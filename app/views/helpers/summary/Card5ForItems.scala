@@ -52,11 +52,7 @@ class Card5ForItems @Inject() (
   private def content(declaration: ExportsDeclaration, actionsEnabled: Boolean, showNoItemError: Boolean)(implicit messages: Messages): Html = {
     val cardContent = card(5).map(_.copy(actions = addItemAction(declaration, actionsEnabled)))
     val html = govukSummaryList(SummaryList(rows(declaration, actionsEnabled, showNoItemError), cardContent))
-    if (!showNoItemError || declaration.hasItems) html
-    else {
-      val str = html.toString
-      Html(str.replace("""class="govuk-summary-card"""", """class="govuk-summary-card govuk-summary-card--error""""))
-    }
+    markCardOnErrors(html, showNoItemError && !declaration.hasItems)
   }
 
   def backLink(implicit request: JourneyRequest[_]): Call = ItemsSummaryController.displayItemsSummaryPage

@@ -26,7 +26,6 @@ import models.declaration.submissions.EnhancedStatus.ERRORS
 import models.requests.JourneyRequest
 import models.requests.SessionHelper._
 import play.api.Logging
-import play.api.data.FormError
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import play.twirl.api.Html
@@ -35,7 +34,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.dashboard.DashboardHelper.toDashboard
 import views.helpers.ActionItemBuilder.lastUrlPlaceholder
-import views.helpers.summary.SummaryHelper.{continuePlaceholder, noItemsError}
+import views.helpers.summary.SummaryHelper.{continuePlaceholder, lrnDuplicateError, noItemsError}
 import views.html.declaration.amendments.amendment_summary
 import views.html.declaration.summary._
 
@@ -97,8 +96,6 @@ class SummaryController @Inject() (
     if (hasMandatoryData) displaySummaryPage()
     else Future.successful(Ok(summaryPageNoData()).removingFromSession(errorFixModeSessionKey))
   }
-
-  val lrnDuplicateError = FormError("lrn", "declaration.consignmentReferences.lrn.error.notExpiredYet")
 
   private def displaySummaryPage()(implicit request: JourneyRequest[_]): Future[Result] = {
     val maybeLrn = request.cacheModel.lrn.map(Lrn(_))

@@ -34,7 +34,7 @@ import play.api.test.Helpers._
 import play.twirl.api.{Html, HtmlFormat}
 import uk.gov.hmrc.http.HeaderCarrier
 import views.helpers.ActionItemBuilder.lastUrlPlaceholder
-import views.helpers.summary.SummaryHelper.{continuePlaceholder, noItemsError}
+import views.helpers.summary.SummaryHelper.{continuePlaceholder, lrnDuplicateError, noItemsError}
 import views.html.declaration.amendments.amendment_summary
 import views.html.declaration.summary._
 import views.html.error_template
@@ -142,12 +142,12 @@ class SummaryControllerSpec extends ControllerWithoutFormSpec with ErrorHandlerM
       val declaration = aDeclaration(withConsignmentReferences())
       withNewCaching(declaration.copy(declarationMeta = declaration.declarationMeta.copy(readyForSubmission = Some(true))))
 
-      val captor = ArgumentCaptor.forClass(classOf[Seq[FormError]])
+      val captor: ArgumentCaptor[Seq[FormError]] = ArgumentCaptor.forClass(classOf[Seq[FormError]])
 
       await(controller.displayPage(getRequest()))
 
       verify(normalSummaryPage, times(1)).apply(any(), captor.capture(), any())(any(), any(), any())
-      captor.getValue mustBe List(controller.lrnDuplicateError)
+      captor.getValue mustBe List(lrnDuplicateError)
     }
 
     "return a draft summary page with a 'Continue' button linking to the same page referenced by the last 'Change' link" when {

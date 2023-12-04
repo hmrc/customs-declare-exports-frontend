@@ -22,7 +22,7 @@
 @import play.twirl.api.HtmlFormat
 @import views.helpers.{BackButton, Title}
 @import views.helpers.summary._
-@import views.helpers.summary.SummaryHelper.noItemsError
+@import views.helpers.summary.SummaryHelper.{lrnDuplicateError, noItemsError}
 @import views.html.components.gds._
 @import views.html.declaration.summary.sections._
 @import uk.gov.hmrc.govukfrontend.views.html.components._
@@ -119,7 +119,7 @@
 
     @draftBodyText
 
-    @card1ForReferences.eval(request.cacheModel)
+    @card1ForReferences.eval(request.cacheModel, true, errors.contains(lrnDuplicateError))
 
     @card2ForParties.eval(request.cacheModel)
 
