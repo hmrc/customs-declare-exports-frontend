@@ -59,7 +59,7 @@ class AmendmentDetailsHelper @Inject() (
 )(implicit codeListConnector: CodeListConnector)
     extends Logging {
 
-  def dateOfAmendment(timestamp: ZonedDateTime): Html =
+  def dateOfAmendment(timestamp: ZonedDateTime)(implicit messages: Messages): Html =
     paragraph(s"""<br/>
          |<time class="date-of-amendment" datetime="${ISO_OFFSET_DATE_TIME.format(timestamp)}">
          |  ${ViewDates.formatDateAtTime(timestamp)}
