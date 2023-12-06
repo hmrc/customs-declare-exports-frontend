@@ -38,12 +38,12 @@ import views.html.declaration.confirmation._
 import views.html.error_template
 
 import java.time.ZonedDateTime
-import java.util.UUID
+import java.util.{Locale, UUID}
 import scala.concurrent.Future
 
 class ConfirmationControllerSpec extends ControllerWithoutFormSpec with GivenWhenThen {
   private val mcc = stubMessagesControllerComponents()
-  private val messages = mcc.messagesApi.preferred(List(Lang("en")))
+  private val messages = mcc.messagesApi.preferred(List(Lang(Locale.ENGLISH)))
 
   val lrn = "R12345"
   val ducr = "1GB12121212121212-TRADER-REF-XYZ"

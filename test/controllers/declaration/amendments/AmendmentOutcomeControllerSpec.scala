@@ -40,13 +40,13 @@ import views.html.declaration.confirmation.holding_page
 import views.html.error_template
 
 import java.time.ZonedDateTime
-import java.util.UUID
+import java.util.{Locale, UUID}
 import scala.concurrent.Future
 
 class AmendmentOutcomeControllerSpec extends ControllerWithoutFormSpec with GivenWhenThen with ScalaFutures {
 
   private val mcc = stubMessagesControllerComponents()
-  private val messages = mcc.messagesApi.preferred(List(Lang("en")))
+  private val messages = mcc.messagesApi.preferred(List(Lang(Locale.ENGLISH)))
 
   val title = "declaration.amendment.holding.title"
 

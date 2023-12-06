@@ -22,8 +22,6 @@
 @import views.helpers.ViewDates.formatDateAtTime
 @import views.html.components.gds.{gdsMainTemplate, link, pageTitle, spanVisuallyHidden}
 
-@import java.time.ZoneId
-
 @this(
   amendmentFlag: DeclarationAmendmentsConfig,
   govukLayout: gdsMainTemplate,
@@ -49,7 +47,7 @@
   declarations.currentPageElements.map { declaration =>
     Seq(
       TableRow(
-        content = HtmlContent(formatDateAtTime(declaration.declarationMeta.updatedDateTime.atZone(ZoneId.of("Europe/London"))))
+        content = HtmlContent(formatDateAtTime(declaration.declarationMeta.updatedDateTime))
       ),
       TableRow(
           content = HtmlContent(

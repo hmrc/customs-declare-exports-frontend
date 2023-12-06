@@ -15,13 +15,14 @@
  *@
 
 @import controllers.routes.{ChoiceController, SavedDeclarationsController}
-@import java.time.{Instant, ZoneOffset}
 @import models.responses.FlashKeys
 @import play.twirl.api.HtmlFormat
 @import uk.gov.hmrc.govukfrontend.views.html.components.{GovukPanel, HtmlContent, Panel, Text}
 @import views.helpers.{Title, ViewDates}
 @import views.html.components.gds.{gdsMainTemplate, govUkLink, heading, link, paragraph}
 @import views.html.components.viewDeclarationSummaryLink
+
+@import java.time.Instant
 
 @this(
     govukLayout: gdsMainTemplate,
@@ -38,7 +39,7 @@
 @expiresMessage = {
     <div id="draft_confirmation-expiry">
         @paragraph(
-            Html(messages("declaration.draft.info", ViewDates.formatDate(Instant.ofEpochMilli(expiry.toLong).atOffset(ZoneOffset.UTC))))
+            Html(messages("declaration.draft.info", ViewDates.formatDate(Instant.ofEpochMilli(expiry.toLong))))
         )
     </div>
 }

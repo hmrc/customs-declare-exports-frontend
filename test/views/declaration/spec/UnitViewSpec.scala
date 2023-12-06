@@ -28,6 +28,8 @@ import services.cache.ExportsTestHelper
 import tools.Stubs
 import views.helpers.CommonMessages
 
+import java.util.Locale
+
 trait UnitViewSpec
     extends UnitWithMocksSpec with CommonMessages with FeatureFlagMocks with JourneyTypeTestRunner with OptionValues with Stubs with ViewMatchers {
 
@@ -94,7 +96,7 @@ class MessagesKeyMatcher(key: String) extends BeMatcher[String] {
 }
 
 object MessagesKeyMatcher {
-  val langs: Seq[Lang] = Seq(Lang("en"))
+  val langs: Seq[Lang] = Seq(Lang(Locale.ENGLISH))
 }
 
 object UnitViewSpec extends Injector with ExportsTestHelper {
