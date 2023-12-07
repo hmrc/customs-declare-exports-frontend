@@ -20,7 +20,7 @@
 @import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.AdditionalDeclarationType
 @import models.declaration.notifications.Notification
 @import models.declaration.submissions.Submission
-@import models.declaration.submissions.EnhancedStatus.{amendmentBlockingStatuses, cancelledStatuses}
+@import models.declaration.submissions.EnhancedStatus.{amendmentBlockingStatuses, cancelledStatuses, GOODS_ARRIVED, GOODS_ARRIVED_MESSAGE}
 @import models.requests.VerifiedEmailRequest
 @import play.api.mvc.Call
 @import uk.gov.hmrc.govukfrontend.views.html.components._
@@ -191,6 +191,14 @@
 }
 
 @declarationStatusReadMore = {
+@if(submission.allSubmissionRequestStatuses.intersect(Seq(GOODS_ARRIVED, GOODS_ARRIVED_MESSAGE)).nonEmpty) {
+  @govukDetails(Details(
+    id = Some("read-more-about-declaration-status-rearrivals"),
+    summary = Text(messages("declaration.details.readMoreAboutDecStatus.rearrivals.header")),
+    content = Text(messages("declaration.details.readMoreAboutDecStatus.rearrivals.paragraph"))
+  ))
+}
+
   @govukDetails(Details(
     id = Some("read-more-about-declaration-status-submitted"),
     summary = Text(messages("declaration.details.readMoreAboutDecStatus.submitted.header")),
