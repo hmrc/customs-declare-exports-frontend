@@ -1,103 +1,103 @@
 [
     {
-       "en": "Commercial Invoice", 
-       "cy": "Commercial Invoice",
+       "en": "Commercial Invoice",
+       "cy": "Anfoneb Fasnachol",
        "code": "380"
     },
     {
        "en": "Proforma Invoice",
-       "cy": "Proforma Invoice",
+       "cy": "Anfoneb Profforma",
        "code": "325"
     },
     {
        "en": "Packing List",
-       "cy": "Packing List",
+       "cy": "Rhestr Bacio",
        "code": "271"
     },
 
     {
        "en": "House Waybill",
-       "cy": "House Waybill",
+       "cy": "Bil Teithrestr a gyhoeddir gan y cwmni anfon nwyddau",
        "code": "703"
     },
     {
        "en": "Air Waybill",
-       "cy": "Air Waybill",
+       "cy": "Bil Teithrestr Awyr",
        "code": "740"
     },
     {
        "en": "Master Air Waybill",
-       "cy": "Master Air Waybill",
+       "cy": "Y Prif Fil Teithrestr Awyr",
        "code": "741"
     },
     {
        "en": "Cargo Manifest",
-       "cy": "Cargo Manifest",
+       "cy": "Maniffest y Cargo",
        "code": "785"
     },
     {
        "en": "Other",
-       "cy": "Other",
+       "cy": "Arall",
        "code": "ZZZ"
     },
     {
        "en": "Container List",
-       "cy": "Container List",
+       "cy": "Rhestr Cynhwysyddion",
        "code": "235"
     },
     {
        "en": "Delivery Note",
-       "cy": "Delivery Note",
+       "cy": "Nodyn Dosbarthu",
        "code": "270"
     },
     {
        "en": "Temporary Storage Declaration",
-       "cy": "Temporary Storage Declaration",
+       "cy": "Datganiad Storio Dros Dro",
        "code": "337"
     },
     {
        "en": "Entry Summary Declaration (ENS)",
-       "cy": "Entry Summary Declaration (ENS)",
+       "cy": "Datganiad Cryno wrth Gyrraedd (ENS)",
        "code": "355"
     },
     {
        "en": "Master Bill of Lading",
-       "cy": "Master Bill of Lading",
+       "cy": "Y Prif Fil Llwytho",
        "code": "704"
     },
     {
        "en": "Bill of Lading",
-       "cy": "Bill of Lading",
+       "cy": "Bil Llwytho",
        "code": "705"
     },
     {
        "en": "House Bill of Lading",
-       "cy": "House Bill of Lading",
+       "cy": "Bil Llwytho a gyhoeddir gan y cwmni anfon nwyddau",
        "code": "714"
     },
     {
        "en": "Rail Consignment Note",
-       "cy": "Rail Consignment Note",
+       "cy": "Nodyn Llwyth ar y Rheilffyrdd",
        "code": "720"
     },
     {
        "en": "Road list SMGS",
-       "cy": "Road list SMGS",
+       "cy": "Rhestr ar y ffordd – SMGS",
        "code": "722"
     },
     {
        "en": "Road Consignment Note",
-       "cy": "Road Consignment Note",
+       "cy": "Nodyn Llwyth ar y Ffordd",
        "code": "730"
     },
     {
        "en": "Despatch Note (Post Parcels)",
-       "cy": "Despatch Note (Post Parcels)",
+       "cy": "Nodyn Anfon (Postio Parseli)",
        "code": "750"
     },
     {
-       "en": "Multimodal/ Combined Transport Document",
-       "cy": "Multimodal/ Combined Transport Document",
+       "en": "Multimodal/Combined Transport Document",
+       "cy": "Dogfen Gludiant Gyfunol/Aml-ddull",
        "code": "760"
     },
     {
@@ -106,98 +106,98 @@
        "code": "787"
     },
     {
-       "en": "Union/ Common Transit Declaration - Mixed Consignments (T)",
-       "cy": "Union/ Common Transit Declaration - Mixed Consignments (T)",
+       "en": "Union/Common Transit Declaration - Mixed Consignments (T)",
+       "cy": "Datganiad Cludo yn yr Undeb/Cyffredin – Llwythi Cymysg (T)",
        "code": "820"
     },
     {
-       "en": "External Union/ Common Transit Declaration (T1)",
-       "cy": "External Union/ Common Transit Declaration (T1)",
+       "en": "External Union/Common Transit Declaration (T1)",
+       "cy": "Datganiad Cludo y Tu Allan i’r Undeb/Cyffredin (T1)",
        "code": "821"
     },
     {
-       "en": "Internal Union/ Common Transit Declaration (T2)",
-       "cy": "Internal Union/ Common Transit Declaration (T2)",
+       "en": "Internal Union/Common Transit Declaration (T2)",
+       "cy": "Datganiad Cludo y Tu Mewn i’r Undeb/Cyffredin (T2)",
        "code": "822"
     },
     {
        "en": "Proof of the Customs Status of Union Goods T2L",
-       "cy": "Proof of the Customs Status of Union Goods T2L",
+       "cy": "Tystiolaeth o Statws Tollau Nwyddau’r Undeb T2L",
        "code": "825"
     },
     {
        "en": "TIR Carnet",
-       "cy": "TIR Carnet",
+       "cy": "Carnet TIR",
        "code": "952"
     },
     {
        "en": "ATA Carnet",
-       "cy": "ATA Carnet",
+       "cy": "Carnet ATA",
        "code": "955"
     },
     {
        "en": "Reference/Date of Entry in the Declarant’s Records (EIDR)*",
-       "cy": "Reference/Date of Entry in the Declarant’s Records (EIDR)*",
+       "cy": "Cyfeirnod/Dyddiad Cofnodi yng Nghofnodion y Datganydd (EIDR)*",
        "code": "CLE"
     },
     {
        "en": "Information Sheet INF3",
-       "cy": "Information Sheet INF3",
+       "cy": "Taflen Wybodaeth INF3",
        "code": "IF3"
     },
     {
        "en": "Cargo Manifest - Simplified Procedure",
-       "cy": "Cargo Manifest - Simplified Procedure",
+       "cy": "Maniffest y Cargo – Gweithdrefn Symlach",
        "code": "MNS"
     },
     {
-       "en": "Declaration/ Notification MRN (including reference no. of any EAD)",
-       "cy": "Declaration/ Notification MRN (including reference no. of any EAD)",
+       "en": "Declaration/Notification MRN (including reference no. of any EAD)",
+       "cy": "Datganiad/Hysbysiad MRC (gan gynnwys cyfeirnod unrhyw EAD)",
        "code": "MRN"
     },
     {
        "en": "Internal Union Transit Declaration - Article 227 of the Code",
-       "cy": "Internal Union Transit Declaration - Article 227 of the Code",
+       "cy": "Datganiad Cludo y Tu Mewn i’r Undeb – Erthygl 227 o’r Cod",
        "code": "T2F"
     },
     {
        "en": "Proof of the Customs Status of Union Goods T2LF",
-       "cy": "Proof of the Customs Status of Union Goods T2LF",
+       "cy": "Tystiolaeth o Statws Tollau Nwyddau’r Undeb T2LF",
        "code": "T2G"
     },
     {
        "en": "T2M Proof",
-       "cy": "T2M Proof",
+       "cy": "Tystiolaeth o T2M",
        "code": "T2M"
     },
     {
        "en": "Simplified Declaration** for Simplified Declaration Procedure (SDP)",
-       "cy": "Simplified Declaration** for Simplified Declaration Procedure (SDP)",
+       "cy": "Datganiad Symlach** ar gyfer Gweithdrefn Datganiadau Symlach (SDP)",
        "code": "SDE"
     },
     {
        "en": "Customs Supervised Export",
-       "cy": "Customs Supervised Export",
+       "cy": "Allforion Dan Oruchwyliaeth y Tollau",
        "code": "CSE"
     },
     {
        "en": "Master Unique Consignment Reference (MUCR) (Including any inventory reference where applicable)",
-       "cy": "Master Unique Consignment Reference (MUCR) (Including any inventory reference where applicable)",
+       "cy": "Prif Gyfeirnod Unigryw y Llwyth (MUCR) (Gan gynnwys unrhyw gyfeirnod stocrestr, lle bo’n berthnasol)",
        "code": "MCR"
     },
     {
        "en": "Declaration Unique Consignment Reference Part Number (DUCR Part)",
-       "cy": "Declaration Unique Consignment Reference Part Number (DUCR Part)",
+       "cy": "Rhan o Gyfeirnod Unigryw y Llwyth ar gyfer Datganiad (Rhan o DUCR)",
        "code": "DCS"
     },
     {
        "en": "Administrative Accompanying Document",
-       "cy": "Administrative Accompanying Document",
+       "cy": "Dogfen Ategol Weinyddol",
        "code": "AAD"
     },
     {
        "en": "Memorandum of Understanding (approved exporters only)",
-       "cy": "Memorandum of Understanding (approved exporters only)",
+       "cy": "Memorandwm Cyd-ddealltwriaeth (allforwyr sydd wedi’u cymeradwyo yn unig)",
        "code": "MOU"
     },
     {
