@@ -754,7 +754,7 @@ submission.enhancedStatus.timeline.content.EXPIRED_NO_ARRIVAL = The goods arriva
 submission.enhancedStatus.timeline.content.EXPIRED_NO_DEPARTURE = Declaration was automatically cancelled by CDS as no departure message was received within 150 days of clearance.
 submission.enhancedStatus.timeline.content.CLEARED = Goods have permission to progress.
 submission.enhancedStatus.timeline.content.RECEIVED = Declaration will be checked when goods arrive into customs control.
-submission.enhancedStatus.timeline.content.GOODS_ARRIVED_MESSAGE = Goods arrival message received.
+submission.enhancedStatus.timeline.content.GOODS_ARRIVED_MESSAGE = Re-arrivals (a change to the goods location) will not appear in this timeline.
 
 dashboard.title = Your declarations
 dashboard.header.ducr = Consignment reference (DUCR)
@@ -804,6 +804,8 @@ declaration.details.view.queries.button = View queries
 
 declaration.details.readMoreAboutDecStatus.header = More about declaration status
 declaration.details.readMoreAboutDecStatus.paragraph = Find out what different declaration statuses mean
+declaration.details.readMoreAboutDecStatus.rearrivals.header = Information about ‘Re-arrivals’
+declaration.details.readMoreAboutDecStatus.rearrivals.paragraph = Re-arrivals cover goods presented at a new location, having cleared for export elsewhere, or arrivals for large consignments, spread over a number of containers. Any arrival or re-arrival will be carried out by approved loaders, specific to the goods location though, re-arrival information may not be displayed in the early versions of the User Interface.
 declaration.details.readMoreAboutDecStatus.submitted.header = Status of ‘Declaration submitted’
 declaration.details.readMoreAboutDecStatus.submitted.paragraph = A pre-lodged declaration will show when it has been submitted successfully and received by HMRC
 declaration.details.readMoreAboutDecStatus.decHasError.header = Status of ‘Declaration has errors’
