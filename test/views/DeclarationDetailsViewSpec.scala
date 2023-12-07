@@ -71,6 +71,7 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
   private val dmsrecNotification = NotificationSummary(UUID.randomUUID, now.plusMinutes(5), CUSTOMS_POSITION_DENIED)
   private val dmsrejNotification = NotificationSummary(UUID.randomUUID, now.plusMinutes(5), ERRORS)
   private val awaitExitResultsNotification = NotificationSummary(UUID.randomUUID, now.plusMinutes(6), AWAITING_EXIT_RESULTS)
+  private val arrivedNotification = NotificationSummary(UUID.randomUUID, now.plusMinutes(6), GOODS_ARRIVED)
 
   // Since the notification list is reverse-ordered (most to least recent) in TimelineEvents...
 
@@ -707,6 +708,22 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
       bulletPoints must include(messages(s"$msgKey.uploadDocuments.details.paragraph.1.bullet.1"))
       bulletPoints must include(messages(s"$msgKey.uploadDocuments.details.paragraph.1.bullet.2"))
       bulletPoints must include(messages(s"$msgKey.uploadDocuments.details.paragraph.1.bullet.3"))
+    }
+
+    "display 'read more' section with re-arrivals status expander based on arrival status" when {
+      "Arrival has occurred on the declaration" in {
+        val arrivedNotificationSummaries =
+          List(acceptedNotification, arrivedNotification)
+        val element =
+          createView(submissionWithNotifications(arrivedNotificationSummaries)).getElementById("read-more-about-declaration-status-rearrivals")
+        element must containMessage(s"$msgKey.readMoreAboutDecStatus.rearrivals.header")
+        element must containMessage(s"$msgKey.readMoreAboutDecStatus.rearrivals.paragraph")
+      }
+
+      "Arrival has not occurred on the declaration" in {
+        val element = view.getElementById("read-more-about-declaration-status-rearrivals")
+        element mustBe null
+      }
     }
 
     "display 'read more' section with submitted declaration status expander" in {
