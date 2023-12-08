@@ -21,6 +21,7 @@ import controllers.declaration.routes._
 import models.DeclarationType._
 import forms.declaration.LocationOfGoods
 import forms.declaration.countries.Country
+import models.declaration.DeclarationStatus.AMENDMENT_DRAFT
 import services.cache.ExportsTestHelper
 import views.declaration.spec.UnitViewSpec
 
@@ -73,14 +74,28 @@ class Card3ForRoutesAndLocationsSpec extends UnitViewSpec with ExportsTestHelper
       checkSummaryRow(row, "locations.goodsLocationCode", "GBAUEMAEMAEMA", call, "locations.goodsLocationCode")
     }
 
+    "show the goods location code without 'Change' link" when {
+      "the declaration is under amendment" in {
+        val declarationToAmend = aDeclarationAfter(declaration, withStatus(AMENDMENT_DRAFT))
+        val view = card3ForRoutesAndLocations.eval(declarationToAmend)(messages)
+        val row = view.getElementsByClass("goods-location-code")
+
+        checkSummaryRow(row, "locations.goodsLocationCode", "GBAUEMAEMAEMA", None, "ign")
+      }
+    }
+
     "show the 'RRS01' additional information" when {
       "the goods location code ends with 'GVM'" in {
         val declaration = aDeclaration(withGoodsLocation(LocationOfGoods("GBAUABDABDABDGVM")), withOfficeOfExit("123"))
         val view = card3ForRoutesAndLocations.eval(declaration)(messages)
-        val row = view.getElementsByClass("rrs01-additional-information")
+
+        val row1 = view.getElementsByClass("goods-location-code")
+        assert(row1.first.hasClass("govuk-summary-list__row--no-border"))
+
+        val row2 = view.getElementsByClass("rrs01-additional-information")
 
         val expectedValue = messages("declaration.summary.locations.rrs01AdditionalInformation.text")
-        checkSummaryRow(row, "locations.rrs01AdditionalInformation", expectedValue, None, "ign")
+        checkSummaryRow(row2, "locations.rrs01AdditionalInformation", expectedValue, None, "ign")
       }
     }
 

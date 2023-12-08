@@ -67,8 +67,8 @@ class RoutingCountriesController @Inject() (
             if (answer) declaration.updateRoutingQuestion(answer)
             else declaration.clearRoutingCountries()
           } map { _ =>
-            if (answer) navigator.continueTo(RoutingCountriesController.displayRoutingCountry)
-            else navigator.continueTo(LocationOfGoodsController.displayPage)
+            val call = if (answer) RoutingCountriesController.displayRoutingCountry else LocationOfGoodsController.displayPage
+            navigator.continueTo(call)
           }
       )
   }

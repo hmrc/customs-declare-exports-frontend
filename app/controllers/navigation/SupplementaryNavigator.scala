@@ -22,7 +22,6 @@ import forms.declaration._
 import forms.declaration.additionaldocuments.{AdditionalDocument, AdditionalDocumentsRequired, AdditionalDocumentsSummary}
 import forms.declaration.commodityMeasure.CommodityMeasure
 import forms.declaration.exporter.{ExporterDetails, ExporterEoriNumber}
-import forms.declaration.officeOfExit.OfficeOfExit
 import models.ExportsDeclaration
 import play.api.mvc.Call
 
@@ -38,7 +37,6 @@ trait SupplementaryNavigator extends CacheDependentNavigators {
     case ContainerAdd            => routes.TransportContainerController.displayContainerSummary
     case LocationOfGoods         => routes.DestinationCountryController.displayPage
     case DocumentSummary         => routes.NatureOfTransactionController.displayPage
-    case OfficeOfExit            => routes.LocationOfGoodsController.displayPage
     case AdditionalActorsSummary => routes.ConsigneeDetailsController.displayPage
     case AdditionalActor         => routes.ConsigneeDetailsController.displayPage
     case page                    => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on supplementary")
@@ -58,7 +56,6 @@ trait SupplementaryNavigator extends CacheDependentNavigators {
   val supplementaryCacheDependent: PartialFunction[DeclarationPage, ExportsDeclaration => Call] = {
     case ConsigneeDetails          => consigneeDetailsSupplementaryPreviousPage
     case DeclarantIsExporter       => declarantIsExporterPreviousPage
-    case OfficeOfExit              => officeOfExitPreviousPage
     case TotalPackageQuantity      => totalPackageQuantityPreviousPage
     case Document                  => previousDocumentsPreviousPageDefault
     case InlandOrBorder            => inlandOrBorderPreviousPage

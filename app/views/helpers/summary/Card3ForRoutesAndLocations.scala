@@ -19,8 +19,8 @@ package views.helpers.summary
 import connectors.CodeListConnector
 import controllers.declaration.routes._
 import forms.declaration.LocationOfGoods.suffixForGVMS
-import models.ExportsDeclaration
 import models.DeclarationType._
+import models.ExportsDeclaration
 import models.declaration.Locations
 import models.requests.JourneyRequest
 import play.api.i18n.Messages
@@ -51,15 +51,15 @@ class Card3ForRoutesAndLocations @Inject() (govukSummaryList: GovukSummaryList, 
   }
 
   def content(declaration: ExportsDeclaration, actionsEnabled: Boolean)(implicit messages: Messages): Html =
-    govukSummaryList(SummaryList(rows(declaration.locations, actionsEnabled), card(3)))
+    govukSummaryList(SummaryList(rows(declaration, actionsEnabled), card(3)))
 
-  private def rows(locations: Locations, actionsEnabled: Boolean)(implicit messages: Messages): Seq[SummaryListRow] =
+  private def rows(declaration: ExportsDeclaration, actionsEnabled: Boolean)(implicit messages: Messages): Seq[SummaryListRow] =
     List(
-      routingCountries(locations, actionsEnabled),
-      destinationCountry(locations, actionsEnabled),
-      goodsLocation(locations, actionsEnabled),
-      additionalInformation(locations),
-      officeOfExit(locations, actionsEnabled)
+      routingCountries(declaration.locations, actionsEnabled),
+      destinationCountry(declaration.locations, actionsEnabled),
+      goodsLocation(declaration, actionsEnabled),
+      additionalInformation(declaration.locations),
+      officeOfExit(declaration.locations, actionsEnabled)
     ).flatten
 
   private def routingCountries(locations: Locations, actionsEnabled: Boolean)(implicit messages: Messages): Option[SummaryListRow] =
@@ -91,14 +91,14 @@ class Card3ForRoutesAndLocations @Inject() (govukSummaryList: GovukSummaryList, 
       )
     }
 
-  private def goodsLocation(locations: Locations, actionsEnabled: Boolean)(implicit messages: Messages): Option[SummaryListRow] =
-    locations.goodsLocation.map { goodsLocation =>
-      SummaryListRow(
-        key("locations.goodsLocationCode"),
-        value(goodsLocation.value),
-        classes = "goods-location-code",
-        changeLink(LocationOfGoodsController.displayPage, "locations.goodsLocationCode", actionsEnabled)
-      )
+  private def goodsLocation(declaration: ExportsDeclaration, actionsEnabled: Boolean)(implicit messages: Messages): Option[SummaryListRow] =
+    declaration.locations.goodsLocation.map { goodsLocation =>
+      val cssNoBorderOnGVMS = if (goodsLocation.value.endsWith(suffixForGVMS)) "govuk-summary-list__row--no-border " else ""
+      val actions =
+        if (declaration.isAmendmentDraft) None
+        else changeLink(LocationOfGoodsController.displayPage, "locations.goodsLocationCode", actionsEnabled)
+
+      SummaryListRow(key("locations.goodsLocationCode"), value(goodsLocation.value), classes = s"${cssNoBorderOnGVMS}goods-location-code", actions)
     }
 
   private def additionalInformation(locations: Locations)(implicit messages: Messages): Option[SummaryListRow] =
@@ -127,5 +127,4 @@ class Card3ForRoutesAndLocations @Inject() (govukSummaryList: GovukSummaryList, 
       case SUPPLEMENTARY | STANDARD            => InvoiceAndExchangeRateChoiceController.displayPage
       case OCCASIONAL | SIMPLIFIED | CLEARANCE => PreviousDocumentsSummaryController.displayPage
     }
-
 }
