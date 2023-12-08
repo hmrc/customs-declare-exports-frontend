@@ -325,7 +325,7 @@ object PointerRecord {
       override val pageLink1Param = Some(NatureOfTransactionController.displayPage)
     },
     "declaration.parties.additionalActors" -> new PointerRecord() {
-      def fetchValue(dec: ExportsDeclaration, args: Int*) = dec.parties.declarationAdditionalActorsData.map(_.actors.size.toString )
+      def fetchValue(dec: ExportsDeclaration, args: Int*) = dec.parties.declarationAdditionalActorsData.map(_.actors.size.toString)
       override val pageLink1Param = Some(AdditionalActorsSummaryController.displayPage)
     },
     "declaration.parties.consigneeDetails.details.address.fullName" -> new PointerRecord() {
