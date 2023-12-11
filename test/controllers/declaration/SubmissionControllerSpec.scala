@@ -19,12 +19,13 @@ package controllers.declaration
 import base.ControllerWithoutFormSpec
 import controllers.declaration.amendments.routes.AmendmentOutcomeController
 import controllers.declaration.routes.{ConfirmationController, SummaryController}
-import controllers.routes.RootController
+import controllers.routes.{ChoiceController, RootController}
 import forms.declaration.AmendmentSubmission.reasonKey
 import forms.declaration.LegalDeclaration
 import forms.declaration.LegalDeclaration._
 import mock.ErrorHandlerMocks
 import models.ExportsDeclaration
+import models.declaration.DeclarationStatus.{AMENDMENT_DRAFT, COMPLETE}
 import models.declaration.submissions.EnhancedStatus.RECEIVED
 import models.declaration.submissions.Submission
 import models.requests.SessionHelper
@@ -131,7 +132,7 @@ class SubmissionControllerSpec extends ControllerWithoutFormSpec with ErrorHandl
   "SubmissionController.displaySubmitAmendmentPage" should {
 
     "return 200 and invoke the expected page" in {
-      withNewCaching(aDeclaration())
+      withNewCaching(aDeclaration(withStatus(AMENDMENT_DRAFT)))
 
       val result = controller.displaySubmitAmendmentPage.apply(getJourneyRequest())
       status(result) mustBe OK
@@ -149,6 +150,18 @@ class SubmissionControllerSpec extends ControllerWithoutFormSpec with ErrorHandl
         status(result) mustBe SEE_OTHER
 
         redirectLocation(result) mustBe Some(RootController.displayPage.url)
+        verifyNoInteractions(amendmentSubmissionPage)
+      }
+    }
+
+    "Redirect to the '/choice' page" when {
+      "the amendments to the declaration were already submitted" in {
+        withNewCaching(aDeclaration(withStatus(COMPLETE)))
+
+        val result = controller.displaySubmitAmendmentPage.apply(getJourneyRequest())
+        status(result) mustBe SEE_OTHER
+
+        redirectLocation(result) mustBe Some(ChoiceController.displayPage.url)
         verifyNoInteractions(amendmentSubmissionPage)
       }
     }

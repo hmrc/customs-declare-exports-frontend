@@ -23,7 +23,7 @@ import controllers.actions.{AuthAction, JourneyAction, VerifiedEmailAction}
 import controllers.declaration.amendments.routes.AmendmentOutcomeController
 import controllers.declaration.routes.ConfirmationController
 import controllers.helpers.ErrorFixModeHelper.inErrorFixMode
-import controllers.routes.RootController
+import controllers.routes.{ChoiceController, RootController}
 import forms.declaration.{AmendmentSubmission, LegalDeclaration}
 import handlers.ErrorHandler
 import models.declaration.submissions.Submission
@@ -103,6 +103,7 @@ class SubmissionController @Inject() (
 
   val displaySubmitAmendmentPage: Action[AnyContent] = actions { implicit request =>
     if (declarationAmendmentsConfig.isDisabled) Redirect(RootController.displayPage)
+    else if (request.cacheModel.isComplete) Redirect(ChoiceController.displayPage)
     else Ok(amendment_submission(AmendmentSubmission.form(false), SubmissionAmendment))
   }
 

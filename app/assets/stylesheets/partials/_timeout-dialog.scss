@@ -34,10 +34,6 @@ html {
 
   @include govuk-media-query($from: tablet) {
     width: 460px;
-    @include govuk-if-ie8 {
-      margin-top: -128px;
-      margin-left: -227px;
-    }
   }
 }
 
