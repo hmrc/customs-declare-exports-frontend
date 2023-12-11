@@ -23,8 +23,9 @@ import controllers.navigation.Navigator
 import controllers.routes.RootController
 import forms.declaration.LocationOfGoods
 import models.ExportsDeclaration
+import models.requests.JourneyRequest
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Results}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.TaggedAuthCodes
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.WithUnsafeDefaultFormBinding
@@ -46,8 +47,9 @@ class LocationOfGoodsController @Inject() (
 )(implicit ec: ExecutionContext, codeListConnector: CodeListConnector)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithUnsafeDefaultFormBinding {
 
-  def displayPage: Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    if (taggedAuthCodes.skipLocationOfGoods(request.cacheModel)) Results.Redirect(RootController.displayPage)
+  val displayPage: Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+    if (taggedAuthCodes.skipLocationOfGoods(request.cacheModel)) Redirect(RootController.displayPage)
+    else if (request.cacheModel.isAmendmentDraft) nextPage
     else {
       val form = LocationOfGoods.form.withSubmissionErrors
       request.cacheModel.locations.goodsLocation match {
@@ -57,19 +59,20 @@ class LocationOfGoodsController @Inject() (
     }
   }
 
-  def saveLocation(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    if (taggedAuthCodes.skipLocationOfGoods(request.cacheModel)) Future.successful(Results.Redirect(RootController.displayPage))
+  val saveLocation: Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+    if (taggedAuthCodes.skipLocationOfGoods(request.cacheModel)) Future.successful(Redirect(RootController.displayPage))
+    else if (request.cacheModel.isAmendmentDraft) Future.successful(nextPage)
     else
       LocationOfGoods.form
         .bindFromRequest()
         .fold(
           formWithErrors => Future.successful(BadRequest(locationOfGoods(formWithErrors))),
-          locationOfGoods =>
-            updateDeclarationFromRequest(updateDeclaration(_, locationOfGoods)).map { _ =>
-              navigator.continueTo(OfficeOfExitController.displayPage)
-            }
+          locationOfGoods => updateDeclarationFromRequest(updateDeclaration(_, locationOfGoods)).map(_ => nextPage)
         )
   }
+
+  private def nextPage(implicit request: JourneyRequest[AnyContent]): Result =
+    navigator.continueTo(OfficeOfExitController.displayPage)
 
   private val updateDeclaration =
     (declaration: ExportsDeclaration, locationOfGoods: LocationOfGoods) =>

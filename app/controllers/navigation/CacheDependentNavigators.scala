@@ -59,9 +59,15 @@ trait CacheDependentNavigators {
         routes.SectionSummaryController.displayPage(1)
     }
 
-  protected def officeOfExitPreviousPage(declaration: ExportsDeclaration): Call =
-    if (taggedAuthCodes.skipLocationOfGoods(declaration)) routes.DestinationCountryController.displayPage
-    else routes.LocationOfGoodsController.displayPage
+  protected def officeOfExitPreviousPage(cacheModel: ExportsDeclaration): Call = {
+    val skipLocationOfGoods = cacheModel.isAmendmentDraft || taggedAuthCodes.skipLocationOfGoods(cacheModel)
+    if (!skipLocationOfGoods) routes.LocationOfGoodsController.displayPage
+    else
+      cacheModel.`type` match {
+        case SUPPLEMENTARY | CLEARANCE => routes.DestinationCountryController.displayPage
+        case _                         => routes.RoutingCountriesController.displayRoutingCountry
+      }
+  }
 
   protected def previousDocumentsPreviousPageDefault(cacheModel: ExportsDeclaration): Call =
     if (cacheModel.hasPreviousDocuments) routes.PreviousDocumentsSummaryController.displayPage

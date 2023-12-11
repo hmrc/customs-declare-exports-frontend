@@ -24,6 +24,8 @@ import forms.declaration.LocationOfGoods
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.SUPPLEMENTARY_EIDR
 import models.DeclarationType
 import models.codes.{Country, GoodsLocationCode}
+import models.declaration.DeclarationStatus.AMENDMENT_DRAFT
+import models.declaration.GoodsLocation
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -78,11 +80,11 @@ class LocationOfGoodsControllerSpec extends ControllerSpec with MockTaggedCodes 
     theResponseForm
   }
 
-  "Location controller" should {
+  "LocationOfGoodsController.displayPage" should {
 
     "return 200 (OK)" when {
 
-      "display page method is invoked and cache is empty" in {
+      "the cache is empty" in {
         val result = controller.displayPage(getRequest())
 
         status(result) mustBe OK
@@ -91,9 +93,9 @@ class LocationOfGoodsControllerSpec extends ControllerSpec with MockTaggedCodes 
         theResponseForm.value mustBe empty
       }
 
-      "display page method is invoked and cache contains data" when {
-        "code is found in list" in {
+      "the cache contains data and" when {
 
+        "code is found in list" in {
           when {
             mockCodeListConnector.allGoodsLocationCodes(any())
           } thenReturn ListMap[String, GoodsLocationCode]("GBAUEMAEMAEMA" -> GoodsLocationCode("GBAUEMAEMAEMA", "Somwhere"))
@@ -109,8 +111,8 @@ class LocationOfGoodsControllerSpec extends ControllerSpec with MockTaggedCodes 
           theResponseForm.value mustNot be(empty)
           theResponseForm.value.value.code mustBe "GBAUEMAEMAEMA"
         }
-        "code does not exist in list" in {
 
+        "code does not exist in list" in {
           when {
             mockCodeListConnector.allGoodsLocationCodes(any())
           } thenReturn ListMap[String, GoodsLocationCode]()
@@ -129,27 +131,14 @@ class LocationOfGoodsControllerSpec extends ControllerSpec with MockTaggedCodes 
       }
     }
 
-    "return 400 (BAD_REQUEST)" when {
-
-      "form is incorrect" in {
-        val incorrectForm = Json.toJson(LocationOfGoods("incorrect"))
-
-        val result = controller.saveLocation()(postRequest(incorrectForm))
-
-        status(result) mustBe BAD_REQUEST
-        verify(mockLocationOfGoods).apply(any())(any(), any())
-      }
-    }
-
     "return 303 (SEE_OTHER)" when {
 
-      "information provided by user are correct" in {
-        val correctForm: JsValue = JsObject(Map("yesNo" -> JsString("Yes"), "glc" -> JsString("PLAUEMAEMAEMA"), "code" -> JsString("")))
-        val result = controller.saveLocation()(postRequest(correctForm))
+      "the declaration is under amendment" in {
+        withNewCaching(aDeclaration(withStatus(AMENDMENT_DRAFT)))
+        val result = controller.displayPage(getRequest())
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe OfficeOfExitController.displayPage
-        verify(mockLocationOfGoods, times(0)).apply(any())(any(), any())
       }
 
       "Additional dec type is Supplementary_EIDR with MOU" in {
@@ -159,6 +148,46 @@ class LocationOfGoodsControllerSpec extends ControllerSpec with MockTaggedCodes 
 
         status(result) mustBe 303
         redirectLocation(result) mustBe Some(RootController.displayPage.url)
+      }
+    }
+  }
+
+  "LocationOfGoodsController.saveLocation" should {
+
+    "update the declaration" when {
+      "information provided by the user are correct" in {
+        val correctForm: JsValue = JsObject(Map("yesNo" -> JsString("Yes"), "glc" -> JsString("PLAUEMAEMAEMA"), "code" -> JsString("")))
+        val result = controller.saveLocation(postRequest(correctForm))
+
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe OfficeOfExitController.displayPage
+        verify(mockLocationOfGoods, times(0)).apply(any())(any(), any())
+
+        theCacheModelUpdated.locations.goodsLocation.value mustBe GoodsLocation("PL", "A", "U", "EMAEMAEMA")
+      }
+    }
+
+    "return 400 (BAD_REQUEST)" when {
+      "form is incorrect" in {
+        val incorrectForm = Json.toJson(LocationOfGoods("incorrect"))
+
+        val result = controller.saveLocation(postRequest(incorrectForm))
+
+        status(result) mustBe BAD_REQUEST
+        verify(mockLocationOfGoods).apply(any())(any(), any())
+      }
+    }
+
+    "return 303 (SEE_OTHER)" when {
+      "the declaration is under amendment" in {
+        val declaration = aDeclaration(withStatus(AMENDMENT_DRAFT))
+        withNewCaching(declaration)
+        val result = controller.saveLocation(postRequest(JsString("")))
+
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe OfficeOfExitController.displayPage
+
+        verifyTheCacheIsUnchanged()
       }
     }
   }
