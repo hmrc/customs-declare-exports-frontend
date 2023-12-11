@@ -148,6 +148,7 @@ object EventData extends Enumeration {
   type Data = Value
 
   val eori, lrn, mrn, ducr, decType, changeReason, changeDescription, fullName, jobRole, email, confirmed, submissionResult, Success, Failure, url,
-    preAmendmentDeclaration, postAmendmentDeclaration, declarationStatus, declarationId, parentDeclarationId, conversationId =
+    preAmendmentDeclaration, postAmendmentDeclaration, declarationStatus, declarationId, parentDeclarationId, parentDeclarationStatus,
+    conversationId =
     Value
 }

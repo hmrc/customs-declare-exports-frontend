@@ -30,7 +30,7 @@ import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.http.{HeaderCarrier, HeaderNames, HttpClient}
 import config.featureFlags.DeclarationAmendmentsConfig
 import models.CancellationStatus.CancellationResult
-import models.declaration.submissions.EnhancedStatus.EnhancedStatus
+import models.declaration.submissions.EnhancedStatus.{ERRORS, EnhancedStatus}
 import models.declaration.DeclarationStatus.{AMENDMENT_DRAFT, DRAFT, INITIAL}
 import play.api.http.Status.CREATED
 import services.AuditCreateDraftDec
@@ -121,7 +121,16 @@ class CustomsDeclareExportsConnector @Inject() (
         val newDecId = parseResponseBody(httpResponse.body)
         // this will exclude draft decs created from scratch that have no DUCR defined yet
         if (httpResponse.status == CREATED && draftDec.ducr.isDefined)
-          audit(eori, newDecId, draftDec.additionalDeclarationType, draftDec.ducr, AMENDMENT_DRAFT, Some(draftDec.id), auditService)
+          audit(
+            eori,
+            newDecId,
+            draftDec.additionalDeclarationType,
+            draftDec.ducr,
+            AMENDMENT_DRAFT,
+            Some(draftDec.id),
+            draftDec.declarationMeta.parentDeclarationEnhancedStatus,
+            auditService
+          )
         newDecId
       }
       .andThen { case _ =>
@@ -141,7 +150,7 @@ class CustomsDeclareExportsConnector @Inject() (
       .map { httpResponse =>
         val newDecId = parseResponseBody(httpResponse.body)
         if (httpResponse.status == CREATED)
-          audit(eori, newDecId, draftDec.additionalDeclarationType, draftDec.ducr, DRAFT, Some(draftDec.id), auditService)
+          audit(eori, newDecId, draftDec.additionalDeclarationType, draftDec.ducr, DRAFT, Some(draftDec.id), Some(ERRORS), auditService)
         newDecId
       }
       .andThen { case _ =>
@@ -182,7 +191,7 @@ class CustomsDeclareExportsConnector @Inject() (
           logPayload("Update Declaration Response", request)
           updateStopwatch.stop()
           if (dec.declarationMeta.status == INITIAL && dec.ducr.isDefined)
-            audit(eori, dec.id, dec.additionalDeclarationType, dec.ducr, DRAFT, None, auditService)
+            audit(eori, dec.id, dec.additionalDeclarationType, dec.ducr, DRAFT, None, None, auditService)
 
         case Failure(_) =>
           updateStopwatch.stop()

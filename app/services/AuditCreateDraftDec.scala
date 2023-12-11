@@ -20,6 +20,7 @@ import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.Add
 import forms.Ducr
 import models.declaration.DeclarationStatus.DeclarationStatus
 import models.ExportsDeclaration
+import models.declaration.submissions.EnhancedStatus.EnhancedStatus
 import play.api.libs.json.{JsObject, Json}
 import services.audit.AuditTypes.CreateDraftDeclatation
 import services.audit.{AuditService, EventData}
@@ -33,6 +34,7 @@ trait AuditCreateDraftDec {
     ducr: Option[Ducr],
     newDecStatus: DeclarationStatus,
     srcDecId: Option[String],
+    srcDecStatus: Option[EnhancedStatus],
     auditService: AuditService
   )(implicit hc: HeaderCarrier): Unit = {
     val auditData: Map[String, String] = Map(
@@ -44,7 +46,8 @@ trait AuditCreateDraftDec {
     val optionalKeyValues = Seq(
       (EventData.decType.toString, additionalDecType.map(_.toString)),
       (EventData.ducr.toString, ducr.map(_.ducr)),
-      (EventData.parentDeclarationId.toString, srcDecId)
+      (EventData.parentDeclarationId.toString, srcDecId),
+      (EventData.parentDeclarationStatus.toString, srcDecStatus.map(_.toString))
     )
 
     val optionalDataElements = optionalKeyValues.foldLeft(Map.empty[String, String]) { (acc, item) =>
@@ -64,6 +67,7 @@ trait AuditCreateDraftDec {
       declaration.ducr,
       declaration.declarationMeta.status,
       declaration.declarationMeta.parentDeclarationId,
+      declaration.declarationMeta.parentDeclarationEnhancedStatus,
       auditService
     )
 }
