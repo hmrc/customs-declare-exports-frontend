@@ -42,6 +42,11 @@ class PersonPresentingGoodsDetailsViewSpec extends UnitViewSpec with Injector wi
         createView().getElementsByTag("h1").first() must containMessage("declaration.personPresentingGoodsDetails.title")
       }
 
+      "display eori input field hint" in {
+
+        createView().getElementById("eori-hint") must containMessage("declaration.personPresentingGoodsDetails.hint")
+      }
+
       "display section header" in {
 
         createView().getElementById("section-header") must containMessage("declaration.section.2")

@@ -541,6 +541,7 @@ declaration.entryIntoDeclarantRecords.answer.no = No
 declaration.entryIntoDeclarantRecords.error = Select yes if this is an entry into the declarant’s records
 
 declaration.personPresentingGoodsDetails.title = What is the EORI number of the person presenting the goods to customs?
+declaration.personPresentingGoodsDetails.hint = A GB EORI number is GB followed by 12 numbers. For example, GB123456789123.
 
 declaration.exporter-address.title = What is the exporter’s name and business address?
 declaration.exporter-address.paragraph = Enter the exporter’s name and business address.
