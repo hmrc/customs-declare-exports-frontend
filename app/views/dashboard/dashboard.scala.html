@@ -17,7 +17,7 @@
 @import config.featureFlags.SecureMessagingConfig
 @import controllers.routes.ChoiceController
 @import models.PageOfSubmissions
-@import views.dashboard.DashboardHelper.{Groups, Page, panels, tabs}
+@import views.dashboard.DashboardHelper.{panels, tabs}
 @import views.helpers.{BackButton, Title}
 @import views.html.components.gds.{gdsMainTemplate, linkButton, navigationBanner, pageTitle, paragraphBody}
 
@@ -51,7 +51,7 @@
 
             @pageTitle(messages("dashboard.title"))
 
-            @paragraph(message = messages("dashboard.hint.no.action.needed"), classes = "govuk-body govuk-warning-text")
+            @paragraph(message = messages("dashboard.check.status.hint"), classes = "govuk-body govuk-!-margin-bottom-6")
 
             <div class="cds-exports-tabs">
                 <h2 class="cds-exports-tabs__title">Contents</h2>
