@@ -24,6 +24,7 @@
 @import views.html.components.gds.{gdsMainTemplate, linkButton, pageTitle, paragraphBody}
 @import views.html.declaration.summary.sections._
 @import uk.gov.hmrc.govukfrontend.views.html.components.{GovukWarningText, Text, WarningText}
+@import play.api.http.HeaderNames
 
 @this(
     govukLayout: gdsMainTemplate,
@@ -42,7 +43,7 @@
 @(submissionId: String)(implicit request: JourneyRequest[_], messages: Messages, appConfig: AppConfig)
 
 @referer = @{
-  if (request.headers.get("referer").exists(_.endsWith("/saved-declarations"))) SavedDeclarationsController.displayDeclarations()
+  if (request.headers.get(HeaderNames.REFERER).exists(_.endsWith("/saved-declarations"))) SavedDeclarationsController.displayDeclarations()
   else DeclarationDetailsController.displayPage(submissionId)
 }
 
