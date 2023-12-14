@@ -25,7 +25,7 @@ import base.ExportsTestData.newUser
 import models.requests.JourneyRequest
 import play.api.test.FakeRequest
 import utils.FakeRequestCSRFSupport.CSRFFakeRequest
-import sttp.model.HeaderNames
+import play.api.http.HeaderNames
 
 class AmendmentSummaryViewSpec extends SummaryViewSpec {
 
@@ -50,7 +50,7 @@ class AmendmentSummaryViewSpec extends SummaryViewSpec {
 
     "should display correct back link" when {
       "referer is the /saved-declarations page" in {
-        val fakeReferer = Map(HeaderNames.Referer -> ".../saved-declarations")
+        val fakeReferer = Map(HeaderNames.REFERER -> ".../saved-declarations")
         val journeyWithHeader = new JourneyRequest(
           buildVerifiedEmailRequest(FakeRequest("", "").withHeaders(fakeReferer.toSeq: _*).withCSRFToken, newUser("12345", "12345")),
           declaration
