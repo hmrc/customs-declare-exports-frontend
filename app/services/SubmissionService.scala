@@ -21,10 +21,9 @@ import connectors.CustomsDeclareExportsConnector
 import forms.declaration.{AmendmentSubmission, LegalDeclaration}
 import metrics.ExportsMetrics
 import metrics.MetricIdentifiers.{submissionAmendmentMetric, submissionMetric}
-import models.DeclarationType.DeclarationType
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.AdditionalDeclarationType
-import models.declaration.DeclarationStatus.DeclarationStatus
 import models.ExportsDeclaration
+import models.declaration.DeclarationStatus.DeclarationStatus
 import models.declaration.submissions.{Submission, SubmissionAmendment}
 import play.api.Logging
 import play.api.libs.json.{JsObject, Json}
@@ -98,15 +97,15 @@ class SubmissionService @Inject() (connector: CustomsDeclareExportsConnector, au
             else connector.submitAmendment(submissionAmendment)
 
           result.andThen {
-            case Success(_) =>
-              auditAmendmentSubmission(eori, declaration, parentDeclaration, amendmentSubmission, Success.toString, auditType)
+            case Success(conversationId) =>
+              auditAmendmentSubmission(eori, declaration, parentDeclaration, amendmentSubmission, conversationId, Success.toString, auditType)
               metrics.incrementCounter(submissionAmendmentMetric)
               timerContext.stop()
 
             case Failure(exception) =>
               logProgress(declaration, "Amendment Submission Failed")
               logger.error(s"Error response from backend $exception")
-              auditAmendmentSubmission(eori, declaration, parentDeclaration, amendmentSubmission, Failure.toString, auditType)
+              auditAmendmentSubmission(eori, declaration, parentDeclaration, amendmentSubmission, "N/A", Failure.toString, auditType)
           }
             .map(Some(_))
 
@@ -147,12 +146,25 @@ class SubmissionService @Inject() (connector: CustomsDeclareExportsConnector, au
     newDeclaration: ExportsDeclaration,
     oldDeclaration: ExportsDeclaration,
     amendmentSubmission: AmendmentSubmission,
+    conversationId: String,
     opResult: String,
     auditType: Audit
   )(implicit hc: HeaderCarrier): Unit = {
 
     val auditPayload = Json
-      .toJson(auditAmendment(eori, newDeclaration.`type`, newDeclaration.lrn, newDeclaration.ducr.map(_.ducr), amendmentSubmission, opResult))
+      .toJson(
+        auditAmendment(
+          eori,
+          newDeclaration.additionalDeclarationType,
+          newDeclaration.lrn,
+          newDeclaration.ducr.map(_.ducr),
+          amendmentSubmission,
+          newDeclaration.id,
+          newDeclaration.declarationMeta.status,
+          conversationId,
+          opResult
+        )
+      )
       .as[JsObject]
 
     val declarationVersions =
@@ -163,22 +175,28 @@ class SubmissionService @Inject() (connector: CustomsDeclareExportsConnector, au
 
   private def auditAmendment(
     eori: String,
-    `type`: DeclarationType,
+    additionalDeclarationType: Option[AdditionalDeclarationType],
     lrn: Option[String],
     ducr: Option[String],
     amendmentSubmission: AmendmentSubmission,
+    id: String,
+    status: DeclarationStatus,
+    conversationId: String,
     result: String
   ): Map[String, String] =
     Map(
       EventData.eori.toString -> eori,
-      EventData.decType.toString -> `type`.toString,
+      EventData.decType.toString -> additionalDeclarationType.map(_.toString).getOrElse(""),
       EventData.lrn.toString -> lrn.getOrElse(""),
       EventData.ducr.toString -> ducr.getOrElse(""),
       EventData.fullName.toString -> amendmentSubmission.fullName,
       EventData.jobRole.toString -> amendmentSubmission.jobRole,
       EventData.email.toString -> amendmentSubmission.email,
       EventData.confirmed.toString -> amendmentSubmission.confirmation.toString,
-      EventData.submissionResult.toString -> result
+      EventData.submissionResult.toString -> result,
+      EventData.declarationId.toString -> id,
+      EventData.declarationStatus.toString -> status.toString,
+      EventData.conversationId.toString -> conversationId
     )
 
   private def auditSubmission(
