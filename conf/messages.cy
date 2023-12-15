@@ -542,6 +542,7 @@ declaration.entryIntoDeclarantRecords.answer.no = Na
 declaration.entryIntoDeclarantRecords.error = Dewiswch ‘Iawn’ os mai cofnod i gofnodion y datganydd yw hwn
 
 declaration.personPresentingGoodsDetails.title = Beth yw rhif EORI y person sy’n cyflwyno’r nwyddau i’r tollau?
+declaration.personPresentingGoodsDetails.hint = Mae rhif EORI yn dechrau gyda dau lythyren (sef GB, XI neu XB) wedi’i ddilyn gan 12 rhif. Er enghraifft, GB123456789123
 
 declaration.exporter-address.title = Beth yw enw a chyfeiriad busnes yr allforiwr?
 declaration.exporter-address.paragraph = Nodwch enw a chyfeiriad busnes yr allforiwr.
