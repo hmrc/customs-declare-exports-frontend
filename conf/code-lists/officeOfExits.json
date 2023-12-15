@@ -1,1 +1,672 @@
-[{"code": "GB000001", "en": "Central Community Transit Office", "cy": "Central Community Transit Office"}, {"code": "GB000002", "en": "Peter Bennett House", "cy": "Peter Bennett House"}, {"code": "GB000003", "en": "Castle Meadow", "cy": "Castle Meadow"}, {"code": "GB000011", "en": "Birmingham Airport", "cy": "Birmingham Airport"}, {"code": "GB000014", "en": "Belfast International Airport", "cy": "Belfast International Airport"}, {"code": "GB000029", "en": "UKBF, Bristol International Airport", "cy": "UKBF, Bristol International Airport"}, {"code": "GB000033", "en": "Avonmouth 1", "cy": "Avonmouth 1"}, {"code": "GB000040", "en": "Dover (OTS) Freight Clearance", "cy": "Dover (OTS) Freight Clearance"}, {"code": "GB000041", "en": "Folkestone", "cy": "Folkestone"}, {"code": "GB000045", "en": "Sheerness", "cy": "Sheerness"}, {"code": "GB000047", "en": "Ramsgate", "cy": "Ramsgate"}, {"code": "GB000049", "en": "Newport", "cy": "Newport"}, {"code": "GB000051", "en": "Felixstowe", "cy": "Felixstowe"}, {"code": "GB000052", "en": "Border Force, Harwich", "cy": "Border Force, Harwich"}, {"code": "GB000053", "en": "Ipswich port", "cy": "Ipswich port"}, {"code": "GB000054", "en": "Great Yarmouth", "cy": "Great Yarmouth"}, {"code": "GB000055", "en": "King's Lynn", "cy": "King's Lynn"}, {"code": "GB000057", "en": "Rosyth", "cy": "Rosyth"}, {"code": "GB000058", "en": "Norwich Airport", "cy": "Norwich Airport"}, {"code": "GB000059", "en": "Grangemouth", "cy": "Grangemouth"}, {"code": "GB000060", "en": "Dover/ Folkestone Eurotunnel Freight", "cy": "Dover/ Folkestone Eurotunnel Freight"}, {"code": "GB000062", "en": "Scrabster", "cy": "Scrabster"}, {"code": "GB000063", "en": "Scotland Inland Authorised Consignee/ Consignor", "cy": "Scotland Inland Authorised Consignee/ Consignor"}, {"code": "GB000067", "en": "Scotland Frontier", "cy": "Scotland Frontier"}, {"code": "GB000070", "en": "Prestwick Airport", "cy": "Prestwick Airport"}, {"code": "GB000072", "en": "Hull", "cy": "Hull"}, {"code": "GB000073", "en": "Grimsby", "cy": "Grimsby"}, {"code": "GB000074", "en": "Immingham", "cy": "Immingham"}, {"code": "GB000080", "en": "Liverpool, Seaforth S2 berth", "cy": "Liverpool, Seaforth S2 berth"}, {"code": "GB000081", "en": "UK North Authorised Consignor/nees", "cy": "UK North Authorised Consignor/nees"}, {"code": "GB000084", "en": "London Heathrow Cargo", "cy": "London Heathrow Cargo"}, {"code": "GB000085", "en": "London Gatwick Airport Cargo Dist.", "cy": "London Gatwick Airport Cargo Dist."}, {"code": "GB000087", "en": "Leeds Bradford Airport", "cy": "Leeds Bradford Airport"}, {"code": "GB000091", "en": "Southend Airport", "cy": "Southend Airport"}, {"code": "GB000093", "en": "Tilbury", "cy": "Tilbury"}, {"code": "GB000098", "en": "Newcastle Airport", "cy": "Newcastle Airport"}, {"code": "GB000099", "en": "Thames Europort (DIFT)", "cy": "Thames Europort (DIFT)"}, {"code": "GB000102", "en": "Luton Airport FCT", "cy": "Luton Airport FCT"}, {"code": "GB000108", "en": "Falmouth", "cy": "Falmouth"}, {"code": "GB000119", "en": "Northolt Airport", "cy": "Northolt Airport"}, {"code": "GB000120", "en": "London Heathrow Airport (Baggage)", "cy": "London Heathrow Airport (Baggage)"}, {"code": "GB000121", "en": "Stansted Airport FCT", "cy": "Stansted Airport FCT"}, {"code": "GB000122", "en": "Cardiff International Airport", "cy": "Cardiff International Airport"}, {"code": "GB000123", "en": "Swansea", "cy": "Swansea"}, {"code": "GB000124", "en": "Holyhead", "cy": "Holyhead"}, {"code": "GB000125", "en": "Barry Dock", "cy": "Barry Dock"}, {"code": "GB000126", "en": "Pembroke Dock", "cy": "Pembroke Dock"}, {"code": "GB000128", "en": "Edinburgh Airport", "cy": "Edinburgh Airport"}, {"code": "GB000130", "en": "London City Airport", "cy": "London City Airport"}, {"code": "GB000140", "en": "George Best (Belfast City)", "cy": "George Best (Belfast City)"}, {"code": "GB000142", "en": "Belfast Docks, Unit 2, Block C", "cy": "Belfast Docks, Unit 2, Block C"}, {"code": "GB000149", "en": "Purfleet Thames Terminal", "cy": "Purfleet Thames Terminal"}, {"code": "GB000150", "en": "Thamesport", "cy": "Thamesport"}, {"code": "GB000155", "en": "Reading", "cy": "Reading"}, {"code": "GB000170", "en": "London Gateway Port", "cy": "London Gateway Port"}, {"code": "GB000191", "en": "Manchester", "cy": "Manchester"}, {"code": "GB000218", "en": "Newcastle-upon-Tyne", "cy": "Newcastle-upon-Tyne"}, {"code": "GB000219", "en": "Teesport", "cy": "Teesport"}, {"code": "GB000244", "en": "Boston", "cy": "Boston"}, {"code": "GB000245", "en": "UKBA East Midlands Airport", "cy": "UKBA East Midlands Airport"}, {"code": "GB000246", "en": "UK South Authorised Consignor/nees", "cy": "UK South Authorised Consignor/nees"}, {"code": "GB000250", "en": "Plymouth", "cy": "Plymouth"}, {"code": "GB000290", "en": "Southampton", "cy": "Southampton"}, {"code": "GB000291", "en": "Poole Ferry Terminal", "cy": "Poole Ferry Terminal"}, {"code": "GB000292", "en": "Portsmouth", "cy": "Portsmouth"}, {"code": "GB000297", "en": "Exeter Airport", "cy": "Exeter Airport"}, {"code": "GB000328", "en": "Cardiff", "cy": "Cardiff"}, {"code": "GB000383", "en": "Salford National Clearance Hub", "cy": "Salford National Clearance Hub"}, {"code": "GB000411", "en": "Aberdeen Airport", "cy": "Aberdeen Airport"}, {"code": "GB000416", "en": "Peterhead", "cy": "Peterhead"}, {"code": "GB000434", "en": "Aberdeen", "cy": "Aberdeen"}, {"code": "GB000450", "en": "Isle of Man Customs & Excise", "cy": "Isle of Man Customs & Excise"}, {"code": "GB000461", "en": "Guernsey Customs & Excise", "cy": "Guernsey Customs & Excise"}, {"code": "GB000465", "en": "Jersey Customs & Immigration", "cy": "Jersey Customs & Immigration"}, {"code": "GB000480", "en": "Chatham", "cy": "Chatham"}, {"code": "GB000500", "en": "Coventry International Hub", "cy": "Coventry International Hub"}, {"code": "GB000501", "en": "HWDC Langley", "cy": "HWDC Langley"}, {"code": "GB000921", "en": "Fords Jetty", "cy": "Fords Jetty"}, {"code": "GB001016", "en": "Lerwick", "cy": "Lerwick"}, {"code": "GB003010", "en": "Barrow in Furness", "cy": "Barrow in Furness"}, {"code": "GB003020", "en": "Berwick upon Tweed", "cy": "Berwick upon Tweed"}, {"code": "GB003030", "en": "Blackpool International Airport", "cy": "Blackpool International Airport"}, {"code": "GB003040", "en": "Glasgow Docks", "cy": "Glasgow Docks"}, {"code": "GB003050", "en": "Plymouth Docks", "cy": "Plymouth Docks"}, {"code": "GB003060", "en": "Bournemouth (Hurn) Airport", "cy": "Bournemouth (Hurn) Airport"}, {"code": "GB003070", "en": "Brize Norton", "cy": "Brize Norton"}, {"code": "GB003080", "en": "Cambridge Airport", "cy": "Cambridge Airport"}, {"code": "GB003090", "en": "Southampton (Eastleigh) Airport", "cy": "Southampton (Eastleigh) Airport"}, {"code": "GB003100", "en": "Dundee (Sea)", "cy": "Dundee (Sea)"}, {"code": "GB003110", "en": "Farnborough Airport", "cy": "Farnborough Airport"}, {"code": "GB003120", "en": "Gloucester (Staverton) Airport", "cy": "Gloucester (Staverton) Airport"}, {"code": "GB003130", "en": "Humberside International Airport", "cy": "Humberside International Airport"}, {"code": "GB003140", "en": "Hartlepool", "cy": "Hartlepool"}, {"code": "GB003150", "en": "Inverness", "cy": "Inverness"}, {"code": "GB003160", "en": "Kemble Airport", "cy": "Kemble Airport"}, {"code": "GB003170", "en": "Kirkwall (Orkney Islands)", "cy": "Kirkwall (Orkney Islands)"}, {"code": "GB003180", "en": "Durham Tees Valley (Teeside Apt)", "cy": "Durham Tees Valley (Teeside Apt)"}, {"code": "GB003190", "en": "Liverpool John Lennon Airport", "cy": "Liverpool John Lennon Airport"}, {"code": "GB003200", "en": "London Ashford (Lydd) Airport", "cy": "London Ashford (Lydd) Airport"}, {"code": "GB003210", "en": "Londonderry", "cy": "Londonderry"}, {"code": "GB003220", "en": "Manchester Docks", "cy": "Manchester Docks"}, {"code": "GB003230", "en": "Oxford (Kidlington) Airport", "cy": "Oxford (Kidlington) Airport"}, {"code": "GB003240", "en": "Portree (Isle of Skye)", "cy": "Portree (Isle of Skye)"}, {"code": "GB003250", "en": "Newhaven", "cy": "Newhaven"}, {"code": "GB003260", "en": "Stornoway (Isle of Lewis)", "cy": "Stornoway (Isle of Lewis)"}, {"code": "GB003270", "en": "Stornoway Airport", "cy": "Stornoway Airport"}, {"code": "GB003280", "en": "Workington", "cy": "Workington"}, {"code": "GB003290", "en": "Biggin Hill", "cy": "Biggin Hill"}, {"code": "GB004098", "en": "Glasgow", "cy": "Glasgow"}, {"code": "GB005010", "en": "Appledore, c/o National Simps Team", "cy": "Appledore, c/o National Simps Team"}, {"code": "GB005020", "en": "Bridgwater, c/o National Simps Team", "cy": "Bridgwater, c/o National Simps Team"}, {"code": "GB005030", "en": "Dagenham, c/o National Simps Team", "cy": "Dagenham, c/o National Simps Team"}, {"code": "GB005040", "en": "Dartford, c/o National Simps Team", "cy": "Dartford, c/o National Simps Team"}, {"code": "GB005050", "en": "Greenock, c/o Simps Team", "cy": "Greenock, c/o Simps Team"}, {"code": "GB005060", "en": "Langstone, c/o Simps Team", "cy": "Langstone, c/o Simps Team"}, {"code": "GB005070", "en": "London, c/o Simps Team", "cy": "London, c/o Simps Team"}, {"code": "GB005080", "en": "Middlesbrough, c/o Simps Team", "cy": "Middlesbrough, c/o Simps Team"}, {"code": "GB005090", "en": "Neath, c/o Simps Team", "cy": "Neath, c/o Simps Team"}, {"code": "GB005100", "en": "Penrhyn, c/o Simps Team", "cy": "Penrhyn, c/o Simps Team"}, {"code": "GB005110", "en": "Ridham, c/o Simps Team", "cy": "Ridham, c/o Simps Team"}, {"code": "GB005120", "en": "Rochester, c/o Simps Team", "cy": "Rochester, c/o Simps Team"}, {"code": "GB005130", "en": "Shoreham, c/o Simps Team", "cy": "Shoreham, c/o Simps Team"}, {"code": "GB005140", "en": "South Shields, c/o Simps Team", "cy": "South Shields, c/o Simps Team"}, {"code": "GB005160", "en": "Warrenpoint", "cy": "Warrenpoint"}, {"code": "GB005170", "en": "Killingholme", "cy": "Killingholme"}, {"code": "GB005180", "en": "Montrose", "cy": "Montrose"}, {"code": "GB005190", "en": "Portbury", "cy": "Portbury"}, {"code": "GB005200", "en": "Fishguard", "cy": "Fishguard"}, {"code": "GB005210", "en": "Heysham", "cy": "Heysham"}, {"code": "GB005211", "en": "Croydon Regional Centre", "cy": "Croydon Regional Centre"}, {"code": "GBEORI01", "en": "EORI Team HMRC", "cy": "EORI Team HMRC"}, {"code": "GBREX001", "en": "Dorchester House", "cy": "Dorchester House"}, {"code": "GBREX002", "en": "Peter Bennett House", "cy": "Peter Bennett House"}, {"code": "GBSOU001", "en": "Southend Direct Exports", "cy": "Southend Direct Exports"}]
+[
+  {
+    "code": "GB000001",
+    "en": "Central Community Transit Office",
+    "cy": "Central Community Transit Office"
+  },
+  {
+    "code": "GB000002",
+    "en": "Peter Bennett House",
+    "cy": "Peter Bennett House"
+  },
+  {
+    "code": "GB000003",
+    "en": "Castle Meadow",
+    "cy": "Castle Meadow"
+  },
+  {
+    "code": "GB000011",
+    "en": "Birmingham Airport",
+    "cy": "Birmingham Airport"
+  },
+  {
+    "code": "GB000014",
+    "en": "Belfast International Airport",
+    "cy": "Belfast International Airport"
+  },
+  {
+    "code": "GB000029",
+    "en": "UKBF, Bristol International Airport",
+    "cy": "UKBF, Bristol International Airport"
+  },
+  {
+    "code": "GB000033",
+    "en": "Avonmouth 1",
+    "cy": "Avonmouth 1"
+  },
+  {
+    "code": "GB000040",
+    "en": "Dover (OTS) Freight Clearance",
+    "cy": "Dover (OTS) Freight Clearance"
+  },
+  {
+    "code": "GB000041",
+    "en": "Folkestone",
+    "cy": "Folkestone"
+  },
+  {
+    "code": "GB000045",
+    "en": "Sheerness",
+    "cy": "Sheerness"
+  },
+  {
+    "code": "GB000047",
+    "en": "Ramsgate",
+    "cy": "Ramsgate"
+  },
+  {
+    "code": "GB000049",
+    "en": "Newport",
+    "cy": "Newport"
+  },
+  {
+    "code": "GB000051",
+    "en": "Felixstowe",
+    "cy": "Felixstowe"
+  },
+  {
+    "code": "GB000052",
+    "en": "Border Force, Harwich",
+    "cy": "Border Force, Harwich"
+  },
+  {
+    "code": "GB000053",
+    "en": "Ipswich port",
+    "cy": "Ipswich port"
+  },
+  {
+    "code": "GB000054",
+    "en": "Great Yarmouth",
+    "cy": "Great Yarmouth"
+  },
+  {
+    "code": "GB000055",
+    "en": "King's Lynn",
+    "cy": "King's Lynn"
+  },
+  {
+    "code": "GB000057",
+    "en": "Rosyth",
+    "cy": "Rosyth"
+  },
+  {
+    "code": "GB000058",
+    "en": "Norwich Airport",
+    "cy": "Norwich Airport"
+  },
+  {
+    "code": "GB000059",
+    "en": "Grangemouth",
+    "cy": "Grangemouth"
+  },
+  {
+    "code": "GB000060",
+    "en": "Dover/ Folkestone Eurotunnel Freight",
+    "cy": "Dover/ Folkestone Eurotunnel Freight"
+  },
+  {
+    "code": "GB000062",
+    "en": "Scrabster",
+    "cy": "Scrabster"
+  },
+  {
+    "code": "GB000063",
+    "en": "Scotland Inland Authorised Consignee/ Consignor",
+    "cy": "Scotland Inland Authorised Consignee/ Consignor"
+  },
+  {
+    "code": "GB000067",
+    "en": "Scotland Frontier",
+    "cy": "Scotland Frontier"
+  },
+  {
+    "code": "GB000070",
+    "en": "Prestwick Airport",
+    "cy": "Prestwick Airport"
+  },
+  {
+    "code": "GB000072",
+    "en": "Hull",
+    "cy": "Hull"
+  },
+  {
+    "code": "GB000073",
+    "en": "Grimsby",
+    "cy": "Grimsby"
+  },
+  {
+    "code": "GB000074",
+    "en": "Immingham",
+    "cy": "Immingham"
+  },
+  {
+    "code": "GB000080",
+    "en": "Liverpool, Seaforth S2 berth",
+    "cy": "Liverpool, Seaforth S2 berth"
+  },
+  {
+    "code": "GB000081",
+    "en": "UK North Authorised Consignor/nees",
+    "cy": "UK North Authorised Consignor/nees"
+  },
+  {
+    "code": "GB000084",
+    "en": "London Heathrow Cargo",
+    "cy": "London Heathrow Cargo"
+  },
+  {
+    "code": "GB000085",
+    "en": "London Gatwick Airport Cargo Dist.",
+    "cy": "London Gatwick Airport Cargo Dist."
+  },
+  {
+    "code": "GB000087",
+    "en": "Leeds Bradford Airport",
+    "cy": "Leeds Bradford Airport"
+  },
+  {
+    "code": "GB000091",
+    "en": "Southend Airport",
+    "cy": "Southend Airport"
+  },
+  {
+    "code": "GB000093",
+    "en": "Tilbury",
+    "cy": "Tilbury"
+  },
+  {
+    "code": "GB000098",
+    "en": "Newcastle Airport",
+    "cy": "Newcastle Airport"
+  },
+  {
+    "code": "GB000099",
+    "en": "Thames Europort (DIFT)",
+    "cy": "Thames Europort (DIFT)"
+  },
+  {
+    "code": "GB000102",
+    "en": "Luton Airport FCT",
+    "cy": "Luton Airport FCT"
+  },
+  {
+    "code": "GB000108",
+    "en": "Falmouth",
+    "cy": "Falmouth"
+  },
+  {
+    "code": "GB000119",
+    "en": "Northolt Airport",
+    "cy": "Northolt Airport"
+  },
+  {
+    "code": "GB000120",
+    "en": "London Heathrow Airport (Baggage)",
+    "cy": "London Heathrow Airport (Baggage)"
+  },
+  {
+    "code": "GB000121",
+    "en": "Stansted Airport FCT",
+    "cy": "Stansted Airport FCT"
+  },
+  {
+    "code": "GB000122",
+    "en": "Cardiff International Airport",
+    "cy": "Cardiff International Airport"
+  },
+  {
+    "code": "GB000123",
+    "en": "Swansea",
+    "cy": "Swansea"
+  },
+  {
+    "code": "GB000124",
+    "en": "Holyhead",
+    "cy": "Holyhead"
+  },
+  {
+    "code": "GB000125",
+    "en": "Barry Dock",
+    "cy": "Barry Dock"
+  },
+  {
+    "code": "GB000126",
+    "en": "Pembroke Dock",
+    "cy": "Pembroke Dock"
+  },
+  {
+    "code": "GB000128",
+    "en": "Edinburgh Airport",
+    "cy": "Edinburgh Airport"
+  },
+  {
+    "code": "GB000130",
+    "en": "London City Airport",
+    "cy": "London City Airport"
+  },
+  {
+    "code": "GB000140",
+    "en": "George Best (Belfast City)",
+    "cy": "George Best (Belfast City)"
+  },
+  {
+    "code": "GB000142",
+    "en": "Belfast Docks, Unit 2, Block C",
+    "cy": "Belfast Docks, Unit 2, Block C"
+  },
+  {
+    "code": "GB000149",
+    "en": "Purfleet Thames Terminal",
+    "cy": "Purfleet Thames Terminal"
+  },
+  {
+    "code": "GB000150",
+    "en": "Thamesport",
+    "cy": "Thamesport"
+  },
+  {
+    "code": "GB000155",
+    "en": "Reading",
+    "cy": "Reading"
+  },
+  {
+    "code": "GB000170",
+    "en": "London Gateway Port",
+    "cy": "London Gateway Port"
+  },
+  {
+    "code": "GB000191",
+    "en": "Manchester",
+    "cy": "Manchester"
+  },
+  {
+    "code": "GB000218",
+    "en": "Newcastle-upon-Tyne",
+    "cy": "Newcastle-upon-Tyne"
+  },
+  {
+    "code": "GB000219",
+    "en": "Teesport",
+    "cy": "Teesport"
+  },
+  {
+    "code": "GB000244",
+    "en": "Boston",
+    "cy": "Boston"
+  },
+  {
+    "code": "GB000245",
+    "en": "UKBA East Midlands Airport",
+    "cy": "UKBA East Midlands Airport"
+  },
+  {
+    "code": "GB000246",
+    "en": "UK South Authorised Consignor/nees",
+    "cy": "UK South Authorised Consignor/nees"
+  },
+  {
+    "code": "GB000250",
+    "en": "Plymouth",
+    "cy": "Plymouth"
+  },
+  {
+    "code": "GB000290",
+    "en": "Southampton",
+    "cy": "Southampton"
+  },
+  {
+    "code": "GB000291",
+    "en": "Poole Ferry Terminal",
+    "cy": "Poole Ferry Terminal"
+  },
+  {
+    "code": "GB000292",
+    "en": "Portsmouth",
+    "cy": "Portsmouth"
+  },
+  {
+    "code": "GB000297",
+    "en": "Exeter Airport",
+    "cy": "Exeter Airport"
+  },
+  {
+    "code": "GB000328",
+    "en": "Cardiff",
+    "cy": "Cardiff"
+  },
+  {
+    "code": "GB000383",
+    "en": "Salford National Clearance Hub",
+    "cy": "Salford National Clearance Hub"
+  },
+  {
+    "code": "GB000411",
+    "en": "Aberdeen Airport",
+    "cy": "Aberdeen Airport"
+  },
+  {
+    "code": "GB000416",
+    "en": "Peterhead",
+    "cy": "Peterhead"
+  },
+  {
+    "code": "GB000434",
+    "en": "Aberdeen",
+    "cy": "Aberdeen"
+  },
+  {
+    "code": "GB000450",
+    "en": "Isle of Man Customs & Excise",
+    "cy": "Isle of Man Customs & Excise"
+  },
+  {
+    "code": "GB000461",
+    "en": "Guernsey Customs & Excise",
+    "cy": "Guernsey Customs & Excise"
+  },
+  {
+    "code": "GB000465",
+    "en": "Jersey Customs & Immigration",
+    "cy": "Jersey Customs & Immigration"
+  },
+  {
+    "code": "GB000480",
+    "en": "Chatham",
+    "cy": "Chatham"
+  },
+  {
+    "code": "GB000500",
+    "en": "Coventry International Hub",
+    "cy": "Coventry International Hub"
+  },
+  {
+    "code": "GB000501",
+    "en": "HWDC Langley",
+    "cy": "HWDC Langley"
+  },
+  {
+    "code": "GB000921",
+    "en": "Fords Jetty",
+    "cy": "Fords Jetty"
+  },
+  {
+    "code": "GB001016",
+    "en": "Lerwick",
+    "cy": "Lerwick"
+  },
+  {
+    "code": "GB003010",
+    "en": "Barrow in Furness",
+    "cy": "Barrow in Furness"
+  },
+  {
+    "code": "GB003020",
+    "en": "Berwick upon Tweed",
+    "cy": "Berwick upon Tweed"
+  },
+  {
+    "code": "GB003030",
+    "en": "Blackpool International Airport",
+    "cy": "Blackpool International Airport"
+  },
+  {
+    "code": "GB003040",
+    "en": "Glasgow Docks",
+    "cy": "Glasgow Docks"
+  },
+  {
+    "code": "GB003050",
+    "en": "Plymouth Docks",
+    "cy": "Plymouth Docks"
+  },
+  {
+    "code": "GB003060",
+    "en": "Bournemouth (Hurn) Airport",
+    "cy": "Bournemouth (Hurn) Airport"
+  },
+  {
+    "code": "GB003070",
+    "en": "Brize Norton",
+    "cy": "Brize Norton"
+  },
+  {
+    "code": "GB003080",
+    "en": "Cambridge Airport",
+    "cy": "Cambridge Airport"
+  },
+  {
+    "code": "GB003090",
+    "en": "Southampton (Eastleigh) Airport",
+    "cy": "Southampton (Eastleigh) Airport"
+  },
+  {
+    "code": "GB003100",
+    "en": "Dundee (Sea)",
+    "cy": "Dundee (Sea)"
+  },
+  {
+    "code": "GB003110",
+    "en": "Farnborough Airport",
+    "cy": "Farnborough Airport"
+  },
+  {
+    "code": "GB003120",
+    "en": "Gloucester (Staverton) Airport",
+    "cy": "Gloucester (Staverton) Airport"
+  },
+  {
+    "code": "GB003130",
+    "en": "Humberside International Airport",
+    "cy": "Humberside International Airport"
+  },
+  {
+    "code": "GB003140",
+    "en": "Hartlepool",
+    "cy": "Hartlepool"
+  },
+  {
+    "code": "GB003150",
+    "en": "Inverness",
+    "cy": "Inverness"
+  },
+  {
+    "code": "GB003160",
+    "en": "Kemble Airport",
+    "cy": "Kemble Airport"
+  },
+  {
+    "code": "GB003170",
+    "en": "Kirkwall (Orkney Islands)",
+    "cy": "Kirkwall (Orkney Islands)"
+  },
+  {
+    "code": "GB003180",
+    "en": "Durham Tees Valley (Teeside Apt)",
+    "cy": "Durham Tees Valley (Teeside Apt)"
+  },
+  {
+    "code": "GB003190",
+    "en": "Liverpool John Lennon Airport",
+    "cy": "Liverpool John Lennon Airport"
+  },
+  {
+    "code": "GB003200",
+    "en": "London Ashford (Lydd) Airport",
+    "cy": "London Ashford (Lydd) Airport"
+  },
+  {
+    "code": "GB003210",
+    "en": "Londonderry",
+    "cy": "Londonderry"
+  },
+  {
+    "code": "GB003220",
+    "en": "Manchester Docks",
+    "cy": "Manchester Docks"
+  },
+  {
+    "code": "GB003230",
+    "en": "Oxford (Kidlington) Airport",
+    "cy": "Oxford (Kidlington) Airport"
+  },
+  {
+    "code": "GB003240",
+    "en": "Portree (Isle of Skye)",
+    "cy": "Portree (Isle of Skye)"
+  },
+  {
+    "code": "GB003250",
+    "en": "Newhaven",
+    "cy": "Newhaven"
+  },
+  {
+    "code": "GB003260",
+    "en": "Stornoway (Isle of Lewis)",
+    "cy": "Stornoway (Isle of Lewis)"
+  },
+  {
+    "code": "GB003270",
+    "en": "Stornoway Airport",
+    "cy": "Stornoway Airport"
+  },
+  {
+    "code": "GB003280",
+    "en": "Workington",
+    "cy": "Workington"
+  },
+  {
+    "code": "GB003290",
+    "en": "Biggin Hill",
+    "cy": "Biggin Hill"
+  },
+  {
+    "code": "GB004098",
+    "en": "Glasgow",
+    "cy": "Glasgow"
+  },
+  {
+    "code": "GB005010",
+    "en": "Appledore, c/o National Simps Team",
+    "cy": "Appledore, c/o National Simps Team"
+  },
+  {
+    "code": "GB005020",
+    "en": "Bridgwater, c/o National Simps Team",
+    "cy": "Bridgwater, c/o National Simps Team"
+  },
+  {
+    "code": "GB005030",
+    "en": "Dagenham, c/o National Simps Team",
+    "cy": "Dagenham, c/o National Simps Team"
+  },
+  {
+    "code": "GB005040",
+    "en": "Dartford, c/o National Simps Team",
+    "cy": "Dartford, c/o National Simps Team"
+  },
+  {
+    "code": "GB005050",
+    "en": "Greenock, c/o Simps Team",
+    "cy": "Greenock, c/o Simps Team"
+  },
+  {
+    "code": "GB005060",
+    "en": "Langstone, c/o Simps Team",
+    "cy": "Langstone, c/o Simps Team"
+  },
+  {
+    "code": "GB005070",
+    "en": "London, c/o Simps Team",
+    "cy": "London, c/o Simps Team"
+  },
+  {
+    "code": "GB005080",
+    "en": "Middlesbrough, c/o Simps Team",
+    "cy": "Middlesbrough, c/o Simps Team"
+  },
+  {
+    "code": "GB005090",
+    "en": "Neath, c/o Simps Team",
+    "cy": "Neath, c/o Simps Team"
+  },
+  {
+    "code": "GB005100",
+    "en": "Penrhyn, c/o Simps Team",
+    "cy": "Penrhyn, c/o Simps Team"
+  },
+  {
+    "code": "GB005110",
+    "en": "Ridham, c/o Simps Team",
+    "cy": "Ridham, c/o Simps Team"
+  },
+  {
+    "code": "GB005120",
+    "en": "Rochester, c/o Simps Team",
+    "cy": "Rochester, c/o Simps Team"
+  },
+  {
+    "code": "GB005130",
+    "en": "Shoreham, c/o Simps Team",
+    "cy": "Shoreham, c/o Simps Team"
+  },
+  {
+    "code": "GB005140",
+    "en": "South Shields, c/o Simps Team",
+    "cy": "South Shields, c/o Simps Team"
+  },
+  {
+    "code": "GB005160",
+    "en": "Warrenpoint",
+    "cy": "Warrenpoint"
+  },
+  {
+    "code": "GB005170",
+    "en": "Killingholme",
+    "cy": "Killingholme"
+  },
+  {
+    "code": "GB005180",
+    "en": "Montrose",
+    "cy": "Montrose"
+  },
+  {
+    "code": "GB005190",
+    "en": "Portbury",
+    "cy": "Portbury"
+  },
+  {
+    "code": "GB005200",
+    "en": "Fishguard",
+    "cy": "Fishguard"
+  },
+  {
+    "code": "GB005210",
+    "en": "Heysham",
+    "cy": "Heysham"
+  },
+  {
+    "code": "GB005211",
+    "en": "Croydon Regional Centre",
+    "cy": "Croydon Regional Centre"
+  },
+  {
+    "code": "GBEORI01",
+    "en": "EORI Team HMRC",
+    "cy": "EORI Team HMRC"
+  },
+  {
+    "code": "GBREX001",
+    "en": "Dorchester House",
+    "cy": "Dorchester House"
+  },
+  {
+    "code": "GBREX002",
+    "en": "Peter Bennett House",
+    "cy": "Peter Bennett House"
+  },
+  {
+    "code": "GBSOU001",
+    "en": "Southend Direct Exports",
+    "cy": "Southend Direct Exports"
+  }
+]
