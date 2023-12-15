@@ -170,7 +170,7 @@ class SubmissionService @Inject() (connector: CustomsDeclareExportsConnector, au
     val declarationVersions =
       Json.obj("preAmendDeclaration" -> Json.toJson(oldDeclaration).as[JsObject], "postAmendDeclaration" -> Json.toJson(newDeclaration).as[JsObject])
 
-    auditService.auditAmendmentSent(auditType, auditPayload ++ declarationVersions)
+    auditService.auditAmendmentSent(auditType, declarationVersions ++ auditPayload)
   }
 
   private def auditAmendment(
