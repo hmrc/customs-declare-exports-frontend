@@ -225,8 +225,8 @@ class CustomsDeclareExportsConnectorISpec extends ConnectorISpec with ExportsDec
   }
 
   "Fetch Submission Page" should {
-    val queryString = s"${Groups}=action&${Page}=1"
-    val pageOfSubmissions = PageOfSubmissions(ActionRequiredStatuses, 1, List(submission))
+    val queryString = s"${Groups}=action&${Page}=1&reverse"
+    val pageOfSubmissions = PageOfSubmissions(ActionRequiredStatuses, 1, List(submission), true)
 
     "return Ok" in {
       stubForExports(

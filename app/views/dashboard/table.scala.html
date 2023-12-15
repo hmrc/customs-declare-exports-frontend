@@ -14,76 +14,30 @@
  * limitations under the License.
  *@
 
-@import config.PaginationConfig
 @import config.featureFlags.DeclarationAmendmentsConfig
 @import models.PageOfSubmissions
 @import models.declaration.submissions.RequestType.SubmissionRequest
 @import models.declaration.submissions.StatusGroup.{StatusGroup, SubmittedStatuses}
 @import models.declaration.submissions.Submission
 @import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.dashboard.DashboardHelper
 @import views.dashboard.DashboardHelper.Page
 @import views.helpers.{EnhancedStatusHelper, ViewDates}
 @import views.html.components.gds._
 
-@import java.time.ZoneId
+@this(amendmentsConfig: DeclarationAmendmentsConfig, dashboardHelper: DashboardHelper)
 
-@this(govukTable: GovukTable, link: link, pagination: pagination, paginationConfig: PaginationConfig, amendmentsConfig: DeclarationAmendmentsConfig)
+@(statusGroup: StatusGroup,
+  pageOfSubmissions: PageOfSubmissions,
+  baseHref: String
+)(implicit request: Request[_], messages: Messages)
 
-@(statusGroup: StatusGroup, pageOfSubmissions: PageOfSubmissions, baseHref: String)(implicit request: Request[_], messages: Messages)
-
-@mrnLink(submission: Submission) = @{
-  HtmlContent(
-      link(
-          text = submission.mrn.getOrElse(messages("dashboard.mrn.pending")),
-          call = routes.DeclarationDetailsController.displayPage(submission.uuid),
-          textHidden = Some(messages("dashboard.hidden.text", submission.ducr.getOrElse("")))
-      )
-  )
-}
-
-@timestamp(submission: Submission) = @{
-  submission.enhancedStatusLastUpdated.map(ViewDates.formatDateAtTime).getOrElse("")
-}
-
-@headCells = @{
-  Some(List("mrn","ducr","lrn","dateAndTime","status").map(key => HeadCell(content = Text(messages(s"dashboard.header.$key")))))
-}
-
-@attr(row: Int, rowId: String) = @{ Map("id" -> s"submission-tab-$statusGroup-row$row-$rowId") }
-
-@paginationComponent = @{
-  val totalPagesInGroup = Math.ceil(pageOfSubmissions.totalSubmissionsInGroup.toDouble / paginationConfig.itemsPerPage).toInt
-  val currentPage = request.getQueryString(Page).fold(totalPagesInGroup)(_.toInt)
-
-  pagination(pageOfSubmissions, baseHref, totalPagesInGroup, currentPage)
-}
-
-@msgKey = @{
-    if(amendmentsConfig.isEnabled && statusGroup == SubmittedStatuses) {
-        s"dashboard.$statusGroup.amendment.content.hint"
-    } else {
-        s"dashboard.$statusGroup.content.hint"
-    }
-}
-
-<p id="@{s"$statusGroup-content-hint"}" class="govuk-body">@Html(messages(msgKey, <br/>))</p>
-
-@govukTable(Table(
-    head = headCells,
-    rows = pageOfSubmissions.submissions.zipWithIndex.map { case (submission, row) =>
-        Seq(
-          TableRow(attributes = attr(row, "mrn"),  content = mrnLink(submission), classes = "govuk-table__cell_break-all"),
-          TableRow(attributes = attr(row, "ducr"), content = Text(submission.ducr.getOrElse("")), classes = "govuk-table__cell_break-all"),
-          TableRow(attributes = attr(row, "lrn"),  content = Text(submission.lrn), classes = "govuk-table__cell_break-all"),
-          TableRow(attributes = attr(row, "dateAndTime"), content = Text(timestamp(submission))),
-          TableRow(attributes = attr(row, "status"), content = Text(EnhancedStatusHelper.asText(submission)))
-        )
-    }
-))
+@dashboardHelper.hint(statusGroup)
+@dashboardHelper.table(pageOfSubmissions, statusGroup)
 
 <div class="govuk-grid-row">
     @if(pageOfSubmissions.submissions.nonEmpty) {
-        @paginationComponent
+        @dashboardHelper.paginationComponent(pageOfSubmissions, baseHref)
     } else {
         <div class="ceds-pagination__summary">
             <p class="govuk-body">@{messages("dashboard.empty.tab")}</p>

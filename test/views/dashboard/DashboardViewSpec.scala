@@ -95,13 +95,13 @@ class DashboardViewSpec extends UnitViewSpec with ExportsTestHelper {
 
   private def createView(status: EnhancedStatus = RECEIVED, totalSubmissionsInPage: Int = 0, totalSubmissionsInGroup: Int = 0): Html = {
     val statusGroup = toStatusGroup(status)
-    val pageOfSubmissions = PageOfSubmissions(statusGroup, totalSubmissionsInGroup, listOfSubmissions(status, totalSubmissionsInPage))
+    val pageOfSubmissions = PageOfSubmissions(statusGroup, totalSubmissionsInGroup, listOfSubmissions(status, totalSubmissionsInPage), false)
     page(pageOfSubmissions)(request(statusGroup, 1), messages)
   }
 
   private def createView(submissionsInPage: Seq[Submission], totalSubmissionsInGroup: Int, currentPage: Int): Html = {
     val statusGroup = toStatusGroup(submissionsInPage.head)
-    page(PageOfSubmissions(statusGroup, totalSubmissionsInGroup, submissionsInPage))(request(statusGroup, currentPage), messages)
+    page(PageOfSubmissions(statusGroup, totalSubmissionsInGroup, submissionsInPage, false))(request(statusGroup, currentPage), messages)
   }
 
   private val statuses = EnhancedStatus.values.toList
@@ -113,7 +113,7 @@ class DashboardViewSpec extends UnitViewSpec with ExportsTestHelper {
     List(Lang("en"), Lang("cy")).foreach { lang =>
       s"have the 'lang' attribute of the '<html' tag set to ${lang.code}" in {
         val statusGroup = toStatusGroup(RECEIVED)
-        val pageOfSubmissions = PageOfSubmissions(statusGroup, 0, listOfSubmissions())
+        val pageOfSubmissions = PageOfSubmissions(statusGroup, 0, listOfSubmissions(), false)
         val messages = stubMessagesApi(langs = stubLangs(List(lang))).preferred(List(lang))
         val view = page(pageOfSubmissions)(request(statusGroup, 1), messages)
         view.getElementsByTag("html").get(0).attr("lang").take(2) mustBe lang.code
@@ -205,8 +205,8 @@ class DashboardViewSpec extends UnitViewSpec with ExportsTestHelper {
 
     "there are NO submissions for the selected tab" should {
 
-      "display the no-action-needed hint" in {
-        createView().getElementsByClass("govuk-warning-text").text mustBe messages("dashboard.hint.no.action.needed")
+      "display the check-the-status hint" in {
+        createView().getElementsByClass("govuk-body").first.text mustBe messages("dashboard.check.status.hint")
       }
 
       "display a 'No declarations' message" in {
@@ -227,7 +227,7 @@ class DashboardViewSpec extends UnitViewSpec with ExportsTestHelper {
           val view = createView(status, totalSubmissionsInPage = 2, totalSubmissionsInGroup = 2)
           val statusGroup = toStatusGroup(status)
           val expectedMessage = messages(s"dashboard.${statusGroup}.content.hint").replace("{0}", "")
-          view.getElementById(s"${statusGroup}-content-hint").text mustBe expectedMessage
+          view.getElementsByClass(s"${statusGroup}-content-hint").text mustBe expectedMessage
         }
       }
 
@@ -359,19 +359,44 @@ class DashboardViewSpec extends UnitViewSpec with ExportsTestHelper {
       "display the table headers" in {
         val view = createView(RECEIVED, totalSubmissionsInPage = 1, totalSubmissionsInGroup = 1)
 
-        def tableHead(column: Int): Element =
-          view.select(".govuk-table__head").first.getElementsByClass("govuk-table__header").get(column)
+        val headers = view.getElementsByClass("govuk-table__header")
 
-        tableHead(0).text mustBe messages("dashboard.header.mrn")
-        tableHead(1).text mustBe messages("dashboard.header.ducr")
-        tableHead(2).text mustBe messages("dashboard.header.lrn")
-        tableHead(3).text mustBe messages("dashboard.header.dateAndTime")
-        tableHead(4).text mustBe messages("dashboard.header.status")
+        headers.get(0).text mustBe messages("dashboard.header.mrn")
+        headers.get(1).text mustBe messages("dashboard.header.ducr")
+        headers.get(2).text mustBe messages("dashboard.header.lrn")
+        headers.get(4).text mustBe messages("dashboard.header.status")
+
+        val updateOn = headers.get(3)
+        updateOn.attr("aria-sort") mustBe "descending"
+
+        val updateOnLink = updateOn.getElementsByClass("update-on-order").first
+        updateOnLink.tagName mustBe "a"
+        updateOnLink.text mustBe messages("dashboard.header.updated.on")
+
+        updateOnLink.attr("href").split("\\?").toList match {
+          case path :: queryString =>
+            path mustBe DashboardController.displayPage.url
+            queryString.head.contains(s"$Groups=$SubmittedStatuses") mustBe true
+            queryString.head.contains(s"$Page=1") mustBe true
+            queryString.head.contains(Reverse) mustBe true
+        }
+      }
+
+      "not include the 'reverse' parameter in the query string of the 'Update on' link" when {
+        "the user clicks the link when the current ordering is 'ascending'" in {
+          val statusGroup = toStatusGroup(RECEIVED)
+          val pageOfSubmissions = PageOfSubmissions(statusGroup, 1, listOfSubmissions(RECEIVED, 1), true)
+          val view = page(pageOfSubmissions)(request(statusGroup, 1), messages)
+
+          val updateOn = view.getElementsByClass("govuk-table__header").get(3)
+          updateOn.attr("aria-sort") mustBe "ascending"
+
+          val updateOnLink = updateOn.getElementsByClass("update-on-order").first
+          updateOnLink.attr("href").contains(Reverse) mustBe false
+        }
       }
 
       "display the submissions in rows and columns" when {
-        // def tab(statusGroup: StatusGroup): Element = view.getElementById(s"$statusGroup-submissions")
-
         def tableCell(view: Html, row: Int, column: Int): Element =
           view.select(".govuk-table__row").get(row).getElementsByClass("govuk-table__cell").get(column)
 
@@ -410,14 +435,12 @@ class DashboardViewSpec extends UnitViewSpec with ExportsTestHelper {
 
     "amendments are enabled" should {
       "display correct panel text for submitted" in {
-
         when(mockDeclarationAmendmentsConfig.isEnabled).thenReturn(true)
 
         val view = createView()
 
         val expectedMessage = messages(s"dashboard.${StatusGroup.SubmittedStatuses}.amendment.content.hint").replace("{0}", "")
-        view.getElementById(s"${StatusGroup.SubmittedStatuses}-content-hint").text mustBe expectedMessage
-
+        view.getElementsByClass(s"${StatusGroup.SubmittedStatuses}-content-hint").text mustBe expectedMessage
       }
     }
   }

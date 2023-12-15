@@ -44,5 +44,18 @@
   &__link {
     @extend .govuk-link--no-visited-state
   }
+}
 
+table.sortable th[aria-sort="descending"] span::after {
+  content: "▼";
+  color: #1d70b8;
+  font-size: 80%;
+  top: 0;
+}
+
+table.sortable th[aria-sort="ascending"] span::after {
+  content: "▲";
+  color: #1d70b8;
+  font-size: 80%;
+  top: 0;
 }

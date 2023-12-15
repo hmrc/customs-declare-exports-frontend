@@ -34,41 +34,19 @@ import views.html.dashboard.dashboard
 import java.time.{ZoneOffset, ZonedDateTime}
 import java.util.UUID
 import scala.concurrent.Future
+
 class DashboardControllerSpec extends ControllerWithoutFormSpec with BeforeAndAfterEach {
 
   val dateTime = ZonedDateTime.now(ZoneOffset.UTC)
 
   val uuid = UUID.randomUUID.toString
 
-  private val action =
-    Action(
-      requestType = SubmissionRequest,
-      id = "conversationID",
-      requestTimestamp = dateTime,
-      notifications = None,
-      decId = Some(uuid),
-      versionNo = 1
-    )
+  private val action = Action("conversationID", SubmissionRequest, dateTime, None, Some(uuid), versionNo = 1)
 
   private val pageOfSubmissions = {
     val uuid = UUID.randomUUID.toString
-    PageOfSubmissions(
-      SubmittedStatuses,
-      1,
-      Seq(
-        Submission(
-          uuid = uuid,
-          eori = "eori",
-          lrn = "lrn",
-          mrn = None,
-          ducr = None,
-          latestEnhancedStatus = Some(GOODS_ARRIVED),
-          enhancedStatusLastUpdated = Some(dateTime),
-          actions = Seq(action),
-          latestDecId = Some(uuid)
-        )
-      )
-    )
+    val submission = Submission(uuid, "eori", "lrn", None, None, Some(GOODS_ARRIVED), Some(dateTime), Seq(action), Some(uuid))
+    PageOfSubmissions(SubmittedStatuses, 1, Seq(submission), true)
   }
 
   private val dashboard = mock[dashboard]
