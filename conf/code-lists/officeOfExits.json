@@ -2,7 +2,7 @@
   {
     "code": "GB000001",
     "en": "Central Community Transit Office",
-    "cy": "Central Community Transit Office"
+    "cy": "Swyddfa Ganolog Cludo yn y Gymuned"
   },
   {
     "code": "GB000002",
@@ -17,17 +17,17 @@
   {
     "code": "GB000011",
     "en": "Birmingham Airport",
-    "cy": "Birmingham Airport"
+    "cy": "Maes awyr Birmingham"
   },
   {
     "code": "GB000014",
     "en": "Belfast International Airport",
-    "cy": "Belfast International Airport"
+    "cy": "Maes awyr Rhyngwladol Belfast"
   },
   {
     "code": "GB000029",
     "en": "UKBF, Bristol International Airport",
-    "cy": "UKBF, Bristol International Airport"
+    "cy": "UKBF, Maes Awyr Rhyngwladol Bryste"
   },
   {
     "code": "GB000033",
@@ -37,7 +37,7 @@
   {
     "code": "GB000040",
     "en": "Dover (OTS) Freight Clearance",
-    "cy": "Dover (OTS) Freight Clearance"
+    "cy": "Clirio Nwyddau Dover (OTS)"
   },
   {
     "code": "GB000041",
@@ -57,7 +57,7 @@
   {
     "code": "GB000049",
     "en": "Newport",
-    "cy": "Newport"
+    "cy": "Casnewydd"
   },
   {
     "code": "GB000051",
@@ -67,12 +67,12 @@
   {
     "code": "GB000052",
     "en": "Border Force, Harwich",
-    "cy": "Border Force, Harwich"
+    "cy": "Llu’r Ffiniau, Harwich"
   },
   {
     "code": "GB000053",
     "en": "Ipswich port",
-    "cy": "Ipswich port"
+    "cy": "Porthladd Ipswich"
   },
   {
     "code": "GB000054",
@@ -82,7 +82,7 @@
   {
     "code": "GB000055",
     "en": "King's Lynn",
-    "cy": "King's Lynn"
+    "cy": "King’s Lynn"
   },
   {
     "code": "GB000057",
@@ -92,7 +92,7 @@
   {
     "code": "GB000058",
     "en": "Norwich Airport",
-    "cy": "Norwich Airport"
+    "cy": "Maes awyr Norwich"
   },
   {
     "code": "GB000059",
@@ -102,7 +102,7 @@
   {
     "code": "GB000060",
     "en": "Dover/ Folkestone Eurotunnel Freight",
-    "cy": "Dover/ Folkestone Eurotunnel Freight"
+    "cy": "Nwyddau Eurotunnel Dover / Folkestone"
   },
   {
     "code": "GB000062",
@@ -112,17 +112,17 @@
   {
     "code": "GB000063",
     "en": "Scotland Inland Authorised Consignee/ Consignor",
-    "cy": "Scotland Inland Authorised Consignee/ Consignor"
+    "cy": "Derbynnydd / Anfonydd Awdurodedig Mewndirol yr Alban"
   },
   {
     "code": "GB000067",
     "en": "Scotland Frontier",
-    "cy": "Scotland Frontier"
+    "cy": "Ffin yr Alban"
   },
   {
     "code": "GB000070",
     "en": "Prestwick Airport",
-    "cy": "Prestwick Airport"
+    "cy": "Maes Awyr Prestwick"
   },
   {
     "code": "GB000072",
@@ -142,32 +142,32 @@
   {
     "code": "GB000080",
     "en": "Liverpool, Seaforth S2 berth",
-    "cy": "Liverpool, Seaforth S2 berth"
+    "cy": "Lerpwl, Seaforth S2 Berth"
   },
   {
     "code": "GB000081",
     "en": "UK North Authorised Consignor/nees",
-    "cy": "UK North Authorised Consignor/nees"
+    "cy": "Anfonydd/Anfonwyr Awdurdodedig Gogledd y DU"
   },
   {
     "code": "GB000084",
     "en": "London Heathrow Cargo",
-    "cy": "London Heathrow Cargo"
+    "cy": "Cargo Heathrow Llundain"
   },
   {
     "code": "GB000085",
     "en": "London Gatwick Airport Cargo Dist.",
-    "cy": "London Gatwick Airport Cargo Dist."
+    "cy": "Dosbarthiad Cargo Maes Awyr Gatwick Llundain"
   },
   {
     "code": "GB000087",
     "en": "Leeds Bradford Airport",
-    "cy": "Leeds Bradford Airport"
+    "cy": "Maes awyr Leeds Bradford"
   },
   {
     "code": "GB000091",
     "en": "Southend Airport",
-    "cy": "Southend Airport"
+    "cy": "Maes awyr Southend"
   },
   {
     "code": "GB000093",
@@ -177,17 +177,17 @@
   {
     "code": "GB000098",
     "en": "Newcastle Airport",
-    "cy": "Newcastle Airport"
+    "cy": "Maes awyr Newcastle"
   },
   {
     "code": "GB000099",
     "en": "Thames Europort (DIFT)",
-    "cy": "Thames Europort (DIFT)"
+    "cy": "Europort Thames (DIFT)"
   },
   {
     "code": "GB000102",
     "en": "Luton Airport FCT",
-    "cy": "Luton Airport FCT"
+    "cy": "Maes Awyr Luton FCT"
   },
   {
     "code": "GB000108",
@@ -197,67 +197,67 @@
   {
     "code": "GB000119",
     "en": "Northolt Airport",
-    "cy": "Northolt Airport"
+    "cy": "Maes Awyr Northolt"
   },
   {
     "code": "GB000120",
     "en": "London Heathrow Airport (Baggage)",
-    "cy": "London Heathrow Airport (Baggage)"
+    "cy": "Maes Awyr Heathrow Llundain (Bagiau)"
   },
   {
     "code": "GB000121",
     "en": "Stansted Airport FCT",
-    "cy": "Stansted Airport FCT"
+    "cy": "Maes Awyr Stansted FCT"
   },
   {
     "code": "GB000122",
     "en": "Cardiff International Airport",
-    "cy": "Cardiff International Airport"
+    "cy": "Maes Awyr Rhyngwladol Caerdydd"
   },
   {
     "code": "GB000123",
     "en": "Swansea",
-    "cy": "Swansea"
+    "cy": "Abertawe"
   },
   {
     "code": "GB000124",
     "en": "Holyhead",
-    "cy": "Holyhead"
+    "cy": "Caergybi"
   },
   {
     "code": "GB000125",
     "en": "Barry Dock",
-    "cy": "Barry Dock"
+    "cy": "Dociau’r Bari"
   },
   {
     "code": "GB000126",
     "en": "Pembroke Dock",
-    "cy": "Pembroke Dock"
+    "cy": "Doc Penfro"
   },
   {
     "code": "GB000128",
     "en": "Edinburgh Airport",
-    "cy": "Edinburgh Airport"
+    "cy": "Maes Awyr Caeredin"
   },
   {
     "code": "GB000130",
     "en": "London City Airport",
-    "cy": "London City Airport"
+    "cy": "Maes Awyr Dinas Llundain"
   },
   {
     "code": "GB000140",
     "en": "George Best (Belfast City)",
-    "cy": "George Best (Belfast City)"
+    "cy": "Maes Awyr George Best (Dinas Belfast)"
   },
   {
     "code": "GB000142",
     "en": "Belfast Docks, Unit 2, Block C",
-    "cy": "Belfast Docks, Unit 2, Block C"
+    "cy": "Dociau Belfast, Uned 2, Bloc C"
   },
   {
     "code": "GB000149",
     "en": "Purfleet Thames Terminal",
-    "cy": "Purfleet Thames Terminal"
+    "cy": "Terfynfa Purfleet, Thames"
   },
   {
     "code": "GB000150",
@@ -272,12 +272,12 @@
   {
     "code": "GB000170",
     "en": "London Gateway Port",
-    "cy": "London Gateway Port"
+    "cy": "Porth Mynedfa Llundain"
   },
   {
     "code": "GB000191",
     "en": "Manchester",
-    "cy": "Manchester"
+    "cy": "Manceinion"
   },
   {
     "code": "GB000218",
@@ -297,12 +297,12 @@
   {
     "code": "GB000245",
     "en": "UKBA East Midlands Airport",
-    "cy": "UKBA East Midlands Airport"
+    "cy": "Maes Awyr UKBA Dwyrain Canolbarth Lloegr"
   },
   {
     "code": "GB000246",
     "en": "UK South Authorised Consignor/nees",
-    "cy": "UK South Authorised Consignor/nees"
+    "cy": "Anfonydd / Anfonwyr Awdurdodedig De’r DU"
   },
   {
     "code": "GB000250",
@@ -317,7 +317,7 @@
   {
     "code": "GB000291",
     "en": "Poole Ferry Terminal",
-    "cy": "Poole Ferry Terminal"
+    "cy": "Terfynell Fferi Poole"
   },
   {
     "code": "GB000292",
@@ -327,22 +327,22 @@
   {
     "code": "GB000297",
     "en": "Exeter Airport",
-    "cy": "Exeter Airport"
+    "cy": "Maes awyr Caerwysg"
   },
   {
     "code": "GB000328",
     "en": "Cardiff",
-    "cy": "Cardiff"
+    "cy": "Caerdydd"
   },
   {
     "code": "GB000383",
     "en": "Salford National Clearance Hub",
-    "cy": "Salford National Clearance Hub"
+    "cy": "Canolfan Clirio Genedlaethol Salford"
   },
   {
     "code": "GB000411",
     "en": "Aberdeen Airport",
-    "cy": "Aberdeen Airport"
+    "cy": "Maes awyr Aberdeen"
   },
   {
     "code": "GB000416",
@@ -357,17 +357,17 @@
   {
     "code": "GB000450",
     "en": "Isle of Man Customs & Excise",
-    "cy": "Isle of Man Customs & Excise"
+    "cy": "Tollau ac Ecséis Ynys Manaw"
   },
   {
     "code": "GB000461",
     "en": "Guernsey Customs & Excise",
-    "cy": "Guernsey Customs & Excise"
+    "cy": "Tollau ac Ecséis Guernsey"
   },
   {
     "code": "GB000465",
     "en": "Jersey Customs & Immigration",
-    "cy": "Jersey Customs & Immigration"
+    "cy": "Mewnfudo a Thollau Jersey"
   },
   {
     "code": "GB000480",
@@ -377,7 +377,7 @@
   {
     "code": "GB000500",
     "en": "Coventry International Hub",
-    "cy": "Coventry International Hub"
+    "cy": "Hyb Cenedlaethol Coventry"
   },
   {
     "code": "GB000501",
@@ -407,22 +407,22 @@
   {
     "code": "GB003030",
     "en": "Blackpool International Airport",
-    "cy": "Blackpool International Airport"
+    "cy": "Maes Awyr Rhyngwladol Birmingham"
   },
   {
     "code": "GB003040",
     "en": "Glasgow Docks",
-    "cy": "Glasgow Docks"
+    "cy": "Dociau Glasgow"
   },
   {
     "code": "GB003050",
     "en": "Plymouth Docks",
-    "cy": "Plymouth Docks"
+    "cy": "Dociau Plymouth"
   },
   {
     "code": "GB003060",
     "en": "Bournemouth (Hurn) Airport",
-    "cy": "Bournemouth (Hurn) Airport"
+    "cy": "Maes Awyr Bournemouth (Hurn)"
   },
   {
     "code": "GB003070",
@@ -432,32 +432,32 @@
   {
     "code": "GB003080",
     "en": "Cambridge Airport",
-    "cy": "Cambridge Airport"
+    "cy": "Maes Awyr Caergrawnt"
   },
   {
     "code": "GB003090",
     "en": "Southampton (Eastleigh) Airport",
-    "cy": "Southampton (Eastleigh) Airport"
+    "cy": "Maes Awyr Southampton (Eastleigh)"
   },
   {
     "code": "GB003100",
     "en": "Dundee (Sea)",
-    "cy": "Dundee (Sea)"
+    "cy": "Dundee (Môr)"
   },
   {
     "code": "GB003110",
     "en": "Farnborough Airport",
-    "cy": "Farnborough Airport"
+    "cy": "Maes Awyr Farnborough"
   },
   {
     "code": "GB003120",
     "en": "Gloucester (Staverton) Airport",
-    "cy": "Gloucester (Staverton) Airport"
+    "cy": "Maes Awyr Caerloyw (Staverton)"
   },
   {
     "code": "GB003130",
     "en": "Humberside International Airport",
-    "cy": "Humberside International Airport"
+    "cy": "Maes Awyr Rhyngwladol Humberside"
   },
   {
     "code": "GB003140",
@@ -472,27 +472,27 @@
   {
     "code": "GB003160",
     "en": "Kemble Airport",
-    "cy": "Kemble Airport"
+    "cy": "Maes Awyr Kemble"
   },
   {
     "code": "GB003170",
     "en": "Kirkwall (Orkney Islands)",
-    "cy": "Kirkwall (Orkney Islands)"
+    "cy": "Kirkwall (Ynysoedd Orkney)"
   },
   {
     "code": "GB003180",
     "en": "Durham Tees Valley (Teeside Apt)",
-    "cy": "Durham Tees Valley (Teeside Apt)"
+    "cy": "Durham Tees Valley (Maes Awyr Teeside)"
   },
   {
     "code": "GB003190",
     "en": "Liverpool John Lennon Airport",
-    "cy": "Liverpool John Lennon Airport"
+    "cy": "Maes Awyr Lerpwl John Lennon"
   },
   {
     "code": "GB003200",
     "en": "London Ashford (Lydd) Airport",
-    "cy": "London Ashford (Lydd) Airport"
+    "cy": "Maes Awyr Ashford (Lydd) Llundain"
   },
   {
     "code": "GB003210",
@@ -502,12 +502,12 @@
   {
     "code": "GB003220",
     "en": "Manchester Docks",
-    "cy": "Manchester Docks"
+    "cy": "Dociau Manceinion"
   },
   {
     "code": "GB003230",
     "en": "Oxford (Kidlington) Airport",
-    "cy": "Oxford (Kidlington) Airport"
+    "cy": "Maes Awyr Rhydychen (Kidlington)"
   },
   {
     "code": "GB003240",
@@ -527,7 +527,7 @@
   {
     "code": "GB003270",
     "en": "Stornoway Airport",
-    "cy": "Stornoway Airport"
+    "cy": "Maes Awyr Stornoway"
   },
   {
     "code": "GB003280",
@@ -587,7 +587,7 @@
   {
     "code": "GB005090",
     "en": "Neath, c/o Simps Team",
-    "cy": "Neath, c/o Simps Team"
+    "cy": "Castell-nedd, c/o Simps Team"
   },
   {
     "code": "GB005100",
@@ -637,7 +637,7 @@
   {
     "code": "GB005200",
     "en": "Fishguard",
-    "cy": "Fishguard"
+    "cy": "Abergwaun"
   },
   {
     "code": "GB005210",
@@ -647,12 +647,12 @@
   {
     "code": "GB005211",
     "en": "Croydon Regional Centre",
-    "cy": "Croydon Regional Centre"
+    "cy": "Canolfan Ranbarthol Croydon"
   },
   {
     "code": "GBEORI01",
     "en": "EORI Team HMRC",
-    "cy": "EORI Team HMRC"
+    "cy": "Tîm EORI CThEF"
   },
   {
     "code": "GBREX001",
@@ -667,6 +667,6 @@
   {
     "code": "GBSOU001",
     "en": "Southend Direct Exports",
-    "cy": "Southend Direct Exports"
+    "cy": "Allforion Uniongyrchol Southend"
   }
 ]
