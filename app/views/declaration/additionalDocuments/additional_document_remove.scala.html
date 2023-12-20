@@ -41,7 +41,7 @@
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 
-@holderTableRows = @{
+@documentTableRows = @{
     Seq.empty :+ document.documentTypeCode.map(typeCode =>
         SummaryListRow(
             Key(Text(messages("declaration.additionalDocument.remove.code"))),
@@ -85,10 +85,11 @@
     )
 }
 
-@holderTable = {
-@govukSummaryList(SummaryList(
-    rows = holderTableRows.flatten
-))
+@documentTable = {
+    @govukSummaryList(SummaryList(
+        classes = "govuk-!-margin-bottom-6",
+        rows = documentTableRows.flatten
+    ))
 }
 
 @govukLayout(
@@ -107,7 +108,7 @@
                 isPageHeading = true
             )),
             html = HtmlFormat.fill(immutable.Seq(
-                holderTable,
+                documentTable,
                 yesNoRadios(form, inline = true),
                 saveButtons()
             ))

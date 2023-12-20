@@ -42,18 +42,19 @@
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 
 @informationTable = {
-@govukSummaryList(SummaryList(
-    rows = Seq(
-        SummaryListRow(
-            Key(Text(messages("declaration.additionalInformation.remove.code"))),
-            Value(Text(information.code))
-        ),
-        SummaryListRow(
-            Key(Text(messages("declaration.additionalInformation.remove.description"))),
-            Value(Text(information.description))
+    @govukSummaryList(SummaryList(
+        classes = "govuk-!-margin-bottom-6",
+        rows = Seq(
+            SummaryListRow(
+                Key(Text(messages("declaration.additionalInformation.remove.code"))),
+                Value(Text(information.code))
+            ),
+            SummaryListRow(
+                Key(Text(messages("declaration.additionalInformation.remove.description"))),
+                Value(Text(information.description))
+            )
         )
-    )
-))
+    ))
 }
 
 @govukLayout(
