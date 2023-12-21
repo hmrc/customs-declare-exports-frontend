@@ -2,162 +2,162 @@
   {
     "code": "43",
     "en": "Bag, super bulk",
-    "cy": "Bag, super bulk"
+    "cy": "Bag, uwch-swmp"
   },
   {
     "code": "44",
     "en": "Bag, polybag",
-    "cy": "Bag, polybag"
+    "cy": "Bag, poly-fag"
   },
   {
     "code": "1A",
     "en": "Drum, steel",
-    "cy": "Drum, steel"
+    "cy": "Drwm, dur"
   },
   {
     "code": "1B",
     "en": "Drum, aluminium",
-    "cy": "Drum, aluminium"
+    "cy": "Drwm, alwminiwm"
   },
   {
     "code": "1D",
     "en": "Drum, plywood",
-    "cy": "Drum, plywood"
+    "cy": "Drwm, pren haenog"
   },
   {
     "code": "1F",
     "en": "Container, flexible",
-    "cy": "Container, flexible"
+    "cy": "Cynhwysydd, hyblyg"
   },
   {
     "code": "1G",
     "en": "Drum, fibre",
-    "cy": "Drum, fibre"
+    "cy": "Drwm, ffibr"
   },
   {
     "code": "1W",
     "en": "Drum, wooden",
-    "cy": "Drum, wooden"
+    "cy": "Drwm, pren"
   },
   {
     "code": "2C",
     "en": "Barrel, wooden",
-    "cy": "Barrel, wooden"
+    "cy": "Casgen, pren"
   },
   {
     "code": "3A",
     "en": "Jerrican, steel",
-    "cy": "Jerrican, steel"
+    "cy": "Tun petrol, dur"
   },
   {
     "code": "3H",
     "en": "Jerrican, plastic",
-    "cy": "Jerrican, plastic"
+    "cy": "Tun petrol, plastig"
   },
   {
     "code": "4A",
     "en": "Box, steel",
-    "cy": "Box, steel"
+    "cy": "Blwch, dur"
   },
   {
     "code": "4B",
     "en": "Box, aluminium",
-    "cy": "Box, aluminium"
+    "cy": "Blwch, alwminiwm"
   },
   {
     "code": "4C",
     "en": "Box, natural wood",
-    "cy": "Box, natural wood"
+    "cy": "Blwch, pren naturiol"
   },
   {
     "code": "4D",
     "en": "Box, plywood",
-    "cy": "Box, plywood"
+    "cy": "Blwch, pren haenog"
   },
   {
     "code": "4F",
     "en": "Box, reconstituted wood",
-    "cy": "Box, reconstituted wood"
+    "cy": "Blwch, pren wedi’i ailgyfuno"
   },
   {
     "code": "4G",
     "en": "Box, fibreboard",
-    "cy": "Box, fibreboard"
+    "cy": "Blwch, bwrdd ffibr"
   },
   {
     "code": "4H",
     "en": "Box, plastic",
-    "cy": "Box, plastic"
+    "cy": "Blwch, plastig"
   },
   {
     "code": "5H",
     "en": "Bag, woven plastic",
-    "cy": "Bag, woven plastic"
+    "cy": "Bag, plastig wedi’i wehyddu"
   },
   {
     "code": "5L",
     "en": "Bag, textile",
-    "cy": "Bag, textile"
+    "cy": "Bag, tecstil"
   },
   {
     "code": "5M",
     "en": "Bag, paper",
-    "cy": "Bag, paper"
+    "cy": "Bag, papur"
   },
   {
     "code": "6H",
     "en": "Composite packaging, plastic receptacle",
-    "cy": "Composite packaging, plastic receptacle"
+    "cy": "Deunydd pacio cyfansawdd, llestr plastig"
   },
   {
     "code": "6P",
     "en": "Composite packaging, glass receptacle",
-    "cy": "Composite packaging, glass receptacle"
+    "cy": "Deunydd pacio cyfansawdd, llestr gwydr"
   },
   {
     "code": "7A",
     "en": "Case, car",
-    "cy": "Case, car"
+    "cy": "Casyn, car"
   },
   {
     "code": "7B",
     "en": "Case, wooden",
-    "cy": "Case, wooden"
+    "cy": "Casyn, pren"
   },
   {
     "code": "8A",
     "en": "Pallet, wooden",
-    "cy": "Pallet, wooden"
+    "cy": "Paled, pren"
   },
   {
     "code": "8B",
     "en": "Crate, wooden",
-    "cy": "Crate, wooden"
+    "cy": "Crât, pren"
   },
   {
     "code": "8C",
     "en": "Bundle, wooden",
-    "cy": "Bundle, wooden"
+    "cy": "Bwndel, pren"
   },
   {
     "code": "AA",
     "en": "Intermediate bulk container, rigid plastic",
-    "cy": "Intermediate bulk container, rigid plastic"
+    "cy": "Swmpgynhwysydd canolradd, plastig anystwyth"
   },
   {
     "code": "AB",
     "en": "Receptacle, fibre",
-    "cy": "Receptacle, fibre"
+    "cy": "Llestr, ffibr"
   },
   {
     "code": "AC",
     "en": "Receptacle, paper",
-    "cy": "Receptacle, paper"
+    "cy": "Llestr, papur"
   },
   {
     "code": "AD",
     "en": "Receptacle, wooden",
-    "cy": "Receptacle, wooden"
+    "cy": "Llestr, pren"
   },
   {
     "code": "AE",
@@ -167,87 +167,87 @@
   {
     "code": "AF",
     "en": "Pallet, modular, collars 80cms * 60cms",
-    "cy": "Pallet, modular, collars 80cms * 60cms"
+    "cy": "Paled, modwlar, â choleri 80cm * 60cm"
   },
   {
     "code": "AG",
     "en": "Pallet, shrinkwrapped",
-    "cy": "Pallet, shrinkwrapped"
+    "cy": "Paled, wedi’i dynlapio"
   },
   {
     "code": "AH",
     "en": "Pallet, 100cms * 110cms",
-    "cy": "Pallet, 100cms * 110cms"
+    "cy": "Paled, 100cm * 110cm"
   },
   {
     "code": "AI",
     "en": "Clamshell",
-    "cy": "Clamshell"
+    "cy": "Colynnog"
   },
   {
     "code": "AJ",
     "en": "Cone",
-    "cy": "Cone"
+    "cy": "Côn"
   },
   {
     "code": "AL",
     "en": "Ball",
-    "cy": "Ball"
+    "cy": "Pelen"
   },
   {
     "code": "AM",
     "en": "Ampoule, non-protected",
-    "cy": "Ampoule, non-protected"
+    "cy": "Ampwl, heb ei ddiogelu"
   },
   {
     "code": "AP",
     "en": "Ampoule, protected",
-    "cy": "Ampoule, protected"
+    "cy": "Ampwl, wedi’i ddiogelu"
   },
   {
     "code": "AT",
     "en": "Atomizer",
-    "cy": "Atomizer"
+    "cy": "Atomeiddiwr"
   },
   {
     "code": "AV",
     "en": "Capsule",
-    "cy": "Capsule"
+    "cy": "Capsiwl"
   },
   {
     "code": "B4",
     "en": "Belt",
-    "cy": "Belt"
+    "cy": "Gwregys"
   },
   {
     "code": "BA",
     "en": "Barrel",
-    "cy": "Barrel"
+    "cy": "Casgen"
   },
   {
     "code": "BB",
     "en": "Bobbin",
-    "cy": "Bobbin"
+    "cy": "Bobin"
   },
   {
     "code": "BC",
     "en": "Bottlecrate / bottlerack",
-    "cy": "Bottlecrate / bottlerack"
+    "cy": "Crât poteli / rhestl boteli"
   },
   {
     "code": "BD",
     "en": "Board",
-    "cy": "Board"
+    "cy": "Bwrdd"
   },
   {
     "code": "BE",
     "en": "Bundle",
-    "cy": "Bundle"
+    "cy": "Bwndel"
   },
   {
     "code": "BF",
     "en": "Balloon, non-protected",
-    "cy": "Balloon, non-protected"
+    "cy": "Balŵn, heb ei ddiogelu"
   },
   {
     "code": "BG",
@@ -257,7 +257,7 @@
   {
     "code": "BH",
     "en": "Bunch",
-    "cy": "Bunch"
+    "cy": "Swp"
   },
   {
     "code": "BI",
@@ -267,42 +267,42 @@
   {
     "code": "BJ",
     "en": "Bucket",
-    "cy": "Bucket"
+    "cy": "Bwced"
   },
   {
     "code": "BK",
     "en": "Basket",
-    "cy": "Basket"
+    "cy": "Basged"
   },
   {
     "code": "BL",
     "en": "Bale, compressed",
-    "cy": "Bale, compressed"
+    "cy": "Bwrn, wedi’i wasgu"
   },
   {
     "code": "BM",
     "en": "Basin",
-    "cy": "Basin"
+    "cy": "Basn"
   },
   {
     "code": "BN",
     "en": "Bale, non-compressed",
-    "cy": "Bale, non-compressed"
+    "cy": "Bwrn, heb ei wasgu"
   },
   {
     "code": "BO",
     "en": "Bottle, non-protected, cylindrical",
-    "cy": "Bottle, non-protected, cylindrical"
+    "cy": "Potel, heb ei diogelu, siâp silindr"
   },
   {
     "code": "BP",
     "en": "Balloon, protected",
-    "cy": "Balloon, protected"
+    "cy": "Balŵn, wedi’i ddiogelu"
   },
   {
     "code": "BQ",
     "en": "Bottle, protected cylindrical",
-    "cy": "Bottle, protected cylindrical"
+    "cy": "Potel, wedi’i diogelu, siâp silindr"
   },
   {
     "code": "BR",
@@ -312,97 +312,97 @@
   {
     "code": "BS",
     "en": "Bottle, non-protected, bulbous",
-    "cy": "Bottle, non-protected, bulbous"
+    "cy": "Potel, heb ei diogelu, oddfog"
   },
   {
     "code": "BT",
     "en": "Bolt",
-    "cy": "Bolt"
+    "cy": "Bollt"
   },
   {
     "code": "BU",
     "en": "Butt",
-    "cy": "Butt"
+    "cy": "Pen"
   },
   {
     "code": "BV",
     "en": "Bottle, protected bulbous",
-    "cy": "Bottle, protected bulbous"
+    "cy": "Potel, wedi’i diogelu, oddfog"
   },
   {
     "code": "BW",
     "en": "Box, for liquids",
-    "cy": "Box, for liquids"
+    "cy": "Blwch, ar gyfer hylifau"
   },
   {
     "code": "BX",
     "en": "Box",
-    "cy": "Box"
+    "cy": "Blwch"
   },
   {
     "code": "BY",
     "en": "Board, in bundle/bunch/truss",
-    "cy": "Board, in bundle/bunch/truss"
+    "cy": "Bwrdd, mewn bwndel/swp/cyplau"
   },
   {
     "code": "BZ",
     "en": "Bars, in bundle/bunch/truss",
-    "cy": "Bars, in bundle/bunch/truss"
+    "cy": "Bariau, mewn bwndel/swp/cyplau"
   },
   {
     "code": "CA",
     "en": "Can, rectangular",
-    "cy": "Can, rectangular"
+    "cy": "Can, siâp petryal"
   },
   {
     "code": "CB",
     "en": "Crate, beer",
-    "cy": "Crate, beer"
+    "cy": "Crât, cwrw"
   },
   {
     "code": "CC",
     "en": "Churn",
-    "cy": "Churn"
+    "cy": "Buddai"
   },
   {
     "code": "CD",
     "en": "Can, with handle and spout",
-    "cy": "Can, with handle and spout"
+    "cy": "Can, gyda dolen a pheipen"
   },
   {
     "code": "CE",
     "en": "Creel",
-    "cy": "Creel"
+    "cy": "Crùl"
   },
   {
     "code": "CF",
     "en": "Coffer",
-    "cy": "Coffer"
+    "cy": "Coffr"
   },
   {
     "code": "CG",
     "en": "Cage",
-    "cy": "Cage"
+    "cy": "Caets"
   },
   {
     "code": "CH",
     "en": "Chest",
-    "cy": "Chest"
+    "cy": "Cist"
   },
   {
     "code": "CI",
     "en": "Canister",
-    "cy": "Canister"
+    "cy": "Tun"
   },
   {
     "code": "CJ",
     "en": "Coffin",
-    "cy": "Coffin"
+    "cy": "Arch"
   },
   {
     "code": "CK",
     "en": "Cask",
-    "cy": "Cask"
+    "cy": "Casgen"
   },
   {
     "code": "CL",
@@ -412,37 +412,37 @@
   {
     "code": "CM",
     "en": "Card",
-    "cy": "Card"
+    "cy": "Cerdyn"
   },
   {
     "code": "CN",
     "en": "Container, not otherwise specified as transport equipment",
-    "cy": "Container, not otherwise specified as transport equipment"
+    "cy": "Cynhwysydd, nad yw fel arall wedi’i nodi fel offer cludo"
   },
   {
     "code": "CO",
     "en": "Carboy, non-protected",
-    "cy": "Carboy, non-protected"
+    "cy": "Carboi, heb ei ddiogelu"
   },
   {
     "code": "CP",
     "en": "Carboy, protected",
-    "cy": "Carboy, protected"
+    "cy": "Carboi, wedi’i ddiogelu"
   },
   {
     "code": "CQ",
     "en": "Cartridge",
-    "cy": "Cartridge"
+    "cy": "Cetrisen"
   },
   {
     "code": "CR",
     "en": "Crate",
-    "cy": "Crate"
+    "cy": "Crât"
   },
   {
     "code": "CS",
     "en": "Case",
-    "cy": "Case"
+    "cy": "Casyn"
   },
   {
     "code": "CT",
@@ -452,292 +452,292 @@
   {
     "code": "CU",
     "en": "Cup",
-    "cy": "Cup"
+    "cy": "Cwpan"
   },
   {
     "code": "CV",
     "en": "Cover",
-    "cy": "Cover"
+    "cy": "Gorchudd"
   },
   {
     "code": "CW",
     "en": "Cage, roll",
-    "cy": "Cage, roll"
+    "cy": "Caets, rholyn"
   },
   {
     "code": "CX",
     "en": "Can, cylindrical",
-    "cy": "Can, cylindrical"
+    "cy": "Can, siâp silindr"
   },
   {
     "code": "CY",
     "en": "Cylinder",
-    "cy": "Cylinder"
+    "cy": "Silindr"
   },
   {
     "code": "CZ",
     "en": "Canvas",
-    "cy": "Canvas"
+    "cy": "Canfas"
   },
   {
     "code": "DA",
     "en": "Crate, multiple layer, plastic",
-    "cy": "Crate, multiple layer, plastic"
+    "cy": "Crât, aml-haenog, plastig"
   },
   {
     "code": "DB",
     "en": "Crate, multiple layer, wooden",
-    "cy": "Crate, multiple layer, wooden"
+    "cy": "Crât, aml-haenog, pren"
   },
   {
     "code": "DC",
     "en": "Crate, multiple layer, cardboard",
-    "cy": "Crate, multiple layer, cardboard"
+    "cy": "Crât, aml-haenog, cardfwrdd"
   },
   {
     "code": "DG",
     "en": "Cage, Commonwealth Handling Equipment Pool (CHEP)",
-    "cy": "Cage, Commonwealth Handling Equipment Pool (CHEP)"
+    "cy": "Caets, Cronfa Offer Trin y Gymanwlad (CHEP)"
   },
   {
     "code": "DH",
     "en": "Box, Commonwealth Handling Equipment Pool (CHEP), Eurobox",
-    "cy": "Box, Commonwealth Handling Equipment Pool (CHEP), Eurobox"
+    "cy": "Blwch, Cronfa Offer Trin y Gymanwlad (CHEP), Ewroflwch"
   },
   {
     "code": "DI",
     "en": "Drum, iron",
-    "cy": "Drum, iron"
+    "cy": "Drwm, haearn"
   },
   {
     "code": "DJ",
     "en": "Demijohn, non-protected",
-    "cy": "Demijohn, non-protected"
+    "cy": "Costrel, heb ei diogelu"
   },
   {
     "code": "DK",
     "en": "Crate, bulk, cardboard",
-    "cy": "Crate, bulk, cardboard"
+    "cy": "Crât, swmp, cardfwrdd"
   },
   {
     "code": "DL",
     "en": "Crate, bulk, plastic",
-    "cy": "Crate, bulk, plastic"
+    "cy": "Crât, swmp, plastig"
   },
   {
     "code": "DM",
     "en": "Crate, bulk, wooden",
-    "cy": "Crate, bulk, wooden"
+    "cy": "Crât, swmp, pren"
   },
   {
     "code": "DN",
     "en": "Dispenser",
-    "cy": "Dispenser"
+    "cy": "Peiriant dosbarthu"
   },
   {
     "code": "DP",
     "en": "Demijohn, protected",
-    "cy": "Demijohn, protected"
+    "cy": "Costrel, wedi’i diogelu"
   },
   {
     "code": "DR",
     "en": "Drum",
-    "cy": "Drum"
+    "cy": "Drwm"
   },
   {
     "code": "DS",
     "en": "Tray, one layer no cover, plastic",
-    "cy": "Tray, one layer no cover, plastic"
+    "cy": "Hambwrdd, un haen heb orchudd, plastig"
   },
   {
     "code": "DT",
     "en": "Tray, one layer no cover, wooden",
-    "cy": "Tray, one layer no cover, wooden"
+    "cy": "Hambwrdd, un haen heb orchudd, pren"
   },
   {
     "code": "DU",
     "en": "Tray, one layer no cover, polystyrene",
-    "cy": "Tray, one layer no cover, polystyrene"
+    "cy": "Hambwrdd, un haen heb orchudd, polystyren"
   },
   {
     "code": "DV",
     "en": "Tray, one layer no cover, cardboard",
-    "cy": "Tray, one layer no cover, cardboard"
+    "cy": "Hambwrdd, un haen heb orchudd, cardfwrdd"
   },
   {
     "code": "DW",
     "en": "Tray, two layers no cover, plastic tray",
-    "cy": "Tray, two layers no cover, plastic tray"
+    "cy": "Hambwrdd, dwy haen heb orchudd, hambwrdd plastig"
   },
   {
     "code": "DX",
     "en": "Tray, two layers no cover, wooden",
-    "cy": "Tray, two layers no cover, wooden"
+    "cy": "Hambwrdd, dwy haen heb orchudd, pren"
   },
   {
     "code": "DY",
     "en": "Tray, two layers no cover, cardboard",
-    "cy": "Tray, two layers no cover, cardboard"
+    "cy": "Hambwrdd, dwy haen heb orchudd, pren"
   },
   {
     "code": "EC",
     "en": "Bag, plastic",
-    "cy": "Bag, plastic"
+    "cy": "Bag, plastig"
   },
   {
     "code": "ED",
     "en": "Case, with pallet base",
-    "cy": "Case, with pallet base"
+    "cy": "Casyn, â phaled fel sylfaen"
   },
   {
     "code": "EE",
     "en": "Case, with pallet base, wooden",
-    "cy": "Case, with pallet base, wooden"
+    "cy": "Casyn, â phaled fel sylfaen, pren"
   },
   {
     "code": "EF",
     "en": "Case, with pallet base, cardboard",
-    "cy": "Case, with pallet base, cardboard"
+    "cy": "Casyn, â phaled fel sylfaen, cardfwrdd"
   },
   {
     "code": "EG",
     "en": "Case, with pallet base, plastic",
-    "cy": "Case, with pallet base, plastic"
+    "cy": "Casyn, â phaled fel sylfaen, plastig"
   },
   {
     "code": "EH",
     "en": "Case, with pallet base, metal",
-    "cy": "Case, with pallet base, metal"
+    "cy": "Casyn, â phaled fel sylfaen, metel"
   },
   {
     "code": "EI",
     "en": "Case, isothermic",
-    "cy": "Case, isothermic"
+    "cy": "Casyn, isothermig"
   },
   {
     "code": "EN",
     "en": "Envelope",
-    "cy": "Envelope"
+    "cy": "Amlen"
   },
   {
     "code": "FB",
     "en": "Flexibag",
-    "cy": "Flexibag"
+    "cy": "Bag hyblyg"
   },
   {
     "code": "FC",
     "en": "Crate, fruit",
-    "cy": "Crate, fruit"
+    "cy": "Crât, ffrwyth"
   },
   {
     "code": "FD",
     "en": "Crate, framed",
-    "cy": "Crate, framed"
+    "cy": "Crât, wedi’i fframio"
   },
   {
     "code": "FE",
     "en": "Flexitank",
-    "cy": "Flexitank"
+    "cy": "Tanc hyblyg"
   },
   {
     "code": "FI",
     "en": "Firkin",
-    "cy": "Firkin"
+    "cy": "Ffircyn"
   },
   {
     "code": "FL",
     "en": "Flask",
-    "cy": "Flask"
+    "cy": "Fflasg"
   },
   {
     "code": "FO",
     "en": "Footlocker",
-    "cy": "Footlocker"
+    "cy": "Cist storio"
   },
   {
     "code": "FP",
     "en": "Filmpack",
-    "cy": "Filmpack"
+    "cy": "Pecyn ffilm"
   },
   {
     "code": "FR",
     "en": "Frame",
-    "cy": "Frame"
+    "cy": "Fframyn"
   },
   {
     "code": "FT",
     "en": "Foodtainer",
-    "cy": "Foodtainer"
+    "cy": "Cynhwysydd bwyd"
   },
   {
     "code": "FW",
     "en": "Cart, flatbed",
-    "cy": "Cart, flatbed"
+    "cy": "Cert, gwaelod gwastad"
   },
   {
     "code": "FX",
     "en": "Bag, flexible container",
-    "cy": "Bag, flexible container"
+    "cy": "Bag, cynhwysydd hyblyg"
   },
   {
     "code": "GB",
     "en": "Bottle, gas",
-    "cy": "Bottle, gas"
+    "cy": "Potel, nwy"
   },
   {
     "code": "GI",
     "en": "Girder",
-    "cy": "Girder"
+    "cy": "Trawst"
   },
   {
     "code": "GL",
     "en": "Container, gallon",
-    "cy": "Container, gallon"
+    "cy": "Cynhwysydd, galwyn"
   },
   {
     "code": "GR",
     "en": "Receptacle, glass",
-    "cy": "Receptacle, glass"
+    "cy": "Llestr, gwydr"
   },
   {
     "code": "GU",
     "en": "Tray, containing horizontally stacked flat items",
-    "cy": "Tray, containing horizontally stacked flat items"
+    "cy": "Hambwrdd, sy’n cynnwys eitemau fflat wedi’u stacio’n llorweddol"
   },
   {
     "code": "GY",
     "en": "Bag, gunny",
-    "cy": "Bag, gunny"
+    "cy": "Bag, sachliain"
   },
   {
     "code": "GZ",
     "en": "Girders, in bundle/bunch/truss",
-    "cy": "Girders, in bundle/bunch/truss"
+    "cy": "Trawstiau bwndel/swp/cyplau"
   },
   {
     "code": "HA",
     "en": "Basket, with handle, plastic",
-    "cy": "Basket, with handle, plastic"
+    "cy": "Basged, â dolen, plastig"
   },
   {
     "code": "HB",
     "en": "Basket, with handle, wooden",
-    "cy": "Basket, with handle, wooden"
+    "cy": "Basged, â dolen, pren"
   },
   {
     "code": "HC",
     "en": "Basket, with handle, cardboard",
-    "cy": "Basket, with handle, cardboard"
+    "cy": "Basged, â dolen, cardfwrdd"
   },
   {
     "code": "HG",
     "en": "Hogshead",
-    "cy": "Hogshead"
+    "cy": "Hocsied"
   },
   {
     "code": "HN",
     "en": "Hanger",
-    "cy": "Hanger"
+    "cy": "Cambren"
   },
   {
     "code": "HR",
@@ -747,52 +747,52 @@
   {
     "code": "IA",
     "en": "Package, display, wooden",
-    "cy": "Package, display, wooden"
+    "cy": "Pecyn, arddangos, pren"
   },
   {
     "code": "IB",
     "en": "Package, display, cardboard",
-    "cy": "Package, display, cardboard"
+    "cy": "Pecyn, arddangos, cardfwrdd"
   },
   {
     "code": "IC",
     "en": "Package, display, plastic",
-    "cy": "Package, display, plastic"
+    "cy": "Pecyn, arddangos, plastig"
   },
   {
     "code": "ID",
     "en": "Package, display, metal",
-    "cy": "Package, display, metal"
+    "cy": "Pecyn, arddangos, metel"
   },
   {
     "code": "IE",
     "en": "Package, show",
-    "cy": "Package, show"
+    "cy": "Pecyn, dangos"
   },
   {
     "code": "IF",
     "en": "Package, flow",
-    "cy": "Package, flow"
+    "cy": "Pecyn, llifo"
   },
   {
     "code": "IG",
     "en": "Package, paper wrapped",
-    "cy": "Package, paper wrapped"
+    "cy": "Pecyn, wedi’i lapio â phapur"
   },
   {
     "code": "IH",
     "en": "Drum, plastic",
-    "cy": "Drum, plastic"
+    "cy": "Drwm, plastig"
   },
   {
     "code": "IK",
     "en": "Package, cardboard, with bottle grip-holes",
-    "cy": "Package, cardboard, with bottle grip-holes"
+    "cy": "Pecyn, cardfwrdd, â thyllau gafael i foteli"
   },
   {
     "code": "IL",
     "en": "Tray, rigid, lidded stackable (CEN TS 14482:2002)",
-    "cy": "Tray, rigid, lidded stackable (CEN TS 14482:2002)"
+    "cy": "Hambwrdd, anhyblyg, â chlawr gellir ei stacio (CEN TS 14482:2002)"
   },
   {
     "code": "IN",
@@ -802,22 +802,22 @@
   {
     "code": "IZ",
     "en": "Ingots, in bundle/bunch/truss",
-    "cy": "Ingots, in bundle/bunch/truss"
+    "cy": "Ingotau, mewn bwndel/swp/cyplau"
   },
   {
     "code": "JB",
     "en": "Bag, jumbo",
-    "cy": "Bag, jumbo"
+    "cy": "Bag, jymbo"
   },
   {
     "code": "JC",
     "en": "Jerrican, rectangular",
-    "cy": "Jerrican, rectangular"
+    "cy": "Tun petrol, siâp petryal"
   },
   {
     "code": "JG",
     "en": "Jug",
-    "cy": "Jug"
+    "cy": "Jwg"
   },
   {
     "code": "JR",
@@ -827,82 +827,82 @@
   {
     "code": "JT",
     "en": "Jutebag",
-    "cy": "Jutebag"
+    "cy": "Bag jiwt"
   },
   {
     "code": "JY",
     "en": "Jerrican, cylindrical",
-    "cy": "Jerrican, cylindrical"
+    "cy": "Tun petrol, siâp silindr"
   },
   {
     "code": "KG",
     "en": "Keg",
-    "cy": "Keg"
+    "cy": "Casgen fach"
   },
   {
     "code": "KI",
     "en": "Kit",
-    "cy": "Kit"
+    "cy": "Cit"
   },
   {
     "code": "LE",
     "en": "Luggage",
-    "cy": "Luggage"
+    "cy": "Bagiau"
   },
   {
     "code": "LG",
     "en": "Log",
-    "cy": "Log"
+    "cy": "Boncyff"
   },
   {
     "code": "LT",
     "en": "Lot",
-    "cy": "Lot"
+    "cy": "Llwyth"
   },
   {
     "code": "LU",
     "en": "Lug",
-    "cy": "Lug"
+    "cy": "Lýg"
   },
   {
     "code": "LV",
     "en": "Liftvan",
-    "cy": "Liftvan"
+    "cy": "Fan codi"
   },
   {
     "code": "LZ",
     "en": "Logs, in bundle/bunch/truss",
-    "cy": "Logs, in bundle/bunch/truss"
+    "cy": "Boncyffion, mewn bwndel/swp/cyplau"
   },
   {
     "code": "MA",
     "en": "Crate, metal",
-    "cy": "Crate, metal"
+    "cy": "Crât, metel"
   },
   {
     "code": "MB",
     "en": "Bag, multiply",
-    "cy": "Bag, multiply"
+    "cy": "Bag, lluosi"
   },
   {
     "code": "MC",
     "en": "Crate, milk",
-    "cy": "Crate, milk"
+    "cy": "Crât, llaeth"
   },
   {
     "code": "ME",
     "en": "Container, metal",
-    "cy": "Container, metal"
+    "cy": "Cynhwysydd, metel"
   },
   {
     "code": "MR",
     "en": "Receptacle, metal",
-    "cy": "Receptacle, metal"
+    "cy": "Llestr, metel"
   },
   {
     "code": "MS",
     "en": "Sack, multi-wall",
-    "cy": "Sack, multi-wall"
+    "cy": "Sach, aml-wal"
   },
   {
     "code": "MT",
@@ -912,87 +912,87 @@
   {
     "code": "MW",
     "en": "Receptacle, plastic wrapped",
-    "cy": "Receptacle, plastic wrapped"
+    "cy": "Llestr, wedi’i lapio â phlastig"
   },
   {
     "code": "MX",
     "en": "Matchbox",
-    "cy": "Matchbox"
+    "cy": "Blwch matsis"
   },
   {
     "code": "NA",
     "en": "Not available",
-    "cy": "Not available"
+    "cy": "Ddim ar gael"
   },
   {
     "code": "NE",
     "en": "Unpacked or unpackaged",
-    "cy": "Unpacked or unpackaged"
+    "cy": "Heb bacio neu heb lapio"
   },
   {
     "code": "NF",
     "en": "Unpacked or unpackaged, single unit",
-    "cy": "Unpacked or unpackaged, single unit"
+    "cy": "Heb bacio neu heb lapio, uned sengl"
   },
   {
     "code": "NG",
     "en": "Unpacked or unpackaged, multiple units",
-    "cy": "Unpacked or unpackaged, multiple units"
+    "cy": "Heb bacio neu heb lapio, unedau lluosog"
   },
   {
     "code": "NS",
     "en": "Nest",
-    "cy": "Nest"
+    "cy": "Nyth"
   },
   {
     "code": "NT",
     "en": "Net",
-    "cy": "Net"
+    "cy": "Rhwyd"
   },
   {
     "code": "NU",
     "en": "Net, tube, plastic",
-    "cy": "Net, tube, plastic"
+    "cy": "Rhwyd, tiwb, plastig"
   },
   {
     "code": "NV",
     "en": "Net, tube, textile",
-    "cy": "Net, tube, textile"
+    "cy": "Rhwyd, tiwb, tecstil"
   },
   {
     "code": "OA",
     "en": "Pallet, CHEP 40 cm x 60 cm",
-    "cy": "Pallet, CHEP 40 cm x 60 cm"
+    "cy": "Paled, CHEP 40cm x 60cm"
   },
   {
     "code": "OB",
     "en": "Pallet, CHEP 80 cm x 120 cm",
-    "cy": "Pallet, CHEP 80 cm x 120 cm"
+    "cy": "Paled, CHEP 80cm x 120cm"
   },
   {
     "code": "OC",
     "en": "Pallet, CHEP 100 cm x 120 cm",
-    "cy": "Pallet, CHEP 100 cm x 120 cm"
+    "cy": "Paled, CHEP 100cm x 120cm"
   },
   {
     "code": "OD",
     "en": "Pallet, AS 4068-1993",
-    "cy": "Pallet, AS 4068-1994"
+    "cy": "Paled, AS 4068-1993"
   },
   {
     "code": "OE",
     "en": "Pallet, ISO T11",
-    "cy": "Pallet, ISO T12"
+    "cy": "Paled, ISO T11"
   },
   {
     "code": "OF",
     "en": "Platform, unspecified weight or dimension",
-    "cy": "Platform, unspecified weight or dimension"
+    "cy": "Platfform, pwysau neu hyd a lled heb ei nodi"
   },
   {
     "code": "OK",
     "en": "Block",
-    "cy": "Block"
+    "cy": "Blocyn"
   },
   {
     "code": "OT",
@@ -1002,67 +1002,67 @@
   {
     "code": "OU",
     "en": "Container, outer",
-    "cy": "Container, outer"
+    "cy": "Cynhwysydd, allanol"
   },
   {
     "code": "P2",
     "en": "Pan",
-    "cy": "Pan"
+    "cy": "Padell"
   },
   {
     "code": "PA",
     "en": "Packet",
-    "cy": "Packet"
+    "cy": "Paced"
   },
   {
     "code": "PB",
     "en": "Pallet, box Combined open-ended box and pallet",
-    "cy": "Pallet, box Combined open-ended box and pallet"
+    "cy": "Paled, blwch a phaled cyfunol penagored"
   },
   {
     "code": "PC",
     "en": "Parcel",
-    "cy": "Parcel"
+    "cy": "Parsel"
   },
   {
     "code": "PD",
     "en": "Pallet, modular, collars 80cms * 100cms",
-    "cy": "Pallet, modular, collars 80cms * 100cms"
+    "cy": "Paled, modwlar, â choleri 80cm * 100cm"
   },
   {
     "code": "PE",
     "en": "Pallet, modular, collars 80cms * 120cms",
-    "cy": "Pallet, modular, collars 80cms * 120cms"
+    "cy": "Paled, modwlar, â choleri 80cm * 100cm"
   },
   {
     "code": "PF",
     "en": "Pen",
-    "cy": "Pen"
+    "cy": "Corlan"
   },
   {
     "code": "PG",
     "en": "Plate",
-    "cy": "Plate"
+    "cy": "Plât"
   },
   {
     "code": "PH",
     "en": "Pitcher",
-    "cy": "Pitcher"
+    "cy": "Piser"
   },
   {
     "code": "PI",
     "en": "Pipe",
-    "cy": "Pipe"
+    "cy": "Pibell"
   },
   {
     "code": "PJ",
     "en": "Punnet",
-    "cy": "Punnet"
+    "cy": "Blychaid"
   },
   {
     "code": "PK",
     "en": "Package",
-    "cy": "Package"
+    "cy": "Pecyn"
   },
   {
     "code": "PL",
@@ -1072,22 +1072,22 @@
   {
     "code": "PN",
     "en": "Plank",
-    "cy": "Plank"
+    "cy": "Planc"
   },
   {
     "code": "PO",
     "en": "Pouch",
-    "cy": "Pouch"
+    "cy": "Cwdyn"
   },
   {
     "code": "PP",
     "en": "Piece",
-    "cy": "Piece"
+    "cy": "Darn"
   },
   {
     "code": "PR",
     "en": "Receptacle, plastic",
-    "cy": "Receptacle, plastic"
+    "cy": "Llestr, plastig"
   },
   {
     "code": "PT",
@@ -1097,137 +1097,137 @@
   {
     "code": "PU",
     "en": "Tray",
-    "cy": "Tray"
+    "cy": "Hambwrdd"
   },
   {
     "code": "PV",
     "en": "Pipes, in bundle/bunch/truss",
-    "cy": "Pipes, in bundle/bunch/truss"
+    "cy": "Pibellau, mewn bwndel/swp/cyplau"
   },
   {
     "code": "PX",
     "en": "Pallet",
-    "cy": "Pallet"
+    "cy": "Paled"
   },
   {
     "code": "PY",
     "en": "Plates, in bundle/bunch/truss",
-    "cy": "Plates, in bundle/bunch/truss"
+    "cy": "Platiau, mewn bwndel/swp/cyplau"
   },
   {
     "code": "PZ",
     "en": "Planks, in bundle/bunch/truss",
-    "cy": "Planks, in bundle/bunch/truss"
+    "cy": "Planciau, mewn bwndel/swp/cyplau"
   },
   {
     "code": "QA",
     "en": "Drum, steel, non-removable head",
-    "cy": "Drum, steel, non-removable head"
+    "cy": "Drwm, dur, â chaead ni ellir ei dynnu"
   },
   {
     "code": "QB",
     "en": "Drum, steel, removable head",
-    "cy": "Drum, steel, removable head"
+    "cy": "Drwm, dur, â chaead y gellir ei dynnu"
   },
   {
     "code": "QC",
     "en": "Drum, aluminium, non-removable head",
-    "cy": "Drum, aluminium, non-removable head"
+    "cy": "Drwm, alwminiwm, â chaead ni ellir ei dynnu"
   },
   {
     "code": "QD",
     "en": "Drum, aluminium, removable head",
-    "cy": "Drum, aluminium, removable head"
+    "cy": "Drwm, alwminiwm, â chaead y gellir ei dynnu"
   },
   {
     "code": "QF",
     "en": "Drum, plastic, non-removable head",
-    "cy": "Drum, plastic, non-removable head"
+    "cy": "Drwm, plastig, â chaead ni ellir ei dynnu"
   },
   {
     "code": "QG",
     "en": "Drum, plastic, removable head",
-    "cy": "Drum, plastic, removable head"
+    "cy": "Drwm, plastig, â chaead y gellir ei dynnu"
   },
   {
     "code": "QH",
     "en": "Barrel, wooden, bung type",
-    "cy": "Barrel, wooden, bung type"
+    "cy": "Casgen, pren, â bwng"
   },
   {
     "code": "QJ",
     "en": "Barrel, wooden, removable head",
-    "cy": "Barrel, wooden, removable head"
+    "cy": "Casgen, pren, â chaead y gellir ei dynnu"
   },
   {
     "code": "QK",
     "en": "Jerrican, steel, non-removable head",
-    "cy": "Jerrican, steel, non-removable head"
+    "cy": "Tun petrol, dur, â chaead ni ellir ei dynnu"
   },
   {
     "code": "QL",
     "en": "Jerrican, steel, removable head",
-    "cy": "Jerrican, steel, removable head"
+    "cy": "Tun petrol, dur, â chaead y gellir ei dynnu"
   },
   {
     "code": "QM",
     "en": "Jerrican, plastic, non-removable head",
-    "cy": "Jerrican, plastic, non-removable head"
+    "cy": "Tun petrol, plastig, â chaead ni ellir ei dynnu"
   },
   {
     "code": "QN",
     "en": "Jerrican, plastic, removable head",
-    "cy": "Jerrican, plastic, removable head"
+    "cy": "Tun petrol, plastig, â chaead y gellir ei dynnu"
   },
   {
     "code": "QP",
     "en": "Box, wooden, natural wood, ordinary",
-    "cy": "Box, wooden, natural wood, ordinary"
+    "cy": "Blwch, pren, pren naturiol, cyffredin"
   },
   {
     "code": "QQ",
     "en": "Box, wooden, natural wood, with sift proof walls",
-    "cy": "Box, wooden, natural wood, with sift proof walls"
+    "cy": "Blwch, pren, pren naturiol, â muriau"
   },
   {
     "code": "QR",
     "en": "Box, plastic, expanded",
-    "cy": "Box, plastic, expanded"
+    "cy": "Blwch, plastig, wedi’i chwyddo"
   },
   {
     "code": "QS",
     "en": "Box, plastic, solid",
-    "cy": "Box, plastic, solid"
+    "cy": "Blwch, plastig, solet"
   },
   {
     "code": "RD",
     "en": "Rod",
-    "cy": "Rod"
+    "cy": "Gwialen"
   },
   {
     "code": "RG",
     "en": "Ring",
-    "cy": "Ring"
+    "cy": "Modrwy"
   },
   {
     "code": "RJ",
     "en": "Rack, clothing hanger",
-    "cy": "Rack, clothing hanger"
+    "cy": "Rhestl, cambren dillad"
   },
   {
     "code": "RK",
     "en": "Rack",
-    "cy": "Rack"
+    "cy": "Rhestl"
   },
   {
     "code": "RL",
     "en": "Reel",
-    "cy": "Reel"
+    "cy": "Rilen"
   },
   {
     "code": "RO",
     "en": "Roll",
-    "cy": "Roll"
+    "cy": "Rholyn"
   },
   {
     "code": "RT",
@@ -1237,92 +1237,92 @@
   {
     "code": "RZ",
     "en": "Rods, in bundle/bunch/truss",
-    "cy": "Rods, in bundle/bunch/truss"
+    "cy": "Gwiail, mewn bwndel/swp/cyplau"
   },
   {
     "code": "SA",
     "en": "Sack",
-    "cy": "Sack"
+    "cy": "Sach"
   },
   {
     "code": "SB",
     "en": "Slab",
-    "cy": "Slab"
+    "cy": "Slabyn"
   },
   {
     "code": "SC",
     "en": "Crate, shallow",
-    "cy": "Crate, shallow"
+    "cy": "Crât, bas"
   },
   {
     "code": "SD",
     "en": "Spindle",
-    "cy": "Spindle"
+    "cy": "Gwerthyd"
   },
   {
     "code": "SE",
     "en": "Sea-chest",
-    "cy": "Sea-chest"
+    "cy": "Cist fôr"
   },
   {
     "code": "SH",
     "en": "Sachet",
-    "cy": "Sachet"
+    "cy": "Bag bychan"
   },
   {
     "code": "SI",
     "en": "Skid",
-    "cy": "Skid"
+    "cy": "Clocsen"
   },
   {
     "code": "SK",
     "en": "Case, skeleton",
-    "cy": "Case, skeleton"
+    "cy": "Casyn, sgerbwd"
   },
   {
     "code": "SL",
     "en": "Slipsheet",
-    "cy": "Slipsheet"
+    "cy": "Slip dalennog"
   },
   {
     "code": "SM",
     "en": "Sheetmetal",
-    "cy": "Sheetmetal"
+    "cy": "Metel dalennog"
   },
   {
     "code": "SO",
     "en": "Spool",
-    "cy": "Spool"
+    "cy": "Sbŵl"
   },
   {
     "code": "SP",
     "en": "Sheet, plastic wrapping",
-    "cy": "Sheet, plastic wrapping"
+    "cy": "Dalen, wedi’i lapio â phlastig"
   },
   {
     "code": "SS",
     "en": "Case, steel",
-    "cy": "Case, steel"
+    "cy": "Casyn, dur"
   },
   {
     "code": "ST",
     "en": "Sheet",
-    "cy": "Sheet"
+    "cy": "Dalen"
   },
   {
     "code": "SU",
     "en": "Suitcase",
-    "cy": "Suitcase"
+    "cy": "Siwtces"
   },
   {
     "code": "SV",
     "en": "Envelope, steel",
-    "cy": "Envelope, steel"
+    "cy": "Amlen, dur"
   },
   {
     "code": "SW",
     "en": "Shrinkwrapped",
-    "cy": "Shrinkwrapped"
+    "cy": "Wedi tynlapio"
   },
   {
     "code": "SX",
@@ -1332,561 +1332,561 @@
   {
     "code": "SY",
     "en": "Sleeve",
-    "cy": "Sleeve"
+    "cy": "Llawes"
   },
   {
     "code": "SZ",
     "en": "Sheets, in bundle/bunch/truss",
-    "cy": "Sheets, in bundle/bunch/truss"
+    "cy": "Dalennau, mewn bwndel/swp/cyplau"
   },
   {
     "code": "T1",
     "en": "Tablet",
-    "cy": "Tablet"
+    "cy": "Llechen"
   },
   {
     "code": "TB",
     "en": "Tub",
-    "cy": "Tub"
+    "cy": "Twb"
   },
   {
     "code": "TC",
     "en": "Tea-chest",
-    "cy": "Tea-chest"
+    "cy": "Cist de"
   },
   {
     "code": "TD",
     "en": "Tube, collapsible",
-    "cy": "Tube, collapsible"
+    "cy": "Tiwb, plygadwy"
   },
   {
     "code": "TE",
     "en": "Tyre",
-    "cy": "Tyre"
+    "cy": "Teiar"
   },
   {
     "code": "TG",
     "en": "Tank container, generic",
-    "cy": "Tank container, generic"
+    "cy": "Cynhwysydd tanc, generig"
   },
   {
     "code": "TI",
     "en": "Tierce",
-    "cy": "Tierce"
+    "cy": "Mesur traean"
   },
   {
     "code": "TK",
     "en": "Tank, rectangular",
-    "cy": "Tank, rectangular"
+    "cy": "Tanc, siâp petryal"
   },
   {
     "code": "TL",
     "en": "Tub, with lid",
-    "cy": "Tub, with lid"
+    "cy": "Twb, â chaead"
   },
   {
     "code": "TN",
     "en": "Tin",
-    "cy": "Tin"
+    "cy": "Tun"
   },
   {
     "code": "TO",
     "en": "Tun",
-    "cy": "Tun"
+    "cy": "Cerwyn"
   },
   {
     "code": "TR",
     "en": "Trunk",
-    "cy": "Trunk"
+    "cy": "Trwnc"
   },
   {
     "code": "TS",
     "en": "Truss",
-    "cy": "Truss"
+    "cy": "Cwpl"
   },
   {
     "code": "TT",
     "en": "Bag, tote",
-    "cy": "Bag, tote"
+    "cy": "Bag, cario"
   },
   {
     "code": "TU",
     "en": "Tube",
-    "cy": "Tube"
+    "cy": "Tiwb"
   },
   {
     "code": "TV",
     "en": "Tube, with nozzle",
-    "cy": "Tube, with nozzle"
+    "cy": "Tiwb, â ffroenell"
   },
   {
     "code": "TW",
     "en": "Pallet, triwall",
-    "cy": "Pallet, triwall"
+    "cy": "Paled, teirwal"
   },
   {
     "code": "TY",
     "en": "Tank, cylindrical",
-    "cy": "Tank, cylindrical"
+    "cy": "Tanc, siâp silindr"
   },
   {
     "code": "TZ",
     "en": "Tubes, in bundle/bunch/truss",
-    "cy": "Tubes, in bundle/bunch/truss"
+    "cy": "Tiwbiau, mewn bwndel/swp/cyplau"
   },
   {
     "code": "UC",
     "en": "Uncaged",
-    "cy": "Uncaged"
+    "cy": "Rhydd o gaets"
   },
   {
     "code": "UN",
     "en": "Unit",
-    "cy": "Unit"
+    "cy": "Uned"
   },
   {
     "code": "VA",
     "en": "Vat",
-    "cy": "Vat"
+    "cy": "Twba"
   },
   {
     "code": "VG",
     "en": "Bulk, gas (at 1031 mbar and 15 degrees celsius)",
-    "cy": "Bulk, gas (at 1031 mbar and 15 degrees celsius)"
+    "cy": "Swmp, nwy (ar 1031 mbar a 15 gradd Celsius)"
   },
   {
     "code": "VI",
     "en": "Vial",
-    "cy": "Vial"
+    "cy": "Ffiol"
   },
   {
     "code": "VK",
     "en": "Vanpack",
-    "cy": "Vanpack"
+    "cy": "Fanpac"
   },
   {
     "code": "VL",
     "en": "Bulk, liquid",
-    "cy": "Bulk, liquid"
+    "cy": "Swmp, hylif"
   },
   {
     "code": "VN",
     "en": "Vehicle",
-    "cy": "Vehicle"
+    "cy": "Cerbyd"
   },
   {
     "code": "VO",
     "en": "Bulk, solid, large particles (\"nodules\")",
-    "cy": "Bulk, solid, large particles (\"nodules\")"
+    "cy": "Swmp, solet, gronynnau mawr (\"nodules\")"
   },
   {
     "code": "VP",
     "en": "Vacuum-packed",
-    "cy": "Vacuum-packed"
+    "cy": "Wedi pacio dan wactod"
   },
   {
     "code": "VQ",
     "en": "Bulk, liquefied gas (at abnormal temperature/pressure)",
-    "cy": "Bulk, liquefied gas (at abnormal temperature/pressure)"
+    "cy": "Swmp, nwy hylifedig (ar wasgedd/tymheredd annormal)"
   },
   {
     "code": "VR",
     "en": "Bulk, solid, granular particles (\"grains\")",
-    "cy": "Bulk, solid, granular particles (\"grains\")"
+    "cy": "Swmp, solet, gronynnau gronynnog (\"grains\")"
   },
   {
     "code": "VS",
     "en": "Bulk, scrap metal",
-    "cy": "Bulk, scrap metal"
+    "cy": "Swmp, metel sgrap"
   },
   {
     "code": "VY",
     "en": "Bulk, solid, fine particles (\"powders\")",
-    "cy": "Bulk, solid, fine particles (\"powders\")"
+    "cy": "Swmp, solet, gronynnau mân (\"powders\")"
   },
   {
     "code": "WA",
     "en": "Intermediate bulk container",
-    "cy": "Intermediate bulk container"
+    "cy": "Swmpgynhwysydd canolradd"
   },
   {
     "code": "WB",
     "en": "Wickerbottle",
-    "cy": "Wickerbottle"
+    "cy": "Potel blethwaith gwellt"
   },
   {
     "code": "WC",
     "en": "Intermediate bulk container, steel",
-    "cy": "Intermediate bulk container, steel"
+    "cy": "Swmpgynhwysydd canolradd, dur"
   },
   {
     "code": "WD",
     "en": "Intermediate bulk container, aluminium",
-    "cy": "Intermediate bulk container, aluminium"
+    "cy": "Swmpgynhwysydd canolradd, alwminiwm"
   },
   {
     "code": "WF",
     "en": "Intermediate bulk container, metal",
-    "cy": "Intermediate bulk container, metal"
+    "cy": "Swmpgynhwysydd canolradd, metel"
   },
   {
     "code": "WG",
     "en": "Intermediate bulk container, steel, pressurised > 10 kpa",
-    "cy": "Intermediate bulk container, steel, pressurised > 10 kpa"
+    "cy": "Swmpgynhwysydd canolradd, dur, dan wasgedd > 10 kpa"
   },
   {
     "code": "WH",
     "en": "Intermediate bulk container, aluminium, pressurised > 10 kpa",
-    "cy": "Intermediate bulk container, aluminium, pressurised > 10 kpa"
+    "cy": "Swmpgynhwysydd canolradd, alwminiwm, dan wasgedd > 10 kpa"
   },
   {
     "code": "WJ",
     "en": "Intermediate bulk container, metal, pressure 10 kpa",
-    "cy": "Intermediate bulk container, metal, pressure 10 kpa"
+    "cy": "Swmpgynhwysydd canolradd, metel, dan wasgedd o 10kpa"
   },
   {
     "code": "WK",
     "en": "Intermediate bulk container, steel, liquid",
-    "cy": "Intermediate bulk container, steel, liquid"
+    "cy": "Swmpgynhwysydd canolradd, dur, hylif"
   },
   {
     "code": "WL",
     "en": "Intermediate bulk container, aluminium, liquid",
-    "cy": "Intermediate bulk container, aluminium, liquid"
+    "cy": "Swmpgynhwysydd canolradd, alwminiwm, hylif"
   },
   {
     "code": "WM",
     "en": "Intermediate bulk container, metal, liquid",
-    "cy": "Intermediate bulk container, metal, liquid"
+    "cy": "Swmpgynhwysydd canolradd, metel, hylif"
   },
   {
     "code": "WN",
     "en": "Intermediate bulk container, woven plastic, without coat/liner",
-    "cy": "Intermediate bulk container, woven plastic, without coat/liner"
+    "cy": "Swmpgynhwysydd canolradd, plastig wedi’i wehyddu, heb orchudd/leinin"
   },
   {
     "code": "WP",
     "en": "Intermediate bulk container, woven plastic, coated",
-    "cy": "Intermediate bulk container, woven plastic, coated"
+    "cy": "Swmpgynhwysydd canolradd, plastig wedi’i wehyddu, wedi’i orchuddio "
   },
   {
     "code": "WQ",
     "en": "Intermediate bulk container, woven plastic, with liner",
-    "cy": "Intermediate bulk container, woven plastic, with liner"
+    "cy": "Swmpgynhwysydd canolradd, plastig wedi’i wehyddu, gyda leinin"
   },
   {
     "code": "WR",
     "en": "Intermediate bulk container, woven plastic, coated and liner",
-    "cy": "Intermediate bulk container, woven plastic, coated and liner"
+    "cy": "Swmpgynhwysydd canolradd, plastig wedi’i wehyddu, wedi’i orchuddio a chyda leinin"
   },
   {
     "code": "WS",
     "en": "Intermediate bulk container, plastic film",
-    "cy": "Intermediate bulk container, plastic film"
+    "cy": "Swmpgynhwysydd canolradd, ffilm blastig"
   },
   {
     "code": "WT",
     "en": "Intermediate bulk container, textile without coat/liner",
-    "cy": "Intermediate bulk container, textile without coat/liner"
+    "cy": "Swmpgynhwysydd canolradd, tecstil heb orchudd/leinin"
   },
   {
     "code": "WU",
     "en": "Intermediate bulk container, natural wood, with inner liner",
-    "cy": "Intermediate bulk container, natural wood, with inner liner"
+    "cy": "Swmpgynhwysydd canolradd, pren naturiol, gyda leinin mewnol"
   },
   {
     "code": "WV",
     "en": "Intermediate bulk container, textile, coated",
-    "cy": "Intermediate bulk container, textile, coated"
+    "cy": "Swmpgynhwysydd canolradd, wedi’i orchuddio"
   },
   {
     "code": "WW",
     "en": "Intermediate bulk container, textile, with liner",
-    "cy": "Intermediate bulk container, textile, with liner"
+    "cy": "Swmpgynhwysydd canolradd, gyda leinin"
   },
   {
     "code": "WX",
     "en": "Intermediate bulk container, textile, coated and liner",
-    "cy": "Intermediate bulk container, textile, coated and liner"
+    "cy": "Swmpgynhwysydd canolradd, wedi’i orchuddio a chyda leinin"
   },
   {
     "code": "WY",
     "en": "Intermediate bulk container, plywood, with inner liner",
-    "cy": "Intermediate bulk container, plywood, with inner liner"
+    "cy": "Swmpgynhwysydd canolradd, pren haenog, gyda leinin mewnol"
   },
   {
     "code": "WZ",
     "en": "Intermediate bulk container, reconstituted wood, with inner liner",
-    "cy": "Intermediate bulk container, reconstituted wood, with inner liner"
+    "cy": "Swmpgynhwysydd canolradd, pren wedi’i ailgyfuno, gyda leinin mewnol"
   },
   {
     "code": "XA",
     "en": "Bag, woven plastic, without inner coat/liner",
-    "cy": "Bag, woven plastic, without inner coat/liner"
+    "cy": "Bag, plastig wedi’i wehyddu, heb orchudd/leinin mewnol"
   },
   {
     "code": "XB",
     "en": "Bag, woven plastic, sift proof",
-    "cy": "Bag, woven plastic, sift proof"
+    "cy": "Bag, plastig wedi’i wehyddu, gwrth-hidlo"
   },
   {
     "code": "XC",
     "en": "Bag, woven plastic, water resistant",
-    "cy": "Bag, woven plastic, water resistant"
+    "cy": "Bag, plastig wedi’i wehyddu, gwrth-ddŵr"
   },
   {
     "code": "XD",
     "en": "Bag, plastics film",
-    "cy": "Bag, plastics film"
+    "cy": "Bag, ffilm blastigion"
   },
   {
     "code": "XF",
     "en": "Bag, textile, without inner coat/liner",
-    "cy": "Bag, textile, without inner coat/liner"
+    "cy": "Bag, tecstil, heb orchudd/leinin mewnol"
   },
   {
     "code": "XG",
     "en": "Bag, textile, sift proof",
-    "cy": "Bag, textile, sift proof"
+    "cy": "Bag, tecstil, gwrth-hidlo"
   },
   {
     "code": "XH",
     "en": "Bag, textile, water resistant",
-    "cy": "Bag, textile, water resistant"
+    "cy": "Bag, tecstil, gwrth-ddŵr"
   },
   {
     "code": "XJ",
     "en": "Bag, paper, multi-wall",
-    "cy": "Bag, paper, multi-wall"
+    "cy": "Bag, aml-wal"
   },
   {
     "code": "XK",
     "en": "Bag, paper, multi-wall, water resistant",
-    "cy": "Bag, paper, multi-wall, water resistant"
+    "cy": "Bag, aml-wal, gwrth-ddŵr"
   },
   {
     "code": "YA",
     "en": "Composite packaging, plastic receptacle in steel drum",
-    "cy": "Composite packaging, plastic receptacle in steel drum"
+    "cy": "Deunydd pacio cyfansawdd, llestr plastig mewn drwm dur"
   },
   {
     "code": "YB",
     "en": "Composite packaging, plastic receptacle in steel crate box",
-    "cy": "Composite packaging, plastic receptacle in steel crate box"
+    "cy": "Deunydd pacio cyfansawdd, llestr plastig mewn blwch crât dur"
   },
   {
     "code": "YC",
     "en": "Composite packaging, plastic receptacle in aluminium drum",
-    "cy": "Composite packaging, plastic receptacle in aluminium drum"
+    "cy": "Deunydd pacio cyfansawdd, llestr plastig mewn drwm alwminiwm"
   },
   {
     "code": "YD",
     "en": "Composite packaging, plastic receptacle in aluminium crate",
-    "cy": "Composite packaging, plastic receptacle in aluminium crate"
+    "cy": "Deunydd pacio cyfansawdd, llestr plastig mewn crât alwminiwm"
   },
   {
     "code": "YF",
     "en": "Composite packaging, plastic receptacle in wooden box",
-    "cy": "Composite packaging, plastic receptacle in wooden box"
+    "cy": "Deunydd pacio cyfansawdd, llestr plastig mewn blwch pren"
   },
   {
     "code": "YG",
     "en": "Composite packaging, plastic receptacle in plywood drum",
-    "cy": "Composite packaging, plastic receptacle in plywood drum"
+    "cy": "Deunydd pacio cyfansawdd, llestr plastig mewn drwm pren haenog"
   },
   {
     "code": "YH",
     "en": "Composite packaging, plastic receptacle in plywood box",
-    "cy": "Composite packaging, plastic receptacle in plywood box"
+    "cy": "Deunydd pacio cyfansawdd, llestr plastig mewn blwch pren haenog"
   },
   {
     "code": "YJ",
     "en": "Composite packaging, plastic receptacle in fibre drum",
-    "cy": "Composite packaging, plastic receptacle in fibre drum"
+    "cy": "Deunydd pacio cyfansawdd, llestr plastig mewn drwm ffibr"
   },
   {
     "code": "YK",
     "en": "Composite packaging, plastic receptacle in fibreboard box",
-    "cy": "Composite packaging, plastic receptacle in fibreboard box"
+    "cy": "Deunydd pacio cyfansawdd, llestr plastig mewn blwch bwrdd ffibr"
   },
   {
     "code": "YL",
     "en": "Composite packaging, plastic receptacle in plastic drum",
-    "cy": "Composite packaging, plastic receptacle in plastic drum"
+    "cy": "Deunydd pacio cyfansawdd, llestr plastig mewn drwm plastig"
   },
   {
     "code": "YM",
     "en": "Composite packaging, plastic receptacle in solid plastic box",
-    "cy": "Composite packaging, plastic receptacle in solid plastic box"
+    "cy": "Deunydd pacio cyfansawdd, llestr plastig mewn blwch plastig solet"
   },
   {
     "code": "YN",
     "en": "Composite packaging, glass receptacle in steel drum",
-    "cy": "Composite packaging, glass receptacle in steel drum"
+    "cy": "Deunydd pacio cyfansawdd, llestr gwydr mewn drwm dur"
   },
   {
     "code": "YP",
     "en": "Composite packaging, glass receptacle in steel crate box",
-    "cy": "Composite packaging, glass receptacle in steel crate box"
+    "cy": "Deunydd pacio cyfansawdd, llestr gwydr mewn blwch crât dur"
   },
   {
     "code": "YQ",
     "en": "Composite packaging, glass receptacle in aluminium drum",
-    "cy": "Composite packaging, glass receptacle in aluminium drum"
+    "cy": "Deunydd pacio cyfansawdd, llestr gwydr mewn drwm alwminiwm"
   },
   {
     "code": "YR",
     "en": "Composite packaging, glass receptacle in aluminium crate",
-    "cy": "Composite packaging, glass receptacle in aluminium crate"
+    "cy": "Deunydd pacio cyfansawdd, llestr gwydr mewn crât alwminiwm"
   },
   {
     "code": "YS",
     "en": "Composite packaging, glass receptacle in wooden box",
-    "cy": "Composite packaging, glass receptacle in wooden box"
+    "cy": "Deunydd pacio cyfansawdd, llestr gwydr mewn blwch pren"
   },
   {
     "code": "YT",
     "en": "Composite packaging, glass receptacle in plywood drum",
-    "cy": "Composite packaging, glass receptacle in plywood drum"
+    "cy": "Deunydd pacio cyfansawdd, llestr gwydr mewn drwm pren haenog"
   },
   {
     "code": "YV",
     "en": "Composite packaging, glass receptacle in wickerwork hamper",
-    "cy": "Composite packaging, glass receptacle in wickerwork hamper"
+    "cy": "Deunydd pacio cyfansawdd, llestr gwydr mewn hamper plethwaith gwellt"
   },
   {
     "code": "YW",
     "en": "Composite packaging, glass receptacle in fibre drum",
-    "cy": "Composite packaging, glass receptacle in fibre drum"
+    "cy": "Deunydd pacio cyfansawdd, llestr gwydr mewn drwm ffibr"
   },
   {
     "code": "YX",
     "en": "Composite packaging, glass receptacle in fibreboard box",
-    "cy": "Composite packaging, glass receptacle in fibreboard box"
+    "cy": "Deunydd pacio cyfansawdd, llestr gwydr mewn blwch bwrdd ffibr"
   },
   {
     "code": "YY",
     "en": "Composite packaging, glass receptacle in expandable plastic pack",
-    "cy": "Composite packaging, glass receptacle in expandable plastic pack"
+    "cy": "Deunydd pacio cyfansawdd, llestr gwydr mewn pecyn plastig chwyddadwy"
   },
   {
     "code": "YZ",
     "en": "Composite packaging, glass receptacle in solid plastic pack",
-    "cy": "Composite packaging, glass receptacle in solid plastic pack"
+    "cy": "Deunydd pacio cyfansawdd, llestr gwydr mewn pecyn plastig solet"
   },
   {
     "code": "ZA",
     "en": "Intermediate bulk container, paper, multi-wall",
-    "cy": "Intermediate bulk container, paper, multi-wall"
+    "cy": "Swmpgynhwysydd canolradd, papur, aml-wal"
   },
   {
     "code": "ZB",
     "en": "Bag, large",
-    "cy": "Bag, large"
+    "cy": "Bag, mawr"
   },
   {
     "code": "ZC",
     "en": "Intermediate bulk container, paper, multi-wall, water resistant",
-    "cy": "Intermediate bulk container, paper, multi-wall, water resistant"
+    "cy": "Swmpgynhwysydd canolradd, papur, aml-wal, gwrth-ddŵr"
   },
   {
     "code": "ZD",
     "en": "Intermediate bulk container, rigid plastic, with structural equipment, solids",
-    "cy": "Intermediate bulk container, rigid plastic, with structural equipment, solids"
+    "cy": "Swmpgynhwysydd canolradd, plastig anystwyth, gydag offer adeiladu, soledau"
   },
   {
     "code": "ZF",
     "en": "Intermediate bulk container, rigid plastic, freestanding, solids",
-    "cy": "Intermediate bulk container, rigid plastic, freestanding, solids"
+    "cy": "Swmpgynhwysydd canolradd, plastig anystwyth, sy’n sefyll ar ei ben ei hun yn annibynnol, soledau"
   },
   {
     "code": "ZG",
     "en": "Intermediate bulk container, rigid plastic, with structural equipment, pressurised",
-    "cy": "Intermediate bulk container, rigid plastic, with structural equipment, pressurised"
+    "cy": "Swmpgynhwysydd canolradd, plastig anystwyth, gydag offer adeiladu, dan wasgedd"
   },
   {
     "code": "ZH",
     "en": "Intermediate bulk container, rigid plastic, freestanding, pressurised",
-    "cy": "Intermediate bulk container, rigid plastic, freestanding, pressurised"
+    "cy": "Swmpgynhwysydd canolradd, plastig anystwyth, sy’n sefyll ar ei ben ei hun yn annibynnol, dan wasgedd"
   },
   {
     "code": "ZJ",
     "en": "Intermediate bulk container, rigid plastic, with structural equipment, liquids",
-    "cy": "Intermediate bulk container, rigid plastic, with structural equipment, liquids"
+    "cy": "Swmpgynhwysydd canolradd, plastig anystwyth, gydag offer adeiladu, hylifau"
   },
   {
     "code": "ZK",
     "en": "Intermediate bulk container, rigid plastic, freestanding, liquids",
-    "cy": "Intermediate bulk container, rigid plastic, freestanding, liquids"
+    "cy": "Swmpgynhwysydd canolradd, plastig anystwyth, sy’n sefyll ar ei ben ei hun yn annibynnol, hylifau"
   },
   {
     "code": "ZL",
     "en": "Intermediate bulk container, composite, rigid plastic, solids",
-    "cy": "Intermediate bulk container, composite, rigid plastic, solids"
+    "cy": "Swmpgynhwysydd canolradd, cyfansawdd, plastig anystwyth, soledau"
   },
   {
     "code": "ZM",
     "en": "Intermediate bulk container, composite, flexible plastic, solids",
-    "cy": "Intermediate bulk container, composite, flexible plastic, solids"
+    "cy": "Swmpgynhwysydd canolradd, cyfansawdd, plastig hyblyg, soledau"
   },
   {
     "code": "ZN",
     "en": "Intermediate bulk container, composite, rigid plastic, pressurised",
-    "cy": "Intermediate bulk container, composite, rigid plastic, pressurised"
+    "cy": "Swmpgynhwysydd canolradd, cyfansawdd, plastig anystwyth, dan wasgedd"
   },
   {
     "code": "ZP",
     "en": "Intermediate bulk container, composite, flexible plastic, pressurised",
-    "cy": "Intermediate bulk container, composite, flexible plastic, pressurised"
+    "cy": "Swmpgynhwysydd canolradd, cyfansawdd, plastig hyblyg, dan wasgedd"
   },
   {
     "code": "ZQ",
     "en": "Intermediate bulk container, composite, rigid plastic, liquids",
-    "cy": "Intermediate bulk container, composite, rigid plastic, liquids"
+    "cy": "Swmpgynhwysydd canolradd, cyfansawdd, plastig anystwyth, hylifau"
   },
   {
     "code": "ZR",
     "en": "Intermediate bulk container, composite, flexible plastic, liquids",
-    "cy": "Intermediate bulk container, composite, flexible plastic, liquids"
+    "cy": "Swmpgynhwysydd canolradd, cyfansawdd, plastig hyblyg, hylifau"
   },
   {
     "code": "ZS",
     "en": "Intermediate bulk container, composite",
-    "cy": "Intermediate bulk container, composite"
+    "cy": "Swmpgynhwysydd canolradd, cyfansawdd"
   },
   {
     "code": "ZT",
     "en": "Intermediate bulk container, fibreboard",
-    "cy": "Intermediate bulk container, fibreboard"
+    "cy": "Swmpgynhwysydd canolradd, bwrdd ffibr"
   },
   {
     "code": "ZU",
     "en": "Intermediate bulk container, flexible",
-    "cy": "Intermediate bulk container, flexible"
+    "cy": "Swmpgynhwysydd canolradd, hyblyg"
   },
   {
     "code": "ZV",
     "en": "Intermediate bulk container, metal, other than steel",
-    "cy": "Intermediate bulk container, metal, other than steel"
+    "cy": "Swmpgynhwysydd canolradd, metel, ar wahân i ddur"
   },
   {
     "code": "ZW",
     "en": "Intermediate bulk container, natural wood",
-    "cy": "Intermediate bulk container, natural wood"
+    "cy": "Swmpgynhwysydd canolradd, pren naturiol"
   },
   {
     "code": "ZX",
     "en": "Intermediate bulk container, plywood",
-    "cy": "Intermediate bulk container, plywood"
+    "cy": "Swmpgynhwysydd canolradd, pren haenog"
   },
   {
     "code": "ZY",
     "en": "Intermediate bulk container, reconstituted wood",
-    "cy": "Intermediate bulk container, reconstituted wood"
+    "cy": "Swmpgynhwysydd canolradd, pren wedi’i ailgyfuno"
   },
   {
     "code": "ZZ",
     "en": "Mutually defined",
-    "cy": "Mutually defined"
+    "cy": "Wedi diffinio ar y cyd"
   }
 ]
