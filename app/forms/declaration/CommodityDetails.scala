@@ -19,13 +19,13 @@ package forms.declaration
 import forms.DeclarationPage
 import forms.declaration.CommodityDetails.{combinedNomenclatureCodePointer, descriptionOfGoodsPointer, keyForCode, keyForDescription}
 import models.AmendmentRow.{forAddedValue, forRemovedValue, pointerToSelector}
-import models.{AmendmentOp, DeclarationType, FieldMapping}
-import models.DeclarationType.{CLEARANCE, DeclarationType}
-import models.viewmodels.TariffContentKey
+import models.DeclarationType._
 import models.ExportsFieldPointer.ExportsFieldPointer
 import models.declaration.ExportItem.itemsPrefix
-import play.api.data.{Form, Mapping}
+import models.viewmodels.TariffContentKey
+import models.{AmendmentOp, FieldMapping}
 import play.api.data.Forms.{mapping, optional, text}
+import play.api.data.{Form, Mapping}
 import play.api.i18n.Messages
 import play.api.libs.json.Json
 import services.DiffTools
@@ -120,13 +120,13 @@ object CommodityDetails extends DeclarationPage with FieldMapping {
     )(CommodityDetails.unapply)
 
   def form(declarationType: DeclarationType): Form[CommodityDetails] = declarationType match {
-    case DeclarationType.CLEARANCE                               => Form(mappingOptionalCodeAndOptionalDescription)
-    case DeclarationType.SIMPLIFIED | DeclarationType.OCCASIONAL => Form(mappingOptionalCode)
-    case _                                                       => Form(mappingRequiredCode)
+    case CLEARANCE               => Form(mappingOptionalCodeAndOptionalDescription)
+    case SIMPLIFIED | OCCASIONAL => Form(mappingOptionalCode)
+    case _                       => Form(mappingRequiredCode)
   }
 
-  override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
-    decType match {
+  override def defineTariffContentKeys(declarationType: DeclarationType): Seq[TariffContentKey] =
+    declarationType match {
       case CLEARANCE =>
         Seq(
           TariffContentKey("tariff.declaration.item.commodityDetails.1.clearance"),

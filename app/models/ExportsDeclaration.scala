@@ -16,7 +16,7 @@
 
 package models
 
-import controllers.helpers.TransportSectionHelper.isGuernseyOrJerseyDestination
+import controllers.helpers.TransportSectionHelper.clearCacheOnSkippingTransportPages
 import forms.Ducr
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
@@ -24,13 +24,13 @@ import forms.declaration.LocationOfGoods.suffixForGVMS
 import forms.declaration._
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.AdditionalDeclarationType
 import forms.declaration.additionaldocuments.AdditionalDocument
-import forms.declaration.countries.Country
 import forms.declaration.authorisationHolder.AuthorisationHolder
+import forms.declaration.countries.Country
 import models.DeclarationType.DeclarationType
 import models.ExportsDeclaration.isCodePrefixedWith
 import models.ExportsFieldPointer.ExportsFieldPointer
-import models.declaration._
 import models.declaration.ProcedureCodesData.lowValueDeclaration
+import models.declaration._
 import play.api.libs.json._
 import services.DiffTools
 import services.DiffTools.{combinePointers, compareDifference, compareIntDifference, ExportsDeclarationDiff}
@@ -205,6 +205,9 @@ case class ExportsDeclaration(
     )
   }
 
+  def updateTransportCountry(transportCountry: TransportCountry): ExportsDeclaration =
+    copy(transport = transport.copy(transportCrossingTheBorderNationality = transportCountry.countryName.map(_ => transportCountry)))
+
   def removeAuthorisationProcedureCodeChoice: ExportsDeclaration =
     copy(parties = parties.copy(authorisationProcedureCodeChoice = None))
 
@@ -216,24 +219,14 @@ case class ExportsDeclaration(
   def updateCountriesOfRouting(routingCountries: Seq[RoutingCountry]): ExportsDeclaration =
     copy(locations = locations.copy(routingCountries = routingCountries))
 
-  def updateDestinationCountry(destinationCountry: Country): ExportsDeclaration = {
-    val declaration = copy(locations = locations.copy(destinationCountry = Some(destinationCountry)))
-    if (!isGuernseyOrJerseyDestination(declaration)) declaration
-    else
-      declaration
-        .updateDepartureTransport(DepartureTransport(None, None))
-        .updateBorderTransport(BorderTransport("", ""))
-        .updateTransportCountry(TransportCountry(None))
-  }
+  def updateDestinationCountry(destinationCountry: Country): ExportsDeclaration =
+    clearCacheOnSkippingTransportPages(copy(locations = locations.copy(destinationCountry = Some(destinationCountry))))
 
   def updateRoutingQuestion(answer: Boolean): ExportsDeclaration =
     copy(locations = locations.copy(hasRoutingCountries = Some(answer)))
 
   def updateContainers(containers: Seq[Container]): ExportsDeclaration =
     copy(transport = transport.copy(containers = Some(containers)))
-
-  def updateTransportCountry(transportCountry: TransportCountry): ExportsDeclaration =
-    copy(transport = transport.copy(transportCrossingTheBorderNationality = transportCountry.countryName.map(_ => transportCountry)))
 
   def updateTransportPayment(payment: TransportPayment): ExportsDeclaration =
     copy(transport = transport.copy(expressConsignment = YesNoAnswer.Yes, transportPayment = Some(payment)))
