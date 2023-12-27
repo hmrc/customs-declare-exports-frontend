@@ -189,6 +189,7 @@ declaration.type.error = Dewiswch fath o ddatganiad
 
 tariff.expander.title.common = Rhagor o fanylion am yr hyn sydd ei angen ar y dudalen hon
 tariff.expander.title.clearance = Rhagor o fanylion am yr hyn sydd ei angen ar y dudalen hon
+tariff.declaration.text = I gael manylion, ewch i {0}.
 
 tariff.declaration.type.common.text = Bydd yr ateb hwn yn cwblhau<br>{0}.
 tariff.declaration.type.common.linkText.0 = Elfen Ddata 1/2 - Math o Ddatganiad Ychwanegol (yn agor tab newydd)

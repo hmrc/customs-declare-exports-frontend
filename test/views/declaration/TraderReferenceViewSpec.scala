@@ -67,7 +67,7 @@ class TraderReferenceViewSpec extends PageWithButtonsSpec with Injector with Moc
         val tariffText = view.getElementsByClass("govuk-details__text").first
 
         removeBlanksIfAnyBeforeDot(tariffText.text) mustBe messages(
-          "tariff.declaration.traderReference.common.text",
+          "tariff.declaration.text",
           messages("tariff.declaration.traderReference.common.linkText.0")
         )
         tariffText.child(0) must haveHref(appConfig.tariffGuideUrl("urls.tariff.declaration.traderReference.common.0"))
@@ -79,7 +79,7 @@ class TraderReferenceViewSpec extends PageWithButtonsSpec with Injector with Moc
         val tariffText = view.getElementsByClass("govuk-details__text").get(0)
 
         removeBlanksIfAnyBeforeDot(tariffText.text) mustBe messages(
-          "tariff.declaration.confirmDucr.common.text",
+          "tariff.declaration.text",
           messages("tariff.declaration.traderReference.clearance.linkText.0")
         )
         tariffText.child(0) must haveHref(appConfig.tariffGuideUrl("urls.tariff.declaration.traderReference.clearance.0"))

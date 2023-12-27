@@ -128,14 +128,8 @@ object CommodityDetails extends DeclarationPage with FieldMapping {
   override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
     decType match {
       case CLEARANCE =>
-        Seq(
-          TariffContentKey("tariff.declaration.item.commodityDetails.1.clearance"),
-          TariffContentKey("tariff.declaration.item.commodityDetails.2.clearance")
-        )
+        Seq(TariffContentKey("tariff.declaration.item.commodityDetails.clearance"))
       case _ =>
-        Seq(
-          TariffContentKey("tariff.declaration.item.commodityDetails.1.common"),
-          TariffContentKey("tariff.declaration.item.commodityDetails.2.common")
-        )
+        Seq(TariffContentKey("tariff.declaration.item.commodityDetails.common"))
     }
 }

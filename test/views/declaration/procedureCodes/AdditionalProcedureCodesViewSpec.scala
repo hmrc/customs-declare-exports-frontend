@@ -102,8 +102,8 @@ class AdditionalProcedureCodesViewSpec extends PageWithButtonsSpec with ExportsT
 
           val prefix = "tariff.declaration.item.additionalProcedureCodes"
 
-          tariffDetails must containText(removeLineBreakIfAny(messages(s"$prefix.1.common.text", messages(s"$prefix.1.common.linkText.0"))))
-          tariffDetails must containText(messages(s"$prefix.2.common.text"))
+          tariffDetails must containText(removeLineBreakIfAny(messages("tariff.declaration.text", messages(s"$prefix.1.common.linkText.0"))))
+          tariffDetails must containText(messages(s"$prefix.2.common.text").replace("<br><br>", ""))
           tariffDetails must containText(removeLineBreakIfAny(messages(s"$prefix.3.common.text", messages(s"$prefix.3.common.linkText.0"))))
           tariffDetails must containText(removeLineBreakIfAny(messages(s"$prefix.4.common.text", messages(s"$prefix.4.common.linkText.0"))))
         }

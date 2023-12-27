@@ -95,20 +95,13 @@ object ConsignmentReferences extends DeclarationPage {
   override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
     decType match {
       case CLEARANCE =>
-        Seq(
-          TariffContentKey("tariff.declaration.consignmentReferences.1.clearance"),
-          TariffContentKey("tariff.declaration.consignmentReferences.2.clearance")
-        )
+        Seq(TariffContentKey("tariff.declaration.consignmentReferences.clearance"))
       case SUPPLEMENTARY =>
         Seq(
-          TariffContentKey("tariff.declaration.consignmentReferences.1.supplementary"),
-          TariffContentKey("tariff.declaration.consignmentReferences.1.common"),
-          TariffContentKey("tariff.declaration.consignmentReferences.2.common")
+          TariffContentKey("tariff.declaration.consignmentReferences.supplementary"),
+          TariffContentKey("tariff.declaration.consignmentReferences.common")
         )
       case _ =>
-        Seq(
-          TariffContentKey("tariff.declaration.consignmentReferences.1.common"),
-          TariffContentKey("tariff.declaration.consignmentReferences.2.common")
-        )
+        Seq(TariffContentKey("tariff.declaration.consignmentReferences.common"))
     }
 }

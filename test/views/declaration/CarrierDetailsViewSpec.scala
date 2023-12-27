@@ -161,7 +161,7 @@ class CarrierDetailsViewSpec extends AddressViewSpec with PageWithButtonsSpec wi
         val tariffDetails = view.getElementsByClass("govuk-details__text").first
 
         val prefix = "tariff.declaration.carrierAddress"
-        val expectedText = messages(s"$prefix.$declType.text", messages(s"$prefix.$declType.linkText.0"))
+        val expectedText = messages("tariff.declaration.text", messages(s"$prefix.$declType.linkText.0"))
 
         val actualText = removeBlanksIfAnyBeforeDot(tariffDetails.text)
         actualText mustBe removeLineBreakIfAny(expectedText)

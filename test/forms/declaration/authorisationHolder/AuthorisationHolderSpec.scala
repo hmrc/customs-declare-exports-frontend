@@ -29,8 +29,7 @@ import org.scalatest.Inspectors.forAll
 class AuthorisationHolderSpec extends DeclarationPageBaseSpec with JourneyTypeTestRunner with MockTaggedCodes {
 
   override def getCommonTariffKeys(messageKey: String): Seq[TariffContentKey] =
-    if (messageKey.endsWith("addAuthorisationRequired")) List(TariffContentKey(s"${messageKey}.common"))
-    else List(TariffContentKey(s"${messageKey}.1.common"), TariffContentKey(s"${messageKey}.2.common"), TariffContentKey(s"${messageKey}.3.common"))
+    List(TariffContentKey(s"${messageKey}.common"))
 
   private val eoriSource = EoriSource.OtherEori.toString
   private val authorisationTypeCode = correctAuthorisationHolder.authorisationTypeCode.get
@@ -224,13 +223,5 @@ class AuthorisationHolderSpec extends DeclarationPageBaseSpec with JourneyTypeTe
     testTariffContentKeys(AuthorisationHolderRequired, "tariff.declaration.isAuthorisationRequired")
   }
   override def getClearanceTariffKeys(messageKey: String): Seq[TariffContentKey] =
-    messageKey match {
-      case "tariff.declaration.isAuthorisationRequired" =>
-        Seq(
-          TariffContentKey(s"${messageKey}.1.clearance"),
-          TariffContentKey(s"${messageKey}.2.clearance"),
-          TariffContentKey(s"${messageKey}.3.clearance")
-        )
-      case _ => Seq(TariffContentKey(s"${messageKey}.clearance"))
-    }
+    Seq(TariffContentKey(s"${messageKey}.clearance"))
 }

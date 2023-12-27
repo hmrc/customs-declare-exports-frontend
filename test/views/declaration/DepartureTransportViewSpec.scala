@@ -67,12 +67,8 @@ class DepartureTransportViewSpec extends PageWithButtonsSpec with Injector {
 
         val tariffDetails = view.getElementsByClass("govuk-details__text").first.text
 
-        val expectedText = removeLineBreakIfAny(
-          messages(
-            s"tariff.declaration.departureTransport.$expectedKey.text",
-            messages(s"tariff.declaration.departureTransport.$expectedKey.linkText.0")
-          )
-        )
+        val expectedText =
+          removeLineBreakIfAny(messages(s"tariff.declaration.text", messages(s"tariff.declaration.departureTransport.$expectedKey.linkText.0")))
         removeBlanksIfAnyBeforeDot(tariffDetails) mustBe expectedText
       }
 

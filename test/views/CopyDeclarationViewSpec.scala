@@ -91,9 +91,8 @@ class CopyDeclarationViewSpec extends UnitViewSpec with CommonMessages with Stub
         val actualText = removeBlanksIfAnyBeforeDot(tariffDetails.text)
 
         val prefix = "tariff.declaration.consignmentReferences"
-        val expectedText = s"""${if (request.declarationType == SUPPLEMENTARY) messages(s"$prefix.1.supplementary.text") else ""}
-            ${messages(s"$prefix.1.common.text", messages(s"$prefix.1.common.linkText.0"))}
-            ${messages(s"$prefix.2.common.text", messages(s"$prefix.2.common.linkText.0"))}
+        val expectedText = s"""${if (request.declarationType == SUPPLEMENTARY) messages(s"$prefix.supplementary.text") else ""}
+            ${messages(s"$prefix.common.text", messages(s"$prefix.common.linkText.0"), messages(s"$prefix.common.linkText.1"))}
           """
 
         val expectedTextWithNoMargin = removeLineBreakIfAny(removeNewLinesIfAny(expectedText).trim)

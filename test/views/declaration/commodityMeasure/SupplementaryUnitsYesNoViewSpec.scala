@@ -141,7 +141,7 @@ class SupplementaryUnitsYesNoViewSpec extends UnitViewSpec with Injector {
 
           val tariffDetails = view.getElementsByClass("govuk-details__text").first
           removeBlanksIfAnyBeforeDot(tariffDetails.text) mustBe messages(
-            "tariff.declaration.item.supplementaryUnits.common.text",
+            "tariff.declaration.text",
             messages("tariff.declaration.item.supplementaryUnits.common.linkText.0")
           )
         }

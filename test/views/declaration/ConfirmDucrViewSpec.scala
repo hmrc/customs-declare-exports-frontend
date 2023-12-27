@@ -90,10 +90,10 @@ class ConfirmDucrViewSpec extends PageWithButtonsSpec with Injector with MockAut
         val tariffText = view.getElementsByClass("govuk-details__text").get(1)
 
         removeBlanksIfAnyBeforeDot(tariffText.text) mustBe messages(
-          "tariff.declaration.confirmDucr.common.text",
-          messages("tariff.declaration.confirmDucr.common.linkText.0")
+          "tariff.declaration.text",
+          messages("tariff.declaration.traderReference.common.linkText.0")
         )
-        tariffText.child(0) must haveHref(appConfig.tariffGuideUrl("urls.tariff.declaration.confirmDucr.common.0"))
+        tariffText.child(0) must haveHref(appConfig.tariffGuideUrl("urls.tariff.declaration.traderReference.common.0"))
       }
 
       "in a Clearance journey" in {
@@ -103,10 +103,10 @@ class ConfirmDucrViewSpec extends PageWithButtonsSpec with Injector with MockAut
         val tariffText = view.getElementsByClass("govuk-details__text").get(1)
 
         removeBlanksIfAnyBeforeDot(tariffText.text) mustBe messages(
-          "tariff.declaration.confirmDucr.common.text",
-          messages("tariff.declaration.confirmDucr.clearance.linkText.0")
+          "tariff.declaration.text",
+          messages("tariff.declaration.traderReference.clearance.linkText.0")
         )
-        tariffText.child(0) must haveHref(appConfig.tariffGuideUrl("urls.tariff.declaration.confirmDucr.clearance.0"))
+        tariffText.child(0) must haveHref(appConfig.tariffGuideUrl("urls.tariff.declaration.traderReference.clearance.0"))
       }
     }
     checkAllSaveButtonsAreDisplayed(view)

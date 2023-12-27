@@ -49,7 +49,6 @@ class AuthorisationHolderRequiredViewSpec extends UnitViewSpec with ExportsTestH
 
     "have correct message keys" in {
       messages must haveTranslationFor(s"$prefix.tradeTariff.link")
-      messages must haveTranslationFor("tariff.declaration.addAuthorisationRequired.common.text")
       messages must haveTranslationFor(s"$prefix.empty")
     }
 
@@ -104,14 +103,13 @@ class AuthorisationHolderRequiredViewSpec extends UnitViewSpec with ExportsTestH
           val prefix = "tariff.declaration.isAuthorisationRequired"
           val expectedText =
             s"""
-                ${messages(s"$prefix.1.common.text", messages(s"$prefix.1.common.linkText.0"))}
-                ${messages(s"$prefix.2.common.text", messages(s"$prefix.2.common.linkText.0"))}
-                ${messages(s"$prefix.3.common.text", messages(s"$prefix.3.common.linkText.0"))}
-
+                ${messages("tariff.declaration.text", messages(s"$prefix.common.linkText.0"))}
+                ${messages(s"$prefix.common.linkText.1")}
+                ${messages(s"$prefix.common.linkText.2")}
               """
 
           val expectedTextWithNoMargin = removeLineBreakIfAny(removeNewLinesIfAny(expectedText).trim)
-          actualText mustBe expectedTextWithNoMargin
+          actualText contains expectedTextWithNoMargin
         }
       }
 

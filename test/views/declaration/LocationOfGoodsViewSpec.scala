@@ -105,7 +105,7 @@ class LocationOfGoodsViewSpec extends PageWithButtonsSpec with Injector {
           val tariffDetails = view.getElementsByClass("govuk-details__text").last.text
 
           val keyPrefix = s"tariff.declaration.locationOfGoods.$key"
-          val expectedText = removeLineBreakIfAny(messages(s"$keyPrefix.text", messages(s"$keyPrefix.linkText.0")))
+          val expectedText = removeLineBreakIfAny(messages(s"tariff.declaration.text", messages(s"$keyPrefix.linkText.0")))
           removeBlanksIfAnyBeforeDot(tariffDetails) mustBe expectedText
         }
 
@@ -160,7 +160,7 @@ class LocationOfGoodsViewSpec extends PageWithButtonsSpec with Injector {
           val tariffDetails = view.getElementsByClass("govuk-details__text").last.text
 
           val keyPrefix = s"tariff.declaration.locationOfGoods.$key"
-          val expectedText = removeLineBreakIfAny(messages(s"$keyPrefix.text", messages(s"$keyPrefix.linkText.0")))
+          val expectedText = removeLineBreakIfAny(messages("tariff.declaration.text", messages(s"$keyPrefix.linkText.0")))
           removeBlanksIfAnyBeforeDot(tariffDetails) mustBe expectedText
         }
 

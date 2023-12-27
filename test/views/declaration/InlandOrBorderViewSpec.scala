@@ -96,7 +96,7 @@ class InlandOrBorderViewSpec extends PageWithButtonsSpec with Injector {
           val tariffDetails = view.getElementsByClass("govuk-details__text").first
 
           val prefix = "tariff.declaration.inlandOrBorder"
-          val expectedText = messages(s"$prefix.common.text", messages(s"$prefix.common.linkText.0"))
+          val expectedText = messages("tariff.declaration.text", messages(s"$prefix.common.linkText.0"))
           val actualText = removeBlanksIfAnyBeforeDot(tariffDetails.text)
           actualText mustBe removeLineBreakIfAny(expectedText)
         }

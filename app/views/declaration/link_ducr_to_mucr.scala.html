@@ -50,16 +50,11 @@
 
 @mucrDetails = {
     @paragraph(
-        id = Some("link-ducr-to-mucr-hint1"),
-        message = messages("declaration.linkDucrToMucr.details.hint1", externalLink(
-            text = messages("declaration.linkDucrToMucr.details.hint1.link"),
+        id = Some("link-ducr-to-mucr-hint"),
+        message = messages("tariff.declaration.linkDucrToMucr.text", externalLink(
+            text = messages("tariff.declaration.linkDucrToMucr.linkText.0"),
             url = appConfig.notesForMucrConsolidationUrl
         ))
-    )
-
-    @paragraph(
-        id = Some("link-ducr-to-mucr-hint2"),
-        message = messages("declaration.linkDucrToMucr.details.hint2")
     )
 }
 
@@ -93,7 +88,7 @@
         )
 
         @govukDetails(Details(
-            summary = Text(messages("declaration.linkDucrToMucr.details")),
+            summary = Text(messages("tariff.declaration.linkDucrToMucr.caption")),
             content = HtmlContent(mucrDetails)
         ))
 

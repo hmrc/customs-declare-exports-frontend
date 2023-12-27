@@ -122,7 +122,7 @@ object InvoiceAndExchangeRate extends DeclarationPage {
   def form: Form[InvoiceAndExchangeRate] = Form(mapping)
 
   override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
-    List(TariffContentKey("tariff.declaration.totalNumbersOfItems.1.common"), TariffContentKey("tariff.declaration.totalNumbersOfItems.2.common"))
+    List(TariffContentKey("tariff.declaration.totalNumbersOfItems.common"))
 
   private def validateExchangeRate = AdditionalConstraintsMapping(
     optional(text()).transform(_.map(_.toUpperCase), (o: Option[String]) => o),

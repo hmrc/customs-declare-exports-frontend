@@ -52,14 +52,14 @@
 
 @detailsLink1 = @{
     externalLink(
-        text = messages("declaration.type.details.p1.linkText"),
+        text = messages("tariff.declaration.type.linkText.0"),
         url = appConfig.additionalDeclarationType
     )
 }
 
 @detailsLink2 = @{
     externalLink(
-        text = messages("declaration.type.details.p2.linkText"),
+        text = messages("tariff.declaration.type.linkText.1"),
         url = appConfig.simplifiedDeclarationOccasionalUse
     )
 }
@@ -67,10 +67,7 @@
 @detailsText = @{
     HtmlContent(HtmlFormat.fill(List(
         paragraphBody(
-            messages("declaration.type.details.p1", detailsLink1)
-        ),
-        paragraphBody(
-            messages("declaration.type.details.p2", detailsLink2)
+            messages("tariff.declaration.type.text", detailsLink1, detailsLink2)
         )
     )))
 }

@@ -82,7 +82,6 @@ class ConsignorDetailsViewSpec extends AddressViewSpec with Injector with PageWi
       messages must haveTranslationFor("declaration.address.country.error")
       messages must haveTranslationFor("site.save_and_continue")
       messages must haveTranslationFor("tariff.expander.title.clearance")
-      messages must haveTranslationFor("tariff.declaration.consignorAddress.clearance.text")
     }
 
     onClearance { implicit request =>

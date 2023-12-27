@@ -50,7 +50,6 @@ class DeclarantExporterViewSpec extends PageWithButtonsSpec with Injector {
       messages must haveTranslationFor("declaration.declarant.exporter.answer.no")
       messages must haveTranslationFor("declaration.declarant.exporter.answer.no.hint")
       messages must haveTranslationFor("declaration.declarant.exporter.error")
-      messages must haveTranslationFor("tariff.declaration.areYouTheExporter.common.text")
     }
   }
 

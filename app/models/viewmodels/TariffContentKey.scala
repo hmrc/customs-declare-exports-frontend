@@ -27,7 +27,7 @@ case class TariffContentKey(key: String) {
 
   def getTextKey()(implicit messages: Messages): String =
     messages.isDefinedAt(s"$key.text") match {
-      case false => s"$noSpecialisation.text"
+      case false => if (messages.isDefinedAt(s"$noSpecialisation.text")) s"$noSpecialisation.text" else "tariff.declaration.text"
       case _     => s"$key.text"
     }
 
