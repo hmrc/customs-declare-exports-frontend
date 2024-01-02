@@ -23,9 +23,9 @@ import controllers.navigation.Navigator
 import forms.declaration.countries.Countries
 import forms.declaration.countries.Countries.DestinationCountryPage
 import models.DeclarationType._
-import models.requests.JourneyRequest
+import models.ExportsDeclaration
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import services.TaggedAuthCodes
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.WithUnsafeDefaultFormBinding
@@ -62,15 +62,18 @@ class DestinationCountryController @Inject() (
       .bindFromRequest()
       .fold(
         formWithErrors => Future.successful(BadRequest(destinationCountryPage(formWithErrors))),
-        validCountry => updateDeclarationFromRequest(_.updateDestinationCountry(validCountry)).map(_ => redirectToNextPage())
+        validCountry =>
+          updateDeclarationFromRequest(_.updateDestinationCountry(validCountry)).map(declaration =>
+            navigator.continueTo(redirectToNextPage(declaration))
+          )
       )
   }
 
-  private def redirectToNextPage()(implicit request: JourneyRequest[AnyContent]): Result =
-    if (taggedAuthCodes.skipLocationOfGoods(request.cacheModel)) navigator.continueTo(OfficeOfExitController.displayPage)
+  private def redirectToNextPage(declaration: ExportsDeclaration): Call =
+    if (taggedAuthCodes.skipLocationOfGoods(declaration)) OfficeOfExitController.displayPage
     else
-      request.declarationType match {
-        case SUPPLEMENTARY | CLEARANCE          => navigator.continueTo(LocationOfGoodsController.displayPage)
-        case STANDARD | SIMPLIFIED | OCCASIONAL => navigator.continueTo(RoutingCountriesController.displayRoutingQuestion)
+      declaration.`type` match {
+        case SUPPLEMENTARY | CLEARANCE          => LocationOfGoodsController.displayPage
+        case STANDARD | SIMPLIFIED | OCCASIONAL => RoutingCountriesController.displayRoutingQuestion
       }
 }

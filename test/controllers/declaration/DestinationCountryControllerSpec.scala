@@ -21,6 +21,7 @@ import connectors.CodeListConnector
 import controllers.declaration.routes.{LocationOfGoodsController, OfficeOfExitController, RoutingCountriesController}
 import controllers.helpers.TransportSectionHelper.{Guernsey, Jersey}
 import forms.declaration.BorderTransport
+import forms.declaration.ModeOfTransportCode.Maritime
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.SUPPLEMENTARY_EIDR
 import forms.declaration.countries.Country
 import models.DeclarationType._
@@ -165,15 +166,16 @@ class DestinationCountryControllerSpec extends ControllerSpec with MockTaggedCod
       }
     }
 
-    "reset 'Border transport' and 'Transport Country' data" when {
+    "reset the cache for 'Departure Transport', 'Border transport' and 'Transport Country'" when {
       List(STANDARD, SUPPLEMENTARY).zip(List(ModelCountry("Guernsey", Guernsey), ModelCountry("Jersey", Jersey))).foreach {
         case (journey, modelCountry) =>
           s"the 'submitForm' method is invoked and destination country selected is '${modelCountry.countryName}'" in {
             when(mockCodeListConnector.getCountryCodes(any())).thenReturn(ListMap(modelCountry.countryCode -> modelCountry))
 
+            val departureTransport = withDepartureTransport(Maritime, "10", "identifier")
             val borderTransport = withBorderTransport(BorderTransport("type", "number"))
             val transportCountry = withTransportCountry(Some("IT"))
-            withNewCaching(aDeclaration(withType(journey), borderTransport, transportCountry))
+            withNewCaching(aDeclaration(withType(journey), departureTransport, borderTransport, transportCountry))
 
             val formData = Json.obj("countryCode" -> modelCountry.countryCode)
 
@@ -182,6 +184,8 @@ class DestinationCountryControllerSpec extends ControllerSpec with MockTaggedCod
             status(result) mustBe SEE_OTHER
 
             val transport = theCacheModelUpdated.transport
+            transport.meansOfTransportOnDepartureType mustBe None
+            transport.meansOfTransportOnDepartureIDNumber mustBe None
             transport.meansOfTransportCrossingTheBorderType mustBe None
             transport.meansOfTransportCrossingTheBorderIDNumber mustBe None
             transport.transportCrossingTheBorderNationality mustBe None

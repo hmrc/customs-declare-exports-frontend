@@ -27,7 +27,7 @@ import controllers.declaration.routes.{
 import controllers.helpers.InlandOrBorderHelper
 import controllers.helpers.TransportSectionHelper._
 import controllers.routes.RootController
-import forms.declaration.InlandOrBorder
+import forms.declaration.{BorderTransport, InlandOrBorder}
 import forms.declaration.InlandOrBorder.{fieldId, Border, Inland}
 import forms.declaration.ModeOfTransportCode.Maritime
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
@@ -178,7 +178,7 @@ class InlandOrBorderControllerSpec extends ControllerSpec with OptionValues {
             theCacheModelUpdated.locations.inlandOrBorder.value mustBe Border
           }
 
-          "reset the cached value from /inland-transport-details, if any, after a successful bind" in {
+          "reset the cache for /inland-transport-details, if any, after a successful bind" in {
             cacheRequest(additionalType, withInlandModeOfTransportCode(Maritime))
 
             await(controller.submitPage()(postRequest(body)))
@@ -186,6 +186,36 @@ class InlandOrBorderControllerSpec extends ControllerSpec with OptionValues {
             val locations = theCacheModelUpdated.locations
             locations.inlandOrBorder.value mustBe Border
             locations.inlandModeOfTransportCode mustBe None
+          }
+
+          "reset the cache for /border-transport, if any, after a successful bind" in {
+            cacheRequest(additionalType, withBorderTransport(BorderTransport("type", "number")))
+
+            await(controller.submitPage()(postRequest(body)))
+
+            val transport = theCacheModelUpdated.transport
+            transport.meansOfTransportCrossingTheBorderType mustBe None
+            transport.meansOfTransportCrossingTheBorderIDNumber mustBe None
+          }
+
+          "reset the cache for 'Departure Transport', 'Border transport' and 'Transport Country'" when {
+            postalOrFTIModeOfTransportCodes.foreach { maybeModeOfTransportCode =>
+              s"modeOfTransportCode is ${maybeModeOfTransportCode.value}" in {
+                val departureTransport = withDepartureTransport(maybeModeOfTransportCode.value, "10", "identifier")
+                val borderTransport = withBorderTransport(BorderTransport("type", "number"))
+                val transportCountry = withTransportCountry(Some("IT"))
+                cacheRequest(additionalType, departureTransport, borderTransport, transportCountry)
+
+                await(controller.submitPage()(postRequest(body)))
+
+                val transport = theCacheModelUpdated.transport
+                transport.meansOfTransportOnDepartureType mustBe None
+                transport.meansOfTransportOnDepartureIDNumber mustBe None
+                transport.meansOfTransportCrossingTheBorderType mustBe None
+                transport.meansOfTransportCrossingTheBorderIDNumber mustBe None
+                transport.transportCrossingTheBorderNationality mustBe None
+              }
+            }
           }
 
           s"redirect to ${expectedNextPage.url}" in {

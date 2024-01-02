@@ -17,17 +17,12 @@
 package controllers.declaration
 
 import base.ControllerSpec
-import controllers.declaration.routes.{
-  BorderTransportController,
-  DepartureTransportController,
-  ExpressConsignmentController,
-  TransportContainerController,
-  TransportCountryController
-}
+import controllers.declaration.routes._
 import controllers.helpers.TransportSectionHelper.{nonPostalOrFTIModeOfTransportCodes, postalOrFTIModeOfTransportCodes}
 import controllers.routes.RootController
-import forms.declaration.InlandModeOfTransportCode
+import forms.declaration.InlandOrBorder.Border
 import forms.declaration.ModeOfTransportCode._
+import forms.declaration.{BorderTransport, InlandModeOfTransportCode}
 import models.DeclarationType._
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -149,13 +144,21 @@ class InlandTransportDetailsControllerSpec extends ControllerSpec with GivenWhen
 
       postalOrFTIModeOfTransportCodes.foreach { transportMode =>
         s"modeOfTransportCode is $transportMode" should {
-          "reset the cache for transport.transportCrossingTheBorderNationality" in {
-            withNewCaching(aDeclarationAfter(request.cacheModel, withTransportCountry(Some("South Africa"))))
+          "reset the cache for 'Departure Transport', 'Border transport' and 'Transport Country'" in {
+            val departureTransport = withDepartureTransport(Maritime, "10", "identifier")
+            val borderTransport = withBorderTransport(BorderTransport("type", "number"))
+            val transportCountry = withTransportCountry(Some("IT"))
+            withNewCaching(aDeclarationAfter(request.cacheModel, departureTransport, borderTransport, transportCountry))
 
             val body = Json.obj("inlandModeOfTransportCode" -> transportMode.value.value)
             await(controller.submit()(postRequest(body)))
 
-            theCacheModelUpdated.transport.transportCrossingTheBorderNationality mustBe None
+            val transport = theCacheModelUpdated.transport
+            transport.meansOfTransportOnDepartureType mustBe None
+            transport.meansOfTransportOnDepartureIDNumber mustBe None
+            transport.meansOfTransportCrossingTheBorderType mustBe None
+            transport.meansOfTransportCrossingTheBorderIDNumber mustBe None
+            transport.transportCrossingTheBorderNationality mustBe None
           }
         }
       }
@@ -197,19 +200,18 @@ class InlandTransportDetailsControllerSpec extends ControllerSpec with GivenWhen
             thePageNavigatedTo mustBe expectedRedirect
           }
         }
-
       }
-
     }
   }
+
+  val borderTransportUrl = BorderTransportController.displayPage
+  val transportCountryUrl = TransportCountryController.displayPage
 
   onJourney(OCCASIONAL, SIMPLIFIED) { request =>
     "Inland Transport Details Controller on POST" should {
 
       nonPostalOrFTIModeOfTransportCodes.foreach { transportMode =>
-        val expectedRedirect = BorderTransportController.displayPage
-
-        s"redirect to ${expectedRedirect.url}" when {
+        s"redirect to ${borderTransportUrl.url}" when {
           s"transportMode '$transportMode' is selected" in {
             withNewCaching(request.cacheModel)
 
@@ -217,13 +219,27 @@ class InlandTransportDetailsControllerSpec extends ControllerSpec with GivenWhen
             val result = await(controller.submit()(postRequest(body)))
 
             result mustBe aRedirectToTheNextPage
-            thePageNavigatedTo mustBe expectedRedirect
+            thePageNavigatedTo mustBe borderTransportUrl
+          }
+        }
+
+        s"redirect to ${transportCountryUrl.url} and" when {
+          "'Inland or Border' is Border" when {
+            s"transportMode '$transportMode' is selected" in {
+              withNewCaching(aDeclarationAfter(request.cacheModel, withInlandOrBorder(Some(Border))))
+
+              val body = Json.obj("inlandModeOfTransportCode" -> transportMode.value)
+              val result = await(controller.submit()(postRequest(body)))
+
+              result mustBe aRedirectToTheNextPage
+              thePageNavigatedTo mustBe transportCountryUrl
+            }
           }
         }
       }
 
       postalOrFTIModeOfTransportCodes.foreach { transportMode =>
-        val expectedRedirect = TransportCountryController.displayPage
+        val expectedRedirect = ExpressConsignmentController.displayPage
 
         s"redirect to ${expectedRedirect.url}" when {
           s"transportMode '$transportMode' is selected" in {

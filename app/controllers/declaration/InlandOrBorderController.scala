@@ -24,10 +24,10 @@ import controllers.declaration.routes.{
   TransportContainerController
 }
 import controllers.helpers.InlandOrBorderHelper
-import controllers.helpers.TransportSectionHelper.{additionalDeclTypesAllowedOnInlandOrBorder, isPostalOrFTIModeOfTransport}
+import controllers.helpers.TransportSectionHelper._
 import controllers.navigation.Navigator
 import controllers.routes.RootController
-import forms.declaration.InlandOrBorder
+import forms.declaration.{BorderTransport, InlandOrBorder}
 import forms.declaration.InlandOrBorder.{form, Border, Inland}
 import models.DeclarationType.SUPPLEMENTARY
 import models.ExportsDeclaration
@@ -76,19 +76,21 @@ class InlandOrBorderController @Inject() (
 
   private def updateExportsCache(inlandOrBorder: InlandOrBorder)(implicit request: JourneyRequest[AnyContent]): Future[Result] =
     updateDeclarationFromRequest { declaration =>
-      declaration.copy(locations =
-        declaration.locations.copy(
-          inlandOrBorder = Some(inlandOrBorder),
-          inlandModeOfTransportCode = if (inlandOrBorder == Border) None else declaration.locations.inlandModeOfTransportCode
+      val declarationAfter = clearCacheOnSkippingTransportPages(
+        declaration.copy(locations =
+          declaration.locations.copy(
+            inlandOrBorder = Some(inlandOrBorder),
+            inlandModeOfTransportCode = if (inlandOrBorder == Border) None else declaration.locations.inlandModeOfTransportCode
+          )
         )
       )
-    } map { _ =>
-      navigator.continueTo(nextPage(request.cacheModel, inlandOrBorder))
+      if (inlandOrBorder == Border) declarationAfter.updateBorderTransport(BorderTransport("", "")) else declarationAfter
     }
+      .map(declaration => navigator.continueTo(nextPage(declaration, inlandOrBorder)))
 
   private def nextPage(declaration: ExportsDeclaration, inlandOrBorder: InlandOrBorder): Call =
     inlandOrBorder match {
-      case Border if isPostalOrFTIModeOfTransport(declaration.transportLeavingBorderCode) =>
+      case Border if skipTransportPages(declaration) =>
         if (declaration.isType(SUPPLEMENTARY)) TransportContainerController.displayContainerSummary
         else ExpressConsignmentController.displayPage
 

@@ -18,7 +18,7 @@ package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.declaration.routes._
-import controllers.helpers.TransportSectionHelper.{isGuernseyOrJerseyDestination, isPostalOrFTIModeOfTransport}
+import controllers.helpers.TransportSectionHelper.skipTransportPages
 import controllers.navigation.Navigator
 import forms.declaration.DepartureTransport
 import forms.declaration.DepartureTransport.form
@@ -70,11 +70,9 @@ class DepartureTransportController @Inject() (
     submit(verifyFormAndUpdateCache)
   }
 
-  private def submit(fun: () => Future[Result])(implicit request: JourneyRequest[AnyContent]): Future[Result] = {
-    val resetValueAndGotoNextPage = isPostalOrFTI || isGuernseyOrJerseyDestination(request.cacheModel)
-    if (resetValueAndGotoNextPage || isSimplifiedOrOccasional) updateCache(DepartureTransport(None, None)).map(_ => nextPage)
-    else fun()
-  }
+  private def submit(fun: () => Future[Result])(implicit request: JourneyRequest[AnyContent]): Future[Result] =
+    if (!(isSimplifiedOrOccasional || skipTransportPages(request.cacheModel))) fun()
+    else updateCache(DepartureTransport(None, None)).map(_ => nextPage)
 
   private def nextPage(implicit request: JourneyRequest[AnyContent]): Result = {
     val call =
@@ -89,9 +87,4 @@ class DepartureTransportController @Inject() (
 
   private def isSimplifiedOrOccasional(implicit request: JourneyRequest[AnyContent]): Boolean =
     request.isType(SIMPLIFIED) || request.isType(OCCASIONAL)
-
-  private def isPostalOrFTI(implicit request: JourneyRequest[AnyContent]): Boolean =
-    isPostalOrFTIModeOfTransport(request.cacheModel.transportLeavingBorderCode) ||
-      request.cacheModel.`type` != CLEARANCE && isPostalOrFTIModeOfTransport(request.cacheModel.inlandModeOfTransportCode)
-
 }

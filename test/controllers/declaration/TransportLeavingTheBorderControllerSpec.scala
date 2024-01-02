@@ -30,7 +30,7 @@ import forms.declaration.InlandOrBorder.{Border, Inland}
 import forms.declaration.LocationOfGoods.suffixForGVMS
 import forms.declaration.ModeOfTransportCode.{meaningfulModeOfTransportCodes, Maritime, RoRo}
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
-import forms.declaration.{LocationOfGoods, ModeOfTransportCode, TransportLeavingTheBorder}
+import forms.declaration.{BorderTransport, LocationOfGoods, ModeOfTransportCode, TransportLeavingTheBorder}
 import models.DeclarationType._
 import models.declaration.ProcedureCodesData.warehouseRequiredProcedureCodes
 import org.mockito.ArgumentCaptor
@@ -152,13 +152,21 @@ class TransportLeavingTheBorderControllerSpec extends ControllerSpec with Option
 
       postalOrFTIModeOfTransportCodes.foreach { modeOfTransportCode =>
         s"modeOfTransportCode is $modeOfTransportCode" should {
-          "reset the cache for transport.transportCrossingTheBorderNationality" in {
-            withNewCaching(aDeclarationAfter(request.cacheModel, withTransportCountry(Some("South Africa"))))
+          "reset the cache for 'Departure Transport', 'Border transport' and 'Transport Country'" in {
+            val departureTransport = withDepartureTransport(Maritime, "10", "identifier")
+            val borderTransport = withBorderTransport(BorderTransport("type", "number"))
+            val transportCountry = withTransportCountry(Some("IT"))
+            withNewCaching(aDeclarationAfter(request.cacheModel, departureTransport, borderTransport, transportCountry))
 
             val body = Json.obj("transportLeavingTheBorder" -> modeOfTransportCode.value.value)
             await(controller.submitForm()(postRequest(body)))
 
-            theCacheModelUpdated.transport.transportCrossingTheBorderNationality mustBe None
+            val transport = theCacheModelUpdated.transport
+            transport.meansOfTransportOnDepartureType mustBe None
+            transport.meansOfTransportOnDepartureIDNumber mustBe None
+            transport.meansOfTransportCrossingTheBorderType mustBe None
+            transport.meansOfTransportCrossingTheBorderIDNumber mustBe None
+            transport.transportCrossingTheBorderNationality mustBe None
           }
         }
       }

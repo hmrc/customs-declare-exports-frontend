@@ -18,7 +18,7 @@ package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.declaration.routes.WarehouseIdentificationController
-import controllers.helpers.TransportSectionHelper.isPostalOrFTIModeOfTransport
+import controllers.helpers.TransportSectionHelper.{clearCacheOnSkippingTransportPages, isPostalOrFTIModeOfTransport}
 import controllers.helpers.{InlandOrBorderHelper, SupervisingCustomsOfficeHelper}
 import controllers.navigation.Navigator
 import forms.declaration.ModeOfTransportCode.RoRo
@@ -67,7 +67,7 @@ class TransportLeavingTheBorderController @Inject() (
   }
 
   private def nextPage(declaration: ExportsDeclaration): Call =
-    if (declaration.`type` == CLEARANCE || declaration.requiresWarehouseId) WarehouseIdentificationController.displayPage
+    if (declaration.isType(CLEARANCE) || declaration.requiresWarehouseId) WarehouseIdentificationController.displayPage
     else supervisingCustomsOfficeHelper.landOnOrSkipToNextPage(declaration)
 
   private def updateCache(code: TransportLeavingTheBorder)(implicit request: JourneyRequest[_]): Future[ExportsDeclaration] =
@@ -75,11 +75,14 @@ class TransportLeavingTheBorderController @Inject() (
       val transportCrossingTheBorderNationality =
         if (isPostalOrFTIModeOfTransport(code.code)) None else declaration.transport.transportCrossingTheBorderNationality
 
-      declaration.copy(
-        transport = declaration.transport
-          .copy(borderModeOfTransportCode = Some(code), transportCrossingTheBorderNationality = transportCrossingTheBorderNationality),
-        locations = declaration.locations.copy(inlandOrBorder =
-          if (code.code == Some(RoRo)) None else inlandOrBorderHelper.resetInlandOrBorderIfRequired(declaration)
+      clearCacheOnSkippingTransportPages(
+        declaration.copy(
+          transport = declaration.transport
+            .copy(borderModeOfTransportCode = Some(code), transportCrossingTheBorderNationality = transportCrossingTheBorderNationality),
+          locations = declaration.locations.copy(inlandOrBorder =
+            if (code.code == Some(RoRo)) None
+            else inlandOrBorderHelper.resetInlandOrBorderIfRequired(declaration)
+          )
         )
       )
     }

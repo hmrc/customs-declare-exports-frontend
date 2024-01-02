@@ -18,12 +18,14 @@ package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.declaration.routes._
-import controllers.helpers.TransportSectionHelper.isPostalOrFTIModeOfTransport
+import controllers.helpers.TransportSectionHelper.{clearCacheOnSkippingTransportPages, isPostalOrFTIModeOfTransport, skipTransportPages}
 import controllers.navigation.Navigator
 import forms.declaration.InlandModeOfTransportCode._
+import forms.declaration.InlandOrBorder.Border
 import forms.declaration.ModeOfTransportCode.{FixedTransportInstallations, PostalConsignment}
 import forms.declaration.{InlandModeOfTransportCode, ModeOfTransportCode}
 import models.DeclarationType._
+import models.ExportsDeclaration
 import models.requests.JourneyRequest
 import play.api.data.FormError
 import play.api.i18n.I18nSupport
@@ -63,17 +65,13 @@ class InlandTransportDetailsController @Inject() (
       .fold(formWithErrors => Future.successful(BadRequest(inlandTransportDetailsPage(formWithErrors))), validateAndUpdateCache(_))
   }
 
-  private def nextPage(code: InlandModeOfTransportCode)(implicit request: JourneyRequest[AnyContent]): Call =
-    if (!isPostalOrFTIModeOfTransport(code.inlandModeOfTransportCode) && isSimplifiedOrOccasional)
-      BorderTransportController.displayPage
-    else if (!isPostalOrFTIModeOfTransport(code.inlandModeOfTransportCode))
-      DepartureTransportController.displayPage
-    else if (isPostalOrFTIModeOfTransport(code.inlandModeOfTransportCode) && isSimplifiedOrOccasional)
-      TransportCountryController.displayPage
-    else if (request.isType(SUPPLEMENTARY))
-      TransportContainerController.displayContainerSummary
-    else
-      ExpressConsignmentController.displayPage
+  private def nextPage(declaration: ExportsDeclaration): Call =
+    if (skipTransportPages(declaration)) {
+      if (declaration.isType(SUPPLEMENTARY)) TransportContainerController.displayContainerSummary
+      else ExpressConsignmentController.displayPage
+    } else if (!(declaration.isType(SIMPLIFIED) || declaration.isType(OCCASIONAL))) DepartureTransportController.displayPage
+    else if (declaration.isInlandOrBorder(Border)) TransportCountryController.displayPage
+    else BorderTransportController.displayPage
 
   private def returnFormWithErrors(code: InlandModeOfTransportCode, error: String)(implicit request: JourneyRequest[_]): Future[Result] = {
     val messages = messagesApi.preferred(request).messages
@@ -84,14 +82,17 @@ class InlandTransportDetailsController @Inject() (
   private def updateCacheAndGoNextPage(code: InlandModeOfTransportCode)(implicit request: JourneyRequest[AnyContent]): Future[Result] =
     updateDeclarationFromRequest { declaration =>
       val transportCrossingTheBorderNationality =
-        if (isPostalOrFTIModeOfTransport(code.inlandModeOfTransportCode)) None else declaration.transport.transportCrossingTheBorderNationality
+        if (isPostalOrFTIModeOfTransport(code.inlandModeOfTransportCode)) None
+        else declaration.transport.transportCrossingTheBorderNationality
 
-      declaration.copy(
-        transport = declaration.transport.copy(transportCrossingTheBorderNationality = transportCrossingTheBorderNationality),
-        locations = declaration.locations.copy(inlandModeOfTransportCode = Some(code))
+      clearCacheOnSkippingTransportPages(
+        declaration.copy(
+          transport = declaration.transport.copy(transportCrossingTheBorderNationality = transportCrossingTheBorderNationality),
+          locations = declaration.locations.copy(inlandModeOfTransportCode = Some(code))
+        )
       )
-    } map { _ =>
-      navigator.continueTo(nextPage(code))
+    } map { declaration =>
+      navigator.continueTo(nextPage(declaration))
     }
 
   private def validateAndUpdateCache(code: InlandModeOfTransportCode)(implicit request: JourneyRequest[AnyContent]): Future[Result] =
@@ -115,7 +116,4 @@ class InlandTransportDetailsController @Inject() (
 
       case _ => None
     }
-
-  private def isSimplifiedOrOccasional(implicit request: JourneyRequest[AnyContent]): Boolean =
-    request.isType(SIMPLIFIED) || request.isType(OCCASIONAL)
 }

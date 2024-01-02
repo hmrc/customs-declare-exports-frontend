@@ -18,10 +18,10 @@ package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.declaration.routes.TransportCountryController
-import controllers.helpers.TransportSectionHelper.{isGuernseyOrJerseyDestination, isPostalOrFTIModeOfTransport}
+import controllers.helpers.TransportSectionHelper.skipTransportPages
 import controllers.navigation.Navigator
 import forms.declaration.BorderTransport
-import models.DeclarationType._
+import models.DeclarationType.{allDeclarationTypesExcluding, CLEARANCE}
 import models.ExportsDeclaration
 import models.requests.JourneyRequest
 import play.api.i18n.I18nSupport
@@ -46,7 +46,7 @@ class BorderTransportController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithUnsafeDefaultFormBinding {
 
-  private val validTypes = Seq(STANDARD, OCCASIONAL, SUPPLEMENTARY, SIMPLIFIED)
+  private val validTypes = allDeclarationTypesExcluding(CLEARANCE)
 
   val displayPage: Action[AnyContent] = (authenticate andThen journeyType(validTypes)).async { implicit request =>
     val pageToDisplay = () => {
@@ -71,14 +71,8 @@ class BorderTransportController @Inject() (
     submit(verifyFormAndUpdateCache)
   }
 
-  private def submit(fun: () => Future[Result])(implicit request: JourneyRequest[AnyContent]): Future[Result] = {
-    val declaration = request.cacheModel
-    val isPostalOrFTI =
-      isPostalOrFTIModeOfTransport(declaration.transportLeavingBorderCode) ||
-        isPostalOrFTIModeOfTransport(declaration.inlandModeOfTransportCode)
-    val resetValueAndGotoNextPage = isPostalOrFTI || isGuernseyOrJerseyDestination(declaration)
-    if (resetValueAndGotoNextPage) updateCache(BorderTransport("", "")).map(_ => nextPage) else fun()
-  }
+  private def submit(fun: () => Future[Result])(implicit request: JourneyRequest[AnyContent]): Future[Result] =
+    if (skipTransportPages(request.cacheModel)) updateCache(BorderTransport("", "")).map(_ => nextPage) else fun()
 
   private def nextPage(implicit r: JourneyRequest[AnyContent]): Result =
     navigator.continueTo(TransportCountryController.displayPage)

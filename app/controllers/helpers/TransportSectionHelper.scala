@@ -16,10 +16,10 @@
 
 package controllers.helpers
 
-import forms.declaration.ModeOfTransportCode
+import forms.declaration.{BorderTransport, DepartureTransport, ModeOfTransportCode, TransportCountry}
 import forms.declaration.ModeOfTransportCode.{meaningfulModeOfTransportCodes, FixedTransportInstallations, PostalConsignment}
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
-import models.DeclarationType.{STANDARD, SUPPLEMENTARY}
+import models.DeclarationType.{CLEARANCE, STANDARD, SUPPLEMENTARY}
 import models.ExportsDeclaration
 
 object TransportSectionHelper {
@@ -47,9 +47,22 @@ object TransportSectionHelper {
 
   private val journeysToTestOnGuernseyOrJersey = List(STANDARD, SUPPLEMENTARY)
 
+  def clearCacheOnSkippingTransportPages(declaration: ExportsDeclaration): ExportsDeclaration =
+    if (!skipTransportPages(declaration)) declaration
+    else
+      declaration
+        .updateDepartureTransport(DepartureTransport(None, None))
+        .updateBorderTransport(BorderTransport("", ""))
+        .updateTransportCountry(TransportCountry(None))
+
   def isGuernseyOrJerseyDestination(declaration: ExportsDeclaration): Boolean =
     declaration.locations.destinationCountry.map(_.code.getOrElse("")) match {
       case Some(Guernsey) | Some(Jersey) => journeysToTestOnGuernseyOrJersey.contains(declaration.`type`)
       case _                             => false
     }
+
+  def skipTransportPages(declaration: ExportsDeclaration): Boolean =
+    isPostalOrFTIModeOfTransport(declaration.transportLeavingBorderCode) ||
+      declaration.`type` != CLEARANCE && isPostalOrFTIModeOfTransport(declaration.inlandModeOfTransportCode) ||
+      isGuernseyOrJerseyDestination(declaration)
 }

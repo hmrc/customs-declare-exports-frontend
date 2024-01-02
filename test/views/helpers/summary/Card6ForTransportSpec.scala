@@ -19,6 +19,7 @@ package views.helpers.summary
 import base.{Injector, MockTransportCodeService}
 import controllers.declaration.routes._
 import forms.common.YesNoAnswer.YesNoAnswers
+import forms.declaration.InlandOrBorder.Border
 import forms.declaration.ModeOfTransportCode.Maritime
 import forms.declaration._
 import models.declaration.Container
@@ -28,14 +29,14 @@ import views.declaration.spec.UnitViewSpec
 class Card6ForTransportSpec extends UnitViewSpec with ExportsTestHelper with Injector {
 
   private val declaration = aDeclaration(
-    withDepartureTransport(ModeOfTransportCode.Maritime, "10", "identifier"),
+    withDepartureTransport(Maritime, "10", "identifier"),
     withBorderTransport("11", "borderId"),
     withContainerData(Seq.empty: _*),
     withTransportPayment(Some(TransportPayment("A"))),
     withWarehouseIdentification(Some(WarehouseIdentification(Some("12345")))),
     withSupervisingCustomsOffice(Some(SupervisingCustomsOffice(Some("23456")))),
-    withInlandOrBorder(Some(InlandOrBorder.Border)),
-    withInlandModeOfTransportCode(ModeOfTransportCode.Maritime),
+    withInlandOrBorder(Some(Border)),
+    withInlandModeOfTransportCode(Maritime),
     withTransportCountry(Some("Some country"))
   )
 

@@ -269,8 +269,7 @@ trait ExportsDeclarationBuilder {
       )
     )
 
-  val withoutDepartureTransport: ExportsDeclarationModifier = declaration =>
-    declaration.copy(transport = declaration.transport.copy(expressConsignment = No, transportPayment = None))
+  val withoutDepartureTransport: ExportsDeclarationModifier = declaration => declaration.updateDepartureTransport(DepartureTransport(None, None))
 
   def withConsignmentReferences(ducr: String = DUCR, lrn: String = LRN.lrn): ExportsDeclarationModifier =
     withConsignmentReferences(ConsignmentReferences(Some(Ducr(ducr)), Some(Lrn(lrn))))
