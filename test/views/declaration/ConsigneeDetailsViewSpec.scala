@@ -80,8 +80,6 @@ class ConsigneeDetailsViewSpec extends AddressViewSpec with PageWithButtonsSpec 
       messages must haveTranslationFor("declaration.address.country.empty")
       messages must haveTranslationFor("declaration.address.country.error")
       messages must haveTranslationFor("site.save_and_continue")
-      messages must haveTranslationFor("tariff.declaration.consignmentReferences.1.common.text")
-      messages must haveTranslationFor("tariff.declaration.consigneeDetails.common.text")
     }
 
     onEveryDeclarationJourney() { implicit request =>

@@ -23,7 +23,7 @@ import models.viewmodels.TariffContentKey
 object ConfirmDucr extends DeclarationPage {
   override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
     decType match {
-      case CLEARANCE => Seq(TariffContentKey("tariff.declaration.confirmDucr.clearance"))
+      case CLEARANCE => Seq(TariffContentKey("tariff.declaration.traderReference.clearance"))
       case _         => Seq(TariffContentKey("tariff.declaration.traderReference.common"))
     }
 }

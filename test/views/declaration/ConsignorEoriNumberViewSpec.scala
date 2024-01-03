@@ -59,7 +59,6 @@ class ConsignorEoriNumberViewSpec extends PageWithButtonsSpec with ExportsTestHe
         messages must haveTranslationFor("declaration.consignorEori.title")
         messages must haveTranslationFor("declaration.consignorEori.eori.label")
         messages must haveTranslationFor("declaration.consignorEori.hasEori.empty")
-        messages must haveTranslationFor("tariff.declaration.consignorEoriNumber.clearance.text")
       }
 
       "display page title" in {

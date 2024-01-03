@@ -23,5 +23,5 @@ import models.viewmodels.TariffContentKey
 object InvoiceAndExchangeRateChoice extends DeclarationPage {
 
   override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
-    List(TariffContentKey("tariff.declaration.totalNumbersOfItems.1.common"))
+    List(TariffContentKey("tariff.declaration.totalNumbersOfItems.common"))
 }

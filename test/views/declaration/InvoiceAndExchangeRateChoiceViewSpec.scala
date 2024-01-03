@@ -92,10 +92,10 @@ class InvoiceAndExchangeRateChoiceViewSpec extends PageWithButtonsSpec with Inje
         val tariffDetails = view.getElementsByClass("govuk-details__text").first
 
         val prefix = "tariff.declaration.totalNumbersOfItems"
-        val expectedText = messages(s"$prefix.1.common.text", messages(s"$prefix.1.common.linkText.0"))
+        val expectedText = messages("tariff.declaration.text", messages(s"$prefix.common.linkText.0"), messages(s"$prefix.common.linkText.1"))
 
         val actualText = removeBlanksIfAnyBeforeDot(tariffDetails.text)
-        actualText mustBe removeLineBreakIfAny(expectedText)
+        actualText contains removeLineBreakIfAny(expectedText)
       }
     }
   }

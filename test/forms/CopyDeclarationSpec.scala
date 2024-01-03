@@ -157,13 +157,13 @@ class CopyDeclarationSpec extends DeclarationPageBaseSpec with ScalaFutures {
   }
 
   override def getCommonTariffKeys(messageKey: String): Seq[TariffContentKey] =
-    Seq(TariffContentKey(s"${messageKey}.1.common"), TariffContentKey(s"${messageKey}.2.common"))
+    Seq(TariffContentKey(s"${messageKey}.common"))
 
   override def getClearanceTariffKeys(messageKey: String): Seq[TariffContentKey] =
-    Seq(TariffContentKey(s"${messageKey}.1.clearance"), TariffContentKey(s"${messageKey}.2.clearance"))
+    Seq(TariffContentKey(s"${messageKey}.clearance"))
 
   override def getSupplementaryTariffKeys(messageKey: String): Seq[TariffContentKey] =
-    Seq(TariffContentKey(s"${messageKey}.1.supplementary"), TariffContentKey(s"${messageKey}.1.common"), TariffContentKey(s"${messageKey}.2.common"))
+    Seq(TariffContentKey(s"${messageKey}.supplementary"), TariffContentKey(s"${messageKey}.common"))
 }
 
 object CopyDeclarationSpec {

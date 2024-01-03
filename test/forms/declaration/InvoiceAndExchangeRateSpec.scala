@@ -25,7 +25,7 @@ import play.api.data.FormError
 class InvoiceAndExchangeRateSpec extends DeclarationPageBaseSpec {
 
   override def getCommonTariffKeys(messageKey: String): Seq[TariffContentKey] =
-    List(TariffContentKey(s"${messageKey}.1.common"), TariffContentKey(s"${messageKey}.2.common"))
+    List(TariffContentKey(s"${messageKey}.common"))
 
   private def mapTo(formData: Option[String], fieldName: String) =
     formData.map(r => Map(fieldName -> r)).getOrElse(Map.empty[String, String])

@@ -21,7 +21,6 @@ import base.TestHelper.createRandomAlphanumericString
 import config.AppConfig
 import controllers.declaration.routes
 import forms.declaration.Mucr
-import models.DeclarationType.{CLEARANCE, OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import org.scalatest.Assertion
@@ -98,31 +97,17 @@ class MucrViewSpec extends UnitViewSpec with CommonMessages with Injector {
       }
     }
 
-    "display the expected tariff details" when {
+    "display the expected tariff details" in {
 
-      onJourney(STANDARD, SIMPLIFIED, OCCASIONAL, SUPPLEMENTARY) { implicit request =>
-        val view = createView()
-        val tariffTitle = view.getElementsByClass("govuk-details__summary-text")
-        tariffTitle.first must containMessage("tariff.expander.title.common")
+      val view = createView()
+      val tariffTitle = view.getElementsByClass("govuk-details__summary-text")
+      tariffTitle.first must containMessage("tariff.expander.title.common")
 
-        val tariffDetails = view.getElementsByClass("govuk-details__text").first
-        removeBlanksIfAnyBeforeDot(tariffDetails.text) mustBe messages(
-          "tariff.declaration.mucr.common.text",
-          messages("tariff.declaration.mucr.common.linkText.0")
-        )
-      }
-
-      onJourney(CLEARANCE) { implicit request =>
-        val view = createView()
-        val tariffTitle = view.getElementsByClass("govuk-details__summary-text")
-        tariffTitle.first must containMessage("tariff.expander.title.clearance")
-
-        val tariffDetails = view.getElementsByClass("govuk-details__text").first
-        removeBlanksIfAnyBeforeDot(tariffDetails.text) mustBe messages(
-          "tariff.declaration.mucr.common.text",
-          messages("tariff.declaration.mucr.common.linkText.0")
-        )
-      }
+      val tariffDetails = view.getElementsByClass("govuk-details__text").first
+      removeBlanksIfAnyBeforeDot(tariffDetails.text) mustBe messages(
+        "tariff.declaration.mucr.common.text",
+        messages("tariff.declaration.mucr.common.linkText.0")
+      ).replace("<br><br>", " ")
     }
   }
 }

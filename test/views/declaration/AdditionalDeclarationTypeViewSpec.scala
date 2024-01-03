@@ -68,7 +68,7 @@ class AdditionalDeclarationTypeViewSpec extends UnitViewSpec with CommonMessages
           val tariffDetails = view.getElementsByClass("govuk-details__text").last.text
 
           val expectedText =
-            removeLineBreakIfAny(messages(s"tariff.declaration.type.$expectedKey.text", messages(s"tariff.declaration.type.$expectedKey.linkText.0")))
+            removeLineBreakIfAny(messages("tariff.declaration.text", messages(s"tariff.declaration.type.$expectedKey.linkText.0")))
           removeBlanksIfAnyBeforeDot(tariffDetails) mustBe expectedText
         }
 

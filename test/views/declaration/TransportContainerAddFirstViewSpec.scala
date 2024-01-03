@@ -97,9 +97,9 @@ class TransportContainerAddFirstViewSpec
       val tariffText = view.getElementsByClass("govuk-details__text").get(0)
 
       removeBlanksIfAnyBeforeDot(tariffText.text) mustBe removeLineBreakIfAny(
-        messages("tariff.declaration.container.common.text", messages("tariff.declaration.container.common.linkText.0"))
+        messages("tariff.declaration.text", messages("tariff.declaration.container.common.linkText.0"))
       )
-      tariffText.child(1) must haveHref(appConfig.tariffGuideUrl("urls.tariff.declaration.container.common.0"))
+      tariffText.child(0) must haveHref(appConfig.tariffGuideUrl("urls.tariff.declaration.container.common.0"))
     }
 
     checkAllSaveButtonsAreDisplayed(view)
@@ -170,8 +170,8 @@ class TransportContainerAddFirstViewSpec
           messages("tariff.declaration.container.clearance.linkText.1")
         )
       )
-      tariffText.child(1) must haveHref(appConfig.tariffGuideUrl("urls.tariff.declaration.container.clearance.0"))
-      tariffText.child(3) must haveHref(appConfig.tariffGuideUrl("urls.tariff.declaration.container.clearance.1"))
+      tariffText.child(0) must haveHref(appConfig.tariffGuideUrl("urls.tariff.declaration.container.clearance.0"))
+      tariffText.child(1) must haveHref(appConfig.tariffGuideUrl("urls.tariff.declaration.container.clearance.1"))
     }
   }
 

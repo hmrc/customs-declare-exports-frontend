@@ -63,8 +63,8 @@ object Lrn extends DeclarationPage {
 
   override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
     decType match {
-      case CLEARANCE => Seq(TariffContentKey("tariff.declaration.lrn.1.clearance"))
+      case CLEARANCE => Seq(TariffContentKey("tariff.declaration.lrn.clearance"))
       case _ =>
-        Seq(TariffContentKey("tariff.declaration.lrn.1.common"))
+        Seq(TariffContentKey("tariff.declaration.lrn.common"))
     }
 }

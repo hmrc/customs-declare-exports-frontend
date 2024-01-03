@@ -135,14 +135,10 @@ class PackageInformationSpec extends UnitWithMocksSpec with JourneyTypeTestRunne
   }
 
   override def getCommonTariffKeys(messageKey: String): Seq[TariffContentKey] =
-    Seq(TariffContentKey(s"${messageKey}.1.common"), TariffContentKey(s"${messageKey}.2.common"), TariffContentKey(s"${messageKey}.3.common"))
+    Seq(TariffContentKey(s"${messageKey}.common"))
 
   override def getClearanceTariffKeys(messageKey: String): Seq[TariffContentKey] =
-    Seq(
-      TariffContentKey(s"${messageKey}.1.clearance"),
-      TariffContentKey(s"${messageKey}.2.clearance"),
-      TariffContentKey(s"${messageKey}.3.clearance")
-    )
+    Seq(TariffContentKey(s"${messageKey}.clearance"))
 
   "PackageInformation" when {
     testTariffContentKeys(PackageInformation, "tariff.declaration.item.packageInformation")

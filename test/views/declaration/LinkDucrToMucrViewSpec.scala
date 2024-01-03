@@ -84,17 +84,15 @@ class LinkDucrToMucrViewSpec extends UnitViewSpec with CommonMessages with Injec
 
       "display the 'MUCR consolidation' details" in {
         val detailsTitle = view.getElementsByClass("govuk-details__summary-text").first.text
-        detailsTitle mustBe messages("declaration.linkDucrToMucr.details")
+        detailsTitle mustBe messages("tariff.declaration.linkDucrToMucr.caption")
 
-        val detailsHint1 = view.getElementById("link-ducr-to-mucr-hint1")
+        val detailsHint1 = view.getElementById("link-ducr-to-mucr-hint")
         detailsHint1.child(0) must haveHref(appConfig.notesForMucrConsolidationUrl)
 
         removeBlanksIfAnyBeforeDot(detailsHint1.text) mustBe messages(
-          "declaration.linkDucrToMucr.details.hint1",
-          messages("declaration.linkDucrToMucr.details.hint1.link")
-        )
-
-        view.getElementById("link-ducr-to-mucr-hint2").text mustBe messages("declaration.linkDucrToMucr.details.hint2")
+          "tariff.declaration.linkDucrToMucr.text",
+          messages("tariff.declaration.linkDucrToMucr.linkText.0")
+        ).replace("<br><br>", " ")
       }
     }
 

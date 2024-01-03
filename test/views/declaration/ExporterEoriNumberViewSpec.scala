@@ -60,10 +60,6 @@ class ExporterEoriNumberViewSpec extends PageWithButtonsSpec with ExportsTestHel
         messages must haveTranslationFor("declaration.exporterEori.title")
         messages must haveTranslationFor("declaration.exporterEori.eori.label")
         messages must haveTranslationFor("declaration.exporterEori.hasEori.empty")
-
-        val titleKey = "tariff.declaration.areYouTheExporter.common.text"
-
-        messages must haveTranslationFor(titleKey)
       }
 
       "display page title" in {

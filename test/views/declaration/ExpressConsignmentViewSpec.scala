@@ -191,9 +191,7 @@ class ExpressConsignmentViewSpec extends UnitViewSpec with CommonMessages with I
     val tariffTitle = view.getElementsByClass("govuk-details__summary-text")
     tariffTitle.first must containMessage(s"tariff.expander.title.$key")
 
-    val expected = removeLineBreakIfAny(
-      messages(s"tariff.declaration.expressConsignment.$key.text", messages(s"tariff.declaration.expressConsignment.$key.linkText.0"))
-    )
+    val expected = removeLineBreakIfAny(messages("tariff.declaration.text", messages(s"tariff.declaration.expressConsignment.$key.linkText.0")))
 
     val tariffDetails = view.getElementsByClass("govuk-details__text").first
     removeBlanksIfAnyBeforeDot(tariffDetails.text) mustBe expected

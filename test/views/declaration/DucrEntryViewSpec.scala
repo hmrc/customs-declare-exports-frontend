@@ -138,7 +138,7 @@ class DucrEntryViewSpec extends PageWithButtonsSpec with Injector {
         val tariffDetails = view.getElementsByClass("govuk-details__text").first
 
         val prefix = "tariff.declaration.ducr"
-        val expectedText = messages(s"$prefix.$key.text", messages(s"$prefix.$key.linkText.0"))
+        val expectedText = messages("tariff.declaration.text", messages(s"$prefix.$key.linkText.0"))
         val actualText = removeBlanksIfAnyBeforeDot(tariffDetails.text)
         actualText mustBe removeLineBreakIfAny(expectedText)
       }

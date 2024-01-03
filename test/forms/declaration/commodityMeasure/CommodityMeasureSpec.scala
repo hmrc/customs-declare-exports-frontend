@@ -116,10 +116,10 @@ class CommodityMeasureSpec extends UnitSpec with DeclarationPageBaseSpec {
   }
 
   override def getCommonTariffKeys(messageKey: String): Seq[TariffContentKey] =
-    Seq(TariffContentKey(s"${messageKey}.1.common"), TariffContentKey(s"${messageKey}.2.common"))
+    Seq(TariffContentKey(s"${messageKey}.common"))
 
   override def getClearanceTariffKeys(messageKey: String): Seq[TariffContentKey] =
-    Seq(TariffContentKey(s"${messageKey}.1.clearance"), TariffContentKey(s"${messageKey}.2.clearance"))
+    Seq(TariffContentKey(s"${messageKey}.clearance"))
 
   "CommodityMeasure" when {
     testTariffContentKeys(CommodityMeasure, "tariff.declaration.item.commodityMeasure")

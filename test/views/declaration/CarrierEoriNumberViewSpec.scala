@@ -48,7 +48,6 @@ class CarrierEoriNumberViewSpec extends UnitViewSpec with CommonMessages with Ex
 
       "have proper messages for labels" in {
         messages must haveTranslationFor("declaration.carrierEori.hasEori.empty")
-        messages must haveTranslationFor("tariff.declaration.locationOfGoods.common.text")
       }
 
       "display 'Back' button that links to 'Exporter Details' page" in {
@@ -112,7 +111,7 @@ class CarrierEoriNumberViewSpec extends UnitViewSpec with CommonMessages with Ex
         val tariffDetails = view.getElementsByClass("govuk-details__text").first
 
         val prefix = "tariff.declaration.carrierEoriNumber"
-        val expectedText = messages(s"$prefix.$declType.text", messages(s"$prefix.$declType.linkText.0"))
+        val expectedText = messages("tariff.declaration.text", messages(s"$prefix.$declType.linkText.0"))
 
         val actualText = removeBlanksIfAnyBeforeDot(tariffDetails.text)
         actualText mustBe removeLineBreakIfAny(expectedText)
