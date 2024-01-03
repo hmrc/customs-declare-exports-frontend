@@ -18,6 +18,7 @@ package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.declaration.routes.PackageInformationSummaryController
+import controllers.helpers.ItemHelper.journeysOnLowValue
 import controllers.navigation.Navigator
 import controllers.routes.RootController
 import forms.declaration.StatisticalValue
@@ -46,7 +47,6 @@ class StatisticalValueController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithUnsafeDefaultFormBinding {
 
-  val journeysOnLowValue = List(OCCASIONAL, SIMPLIFIED)
   val validJourneys = List(STANDARD, SUPPLEMENTARY) ::: journeysOnLowValue
 
   def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType(validJourneys)) { implicit request =>

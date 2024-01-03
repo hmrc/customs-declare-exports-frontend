@@ -38,12 +38,12 @@ trait CacheDependentNavigators {
   protected def nactCodeFirstPreviousPage(cacheModel: ExportsDeclaration, itemId: String): Call =
     cacheModel.natureOfTransaction match {
       case Some(NatureOfTransaction(`Sale`) | NatureOfTransaction(`BusinessPurchase`)) => routes.ZeroRatedForVatController.displayPage(itemId)
-      case _                                                                           => routes.TaricCodeSummaryController.displayPage(itemId)
+      case _                                                                           => cusCodeOrDangerousGoodsPage(cacheModel, itemId)
     }
 
   protected def nactCodePreviousPageForSimplified(cacheModel: ExportsDeclaration, itemId: String): Call =
     if (cacheModel.isLowValueDeclaration(itemId)) routes.ZeroRatedForVatController.displayPage(itemId)
-    else routes.TaricCodeSummaryController.displayPage(itemId)
+    else cusCodeOrDangerousGoodsPage(cacheModel, itemId)
 
   protected def packageInformationPreviousPageForSimplified(cacheModel: ExportsDeclaration, itemId: String): Call =
     if (cacheModel.isLowValueDeclaration(itemId)) routes.StatisticalValueController.displayPage(itemId)
@@ -263,7 +263,7 @@ trait CacheDependentNavigators {
   protected def containerFirstPreviousPageOnSupplementary(cacheModel: ExportsDeclaration): Call =
     expressConsignmentPreviousPage(cacheModel)
 
-  protected def additionalTaricCodesPreviousPage(cacheModel: ExportsDeclaration, itemId: String): Call =
+  protected def cusCodeOrDangerousGoodsPage(cacheModel: ExportsDeclaration, itemId: String): Call =
     if (cacheModel.isCommodityCodeOfItemPrefixedWith(itemId, CommodityDetails.commodityCodeChemicalPrefixes))
       routes.CusCodeController.displayPage(itemId)
     else

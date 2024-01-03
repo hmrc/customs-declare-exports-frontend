@@ -17,7 +17,7 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.declaration.routes.TaricCodeSummaryController
+import controllers.helpers.ItemHelper.cusCodeAndDangerousGoodsNextPage
 import controllers.navigation.Navigator
 import forms.declaration.CusCode
 import forms.declaration.CusCode.form
@@ -25,7 +25,7 @@ import models.DeclarationType._
 import models.ExportsDeclaration
 import models.requests.JourneyRequest
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.WithUnsafeDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
@@ -36,7 +36,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class CusCodeController @Inject() (
   authenticate: AuthAction,
-  journeyType: JourneyAction,
+  journeyAction: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
   navigator: Navigator,
   mcc: MessagesControllerComponents,
@@ -46,7 +46,7 @@ class CusCodeController @Inject() (
 
   val validTypes = Seq(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL)
 
-  def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
+  def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyAction(validTypes)) { implicit request =>
     val frm = form.withSubmissionErrors
     request.cacheModel.itemBy(itemId).flatMap(_.cusCode) match {
       case Some(cusCode) => Ok(cusCodePage(itemId, frm.fill(cusCode)))
@@ -54,22 +54,18 @@ class CusCodeController @Inject() (
     }
   }
 
-  def submitForm(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def submitForm(itemId: String): Action[AnyContent] = (authenticate andThen journeyAction(validTypes)).async { implicit request =>
     form
       .bindFromRequest()
       .fold(
         formWithErrors => Future.successful(BadRequest(cusCodePage(itemId, formWithErrors))),
         validForm =>
-          updateExportsCache(itemId, validForm).map { _ =>
-            navigator.continueTo(nextPage(itemId, request.declarationType))
+          updateExportsCache(itemId, validForm).map { declaration =>
+            navigator.continueTo(cusCodeAndDangerousGoodsNextPage(declaration, itemId))
           }
       )
   }
 
   private def updateExportsCache(itemId: String, updatedItem: CusCode)(implicit request: JourneyRequest[AnyContent]): Future[ExportsDeclaration] =
     updateDeclarationFromRequest(_.updatedItem(itemId, item => item.copy(cusCode = Some(updatedItem))))
-
-  def nextPage(itemId: String, declarationType: DeclarationType): Call =
-    if (declarationType == CLEARANCE) routes.NactCodeSummaryController.displayPage(itemId)
-    else TaricCodeSummaryController.displayPage(itemId)
 }

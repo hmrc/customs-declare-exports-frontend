@@ -29,7 +29,6 @@ import forms.declaration.{
   NactCode,
   PackageInformation,
   StatisticalValue,
-  TaricCode,
   UNDangerousGoodsCode
 }
 import forms.declaration.additionaldocuments.{AdditionalDocument, DocumentWriteOff}
@@ -248,68 +247,6 @@ class ExportItemSpec extends UnitWithMocksSpec with ExportsItemBuilder {
         item.createDiff(item.copy(cusCode = Some(originalValue)), baseFieldPointer) mustBe Seq(
           constructAlteredField(fieldPointer, originalValue, item.cusCode.get)
         )
-      }
-
-      val taricCodes = List(TaricCode("taricCodeOne"), TaricCode("taricCodeTwo"), TaricCode("taricCodeThree"))
-
-      "when taricCodes are present but not equal" in {
-        val fieldPointer = s"$baseFieldPointer.${TaricCode.pointer}"
-        withClue("original taricCodes are not present") {
-          val item = ExportItem("latestId", taricCodes = Some(taricCodes))
-          item.createDiff(item.copy(taricCodes = None), baseFieldPointer) mustBe Seq(
-            constructAlteredField(s"${fieldPointer}", None, Some(Seq(taricCodes(0), taricCodes(1), taricCodes(2))))
-          )
-        }
-
-        withClue("this taricCodes are not present") {
-          val item = ExportItem("latestId", taricCodes = None)
-          item.createDiff(item.copy(taricCodes = Some(taricCodes)), baseFieldPointer) mustBe Seq(
-            constructAlteredField(s"${fieldPointer}", Some(Seq(taricCodes(0), taricCodes(1), taricCodes(2))), None)
-          )
-        }
-
-        withClue("original taricCodes are present but empty") {
-          val item = ExportItem("latestId", taricCodes = Some(taricCodes))
-          item.createDiff(item.copy(taricCodes = Some(List.empty)), baseFieldPointer) mustBe Seq(
-            constructAlteredField(s"${fieldPointer}.#1", None, Some(taricCodes(0))),
-            constructAlteredField(s"${fieldPointer}.#2", None, Some(taricCodes(1))),
-            constructAlteredField(s"${fieldPointer}.#3", None, Some(taricCodes(2)))
-          )
-        }
-
-        withClue("this taricCodes are present but empty") {
-          val item = ExportItem("latestId", taricCodes = Some(List.empty))
-          item.createDiff(item.copy(taricCodes = Some(taricCodes)), baseFieldPointer) mustBe Seq(
-            constructAlteredField(s"${fieldPointer}.#1", Some(taricCodes(0)), None),
-            constructAlteredField(s"${fieldPointer}.#2", Some(taricCodes(1)), None),
-            constructAlteredField(s"${fieldPointer}.#3", Some(taricCodes(2)), None)
-          )
-        }
-
-        withClue("both taricCodes contain different number of elements") {
-          val item = ExportItem("latestId", taricCodes = Some(taricCodes.drop(1)))
-          item.createDiff(item.copy(taricCodes = Some(taricCodes)), baseFieldPointer) mustBe Seq(
-            constructAlteredField(s"${fieldPointer}.#1", Some(taricCodes(0)), Some(taricCodes(1))),
-            constructAlteredField(s"${fieldPointer}.#2", Some(taricCodes(1)), Some(taricCodes(2))),
-            constructAlteredField(s"${fieldPointer}.#3", Some(taricCodes(2)), None)
-          )
-        }
-
-        withClue("both taricCodes contain same elements but in different order") {
-          val item = ExportItem("latestId", taricCodes = Some(taricCodes))
-          item.createDiff(item.copy(taricCodes = Some(taricCodes.reverse)), baseFieldPointer) mustBe Seq(
-            constructAlteredField(s"${fieldPointer}.#1", Some(taricCodes(2)), Some(taricCodes(0))),
-            constructAlteredField(s"${fieldPointer}.#3", Some(taricCodes(0)), Some(taricCodes(2)))
-          )
-        }
-
-        withClue("taricCodes contain elements with different values") {
-          val newValue = TaricCode("taricCodeFour")
-          val item = ExportItem("latestId", taricCodes = Some(List(newValue) ++ taricCodes.drop(1)))
-          item.createDiff(item.copy(taricCodes = Some(taricCodes)), baseFieldPointer) mustBe Seq(
-            constructAlteredField(s"${fieldPointer}.#1", Some(taricCodes(0)), Some(newValue))
-          )
-        }
       }
 
       val nactCodes = List(NactCode("nactCodeOne"), NactCode("nactCodeTwo"), NactCode("nactCodeThree"))

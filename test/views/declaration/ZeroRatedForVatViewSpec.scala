@@ -17,7 +17,7 @@
 package views.declaration
 
 import base.Injector
-import controllers.declaration.routes
+import controllers.declaration.routes.UNDangerousGoodsCodeController
 import forms.declaration.NactCode.form
 import forms.declaration.ZeroRatedForVat._
 import models.DeclarationType._
@@ -99,10 +99,10 @@ class ZeroRatedForVatViewSpec extends PageWithButtonsSpec with Injector {
         }
       }
 
-      "display 'Back' button that links to 'Taric' page" in {
+      "display 'Back' button that links to the 'UN Dangerous Goods Code' page" in {
         val backButton = view.getElementById("back-link")
         backButton must containMessage("site.backToPreviousQuestion")
-        backButton must haveHref(routes.TaricCodeSummaryController.displayPage(itemId))
+        backButton must haveHref(UNDangerousGoodsCodeController.displayPage(itemId))
       }
 
       checkAllSaveButtonsAreDisplayed(createView())

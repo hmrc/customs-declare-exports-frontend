@@ -46,7 +46,6 @@ class Card5ForItemsSpec extends UnitViewSpec with ExportsTestHelper with Injecto
     withCommodityDetails(CommodityDetails(Some("1234567890"), Some("description"))),
     withUNDangerousGoodsCode(UNDangerousGoodsCode(Some("345"))),
     withCUSCode(CusCode(Some("321"))),
-    withTaricCodes(TaricCode("999"), TaricCode("888")),
     withNactCodes(NactCode("111"), NactCode("222")),
     withNactExemptionCode(NactCode("VATE")),
     withPackageInformation("PC", 10, "marks"),
@@ -305,12 +304,6 @@ class Card5ForItemsSpec extends UnitViewSpec with ExportsTestHelper with Injecto
         val row = view.getElementsByClass("item-1-cus-code")
         val call = Some(CusCodeController.displayPage(itemId))
         checkSummaryRow(row, "item.cusCode", "321", call, "item.cusCode")
-      }
-
-      "show 'TARIC additional codes'" in {
-        val row = view.getElementsByClass("item-1-taric-additional-codes")
-        val call = Some(TaricCodeSummaryController.displayPage(itemId))
-        checkSummaryRow(row, "item.taricAdditionalCodes", "999, 888", call, "item.taricAdditionalCodes")
       }
 
       "show 'National additional codes'" in {

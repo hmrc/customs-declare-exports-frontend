@@ -253,7 +253,6 @@ tariff.declaration.item.commodityDetails.common.linkText.0 = Elfen Ddata 6/14 - 
 tariff.declaration.item.commodityDetails.common.linkText.1 = Elfen Ddata 6/8 Disgrifiad o’r nwyddau (yn agor tab newydd)
 tariff.declaration.item.unDangerousGoodsCode.common.linkText.0 = Elfen Ddata 6/12 - Cod Nwyddau Peryglus y Cenhedloedd Unedig (yn agor tab newydd)
 tariff.declaration.item.cusCode.common.linkText.0 = Elfen Ddata 6/13 - Cod CUS ar gyfer Cemegau (yn agor tab newydd)
-tariff.declaration.item.additionalTaricCode.common.linkText.0 = Elfen Ddata 6/16 - Cod Nwyddau: Cod TARIC Ychwanegol (yn agor tab newydd)
 tariff.declaration.item.nationalAdditionalCode.common.linkText.0 = Elfen Ddata 6/17 - Cod Ychwanegol Cenedlaethol (yn agor tab newydd)
 tariff.declaration.item.zeroRatedForVat.common.text = Bydd y cofnod hwn yn anfon cod VATZ ar gyfer ‘Iawn’, VATR ar gyfer ‘Wedi’i ostwng’, neu VATE ar gyfer ‘Esempt’ i’w gwblhau {0}
 tariff.declaration.item.zeroRatedForVat.common.linkText.0 = Elfen Ddata 6/17 - Cod Ychwanegol Cenedlaethol (yn agor tab newydd)
@@ -1478,29 +1477,6 @@ declaration.cusCode.error.empty = Nodwch god CUS
 declaration.cusCode.error.length = Mae’n rhaid i’r cod CUS fod 8 o gymeriadau yn union
 declaration.cusCode.error.specialCharacters = Mae’n rhaid i’r cod CUS gynnwys llythrennau a rhifau’n unig
 
-declaration.taricAdditionalCodes.addfirst.header = A oes cod TARIC ychwanegol?
-declaration.taricAdditionalCodes.addfirst.body = Bydd {0} yn rhestru cod TARIC ychwanegol os oes angen un. Bydd hwn yn god 4 digid o rifau’n unig, yn y tab, ‘Allforion’, o dan y pennawd, ‘Mesur’.
-declaration.taricAdditionalCodes.addfirst.body.link = Cofnod yn y tariff ar gyfer {0}, y cod a nodwyd gennych (yn agor tab newydd)
-declaration.taricAdditionalCodes.addfirst.body.altlink = Cofnod yn y tariff ar gyfer eich nwyddau (yn agor tab newydd)
-declaration.taricAdditionalCodes.addfirst.inset.text = Bwrw golwg dros {0} yn y golofn ‘Mesur’ - sef 4061 a 4099. Peidiwch â chopïo’r codau hyn; dim ond enghraifft ydyw.
-declaration.taricAdditionalCodes.addfirst.inset.text.link = Codau TARIC ychwanegol (yn agor tab newydd)
-declaration.taricAdditionalCodes.addfirst.label = Cod TARIC ychwanegol
-
-declaration.taricAdditionalCodes.addnext.header = Beth yw’r cod ychwanegol nesaf?
-declaration.taricAdditionalCodes.remove.header = A ydych yn siŵr eich bod am dynnu’r cod ychwanegol hwn?
-
-declaration.taricAdditionalCodes.header.singular = Rydych wedi ychwanegu 1 cod ychwanegol
-declaration.taricAdditionalCodes.header.plural = Rydych wedi ychwanegu {0} o godau ychwanegol
-declaration.taricAdditionalCodes.label = A oes angen i chi ychwanegu cod ychwanegol arall?
-declaration.taricAdditionalCodes.answer.empty = Dewiswch ‘Iawn’ os oes cod ychwanegol
-declaration.taricAdditionalCodes.add.answer.empty = Dewiswch ‘Iawn’ os oes angen i chi ychwanegu cod ychwanegol arall
-declaration.taricAdditionalCodes.remove.answer.empty = Dewiswch ‘Iawn’ os ydych am dynnu’r cod ychwanegol hwn
-declaration.taricAdditionalCodes.error.empty = Nodwch god TARIC
-declaration.taricAdditionalCodes.error.invalid = Mae’n rhaid i’r cod TARIC ychwanegol gynnwys rhifau a llythrennau’n unig
-declaration.taricAdditionalCodes.error.duplicate = Mae’r cod ychwanegol eisoes wedi’i ychwanegu
-declaration.taricAdditionalCodes.table.header = Cod ychwanegol
-declaration.taricAdditionalCodes.remove.hint = Tynnwch god ychwanegol {0}.
-
 declaration.nationalAdditionalCode.addfirst.header = A oes angen ychwanegu cod ychwanegol cenedlaethol?
 declaration.nationalAdditionalCode.addfirst.body = Ychwanegwch god ychwanegol cenedlaethol o {0} os yw eithriadau neu gyfraddau is o drethi yn berthnasol.
 declaration.nationalAdditionalCode.addfirst.body.link = Atodiad 19 (yn agor tab newydd)
@@ -1943,9 +1919,6 @@ declaration.summary.item.unDangerousGoodsCode = Cod nwyddau peryglus y Cenhedloe
 declaration.summary.item.unDangerousGoodsCode.change = Newidiwch god nwyddau peryglus y Cenhedloedd Unedig ar gyfer eitem {0}
 declaration.summary.item.cusCode = Cod CUS
 declaration.summary.item.cusCode.change = Newidiwch y cod CUS ar gyfer eitem {0}
-declaration.summary.item.taricAdditionalCode = Cod TARIC ychwanegol
-declaration.summary.item.taricAdditionalCodes = Codau TARIC ychwanegol
-declaration.summary.item.taricAdditionalCodes.change = Newidiwch y codau TARIC ychwanegol ar gyfer eitem {0}
 declaration.summary.item.nationalAdditionalCode = Cod ychwanegol cenedlaethol
 declaration.summary.item.nationalAdditionalCodes = Codau ychwanegol cenedlaethol
 declaration.summary.item.nationalAdditionalCodes.change = Newidiwch y codau ychwanegol cenedlaethol ar gyfer eitem {0}

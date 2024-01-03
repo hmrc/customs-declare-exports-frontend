@@ -68,12 +68,6 @@ trait ExportsItemBuilder {
   def withCUSCode(data: CusCode): ItemModifier =
     _.copy(cusCode = Some(data))
 
-  def withTaricCodes(first: TaricCode, others: TaricCode*): ItemModifier =
-    withTaricCodes(List(first) ++ others.toList)
-
-  def withTaricCodes(codes: List[TaricCode]): ItemModifier =
-    _.copy(taricCodes = Some(codes))
-
   def withNactCodes(first: NactCode, others: NactCode*): ItemModifier =
     withNactCodes(List(first) ++ others.toList)
 

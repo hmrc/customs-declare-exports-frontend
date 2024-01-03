@@ -17,11 +17,15 @@
 package controllers.declaration
 
 import base.ControllerSpec
-import controllers.declaration.routes.TaricCodeSummaryController
+import controllers.declaration.routes.{NactCodeSummaryController, ZeroRatedForVatController}
+import controllers.helpers.ItemHelper.journeysOnLowValue
 import controllers.routes.RootController
 import forms.declaration.CusCode
 import forms.declaration.CusCode._
-import models.DeclarationType.{apply => _, _}
+import forms.declaration.NatureOfTransaction.{BusinessPurchase, Sale}
+import models.DeclarationType._
+import models.ExportsDeclaration
+import models.declaration.ProcedureCodesData.lowValueDeclaration
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -50,16 +54,20 @@ class CusCodeControllerSpec extends ControllerSpec {
     reset(mockPage)
   }
 
-  val itemId = "itemId"
-
   def theResponseForm: Form[CusCode] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[CusCode]])
     verify(mockPage).apply(any(), captor.capture())(any(), any())
     captor.getValue
   }
 
+  def itemIdOfCachedDeclaration(declaration: ExportsDeclaration): String = {
+    val result = declaration.items.headOption.fold(declaration.copy(items = List(anItem())))(_ => declaration)
+    withNewCaching(result)
+    result.items.head.id
+  }
+
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
-    withNewCaching(aDeclaration())
+    val itemId = itemIdOfCachedDeclaration(aDeclaration())
     await(controller.displayPage(itemId)(request))
     theResponseForm
   }
@@ -72,8 +80,7 @@ class CusCodeControllerSpec extends ControllerSpec {
       "return 200 (OK)" when {
 
         "display page method is invoked and cache is empty" in {
-          withNewCaching(request.cacheModel)
-
+          val itemId = itemIdOfCachedDeclaration(request.cacheModel)
           val result = controller.displayPage(itemId)(getRequest())
 
           status(result) mustBe OK
@@ -99,10 +106,8 @@ class CusCodeControllerSpec extends ControllerSpec {
 
       "return 400 (BAD_REQUEST)" when {
         "form is incorrect" in {
-          withNewCaching(request.cacheModel)
-
+          val itemId = itemIdOfCachedDeclaration(request.cacheModel)
           val incorrectForm = formData("Invalid Code")
-
           val result = controller.submitForm(itemId)(postRequest(incorrectForm))
 
           status(result) mustBe BAD_REQUEST
@@ -111,17 +116,49 @@ class CusCodeControllerSpec extends ControllerSpec {
       }
     }
 
+    val correctForm = formData("12345678")
+
     onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL) { request =>
       "return 303 (SEE_OTHER)" when {
-        "accept submission and redirect" in {
-          withNewCaching(request.cacheModel)
-          val correctForm = formData("12345678")
+        "accept submission and redirect to the 'Nact Code Summary' page" in {
+          val itemId = itemIdOfCachedDeclaration(request.cacheModel)
 
           val result = controller.submitForm(itemId)(postRequest(correctForm))
-
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe TaricCodeSummaryController.displayPage(itemId)
-          verify(mockPage, times(0)).apply(any(), any())(any(), any())
+          thePageNavigatedTo mustBe NactCodeSummaryController.displayPage(itemId)
+        }
+      }
+    }
+
+    "redirect to the 'Zero-Rated for Vat' page" when {
+
+      "on Standard journey and" when {
+
+        "NatureOfTransaction is 'BusinessPurchase'" in {
+          val itemId = itemIdOfCachedDeclaration(aDeclaration(withNatureOfTransaction(BusinessPurchase)))
+          val result = controller.submitForm(itemId)(postRequest(correctForm))
+          await(result) mustBe aRedirectToTheNextPage
+          thePageNavigatedTo mustBe ZeroRatedForVatController.displayPage(itemId)
+        }
+
+        "NatureOfTransaction is 'Sale'" in {
+          val itemId = itemIdOfCachedDeclaration(aDeclaration(withNatureOfTransaction(Sale)))
+          val result = controller.submitForm(itemId)(postRequest(correctForm))
+          await(result) mustBe aRedirectToTheNextPage
+          thePageNavigatedTo mustBe ZeroRatedForVatController.displayPage(itemId)
+        }
+      }
+
+      journeysOnLowValue.foreach { declarationType =>
+        s"on $declarationType journey and" when {
+          "the declaration is a 'low value' one " in {
+            val item = anItem(withProcedureCodes(additionalProcedureCodes = List(lowValueDeclaration)))
+            withNewCaching(aDeclaration(withType(declarationType), withItems(item)))
+
+            val result = controller.submitForm(item.id)(postRequest(correctForm))
+            await(result) mustBe aRedirectToTheNextPage
+            thePageNavigatedTo mustBe ZeroRatedForVatController.displayPage(item.id)
+          }
         }
       }
     }
@@ -129,9 +166,9 @@ class CusCodeControllerSpec extends ControllerSpec {
     onClearance { request =>
       "return 303 (SEE_OTHER)" when {
         "invalid journey CLEARANCE" in {
-          withNewCaching(request.cacheModel)
+          val itemId = itemIdOfCachedDeclaration(request.cacheModel)
 
-          val result = controller.displayPage("").apply(getRequest())
+          val result = controller.displayPage(itemId).apply(getRequest())
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(RootController.displayPage.url)

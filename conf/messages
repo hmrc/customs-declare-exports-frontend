@@ -250,7 +250,6 @@ tariff.declaration.item.commodityDetails.common.linkText.0 = Data Element 6/14 -
 tariff.declaration.item.commodityDetails.common.linkText.1 = Data Element 6/8 - Description of Goods (opens in new tab)
 tariff.declaration.item.unDangerousGoodsCode.common.linkText.0 = Data Element 6/12 - UN Dangerous Goods Code (opens in new tab)
 tariff.declaration.item.cusCode.common.linkText.0 = Data Element 6/13 - CUS Code for Chemicals (opens in new tab)
-tariff.declaration.item.additionalTaricCode.common.linkText.0 = Data Element 6/16 - Commodity Code: TARIC Additional Code (opens in new tab)
 tariff.declaration.item.nationalAdditionalCode.common.linkText.0 = Data Element 6/17 - National Additional Code (opens in new tab)
 tariff.declaration.item.zeroRatedForVat.common.text = This entry will send code VATZ for ‘Yes’, VATR for ‘Reduced’, or VATE for ‘Exempt’. <br><br>For details, go to {0}.
 tariff.declaration.item.zeroRatedForVat.common.linkText.0 = Data Element 6/17 - National Additional Code (opens in new tab)
@@ -1476,29 +1475,6 @@ declaration.cusCode.error.empty = Enter a CUS code
 declaration.cusCode.error.length = CUS code must be exactly 8 characters
 declaration.cusCode.error.specialCharacters = CUS code must contain only letters and numbers
 
-declaration.taricAdditionalCodes.addfirst.header = Is there a TARIC additional code?
-declaration.taricAdditionalCodes.addfirst.body = The {0} will list a TARIC additional code if one is required. It will be a 4-digit code of numbers only, in the ‘Exports’ tab under the heading ‘Measure’.
-declaration.taricAdditionalCodes.addfirst.body.link = Tariff entry for {0}, the code you entered (opens in new tab)
-declaration.taricAdditionalCodes.addfirst.body.altlink = Tariff entry for your commodity (opens in new tab)
-declaration.taricAdditionalCodes.addfirst.inset.text = View {0} in the ‘Measure’ column - namely 4061 and 4099. Do not copy these codes; it is just an example.
-declaration.taricAdditionalCodes.addfirst.inset.text.link = TARIC additional codes (opens in new tab)
-declaration.taricAdditionalCodes.addfirst.label = TARIC additional code
-
-declaration.taricAdditionalCodes.addnext.header = What is the next additional code?
-declaration.taricAdditionalCodes.remove.header = Are you sure you want to remove this additional code?
-
-declaration.taricAdditionalCodes.header.singular = You have added 1 additional code
-declaration.taricAdditionalCodes.header.plural = You have added {0} additional codes
-declaration.taricAdditionalCodes.label = Do you need to add another additional code?
-declaration.taricAdditionalCodes.answer.empty = Select yes if there is an additional code
-declaration.taricAdditionalCodes.add.answer.empty = Select yes if you need to add another additional code
-declaration.taricAdditionalCodes.remove.answer.empty = Select yes if you want to remove this additional code
-declaration.taricAdditionalCodes.error.empty = Enter a TARIC code
-declaration.taricAdditionalCodes.error.invalid = TARIC additional code must contain only numbers and letters
-declaration.taricAdditionalCodes.error.duplicate = Additional code already added
-declaration.taricAdditionalCodes.table.header = Additional code
-declaration.taricAdditionalCodes.remove.hint = Remove additional code {0}.
-
 declaration.nationalAdditionalCode.addfirst.header = Do you need to add a national additional code?
 declaration.nationalAdditionalCode.addfirst.body = Add a national additional code from {0} if exemptions or reduced rates of taxes are applicable.
 declaration.nationalAdditionalCode.addfirst.body.link = Appendix 19 (opens in new tab)
@@ -1944,9 +1920,6 @@ declaration.summary.item.unDangerousGoodsCode = UN dangerous goods code
 declaration.summary.item.unDangerousGoodsCode.change = Change UN dangerous goods code for item {0}
 declaration.summary.item.cusCode = CUS code
 declaration.summary.item.cusCode.change = Change CUS code for item {0}
-declaration.summary.item.taricAdditionalCode = TARIC additional code
-declaration.summary.item.taricAdditionalCodes = TARIC additional codes
-declaration.summary.item.taricAdditionalCodes.change = Change additional TARIC codes for item {0}
 declaration.summary.item.nationalAdditionalCode = National additional code
 declaration.summary.item.nationalAdditionalCodes = National additional codes
 declaration.summary.item.nationalAdditionalCodes.change = Change national additional codes for item {0}

@@ -48,7 +48,6 @@ import forms.declaration.{
   Seal,
   StatisticalValue,
   SupervisingCustomsOffice,
-  TaricCode,
   TransportCountry,
   TransportLeavingTheBorder,
   TransportPayment,
@@ -909,7 +908,6 @@ object AmendmentDetailsViewSpec {
         s"$item.unDangerousGoodsCode"
       ) ++
       amendment(s"$items.cusCode", CusCode(Some("ABCD1234")), CusCode(Some("DCBA4321")), items, "ABCD1234", "DCBA4321", s"$item.cusCode") ++
-      amendment(s"$items.taricCode.#1", TaricCode("9SLQ"), TaricCode("9SLP"), items, "9SLQ", "9SLP", s"$item.taricAdditionalCode") ++
       amendment(s"$items.nactCode.#1", NactCode("X511"), NactCode("X512"), items, "X511", "X512", s"$item.nationalAdditionalCode") ++
       amendment(s"$items.nactExemptionCode", NactCode("VATR"), NactCode("VATE"), items, "No, reduced", "No, exempt", s"$item.zeroRatedForVat") ++
       amendment(
@@ -1118,7 +1116,7 @@ object AmendmentDetailsViewSpec {
           Some(CommodityDetails(Some("4106920000"), Some("Straw for bottles"))),
           Some(UNDangerousGoodsCode(Some("1234"))),
           Some(CusCode(Some("ABCD1234"))),
-          Some(List(TaricCode("9SLQ"))),
+          None,
           Some(List(NactCode("X511"))),
           Some(NactCode("VATR")),
           Some(List(PackageInformation(1, "123456789", Some("ZB"), Some(100), Some("Shipping marks")))),
@@ -1152,7 +1150,6 @@ object AmendmentDetailsViewSpec {
           s"$item.goodsDescription" -> "Straw for bottles",
           s"$item.unDangerousGoodsCode" -> "1234",
           s"$item.cusCode" -> "ABCD1234",
-          s"$item.taricAdditionalCode" -> "9SLQ",
           s"$item.nationalAdditionalCode" -> "X511",
           s"$item.zeroRatedForVat" -> "No, reduced",
           s"$item.packageInformation.type" -> "ZB",

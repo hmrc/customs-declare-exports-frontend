@@ -72,7 +72,6 @@ case class ExportItem(
         combinePointers(pointerString, UNDangerousGoodsCode.pointer, maybeSequenceId)
       ),
       compareDifference(original.cusCode, cusCode, combinePointers(pointerString, CusCode.pointer, maybeSequenceId)),
-      compareDifference(original.taricCodes, taricCodes, combinePointers(pointerString, TaricCode.pointer, maybeSequenceId)),
       compareDifference(original.nactCodes, nactCodes, combinePointers(pointerString, NactCode.pointer, maybeSequenceId)),
       compareDifference(original.nactExemptionCode, nactExemptionCode, combinePointers(pointerString, NactCode.exemptionPointer, maybeSequenceId)),
       createDiff(original.packageInformation, packageInformation, combinePointers(pointerString, PackageInformation.pointer, maybeSequenceId)),
@@ -99,7 +98,6 @@ case class ExportItem(
       commodityDetails.isDefined ||
       dangerousGoodsCode.isDefined ||
       cusCode.isDefined ||
-      taricCodes.isDefined ||
       nactCodes.isDefined ||
       nactExemptionCode.isDefined ||
       packageInformation.isDefined ||
@@ -154,9 +152,6 @@ case class ExportItem(
       commodityDetails.fold("")(_.valueAdded(s"$pointer.${CommodityDetails.pointer}")) +
       dangerousGoodsCode.fold("")(_.valueAdded(s"$pointer.${UNDangerousGoodsCode.pointer}")) +
       cusCode.fold("")(_.valueAdded(s"$pointer.${CusCode.pointer}")) +
-      taricCodes.fold("")(_.zipWithIndex.map { case (taricCode, index) =>
-        taricCode.valueAdded(s"$pointer.${TaricCode.pointer}.${index + 1}")
-      }.mkString) +
       nactCodes.fold("")(_.zipWithIndex.map { case (nactCode, index) =>
         nactCode.valueAdded(s"$pointer.${NactCode.pointer}.${index + 1}")
       }.mkString) +
@@ -182,9 +177,6 @@ case class ExportItem(
       commodityDetails.fold("")(_.valueRemoved(s"$pointer.${CommodityDetails.pointer}")) +
       dangerousGoodsCode.fold("")(_.valueRemoved(s"$pointer.${UNDangerousGoodsCode.pointer}")) +
       cusCode.fold("")(_.valueRemoved(s"$pointer.${CusCode.pointer}")) +
-      taricCodes.fold("")(_.zipWithIndex.map { case (taricCode, index) =>
-        taricCode.valueRemoved(s"$pointer.${TaricCode.pointer}.${index + 1}")
-      }.mkString) +
       nactCodes.fold("")(_.zipWithIndex.map { case (nactCode, index) =>
         nactCode.valueRemoved(s"$pointer.${NactCode.pointer}.${index + 1}")
       }.mkString) +

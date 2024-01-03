@@ -42,7 +42,6 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
     withCommodityDetails(CommodityDetails(Some("1234567890"), Some("description"))),
     withUNDangerousGoodsCode(UNDangerousGoodsCode(Some("345"))),
     withCUSCode(CusCode(Some("321"))),
-    withTaricCodes(TaricCode("999"), TaricCode("888")),
     withNactCodes(NactCode("111"), NactCode("222")),
     withNactExemptionCode(NactCode("VATE")),
     withPackageInformation("PB", 10, "marks"),
@@ -114,11 +113,6 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
       "have a 'cus code' row" in {
         val row = view.getElementsByClass("item-1-cusCode-row")
         checkSummaryRow(row, "item.cusCode", "321", None, "ign")
-      }
-
-      "have a 'taric codes' row" in {
-        val row = view.getElementsByClass("item-1-taricAdditionalCodes-row")
-        checkSummaryRow(row, "item.taricAdditionalCodes", "999, 888", None, "ign")
       }
 
       "have a 'nact codes' row" in {
@@ -330,10 +324,6 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
 
       "not display a 'UN CUS Code' row" in {
         view.getElementsByClass("item-1-cusCode-row") mustBe empty
-      }
-
-      "not display a 'TARIC Codes' row" in {
-        view.getElementsByClass("item-1-taricAdditionalCodes-row") mustBe empty
       }
 
       "not display a 'National Additional Codes' row" in {
