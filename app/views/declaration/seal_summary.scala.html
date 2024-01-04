@@ -14,18 +14,17 @@
  * limitations under the License.
  *@
 
-@import controllers.declaration.routes._
+@import config.AppConfig
+@import controllers.declaration.routes.{SealController, TransportContainerController}
 @import forms.common.YesNoAnswer
 @import forms.declaration.Seal
+@import models.requests.JourneyRequest
 @import play.twirl.api.HtmlFormat
 @import uk.gov.hmrc.govukfrontend.views.html.components._
-@import views.helpers.{BackButton, Title}
 @import views.components.gds.Styles._
-@import views.html.components.gds._
-@import scala.collection.immutable
+@import views.helpers.{BackButton, Title}
 @import views.helpers.ErrorMapper.yesNoErrors
-@import config.AppConfig
-@import models.requests.JourneyRequest
+@import views.html.components.gds._
 
 @this(
     govukLayout: gdsMainTemplate,
@@ -100,12 +99,17 @@
     )
 }
 
-@govukLayout(
-    title = if(seals.isEmpty) Title("declaration.seal.add.first", "declaration.section.6", containerId)
-            else if(seals.size == 1) Title("declaration.seal.summary.title", "declaration.section.6", containerId)
-            else Title("declaration.seal.summary.multiple.title", "declaration.section.6", "", Some(Seq(seals.size.toString, containerId))),
-    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), controllers.declaration.routes.TransportContainerController.displayContainerSummary))) {
+@title = @{
+  val hasErrors = form.hasErrors || form.hasGlobalErrors
+  if (seals.isEmpty) Title("declaration.seal.add.first", "declaration.section.6", containerId, hasErrors = hasErrors)
+  else if (seals.size == 1) Title("declaration.seal.summary.title", "declaration.section.6", containerId, hasErrors = hasErrors)
+  else Title("declaration.seal.summary.multiple.title", "declaration.section.6", "", Some(Seq(seals.size.toString, containerId)), hasErrors = hasErrors)
+}
 
+@govukLayout(
+    title = title,
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), TransportContainerController.displayContainerSummary))
+) {
     @formHelper(action = SealController.submitSummaryAction(containerId), 'autoComplete -> "off") {
         @errorSummary(yesNoErrors(form.errors))
 
@@ -124,7 +128,7 @@
                     classes = gdsPageLegend,
                     isPageHeading = true
                 )),
-                html = HtmlFormat.fill(immutable.Seq(
+                html = HtmlFormat.fill(List(
                     sealsTable,
                     addSealRadios
                 ))

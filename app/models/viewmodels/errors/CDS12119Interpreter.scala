@@ -18,14 +18,12 @@ package models.viewmodels.errors
 
 import connectors.CodeListConnector
 import controllers.declaration.routes.ProcedureCodesController
-import models.declaration.errors.ErrorInstance
 import models.Pointer
+import models.declaration.errors.ErrorInstance
 import play.api.i18n.Messages
 import play.twirl.api.{Html, HtmlFormat}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import views.html.components.gds.link
-
-import scala.collection.immutable
 
 object CDS12119Interpreter extends ErrorInterpreter {
   def generateHtmlFor(error: ErrorInstance)(implicit messages: Messages, codeListConnector: CodeListConnector, link: link): Option[Html] = {
@@ -52,7 +50,7 @@ object CDS12119Interpreter extends ErrorInterpreter {
     Some(
       HtmlContent(
         HtmlFormat.fill(
-          immutable.Seq(
+          List(
             errorHeader,
             errorTitle(error),
             contentHeader,

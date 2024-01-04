@@ -24,8 +24,6 @@ import play.twirl.api.{Html, HtmlFormat}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import views.html.components.gds.link
 
-import scala.collection.immutable
-
 object CDS12062Interpreter extends ErrorInterpreter {
   def generateHtmlFor(error: ErrorInstance)(implicit messages: Messages, codeListConnector: CodeListConnector, link: link): Option[Html] = {
 
@@ -35,13 +33,7 @@ object CDS12062Interpreter extends ErrorInterpreter {
     Some(
       HtmlContent(
         HtmlFormat.fill(
-          immutable.Seq(
-            errorHeader,
-            errorTitle(error),
-            contentHeader,
-            HtmlFormat.fill(formattedErrorDescription(error.errorCode) :+ changeLink),
-            errorFooter
-          )
+          List(errorHeader, errorTitle(error), contentHeader, HtmlFormat.fill(formattedErrorDescription(error.errorCode) :+ changeLink), errorFooter)
         )
       ).asHtml
     )

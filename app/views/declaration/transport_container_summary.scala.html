@@ -14,21 +14,19 @@
  * limitations under the License.
  *@
 
+@import config.AppConfig
 @import controllers.declaration.routes._
 @import controllers.navigation.Navigator
 @import forms.common.YesNoAnswer
-@import forms.declaration.ContainerFirst
-@import forms.declaration.ContainerAdd
+@import forms.declaration.{ContainerAdd, ContainerFirst}
 @import models.declaration.Container
 @import models.requests.JourneyRequest
 @import play.twirl.api.HtmlFormat
 @import uk.gov.hmrc.govukfrontend.views.html.components._
-@import views.helpers.{BackButton, Title}
 @import views.components.gds.Styles._
-@import views.html.components.gds._
-@import scala.collection.immutable
+@import views.helpers.{BackButton, Title}
 @import views.helpers.ErrorMapper.yesNoErrors
-@import config.AppConfig
+@import views.html.components.gds._
 
 @this(
     govukLayout: gdsMainTemplate,
@@ -114,11 +112,16 @@
     )
 }
 
-@govukLayout(
-    title = if(containers.size == 1) Title("declaration.transportInformation.containers.title", "declaration.section.6")
-            else Title("declaration.transportInformation.containers.multiple.title", "declaration.section.6", containers.size.toString),
-    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(ContainerFirst)))) {
+@title = @{
+  val hasErrors = form.hasErrors || form.hasGlobalErrors
+  if (containers.size == 1) Title("declaration.transportInformation.containers.title", "declaration.section.6", hasErrors = hasErrors)
+  else Title("declaration.transportInformation.containers.multiple.title", "declaration.section.6", containers.size.toString, hasErrors = hasErrors)
+}
 
+@govukLayout(
+    title = title,
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(ContainerFirst)))
+) {
     @formHelper(action = TransportContainerController.submitSummaryAction, 'autoComplete -> "off") {
         @errorSummary(yesNoErrors(form.errors))
 
@@ -133,12 +136,11 @@
                 classes = gdsPageLegend,
                 isPageHeading = true
             )),
-            html = HtmlFormat.fill(immutable.Seq(
+            html = HtmlFormat.fill(List(
                 containersTable,
                 addContainerRadios,
                 saveButtons()
             ))
         ))
     }
-
 }

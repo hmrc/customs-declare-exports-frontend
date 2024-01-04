@@ -17,14 +17,13 @@
 @import controllers.declaration.routes._
 @import forms.common.YesNoAnswer
 @import forms.declaration.additionaldocuments.AdditionalDocument
+@import models.requests.JourneyRequest
 @import play.twirl.api.HtmlFormat
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.components.gds.Styles._
 @import views.html.components.gds._
 @import views.helpers.{BackButton, Title}
-@import scala.collection.immutable
 @import views.helpers.ErrorMapper.yesNoErrors
-@import models.requests.JourneyRequest
 
 @this(
     govukLayout: gdsMainTemplate,
@@ -107,7 +106,7 @@
                 classes = gdsPageLegend,
                 isPageHeading = true
             )),
-            html = HtmlFormat.fill(immutable.Seq(
+            html = HtmlFormat.fill(List(
                 documentTable,
                 yesNoRadios(form, inline = true),
                 saveButtons()

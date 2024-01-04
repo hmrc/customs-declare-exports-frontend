@@ -14,20 +14,19 @@
  * limitations under the License.
  *@
 
+@import config.AppConfig
 @import controllers.declaration.routes
 @import controllers.navigation.Navigator
 @import forms.common.YesNoAnswer
 @import models.declaration.ExportItem
 @import models.requests.JourneyRequest
 @import models.DeclarationType.CLEARANCE
-@import uk.gov.hmrc.govukfrontend.views.html.components._
-@import views.helpers.{BackButton, Title}
-@import views.html.components.gds._
-@import views.components.gds.Styles._
 @import play.twirl.api.HtmlFormat
-@import scala.collection.immutable
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.components.gds.Styles._
+@import views.helpers.{BackButton, Title}
 @import views.helpers.ErrorMapper.yesNoErrors
-@import config.AppConfig
+@import views.html.components.gds._
 
 @this(
     govukLayout: gdsMainTemplate,
@@ -130,10 +129,9 @@
 @govukLayout(
     title = Title(titleMessageKey, "declaration.section.5", items.length.toString, hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.back"), navigator.backLink(ExportItem))),
-    useCustomContentWidth = true) {
-
+    useCustomContentWidth = true
+) {
     @formHelper(action = routes.ItemsSummaryController.submit, 'autoComplete -> "off") {
-
         @errorSummary(yesNoErrors(itemsErrors ++ form.errors))
 
         @sectionHeader(messages("declaration.section.5"))
@@ -143,7 +141,7 @@
                 classes = gdsPageLegend,
                 isPageHeading = true
             )),
-            html = HtmlFormat.fill(immutable.Seq(
+            html = HtmlFormat.fill(List(
                 itemsTable,
                 if (!request.isType(CLEARANCE))
                 addAnotherQuestion("declaration.itemsSummary.addAnotherItem.question", form)

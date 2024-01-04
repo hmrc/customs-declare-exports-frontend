@@ -14,9 +14,8 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.govukfrontend.views.html.components._
 @import play.twirl.api.HtmlFormat
-@import scala.collection.immutable
+@import uk.gov.hmrc.govukfrontend.views.html.components._
 
 @this(govukButton : GovukButton)
 
@@ -24,7 +23,7 @@
 
 @govukButton(Button(
     classes = "govuk-button--secondary govuk-!-margin-0",
-    content = HtmlContent(HtmlFormat.fill(immutable.Seq(
+    content = HtmlContent(HtmlFormat.fill(List(
         Html(s"""<span aria-hidden="true">${messages(label)}</span>"""),
         Html(s"""<span class="govuk-visually-hidden">${hiddenLabel.getOrElse(messages("site.remove"))}</span>""")
     ))),

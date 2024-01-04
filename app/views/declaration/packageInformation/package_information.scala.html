@@ -14,20 +14,18 @@
  * limitations under the License.
  *@
 
+@import config.AppConfig
 @import controllers.declaration.routes
-@import controllers.navigation.Navigator
+@import controllers.navigation.{ItemId, Navigator}
 @import forms.declaration.PackageInformation
 @import models.requests.JourneyRequest
-@import views.helpers.{BackButton, Title}
-@import uk.gov.hmrc.govukfrontend.views.html.components._
-@import views.html.components.gds._
-@import controllers.navigation.ItemId
 @import play.twirl.api.HtmlFormat
-@import scala.collection.immutable
-@import views.components.gds.Styles._
-@import views.helpers.ErrorMapper.yesNoErrors
-@import config.AppConfig
+@import uk.gov.hmrc.govukfrontend.views.html.components._
 @import services.PackageTypesService
+@import views.components.gds.Styles._
+@import views.helpers.{BackButton, Title}
+@import views.helpers.ErrorMapper.yesNoErrors
+@import views.html.components.gds._
 
 @this(
     govukLayout: gdsMainTemplate,
@@ -48,17 +46,14 @@
 @(itemId: String, form: Form[_], packages: Seq[PackageInformation])(implicit request: JourneyRequest[_], messages: Messages)
 
 @title = @{
-    if(packages.size == 1)
-        Title("declaration.packageInformation.table.heading", "declaration.section.5")
-    else
-        Title("declaration.packageInformation.table.multiple.heading", "declaration.section.5", packages.size.toString)
+  val hasErrors = form.hasErrors || form.hasGlobalErrors
+  if (packages.size == 1) Title("declaration.packageInformation.table.heading", "declaration.section.5", hasErrors = hasErrors)
+  else Title("declaration.packageInformation.table.multiple.heading", "declaration.section.5", packages.size.toString, hasErrors = hasErrors)
 }
 
 @header = @{
-    if(packages.size == 1)
-        Text(messages("declaration.packageInformation.table.heading"))
-    else
-        Text(messages("declaration.packageInformation.table.multiple.heading", packages.size))
+  if (packages.size == 1) Text(messages("declaration.packageInformation.table.heading"))
+  else Text(messages("declaration.packageInformation.table.multiple.heading", packages.size))
 }
 
 @packageInfoTable = {
@@ -114,7 +109,6 @@
     title = title,
     backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(PackageInformation, ItemId(itemId))))
 ) {
-
     @formHelper(action = routes.PackageInformationSummaryController.submitForm(itemId), 'autoComplete -> "off") {
         @errorSummary(yesNoErrors(form.errors))
 
@@ -126,12 +120,11 @@
                 classes = gdsPageLegend,
                 isPageHeading = true
             )),
-            html = HtmlFormat.fill(immutable.Seq(
+            html = HtmlFormat.fill(List(
                 packageInfoTable,
                 addAnotherQuestion("declaration.packageInformation.add.another", form),
                 saveButtons()
             ))
         ))
-
     }
 }

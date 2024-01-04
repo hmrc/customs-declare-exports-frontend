@@ -76,8 +76,7 @@
     title = Title("declaration.type.description", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.backToPreviousQuestion"), ChoiceController.displayPage)),
     showDeclarationSummaryLink = false
-){
-
+) {
     @formHelper(action = controllers.declaration.routes.DeclarationChoiceController.submitChoice, 'autoComplete -> "off") {
         @errorSummary(radioGroupErrors("type", DeclarationType.STANDARD.toString, form.errors))
 

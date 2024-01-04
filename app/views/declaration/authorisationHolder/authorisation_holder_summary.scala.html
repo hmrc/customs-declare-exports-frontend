@@ -26,8 +26,6 @@
 @import views.helpers.ErrorMapper.yesNoErrors
 @import views.html.components.gds._
 
-@import scala.collection.immutable
-
 @this(
     govukLayout: gdsMainTemplate,
     govukFieldset: GovukFieldset,
@@ -51,17 +49,14 @@
 @(form: Form[_], holders: Seq[AuthorisationHolder])(implicit request: JourneyRequest[_], messages: Messages)
 
 @title = @{
-    if(holders.size == 1)
-        Title("declaration.authorisationHolder.table.heading", "declaration.section.2")
-    else
-        Title("declaration.authorisationHolder.table.multiple.heading", "declaration.section.2", holders.size.toString)
+  val hasErrors = form.hasErrors || form.hasGlobalErrors
+  if (holders.size == 1) Title("declaration.authorisationHolder.table.heading", "declaration.section.2", hasErrors = hasErrors)
+  else Title("declaration.authorisationHolder.table.multiple.heading", "declaration.section.2", holders.size.toString, hasErrors = hasErrors)
 }
 
 @header = @{
-    if(holders.size == 1)
-        messages("declaration.authorisationHolder.table.heading")
-    else
-        messages("declaration.authorisationHolder.table.multiple.heading", holders.size)
+  if (holders.size == 1) messages("declaration.authorisationHolder.table.heading")
+  else messages("declaration.authorisationHolder.table.multiple.heading", holders.size)
 }
 
 @holdersTable = {
@@ -109,7 +104,6 @@
     title = title,
     backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(AuthorisationHolderSummary)))
 ) {
-
     @formHelper(action = AuthorisationHolderSummaryController.submitForm, 'autoComplete -> "off") {
         @errorSummary(yesNoErrors(form.errors))
 
@@ -122,7 +116,7 @@
         @holdersTable
 
         @govukFieldset(Fieldset(
-            html = HtmlFormat.fill(immutable.Seq(
+            html = HtmlFormat.fill(List(
                 addAnotherQuestion("declaration.authorisationHolder.add.another", form),
                 saveButtons()
             ))

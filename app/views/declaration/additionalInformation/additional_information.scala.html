@@ -14,22 +14,19 @@
  * limitations under the License.
  *@
 
-@import controllers.declaration.routes._
-@import controllers.navigation.ItemId
-@import controllers.navigation.Navigator
-@import forms.common.YesNoAnswer
-@import forms.declaration.AdditionalInformation
-@import forms.declaration.AdditionalInformationSummary
-@import models.requests.JourneyRequest
-@import uk.gov.hmrc.govukfrontend.views.html.components._
-@import views.helpers.{BackButton, Title}
-@import views.html.components.gds._
-@import views.components.gds.Styles._
-@import play.twirl.api.HtmlFormat
-@import scala.collection.immutable
 @import config.AppConfig
+@import controllers.declaration.routes._
+@import controllers.navigation.{ItemId, Navigator}
+@import forms.common.YesNoAnswer
+@import forms.declaration.{AdditionalInformation, AdditionalInformationSummary}
+@import models.requests.JourneyRequest
+@import play.twirl.api.HtmlFormat
+@import uk.gov.hmrc.govukfrontend.views.html.components._
 @import utils.ListItem._
+@import views.components.gds.Styles._
+@import views.helpers.{BackButton, Title}
 @import views.helpers.ErrorMapper.yesNoErrors
+@import views.html.components.gds._
 
 @this(
     govukLayout: gdsMainTemplate,
@@ -49,17 +46,14 @@
 @(itemId: String, form: Form[YesNoAnswer], items: Seq[AdditionalInformation], backLink: Call)(implicit request: JourneyRequest[_], messages: Messages)
 
 @title = @{
-    if(items.size == 1)
-        Title("declaration.additionalInformation.table.heading", "declaration.section.5")
-    else
-        Title("declaration.additionalInformation.table.multiple.heading", "declaration.section.5", items.size.toString)
+  val hasErrors = form.hasErrors || form.hasGlobalErrors
+  if (items.size == 1) Title("declaration.additionalInformation.table.heading", "declaration.section.5", hasErrors = hasErrors)
+  else Title("declaration.additionalInformation.table.multiple.heading", "declaration.section.5", items.size.toString, hasErrors = hasErrors)
 }
 
 @header = @{
-    if(items.size == 1)
-        Text(messages("declaration.additionalInformation.table.heading"))
-    else
-        Text(messages("declaration.additionalInformation.table.multiple.heading", items.size))
+  if (items.size == 1) Text(messages("declaration.additionalInformation.table.heading"))
+  else Text(messages("declaration.additionalInformation.table.multiple.heading", items.size))
 }
 
 @additionalInformationTable = {
@@ -129,7 +123,7 @@
                 classes = gdsPageLegend,
                 isPageHeading = true
             )),
-            html = HtmlFormat.fill(immutable.Seq(
+            html = HtmlFormat.fill(List(
                 additionalInformationTable,
                 addAnotherQuestion("declaration.additionalInformation.add.another", form),
                 saveButtons()

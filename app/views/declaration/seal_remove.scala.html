@@ -16,14 +16,13 @@
 
 @import controllers.declaration.routes._
 @import forms.common.YesNoAnswer
+@import models.requests.JourneyRequest
 @import play.twirl.api.HtmlFormat
 @import uk.gov.hmrc.govukfrontend.views.html.components._
-@import views.helpers.{BackButton, Title}
 @import views.components.gds.Styles._
-@import views.html.components.gds._
-@import scala.collection.immutable
+@import views.helpers.{BackButton, Title}
 @import views.helpers.ErrorMapper.yesNoErrors
-@import models.requests.JourneyRequest
+@import views.html.components.gds._
 
 @this(
     govukLayout: gdsMainTemplate,
@@ -54,8 +53,8 @@
 
 @govukLayout(
     title = Title("declaration.seal.remove.title", "declaration.section.6", containerId, hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), controllers.declaration.routes.SealController.displaySealSummary(containerId)))) {
-
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), controllers.declaration.routes.SealController.displaySealSummary(containerId)))
+) {
     @formHelper(action = SealController.submitSealRemove(containerId, sealId), 'autoComplete -> "off") {
         @errorSummary(yesNoErrors(form.errors))
 
@@ -67,13 +66,12 @@
                 classes = gdsPageLegend,
                 isPageHeading = true
             )),
-            html = HtmlFormat.fill(immutable.Seq(
+            html = HtmlFormat.fill(List(
                 sealsSummary,
                 yesNoRadios(form, inline = true),
                 saveButtons()
             ))
         ))
     }
-
 }
 
