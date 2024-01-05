@@ -249,9 +249,9 @@ object ExportsDeclaration extends FieldMapping {
   val pointer: ExportsFieldPointer = "declaration"
   val goodsItemQuantityPointer: ExportsFieldPointer = "goodsItemQuantity"
 
-  def isCodePrefixedWith(maybeCode: Option[String], prefixes: Seq[Int]): Boolean = maybeCode match {
-    case Some(code) if code.trim.nonEmpty =>
-      prefixes.exists(prefix => code.startsWith(prefix.toString))
-    case _ => false
-  }
+  def isCodePrefixedWith(maybeCode: Option[String], prefixes: Seq[Int]): Boolean =
+    maybeCode match {
+      case Some(code) if code.trim.nonEmpty => prefixes.exists(prefix => code.startsWith(prefix.toString))
+      case _                                => false
+    }
 }

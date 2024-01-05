@@ -113,7 +113,6 @@ class SummaryMessagesSpec extends UnitViewSpec {
       messages must haveTranslationFor("declaration.summary.item.goodsDescription")
       messages must haveTranslationFor("declaration.summary.item.unDangerousGoodsCode")
       messages must haveTranslationFor("declaration.summary.item.cusCode")
-      messages must haveTranslationFor("declaration.summary.item.taricAdditionalCodes")
       messages must haveTranslationFor("declaration.summary.item.nationalAdditionalCodes")
       messages must haveTranslationFor("declaration.summary.item.itemValue")
       messages must haveTranslationFor("declaration.summary.item.supplementaryUnits")

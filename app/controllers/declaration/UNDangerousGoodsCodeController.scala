@@ -17,7 +17,8 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.declaration.routes.{CommodityMeasureController, CusCodeController, TaricCodeSummaryController}
+import controllers.declaration.routes.{CommodityMeasureController, CusCodeController, PackageInformationSummaryController}
+import controllers.helpers.ItemHelper.cusCodeAndDangerousGoodsNextPage
 import controllers.navigation.Navigator
 import forms.declaration.UNDangerousGoodsCode.form
 import forms.declaration.{CommodityDetails, UNDangerousGoodsCode}
@@ -25,7 +26,7 @@ import models.requests.JourneyRequest
 import models.{DeclarationType, ExportsDeclaration}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.WithUnsafeDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
@@ -58,23 +59,18 @@ class UNDangerousGoodsCodeController @Inject() (
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[UNDangerousGoodsCode]) => Future.successful(BadRequest(unDangerousGoodsCodePage(itemId, formWithErrors))),
-        validForm =>
-          updateExportsCache(itemId, validForm).map { _ =>
-            redirectToNextPage(itemId)
-          }
+        validForm => updateExportsCache(itemId, validForm).map(declaration => navigator.continueTo(nextPage(declaration, itemId)))
       )
   }
 
-  private def redirectToNextPage(itemId: String)(implicit request: JourneyRequest[AnyContent]): Result =
-    if (request.isType(DeclarationType.CLEARANCE)) {
-      if (request.cacheModel.itemBy(itemId).exists(_.isExportInventoryCleansingRecord))
-        navigator.continueTo(CommodityMeasureController.displayPage(itemId))
-      else
-        navigator.continueTo(routes.PackageInformationSummaryController.displayPage(itemId))
-    } else if (request.cacheModel.isCommodityCodeOfItemPrefixedWith(itemId, CommodityDetails.commodityCodeChemicalPrefixes))
-      navigator.continueTo(CusCodeController.displayPage(itemId))
-    else
-      navigator.continueTo(TaricCodeSummaryController.displayPage(itemId))
+  private def nextPage(declaration: ExportsDeclaration, itemId: String): Call =
+    if (declaration.isType(DeclarationType.CLEARANCE)) {
+      if (declaration.itemBy(itemId).exists(_.isExportInventoryCleansingRecord)) CommodityMeasureController.displayPage(itemId)
+      else PackageInformationSummaryController.displayPage(itemId)
+    } else {
+      val toCusCodePage = declaration.isCommodityCodeOfItemPrefixedWith(itemId, CommodityDetails.commodityCodeChemicalPrefixes)
+      if (toCusCodePage) CusCodeController.displayPage(itemId) else cusCodeAndDangerousGoodsNextPage(declaration, itemId)
+    }
 
   private def updateExportsCache(itemId: String, updatedItem: UNDangerousGoodsCode)(
     implicit request: JourneyRequest[AnyContent]

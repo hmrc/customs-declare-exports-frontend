@@ -111,7 +111,6 @@ class Card5ForItems @Inject() (
         goodsDescription(item, actionsEnabled, index),
         dangerousGoodsCode(item, actionsEnabled, index),
         cusCode(item, actionsEnabled, index),
-        taricCodes(item, actionsEnabled, index),
         nactCodes(item, actionsEnabled, index),
         nactExemptionCode(item, actionsEnabled, index),
         statisticalValue(item, actionsEnabled, index)
@@ -223,16 +222,6 @@ class Card5ForItems @Inject() (
         value(cusCode.cusCode.getOrElse(messages("site.no"))),
         classes = s"item-$index-cus-code",
         changeLink(CusCodeController.displayPage(item.id), "item.cusCode", actionsEnabled, Some(index))
-      )
-    }
-
-  private def taricCodes(item: ExportItem, actionsEnabled: Boolean, index: Int)(implicit messages: Messages): Option[SummaryListRow] =
-    item.taricCodes.map { taricCodes =>
-      SummaryListRow(
-        key("item.taricAdditionalCodes"),
-        value(if (taricCodes.isEmpty) messages("site.none") else taricCodes.map(_.taricCode).mkString(", ")),
-        classes = s"item-$index-taric-additional-codes",
-        changeLink(TaricCodeSummaryController.displayPage(item.id), "item.taricAdditionalCodes", actionsEnabled, Some(index))
       )
     }
 

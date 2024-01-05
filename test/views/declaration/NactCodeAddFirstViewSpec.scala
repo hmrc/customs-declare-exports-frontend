@@ -18,7 +18,7 @@ package views.declaration
 
 import base.Injector
 import config.AppConfig
-import controllers.declaration.routes.{TaricCodeSummaryController, ZeroRatedForVatController}
+import controllers.declaration.routes.{UNDangerousGoodsCodeController, ZeroRatedForVatController}
 import forms.declaration.NactCodeFirst
 import forms.declaration.NactCodeFirst.form
 import forms.declaration.NatureOfTransaction.{BusinessPurchase, Construction, Sale}
@@ -66,26 +66,26 @@ class NactCodeAddFirstViewSpec extends PageWithButtonsSpec with Injector {
 
     "display 'Back' button" when {
 
-      "STANDARD journey" when {
+      "STANDARD journey and" when {
 
-        "answered sale in nature of transaction" in {
+        "entered 'sale' in nature-of-transaction" in {
           val view = createView()(journeyRequest(aDeclaration(withType(STANDARD), withNatureOfTransaction(Sale))))
           view.getElementById("back-link") must haveHref(ZeroRatedForVatController.displayPage(itemId))
         }
 
-        "answered business purchase nature of transaction" in {
+        "entered 'business purchase' in nature-of-transaction" in {
           val view = createView()(journeyRequest(aDeclaration(withType(STANDARD), withNatureOfTransaction(BusinessPurchase))))
           view.getElementById("back-link") must haveHref(ZeroRatedForVatController.displayPage(itemId))
         }
 
-        "answered other nature of transaction" in {
+        "entered other nature-of-transaction" in {
           val view = createView()(journeyRequest(aDeclaration(withType(STANDARD), withNatureOfTransaction(Construction))))
-          view.getElementById("back-link") must haveHref(TaricCodeSummaryController.displayPage(itemId))
+          view.getElementById("back-link") must haveHref(UNDangerousGoodsCodeController.displayPage(itemId))
         }
 
-        "not answered nature of transaction" in {
+        "not entered nature-of-transaction" in {
           val view = createView()(journeyRequest(aDeclaration(withType(STANDARD))))
-          view.getElementById("back-link") must haveHref(TaricCodeSummaryController.displayPage(itemId))
+          view.getElementById("back-link") must haveHref(UNDangerousGoodsCodeController.displayPage(itemId))
         }
       }
 
@@ -100,7 +100,7 @@ class NactCodeAddFirstViewSpec extends PageWithButtonsSpec with Injector {
 
       onJourney(SUPPLEMENTARY, OCCASIONAL, SIMPLIFIED) { implicit request =>
         s"${request.declarationType} journey" in {
-          createView().getElementById("back-link") must haveHref(TaricCodeSummaryController.displayPage(itemId))
+          createView().getElementById("back-link") must haveHref(UNDangerousGoodsCodeController.displayPage(itemId))
         }
       }
     }

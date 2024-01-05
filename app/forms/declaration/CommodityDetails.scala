@@ -70,7 +70,7 @@ object CommodityDetails extends DeclarationPage with FieldMapping {
   val combinedNomenclatureCodeKey = "combinedNomenclatureCode"
   val descriptionOfGoodsKey = "descriptionOfGoods"
   val descriptionOfGoodsMaxLength = 280
-  val commodityCodeChemicalPrefixes = Seq(28, 29, 38)
+  val commodityCodeChemicalPrefixes = List(28, 29, 38)
 
   private val combinedNomenclatureCodeAcceptedLengths = List(8, 10)
 

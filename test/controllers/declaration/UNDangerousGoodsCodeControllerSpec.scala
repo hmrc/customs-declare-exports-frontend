@@ -17,14 +17,25 @@
 package controllers.declaration
 
 import base.ControllerSpec
-import controllers.declaration.routes.{CommodityMeasureController, CusCodeController, TaricCodeSummaryController}
+import controllers.declaration.routes.{
+  CommodityMeasureController,
+  CusCodeController,
+  NactCodeSummaryController,
+  PackageInformationSummaryController,
+  ZeroRatedForVatController
+}
+import controllers.helpers.ItemHelper.journeysOnLowValue
+import forms.declaration.CommodityDetails.commodityCodeChemicalPrefixes
+import forms.declaration.NatureOfTransaction.{BusinessPurchase, Sale}
 import forms.declaration.UNDangerousGoodsCode.{dangerousGoodsCodeKey, hasDangerousGoodsCodeKey}
 import forms.declaration.{CommodityDetails, UNDangerousGoodsCode}
 import models.DeclarationType._
+import models.ExportsDeclaration
+import models.declaration.ProcedureCodesData.lowValueDeclaration
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
-import org.scalatest.OptionValues
+import org.scalatest.{Assertion, OptionValues}
 import play.api.data.Form
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{AnyContentAsEmpty, Call, Request}
@@ -57,12 +68,17 @@ class UNDangerousGoodsCodeControllerSpec extends ControllerSpec with OptionValue
     reset(mockPage)
   }
 
+  def itemIdOfCachedDeclaration(declaration: ExportsDeclaration): String = {
+    val result = declaration.items.headOption.fold(declaration.copy(items = List(anItem())))(_ => declaration)
+    withNewCaching(result)
+    result.items.head.id
+  }
+
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
+    val itemId = itemIdOfCachedDeclaration(aDeclaration())
     await(controller.displayPage(itemId)(request))
     theResponseForm
   }
-
-  val itemId = "itemId"
 
   def theResponseForm: Form[UNDangerousGoodsCode] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[UNDangerousGoodsCode]])
@@ -78,6 +94,7 @@ class UNDangerousGoodsCodeControllerSpec extends ControllerSpec with OptionValue
     "return 200 (OK)" when {
 
       "display page method is invoked and cache is empty" in {
+        val itemId = itemIdOfCachedDeclaration(aDeclaration())
         val result = controller.displayPage(itemId)(getRequest())
 
         status(result) mustBe OK
@@ -103,8 +120,8 @@ class UNDangerousGoodsCodeControllerSpec extends ControllerSpec with OptionValue
     "return 400 (BAD_REQUEST)" when {
 
       "form is incorrect" in {
+        val itemId = itemIdOfCachedDeclaration(aDeclaration())
         val incorrectForm = formData("Invalid Code")
-
         val result = controller.submitForm(itemId)(postRequest(incorrectForm))
 
         status(result) mustBe BAD_REQUEST
@@ -112,49 +129,81 @@ class UNDangerousGoodsCodeControllerSpec extends ControllerSpec with OptionValue
       }
     }
 
+    val correctForm = formData("1234")
+
     "return 303 (SEE_OTHER)" when {
 
       onJourney(STANDARD, SIMPLIFIED, OCCASIONAL, SUPPLEMENTARY) { request =>
-        def controllerRedirectsToNextPageForCommodityCode(commodityCode: String, expectedCall: Call): HtmlFormat.Appendable = {
+        def controllerRedirectsToNextPageForCommodityCode(commodityCode: String, expectedCall: String => Call): Assertion = {
           val commodityDetails = CommodityDetails(Some(commodityCode), None)
-          withNewCaching(aDeclarationAfter(request.cacheModel, withItem(anItem(withItemId(itemId), withCommodityDetails(commodityDetails)))))
-          val correctForm = formData("1234")
+          val item = anItem(withCommodityDetails(commodityDetails))
+          withNewCaching(aDeclarationAfter(request.cacheModel, withItem(item)))
 
-          val result = controller.submitForm(itemId)(postRequest(correctForm))
-
+          val result = controller.submitForm(item.id)(postRequest(correctForm))
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe expectedCall
-          verify(mockPage, times(0)).apply(any(), any())(any(), any())
+          thePageNavigatedTo mustBe expectedCall(item.id)
         }
 
-        "accept submission and redirect for commodity code 2800000000" in {
-          controllerRedirectsToNextPageForCommodityCode("2800000000", CusCodeController.displayPage(itemId))
+        commodityCodeChemicalPrefixes.foreach { prefix =>
+          s"accept submission and redirect for commodity code ${prefix}00000000" in {
+            controllerRedirectsToNextPageForCommodityCode(s"${prefix}00000000", CusCodeController.displayPage(_))
+          }
         }
 
         "accept submission and redirect for commodity code 2100000000" in {
-          controllerRedirectsToNextPageForCommodityCode("2100000000", TaricCodeSummaryController.displayPage(itemId))
+          controllerRedirectsToNextPageForCommodityCode("2100000000", NactCodeSummaryController.displayPage(_))
         }
       }
 
       onJourney(CLEARANCE) { request =>
-        def controllerRedirectsToNextPageForProcedureCode(procedureCode: String, expectedCall: Call): HtmlFormat.Appendable = {
+        def controllerRedirectsToNextPageForProcedureCode(procedureCode: String, expectedCall: String => Call): Assertion = {
+          val item = anItem(withProcedureCodes(Some(procedureCode)))
+          withNewCaching(aDeclarationAfter(request.cacheModel, withItem(item)))
 
-          withNewCaching(aDeclarationAfter(request.cacheModel, withItem(anItem(withItemId(itemId), withProcedureCodes(Some(procedureCode))))))
-          val correctForm = formData("1234")
-
-          val result = controller.submitForm(itemId)(postRequest(correctForm))
-
+          val result = controller.submitForm(item.id)(postRequest(correctForm))
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe expectedCall
-          verify(mockPage, times(0)).apply(any(), any())(any(), any())
+          thePageNavigatedTo mustBe expectedCall(item.id)
         }
 
         "accept submission and redirect for procedure code 0019" in {
-          controllerRedirectsToNextPageForProcedureCode("0019", CommodityMeasureController.displayPage(itemId))
+          controllerRedirectsToNextPageForProcedureCode("0019", CommodityMeasureController.displayPage(_))
         }
 
         "accept submission and redirect for procedure code 1234" in {
-          controllerRedirectsToNextPageForProcedureCode("1234", routes.PackageInformationSummaryController.displayPage(itemId))
+          controllerRedirectsToNextPageForProcedureCode("1234", PackageInformationSummaryController.displayPage(_))
+        }
+      }
+    }
+
+    "redirect to the 'Zero-Rated for Vat' page" when {
+
+      "on Standard journey and" when {
+
+        "NatureOfTransaction is 'BusinessPurchase'" in {
+          val itemId = itemIdOfCachedDeclaration(aDeclaration(withNatureOfTransaction(BusinessPurchase)))
+          val result = controller.submitForm(itemId)(postRequest(correctForm))
+          await(result) mustBe aRedirectToTheNextPage
+          thePageNavigatedTo mustBe ZeroRatedForVatController.displayPage(itemId)
+        }
+
+        "NatureOfTransaction is 'Sale'" in {
+          val itemId = itemIdOfCachedDeclaration(aDeclaration(withNatureOfTransaction(Sale)))
+          val result = controller.submitForm(itemId)(postRequest(correctForm))
+          await(result) mustBe aRedirectToTheNextPage
+          thePageNavigatedTo mustBe ZeroRatedForVatController.displayPage(itemId)
+        }
+      }
+
+      journeysOnLowValue.foreach { declarationType =>
+        s"on $declarationType journey and" when {
+          "the declaration is a 'low value' one " in {
+            val item = anItem(withProcedureCodes(additionalProcedureCodes = List(lowValueDeclaration)))
+            withNewCaching(aDeclaration(withType(declarationType), withItems(item)))
+
+            val result = controller.submitForm(item.id)(postRequest(correctForm))
+            await(result) mustBe aRedirectToTheNextPage
+            thePageNavigatedTo mustBe ZeroRatedForVatController.displayPage(item.id)
+          }
         }
       }
     }

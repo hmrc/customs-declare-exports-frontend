@@ -127,17 +127,6 @@
                 )
             )
         ),
-        item.taricCodes.map(taricCodes =>
-            SummaryListRow(
-                classes = s"item-${itemDisplayNum}-taricAdditionalCodes-row",
-                key = Key(
-                    content = Text(messages("declaration.summary.item.taricAdditionalCodes"))
-                ),
-                value = Value(
-                    content = Text(if(taricCodes.isEmpty) messages("site.no") else taricCodes.map(_.taricCode).mkString(", "))
-                )
-            )
-        ),
         item.nactCodes.map(nactCodes =>
             SummaryListRow(
                 classes = s"item-${itemDisplayNum}-nationalAdditionalCodes-row",

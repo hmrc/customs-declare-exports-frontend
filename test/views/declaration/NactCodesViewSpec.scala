@@ -17,7 +17,7 @@
 package views.declaration
 
 import base.Injector
-import controllers.declaration.routes.{TaricCodeSummaryController, ZeroRatedForVatController}
+import controllers.declaration.routes.{UNDangerousGoodsCodeController, ZeroRatedForVatController}
 import forms.common.YesNoAnswer.{form, YesNoAnswers}
 import forms.declaration.NactCode
 import forms.declaration.NatureOfTransaction.{BusinessPurchase, HouseRemoval, Sale}
@@ -62,40 +62,36 @@ class NactCodesViewSpec extends UnitViewSpec with Injector {
     }
 
     onJourney(SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL) { implicit request =>
-      "display 'Back' button that links to 'TARIC Code' page" in {
-        createView().getElementById("back-link") must haveHref(TaricCodeSummaryController.displayPage(itemId))
+      "display 'Back' button that links to the 'UN Dangerous Goods Code' page" in {
+        createView().getElementById("back-link") must haveHref(UNDangerousGoodsCodeController.displayPage(itemId))
       }
     }
 
-    onJourney(STANDARD) { implicit request =>
-      "display 'Back' button" when {
+    "display 'Back' button" when {
 
-        "sale answered to nature-of-transaction" in {
-          val view = createView()(journeyRequest(aDeclaration(withType(STANDARD), withNatureOfTransaction(Sale))))
-          view.getElementById("back-link") must haveHref(ZeroRatedForVatController.displayPage(itemId))
-        }
-
-        "business purchase answered to nature-of-transaction" in {
-          val view = createView()(journeyRequest(aDeclaration(withType(STANDARD), withNatureOfTransaction(BusinessPurchase))))
-          view.getElementById("back-link") must haveHref(ZeroRatedForVatController.displayPage(itemId))
-        }
-
-        "sale is not answer to nature-of-transaction" in {
-          val view = createView()(journeyRequest(aDeclaration(withType(STANDARD), withNatureOfTransaction(HouseRemoval))))
-          view.getElementById("back-link") must haveHref(TaricCodeSummaryController.displayPage(itemId))
-        }
-
-        "nature-of-transaction is empty" in {
-          createView().getElementById("back-link") must haveHref(TaricCodeSummaryController.displayPage(itemId))
-        }
+      "entered 'sale' in nature-of-transaction" in {
+        val view = createView()(journeyRequest(aDeclaration(withType(STANDARD), withNatureOfTransaction(Sale))))
+        view.getElementById("back-link") must haveHref(ZeroRatedForVatController.displayPage(itemId))
       }
-    }
 
-    onJourney(OCCASIONAL, SIMPLIFIED) { implicit request =>
-      "display 'Back' button" when {
-        "for 'low value' declarations" in {
+      "entered 'business purchase' in nature-of-transaction" in {
+        val view = createView()(journeyRequest(aDeclaration(withType(STANDARD), withNatureOfTransaction(BusinessPurchase))))
+        view.getElementById("back-link") must haveHref(ZeroRatedForVatController.displayPage(itemId))
+      }
+
+      "entered other nature-of-transaction" in {
+        val view = createView()(journeyRequest(aDeclaration(withType(STANDARD), withNatureOfTransaction(HouseRemoval))))
+        view.getElementById("back-link") must haveHref(UNDangerousGoodsCodeController.displayPage(itemId))
+      }
+
+      "not entered nature-of-transaction" in {
+        createView().getElementById("back-link") must haveHref(UNDangerousGoodsCodeController.displayPage(itemId))
+      }
+
+      "declaration is a 'low value' one" in {
+        List(OCCASIONAL, SIMPLIFIED).foreach { declarationType =>
           val item = anItem(withItemId(itemId), withProcedureCodes(additionalProcedureCodes = Seq(lowValueDeclaration)))
-          val requestWithCache = journeyRequest(aDeclarationAfter(request.cacheModel, withItems(item)))
+          val requestWithCache = journeyRequest(aDeclaration(withType(declarationType), withItems(item)))
           val view = createView()(requestWithCache)
           view.getElementById("back-link") must haveHref(ZeroRatedForVatController.displayPage(itemId))
         }

@@ -48,7 +48,6 @@ trait SupplementaryNavigator extends CacheDependentNavigators {
     case PackageInformation          => routes.StatisticalValueController.displayPage
     case CusCode                     => routes.UNDangerousGoodsCodeController.displayPage
     case NactCode                    => routes.NactCodeSummaryController.displayPage
-    case NactCodeFirst               => routes.TaricCodeSummaryController.displayPage
     case CommodityMeasure            => routes.PackageInformationSummaryController.displayPage
     case page                        => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on supplementary")
   }
@@ -66,7 +65,8 @@ trait SupplementaryNavigator extends CacheDependentNavigators {
     case RepresentativeAgent       => representativeAgentPreviousPage
   }
 
-  val supplementaryCacheItemDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, String) => Call] = { case AdditionalDocument =>
-    additionalDocumentsPreviousPage
+  val supplementaryCacheItemDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, String) => Call] = {
+    case NactCodeFirst      => cusCodeOrDangerousGoodsPage
+    case AdditionalDocument => additionalDocumentsPreviousPage
   }
 }

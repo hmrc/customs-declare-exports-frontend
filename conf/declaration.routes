@@ -333,20 +333,6 @@ GET         /items/:itemId/cus-code                            controllers.decla
 
 POST        /items/:itemId/cus-code                            controllers.declaration.CusCodeController.submitForm(itemId)
 
-# TARIC Code
-
-GET         /items/:itemId/additional-taric-code               controllers.declaration.TaricCodeAddController.displayPage(itemId)
-
-POST        /items/:itemId/additional-taric-code               controllers.declaration.TaricCodeAddController.submitForm(itemId)
-
-GET         /items/:itemId/additional-taric-codes-list         controllers.declaration.TaricCodeSummaryController.displayPage(itemId)
-
-POST        /items/:itemId/additional-taric-codes-list         controllers.declaration.TaricCodeSummaryController.submitForm(itemId)
-
-GET         /items/:itemId/additional-taric-code/:code/remove  controllers.declaration.TaricCodeRemoveController.displayPage(itemId, code)
-
-POST        /items/:itemId/additional-taric-code/:code/remove  controllers.declaration.TaricCodeRemoveController.submitForm(itemId, code)
-
 # NACT Code
 
 GET         /items/:itemId/vat-rating                          controllers.declaration.ZeroRatedForVatController.displayPage(itemId)
