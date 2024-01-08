@@ -29,8 +29,6 @@
 @import views.helpers.{BackButton, Title}
 @import views.html.components.gds._
 
-@import scala.collection.immutable
-
 @this(
     govukLayout: gdsMainTemplate,
     govukFieldset: GovukFieldset,
@@ -70,7 +68,6 @@
     title = Title("declaration.additionalFiscalReferences.title", "declaration.section.5", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(AdditionalFiscalReference, ItemId(itemId))))
 ) {
-
     @formHelper(action = routes.AdditionalFiscalReferencesAddController.submitForm(itemId), 'autoComplete -> "off") {
         @errorSummary(form.errors)
 
@@ -82,7 +79,7 @@
                 classes = gdsPageLegend,
                 isPageHeading = true
             )),
-            html = HtmlFormat.fill(immutable.Seq(
+            html = HtmlFormat.fill(List(
                 inputFields,
                 tariffExpander(AdditionalFiscalReference, request.declarationType)(messages, appConfig),
                 saveButtons()

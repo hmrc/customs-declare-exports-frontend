@@ -17,14 +17,13 @@
 @import controllers.declaration.routes._
 @import forms.common.YesNoAnswer
 @import forms.common.YesNoAnswer.YesNoAnswers._
+@import models.requests.JourneyRequest
 @import play.twirl.api.HtmlFormat
 @import uk.gov.hmrc.govukfrontend.views.html.components._
-@import views.helpers.{BackButton, Title}
 @import views.components.gds.Styles._
-@import views.html.components.gds._
-@import scala.collection.immutable
+@import views.helpers.{BackButton, Title}
 @import views.helpers.ErrorMapper.yesNoErrors
-@import models.requests.JourneyRequest
+@import views.html.components.gds._
 
 @this(
     govukLayout: gdsMainTemplate,
@@ -55,8 +54,8 @@
 
 @govukLayout(
     title = Title("declaration.nationalAdditionalCode.remove.header", "declaration.section.5", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), controllers.declaration.routes.NactCodeSummaryController.displayPage(itemId)))) {
-
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), controllers.declaration.routes.NactCodeSummaryController.displayPage(itemId)))
+) {
     @formHelper(action = NactCodeRemoveController.submitForm(itemId, code), 'autoComplete -> "off") {
         @errorSummary(yesNoErrors(form.errors))
 
@@ -68,12 +67,11 @@
                 classes = gdsPageLegend,
                 isPageHeading = true
             )),
-            html = HtmlFormat.fill(immutable.Seq(
+            html = HtmlFormat.fill(List(
                 nactCodeSummary,
                 yesNoRadios(form, inline = true),
                 saveButtons()
             ))
         ))
     }
-
 }

@@ -17,14 +17,13 @@
 @import controllers.declaration.routes._
 @import forms.common.YesNoAnswer
 @import forms.declaration.AdditionalInformation
+@import models.requests.JourneyRequest
 @import play.twirl.api.HtmlFormat
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.components.gds.Styles._
-@import views.html.components.gds._
 @import views.helpers.{BackButton, Title}
-@import scala.collection.immutable
 @import views.helpers.ErrorMapper.yesNoErrors
-@import models.requests.JourneyRequest
+@import views.html.components.gds._
 
 @this(
     govukLayout: gdsMainTemplate,
@@ -59,8 +58,8 @@
 
 @govukLayout(
     title = Title("declaration.additionalInformation.remove.title", "declaration.section.5", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), AdditionalInformationController.displayPage(itemId)))) {
-
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), AdditionalInformationController.displayPage(itemId)))
+) {
     @formHelper(action = AdditionalInformationRemoveController.submitForm(itemId, informationId), 'autoComplete -> "off") {
         @errorSummary(yesNoErrors(form.errors))
 
@@ -72,12 +71,11 @@
                 classes = gdsPageLegend,
                 isPageHeading = true
             )),
-            html = HtmlFormat.fill(immutable.Seq(
+            html = HtmlFormat.fill(List(
                 informationTable,
                 yesNoRadios(form, inline = true),
                 saveButtons()
             ))
         ))
     }
-
 }

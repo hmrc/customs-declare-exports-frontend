@@ -17,17 +17,16 @@
 @import config.AppConfig
 @import controllers.declaration.routes
 @import controllers.navigation._
+@import forms.common.YesNoAnswer
 @import forms.declaration.NactCodeFirst
 @import forms.declaration.NactCode
 @import models.requests.JourneyRequest
-@import uk.gov.hmrc.govukfrontend.views.html.components._
-@import views.helpers.{BackButton, Title}
-@import views.html.components.gds._
-@import forms.common.YesNoAnswer
-@import views.components.gds.Styles._
 @import play.twirl.api.HtmlFormat
-@import scala.collection.immutable
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.components.gds.Styles._
+@import views.helpers.{BackButton, Title}
 @import views.helpers.ErrorMapper.yesNoErrors
+@import views.html.components.gds._
 
 @this(
     govukLayout: gdsMainTemplate,
@@ -49,17 +48,14 @@
 @(itemId: String, form: Form[YesNoAnswer], nactCodes: Seq[NactCode] = Seq.empty)(implicit request: JourneyRequest[_], messages: Messages)
 
 @title = @{
-    if(nactCodes.size == 1)
-        Title("declaration.nationalAdditionalCode.header.singular", "declaration.section.5")
-    else
-        Title("declaration.nationalAdditionalCode.header.plural", "declaration.section.5", nactCodes.size.toString)
+  val hasErrors = form.hasErrors || form.hasGlobalErrors
+  if (nactCodes.size == 1) Title("declaration.nationalAdditionalCode.header.singular", "declaration.section.5", hasErrors = hasErrors)
+  else Title("declaration.nationalAdditionalCode.header.plural", "declaration.section.5", nactCodes.size.toString, hasErrors = hasErrors)
 }
 
 @header = @{
-    if(nactCodes.size == 1)
-        Text(messages("declaration.nationalAdditionalCode.header.singular"))
-    else
-        Text(messages("declaration.nationalAdditionalCode.header.plural", nactCodes.size))
+  if (nactCodes.size == 1) Text(messages("declaration.nationalAdditionalCode.header.singular"))
+  else Text(messages("declaration.nationalAdditionalCode.header.plural", nactCodes.size))
 }
 
 @nactCodesTable = {
@@ -97,10 +93,9 @@
 
 @govukLayout(
     title = title,
-    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(NactCodeFirst, ItemId(itemId))))) {
-
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(NactCodeFirst, ItemId(itemId))))
+) {
     @formHelper(action = routes.NactCodeSummaryController.submitForm(itemId), 'autoComplete -> "off") {
-
         @errorSummary(yesNoErrors(form.errors))
 
         @sectionHeader(messages("declaration.section.5"))
@@ -111,12 +106,11 @@
                 classes = gdsPageLegend,
                 isPageHeading = true
             )),
-            html = HtmlFormat.fill(immutable.Seq(
+            html = HtmlFormat.fill(List(
                 nactCodesTable,
                 addAnotherQuestion("declaration.nationalAdditionalCode.label", form),
                 saveButtons()
             ))
         ))
-
     }
 }

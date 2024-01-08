@@ -17,16 +17,15 @@
 @import controllers.declaration.routes.{PackageInformationRemoveController, PackageInformationSummaryController}
 @import forms.common.YesNoAnswer
 @import forms.common.YesNoAnswer.YesNoAnswers._
-@import play.twirl.api.HtmlFormat
-@import uk.gov.hmrc.govukfrontend.views.html.components._
-@import views.helpers.{BackButton, Title}
-@import views.components.gds.Styles._
-@import views.html.components.gds._
-@import scala.collection.immutable
 @import forms.declaration.PackageInformation
-@import views.helpers.ErrorMapper.yesNoErrors
-@import services.PackageTypesService
 @import models.requests.JourneyRequest
+@import play.twirl.api.HtmlFormat
+@import services.PackageTypesService
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.components.gds.Styles._
+@import views.helpers.{BackButton, Title}
+@import views.helpers.ErrorMapper.yesNoErrors
+@import views.html.components.gds._
 
 @this(
     govukLayout: gdsMainTemplate,
@@ -66,8 +65,8 @@
 
 @govukLayout(
     title = Title("declaration.packageInformation.remove.title", "declaration.section.5", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), PackageInformationSummaryController.displayPage(itemId)))) {
-
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), PackageInformationSummaryController.displayPage(itemId)))
+) {
     @formHelper(action = PackageInformationRemoveController.submitForm(itemId, info.id), 'autoComplete -> "off") {
         @errorSummary(yesNoErrors(form.errors))
 
@@ -79,7 +78,7 @@
                 classes = gdsPageLegend,
                 isPageHeading = true
             )),
-            html = HtmlFormat.fill(immutable.Seq(
+            html = HtmlFormat.fill(List(
                 packageInformationTable,
                 yesNoRadios(form, inline = true),
                 saveButtons()

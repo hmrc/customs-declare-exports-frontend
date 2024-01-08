@@ -94,7 +94,7 @@
 }
 
 @govukLayout(
-    title = Title(s"amendment.${key}.heading"),
+    title = Title(s"amendment.${key}.heading", hasErrors = form.hasErrors || form.hasGlobalErrors),
     backButton = Some(BackButton(messages("site.back"), backButton)),
     useCustomContentWidth = true,
     showDeclarationSummaryLink = false

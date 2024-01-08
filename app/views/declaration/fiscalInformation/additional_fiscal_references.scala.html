@@ -19,16 +19,15 @@
 @import controllers.navigation.{ItemId, Navigator}
 @import forms.common.YesNoAnswer
 @import forms.declaration.{AdditionalFiscalReference, AdditionalFiscalReferencesData, AdditionalFiscalReferencesSummary}
-@import services.Countries
 @import models.requests.JourneyRequest
-@import views.components.gds.Styles._
-@import uk.gov.hmrc.govukfrontend.views.html.components._
-@import views.helpers.{BackButton, Title}
-@import views.html.components.gds._
 @import play.twirl.api.HtmlFormat
-@import scala.collection.immutable
+@import services.Countries
+@import uk.gov.hmrc.govukfrontend.views.html.components._
 @import utils.ListItem._
+@import views.components.gds.Styles._
+@import views.helpers.{BackButton, Title}
 @import views.helpers.ErrorMapper.yesNoErrors
+@import views.html.components.gds._
 
 @this(
     govukLayout: gdsMainTemplate,
@@ -47,17 +46,14 @@
 @(itemId:String, form: Form[YesNoAnswer], additionalReferences: Seq[AdditionalFiscalReference])(implicit request: JourneyRequest[_], messages: Messages)
 
 @title = @{
-    if(additionalReferences.size == 1)
-        Title("declaration.additionalFiscalReferences.table.heading", "declaration.section.5")
-    else
-        Title("declaration.additionalFiscalReferences.table.multiple.heading", "declaration.section.5", additionalReferences.size.toString)
+  val hasErrors = form.hasErrors || form.hasGlobalErrors
+  if (additionalReferences.size == 1) Title("declaration.additionalFiscalReferences.table.heading", "declaration.section.5", hasErrors = hasErrors)
+  else Title("declaration.additionalFiscalReferences.table.multiple.heading", "declaration.section.5", additionalReferences.size.toString, hasErrors = hasErrors)
 }
 
 @header = @{
-    if(additionalReferences.size == 1)
-        Text(messages("declaration.additionalFiscalReferences.table.heading"))
-    else
-        Text(messages("declaration.additionalFiscalReferences.table.multiple.heading", additionalReferences.size))
+  if (additionalReferences.size == 1) Text(messages("declaration.additionalFiscalReferences.table.heading"))
+  else Text(messages("declaration.additionalFiscalReferences.table.multiple.heading", additionalReferences.size))
 }
 
 @referenceTable = {
@@ -103,10 +99,8 @@
 @govukLayout(
     title = title,
     backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(AdditionalFiscalReferencesSummary, ItemId(itemId))))
-    ) {
-
+) {
     @formHelper(action = AdditionalFiscalReferencesController.submitForm(itemId), 'autoComplete -> "off") {
-
         @errorSummary(yesNoErrors(form.errors))
 
         @sectionHeader(messages("declaration.section.5"))
@@ -117,13 +111,11 @@
                 classes = gdsPageLegend,
                 isPageHeading = true
             )),
-            html = HtmlFormat.fill(immutable.Seq(
+            html = HtmlFormat.fill(List(
                 referenceTable,
                 addAnotherQuestion("declaration.additionalFiscalReferences.add.another", form),
                 saveButtons()
             ))
         ))
-
     }
-
 }

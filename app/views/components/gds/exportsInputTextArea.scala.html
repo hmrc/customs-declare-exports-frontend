@@ -14,12 +14,11 @@
  * limitations under the License.
  *@
 
-@import scala.collection.immutable
+@import play.twirl.api.HtmlFormat
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.components.gds.Styles._
 @import views.helpers.InputTextHelper
 @import views.html.components.gds.label
-@import play.twirl.api.HtmlFormat
 
 @this(govukTextarea : GovukTextarea, label: label, helper: InputTextHelper)
 
@@ -47,7 +46,7 @@
 
 @{bodyHtml
     .map{ body =>
-        HtmlContent(HtmlFormat.fill(immutable.Seq(
+        HtmlContent(HtmlFormat.fill(List(
             label(labelKey = labelKey, forFieldName = field.id, labelArg = labelArg, isSubHeading = isSubHeading, subHeadingClasses = subHeadingClasses),
             body,
             govukTextarea(Textarea(

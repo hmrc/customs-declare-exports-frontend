@@ -14,15 +14,14 @@
  * limitations under the License.
  *@
 
-@import models.requests.JourneyRequest
-@import forms.declaration.AdditionalInformation
-@import controllers.declaration.AdditionalInformationAddController.AdditionalInformationFormGroupId
-@import uk.gov.hmrc.govukfrontend.views.html.components._
 @import config.AppConfig
-@import views.html.components.gds._
-@import views.components.gds.Styles._
+@import controllers.declaration.AdditionalInformationAddController.AdditionalInformationFormGroupId
+@import forms.declaration.AdditionalInformation
+@import models.requests.JourneyRequest
 @import play.twirl.api.HtmlFormat
-@import scala.collection.immutable
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.components.gds.Styles._
+@import views.html.components.gds._
 
 @this(
     govukFieldset: GovukFieldset,
@@ -74,7 +73,7 @@
 )))
 
 @govukFieldset(Fieldset(
-    html = HtmlFormat.fill(immutable.Seq(
+    html = HtmlFormat.fill(List(
         pageFields,
         tariffExpander(AdditionalInformation, request.declarationType)(messages, appConfig),
         saveButtons()

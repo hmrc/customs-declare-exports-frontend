@@ -52,17 +52,14 @@
 @(itemId: String, form: Form[_], documents: Seq[AdditionalDocument])(implicit request: JourneyRequest[_], messages: Messages)
 
 @title = @{
-    if(documents.size == 1)
-        Title("declaration.additionalDocument.summary.heading", "declaration.section.5")
-    else
-        Title("declaration.additionalDocument.summary.multiple.heading", "declaration.section.5", documents.size.toString)
+  val hasErrors = form.hasErrors || form.hasGlobalErrors
+  if (documents.size == 1) Title("declaration.additionalDocument.summary.heading", "declaration.section.5", hasErrors = hasErrors)
+  else Title("declaration.additionalDocument.summary.multiple.heading", "declaration.section.5", documents.size.toString, hasErrors = hasErrors)
 }
 
 @header = @{
-    if(documents.size == 1)
-        Text(messages("declaration.additionalDocument.summary.heading"))
-    else
-        Text(messages("declaration.additionalDocument.summary.multiple.heading", documents.size))
+  if (documents.size == 1) Text(messages("declaration.additionalDocument.summary.heading"))
+  else Text(messages("declaration.additionalDocument.summary.multiple.heading", documents.size))
 }
 
 @warning = {
@@ -138,10 +135,9 @@
 
 @govukLayout(
     title = title,
-    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(AdditionalDocumentsSummary, ItemId(itemId))))) {
-
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(AdditionalDocumentsSummary, ItemId(itemId))))
+) {
     @formHelper(action = AdditionalDocumentsController.submitForm(itemId), 'autoComplete -> "off") {
-
         @errorSummary(yesNoErrors(form.errors))
 
         @sectionHeader(messages("declaration.section.5"))
@@ -159,6 +155,5 @@
                 saveButtons()
             ))
         ))
-
     }
 }

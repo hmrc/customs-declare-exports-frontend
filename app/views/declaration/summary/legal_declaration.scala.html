@@ -76,7 +76,7 @@
 }
 
 @govukLayout(
-    title = Title(headerMsgKey),
+    title = Title(headerMsgKey, hasErrors = form.hasErrors || form.hasGlobalErrors),
     backButton = Some(BackButton(messages("site.back"), SummaryController.displayPage)),
     useCustomContentWidth = true,
     showDeclarationSummaryLink = false
