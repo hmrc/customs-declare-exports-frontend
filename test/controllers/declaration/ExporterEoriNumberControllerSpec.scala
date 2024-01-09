@@ -16,7 +16,7 @@
 
 package controllers.declaration
 
-import base.ControllerSpec
+import base.{AuditedControllerSpec, ControllerSpec}
 import controllers.declaration.routes.{ExporterDetailsController, IsExsController, RepresentativeAgentController}
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.common.{Address, Eori}
@@ -34,7 +34,7 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import views.html.declaration.exporter_eori_number
 
-class ExporterEoriNumberControllerSpec extends ControllerSpec with OptionValues {
+class ExporterEoriNumberControllerSpec extends ControllerSpec with AuditedControllerSpec with OptionValues {
 
   val mockExporterEoriNumberPage = mock[exporter_eori_number]
 
@@ -45,7 +45,7 @@ class ExporterEoriNumberControllerSpec extends ControllerSpec with OptionValues 
     stubMessagesControllerComponents(),
     mockExporterEoriNumberPage,
     mockExportsCacheService
-  )(ec)
+  )(ec, auditService)
 
   def checkViewInteractions(noOfInvocations: Int = 1): Unit =
     verify(mockExporterEoriNumberPage, times(noOfInvocations)).apply(any())(any(), any())
@@ -141,6 +141,7 @@ class ExporterEoriNumberControllerSpec extends ControllerSpec with OptionValues 
 
         status(result) mustBe BAD_REQUEST
         checkViewInteractions()
+        verifyNoAudit()
       }
 
       "EORI is not provided but trader selected that it has an EORI" in {
@@ -152,6 +153,7 @@ class ExporterEoriNumberControllerSpec extends ControllerSpec with OptionValues 
 
         status(result) mustBe BAD_REQUEST
         checkViewInteractions()
+        verifyNoAudit()
       }
 
       "no choice is selected and no cached ExporterDetails exist" in {
@@ -163,6 +165,7 @@ class ExporterEoriNumberControllerSpec extends ControllerSpec with OptionValues 
 
         status(result) mustBe BAD_REQUEST
         checkViewInteractions()
+        verifyNoAudit()
       }
     }
 
@@ -178,6 +181,7 @@ class ExporterEoriNumberControllerSpec extends ControllerSpec with OptionValues 
         thePageNavigatedTo mustBe ExporterDetailsController.displayPage
         checkViewInteractions(0)
         theCacheModelUpdated.parties.exporterDetails must be(Some(ExporterDetails(EntityDetails(None, None))))
+        verifyAudit()
       }
     }
   }
@@ -196,6 +200,7 @@ class ExporterEoriNumberControllerSpec extends ControllerSpec with OptionValues 
         thePageNavigatedTo mustBe RepresentativeAgentController.displayPage
         checkViewInteractions(0)
         theCacheModelUpdated.parties.exporterDetails must be(Some(ExporterDetails(EntityDetails(eoriInput, None))))
+        verifyAudit()
       }
     }
   }
@@ -214,6 +219,7 @@ class ExporterEoriNumberControllerSpec extends ControllerSpec with OptionValues 
         thePageNavigatedTo mustBe IsExsController.displayPage
         checkViewInteractions(0)
         theCacheModelUpdated.parties.exporterDetails must be(Some(ExporterDetails(EntityDetails(eoriInput, None))))
+        verifyAudit()
       }
     }
   }

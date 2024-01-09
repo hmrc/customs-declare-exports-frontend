@@ -16,7 +16,7 @@
 
 package controllers.declaration
 
-import base.{ControllerSpec, MockTaggedCodes}
+import base.{AuditedControllerSpec, ControllerSpec, MockTaggedCodes}
 import controllers.declaration.routes.{AdditionalDocumentAddController, AdditionalDocumentsController, AdditionalDocumentsRequiredController}
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.Yes
@@ -34,7 +34,7 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import views.html.declaration.is_licence_required
 
-class IsLicenceRequiredControllerSpec extends ControllerSpec with MockTaggedCodes with OptionValues {
+class IsLicenceRequiredControllerSpec extends ControllerSpec with AuditedControllerSpec with MockTaggedCodes with OptionValues {
 
   private val itemId = "itemId"
   private val commodityDetails = CommodityDetails(Some("1234567890"), Some("description"))
@@ -50,7 +50,7 @@ class IsLicenceRequiredControllerSpec extends ControllerSpec with MockTaggedCode
     stubMessagesControllerComponents(),
     taggedAuthCodes,
     mockPage
-  )(ec)
+  )(ec, auditService)
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     withNewCaching(declaration)
@@ -121,6 +121,7 @@ class IsLicenceRequiredControllerSpec extends ControllerSpec with MockTaggedCode
             val result = controller.submitForm(itemId)(postRequestAsFormUrlEncoded(Seq("yesNo" -> "Yes"): _*))
             await(result) mustBe aRedirectToTheNextPage
             thePageNavigatedTo mustBe AdditionalDocumentsController.displayPage(itemId)
+            verifyAudit()
           }
 
           "user submits valid No answer" in {
@@ -129,6 +130,7 @@ class IsLicenceRequiredControllerSpec extends ControllerSpec with MockTaggedCode
             val result = controller.submitForm(itemId)(postRequestAsFormUrlEncoded(Seq("yesNo" -> "No"): _*))
             await(result) mustBe aRedirectToTheNextPage
             thePageNavigatedTo mustBe AdditionalDocumentsController.displayPage(itemId)
+            verifyAudit()
           }
         }
 
@@ -139,6 +141,7 @@ class IsLicenceRequiredControllerSpec extends ControllerSpec with MockTaggedCode
             val result = controller.submitForm(itemId)(postRequestAsFormUrlEncoded(Seq("yesNo" -> "Yes"): _*))
             await(result) mustBe aRedirectToTheNextPage
             thePageNavigatedTo mustBe AdditionalDocumentAddController.displayPage(itemId)
+            verifyAudit()
           }
 
           "user submits valid No answer" when {
@@ -154,6 +157,7 @@ class IsLicenceRequiredControllerSpec extends ControllerSpec with MockTaggedCode
 
               await(result) mustBe aRedirectToTheNextPage
               thePageNavigatedTo mustBe AdditionalDocumentAddController.displayPage(itemId)
+              verifyAudit()
             }
 
             "NO authorisation from List" in {
@@ -162,6 +166,7 @@ class IsLicenceRequiredControllerSpec extends ControllerSpec with MockTaggedCode
               val result = controller.submitForm(itemId)(postRequestAsFormUrlEncoded(Seq("yesNo" -> "No"): _*))
               await(result) mustBe aRedirectToTheNextPage
               thePageNavigatedTo mustBe AdditionalDocumentsRequiredController.displayPage(itemId)
+              verifyAudit()
             }
           }
         }

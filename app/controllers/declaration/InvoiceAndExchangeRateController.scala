@@ -26,6 +26,7 @@ import models.requests.JourneyRequest
 import models.{DeclarationType, ExportsDeclaration}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import services.audit.AuditService
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.WithUnsafeDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
@@ -41,7 +42,7 @@ class InvoiceAndExchangeRateController @Inject() (
   mcc: MessagesControllerComponents,
   invoiceAndExchangeRatePage: invoice_and_exchange_rate,
   override val exportsCacheService: ExportsCacheService
-)(implicit ec: ExecutionContext)
+)(implicit ec: ExecutionContext, auditService: AuditService)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithUnsafeDefaultFormBinding {
 
   private val validTypes = Seq(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY)

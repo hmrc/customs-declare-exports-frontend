@@ -16,7 +16,7 @@
 
 package controllers.declaration
 
-import base.{ControllerSpec, MockTransportCodeService}
+import base.{AuditedControllerSpec, ControllerSpec, MockTransportCodeService}
 import controllers.declaration.routes.{BorderTransportController, ExpressConsignmentController, TransportCountryController}
 import controllers.helpers.TransportSectionHelper.{postalOrFTIModeOfTransportCodes, Guernsey, Jersey}
 import forms.declaration.DepartureTransport
@@ -37,7 +37,7 @@ import play.twirl.api.HtmlFormat
 import views.helpers.DepartureTransportHelper
 import views.html.declaration.departure_transport
 
-class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerMocks {
+class DepartureTransportControllerSpec extends ControllerSpec with AuditedControllerSpec with ErrorHandlerMocks {
 
   val transportCodeService = MockTransportCodeService.transportCodeService
 
@@ -53,7 +53,7 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
     transportCodeService,
     departureTransportHelper,
     departureTransportPage
-  )(ec)
+  )(ec, auditService)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
@@ -64,7 +64,7 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
   }
 
   override protected def afterEach(): Unit = {
-    reset(departureTransportHelper, departureTransportPage)
+    reset(departureTransportHelper, departureTransportPage, auditService)
     super.afterEach()
   }
 
@@ -125,6 +125,7 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
               val transport = theCacheModelUpdated.transport
               transport.meansOfTransportOnDepartureType mustBe None
               transport.meansOfTransportOnDepartureIDNumber mustBe None
+              verifyAudit()
             }
           }
         }
@@ -158,6 +159,7 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
 
           val result = controller.submitForm()(postRequest(correctForm))
           status(result) must be(BAD_REQUEST)
+          verifyNoAudit()
         }
 
         "form is incorrect" in {
@@ -167,6 +169,7 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
 
           val result = controller.submitForm()(postRequest(incorrectForm))
           status(result) must be(BAD_REQUEST)
+          verifyNoAudit()
         }
       }
     }
@@ -186,6 +189,7 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
             val transport = theCacheModelUpdated.transport
             transport.meansOfTransportOnDepartureType mustBe None
             transport.meansOfTransportOnDepartureIDNumber mustBe None
+            verifyAudit()
           }
 
           s"the 'submitForm' method is invoked and Destination country is '$country'" in {
@@ -201,6 +205,7 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
             val transport = theCacheModelUpdated.transport
             transport.meansOfTransportOnDepartureType mustBe None
             transport.meansOfTransportOnDepartureIDNumber mustBe None
+            verifyAudit()
           }
         }
       }
@@ -214,6 +219,7 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
 
           status(result) must be(SEE_OTHER)
           thePageNavigatedTo mustBe BorderTransportController.displayPage
+          verifyAudit()
         }
       }
 
@@ -227,6 +233,7 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
 
           status(result) must be(SEE_OTHER)
           thePageNavigatedTo mustBe TransportCountryController.displayPage
+          verifyAudit()
         }
       }
     }
@@ -261,6 +268,7 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
           val transport = theCacheModelUpdated.transport
           transport.meansOfTransportOnDepartureType mustBe None
           transport.meansOfTransportOnDepartureIDNumber mustBe None
+          verifyAudit()
         }
       }
     }
@@ -277,6 +285,7 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
 
           status(result) must be(SEE_OTHER)
           thePageNavigatedTo mustBe ExpressConsignmentController.displayPage
+          verifyAudit()
         }
 
         "'0019' has been entered as Procedure Code and" when {
@@ -290,10 +299,10 @@ class DepartureTransportControllerSpec extends ControllerSpec with ErrorHandlerM
 
             await(result) mustBe aRedirectToTheNextPage
             thePageNavigatedTo mustBe ExpressConsignmentController.displayPage
+            verifyAudit()
           }
         }
       }
     }
-
   }
 }

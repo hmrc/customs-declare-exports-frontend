@@ -16,7 +16,7 @@
 
 package controllers.declaration
 
-import base.ControllerSpec
+import base.{AuditedControllerSpec, ControllerSpec}
 import controllers.declaration.routes.{CarrierEoriNumberController, ConsigneeDetailsController}
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.{IsExs, RepresentativeStatus}
@@ -32,7 +32,7 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import views.html.declaration.representative_details_status
 
-class RepresentativeStatusControllerSpec extends ControllerSpec with OptionValues {
+class RepresentativeStatusControllerSpec extends ControllerSpec with AuditedControllerSpec with OptionValues {
 
   val mockPage = mock[representative_details_status]
 
@@ -43,7 +43,7 @@ class RepresentativeStatusControllerSpec extends ControllerSpec with OptionValue
     mockExportsCacheService,
     stubMessagesControllerComponents(),
     mockPage
-  )(ec)
+  )(ec, auditService)
 
   val statusCode = "2"
 
@@ -111,6 +111,7 @@ class RepresentativeStatusControllerSpec extends ControllerSpec with OptionValue
 
           status(result) mustBe BAD_REQUEST
           verifyPage(1)
+          verifyNoAudit()
         }
       }
     }
@@ -127,6 +128,7 @@ class RepresentativeStatusControllerSpec extends ControllerSpec with OptionValue
         thePageNavigatedTo mustBe ConsigneeDetailsController.displayPage
 
         verifyPage(0)
+        verifyAudit()
       }
     }
 
@@ -142,6 +144,7 @@ class RepresentativeStatusControllerSpec extends ControllerSpec with OptionValue
         thePageNavigatedTo mustBe CarrierEoriNumberController.displayPage
 
         verifyPage(0)
+        verifyAudit()
       }
     }
 
@@ -159,6 +162,7 @@ class RepresentativeStatusControllerSpec extends ControllerSpec with OptionValue
           thePageNavigatedTo mustBe CarrierEoriNumberController.displayPage
 
           verifyPage(0)
+          verifyAudit()
         }
       }
 
@@ -175,6 +179,7 @@ class RepresentativeStatusControllerSpec extends ControllerSpec with OptionValue
           thePageNavigatedTo mustBe ConsigneeDetailsController.displayPage
 
           verifyPage(0)
+          verifyAudit()
         }
       }
     }

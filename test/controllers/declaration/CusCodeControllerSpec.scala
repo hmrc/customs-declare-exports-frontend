@@ -16,7 +16,7 @@
 
 package controllers.declaration
 
-import base.ControllerSpec
+import base.{AuditedControllerSpec, ControllerSpec}
 import controllers.declaration.routes.{NactCodeSummaryController, ZeroRatedForVatController}
 import controllers.helpers.ItemHelper.journeysOnLowValue
 import controllers.routes.RootController
@@ -36,12 +36,15 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import views.html.declaration.cus_code
 
-class CusCodeControllerSpec extends ControllerSpec {
+class CusCodeControllerSpec extends ControllerSpec with AuditedControllerSpec {
 
   val mockPage = mock[cus_code]
 
   val controller =
-    new CusCodeController(mockAuthAction, mockJourneyAction, mockExportsCacheService, navigator, stubMessagesControllerComponents(), mockPage)(ec)
+    new CusCodeController(mockAuthAction, mockJourneyAction, mockExportsCacheService, navigator, stubMessagesControllerComponents(), mockPage)(
+      ec,
+      auditService
+    )
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
@@ -112,6 +115,7 @@ class CusCodeControllerSpec extends ControllerSpec {
 
           status(result) mustBe BAD_REQUEST
           verify(mockPage, times(1)).apply(any(), any())(any(), any())
+          verifyNoAudit()
         }
       }
     }
@@ -126,6 +130,7 @@ class CusCodeControllerSpec extends ControllerSpec {
           val result = controller.submitForm(itemId)(postRequest(correctForm))
           await(result) mustBe aRedirectToTheNextPage
           thePageNavigatedTo mustBe NactCodeSummaryController.displayPage(itemId)
+          verifyAudit()
         }
       }
     }
@@ -139,6 +144,7 @@ class CusCodeControllerSpec extends ControllerSpec {
           val result = controller.submitForm(itemId)(postRequest(correctForm))
           await(result) mustBe aRedirectToTheNextPage
           thePageNavigatedTo mustBe ZeroRatedForVatController.displayPage(itemId)
+          verifyAudit()
         }
 
         "NatureOfTransaction is 'Sale'" in {
@@ -146,6 +152,7 @@ class CusCodeControllerSpec extends ControllerSpec {
           val result = controller.submitForm(itemId)(postRequest(correctForm))
           await(result) mustBe aRedirectToTheNextPage
           thePageNavigatedTo mustBe ZeroRatedForVatController.displayPage(itemId)
+          verifyAudit()
         }
       }
 
@@ -158,6 +165,7 @@ class CusCodeControllerSpec extends ControllerSpec {
             val result = controller.submitForm(item.id)(postRequest(correctForm))
             await(result) mustBe aRedirectToTheNextPage
             thePageNavigatedTo mustBe ZeroRatedForVatController.displayPage(item.id)
+            verifyAudit()
           }
         }
       }
@@ -172,6 +180,7 @@ class CusCodeControllerSpec extends ControllerSpec {
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(RootController.displayPage.url)
+          verifyNoAudit()
         }
       }
     }

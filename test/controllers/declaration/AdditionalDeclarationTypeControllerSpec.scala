@@ -16,7 +16,7 @@
 
 package controllers.declaration
 
-import base.ControllerSpec
+import base.{AuditedControllerSpec, ControllerSpec}
 import controllers.actions.AmendmentDraftFilterSpec
 import controllers.declaration.routes.{DeclarantDetailsController, DucrChoiceController}
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
@@ -33,7 +33,7 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import views.html.declaration.additional_declaration_type
 
-class AdditionalDeclarationTypeControllerSpec extends ControllerSpec with AmendmentDraftFilterSpec {
+class AdditionalDeclarationTypeControllerSpec extends ControllerSpec with AuditedControllerSpec with AmendmentDraftFilterSpec {
 
   val additionalDeclarationTypePage = mock[additional_declaration_type]
 
@@ -44,7 +44,7 @@ class AdditionalDeclarationTypeControllerSpec extends ControllerSpec with Amendm
     navigator,
     stubMessagesControllerComponents(),
     additionalDeclarationTypePage
-  )(ec)
+  )(ec, auditService)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
@@ -113,12 +113,14 @@ class AdditionalDeclarationTypeControllerSpec extends ControllerSpec with Amendm
             withNewCaching(aDeclaration(withType(declarationType)))
             val result = controller.submitForm()(postRequest(JsString("")))
             status(result) must be(BAD_REQUEST)
+            verifyNoAudit()
           }
 
           s"the value selected is not a valid AdditionalDeclarationType" in {
             withNewCaching(aDeclaration(withType(declarationType)))
             val result = controller.submitForm()(postRequest(JsString("x")))
             status(result) must be(BAD_REQUEST)
+            verifyNoAudit()
           }
         }
       }
@@ -141,6 +143,7 @@ class AdditionalDeclarationTypeControllerSpec extends ControllerSpec with Amendm
               else DeclarantDetailsController.displayPage
 
             thePageNavigatedTo mustBe expectedPage
+            verifyAudit()
           }
         }
       }

@@ -16,7 +16,7 @@
 
 package controllers.declaration
 
-import base.{ControllerSpec, MockTaggedCodes}
+import base.{AuditedControllerSpec, ControllerSpec, MockTaggedCodes}
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.Yes
 import forms.declaration.additionaldocuments.AdditionalDocument
@@ -32,7 +32,7 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import views.html.declaration.additionalDocuments.additional_document_add
 
-class AdditionalDocumentAddControllerSpec extends ControllerSpec with ErrorHandlerMocks with MockTaggedCodes {
+class AdditionalDocumentAddControllerSpec extends ControllerSpec with AuditedControllerSpec with ErrorHandlerMocks with MockTaggedCodes {
 
   val additionalDocumentAddPage = mock[additional_document_add]
 
@@ -45,7 +45,7 @@ class AdditionalDocumentAddControllerSpec extends ControllerSpec with ErrorHandl
     taggedAuthCodes,
     taggedAdditionalDocumentCodes,
     additionalDocumentAddPage
-  )(ec)
+  )(ec, auditService)
 
   val itemId = "itemId"
 
@@ -93,6 +93,7 @@ class AdditionalDocumentAddControllerSpec extends ControllerSpec with ErrorHandl
         val result = controller.submitForm(itemId)(postRequestAsFormUrlEncoded(incorrectForm: _*))
 
         status(result) mustBe BAD_REQUEST
+        verifyNoAudit()
         verifyPageInvoked()
       }
 
@@ -125,6 +126,7 @@ class AdditionalDocumentAddControllerSpec extends ControllerSpec with ErrorHandl
 
         status(result) mustBe BAD_REQUEST
         verifyPageInvoked()
+        verifyNoAudit()
       }
 
       "user reach maximum amount of items" in {
@@ -138,6 +140,7 @@ class AdditionalDocumentAddControllerSpec extends ControllerSpec with ErrorHandl
 
         status(result) mustBe BAD_REQUEST
         verifyPageInvoked()
+        verifyNoAudit()
       }
     }
 
@@ -152,6 +155,7 @@ class AdditionalDocumentAddControllerSpec extends ControllerSpec with ErrorHandl
 
         val savedDocuments = theCacheModelUpdated.itemBy(itemId).flatMap(_.additionalDocuments)
         savedDocuments mustBe Some(AdditionalDocuments(YesNoAnswer.Yes, Seq(additionalDocument)))
+        verifyAudit()
       }
     }
 
@@ -169,6 +173,7 @@ class AdditionalDocumentAddControllerSpec extends ControllerSpec with ErrorHandl
 
         val isRequired = theCacheModelUpdated.itemBy(itemId).flatMap(_.additionalDocuments.flatMap(_.isRequired))
         isRequired mustBe Yes
+        verifyAudit()
       }
     }
   }

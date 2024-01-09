@@ -16,7 +16,7 @@
 
 package controllers.declaration
 
-import base.ControllerSpec
+import base.{AuditedControllerSpec, ControllerSpec}
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import org.mockito.ArgumentCaptor
@@ -30,7 +30,7 @@ import play.twirl.api.HtmlFormat
 import play.twirl.api.HtmlFormat.Appendable
 import views.html.declaration.additionalDocuments.additional_documents_required
 
-class AdditionalDocumentsRequiredControllerSpec extends ControllerSpec {
+class AdditionalDocumentsRequiredControllerSpec extends ControllerSpec with AuditedControllerSpec {
 
   private val page = mock[additional_documents_required]
 
@@ -41,7 +41,7 @@ class AdditionalDocumentsRequiredControllerSpec extends ControllerSpec {
     navigator,
     stubMessagesControllerComponents(),
     page
-  )(ec)
+  )(ec, auditService)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
@@ -88,6 +88,7 @@ class AdditionalDocumentsRequiredControllerSpec extends ControllerSpec {
 
           status(result) mustBe SEE_OTHER
           thePageNavigatedTo mustBe routes.AdditionalDocumentAddController.displayPage(itemId)
+          verifyAudit()
         }
       }
 
@@ -99,6 +100,7 @@ class AdditionalDocumentsRequiredControllerSpec extends ControllerSpec {
 
           status(result) mustBe SEE_OTHER
           thePageNavigatedTo mustBe routes.ItemsSummaryController.displayItemsSummaryPage
+          verifyAudit()
         }
       }
 
@@ -111,6 +113,7 @@ class AdditionalDocumentsRequiredControllerSpec extends ControllerSpec {
           val result = controller.submitForm(itemId)(postRequest(incorrectForm))
           status(result) must be(BAD_REQUEST)
           verifyPageInvoked
+          verifyNoAudit()
         }
       }
     }

@@ -16,7 +16,7 @@
 
 package controllers.declaration
 
-import base.ControllerSpec
+import base.{AuditedControllerSpec, ControllerSpec}
 import forms.common.{Eori, YesNoAnswer}
 import forms.declaration.AdditionalActor
 import models.declaration.AdditionalActors
@@ -31,7 +31,7 @@ import play.twirl.api.HtmlFormat
 import utils.ListItem
 import views.html.declaration.additionalActors.additional_actors_remove
 
-class AdditionalActorsRemoveControllerSpec extends ControllerSpec with OptionValues {
+class AdditionalActorsRemoveControllerSpec extends ControllerSpec with AuditedControllerSpec with OptionValues {
 
   val mockPage = mock[additional_actors_remove]
 
@@ -43,7 +43,7 @@ class AdditionalActorsRemoveControllerSpec extends ControllerSpec with OptionVal
       navigator,
       stubMessagesControllerComponents(),
       mockPage
-    )(ec)
+    )(ec, auditService)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
@@ -107,6 +107,7 @@ class AdditionalActorsRemoveControllerSpec extends ControllerSpec with OptionVal
 
           status(result) mustBe BAD_REQUEST
           verifyRemovePageInvoked()
+          verifyNoAudit()
         }
 
       }
@@ -121,6 +122,7 @@ class AdditionalActorsRemoveControllerSpec extends ControllerSpec with OptionVal
           thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalActorsSummaryController.displayPage
 
           theCacheModelUpdated.parties.declarationHoldersData mustBe None
+          verifyAudit()
         }
 
         "user submits 'No' answer" in {
@@ -133,6 +135,7 @@ class AdditionalActorsRemoveControllerSpec extends ControllerSpec with OptionVal
           thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalActorsSummaryController.displayPage
 
           verifyTheCacheIsUnchanged()
+          verifyNoAudit()
         }
       }
     }

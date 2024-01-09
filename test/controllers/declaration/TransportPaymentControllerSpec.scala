@@ -16,7 +16,7 @@
 
 package controllers.declaration
 
-import base.ControllerSpec
+import base.{AuditedControllerSpec, ControllerSpec}
 import controllers.declaration.routes.TransportContainerController
 import controllers.routes.RootController
 import forms.declaration.TransportPayment
@@ -31,7 +31,7 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import views.html.declaration.transport_payment
 
-class TransportPaymentControllerSpec extends ControllerSpec {
+class TransportPaymentControllerSpec extends ControllerSpec with AuditedControllerSpec {
 
   val transportPaymentPage = mock[transport_payment]
 
@@ -42,7 +42,7 @@ class TransportPaymentControllerSpec extends ControllerSpec {
     mockExportsCacheService,
     stubMessagesControllerComponents(),
     transportPaymentPage
-  )(ec)
+  )(ec, auditService)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
@@ -53,7 +53,7 @@ class TransportPaymentControllerSpec extends ControllerSpec {
 
   override protected def afterEach(): Unit = {
     super.afterEach()
-    reset(transportPaymentPage)
+    reset(transportPaymentPage, auditService)
   }
 
   def theResponseForm: Form[TransportPayment] = {
@@ -101,6 +101,7 @@ class TransportPaymentControllerSpec extends ControllerSpec {
           val result = controller.submitForm()(postRequest(incorrectForm))
 
           status(result) must be(BAD_REQUEST)
+          verifyNoAudit()
         }
       }
 
@@ -114,6 +115,7 @@ class TransportPaymentControllerSpec extends ControllerSpec {
           await(result) mustBe aRedirectToTheNextPage
           thePageNavigatedTo mustBe TransportContainerController.displayContainerSummary
           verify(transportPaymentPage, times(0)).apply(any())(any(), any())
+          verifyAudit()
         }
       }
     }

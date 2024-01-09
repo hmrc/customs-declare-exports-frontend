@@ -16,7 +16,7 @@
 
 package controllers.declaration
 
-import base.ControllerWithoutFormSpec
+import base.{AuditedControllerSpec, ControllerWithoutFormSpec}
 import controllers.declaration.routes.PreviousDocumentsSummaryController
 import forms.common.YesNoAnswer
 import forms.declaration.Document
@@ -28,7 +28,7 @@ import play.twirl.api.HtmlFormat
 import utils.ListItem
 import views.html.declaration.previousDocuments.previous_documents_remove
 
-class PreviousDocumentsRemoveControllerSpec extends ControllerWithoutFormSpec {
+class PreviousDocumentsRemoveControllerSpec extends ControllerWithoutFormSpec with AuditedControllerSpec {
 
   private val page = mock[previous_documents_remove]
 
@@ -39,7 +39,7 @@ class PreviousDocumentsRemoveControllerSpec extends ControllerWithoutFormSpec {
     navigator,
     stubMessagesControllerComponents(),
     page
-  )
+  )(ec, auditService)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
@@ -78,6 +78,7 @@ class PreviousDocumentsRemoveControllerSpec extends ControllerWithoutFormSpec {
         val result = controller.submit(documentId)(postRequest(incorrectForm))
 
         status(result) mustBe BAD_REQUEST
+        verifyNoAudit()
       }
     }
 
@@ -101,6 +102,7 @@ class PreviousDocumentsRemoveControllerSpec extends ControllerWithoutFormSpec {
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe PreviousDocumentsSummaryController.displayPage
+        verifyAudit()
       }
 
       "user answer No" in {
@@ -112,6 +114,7 @@ class PreviousDocumentsRemoveControllerSpec extends ControllerWithoutFormSpec {
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe PreviousDocumentsSummaryController.displayPage
+        verifyNoAudit()
       }
 
       "submit method is invoked for incorrect document" in {
@@ -123,6 +126,7 @@ class PreviousDocumentsRemoveControllerSpec extends ControllerWithoutFormSpec {
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe PreviousDocumentsSummaryController.displayPage
+        verifyNoAudit()
       }
     }
 
@@ -136,6 +140,7 @@ class PreviousDocumentsRemoveControllerSpec extends ControllerWithoutFormSpec {
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe PreviousDocumentsSummaryController.displayPage
+        verifyAudit()
       }
     }
   }

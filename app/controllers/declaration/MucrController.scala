@@ -25,6 +25,7 @@ import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
+import services.audit.AuditService
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.WithUnsafeDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
@@ -40,7 +41,7 @@ class MucrController @Inject() (
   navigator: Navigator,
   mcc: MessagesControllerComponents,
   mucrPage: mucr_code
-)(implicit ec: ExecutionContext)
+)(implicit ec: ExecutionContext, auditService: AuditService)
     extends FrontendController(mcc) with AmendmentDraftFilter with I18nSupport with ModelCacheable with SubmissionErrors
     with WithUnsafeDefaultFormBinding {
 

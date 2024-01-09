@@ -16,7 +16,7 @@
 
 package controllers.declaration
 
-import base.ControllerSpec
+import base.{AuditedControllerSpec, ControllerSpec}
 import controllers.declaration.routes._
 import controllers.helpers.TransportSectionHelper.{nonPostalOrFTIModeOfTransportCodes, postalOrFTIModeOfTransportCodes}
 import controllers.routes.RootController
@@ -35,7 +35,7 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import views.html.declaration.inland_transport_details
 
-class InlandTransportDetailsControllerSpec extends ControllerSpec with GivenWhenThen with OptionValues {
+class InlandTransportDetailsControllerSpec extends ControllerSpec with AuditedControllerSpec with GivenWhenThen with OptionValues {
 
   private val inlandTransportDetails = mock[inland_transport_details]
 
@@ -46,7 +46,7 @@ class InlandTransportDetailsControllerSpec extends ControllerSpec with GivenWhen
     exportsCacheService = mockExportsCacheService,
     mcc = stubMessagesControllerComponents(),
     inlandTransportDetailsPage = inlandTransportDetails
-  )
+  )(ec, auditService)
 
   private val exampleTransportMode = Maritime
 
@@ -57,7 +57,7 @@ class InlandTransportDetailsControllerSpec extends ControllerSpec with GivenWhen
   }
 
   override protected def afterEach(): Unit = {
-    reset(inlandTransportDetails)
+    reset(inlandTransportDetails, auditService)
     super.afterEach()
   }
 
@@ -117,6 +117,7 @@ class InlandTransportDetailsControllerSpec extends ControllerSpec with GivenWhen
         await(controller.submit().apply(postRequest(body)))
 
         theCacheModelUpdated.locations.inlandModeOfTransportCode.value.inlandModeOfTransportCode.value mustBe exampleTransportMode
+        verifyAudit()
       }
 
       "return Bad Request if payload is not compatible with model" in {
@@ -126,6 +127,7 @@ class InlandTransportDetailsControllerSpec extends ControllerSpec with GivenWhen
         val result = controller.submit()(postRequest(body))
 
         status(result) mustBe BAD_REQUEST
+        verifyNoAudit()
       }
 
       "return an error" when {
@@ -138,6 +140,7 @@ class InlandTransportDetailsControllerSpec extends ControllerSpec with GivenWhen
 
             val result = controller.submit()(postRequest(body))
             status(result) mustBe BAD_REQUEST
+            verifyNoAudit()
           }
         }
       }
@@ -159,6 +162,7 @@ class InlandTransportDetailsControllerSpec extends ControllerSpec with GivenWhen
             transport.meansOfTransportCrossingTheBorderType mustBe None
             transport.meansOfTransportCrossingTheBorderIDNumber mustBe None
             transport.transportCrossingTheBorderNationality mustBe None
+            verifyAudit()
           }
         }
       }
@@ -180,6 +184,7 @@ class InlandTransportDetailsControllerSpec extends ControllerSpec with GivenWhen
 
             result mustBe aRedirectToTheNextPage
             thePageNavigatedTo mustBe expectedRedirect
+            verifyAudit()
           }
         }
       }
@@ -198,6 +203,7 @@ class InlandTransportDetailsControllerSpec extends ControllerSpec with GivenWhen
 
             result mustBe aRedirectToTheNextPage
             thePageNavigatedTo mustBe expectedRedirect
+            verifyAudit()
           }
         }
       }
@@ -220,6 +226,7 @@ class InlandTransportDetailsControllerSpec extends ControllerSpec with GivenWhen
 
             result mustBe aRedirectToTheNextPage
             thePageNavigatedTo mustBe borderTransportUrl
+            verifyAudit()
           }
         }
 
@@ -233,6 +240,7 @@ class InlandTransportDetailsControllerSpec extends ControllerSpec with GivenWhen
 
               result mustBe aRedirectToTheNextPage
               thePageNavigatedTo mustBe transportCountryUrl
+              verifyAudit()
             }
           }
         }
@@ -252,9 +260,7 @@ class InlandTransportDetailsControllerSpec extends ControllerSpec with GivenWhen
             thePageNavigatedTo mustBe expectedRedirect
           }
         }
-
       }
-
     }
   }
 

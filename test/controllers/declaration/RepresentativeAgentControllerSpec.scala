@@ -16,7 +16,7 @@
 
 package controllers.declaration
 
-import base.ControllerSpec
+import base.{AuditedControllerSpec, ControllerSpec}
 import controllers.declaration.routes.{RepresentativeEntityController, RepresentativeStatusController}
 import forms.common.Eori
 import forms.declaration.RepresentativeAgent
@@ -31,7 +31,7 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import views.html.declaration.representative_details_agent
 
-class RepresentativeAgentControllerSpec extends ControllerSpec with OptionValues {
+class RepresentativeAgentControllerSpec extends ControllerSpec with AuditedControllerSpec with OptionValues {
 
   val mockPage = mock[representative_details_agent]
 
@@ -42,7 +42,7 @@ class RepresentativeAgentControllerSpec extends ControllerSpec with OptionValues
     mockExportsCacheService,
     stubMessagesControllerComponents(),
     mockPage
-  )(ec)
+  )(ec, auditService)
 
   def theResponseForm: Form[RepresentativeAgent] = {
     val formCaptor = ArgumentCaptor.forClass(classOf[Form[RepresentativeAgent]])
@@ -57,7 +57,7 @@ class RepresentativeAgentControllerSpec extends ControllerSpec with OptionValues
   }
 
   override protected def afterEach(): Unit = {
-    reset(mockPage)
+    reset(mockPage, auditService)
     super.afterEach()
   }
 
@@ -106,6 +106,7 @@ class RepresentativeAgentControllerSpec extends ControllerSpec with OptionValues
 
           status(result) mustBe BAD_REQUEST
           verifyPage(1)
+          verifyNoAudit()
         }
       }
     }
@@ -124,6 +125,7 @@ class RepresentativeAgentControllerSpec extends ControllerSpec with OptionValues
           thePageNavigatedTo mustBe RepresentativeStatusController.displayPage
 
           verifyPage(0)
+          verifyAudit()
         }
 
         "clear the representative eori if already present " in {
@@ -136,6 +138,7 @@ class RepresentativeAgentControllerSpec extends ControllerSpec with OptionValues
 
           val representativeDetails = theCacheModelUpdated.parties.representativeDetails
           representativeDetails.flatMap(_.details).isDefined mustBe false
+          verifyAudit()
         }
       }
 
@@ -152,6 +155,7 @@ class RepresentativeAgentControllerSpec extends ControllerSpec with OptionValues
           thePageNavigatedTo mustBe RepresentativeEntityController.displayPage
 
           verifyPage(0)
+          verifyAudit()
         }
 
         "not clear the representative eori if already present" in {
@@ -164,6 +168,7 @@ class RepresentativeAgentControllerSpec extends ControllerSpec with OptionValues
 
           val representativeDetails = theCacheModelUpdated.parties.representativeDetails
           representativeDetails.flatMap(_.details).isDefined mustBe true
+          verifyAudit()
         }
       }
     }

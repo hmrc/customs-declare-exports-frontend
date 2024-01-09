@@ -16,7 +16,7 @@
 
 package controllers.declaration
 
-import base.ControllerWithoutFormSpec
+import base.{AuditedControllerSpec, ControllerWithoutFormSpec}
 import config.AppConfig
 import controllers.declaration.SummaryControllerSpec.{expectedHref, fakeSummaryPage}
 import controllers.declaration.routes.SummaryController
@@ -41,7 +41,7 @@ import views.html.error_template
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class SummaryControllerSpec extends ControllerWithoutFormSpec with ErrorHandlerMocks with OptionValues {
+class SummaryControllerSpec extends ControllerWithoutFormSpec with AuditedControllerSpec with ErrorHandlerMocks with OptionValues {
 
   private val amendmentSummaryPage = mock[amendment_summary]
   private val normalSummaryPage = mock[normal_summary_page]
@@ -64,7 +64,7 @@ class SummaryControllerSpec extends ControllerWithoutFormSpec with ErrorHandlerM
     normalSummaryPage,
     mockSummaryPageNoData,
     mockLrnValidator
-  )(ec, appConfig)
+  )(ec, appConfig, auditService)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()

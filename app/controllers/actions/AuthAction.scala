@@ -97,10 +97,15 @@ class AuthActionImpl @Inject() (
         val userProvidedEoriHash = getTdrSecretFromEnrolments(allEnrolments).map(_.value).getOrElse("NoHashProvided")
         val maybeHiddenSalt = appConfig.maybeTdrHashSalt
 
-        if (allowListAuthentication(cdsLoggedInUser.eori) && tdrSecretAuthentication(cdsLoggedInUser.eori, maybeHiddenSalt, userProvidedEoriHash))
+        val onAllowList = allowListAuthentication(cdsLoggedInUser.eori)
+        val tdrSecretMatches = tdrSecretAuthentication(cdsLoggedInUser.eori, maybeHiddenSalt, userProvidedEoriHash)
+
+        if (onAllowList && tdrSecretMatches)
           block(new AuthenticatedRequest(request, cdsLoggedInUser))
-        else
+        else {
+          logger.warn(s"User rejected with onAllowList=$onAllowList & tdrSecretMatches=$tdrSecretMatches")
           Future.successful(Results.Redirect(routes.UnauthorisedController.onPageLoad(UserEoriNotAllowed)))
+        }
     }
 
     result.recoverWith {

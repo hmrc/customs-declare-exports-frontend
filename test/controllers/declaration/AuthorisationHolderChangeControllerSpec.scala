@@ -16,7 +16,7 @@
 
 package controllers.declaration
 
-import base.ControllerSpec
+import base.{AuditedControllerSpec, ControllerSpec}
 import controllers.declaration.routes.AuthorisationHolderSummaryController
 import forms.common.Eori
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
@@ -35,7 +35,8 @@ import play.api.test.Helpers._
 import play.twirl.api.{Html, HtmlFormat}
 import views.html.declaration.authorisationHolder.authorisation_holder_change
 
-class AuthorisationHolderChangeControllerSpec extends ControllerSpec with ErrorHandlerMocks with GivenWhenThen with OptionValues {
+class AuthorisationHolderChangeControllerSpec
+    extends ControllerSpec with AuditedControllerSpec with ErrorHandlerMocks with GivenWhenThen with OptionValues {
 
   val mockChangePage = mock[authorisation_holder_change]
 
@@ -47,7 +48,7 @@ class AuthorisationHolderChangeControllerSpec extends ControllerSpec with ErrorH
     mockErrorHandler,
     stubMessagesControllerComponents(),
     mockChangePage
-  )(ec)
+  )(ec, auditService)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
@@ -119,6 +120,7 @@ class AuthorisationHolderChangeControllerSpec extends ControllerSpec with ErrorH
 
           status(result) mustBe BAD_REQUEST
           verifyNoInteractions(mockChangePage)
+          verifyNoAudit()
         }
 
         "user edits with invalid data" in {
@@ -129,6 +131,7 @@ class AuthorisationHolderChangeControllerSpec extends ControllerSpec with ErrorH
 
           status(result) mustBe BAD_REQUEST
           verifyChangePageInvoked()
+          verifyNoAudit()
         }
 
         "user edit leads to duplicate data" in {
@@ -143,6 +146,7 @@ class AuthorisationHolderChangeControllerSpec extends ControllerSpec with ErrorH
 
           status(result) mustBe BAD_REQUEST
           verifyChangePageInvoked()
+          verifyNoAudit()
         }
       }
 
@@ -163,6 +167,7 @@ class AuthorisationHolderChangeControllerSpec extends ControllerSpec with ErrorH
 
           val savedHolder = theCacheModelUpdated.parties.declarationHoldersData
           savedHolder mustBe Some(AuthorisationHolders(List(authorisationHolder2)))
+          verifyAudit()
         }
       }
     }
@@ -190,6 +195,7 @@ class AuthorisationHolderChangeControllerSpec extends ControllerSpec with ErrorH
 
           status(result) mustBe BAD_REQUEST
           verifyChangePageInvoked()
+          verifyNoAudit()
         }
       }
     }

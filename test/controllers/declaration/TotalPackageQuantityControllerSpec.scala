@@ -16,7 +16,7 @@
 
 package controllers.declaration
 
-import base.ControllerSpec
+import base.{AuditedControllerSpec, ControllerSpec}
 import controllers.declaration.routes.NatureOfTransactionController
 import controllers.helpers.TransportSectionHelper.{Guernsey, Jersey}
 import controllers.routes.RootController
@@ -33,7 +33,7 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import views.html.declaration.total_package_quantity
 
-class TotalPackageQuantityControllerSpec extends ControllerSpec {
+class TotalPackageQuantityControllerSpec extends ControllerSpec with AuditedControllerSpec {
 
   private val totalPackageQuantity = mock[total_package_quantity]
 
@@ -44,7 +44,7 @@ class TotalPackageQuantityControllerSpec extends ControllerSpec {
     navigator,
     mockExportsCacheService,
     totalPackageQuantity
-  )
+  )(ec, auditService)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
@@ -96,6 +96,7 @@ class TotalPackageQuantityControllerSpec extends ControllerSpec {
           val body = Json.obj("totalPackage" -> "one")
           val result = controller.saveTotalPackageQuantity().apply(postRequest(body, request.cacheModel))
           status(result) mustBe BAD_REQUEST
+          verifyNoAudit()
         }
       }
 
@@ -112,6 +113,7 @@ class TotalPackageQuantityControllerSpec extends ControllerSpec {
             thePageNavigatedTo mustBe NatureOfTransactionController.displayPage
 
             theCacheModelUpdated
+            verifyAudit()
           }
         }
 
@@ -123,6 +125,7 @@ class TotalPackageQuantityControllerSpec extends ControllerSpec {
 
           await(result) mustBe aRedirectToTheNextPage
           thePageNavigatedTo mustBe NatureOfTransactionController.displayPage
+          verifyAudit()
         }
       }
     }
@@ -135,6 +138,7 @@ class TotalPackageQuantityControllerSpec extends ControllerSpec {
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) must contain(RootController.displayPage.url)
+        verifyNoAudit()
       }
     }
   }

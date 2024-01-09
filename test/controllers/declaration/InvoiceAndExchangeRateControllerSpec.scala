@@ -16,7 +16,7 @@
 
 package controllers.declaration
 
-import base.ControllerSpec
+import base.{AuditedControllerSpec, ControllerSpec}
 import controllers.declaration.routes.TotalPackageQuantityController
 import controllers.routes.RootController
 import forms.common.YesNoAnswer.YesNoAnswers
@@ -33,7 +33,7 @@ import play.api.test.Helpers._
 import play.twirl.api.{Html, HtmlFormat}
 import views.html.declaration.invoice_and_exchange_rate
 
-class InvoiceAndExchangeRateControllerSpec extends ControllerSpec with OptionValues {
+class InvoiceAndExchangeRateControllerSpec extends ControllerSpec with AuditedControllerSpec with OptionValues {
 
   val mockInvoiceAndExchangeRatePage = mock[invoice_and_exchange_rate]
 
@@ -50,7 +50,7 @@ class InvoiceAndExchangeRateControllerSpec extends ControllerSpec with OptionVal
   }
 
   override protected def afterEach(): Unit = {
-    Mockito.reset(mockInvoiceAndExchangeRatePage)
+    Mockito.reset(mockInvoiceAndExchangeRatePage, auditService)
     super.afterEach()
   }
 
@@ -67,7 +67,7 @@ class InvoiceAndExchangeRateControllerSpec extends ControllerSpec with OptionVal
     stubMessagesControllerComponents(),
     mockInvoiceAndExchangeRatePage,
     mockExportsCacheService
-  )(ec)
+  )(ec, auditService)
 
   val withoutExchange = InvoiceAndExchangeRate(
     totalAmountInvoiced = Some("100000"),
@@ -117,6 +117,7 @@ class InvoiceAndExchangeRateControllerSpec extends ControllerSpec with OptionVal
 
         status(result) mustBe BAD_REQUEST
         verifyPage()
+        verifyNoAudit()
       }
 
       "return 303 (SEE_OTHER) when information provided by user are correct" in {
@@ -127,6 +128,7 @@ class InvoiceAndExchangeRateControllerSpec extends ControllerSpec with OptionVal
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe TotalPackageQuantityController.displayPage
         verifyPage(0)
+        verifyAudit()
       }
 
       "empty fixed rate of exchange value from cache when 'No' is submitted" in {
@@ -135,6 +137,7 @@ class InvoiceAndExchangeRateControllerSpec extends ControllerSpec with OptionVal
         await(controller.saveNoOfItems()(postRequest(correctForm)))
 
         theCacheModelUpdated.totalNumberOfItems.get.exchangeRate mustBe None
+        verifyAudit()
       }
     }
 

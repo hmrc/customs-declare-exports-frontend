@@ -29,6 +29,7 @@ import play.api.Logging
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import play.twirl.api.Html
+import services.audit.AuditService
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
@@ -53,7 +54,7 @@ class SummaryController @Inject() (
   normalSummaryPage: normal_summary_page,
   summaryPageNoData: summary_page_no_data,
   lrnValidator: LrnValidator
-)(implicit ec: ExecutionContext, appConfig: AppConfig)
+)(implicit ec: ExecutionContext, appConfig: AppConfig, auditService: AuditService)
     extends FrontendController(mcc) with I18nSupport with Logging with ModelCacheable {
 
   val displayPage: Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType).async { implicit request =>

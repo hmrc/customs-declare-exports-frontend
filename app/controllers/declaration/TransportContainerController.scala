@@ -33,6 +33,7 @@ import models.requests.JourneyRequest
 import play.api.data.{Form, FormError}
 import play.api.i18n.I18nSupport
 import play.api.mvc._
+import services.audit.AuditService
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.WithUnsafeDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
@@ -52,7 +53,7 @@ class TransportContainerController @Inject() (
   addPage: transport_container_add,
   summaryPage: transport_container_summary,
   removePage: transport_container_remove
-)(implicit ec: ExecutionContext)
+)(implicit ec: ExecutionContext, auditService: AuditService)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithUnsafeDefaultFormBinding {
 
   def displayAddContainer(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>

@@ -16,7 +16,7 @@
 
 package controllers.declaration
 
-import base.ControllerSpec
+import base.{AuditedControllerSpec, ControllerSpec}
 import controllers.declaration.routes.PackageInformationSummaryController
 import controllers.helpers.MultipleItemsHelper
 import controllers.routes.RootController
@@ -35,7 +35,7 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import views.html.declaration.statistical_value
 
-class StatisticalValueControllerSpec extends ControllerSpec with ErrorHandlerMocks with OptionValues {
+class StatisticalValueControllerSpec extends ControllerSpec with AuditedControllerSpec with ErrorHandlerMocks with OptionValues {
 
   val mockItemTypePage = mock[statistical_value]
 
@@ -46,7 +46,7 @@ class StatisticalValueControllerSpec extends ControllerSpec with ErrorHandlerMoc
     navigator,
     stubMessagesControllerComponents(),
     mockItemTypePage
-  )(ec)
+  )(ec, auditService)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
@@ -127,6 +127,7 @@ class StatisticalValueControllerSpec extends ControllerSpec with ErrorHandlerMoc
 
           status(result) mustBe BAD_REQUEST
           verify(mockItemTypePage, times(1)).apply(any(), any())(any(), any())
+          verifyNoAudit()
         }
       }
     }
@@ -141,6 +142,7 @@ class StatisticalValueControllerSpec extends ControllerSpec with ErrorHandlerMoc
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(RootController.displayPage.url)
+          verifyNoAudit()
         }
       }
 
@@ -157,6 +159,7 @@ class StatisticalValueControllerSpec extends ControllerSpec with ErrorHandlerMoc
           verify(mockItemTypePage, times(0)).apply(any(), any())(any(), any())
 
           validateCache(StatisticalValue("7"))
+          verifyAudit()
         }
       }
     }

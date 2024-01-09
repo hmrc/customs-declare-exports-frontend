@@ -16,7 +16,7 @@
 
 package controllers.declaration
 
-import base.ControllerSpec
+import base.{AuditedControllerSpec, ControllerSpec}
 import base.ExportsTestData.allValuesRequiringToSkipInlandOrBorder
 import controllers.declaration.routes.{
   DepartureTransportController,
@@ -43,7 +43,7 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import views.html.declaration.inland_border
 
-class InlandOrBorderControllerSpec extends ControllerSpec with OptionValues {
+class InlandOrBorderControllerSpec extends ControllerSpec with AuditedControllerSpec with OptionValues {
 
   private val inlandOrBorderPage = mock[inland_border]
   private val inlandOrBorderHelper = instanceOf[InlandOrBorderHelper]
@@ -56,7 +56,7 @@ class InlandOrBorderControllerSpec extends ControllerSpec with OptionValues {
     stubMessagesControllerComponents(),
     inlandOrBorderPage,
     inlandOrBorderHelper
-  )
+  )(ec, auditService)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
@@ -66,7 +66,7 @@ class InlandOrBorderControllerSpec extends ControllerSpec with OptionValues {
   }
 
   override protected def afterEach(): Unit = {
-    reset(inlandOrBorderPage)
+    reset(inlandOrBorderPage, auditService)
     super.afterEach()
   }
 
@@ -154,6 +154,7 @@ class InlandOrBorderControllerSpec extends ControllerSpec with OptionValues {
             await(controller.submitPage()(postRequest(body)))
 
             theCacheModelUpdated.locations.inlandOrBorder.value mustBe Inland
+            verifyAudit()
           }
 
           s"redirect to ${expectedNextPage.url}" in {
@@ -176,6 +177,7 @@ class InlandOrBorderControllerSpec extends ControllerSpec with OptionValues {
             await(controller.submitPage()(postRequest(body)))
 
             theCacheModelUpdated.locations.inlandOrBorder.value mustBe Border
+            verifyAudit()
           }
 
           "reset the cache for /inland-transport-details, if any, after a successful bind" in {
@@ -186,6 +188,7 @@ class InlandOrBorderControllerSpec extends ControllerSpec with OptionValues {
             val locations = theCacheModelUpdated.locations
             locations.inlandOrBorder.value mustBe Border
             locations.inlandModeOfTransportCode mustBe None
+            verifyAudit()
           }
 
           "reset the cache for /border-transport, if any, after a successful bind" in {
@@ -196,6 +199,7 @@ class InlandOrBorderControllerSpec extends ControllerSpec with OptionValues {
             val transport = theCacheModelUpdated.transport
             transport.meansOfTransportCrossingTheBorderType mustBe None
             transport.meansOfTransportCrossingTheBorderIDNumber mustBe None
+            verifyAudit()
           }
 
           "reset the cache for 'Departure Transport', 'Border transport' and 'Transport Country'" when {
@@ -214,6 +218,7 @@ class InlandOrBorderControllerSpec extends ControllerSpec with OptionValues {
                 transport.meansOfTransportCrossingTheBorderType mustBe None
                 transport.meansOfTransportCrossingTheBorderIDNumber mustBe None
                 transport.transportCrossingTheBorderNationality mustBe None
+                verifyAudit()
               }
             }
           }
@@ -236,6 +241,7 @@ class InlandOrBorderControllerSpec extends ControllerSpec with OptionValues {
             val result = controller.submitPage()(postRequest(body))
 
             status(result) mustBe BAD_REQUEST
+            verifyNoAudit()
           }
         }
       }
@@ -258,6 +264,7 @@ class InlandOrBorderControllerSpec extends ControllerSpec with OptionValues {
 
                 result mustBe aRedirectToTheNextPage
                 thePageNavigatedTo mustBe expectedNextPage
+                verifyAudit()
               }
             }
           }
@@ -272,6 +279,7 @@ class InlandOrBorderControllerSpec extends ControllerSpec with OptionValues {
 
               result mustBe aRedirectToTheNextPage
               thePageNavigatedTo mustBe expectedNextPage
+              verifyAudit()
             }
           }
         }
@@ -287,6 +295,7 @@ class InlandOrBorderControllerSpec extends ControllerSpec with OptionValues {
 
         val result = controller.submitPage()(postRequest(JsString("")))
         redirectLocation(result) mustBe Some(RootController.displayPage.url)
+        verifyNoAudit()
       }
     }
 

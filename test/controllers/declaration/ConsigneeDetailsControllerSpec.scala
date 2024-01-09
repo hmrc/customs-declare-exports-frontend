@@ -16,7 +16,7 @@
 
 package controllers.declaration
 
-import base.ControllerSpec
+import base.{AuditedControllerSpec, ControllerSpec}
 import connectors.CodeListConnector
 import controllers.declaration.routes.{AdditionalActorsSummaryController, AuthorisationProcedureCodeChoiceController}
 import forms.common.Address
@@ -36,7 +36,7 @@ import views.html.declaration.consignee_details
 
 import scala.collection.immutable.ListMap
 
-class ConsigneeDetailsControllerSpec extends ControllerSpec {
+class ConsigneeDetailsControllerSpec extends ControllerSpec with AuditedControllerSpec {
 
   val consigneeDetailsPage = mock[consignee_details]
   val mockCodeListConnector = mock[CodeListConnector]
@@ -48,7 +48,7 @@ class ConsigneeDetailsControllerSpec extends ControllerSpec {
     navigator,
     stubMessagesControllerComponents(),
     consigneeDetailsPage
-  )(ec, mockCodeListConnector)
+  )(ec, mockCodeListConnector, auditService)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
@@ -109,6 +109,7 @@ class ConsigneeDetailsControllerSpec extends ControllerSpec {
           val result = controller.saveAddress()(postRequest(incorrectForm))
 
           status(result) must be(BAD_REQUEST)
+          verifyNoAudit()
         }
       }
     }
@@ -145,5 +146,6 @@ class ConsigneeDetailsControllerSpec extends ControllerSpec {
 
     await(result) mustBe aRedirectToTheNextPage
     thePageNavigatedTo mustBe expectedRedirectionLocation
+    verifyAudit()
   }
 }

@@ -16,7 +16,7 @@
 
 package controllers.declaration
 
-import base.ControllerSpec
+import base.{AuditedControllerSpec, ControllerSpec}
 import controllers.declaration.routes.AdditionalInformationController
 import forms.common.YesNoAnswer.{No, Yes}
 import forms.declaration.AdditionalInformation
@@ -34,7 +34,7 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import views.html.declaration.additionalInformation.additional_information_add
 
-class AdditionalInformationAddControllerSpec extends ControllerSpec with ErrorHandlerMocks {
+class AdditionalInformationAddControllerSpec extends ControllerSpec with AuditedControllerSpec with ErrorHandlerMocks {
 
   val mockAddPage = mock[additional_information_add]
 
@@ -45,7 +45,7 @@ class AdditionalInformationAddControllerSpec extends ControllerSpec with ErrorHa
     navigator,
     stubMessagesControllerComponents(),
     mockAddPage
-  )(ec)
+  )(ec, auditService)
 
   val itemId = "itemId"
 
@@ -96,6 +96,7 @@ class AdditionalInformationAddControllerSpec extends ControllerSpec with ErrorHa
 
         status(result) mustBe BAD_REQUEST
         verifyPageInvoked()
+        verifyNoAudit()
       }
 
       "user enters 'RRS01' as code" in {
@@ -104,6 +105,7 @@ class AdditionalInformationAddControllerSpec extends ControllerSpec with ErrorHa
 
         status(result) mustBe BAD_REQUEST
         verifyPageInvoked()
+        verifyNoAudit()
       }
 
       "user enters 'LIC99' as code" in {
@@ -112,6 +114,7 @@ class AdditionalInformationAddControllerSpec extends ControllerSpec with ErrorHa
 
         status(result) mustBe BAD_REQUEST
         verifyPageInvoked()
+        verifyNoAudit()
       }
 
       "user enters duplicated item" in {
@@ -123,6 +126,7 @@ class AdditionalInformationAddControllerSpec extends ControllerSpec with ErrorHa
 
         status(result) mustBe BAD_REQUEST
         verifyPageInvoked()
+        verifyNoAudit()
       }
 
       "user reaches maximum amount of items" in {
@@ -135,6 +139,7 @@ class AdditionalInformationAddControllerSpec extends ControllerSpec with ErrorHa
 
         status(result) mustBe BAD_REQUEST
         verifyPageInvoked()
+        verifyNoAudit()
       }
     }
 
@@ -152,6 +157,7 @@ class AdditionalInformationAddControllerSpec extends ControllerSpec with ErrorHa
 
         val savedDocuments = theCacheModelUpdated.itemBy(itemId).flatMap(_.additionalInformation)
         savedDocuments mustBe Some(AdditionalInformationData(Seq(additionalInformation)))
+        verifyAudit()
       }
     }
   }
@@ -170,6 +176,7 @@ class AdditionalInformationAddControllerSpec extends ControllerSpec with ErrorHa
 
       val isRequired = theCacheModelUpdated.itemBy(itemId).flatMap(_.additionalInformation.flatMap(_.isRequired))
       isRequired mustBe Yes
+      verifyAudit()
     }
   }
 }

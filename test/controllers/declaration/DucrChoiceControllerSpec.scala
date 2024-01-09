@@ -16,7 +16,7 @@
 
 package controllers.declaration
 
-import base.ControllerSpec
+import base.{AuditedControllerSpec, ControllerSpec}
 import controllers.actions.AmendmentDraftFilterSpec
 import controllers.declaration.routes.{DucrEntryController, TraderReferenceController}
 import controllers.routes.RootController
@@ -33,7 +33,7 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import views.html.declaration.ducr_choice
 
-class DucrChoiceControllerSpec extends ControllerSpec with AmendmentDraftFilterSpec {
+class DucrChoiceControllerSpec extends ControllerSpec with AuditedControllerSpec with AmendmentDraftFilterSpec {
 
   private val ducrChoicePage = mock[ducr_choice]
 
@@ -44,7 +44,7 @@ class DucrChoiceControllerSpec extends ControllerSpec with AmendmentDraftFilterS
     navigator,
     stubMessagesControllerComponents(),
     ducrChoicePage
-  )(ec)
+  )(ec, auditService)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
@@ -109,6 +109,7 @@ class DucrChoiceControllerSpec extends ControllerSpec with AmendmentDraftFilterS
             val result = controller.submitForm(postRequest(body))
 
             status(result) must be(BAD_REQUEST)
+            verifyNoAudit()
           }
         }
       }
@@ -123,6 +124,7 @@ class DucrChoiceControllerSpec extends ControllerSpec with AmendmentDraftFilterS
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(RootController.displayPage.url)
+        verifyNoAudit()
       }
     }
   }
@@ -140,6 +142,7 @@ class DucrChoiceControllerSpec extends ControllerSpec with AmendmentDraftFilterS
 
             status(result) mustBe SEE_OTHER
             thePageNavigatedTo mustBe TraderReferenceController.displayPage
+            verifyNoAudit()
           }
         }
       }
@@ -162,6 +165,7 @@ class DucrChoiceControllerSpec extends ControllerSpec with AmendmentDraftFilterS
               consignmentReferences.lrn.get.lrn mustBe LRN.lrn
 
               thePageNavigatedTo mustBe DucrEntryController.displayPage
+              verifyAudit()
             }
           }
         }

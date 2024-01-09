@@ -16,7 +16,7 @@
 
 package controllers.declaration
 
-import base.ControllerSpec
+import base.{AuditedControllerSpec, ControllerSpec}
 import controllers.declaration.routes.ExporterEoriNumberController
 import controllers.routes.RootController
 import forms.common.Eori
@@ -34,7 +34,7 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import views.html.declaration.person_presenting_goods_details
 
-class PersonPresentingGoodsDetailsControllerSpec extends ControllerSpec with ScalaFutures {
+class PersonPresentingGoodsDetailsControllerSpec extends ControllerSpec with AuditedControllerSpec with ScalaFutures {
 
   private val testEori = "GB1234567890000"
 
@@ -47,7 +47,7 @@ class PersonPresentingGoodsDetailsControllerSpec extends ControllerSpec with Sca
     navigator,
     stubMessagesControllerComponents(),
     page
-  )(ec)
+  )(ec, auditService)
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -56,7 +56,7 @@ class PersonPresentingGoodsDetailsControllerSpec extends ControllerSpec with Sca
   }
 
   override def afterEach(): Unit = {
-    reset(page)
+    reset(page, auditService)
     super.afterEach()
   }
 
@@ -135,6 +135,7 @@ class PersonPresentingGoodsDetailsControllerSpec extends ControllerSpec with Sca
           val result = controller.submitForm()(postRequest(correctForm))
 
           status(result) mustBe SEE_OTHER
+          verifyAudit()
         }
 
         "redirect to Exporter Details page" in {
@@ -153,6 +154,7 @@ class PersonPresentingGoodsDetailsControllerSpec extends ControllerSpec with Sca
           controller.submitForm()(postRequest(correctForm)).futureValue
 
           theCacheModelUpdated.parties.personPresentingGoodsDetails mustBe Some(PersonPresentingGoodsDetails(Eori(testEori)))
+          verifyAudit()
         }
 
         "call Navigator" in {
@@ -185,6 +187,7 @@ class PersonPresentingGoodsDetailsControllerSpec extends ControllerSpec with Sca
         val result = controller.submitForm()(postRequest(correctForm))
 
         status(result) mustBe SEE_OTHER
+        verifyNoAudit()
       }
 
       "redirect to start page" in {

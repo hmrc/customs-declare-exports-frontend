@@ -16,7 +16,7 @@
 
 package controllers.declaration
 
-import base.ControllerSpec
+import base.{AuditedControllerSpec, ControllerSpec}
 import forms.common.YesNoAnswer
 import forms.declaration.{AdditionalFiscalReference, AdditionalFiscalReferencesData}
 import org.mockito.ArgumentCaptor
@@ -30,7 +30,7 @@ import play.twirl.api.HtmlFormat
 import utils.ListItem
 import views.html.declaration.fiscalInformation.additional_fiscal_references_remove
 
-class AdditionalFiscalReferencesRemoveControllerSpec extends ControllerSpec with OptionValues {
+class AdditionalFiscalReferencesRemoveControllerSpec extends ControllerSpec with AuditedControllerSpec with OptionValues {
 
   val mockRemovePage = mock[additional_fiscal_references_remove]
 
@@ -42,7 +42,7 @@ class AdditionalFiscalReferencesRemoveControllerSpec extends ControllerSpec with
       navigator,
       stubMessagesControllerComponents(),
       mockRemovePage
-    )(ec)
+    )(ec, auditService)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
@@ -112,6 +112,7 @@ class AdditionalFiscalReferencesRemoveControllerSpec extends ControllerSpec with
 
           status(result) mustBe BAD_REQUEST
           verifyRemovePageInvoked()
+          verifyNoAudit()
         }
 
       }
@@ -124,6 +125,7 @@ class AdditionalFiscalReferencesRemoveControllerSpec extends ControllerSpec with
 
           await(result) mustBe aRedirectToTheNextPage
           thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalFiscalReferencesController.displayPage(item.id)
+          verifyNoAudit()
         }
 
         "user submits 'Yes' answer when multiple additional information exists" in {
@@ -138,6 +140,7 @@ class AdditionalFiscalReferencesRemoveControllerSpec extends ControllerSpec with
           theCacheModelUpdated
             .itemBy(item.id)
             .flatMap(_.additionalFiscalReferencesData) mustBe Some(AdditionalFiscalReferencesData(Seq(additionalReferenceOther)))
+          verifyAudit()
         }
 
         "user submits 'Yes' answer when single additional information exists" in {
@@ -150,6 +153,7 @@ class AdditionalFiscalReferencesRemoveControllerSpec extends ControllerSpec with
           thePageNavigatedTo mustBe controllers.declaration.routes.FiscalInformationController.displayPage(item.id)
 
           theCacheModelUpdated.itemBy(item.id).flatMap(_.additionalFiscalReferencesData) mustBe Some(AdditionalFiscalReferencesData(Seq.empty))
+          verifyAudit()
         }
 
         "user submits 'No' answer" in {
@@ -162,6 +166,7 @@ class AdditionalFiscalReferencesRemoveControllerSpec extends ControllerSpec with
           thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalFiscalReferencesController.displayPage(item.id)
 
           verifyTheCacheIsUnchanged()
+          verifyNoAudit()
         }
       }
     }

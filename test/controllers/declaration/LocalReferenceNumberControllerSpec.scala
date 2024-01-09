@@ -16,7 +16,7 @@
 
 package controllers.declaration
 
-import base.ControllerSpec
+import base.{AuditedControllerSpec, ControllerSpec}
 import controllers.actions.AmendmentDraftFilterSpec
 import controllers.declaration.routes.LinkDucrToMucrController
 import forms.{Lrn, LrnValidator}
@@ -34,7 +34,7 @@ import views.html.declaration.local_reference_number
 
 import scala.concurrent.Future
 
-class LocalReferenceNumberControllerSpec extends ControllerSpec with AmendmentDraftFilterSpec with GivenWhenThen {
+class LocalReferenceNumberControllerSpec extends ControllerSpec with AuditedControllerSpec with AmendmentDraftFilterSpec with GivenWhenThen {
 
   private val lrnValidator = mock[LrnValidator]
   private val lrnPage = mock[local_reference_number]
@@ -47,7 +47,7 @@ class LocalReferenceNumberControllerSpec extends ControllerSpec with AmendmentDr
     navigator,
     stubMessagesControllerComponents(),
     lrnPage
-  )(ec)
+  )(ec, auditService)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
@@ -104,6 +104,7 @@ class LocalReferenceNumberControllerSpec extends ControllerSpec with AmendmentDr
 
           val result = controller.submitForm()(postRequest(incorrectForm))
           status(result) must be(BAD_REQUEST)
+          verifyNoAudit()
         }
 
         "LrnValidator returns false" in {
@@ -113,6 +114,7 @@ class LocalReferenceNumberControllerSpec extends ControllerSpec with AmendmentDr
 
           val result = controller.submitForm()(postRequest(correctForm))
           status(result) must be(BAD_REQUEST)
+          verifyNoAudit()
         }
       }
 
@@ -125,6 +127,7 @@ class LocalReferenceNumberControllerSpec extends ControllerSpec with AmendmentDr
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe routes.LinkDucrToMucrController.displayPage
+        verifyAudit()
       }
     }
   }

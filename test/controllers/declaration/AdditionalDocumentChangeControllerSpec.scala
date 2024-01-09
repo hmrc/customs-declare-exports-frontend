@@ -16,7 +16,7 @@
 
 package controllers.declaration
 
-import base.{ControllerSpec, MockTaggedCodes}
+import base.{AuditedControllerSpec, ControllerSpec, MockTaggedCodes}
 import forms.common.YesNoAnswer.Yes
 import forms.declaration.additionaldocuments.{AdditionalDocument, DocumentWriteOff}
 import mock.ErrorHandlerMocks
@@ -32,7 +32,7 @@ import play.twirl.api.HtmlFormat
 import utils.ListItem
 import views.html.declaration.additionalDocuments.additional_document_change
 
-class AdditionalDocumentChangeControllerSpec extends ControllerSpec with ErrorHandlerMocks with MockTaggedCodes {
+class AdditionalDocumentChangeControllerSpec extends ControllerSpec with AuditedControllerSpec with ErrorHandlerMocks with MockTaggedCodes {
 
   val additionalDocumentChangePage = mock[additional_document_change]
 
@@ -45,7 +45,7 @@ class AdditionalDocumentChangeControllerSpec extends ControllerSpec with ErrorHa
     taggedAuthCodes,
     taggedAdditionalDocumentCodes,
     additionalDocumentChangePage
-  )(ec)
+  )(ec, auditService)
 
   val itemId = "itemId"
   val existingDocument1 = AdditionalDocument(Some("1000"), None, None, None, None, None, None)
@@ -113,6 +113,7 @@ class AdditionalDocumentChangeControllerSpec extends ControllerSpec with ErrorHa
 
         status(result) mustBe BAD_REQUEST
         verifyPageInvoked()
+        verifyNoAudit()
       }
 
       "user save empty form without new item" in {
@@ -120,12 +121,14 @@ class AdditionalDocumentChangeControllerSpec extends ControllerSpec with ErrorHa
 
         status(result) mustBe BAD_REQUEST
         verifyPageInvoked()
+        verifyNoAudit()
       }
 
       def verifyBadRequest(incorrectForm: Seq[(String, String)]): HtmlFormat.Appendable = {
         val result = controller.submitForm(itemId, documentId)(postRequestAsFormUrlEncoded(incorrectForm: _*))
 
         status(result) mustBe BAD_REQUEST
+        verifyNoAudit()
         verifyPageInvoked()
       }
     }
@@ -152,6 +155,7 @@ class AdditionalDocumentChangeControllerSpec extends ControllerSpec with ErrorHa
             )
           )
         )
+        verifyAudit()
       }
 
       "user does not change document" in {
@@ -164,6 +168,7 @@ class AdditionalDocumentChangeControllerSpec extends ControllerSpec with ErrorHa
 
         val savedDocuments = theCacheModelUpdated.itemBy(itemId).flatMap(_.additionalDocuments)
         savedDocuments mustBe Some(AdditionalDocuments(Yes, Seq(existingDocument1, existingDocument2)))
+        verifyAudit()
       }
     }
   }

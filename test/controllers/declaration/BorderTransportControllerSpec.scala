@@ -16,7 +16,7 @@
 
 package controllers.declaration
 
-import base.{ControllerSpec, MockTransportCodeService}
+import base.{AuditedControllerSpec, ControllerSpec, MockTransportCodeService}
 import controllers.declaration.routes.TransportCountryController
 import controllers.helpers.TransportSectionHelper.{Guernsey, Jersey}
 import controllers.routes.RootController
@@ -34,7 +34,7 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import views.html.declaration.border_transport
 
-class BorderTransportControllerSpec extends ControllerSpec {
+class BorderTransportControllerSpec extends ControllerSpec with AuditedControllerSpec {
 
   implicit val transportCodeService = MockTransportCodeService.transportCodeService
 
@@ -48,7 +48,7 @@ class BorderTransportControllerSpec extends ControllerSpec {
     stubMessagesControllerComponents(),
     transportCodeService,
     borderTransportPage
-  )(ec)
+  )(ec, auditService)
 
   def theResponseForm: Form[BorderTransport] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[BorderTransport]])
@@ -69,7 +69,7 @@ class BorderTransportControllerSpec extends ControllerSpec {
   }
 
   override protected def afterEach(): Unit = {
-    reset(borderTransportPage)
+    reset(borderTransportPage, auditService)
     super.afterEach()
   }
 
@@ -121,6 +121,7 @@ class BorderTransportControllerSpec extends ControllerSpec {
             val transport = theCacheModelUpdated.transport
             transport.meansOfTransportCrossingTheBorderType mustBe None
             transport.meansOfTransportCrossingTheBorderIDNumber mustBe None
+            verifyAudit()
           }
         }
       }
@@ -152,6 +153,7 @@ class BorderTransportControllerSpec extends ControllerSpec {
 
           val result = controller.submitForm(postRequest(incorrectForm))
           status(result) must be(BAD_REQUEST)
+          verifyNoAudit()
         }
       }
 
@@ -163,6 +165,7 @@ class BorderTransportControllerSpec extends ControllerSpec {
 
           await(result) mustBe aRedirectToTheNextPage
           thePageNavigatedTo mustBe TransportCountryController.displayPage
+          verifyAudit()
         }
       }
     }
@@ -186,6 +189,7 @@ class BorderTransportControllerSpec extends ControllerSpec {
 
           status(result) must be(SEE_OTHER)
           redirectLocation(result) mustBe Some(RootController.displayPage.url)
+          verifyNoAudit()
         }
       }
     }

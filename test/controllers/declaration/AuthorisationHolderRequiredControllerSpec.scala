@@ -16,7 +16,7 @@
 
 package controllers.declaration
 
-import base.ControllerSpec
+import base.{AuditedControllerSpec, ControllerSpec}
 import controllers.declaration.routes.{AuthorisationHolderAddController, AuthorisationHolderSummaryController, SectionSummaryController}
 import forms.common.{Eori, YesNoAnswer}
 import forms.declaration.AuthorisationProcedureCodeChoice.{Choice1007, Choice1040, ChoiceOthers}
@@ -36,7 +36,7 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import views.html.declaration.authorisationHolder.authorisation_holder_required
 
-class AuthorisationHolderRequiredControllerSpec extends ControllerSpec with OptionValues {
+class AuthorisationHolderRequiredControllerSpec extends ControllerSpec with AuditedControllerSpec with OptionValues {
 
   val mockPage = mock[authorisation_holder_required]
 
@@ -47,7 +47,7 @@ class AuthorisationHolderRequiredControllerSpec extends ControllerSpec with Opti
     navigator,
     stubMessagesControllerComponents(),
     mockPage
-  )
+  )(ec, auditService)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
@@ -190,6 +190,7 @@ class AuthorisationHolderRequiredControllerSpec extends ControllerSpec with Opti
 
           await(result) mustBe aRedirectToTheNextPage
           thePageNavigatedTo mustBe AuthorisationHolderAddController.displayPage
+          verifyAudit()
         }
       }
 
@@ -203,6 +204,7 @@ class AuthorisationHolderRequiredControllerSpec extends ControllerSpec with Opti
 
           await(result) mustBe aRedirectToTheNextPage
           thePageNavigatedTo mustBe SectionSummaryController.displayPage(2)
+          verifyAudit()
         }
       }
 
@@ -216,6 +218,7 @@ class AuthorisationHolderRequiredControllerSpec extends ControllerSpec with Opti
 
           status(result) mustBe BAD_REQUEST
           verifyPageInvoked()
+          verifyNoAudit()
         }
       }
   }

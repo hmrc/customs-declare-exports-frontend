@@ -16,7 +16,7 @@
 
 package controllers.declaration
 
-import base.ControllerSpec
+import base.{AuditedControllerSpec, ControllerSpec}
 import controllers.actions.AmendmentDraftFilterSpec
 import controllers.declaration.routes.{ConsignmentReferencesController, DeclarantExporterController, DucrChoiceController, NotEligibleController}
 import forms.common.YesNoAnswer.YesNoAnswers
@@ -34,7 +34,7 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import views.html.declaration.declarant_details
 
-class DeclarantDetailsControllerSpec extends ControllerSpec with AmendmentDraftFilterSpec {
+class DeclarantDetailsControllerSpec extends ControllerSpec with AuditedControllerSpec with AmendmentDraftFilterSpec {
 
   private val declarantDetailsPage = mock[declarant_details]
 
@@ -45,7 +45,7 @@ class DeclarantDetailsControllerSpec extends ControllerSpec with AmendmentDraftF
     navigator,
     stubMessagesControllerComponents(),
     declarantDetailsPage
-  )(ec)
+  )(ec, auditService)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
@@ -101,6 +101,7 @@ class DeclarantDetailsControllerSpec extends ControllerSpec with AmendmentDraftF
 
         val result = controller.submitForm()(postRequest(incorrectForm))
         status(result) must be(BAD_REQUEST)
+        verifyNoAudit()
       }
     }
 
@@ -115,6 +116,7 @@ class DeclarantDetailsControllerSpec extends ControllerSpec with AmendmentDraftF
 
           status(result) mustBe SEE_OTHER
           thePageNavigatedTo mustBe DucrChoiceController.displayPage
+          verifyAudit()
         }
       }
 
@@ -127,6 +129,7 @@ class DeclarantDetailsControllerSpec extends ControllerSpec with AmendmentDraftF
 
           status(result) mustBe SEE_OTHER
           thePageNavigatedTo mustBe ConsignmentReferencesController.displayPage
+          verifyAudit()
         }
       }
 
@@ -139,6 +142,7 @@ class DeclarantDetailsControllerSpec extends ControllerSpec with AmendmentDraftF
 
           status(result) mustBe SEE_OTHER
           thePageNavigatedTo mustBe DeclarantExporterController.displayPage
+          verifyAudit()
         }
       }
     }
@@ -154,6 +158,7 @@ class DeclarantDetailsControllerSpec extends ControllerSpec with AmendmentDraftF
           redirectLocation(result) mustBe Some(NotEligibleController.displayNotDeclarant.url)
 
           session(result).get(SessionHelper.declarationUuid) must be(None)
+          verifyNoAudit()
         }
       }
     }

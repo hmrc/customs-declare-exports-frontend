@@ -16,7 +16,7 @@
 
 package controllers.declaration
 
-import base.ControllerSpec
+import base.{AuditedControllerSpec, ControllerSpec}
 import controllers.declaration.routes.{ConsignorDetailsController, RepresentativeAgentController}
 import controllers.routes.RootController
 import forms.common.YesNoAnswer.YesNoAnswers
@@ -36,7 +36,7 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import views.html.declaration.consignor_eori_number
 
-class ConsignorEoriNumberControllerSpec extends ControllerSpec with OptionValues {
+class ConsignorEoriNumberControllerSpec extends ControllerSpec with AuditedControllerSpec with OptionValues {
 
   val mockConsignorEoriNumberPage = mock[consignor_eori_number]
 
@@ -47,7 +47,7 @@ class ConsignorEoriNumberControllerSpec extends ControllerSpec with OptionValues
     stubMessagesControllerComponents(),
     mockConsignorEoriNumberPage,
     mockExportsCacheService
-  )(ec)
+  )(ec, auditService)
 
   def checkViewInteractions(noOfInvocations: Int = 1): Unit =
     verify(mockConsignorEoriNumberPage, times(noOfInvocations)).apply(any())(any(), any())
@@ -155,6 +155,7 @@ class ConsignorEoriNumberControllerSpec extends ControllerSpec with OptionValues
 
         status(result) mustBe BAD_REQUEST
         checkViewInteractions()
+        verifyNoAudit()
       }
 
       "EORI is not provided but trader selected that it has an EORI" in {
@@ -166,6 +167,7 @@ class ConsignorEoriNumberControllerSpec extends ControllerSpec with OptionValues
 
         status(result) mustBe BAD_REQUEST
         checkViewInteractions()
+        verifyNoAudit()
       }
 
       "no choice is selected and no cached ConsignorDetails exist" in {
@@ -177,6 +179,7 @@ class ConsignorEoriNumberControllerSpec extends ControllerSpec with OptionValues
 
         status(result) mustBe BAD_REQUEST
         checkViewInteractions()
+        verifyNoAudit()
       }
     }
   }
@@ -194,6 +197,7 @@ class ConsignorEoriNumberControllerSpec extends ControllerSpec with OptionValues
         thePageNavigatedTo mustBe ConsignorDetailsController.displayPage
         checkViewInteractions(0)
         theCacheModelUpdated.parties.consignorDetails must be(Some(ConsignorDetails(EntityDetails(None, None))))
+        verifyAudit()
       }
 
       "'Yes' is selected" in {
@@ -208,6 +212,7 @@ class ConsignorEoriNumberControllerSpec extends ControllerSpec with OptionValues
         thePageNavigatedTo mustBe RepresentativeAgentController.displayPage
         checkViewInteractions(0)
         theCacheModelUpdated.parties.consignorDetails must be(Some(ConsignorDetails(EntityDetails(eoriInput, None))))
+        verifyAudit()
       }
     }
 
@@ -224,6 +229,7 @@ class ConsignorEoriNumberControllerSpec extends ControllerSpec with OptionValues
 
         status(result) must be(SEE_OTHER)
         redirectLocation(result) mustBe Some(RootController.displayPage.url)
+        verifyNoAudit()
       }
     }
   }

@@ -16,7 +16,7 @@
 
 package controllers.declaration
 
-import base.ControllerSpec
+import base.{AuditedControllerSpec, ControllerSpec}
 import base.ExportsTestData.modifierForPC1040
 import controllers.declaration.routes._
 import controllers.helpers.SupervisingCustomsOfficeHelper
@@ -35,7 +35,7 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import views.html.declaration.{warehouse_identification, warehouse_identification_yesno}
 
-class WarehouseIdentificationControllerSpec extends ControllerSpec {
+class WarehouseIdentificationControllerSpec extends ControllerSpec with AuditedControllerSpec {
 
   private val pageYesNo = mock[warehouse_identification_yesno]
   private val pageIdentification = mock[warehouse_identification]
@@ -51,7 +51,7 @@ class WarehouseIdentificationControllerSpec extends ControllerSpec {
     pageYesNo,
     pageIdentification,
     supervisingCustomsOfficeHelper
-  )(ec)
+  )(ec, auditService)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
@@ -114,6 +114,7 @@ class WarehouseIdentificationControllerSpec extends ControllerSpec {
           val result = controller.saveIdentificationNumber()(postRequest(incorrectForm))
 
           status(result) must be(BAD_REQUEST)
+          verifyNoAudit()
         }
       }
 
@@ -126,6 +127,7 @@ class WarehouseIdentificationControllerSpec extends ControllerSpec {
 
           await(result) mustBe aRedirectToTheNextPage
           thePageNavigatedTo mustBe SupervisingCustomsOfficeController.displayPage
+          verifyAudit()
         }
       }
     }
@@ -141,6 +143,7 @@ class WarehouseIdentificationControllerSpec extends ControllerSpec {
           status(result) mustBe SEE_OTHER
 
           thePageNavigatedTo mustBe InlandTransportDetailsController.displayPage
+          verifyAudit()
         }
       }
     }
@@ -156,6 +159,7 @@ class WarehouseIdentificationControllerSpec extends ControllerSpec {
 
             status(result) mustBe SEE_OTHER
             thePageNavigatedTo mustBe InlandOrBorderController.displayPage
+            verifyAudit()
           }
         }
       }
@@ -188,6 +192,7 @@ class WarehouseIdentificationControllerSpec extends ControllerSpec {
           val result = controller.saveIdentificationNumber()(postRequest(incorrectForm))
 
           status(result) must be(BAD_REQUEST)
+          verifyNoAudit()
         }
       }
 
@@ -201,6 +206,7 @@ class WarehouseIdentificationControllerSpec extends ControllerSpec {
 
           await(result) mustBe aRedirectToTheNextPage
           thePageNavigatedTo mustBe SupervisingCustomsOfficeController.displayPage
+          verifyAudit()
         }
       }
 
@@ -214,6 +220,7 @@ class WarehouseIdentificationControllerSpec extends ControllerSpec {
 
           await(result) mustBe aRedirectToTheNextPage
           thePageNavigatedTo mustBe SupervisingCustomsOfficeController.displayPage
+          verifyAudit()
         }
       }
     }

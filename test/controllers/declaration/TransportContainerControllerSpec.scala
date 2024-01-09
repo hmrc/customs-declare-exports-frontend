@@ -16,7 +16,7 @@
 
 package controllers.declaration
 
-import base.{ControllerSpec, Injector}
+import base.{AuditedControllerSpec, ControllerSpec, Injector}
 import controllers.declaration.routes.{SealController, TransportContainerController}
 import controllers.helpers.Remove
 import controllers.helpers.SequenceIdHelper.valueOfEso
@@ -37,7 +37,7 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import views.html.declaration._
 
-class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerMocks with Injector with OptionValues {
+class TransportContainerControllerSpec extends ControllerSpec with AuditedControllerSpec with ErrorHandlerMocks with Injector with OptionValues {
 
   val transportContainersAddFirstPage = instanceOf[transport_container_add_first]
   val transportContainersAddPage = instanceOf[transport_container_add]
@@ -54,7 +54,7 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
     transportContainersAddPage,
     transportContainersSummaryPage,
     transportContainersRemovePage
-  )(ec)
+  )(ec, auditService)
 
   val containerId = "434335468"
   val sealId = "287345"
@@ -73,7 +73,7 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
   }
 
   override protected def afterEach(): Unit = {
-    reset(transportContainersSummaryPage)
+    reset(transportContainersSummaryPage, auditService)
     super.afterEach()
   }
 
@@ -320,6 +320,7 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
         thePageNavigatedTo mustBe TransportContainerController.displayContainerSummary
 
         verifyTheCacheIsUnchanged()
+        verifyNoAudit()
       }
     }
   }
@@ -331,6 +332,7 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
       val result = controller.submitAddContainer()(postRequest(body))
 
       status(result) must be(BAD_REQUEST)
+      verifyNoAudit()
     }
 
     "user adds seal and reached limit of items" in {
@@ -340,6 +342,7 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
       val result = controller.submitAddContainer()(postRequest(body))
 
       status(result) must be(BAD_REQUEST)
+      verifyNoAudit()
     }
 
     "user adds seal with duplicated value" in {
@@ -349,11 +352,13 @@ class TransportContainerControllerSpec extends ControllerSpec with ErrorHandlerM
       val result = controller.submitAddContainer()(postRequest(body))
 
       status(result) must be(BAD_REQUEST)
+      verifyNoAudit()
     }
   }
 
   def verifyCachedContainers(expectedSequenceId: Int, expectedContainers: Seq[Container]): Assertion = {
     val declaration = theCacheModelUpdated
+    verifyAudit()
     declaration.containers mustBe expectedContainers
     valueOfEso[Container](declaration).value mustBe expectedSequenceId
   }

@@ -16,7 +16,7 @@
 
 package controllers.declaration
 
-import base.ControllerSpec
+import base.{AuditedControllerSpec, ControllerSpec}
 import controllers.actions.AmendmentDraftFilterSpec
 import controllers.declaration.routes.DucrEntryController
 import forms.Ducr
@@ -36,7 +36,7 @@ import play.api.test.Helpers.{await, redirectLocation, status}
 import play.twirl.api.HtmlFormat
 import views.html.declaration.confirm_ducr
 
-class ConfirmDucrControllerSpec extends ControllerSpec with AmendmentDraftFilterSpec with ErrorHandlerMocks {
+class ConfirmDucrControllerSpec extends ControllerSpec with AuditedControllerSpec with AmendmentDraftFilterSpec with ErrorHandlerMocks {
 
   private val confirmDucrPage = mock[confirm_ducr]
 
@@ -47,7 +47,7 @@ class ConfirmDucrControllerSpec extends ControllerSpec with AmendmentDraftFilter
     stubMessagesControllerComponents(),
     mockExportsCacheService,
     confirmDucrPage
-  )
+  )(ec, auditService)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
@@ -101,6 +101,7 @@ class ConfirmDucrControllerSpec extends ControllerSpec with AmendmentDraftFilter
         status(result) mustBe BAD_REQUEST
         verify(confirmDucrPage).apply(any(), meq(dummyConRefs.ducr.get))(any(), any())
         verifyTheCacheIsUnchanged()
+        verifyNoAudit()
       }
     }
 
@@ -116,6 +117,7 @@ class ConfirmDucrControllerSpec extends ControllerSpec with AmendmentDraftFilter
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe routes.LocalReferenceNumberController.displayPage
         verifyTheCacheIsUnchanged()
+        verifyNoAudit()
       }
 
       "form was submitted with No answer" in {
@@ -127,6 +129,7 @@ class ConfirmDucrControllerSpec extends ControllerSpec with AmendmentDraftFilter
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe routes.DucrEntryController.displayPage
         theCacheModelUpdated mustBe aDeclaration(withConsignmentReferences(ConsignmentReferences(None, None, None, None)))
+        verifyAudit()
       }
 
       "display page is invoked with no DUCR in cache" in {

@@ -16,7 +16,7 @@
 
 package controllers.declaration
 
-import base.{ControllerSpec, MockTaggedCodes}
+import base.{AuditedControllerSpec, ControllerSpec, MockTaggedCodes}
 import connectors.CodeListConnector
 import controllers.declaration.routes.{LocationOfGoodsController, OfficeOfExitController, RoutingCountriesController}
 import controllers.helpers.TransportSectionHelper.{Guernsey, Jersey}
@@ -39,7 +39,7 @@ import views.html.declaration.destinationCountries.destination_country
 import scala.collection.immutable.ListMap
 import scala.concurrent.ExecutionContext.global
 
-class DestinationCountryControllerSpec extends ControllerSpec with MockTaggedCodes {
+class DestinationCountryControllerSpec extends ControllerSpec with AuditedControllerSpec with MockTaggedCodes {
 
   val destinationCountryPage = mock[destination_country]
   val mockCodeListConnector = mock[CodeListConnector]
@@ -52,7 +52,7 @@ class DestinationCountryControllerSpec extends ControllerSpec with MockTaggedCod
     stubMessagesControllerComponents(),
     taggedAuthCodes,
     destinationCountryPage
-  )(global, mockCodeListConnector)
+  )(global, mockCodeListConnector, auditService)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
@@ -63,7 +63,7 @@ class DestinationCountryControllerSpec extends ControllerSpec with MockTaggedCod
   }
 
   override protected def afterEach(): Unit = {
-    reset(destinationCountryPage, mockCodeListConnector)
+    reset(destinationCountryPage, mockCodeListConnector, auditService)
     super.afterEach()
   }
 
@@ -111,6 +111,7 @@ class DestinationCountryControllerSpec extends ControllerSpec with MockTaggedCod
         val result = controller.submit(postRequest(incorrectForm))
 
         status(result) mustBe BAD_REQUEST
+        verifyNoAudit()
       }
     }
 
@@ -125,6 +126,7 @@ class DestinationCountryControllerSpec extends ControllerSpec with MockTaggedCod
           val result = controller.submit(postRequest(formData))
 
           status(result) mustBe SEE_OTHER
+          verifyAudit()
           thePageNavigatedTo mustBe redirect
         }
 
@@ -138,6 +140,7 @@ class DestinationCountryControllerSpec extends ControllerSpec with MockTaggedCod
           val result = controller.submit(postRequest(formData))
 
           status(result) mustBe SEE_OTHER
+          verifyAudit()
           thePageNavigatedTo mustBe OfficeOfExitController.displayPage
         }
 
@@ -189,6 +192,8 @@ class DestinationCountryControllerSpec extends ControllerSpec with MockTaggedCod
             transport.meansOfTransportCrossingTheBorderType mustBe None
             transport.meansOfTransportCrossingTheBorderIDNumber mustBe None
             transport.transportCrossingTheBorderNationality mustBe None
+
+            verifyAudit()
           }
       }
     }

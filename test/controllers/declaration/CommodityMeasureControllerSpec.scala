@@ -16,7 +16,7 @@
 
 package controllers.declaration
 
-import base.ControllerSpec
+import base.{AuditedControllerSpec, ControllerSpec}
 import controllers.routes.RootController
 import forms.declaration.commodityMeasure.CommodityMeasure
 import models.DeclarationType.{CLEARANCE, OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
@@ -31,7 +31,7 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import views.html.declaration.commodityMeasure.commodity_measure
 
-class CommodityMeasureControllerSpec extends ControllerSpec {
+class CommodityMeasureControllerSpec extends ControllerSpec with AuditedControllerSpec {
 
   private val format = Json.format[CommodityMeasure]
 
@@ -44,7 +44,7 @@ class CommodityMeasureControllerSpec extends ControllerSpec {
     navigator,
     stubMessagesControllerComponents(),
     commodityMeasurePage
-  )(ec)
+  )(ec, auditService)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
@@ -105,6 +105,7 @@ class CommodityMeasureControllerSpec extends ControllerSpec {
 
           status(result) must be(BAD_REQUEST)
           verify(commodityMeasurePage).apply(any(), any())(any(), any())
+          verifyNoAudit()
         }
       }
     }
@@ -121,6 +122,7 @@ class CommodityMeasureControllerSpec extends ControllerSpec {
 
           await(result) mustBe aRedirectToTheNextPage
           thePageNavigatedTo mustBe routes.SupplementaryUnitsController.displayPage("itemId")
+          verifyAudit()
         }
       }
 
@@ -132,6 +134,7 @@ class CommodityMeasureControllerSpec extends ControllerSpec {
 
           await(result) mustBe aRedirectToTheNextPage
           thePageNavigatedTo mustBe routes.AdditionalInformationRequiredController.displayPage("itemId")
+          verifyAudit()
         }
       }
     }
@@ -145,6 +148,7 @@ class CommodityMeasureControllerSpec extends ControllerSpec {
 
           status(response) must be(SEE_OTHER)
           redirectLocation(response) mustBe Some(RootController.displayPage.url)
+          verifyNoAudit()
         }
 
         "the journey is not valid for submitPage" in {
@@ -154,6 +158,7 @@ class CommodityMeasureControllerSpec extends ControllerSpec {
 
           status(response) must be(SEE_OTHER)
           redirectLocation(response) mustBe Some(RootController.displayPage.url)
+          verifyNoAudit()
         }
       }
     }

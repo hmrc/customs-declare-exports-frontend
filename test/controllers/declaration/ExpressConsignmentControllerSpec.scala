@@ -16,7 +16,7 @@
 
 package controllers.declaration
 
-import base.ControllerSpec
+import base.{AuditedControllerSpec, ControllerSpec}
 import controllers.routes.RootController
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
@@ -36,7 +36,7 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import views.html.declaration.express_consignment
 
-class ExpressConsignmentControllerSpec extends ControllerSpec {
+class ExpressConsignmentControllerSpec extends ControllerSpec with AuditedControllerSpec {
 
   private val expressConsignmentPage = mock[express_consignment]
 
@@ -47,7 +47,7 @@ class ExpressConsignmentControllerSpec extends ControllerSpec {
     navigator,
     stubMessagesControllerComponents(),
     expressConsignmentPage
-  )(ec)
+  )(ec, auditService)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
@@ -57,7 +57,7 @@ class ExpressConsignmentControllerSpec extends ControllerSpec {
   }
 
   override protected def afterEach(): Unit = {
-    reset(expressConsignmentPage)
+    reset(expressConsignmentPage, auditService)
     super.afterEach()
   }
 
@@ -112,6 +112,7 @@ class ExpressConsignmentControllerSpec extends ControllerSpec {
           val result = controller.submitForm()(postRequest(incorrectForm))
           status(result) must be(BAD_REQUEST)
           verifyPageInvoked
+          verifyNoAudit()
         }
       }
     }

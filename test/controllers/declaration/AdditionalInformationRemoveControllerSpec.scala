@@ -16,7 +16,7 @@
 
 package controllers.declaration
 
-import base.ControllerSpec
+import base.{AuditedControllerSpec, ControllerSpec}
 import forms.common.YesNoAnswer
 import forms.declaration.AdditionalInformation
 import models.declaration.AdditionalInformationData
@@ -31,7 +31,7 @@ import play.twirl.api.HtmlFormat
 import utils.ListItem
 import views.html.declaration.additionalInformation.additional_information_remove
 
-class AdditionalInformationRemoveControllerSpec extends ControllerSpec with OptionValues {
+class AdditionalInformationRemoveControllerSpec extends ControllerSpec with AuditedControllerSpec with OptionValues {
 
   val mockRemovePage = mock[additional_information_remove]
 
@@ -43,7 +43,7 @@ class AdditionalInformationRemoveControllerSpec extends ControllerSpec with Opti
       navigator,
       stubMessagesControllerComponents(),
       mockRemovePage
-    )(ec)
+    )(ec, auditService)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
@@ -52,7 +52,7 @@ class AdditionalInformationRemoveControllerSpec extends ControllerSpec with Opti
   }
 
   override protected def afterEach(): Unit = {
-    reset(mockRemovePage)
+    reset(mockRemovePage, auditService)
     super.afterEach()
   }
 
@@ -113,13 +113,13 @@ class AdditionalInformationRemoveControllerSpec extends ControllerSpec with Opti
 
           status(result) mustBe BAD_REQUEST
           verifyRemovePageInvoked()
+          verifyNoAudit()
         }
 
       }
       "return 303 (SEE_OTHER)" when {
 
         "requested document id invalid" in {
-
           withNewCaching(aDeclarationAfter(request.cacheModel, withItem(itemWithTwoAdditionalInformation)))
 
           val result = controller.displayPage(itemId, "some-id")(getRequest())
@@ -138,6 +138,8 @@ class AdditionalInformationRemoveControllerSpec extends ControllerSpec with Opti
           thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalInformationController.displayPage(itemId)
 
           theCacheModelUpdated.itemBy(itemId).flatMap(_.additionalInformation) mustBe Some(AdditionalInformationData(Seq(additionalInformationOther)))
+
+          verifyAudit()
         }
 
         "user submits 'Yes' answer when single additional information exists" in {
@@ -150,6 +152,7 @@ class AdditionalInformationRemoveControllerSpec extends ControllerSpec with Opti
           thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalInformationRequiredController.displayPage(itemId)
 
           theCacheModelUpdated.itemBy(itemId).flatMap(_.additionalInformation) mustBe Some(AdditionalInformationData(YesNoAnswer.Yes, Seq.empty))
+          verifyAudit()
         }
 
         "user submits 'No' answer" in {
@@ -162,9 +165,9 @@ class AdditionalInformationRemoveControllerSpec extends ControllerSpec with Opti
           thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalInformationController.displayPage(itemId)
 
           verifyTheCacheIsUnchanged()
+          verifyNoAudit()
         }
       }
     }
-
   }
 }

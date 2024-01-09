@@ -16,7 +16,7 @@
 
 package controllers.declaration
 
-import base.ControllerSpec
+import base.{AuditedControllerSpec, ControllerSpec}
 import connectors.CodeListConnector
 import controllers.declaration.routes.{ExpressConsignmentController, TransportContainerController}
 import controllers.helpers.TransportSectionHelper.{Guernsey, Jersey}
@@ -38,7 +38,7 @@ import views.html.declaration.transport_country
 
 import scala.collection.immutable.ListMap
 
-class TransportCountryControllerSpec extends ControllerSpec with OptionValues {
+class TransportCountryControllerSpec extends ControllerSpec with AuditedControllerSpec with OptionValues {
 
   val page = mock[transport_country]
   val codeListConnector = mock[CodeListConnector]
@@ -46,7 +46,8 @@ class TransportCountryControllerSpec extends ControllerSpec with OptionValues {
   val controller =
     new TransportCountryController(mockAuthAction, mockJourneyAction, navigator, mockExportsCacheService, stubMessagesControllerComponents(), page)(
       ec,
-      codeListConnector
+      codeListConnector,
+      auditService
     )
 
   val countryCode = "ZA"
@@ -61,7 +62,7 @@ class TransportCountryControllerSpec extends ControllerSpec with OptionValues {
 
   override protected def afterEach(): Unit = {
     super.afterEach()
-    reset(page, codeListConnector)
+    reset(page, codeListConnector, auditService)
   }
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
@@ -168,6 +169,7 @@ class TransportCountryControllerSpec extends ControllerSpec with OptionValues {
 
           await(result) mustBe aRedirectToTheNextPage
           thePageNavigatedTo mustBe nextPage(request.declarationType)
+          verifyAudit()
         }
 
         "the user selects the 'Yes' radio and a country from the dropdown" in {
@@ -178,6 +180,7 @@ class TransportCountryControllerSpec extends ControllerSpec with OptionValues {
 
           await(result) mustBe aRedirectToTheNextPage
           thePageNavigatedTo mustBe nextPage(request.declarationType)
+          verifyAudit()
         }
       }
 
@@ -190,9 +193,9 @@ class TransportCountryControllerSpec extends ControllerSpec with OptionValues {
 
           status(result) mustBe BAD_REQUEST
           verify(page, times(1)).apply(any(), any())(any(), any())
+          verifyNoAudit()
         }
       }
-
     }
 
     onClearance { request =>
@@ -202,6 +205,7 @@ class TransportCountryControllerSpec extends ControllerSpec with OptionValues {
         val formData = Json.obj(hasTransportCountry -> "Yes", transportCountry -> countryName)
         val result = controller.submitForm(postRequest(formData))
         redirectLocation(result) mustBe Some(RootController.displayPage.url)
+        verifyNoAudit()
       }
     }
   }

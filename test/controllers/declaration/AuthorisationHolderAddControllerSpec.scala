@@ -16,7 +16,7 @@
 
 package controllers.declaration
 
-import base.{ControllerSpec, ExportsTestData, MockTaggedCodes}
+import base.{AuditedControllerSpec, ControllerSpec, ExportsTestData, MockTaggedCodes}
 import controllers.declaration.routes.AuthorisationHolderSummaryController
 import forms.common.Eori
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
@@ -35,7 +35,8 @@ import play.api.test.Helpers._
 import play.twirl.api.{Html, HtmlFormat}
 import views.html.declaration.authorisationHolder.authorisation_holder_add
 
-class AuthorisationHolderAddControllerSpec extends ControllerSpec with GivenWhenThen with MockTaggedCodes with OptionValues {
+class AuthorisationHolderAddControllerSpec
+    extends ControllerSpec with AuditedControllerSpec with GivenWhenThen with MockTaggedCodes with OptionValues {
 
   val mockAddPage = mock[authorisation_holder_add]
 
@@ -47,7 +48,7 @@ class AuthorisationHolderAddControllerSpec extends ControllerSpec with GivenWhen
     stubMessagesControllerComponents(),
     taggedAuthCodes,
     mockAddPage
-  )(ec)
+  )(ec, auditService)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
@@ -102,6 +103,7 @@ class AuthorisationHolderAddControllerSpec extends ControllerSpec with GivenWhen
 
           status(result) mustBe BAD_REQUEST
           verifyAddPageInvoked()
+          verifyNoAudit()
         }
 
         "user submits invalid data" in {
@@ -112,6 +114,7 @@ class AuthorisationHolderAddControllerSpec extends ControllerSpec with GivenWhen
 
           status(result) mustBe BAD_REQUEST
           verifyAddPageInvoked()
+          verifyNoAudit()
         }
 
         "user submits duplicate data" in {
@@ -123,6 +126,7 @@ class AuthorisationHolderAddControllerSpec extends ControllerSpec with GivenWhen
 
           status(result) mustBe BAD_REQUEST
           verifyAddPageInvoked()
+          verifyNoAudit()
         }
 
         "user adds too many codes" in {
@@ -135,6 +139,7 @@ class AuthorisationHolderAddControllerSpec extends ControllerSpec with GivenWhen
 
           status(result) mustBe BAD_REQUEST
           verifyAddPageInvoked()
+          verifyNoAudit()
         }
 
         "user adds mutually exclusive data" when {
@@ -148,6 +153,7 @@ class AuthorisationHolderAddControllerSpec extends ControllerSpec with GivenWhen
 
             status(result) mustBe BAD_REQUEST
             verifyAddPageInvoked()
+            verifyNoAudit()
           }
 
           "attempted to add CSE when already having EXRR present" in {
@@ -159,6 +165,7 @@ class AuthorisationHolderAddControllerSpec extends ControllerSpec with GivenWhen
 
             status(result) mustBe BAD_REQUEST
             verifyAddPageInvoked()
+            verifyNoAudit()
           }
         }
       }
@@ -180,6 +187,7 @@ class AuthorisationHolderAddControllerSpec extends ControllerSpec with GivenWhen
 
           val savedHolder = theCacheModelUpdated.parties.declarationHoldersData
           savedHolder mustBe Some(AuthorisationHolders(List(authorisationHolder)))
+          verifyAudit()
         }
       }
     }
@@ -202,6 +210,7 @@ class AuthorisationHolderAddControllerSpec extends ControllerSpec with GivenWhen
 
           status(result) mustBe BAD_REQUEST
           verifyAddPageInvoked()
+          verifyNoAudit()
         }
       }
     }

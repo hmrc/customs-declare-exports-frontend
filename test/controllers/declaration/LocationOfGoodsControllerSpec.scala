@@ -16,7 +16,7 @@
 
 package controllers.declaration
 
-import base.{ControllerSpec, MockTaggedCodes}
+import base.{AuditedControllerSpec, ControllerSpec, MockTaggedCodes}
 import connectors.CodeListConnector
 import controllers.declaration.routes.OfficeOfExitController
 import controllers.routes.RootController
@@ -39,7 +39,7 @@ import views.html.declaration.location_of_goods
 
 import scala.collection.immutable.ListMap
 
-class LocationOfGoodsControllerSpec extends ControllerSpec with MockTaggedCodes with OptionValues {
+class LocationOfGoodsControllerSpec extends ControllerSpec with AuditedControllerSpec with MockTaggedCodes with OptionValues {
 
   val mockLocationOfGoods = mock[location_of_goods]
   val mockCodeListConnector = mock[CodeListConnector]
@@ -52,7 +52,7 @@ class LocationOfGoodsControllerSpec extends ControllerSpec with MockTaggedCodes 
     mockExportsCacheService,
     navigator,
     taggedAuthCodes
-  )(ec, mockCodeListConnector)
+  )(ec, mockCodeListConnector, auditService)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
@@ -164,6 +164,7 @@ class LocationOfGoodsControllerSpec extends ControllerSpec with MockTaggedCodes 
         verify(mockLocationOfGoods, times(0)).apply(any())(any(), any())
 
         theCacheModelUpdated.locations.goodsLocation.value mustBe GoodsLocation("PL", "A", "U", "EMAEMAEMA")
+        verifyAudit()
       }
     }
 
@@ -175,6 +176,7 @@ class LocationOfGoodsControllerSpec extends ControllerSpec with MockTaggedCodes 
 
         status(result) mustBe BAD_REQUEST
         verify(mockLocationOfGoods).apply(any())(any(), any())
+        verifyNoAudit()
       }
     }
 
@@ -188,6 +190,7 @@ class LocationOfGoodsControllerSpec extends ControllerSpec with MockTaggedCodes 
         thePageNavigatedTo mustBe OfficeOfExitController.displayPage
 
         verifyTheCacheIsUnchanged()
+        verifyNoAudit()
       }
     }
   }

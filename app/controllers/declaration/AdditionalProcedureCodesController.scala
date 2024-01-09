@@ -32,6 +32,7 @@ import play.api.data.FormError
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.ProcedureCodeService
+import services.audit.AuditService
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.controller.WithUnsafeDefaultFormBinding
@@ -50,7 +51,7 @@ class AdditionalProcedureCodesController @Inject() (
   procedureCodeService: ProcedureCodeService,
   additionalProcedureCodesPage: additional_procedure_codes,
   supervisingCustomsOfficeHelper: SupervisingCustomsOfficeHelper
-)(implicit ec: ExecutionContext)
+)(implicit ec: ExecutionContext, auditService: AuditService)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithUnsafeDefaultFormBinding {
 
   private val emptyProcedureCodesData = ProcedureCodesData(None, Seq())

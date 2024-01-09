@@ -17,8 +17,7 @@
 package controllers.declaration
 
 import scala.concurrent.Future
-
-import base.ControllerSpec
+import base.{AuditedControllerSpec, ControllerSpec}
 import controllers.declaration.routes.AdditionalInformationRequiredController
 import controllers.routes.RootController
 import forms.declaration.commodityMeasure.SupplementaryUnits
@@ -37,7 +36,7 @@ import services.TariffApiService.{CommodityCodeNotFound, SupplementaryUnitsNotRe
 import services.{CommodityInfo, TariffApiService}
 import views.html.declaration.commodityMeasure.{supplementary_units, supplementary_units_yes_no}
 
-class SupplementaryUnitsControllerSpec extends ControllerSpec {
+class SupplementaryUnitsControllerSpec extends ControllerSpec with AuditedControllerSpec {
 
   private val supplementaryUnitsPage = mock[supplementary_units]
   private val supplementaryUnitsYesNoPage = mock[supplementary_units_yes_no]
@@ -53,7 +52,7 @@ class SupplementaryUnitsControllerSpec extends ControllerSpec {
     stubMessagesControllerComponents(),
     supplementaryUnitsPage,
     supplementaryUnitsYesNoPage
-  )(ec)
+  )(ec, auditService)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
@@ -65,7 +64,7 @@ class SupplementaryUnitsControllerSpec extends ControllerSpec {
 
   override protected def afterEach(): Unit = {
     super.afterEach()
-    reset(supplementaryUnitsPage, supplementaryUnitsYesNoPage, tariffApiService)
+    reset(supplementaryUnitsPage, supplementaryUnitsYesNoPage, tariffApiService, auditService)
   }
 
   def responseMandatoryForm: Form[SupplementaryUnits] = {
@@ -200,6 +199,7 @@ class SupplementaryUnitsControllerSpec extends ControllerSpec {
 
             await(result) mustBe aRedirectToTheNextPage
             thePageNavigatedTo mustBe AdditionalInformationRequiredController.displayPage("itemId")
+            verifyAudit()
           }
         }
 
@@ -213,6 +213,7 @@ class SupplementaryUnitsControllerSpec extends ControllerSpec {
 
             status(result) must be(BAD_REQUEST)
             verify(supplementaryUnitsYesNoPage).apply(any(), any())(any(), any())
+            verifyNoAudit()
           }
         }
       }
@@ -231,6 +232,7 @@ class SupplementaryUnitsControllerSpec extends ControllerSpec {
 
             await(result) mustBe aRedirectToTheNextPage
             thePageNavigatedTo mustBe AdditionalInformationRequiredController.displayPage("itemId")
+            verifyAudit()
           }
         }
 
@@ -246,6 +248,7 @@ class SupplementaryUnitsControllerSpec extends ControllerSpec {
 
             status(result) must be(BAD_REQUEST)
             verify(supplementaryUnitsPage).apply(any(), any(), any())(any(), any())
+            verifyNoAudit()
           }
         }
       }
@@ -259,6 +262,7 @@ class SupplementaryUnitsControllerSpec extends ControllerSpec {
 
         status(response) must be(SEE_OTHER)
         redirectLocation(response) mustBe Some(RootController.displayPage.url)
+        verifyNoAudit()
       }
     }
   }
