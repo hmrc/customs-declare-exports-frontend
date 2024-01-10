@@ -16,7 +16,7 @@
 
 package controllers.declaration
 
-import base.ControllerSpec
+import base.{AuditedControllerSpec, ControllerSpec}
 import controllers.routes.RootController
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
@@ -34,7 +34,7 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import views.html.declaration.invoice_and_exchange_rate_choice
 
-class InvoiceAndExchangeRateChoiceControllerSpec extends ControllerSpec {
+class InvoiceAndExchangeRateChoiceControllerSpec extends ControllerSpec with AuditedControllerSpec {
 
   private val invoiceAndExchangeRateChoicePage = mock[invoice_and_exchange_rate_choice]
 
@@ -45,7 +45,7 @@ class InvoiceAndExchangeRateChoiceControllerSpec extends ControllerSpec {
     stubMessagesControllerComponents(),
     invoiceAndExchangeRateChoicePage,
     mockExportsCacheService
-  )(ec)
+  )(ec, auditService)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
@@ -105,12 +105,14 @@ class InvoiceAndExchangeRateChoiceControllerSpec extends ControllerSpec {
       "return 303 (SEE_OTHER) and redirect to the /total-package-quantity page" when {
         "the answer is 'yes'" in {
           verifyRedirect(YesNoAnswers.yes, routes.TotalPackageQuantityController.displayPage)
+          verifyAudit()
         }
       }
 
       "return 303 (SEE_OTHER) and redirect to the /invoices-and-exchange-rate page" when {
         "the answer is 'no'" in {
           verifyRedirect(YesNoAnswers.no, routes.InvoiceAndExchangeRateController.displayPage)
+          verifyNoAudit()
         }
       }
     }
@@ -121,6 +123,7 @@ class InvoiceAndExchangeRateChoiceControllerSpec extends ControllerSpec {
 
         val result = controller.submitForm()(postRequest(JsString("")))
         redirectLocation(result) mustBe Some(RootController.displayPage.url)
+        verifyNoAudit()
       }
     }
 
@@ -132,6 +135,7 @@ class InvoiceAndExchangeRateChoiceControllerSpec extends ControllerSpec {
         val result = controller.submitForm()(postRequest(incorrectForm))
         status(result) must be(BAD_REQUEST)
         verifyPageInvoked
+        verifyNoAudit()
       }
 
       "neither Yes or No have been selected on the page" in {
@@ -140,6 +144,7 @@ class InvoiceAndExchangeRateChoiceControllerSpec extends ControllerSpec {
         val result = controller.submitForm()(postRequest(incorrectForm))
         status(result) must be(BAD_REQUEST)
         verifyPageInvoked
+        verifyNoAudit()
       }
     }
   }

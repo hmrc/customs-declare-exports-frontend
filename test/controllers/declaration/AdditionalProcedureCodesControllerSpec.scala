@@ -16,7 +16,7 @@
 
 package controllers.declaration
 
-import base.ControllerSpec
+import base.{AuditedControllerSpec, ControllerSpec}
 import base.ExportsTestData.pc1040
 import controllers.helpers.{Remove, SupervisingCustomsOfficeHelper}
 import forms.declaration.SupervisingCustomsOffice
@@ -44,7 +44,8 @@ import views.html.declaration.procedureCodes.additional_procedure_codes
 
 import java.util.{Locale, UUID}
 
-class AdditionalProcedureCodesControllerSpec extends ControllerSpec with ErrorHandlerMocks with OptionValues with ScalaFutures {
+class AdditionalProcedureCodesControllerSpec
+    extends ControllerSpec with AuditedControllerSpec with ErrorHandlerMocks with OptionValues with ScalaFutures {
 
   private val additionalProcedureCodesPage = mock[additional_procedure_codes]
   private val procedureCodeService = mock[ProcedureCodeService]
@@ -61,7 +62,7 @@ class AdditionalProcedureCodesControllerSpec extends ControllerSpec with ErrorHa
     procedureCodeService,
     additionalProcedureCodesPage,
     supervisingCustomsOfficeHelper
-  )(ec)
+  )(ec, auditService)
 
   private val itemId = "itemId12345"
   private val sampleProcedureCode = "1040"

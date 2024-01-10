@@ -16,7 +16,7 @@
 
 package controllers.declaration
 
-import base.ControllerSpec
+import base.{AuditedControllerSpec, ControllerSpec}
 import controllers.declaration.routes.AdditionalProcedureCodesController
 import forms.declaration._
 import forms.declaration.procedurecodes.ProcedureCode
@@ -36,7 +36,7 @@ import play.twirl.api.HtmlFormat
 import views.declaration.PackageInformationViewSpec
 import views.html.declaration.procedureCodes.procedure_codes
 
-class ProcedureCodeControllerSpec extends ControllerSpec with ErrorHandlerMocks with OptionValues with ScalaFutures {
+class ProcedureCodeControllerSpec extends ControllerSpec with AuditedControllerSpec with ErrorHandlerMocks with OptionValues with ScalaFutures {
 
   private val procedureCodesPage = mock[procedure_codes]
 
@@ -47,7 +47,7 @@ class ProcedureCodeControllerSpec extends ControllerSpec with ErrorHandlerMocks 
     mockExportsCacheService,
     stubMessagesControllerComponents(),
     procedureCodesPage
-  )(ec)
+  )(ec, auditService)
 
   val itemId = "itemId12345"
 
@@ -65,7 +65,7 @@ class ProcedureCodeControllerSpec extends ControllerSpec with ErrorHandlerMocks 
   }
 
   override protected def afterEach(): Unit = {
-    reset(procedureCodesPage)
+    reset(procedureCodesPage, auditService)
     super.afterEach()
   }
 
@@ -125,6 +125,7 @@ class ProcedureCodeControllerSpec extends ControllerSpec with ErrorHandlerMocks 
 
           status(result) mustBe BAD_REQUEST
           verify(procedureCodesPage).apply(any(), any())(any(), any())
+          verifyNoAudit()
         }
       }
 
@@ -138,6 +139,7 @@ class ProcedureCodeControllerSpec extends ControllerSpec with ErrorHandlerMocks 
 
           status(result) mustBe BAD_REQUEST
           verify(procedureCodesPage).apply(any(), any())(any(), any())
+          verifyNoAudit()
         }
       }
 
@@ -151,6 +153,7 @@ class ProcedureCodeControllerSpec extends ControllerSpec with ErrorHandlerMocks 
           status(result) mustBe SEE_OTHER
           thePageNavigatedTo mustBe AdditionalProcedureCodesController.displayPage(itemId)
           verify(procedureCodesPage, never()).apply(any(), any())(any(), any())
+          verifyAudit()
         }
       }
 
@@ -169,6 +172,7 @@ class ProcedureCodeControllerSpec extends ControllerSpec with ErrorHandlerMocks 
             updatedItem.get.procedureCodes mustBe defined
             updatedItem.get.procedureCodes.get.procedureCode mustBe defined
             updatedItem.get.procedureCodes.get.procedureCode.get mustBe "1234"
+            verifyAudit()
           }
 
           "NOT remove Additional Procedure Codes from the cache" in {
@@ -182,6 +186,7 @@ class ProcedureCodeControllerSpec extends ControllerSpec with ErrorHandlerMocks 
             updatedItem mustBe defined
             updatedItem.get.procedureCodes mustBe defined
             updatedItem.get.procedureCodes.get.additionalProcedureCodes mustBe Seq("123", "456")
+            verifyAudit()
           }
         }
 
@@ -199,6 +204,7 @@ class ProcedureCodeControllerSpec extends ControllerSpec with ErrorHandlerMocks 
             updatedItem.get.procedureCodes mustBe defined
             updatedItem.get.procedureCodes.get.procedureCode mustBe defined
             updatedItem.get.procedureCodes.get.procedureCode.get mustBe "5678"
+            verifyAudit()
           }
 
           "remove all Additional Procedure Codes from the cache" in {
@@ -212,6 +218,7 @@ class ProcedureCodeControllerSpec extends ControllerSpec with ErrorHandlerMocks 
             updatedItem mustBe defined
             updatedItem.get.procedureCodes mustBe defined
             updatedItem.get.procedureCodes.get.additionalProcedureCodes mustBe empty
+            verifyAudit()
           }
 
           "NOT remove Additional Procedure Codes from the cache" when {
@@ -226,6 +233,7 @@ class ProcedureCodeControllerSpec extends ControllerSpec with ErrorHandlerMocks 
               updatedItem mustBe defined
               updatedItem.get.procedureCodes mustBe defined
               updatedItem.get.procedureCodes.get.additionalProcedureCodes mustBe Seq("123", "456")
+              verifyAudit()
             }
           }
         }
@@ -246,6 +254,7 @@ class ProcedureCodeControllerSpec extends ControllerSpec with ErrorHandlerMocks 
           val updatedItem = theCacheModelUpdated.itemBy(itemId)
           updatedItem.flatMap(_.fiscalInformation).value mustBe fiscalInformation
           updatedItem.flatMap(_.additionalFiscalReferencesData).value mustBe fiscalReferencesData
+          verifyAudit()
         }
       }
 
@@ -264,6 +273,7 @@ class ProcedureCodeControllerSpec extends ControllerSpec with ErrorHandlerMocks 
           val updatedItem = theCacheModelUpdated.itemBy(itemId)
           updatedItem.flatMap(_.fiscalInformation) mustBe None
           updatedItem.flatMap(_.additionalFiscalReferencesData) mustBe None
+          verifyAudit()
         }
       }
     }
@@ -281,6 +291,7 @@ class ProcedureCodeControllerSpec extends ControllerSpec with ErrorHandlerMocks 
 
           val updatedItem = theCacheModelUpdated.itemBy(itemId)
           updatedItem.flatMap(_.packageInformation) mustBe Some(Seq(PackageInformationViewSpec.packageInformation))
+          verifyAudit()
         }
       }
 
@@ -295,6 +306,7 @@ class ProcedureCodeControllerSpec extends ControllerSpec with ErrorHandlerMocks 
 
           val updatedItem = theCacheModelUpdated.itemBy(itemId)
           updatedItem.flatMap(_.packageInformation) mustBe None
+          verifyAudit()
         }
       }
     }
@@ -317,6 +329,7 @@ class ProcedureCodeControllerSpec extends ControllerSpec with ErrorHandlerMocks 
 
             val updatedLocations = theCacheModelUpdated.locations
             updatedLocations.warehouseIdentification mustBe None
+            verifyAudit()
           }
         }
 
@@ -336,6 +349,7 @@ class ProcedureCodeControllerSpec extends ControllerSpec with ErrorHandlerMocks 
 
             val updatedLocations = theCacheModelUpdated.locations
             updatedLocations.warehouseIdentification.value mustBe warehouseIdentification
+            verifyAudit()
           }
         }
       }

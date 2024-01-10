@@ -16,7 +16,7 @@
 
 package controllers.declaration
 
-import base.ControllerSpec
+import base.{AuditedControllerSpec, ControllerSpec}
 import controllers.declaration.routes.AdditionalInformationController
 import forms.common.YesNoAnswer.Yes
 import forms.declaration.AdditionalInformation
@@ -34,7 +34,7 @@ import play.twirl.api.HtmlFormat
 import utils.ListItem
 import views.html.declaration.additionalInformation.additional_information_change
 
-class AdditionalInformationChangeControllerSpec extends ControllerSpec with ErrorHandlerMocks {
+class AdditionalInformationChangeControllerSpec extends ControllerSpec with AuditedControllerSpec with ErrorHandlerMocks {
 
   val mockChangePage = mock[additional_information_change]
 
@@ -45,7 +45,7 @@ class AdditionalInformationChangeControllerSpec extends ControllerSpec with Erro
     navigator,
     stubMessagesControllerComponents(),
     mockChangePage
-  )(ec)
+  )(ec, auditService)
 
   val itemId = "itemId"
   private val additionalInformation1 = AdditionalInformation("00400", "Some description")
@@ -97,6 +97,7 @@ class AdditionalInformationChangeControllerSpec extends ControllerSpec with Erro
 
         status(result) mustBe BAD_REQUEST
         verifyPageInvoked()
+        verifyNoAudit()
       }
 
       "user enters 'RRS01' as code" in {
@@ -105,6 +106,7 @@ class AdditionalInformationChangeControllerSpec extends ControllerSpec with Erro
 
         status(result) mustBe BAD_REQUEST
         verifyPageInvoked()
+        verifyNoAudit()
       }
 
       "user enters 'LIC99' as code" in {
@@ -113,6 +115,7 @@ class AdditionalInformationChangeControllerSpec extends ControllerSpec with Erro
 
         status(result) mustBe BAD_REQUEST
         verifyPageInvoked()
+        verifyNoAudit()
       }
 
       "user enters duplicated item" in {
@@ -121,6 +124,7 @@ class AdditionalInformationChangeControllerSpec extends ControllerSpec with Erro
 
         status(result) mustBe BAD_REQUEST
         verifyPageInvoked()
+        verifyNoAudit()
       }
     }
 
@@ -136,6 +140,7 @@ class AdditionalInformationChangeControllerSpec extends ControllerSpec with Erro
 
         val savedData = theCacheModelUpdated.itemBy(itemId).flatMap(_.additionalInformation)
         savedData mustBe Some(AdditionalInformationData(Yes, Seq(AdditionalInformation("00000", "Change"), additionalInformation2)))
+        verifyAudit()
       }
 
       "user does not change document" in {
@@ -148,6 +153,7 @@ class AdditionalInformationChangeControllerSpec extends ControllerSpec with Erro
 
         val savedDocuments = theCacheModelUpdated.itemBy(itemId).flatMap(_.additionalInformation)
         savedDocuments mustBe Some(AdditionalInformationData(Yes, Seq(additionalInformation1, additionalInformation2)))
+        verifyAudit()
       }
     }
   }

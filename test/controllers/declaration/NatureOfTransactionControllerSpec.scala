@@ -16,7 +16,7 @@
 
 package controllers.declaration
 
-import base.ControllerSpec
+import base.{AuditedControllerSpec, ControllerSpec}
 import controllers.declaration.routes.PreviousDocumentsSummaryController
 import forms.declaration.{Document, NatureOfTransaction}
 import models.DeclarationType
@@ -31,7 +31,7 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import views.html.declaration.nature_of_transaction
 
-class NatureOfTransactionControllerSpec extends ControllerSpec with OptionValues {
+class NatureOfTransactionControllerSpec extends ControllerSpec with AuditedControllerSpec with OptionValues {
 
   val mockNatureOfTransactionPage = mock[nature_of_transaction]
 
@@ -42,7 +42,7 @@ class NatureOfTransactionControllerSpec extends ControllerSpec with OptionValues
     stubMessagesControllerComponents(),
     mockNatureOfTransactionPage,
     mockExportsCacheService
-  )(ec)
+  )(ec, auditService)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
@@ -101,6 +101,7 @@ class NatureOfTransactionControllerSpec extends ControllerSpec with OptionValues
 
         status(result) mustBe BAD_REQUEST
         verify(mockNatureOfTransactionPage, times(1)).apply(any())(any(), any())
+        verifyNoAudit()
       }
     }
 
@@ -115,6 +116,7 @@ class NatureOfTransactionControllerSpec extends ControllerSpec with OptionValues
         thePageNavigatedTo mustBe PreviousDocumentsSummaryController.displayPage
 
         verify(mockNatureOfTransactionPage, times(0)).apply(any())(any(), any())
+        verifyAudit()
       }
     }
   }

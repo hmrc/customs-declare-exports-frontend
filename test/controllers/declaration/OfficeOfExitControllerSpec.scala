@@ -16,7 +16,7 @@
 
 package controllers.declaration
 
-import base.ControllerSpec
+import base.{AuditedControllerSpec, ControllerSpec}
 import forms.declaration.officeOfExit.OfficeOfExit
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -29,7 +29,7 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import views.html.declaration.office_of_exit
 
-class OfficeOfExitControllerSpec extends ControllerSpec with OptionValues {
+class OfficeOfExitControllerSpec extends ControllerSpec with AuditedControllerSpec with OptionValues {
 
   val mockOfficeOfExitPage = mock[office_of_exit]
 
@@ -40,7 +40,7 @@ class OfficeOfExitControllerSpec extends ControllerSpec with OptionValues {
     stubMessagesControllerComponents(),
     mockOfficeOfExitPage,
     mockExportsCacheService
-  )(ec)
+  )(ec, auditService)
 
   def checkViewInteractions(noOfInvocations: Int = 1): Unit =
     verify(mockOfficeOfExitPage, times(noOfInvocations)).apply(any())(any(), any())
@@ -106,6 +106,7 @@ class OfficeOfExitControllerSpec extends ControllerSpec with OptionValues {
 
         status(result) mustBe BAD_REQUEST
         checkViewInteractions()
+        verifyNoAudit()
       }
     }
   }
@@ -126,8 +127,8 @@ class OfficeOfExitControllerSpec extends ControllerSpec with OptionValues {
         thePageNavigatedTo mustBe routes.SectionSummaryController.displayPage(3)
         checkViewInteractions(0)
         theCacheModelUpdated.locations.officeOfExit must be(Some(OfficeOfExit(officeOfExitInput)))
+        verifyAudit()
       }
-
     }
   }
 }

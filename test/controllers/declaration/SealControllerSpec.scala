@@ -16,7 +16,7 @@
 
 package controllers.declaration
 
-import base.ControllerSpec
+import base.{AuditedControllerSpec, ControllerSpec}
 import controllers.declaration.routes.{SealController, TransportContainerController}
 import controllers.helpers.SequenceIdHelper.valueOfEso
 import controllers.helpers.{Remove, SaveAndContinue}
@@ -36,7 +36,7 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import views.html.declaration.{seal_add, seal_remove, seal_summary}
 
-class SealControllerSpec extends ControllerSpec with ErrorHandlerMocks with GivenWhenThen with OptionValues {
+class SealControllerSpec extends ControllerSpec with AuditedControllerSpec with ErrorHandlerMocks with GivenWhenThen with OptionValues {
 
   val sealAddPage = mock[seal_add]
   val sealRemovePage = mock[seal_remove]
@@ -55,7 +55,7 @@ class SealControllerSpec extends ControllerSpec with ErrorHandlerMocks with Give
     sealAddPage,
     sealRemovePage,
     sealSummaryPage
-  )
+  )(ec, auditService)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
@@ -136,6 +136,7 @@ class SealControllerSpec extends ControllerSpec with ErrorHandlerMocks with Give
         val result = controller.submitAddSeal(containerId)(postRequest(body))
 
         status(result) must be(BAD_REQUEST)
+        verifyNoAudit()
       }
 
       "user adds seal with incorrect item" in {
@@ -145,6 +146,7 @@ class SealControllerSpec extends ControllerSpec with ErrorHandlerMocks with Give
         val result = controller.submitAddSeal(containerId)(postRequest(body))
 
         status(result) must be(BAD_REQUEST)
+        verifyNoAudit()
       }
 
       "user adds seal and reached limit of items" in {
@@ -156,6 +158,7 @@ class SealControllerSpec extends ControllerSpec with ErrorHandlerMocks with Give
         val result = controller.submitAddSeal(containerId)(postRequestAsFormUrlEncoded(body: _*))
 
         status(result) must be(BAD_REQUEST)
+        verifyNoAudit()
       }
 
       "user adds seal with duplicated value" in {
@@ -166,6 +169,7 @@ class SealControllerSpec extends ControllerSpec with ErrorHandlerMocks with Give
         val result = controller.submitAddSeal(containerId)(postRequest(body))
 
         status(result) must be(BAD_REQUEST)
+        verifyNoAudit()
       }
     }
 
@@ -186,6 +190,7 @@ class SealControllerSpec extends ControllerSpec with ErrorHandlerMocks with Give
         valueOfEso[Seal](declaration).value mustBe 0
 
         thePageNavigatedTo mustBe SealController.displaySealSummary(containerId)
+        verifyAudit()
       }
 
       "add an additional seal" in {
@@ -204,6 +209,7 @@ class SealControllerSpec extends ControllerSpec with ErrorHandlerMocks with Give
         valueOfEso[Seal](declaration).value mustBe 1
 
         thePageNavigatedTo mustBe SealController.displaySealSummary(containerId)
+        verifyAudit()
       }
 
       "add the first seal to an additional container" in {
@@ -222,6 +228,7 @@ class SealControllerSpec extends ControllerSpec with ErrorHandlerMocks with Give
         valueOfEso[Seal](declaration).value mustBe 1
 
         thePageNavigatedTo mustBe SealController.displaySealSummary("container2")
+        verifyAudit()
       }
 
       "add a seal and" when {
@@ -240,6 +247,7 @@ class SealControllerSpec extends ControllerSpec with ErrorHandlerMocks with Give
           valueOfEso[Seal](declaration).value mustBe 0
 
           thePageNavigatedTo mustBe SealController.displaySealSummary(containerId)
+          verifyAudit()
         }
       }
 
@@ -253,6 +261,7 @@ class SealControllerSpec extends ControllerSpec with ErrorHandlerMocks with Give
           await(result) mustBe aRedirectToTheNextPage
 
           thePageNavigatedTo mustBe SealController.displaySealRemove(containerId, "value")
+          verifyNoAudit()
         }
 
         "user clicks 'remove' when container in cache" in {
@@ -263,6 +272,7 @@ class SealControllerSpec extends ControllerSpec with ErrorHandlerMocks with Give
 
           await(result) mustBe aRedirectToTheNextPage
           thePageNavigatedTo mustBe SealController.displaySealRemove(containerId, "value")
+          verifyNoAudit()
         }
       }
 
@@ -314,6 +324,7 @@ class SealControllerSpec extends ControllerSpec with ErrorHandlerMocks with Give
           valueOfEso[Seal](declaration).value mustBe 1
 
           thePageNavigatedTo mustBe SealController.displaySealSummary("containerB")
+          verifyAudit()
         }
 
         "user confirms that they do not want to remove" in {
@@ -326,6 +337,7 @@ class SealControllerSpec extends ControllerSpec with ErrorHandlerMocks with Give
           thePageNavigatedTo mustBe SealController.displaySealSummary(containerId)
 
           verifyTheCacheIsUnchanged()
+          verifyNoAudit()
         }
       }
     }

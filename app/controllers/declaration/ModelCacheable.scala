@@ -18,10 +18,11 @@ package controllers.declaration
 
 import models.ExportsDeclaration
 import models.requests.JourneyRequest
+import services.audit.{AuditService, AuditTypes}
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.http.HeaderCarrier
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 trait ModelCacheable {
 
@@ -32,6 +33,9 @@ trait ModelCacheable {
 
   def updateDeclarationFromRequest(
     updateDeclaration: ExportsDeclaration => ExportsDeclaration
-  )(implicit hc: HeaderCarrier, request: JourneyRequest[_]): Future[ExportsDeclaration] =
-    exportsCacheService.update(updateDeclaration(request.cacheModel), request.eori)
+  )(implicit hc: HeaderCarrier, request: JourneyRequest[_], auditService: AuditService, ec: ExecutionContext): Future[ExportsDeclaration] =
+    exportsCacheService.update(updateDeclaration(request.cacheModel), request.eori).map { updatedCache =>
+      auditService.auditAllPagesUserInput(AuditTypes.SaveDraftValue, updatedCache)
+      updatedCache
+    }
 }

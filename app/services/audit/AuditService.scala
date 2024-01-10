@@ -140,8 +140,8 @@ class AuditService @Inject() (connector: AuditConnector, appConfig: AppConfig)(i
 
 object AuditTypes extends Enumeration {
   type Audit = Value
-  val Submission, SubmissionPayload, Cancellation, NavigateToMessages, Amendment, AmendmentPayload, AmendmentCancellation, UploadDocumentLink,
-    CreateDraftDeclatation = Value
+  val SaveDraftValue, Submission, SubmissionPayload, Cancellation, NavigateToMessages, Amendment, AmendmentPayload, AmendmentCancellation,
+    UploadDocumentLink, CreateDraftDeclatation = Value
 }
 
 object EventData extends Enumeration {

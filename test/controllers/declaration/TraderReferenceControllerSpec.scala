@@ -16,7 +16,7 @@
 
 package controllers.declaration
 
-import base.ControllerSpec
+import base.{AuditedControllerSpec, ControllerSpec}
 import controllers.actions.AmendmentDraftFilterSpec
 import controllers.declaration.routes.ConfirmDucrController
 import forms.Ducr
@@ -35,7 +35,7 @@ import views.html.declaration.trader_reference
 
 import java.time.{LocalDate, ZonedDateTime}
 
-class TraderReferenceControllerSpec extends ControllerSpec with AmendmentDraftFilterSpec {
+class TraderReferenceControllerSpec extends ControllerSpec with AuditedControllerSpec with AmendmentDraftFilterSpec {
 
   private val traderReferencePage = mock[trader_reference]
 
@@ -46,7 +46,7 @@ class TraderReferenceControllerSpec extends ControllerSpec with AmendmentDraftFi
     stubMessagesControllerComponents(),
     mockExportsCacheService,
     traderReferencePage
-  )
+  )(ec, auditService)
 
   def nextPageOnTypes: Seq[NextPageOnType] =
     allDeclarationTypesExcluding(SUPPLEMENTARY).map(NextPageOnType(_, ConfirmDucrController.displayPage))
@@ -108,6 +108,7 @@ class TraderReferenceControllerSpec extends ControllerSpec with AmendmentDraftFi
 
         status(result) mustBe BAD_REQUEST
         verifyTheCacheIsUnchanged()
+        verifyNoAudit()
       }
 
       "form was submitted with no data" in {
@@ -118,6 +119,7 @@ class TraderReferenceControllerSpec extends ControllerSpec with AmendmentDraftFi
 
         status(result) mustBe BAD_REQUEST
         verifyTheCacheIsUnchanged()
+        verifyNoAudit()
       }
     }
 
@@ -133,6 +135,7 @@ class TraderReferenceControllerSpec extends ControllerSpec with AmendmentDraftFi
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe routes.ConfirmDucrController.displayPage
         theCacheModelUpdated().head mustBe aDeclarationAfter(declaration, withConsignmentReferences(dummyConRefs))
+        verifyAudit()
       }
 
       "display page method is invoked on supplementary journey" in {
@@ -142,6 +145,7 @@ class TraderReferenceControllerSpec extends ControllerSpec with AmendmentDraftFi
 
         status(result) mustBe 303
         redirectLocation(result) mustBe Some(controllers.routes.RootController.displayPage.url)
+        verifyNoAudit()
       }
     }
   }

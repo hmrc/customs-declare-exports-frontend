@@ -16,7 +16,7 @@
 
 package controllers.declaration
 
-import base.ControllerSpec
+import base.{AuditedControllerSpec, ControllerSpec}
 import connectors.CodeListConnector
 import controllers.declaration.routes.{LocationOfGoodsController, RoutingCountriesController}
 import controllers.helpers.Remove
@@ -38,7 +38,7 @@ import views.html.declaration.destinationCountries.{country_of_routing, routing_
 
 import scala.collection.immutable.ListMap
 
-class RoutingCountriesControllerSpec extends ControllerSpec with GivenWhenThen with OptionValues {
+class RoutingCountriesControllerSpec extends ControllerSpec with AuditedControllerSpec with GivenWhenThen with OptionValues {
 
   val mockRoutingQuestionPage = mock[routing_country_question]
   val mockCountryOfRoutingPage = mock[country_of_routing]
@@ -53,7 +53,7 @@ class RoutingCountriesControllerSpec extends ControllerSpec with GivenWhenThen w
     stubMessagesControllerComponents(),
     mockRoutingQuestionPage,
     mockCountryOfRoutingPage
-  )(ec, mockCodeListConnector)
+  )(ec, mockCodeListConnector, auditService)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
@@ -116,6 +116,7 @@ class RoutingCountriesControllerSpec extends ControllerSpec with GivenWhenThen w
         val result = controller.submitRoutingAnswer()(postRequest(incorrectForm))
 
         status(result) mustBe BAD_REQUEST
+        verifyNoAudit()
       }
 
       "user submitted incorrect country on Routing Countries page" in {
@@ -126,6 +127,7 @@ class RoutingCountriesControllerSpec extends ControllerSpec with GivenWhenThen w
         val result = controller.submitRoutingAnswer()(postRequest(incorrectForm))
 
         status(result) mustBe BAD_REQUEST
+        verifyNoAudit()
       }
 
       "user submitted duplicated country in Routing Countries page" in {
@@ -136,6 +138,7 @@ class RoutingCountriesControllerSpec extends ControllerSpec with GivenWhenThen w
         val result = controller.submitRoutingAnswer()(postRequest(duplicatedForm))
 
         status(result) mustBe BAD_REQUEST
+        verifyNoAudit()
       }
 
       "save and continue in Routing Countries" when {
@@ -145,6 +148,7 @@ class RoutingCountriesControllerSpec extends ControllerSpec with GivenWhenThen w
           val result = controller.submitRoutingCountry()(postRequestAsFormUrlEncoded(Seq(saveAndContinueActionUrlEncoded): _*))
 
           status(result) mustBe BAD_REQUEST
+          verifyNoAudit()
 
           verifyTheCacheIsUnchanged()
         }
@@ -163,6 +167,7 @@ class RoutingCountriesControllerSpec extends ControllerSpec with GivenWhenThen w
 
           await(result) mustBe aRedirectToTheNextPage
           thePageNavigatedTo mustBe RoutingCountriesController.displayRoutingCountry
+          verifyAudit()
         }
 
         "No" in {
@@ -174,6 +179,7 @@ class RoutingCountriesControllerSpec extends ControllerSpec with GivenWhenThen w
 
           await(result) mustBe aRedirectToTheNextPage
           thePageNavigatedTo mustBe LocationOfGoodsController.displayPage
+          verifyAudit()
         }
 
         "error fixing and the answer is yes" in {
@@ -185,6 +191,7 @@ class RoutingCountriesControllerSpec extends ControllerSpec with GivenWhenThen w
 
           await(result) mustBe aRedirectToTheNextPage
           thePageNavigatedTo mustBe RoutingCountriesController.displayRoutingCountry
+          verifyAudit()
         }
       }
 
@@ -307,6 +314,7 @@ class RoutingCountriesControllerSpec extends ControllerSpec with GivenWhenThen w
 
           await(result) mustBe aRedirectToTheNextPage
           thePageNavigatedTo mustBe LocationOfGoodsController.displayPage
+          verifyNoAudit()
         }
       }
 
@@ -319,6 +327,7 @@ class RoutingCountriesControllerSpec extends ControllerSpec with GivenWhenThen w
         routingCountries.zip(expectedCountries).foreach { case (routingCountry, expectedCountry) =>
           routingCountry.country == FormCountry(Some(expectedCountry)) mustBe true
         }
+        verifyAudit()
         routingCountries.size mustBe expectedCountries.size
         valueOfEso[RoutingCountry](declaration).value mustBe expectedSize
       }

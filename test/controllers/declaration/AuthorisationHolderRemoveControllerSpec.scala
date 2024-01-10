@@ -16,7 +16,7 @@
 
 package controllers.declaration
 
-import base.ControllerSpec
+import base.{AuditedControllerSpec, ControllerSpec}
 import controllers.declaration.routes.{AuthorisationHolderAddController, AuthorisationHolderRequiredController, AuthorisationHolderSummaryController}
 import forms.common.YesNoAnswer.Yes
 import forms.common.{Eori, YesNoAnswer}
@@ -38,7 +38,8 @@ import play.twirl.api.HtmlFormat
 import play.twirl.api.HtmlFormat.Appendable
 import views.html.declaration.authorisationHolder.authorisation_holder_remove
 
-class AuthorisationHolderRemoveControllerSpec extends ControllerSpec with ErrorHandlerMocks with GivenWhenThen with OptionValues {
+class AuthorisationHolderRemoveControllerSpec
+    extends ControllerSpec with AuditedControllerSpec with ErrorHandlerMocks with GivenWhenThen with OptionValues {
 
   val mockRemovePage = mock[authorisation_holder_remove]
 
@@ -50,7 +51,7 @@ class AuthorisationHolderRemoveControllerSpec extends ControllerSpec with ErrorH
     mockErrorHandler,
     stubMessagesControllerComponents(),
     mockRemovePage
-  )(ec)
+  )(ec, auditService)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
@@ -133,6 +134,7 @@ class AuthorisationHolderRemoveControllerSpec extends ControllerSpec with ErrorH
 
           status(result) mustBe BAD_REQUEST
           verifyNoInteractions(mockRemovePage)
+          verifyNoAudit()
         }
 
         "user submits an invalid answer" in {
@@ -143,6 +145,7 @@ class AuthorisationHolderRemoveControllerSpec extends ControllerSpec with ErrorH
 
           status(result) mustBe BAD_REQUEST
           verifyRemovePageInvoked()
+          verifyNoAudit()
         }
       }
     }
@@ -170,6 +173,7 @@ class AuthorisationHolderRemoveControllerSpec extends ControllerSpec with ErrorH
               case _                      => AuthorisationHolders(Seq(authorisationHolder_2), None)
             }
             theCacheModelUpdated.parties.declarationHoldersData mustBe Some(expectedHoldersData)
+            verifyAudit()
           }
         }
 
@@ -183,6 +187,7 @@ class AuthorisationHolderRemoveControllerSpec extends ControllerSpec with ErrorH
           thePageNavigatedTo mustBe AuthorisationHolderSummaryController.displayPage
 
           verifyTheCacheIsUnchanged()
+          verifyNoAudit()
         }
       }
     }
@@ -207,6 +212,7 @@ class AuthorisationHolderRemoveControllerSpec extends ControllerSpec with ErrorH
               await(result) mustBe aRedirectToTheNextPage
               thePageNavigatedTo mustBe AuthorisationHolderAddController.displayPage
               theCacheModelUpdated.parties.declarationHoldersData mustBe None
+              verifyAudit()
             }
           }
         }
@@ -224,6 +230,7 @@ class AuthorisationHolderRemoveControllerSpec extends ControllerSpec with ErrorH
               thePageNavigatedTo mustBe AuthorisationHolderRequiredController.displayPage
 
               theCacheModelUpdated.parties.declarationHoldersData mustBe None
+              verifyAudit()
             }
           }
         }
@@ -242,6 +249,7 @@ class AuthorisationHolderRemoveControllerSpec extends ControllerSpec with ErrorH
                 thePageNavigatedTo mustBe AuthorisationHolderRequiredController.displayPage
 
                 theCacheModelUpdated.parties.declarationHoldersData mustBe None
+                verifyAudit()
               }
             }
           }

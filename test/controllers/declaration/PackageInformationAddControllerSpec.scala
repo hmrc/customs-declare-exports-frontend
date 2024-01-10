@@ -16,7 +16,7 @@
 
 package controllers.declaration
 
-import base.{ControllerSpec, Injector}
+import base.{AuditedControllerSpec, ControllerSpec, Injector}
 import controllers.helpers.SequenceIdHelper.valueOfEso
 import forms.declaration.PackageInformation
 import org.mockito.ArgumentCaptor
@@ -31,7 +31,7 @@ import services.PackageTypesService
 import views.declaration.PackageInformationViewSpec.packageInformation
 import views.html.declaration.packageInformation.package_information_add
 
-class PackageInformationAddControllerSpec extends ControllerSpec with OptionValues with Injector with GivenWhenThen {
+class PackageInformationAddControllerSpec extends ControllerSpec with AuditedControllerSpec with OptionValues with Injector with GivenWhenThen {
 
   val mockAddPage = mock[package_information_add]
   val mockPackageTypesService = instanceOf[PackageTypesService]
@@ -44,7 +44,7 @@ class PackageInformationAddControllerSpec extends ControllerSpec with OptionValu
       navigator,
       stubMessagesControllerComponents(),
       mockAddPage
-    )(ec, mockPackageTypesService)
+    )(ec, mockPackageTypesService, auditService)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
@@ -100,6 +100,7 @@ class PackageInformationAddControllerSpec extends ControllerSpec with OptionValu
 
           status(result) mustBe BAD_REQUEST
           verifyAddPageInvoked()
+          verifyNoAudit()
         }
 
         "user adds duplicate data" in {
@@ -115,6 +116,7 @@ class PackageInformationAddControllerSpec extends ControllerSpec with OptionValu
 
           status(result) mustBe BAD_REQUEST
           verifyAddPageInvoked()
+          verifyNoAudit()
         }
 
         "user adds too many codes" in {
@@ -127,6 +129,7 @@ class PackageInformationAddControllerSpec extends ControllerSpec with OptionValu
 
           status(result) mustBe BAD_REQUEST
           verifyAddPageInvoked()
+          verifyNoAudit()
         }
       }
 
@@ -149,6 +152,7 @@ class PackageInformationAddControllerSpec extends ControllerSpec with OptionValu
 
           And("max seq id is updated in dec meta")
           valueOfEso[PackageInformation](declaration).value mustBe 1
+          verifyAudit()
         }
       }
     }

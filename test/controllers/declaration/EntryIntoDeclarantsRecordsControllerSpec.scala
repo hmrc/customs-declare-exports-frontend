@@ -16,7 +16,7 @@
 
 package controllers.declaration
 
-import base.ControllerSpec
+import base.{AuditedControllerSpec, ControllerSpec}
 import controllers.declaration.routes.{DeclarantDetailsController, PersonPresentingGoodsDetailsController}
 import controllers.routes.RootController
 import forms.common.YesNoAnswer.{No, Yes, YesNoAnswers}
@@ -36,7 +36,7 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import views.html.declaration.entry_into_declarants_records
 
-class EntryIntoDeclarantsRecordsControllerSpec extends ControllerSpec with ScalaFutures {
+class EntryIntoDeclarantsRecordsControllerSpec extends ControllerSpec with AuditedControllerSpec with ScalaFutures {
 
   private val page = mock[entry_into_declarants_records]
 
@@ -47,7 +47,7 @@ class EntryIntoDeclarantsRecordsControllerSpec extends ControllerSpec with Scala
     navigator,
     stubMessagesControllerComponents(),
     page
-  )(ec)
+  )(ec, auditService)
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -56,7 +56,7 @@ class EntryIntoDeclarantsRecordsControllerSpec extends ControllerSpec with Scala
   }
 
   override def afterEach(): Unit = {
-    reset(page)
+    reset(page, auditService)
     super.afterEach()
   }
 
@@ -135,6 +135,7 @@ class EntryIntoDeclarantsRecordsControllerSpec extends ControllerSpec with Scala
           val result = controller.submitForm()(postRequest(correctForm))
 
           status(result) mustBe SEE_OTHER
+          verifyAudit()
         }
 
         "call Cache to update it" in {
@@ -144,6 +145,7 @@ class EntryIntoDeclarantsRecordsControllerSpec extends ControllerSpec with Scala
           controller.submitForm()(postRequest(correctForm)).futureValue
 
           theCacheModelUpdated.parties.isEntryIntoDeclarantsRecords mustBe Yes
+          verifyAudit()
         }
 
         "call Navigator" in {
@@ -168,6 +170,7 @@ class EntryIntoDeclarantsRecordsControllerSpec extends ControllerSpec with Scala
           val modelPassedToCache = theCacheModelUpdated
           modelPassedToCache.parties.isEntryIntoDeclarantsRecords mustBe Yes
           modelPassedToCache.parties.personPresentingGoodsDetails mustBe Some(PersonPresentingGoodsDetails(Eori("GB1234567890")))
+          verifyAudit()
         }
 
         "update Cache with AuthorisationProcedureCodeChoice left unchanged" in {
@@ -179,6 +182,7 @@ class EntryIntoDeclarantsRecordsControllerSpec extends ControllerSpec with Scala
           val modelPassedToCache = theCacheModelUpdated
           modelPassedToCache.parties.isEntryIntoDeclarantsRecords mustBe Yes
           modelPassedToCache.parties.authorisationProcedureCodeChoice mustBe Choice1040
+          verifyAudit()
         }
 
         "redirect to Person Presenting the Goods page" in {
@@ -203,6 +207,7 @@ class EntryIntoDeclarantsRecordsControllerSpec extends ControllerSpec with Scala
           val modelPassedToCache = theCacheModelUpdated
           modelPassedToCache.parties.isEntryIntoDeclarantsRecords mustBe No
           modelPassedToCache.parties.personPresentingGoodsDetails mustBe None
+          verifyAudit()
         }
 
         "update Cache with AuthorisationProcedureCodeChoice set to None" in {
@@ -214,6 +219,7 @@ class EntryIntoDeclarantsRecordsControllerSpec extends ControllerSpec with Scala
           val modelPassedToCache = theCacheModelUpdated
           modelPassedToCache.parties.isEntryIntoDeclarantsRecords mustBe No
           modelPassedToCache.parties.authorisationProcedureCodeChoice mustBe None
+          verifyAudit()
         }
 
         "redirect to Declarant Details page" in {
@@ -234,6 +240,7 @@ class EntryIntoDeclarantsRecordsControllerSpec extends ControllerSpec with Scala
           val result = controller.submitForm()(postRequest(incorrectForm))
 
           status(result) mustBe BAD_REQUEST
+          verifyNoAudit()
         }
       }
     }
@@ -246,6 +253,7 @@ class EntryIntoDeclarantsRecordsControllerSpec extends ControllerSpec with Scala
         val result = controller.submitForm()(postRequest(correctForm))
 
         status(result) mustBe SEE_OTHER
+        verifyNoAudit()
       }
 
       "redirect to start page" in {

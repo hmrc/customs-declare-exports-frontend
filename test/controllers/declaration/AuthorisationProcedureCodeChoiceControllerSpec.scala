@@ -16,7 +16,7 @@
 
 package controllers.declaration
 
-import base.ControllerSpec
+import base.{AuditedControllerSpec, ControllerSpec}
 import controllers.routes.RootController
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.AuthorisationProcedureCodeChoice
@@ -35,7 +35,7 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import views.html.declaration.authorisation_procedure_code_choice
 
-class AuthorisationProcedureCodeChoiceControllerSpec extends ControllerSpec {
+class AuthorisationProcedureCodeChoiceControllerSpec extends ControllerSpec with AuditedControllerSpec {
 
   val authorisationProcedureCodeChoice = mock[authorisation_procedure_code_choice]
 
@@ -46,7 +46,7 @@ class AuthorisationProcedureCodeChoiceControllerSpec extends ControllerSpec {
     navigator,
     stubMessagesControllerComponents(),
     authorisationProcedureCodeChoice
-  )(ec)
+  )(ec, auditService)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
@@ -158,6 +158,7 @@ class AuthorisationProcedureCodeChoiceControllerSpec extends ControllerSpec {
 
             status(result) mustBe SEE_OTHER
             redirectLocation(result) mustBe Some(RootController.displayPage.url)
+            verifyNoAudit()
           }
         }
       }
@@ -178,6 +179,7 @@ class AuthorisationProcedureCodeChoiceControllerSpec extends ControllerSpec {
 
               verifyPageInvoked(0)
               theCacheModelUpdated.parties.authorisationProcedureCodeChoice mustBe choice
+              verifyAudit()
             }
           }
         }
@@ -191,6 +193,7 @@ class AuthorisationProcedureCodeChoiceControllerSpec extends ControllerSpec {
             status(result) must be(BAD_REQUEST)
             verifyPageInvoked()
             verifyTheCacheIsUnchanged()
+            verifyNoAudit()
           }
         }
       }

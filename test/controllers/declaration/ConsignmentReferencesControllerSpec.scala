@@ -16,7 +16,7 @@
 
 package controllers.declaration
 
-import base.ControllerSpec
+import base.{AuditedControllerSpec, ControllerSpec}
 import base.ExportsTestData.eidrDateStamp
 import controllers.actions.AmendmentDraftFilterSpec
 import controllers.declaration.routes.{LinkDucrToMucrController, SectionSummaryController}
@@ -37,7 +37,7 @@ import views.html.declaration.consignment_references
 
 import scala.concurrent.Future
 
-class ConsignmentReferencesControllerSpec extends ControllerSpec with AmendmentDraftFilterSpec with GivenWhenThen {
+class ConsignmentReferencesControllerSpec extends ControllerSpec with AuditedControllerSpec with AmendmentDraftFilterSpec with GivenWhenThen {
 
   private val lrnValidator = mock[LrnValidator]
   private val consignmentReferencesPage = mock[consignment_references]
@@ -50,7 +50,7 @@ class ConsignmentReferencesControllerSpec extends ControllerSpec with AmendmentD
     navigator,
     stubMessagesControllerComponents(),
     consignmentReferencesPage
-  )(ec)
+  )(ec, auditService)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
@@ -115,6 +115,7 @@ class ConsignmentReferencesControllerSpec extends ControllerSpec with AmendmentD
 
           val result = controller.submitForm()(postRequest(incorrectForm))
           status(result) must be(BAD_REQUEST)
+          verifyNoAudit()
         }
 
         "LrnValidator returns false" in {
@@ -124,6 +125,7 @@ class ConsignmentReferencesControllerSpec extends ControllerSpec with AmendmentD
 
           val result = controller.submitForm()(postRequest(correctForm))
           status(result) must be(BAD_REQUEST)
+          verifyNoAudit()
         }
       }
 
@@ -139,6 +141,7 @@ class ConsignmentReferencesControllerSpec extends ControllerSpec with AmendmentD
 
         val declaration = theCacheModelUpdated
         declaration.consignmentReferences.head.ducr.get.ducr mustBe ducr.toUpperCase
+        verifyAudit()
       }
     }
 
@@ -152,6 +155,7 @@ class ConsignmentReferencesControllerSpec extends ControllerSpec with AmendmentD
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe routes.LinkDucrToMucrController.displayPage
+        verifyAudit()
       }
     }
 
@@ -167,6 +171,7 @@ class ConsignmentReferencesControllerSpec extends ControllerSpec with AmendmentD
 
           await(result) mustBe aRedirectToTheNextPage
           thePageNavigatedTo mustBe routes.SectionSummaryController.displayPage(1)
+          verifyAudit()
         }
 
         "for SUPPLEMENTARY_EIDR" in {
@@ -178,8 +183,8 @@ class ConsignmentReferencesControllerSpec extends ControllerSpec with AmendmentD
 
           await(result) mustBe aRedirectToTheNextPage
           thePageNavigatedTo mustBe routes.SectionSummaryController.displayPage(1)
+          verifyAudit()
         }
-
       }
     }
   }

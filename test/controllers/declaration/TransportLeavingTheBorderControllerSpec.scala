@@ -16,7 +16,7 @@
 
 package controllers.declaration
 
-import base.ControllerSpec
+import base.{AuditedControllerSpec, ControllerSpec}
 import base.ExportsTestData.{modifierForPC1040, valuesRequiringToSkipInlandOrBorder}
 import controllers.declaration.routes.{
   InlandOrBorderController,
@@ -44,7 +44,7 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import views.html.declaration.transport_leaving_the_border
 
-class TransportLeavingTheBorderControllerSpec extends ControllerSpec with OptionValues {
+class TransportLeavingTheBorderControllerSpec extends ControllerSpec with AuditedControllerSpec with OptionValues {
 
   private val transportLeavingTheBorder = mock[transport_leaving_the_border]
 
@@ -60,7 +60,7 @@ class TransportLeavingTheBorderControllerSpec extends ControllerSpec with Option
     transportLeavingTheBorder,
     inlandOrBorderHelper = inlandOrBorderHelper,
     supervisingCustomsOfficeHelper
-  )(ec)
+  )(ec, auditService)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
@@ -119,6 +119,7 @@ class TransportLeavingTheBorderControllerSpec extends ControllerSpec with Option
 
           val result = controller.submitForm()(postRequest(Json.obj()))
           status(result) must be(BAD_REQUEST)
+          verifyNoAudit()
         }
       }
 
@@ -133,6 +134,7 @@ class TransportLeavingTheBorderControllerSpec extends ControllerSpec with Option
             await(controller.submitForm()(postRequest(body)))
 
             theCacheModelUpdated.transportLeavingBorderCode mustBe Some(RoRo)
+            verifyAudit()
           }
         }
 
@@ -145,6 +147,7 @@ class TransportLeavingTheBorderControllerSpec extends ControllerSpec with Option
 
               val result = controller.submitForm()(postRequest(body))
               status(result) must be(BAD_REQUEST)
+              verifyNoAudit()
             }
           }
         }
@@ -167,6 +170,8 @@ class TransportLeavingTheBorderControllerSpec extends ControllerSpec with Option
             transport.meansOfTransportCrossingTheBorderType mustBe None
             transport.meansOfTransportCrossingTheBorderIDNumber mustBe None
             transport.transportCrossingTheBorderNationality mustBe None
+
+            verifyAudit()
           }
         }
       }
@@ -186,6 +191,7 @@ class TransportLeavingTheBorderControllerSpec extends ControllerSpec with Option
             await(controller.submitForm()(postRequest(body)))
 
             theCacheModelUpdated.transportLeavingBorderCode.value mustBe modeOfTransportCode
+            verifyAudit()
           }
         }
 
@@ -200,6 +206,7 @@ class TransportLeavingTheBorderControllerSpec extends ControllerSpec with Option
 
                 await(result) mustBe aRedirectToTheNextPage
                 thePageNavigatedTo mustBe WarehouseIdentificationController.displayPage
+                verifyAudit()
               }
             }
           }
@@ -211,6 +218,7 @@ class TransportLeavingTheBorderControllerSpec extends ControllerSpec with Option
 
             await(result) mustBe aRedirectToTheNextPage
             thePageNavigatedTo mustBe SupervisingCustomsOfficeController.displayPage
+            verifyAudit()
           }
         }
 
@@ -229,6 +237,7 @@ class TransportLeavingTheBorderControllerSpec extends ControllerSpec with Option
                   else InlandOrBorderController.displayPage
 
                 thePageNavigatedTo mustBe expectedPage
+                verifyAudit()
               }
             }
           }
@@ -244,6 +253,7 @@ class TransportLeavingTheBorderControllerSpec extends ControllerSpec with Option
 
                 await(result) mustBe aRedirectToTheNextPage
                 thePageNavigatedTo mustBe InlandTransportDetailsController.displayPage
+                verifyAudit()
               }
             }
 
@@ -269,6 +279,8 @@ class TransportLeavingTheBorderControllerSpec extends ControllerSpec with Option
 
                     await(result) mustBe aRedirectToTheNextPage
                     thePageNavigatedTo mustBe expectedPage
+
+                    verifyAudit()
                   }
                 }
               }
@@ -284,6 +296,7 @@ class TransportLeavingTheBorderControllerSpec extends ControllerSpec with Option
 
             await(result) mustBe aRedirectToTheNextPage
             thePageNavigatedTo mustBe WarehouseIdentificationController.displayPage
+            verifyAudit()
           }
         }
       }

@@ -16,7 +16,7 @@
 
 package controllers.declaration
 
-import base.ControllerSpec
+import base.{AuditedControllerSpec, ControllerSpec}
 import connectors.CodeListConnector
 import forms.declaration.{AdditionalFiscalReference, AdditionalFiscalReferencesData}
 import mock.{ErrorHandlerMocks, ItemActionMocks}
@@ -35,7 +35,7 @@ import views.html.declaration.fiscalInformation.additional_fiscal_references_add
 import scala.collection.immutable.ListMap
 import scala.concurrent.Future
 
-class AdditionalFiscalReferencesAddControllerSpec extends ControllerSpec with ItemActionMocks with ErrorHandlerMocks {
+class AdditionalFiscalReferencesAddControllerSpec extends ControllerSpec with AuditedControllerSpec with ItemActionMocks with ErrorHandlerMocks {
 
   val mockAddPage = mock[additional_fiscal_references_add]
   val mockCodeListConnector = mock[CodeListConnector]
@@ -47,7 +47,7 @@ class AdditionalFiscalReferencesAddControllerSpec extends ControllerSpec with It
     navigator,
     stubMessagesControllerComponents(),
     mockAddPage
-  )(ec, mockCodeListConnector)
+  )(ec, mockCodeListConnector, auditService)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
@@ -101,6 +101,7 @@ class AdditionalFiscalReferencesAddControllerSpec extends ControllerSpec with It
         val result = controller.submitForm(item.id)(postRequestAsFormUrlEncoded(incorrectForm: _*))
 
         status(result) must be(BAD_REQUEST)
+        verifyNoAudit()
       }
 
       "user adds duplicated item" in {
@@ -115,6 +116,7 @@ class AdditionalFiscalReferencesAddControllerSpec extends ControllerSpec with It
         val result = controller.submitForm(itemCacheData.id)(postRequestAsFormUrlEncoded(duplicatedForm: _*))
 
         status(result) must be(BAD_REQUEST)
+        verifyNoAudit()
       }
 
       "user reaches maximum amount of items" in {
@@ -130,6 +132,7 @@ class AdditionalFiscalReferencesAddControllerSpec extends ControllerSpec with It
 
         val result = controller.submitForm(itemCacheData.id)(postRequestAsFormUrlEncoded(form: _*))
         status(result) must be(BAD_REQUEST)
+        verifyNoAudit()
       }
     }
 
@@ -146,6 +149,7 @@ class AdditionalFiscalReferencesAddControllerSpec extends ControllerSpec with It
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe routes.AdditionalFiscalReferencesController.displayPage(item.id)
+        verifyAudit()
       }
     }
   }

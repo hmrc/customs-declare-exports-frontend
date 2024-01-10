@@ -16,7 +16,7 @@
 
 package controllers.declaration
 
-import base.ControllerSpec
+import base.{AuditedControllerSpec, ControllerSpec}
 import forms.common.YesNoAnswer
 import models.DeclarationType._
 import org.mockito.ArgumentCaptor
@@ -31,7 +31,7 @@ import views.html.declaration.additionalInformation.additional_information_requi
 
 import scala.concurrent.Future
 
-class AdditionalInformationRequiredControllerSpec extends ControllerSpec with OptionValues {
+class AdditionalInformationRequiredControllerSpec extends ControllerSpec with AuditedControllerSpec with OptionValues {
 
   private val mockPage = mock[additional_information_required]
 
@@ -42,7 +42,7 @@ class AdditionalInformationRequiredControllerSpec extends ControllerSpec with Op
     navigator,
     stubMessagesControllerComponents(),
     mockPage
-  )(ec)
+  )(ec, auditService)
 
   val itemId = "itemId"
 
@@ -99,8 +99,8 @@ class AdditionalInformationRequiredControllerSpec extends ControllerSpec with Op
 
           status(result) mustBe BAD_REQUEST
           verifyPageInvoked()
+          verifyNoAudit()
         }
-
       }
 
       "return 303 (SEE_OTHER)" when {
@@ -124,8 +124,8 @@ class AdditionalInformationRequiredControllerSpec extends ControllerSpec with Op
 
           await(result) mustBe aRedirectToTheNextPage
           thePageNavigatedTo mustBe routes.AdditionalInformationController.displayPage(itemId)
+          verifyAudit()
         }
-
       }
     }
 
@@ -138,8 +138,8 @@ class AdditionalInformationRequiredControllerSpec extends ControllerSpec with Op
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe routes.AdditionalDocumentsController.displayPage(itemId)
+        verifyAudit()
       }
-
     }
 
     onJourney(STANDARD, OCCASIONAL, SUPPLEMENTARY, SIMPLIFIED) { request =>
@@ -151,6 +151,7 @@ class AdditionalInformationRequiredControllerSpec extends ControllerSpec with Op
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe routes.IsLicenceRequiredController.displayPage(itemId)
+        verifyAudit()
       }
     }
   }

@@ -16,7 +16,7 @@
 
 package controllers.declaration
 
-import base.ControllerSpec
+import base.{AuditedControllerSpec, ControllerSpec}
 import controllers.actions.AmendmentDraftFilterSpec
 import controllers.declaration.routes.LocalReferenceNumberController
 import forms.Ducr
@@ -32,13 +32,14 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import views.html.declaration.ducr_entry
 
-class DucrEntryControllerSpec extends ControllerSpec with AmendmentDraftFilterSpec with GivenWhenThen {
+class DucrEntryControllerSpec extends ControllerSpec with AuditedControllerSpec with AmendmentDraftFilterSpec with GivenWhenThen {
 
   private val ducrEntryPage = mock[ducr_entry]
 
   val controller =
     new DucrEntryController(mockAuthAction, mockJourneyAction, mockExportsCacheService, navigator, stubMessagesControllerComponents(), ducrEntryPage)(
-      ec
+      ec,
+      auditService
     )
 
   override protected def beforeEach(): Unit = {
@@ -99,6 +100,7 @@ class DucrEntryControllerSpec extends ControllerSpec with AmendmentDraftFilterSp
 
           val result = controller.submitForm()(postRequest(incorrectForm))
           status(result) must be(BAD_REQUEST)
+          verifyNoAudit()
         }
       }
 
@@ -114,6 +116,7 @@ class DucrEntryControllerSpec extends ControllerSpec with AmendmentDraftFilterSp
 
         val declaration = theCacheModelUpdated
         declaration.consignmentReferences.head.ducr.get.ducr mustBe ducr.toUpperCase
+        verifyAudit()
       }
 
       "return 303 (SEE_OTHER) and redirect to 'Lrn' page" in {
@@ -124,6 +127,7 @@ class DucrEntryControllerSpec extends ControllerSpec with AmendmentDraftFilterSp
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe LocalReferenceNumberController.displayPage
+        verifyAudit()
       }
     }
   }

@@ -16,7 +16,7 @@
 
 package controllers.declaration
 
-import base.ControllerSpec
+import base.{AuditedControllerSpec, ControllerSpec}
 import controllers.declaration.routes.{CarrierEoriNumberController, ConsigneeDetailsController, ExporterEoriNumberController, IsExsController}
 import forms.declaration.DeclarantIsExporter
 import models.DeclarationType
@@ -31,7 +31,7 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import views.html.declaration.declarant_exporter
 
-class DeclarantExporterControllerSpec extends ControllerSpec with OptionValues {
+class DeclarantExporterControllerSpec extends ControllerSpec with AuditedControllerSpec with OptionValues {
 
   val mockPage = mock[declarant_exporter]
 
@@ -42,7 +42,7 @@ class DeclarantExporterControllerSpec extends ControllerSpec with OptionValues {
     navigator,
     stubMessagesControllerComponents(),
     mockPage
-  )(ec)
+  )(ec, auditService)
 
   def theResponseForm: Form[DeclarantIsExporter] = {
     val formCaptor = ArgumentCaptor.forClass(classOf[Form[DeclarantIsExporter]])
@@ -109,6 +109,7 @@ class DeclarantExporterControllerSpec extends ControllerSpec with OptionValues {
 
           status(result) mustBe BAD_REQUEST
           verifyPage(1)
+          verifyNoAudit()
         }
       }
     }
@@ -125,6 +126,7 @@ class DeclarantExporterControllerSpec extends ControllerSpec with OptionValues {
         thePageNavigatedTo mustBe ExporterEoriNumberController.displayPage
 
         verifyPage(0)
+        verifyAudit()
       }
     }
 
@@ -140,6 +142,7 @@ class DeclarantExporterControllerSpec extends ControllerSpec with OptionValues {
         thePageNavigatedTo mustBe CarrierEoriNumberController.displayPage
 
         verifyPage(0)
+        verifyAudit()
       }
     }
 
@@ -155,6 +158,7 @@ class DeclarantExporterControllerSpec extends ControllerSpec with OptionValues {
         thePageNavigatedTo mustBe IsExsController.displayPage
 
         verifyPage(0)
+        verifyAudit()
       }
     }
 
@@ -170,6 +174,7 @@ class DeclarantExporterControllerSpec extends ControllerSpec with OptionValues {
         thePageNavigatedTo mustBe ConsigneeDetailsController.displayPage
 
         verifyPage(0)
+        verifyAudit()
       }
     }
   }

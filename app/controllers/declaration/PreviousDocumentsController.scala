@@ -29,6 +29,7 @@ import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.cache.ExportsCacheService
 import services.DocumentTypeService
+import services.audit.AuditService
 import uk.gov.hmrc.play.bootstrap.controller.WithUnsafeDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.previousDocuments.previous_documents
@@ -44,7 +45,7 @@ class PreviousDocumentsController @Inject() (
   previousDocumentsPage: previous_documents,
   override val exportsCacheService: ExportsCacheService,
   documentTypeService: DocumentTypeService
-)(implicit ec: ExecutionContext)
+)(implicit ec: ExecutionContext, auditService: AuditService)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithUnsafeDefaultFormBinding {
 
   def displayPage: Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>

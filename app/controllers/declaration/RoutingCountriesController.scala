@@ -30,6 +30,7 @@ import models.declaration.RoutingCountry
 import models.requests.JourneyRequest
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import services.audit.AuditService
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.WithUnsafeDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
@@ -46,7 +47,7 @@ class RoutingCountriesController @Inject() (
   mcc: MessagesControllerComponents,
   routingQuestionPage: routing_country_question,
   countryOfRoutingPage: country_of_routing
-)(implicit ec: ExecutionContext, codeListConnector: CodeListConnector)
+)(implicit ec: ExecutionContext, codeListConnector: CodeListConnector, auditService: AuditService)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithUnsafeDefaultFormBinding {
 
   def displayRoutingQuestion(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>

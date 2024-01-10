@@ -16,7 +16,7 @@
 
 package controllers.declaration
 
-import base.{ControllerSpec, TestHelper}
+import base.{AuditedControllerSpec, ControllerSpec, TestHelper}
 import controllers.declaration.routes.StatisticalValueController
 import controllers.routes.RootController
 import forms.declaration.{NactCode, NactCodeFirst}
@@ -31,7 +31,7 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import views.html.declaration.{nact_code_add, nact_code_add_first}
 
-class NactCodeAddControllerSpec extends ControllerSpec with OptionValues {
+class NactCodeAddControllerSpec extends ControllerSpec with AuditedControllerSpec with OptionValues {
 
   val mockAddPage = mock[nact_code_add]
   val mockAddFirstPage = mock[nact_code_add_first]
@@ -45,7 +45,7 @@ class NactCodeAddControllerSpec extends ControllerSpec with OptionValues {
       stubMessagesControllerComponents(),
       mockAddFirstPage,
       mockAddPage
-    )(ec)
+    )(ec, auditService)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
@@ -138,6 +138,7 @@ class NactCodeAddControllerSpec extends ControllerSpec with OptionValues {
 
           status(result) mustBe BAD_REQUEST
           verifyAddPageFirstInvoked()
+          verifyNoAudit()
         }
 
         "user adds duplicate code" in {
@@ -150,6 +151,7 @@ class NactCodeAddControllerSpec extends ControllerSpec with OptionValues {
 
           status(result) mustBe BAD_REQUEST
           verifyAddPageInvoked()
+          verifyNoAudit()
         }
 
         "user adds too many codes" in {
@@ -162,6 +164,7 @@ class NactCodeAddControllerSpec extends ControllerSpec with OptionValues {
 
           status(result) mustBe BAD_REQUEST
           verifyAddPageInvoked()
+          verifyNoAudit()
         }
       }
 
@@ -178,6 +181,7 @@ class NactCodeAddControllerSpec extends ControllerSpec with OptionValues {
           thePageNavigatedTo mustBe routes.NactCodeSummaryController.displayPage(item.id)
 
           theCacheModelUpdated.itemBy(item.id).flatMap(_.nactCodes) mustBe Some(Seq(NactCode("VATR")))
+          verifyAudit()
         }
 
         "user submits valid additional code" in {
@@ -192,6 +196,7 @@ class NactCodeAddControllerSpec extends ControllerSpec with OptionValues {
           thePageNavigatedTo mustBe routes.NactCodeSummaryController.displayPage(item.id)
 
           theCacheModelUpdated.itemBy(item.id).flatMap(_.nactCodes) mustBe Some(Seq(nactCode, NactCode("VATR")))
+          verifyAudit()
         }
       }
     }

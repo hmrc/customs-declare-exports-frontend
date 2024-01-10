@@ -16,7 +16,7 @@
 
 package controllers.declaration
 
-import base.ControllerSpec
+import base.{AuditedControllerSpec, ControllerSpec}
 import connectors.CodeListConnector
 import controllers.declaration.routes.{IsExsController, RepresentativeAgentController}
 import forms.common.{Address, Eori}
@@ -38,7 +38,7 @@ import views.html.declaration.exporter_address
 import scala.collection.immutable.ListMap
 import scala.concurrent.ExecutionContext
 
-class ExporterDetailsControllerSpec extends ControllerSpec with OptionValues {
+class ExporterDetailsControllerSpec extends ControllerSpec with AuditedControllerSpec with OptionValues {
 
   val exporter_address = mock[exporter_address]
   val mockCodeListConnector = mock[CodeListConnector]
@@ -50,7 +50,7 @@ class ExporterDetailsControllerSpec extends ControllerSpec with OptionValues {
     navigator,
     stubMessagesControllerComponents(),
     exporter_address
-  )(ExecutionContext.global, mockCodeListConnector)
+  )(ExecutionContext.global, mockCodeListConnector, auditService)
 
   val address = Some(Address("CaptainAmerica", "Test Street", "Leeds", "LS18BN", "United Kingdom, Great Britain, Northern Ireland"))
   val eori = Some(Eori("GB213472539481923"))
@@ -106,6 +106,7 @@ class ExporterDetailsControllerSpec extends ControllerSpec with OptionValues {
           val body = Json.obj("details" -> Json.obj("eori" -> "!nva!id"))
           val response = controller.saveAddress()(postRequest(body))
           status(response) mustBe BAD_REQUEST
+          verifyNoAudit()
         }
       }
 
@@ -118,6 +119,7 @@ class ExporterDetailsControllerSpec extends ControllerSpec with OptionValues {
 
           response mustBe aRedirectToTheNextPage
           thePageNavigatedTo mustBe RepresentativeAgentController.displayPage
+          verifyAudit()
         }
       }
     }
@@ -131,6 +133,7 @@ class ExporterDetailsControllerSpec extends ControllerSpec with OptionValues {
 
           response mustBe aRedirectToTheNextPage
           thePageNavigatedTo mustBe IsExsController.displayPage
+          verifyAudit()
         }
       }
     }

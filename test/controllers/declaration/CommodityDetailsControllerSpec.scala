@@ -16,7 +16,7 @@
 
 package controllers.declaration
 
-import base.ControllerSpec
+import base.{AuditedControllerSpec, ControllerSpec}
 import controllers.declaration.routes.{CommodityMeasureController, PackageInformationSummaryController, UNDangerousGoodsCodeController}
 import forms.declaration.{CommodityDetails, CusCode, IsExs}
 import models.DeclarationType._
@@ -31,7 +31,7 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import views.html.declaration.commodity_details
 
-class CommodityDetailsControllerSpec extends ControllerSpec with OptionValues {
+class CommodityDetailsControllerSpec extends ControllerSpec with AuditedControllerSpec with OptionValues {
 
   val mockCommodityDetailsPage = mock[commodity_details]
 
@@ -42,7 +42,7 @@ class CommodityDetailsControllerSpec extends ControllerSpec with OptionValues {
     navigator,
     stubMessagesControllerComponents(),
     mockCommodityDetailsPage
-  )(ec)
+  )(ec, auditService)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
@@ -110,6 +110,7 @@ class CommodityDetailsControllerSpec extends ControllerSpec with OptionValues {
 
         status(result) mustBe BAD_REQUEST
         verify(mockCommodityDetailsPage, times(1)).apply(any(), any())(any(), any())
+        verifyNoAudit()
       }
     }
 
@@ -122,6 +123,7 @@ class CommodityDetailsControllerSpec extends ControllerSpec with OptionValues {
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe UNDangerousGoodsCodeController.displayPage(itemId)
+        verifyAudit()
       }
     }
 
@@ -134,6 +136,7 @@ class CommodityDetailsControllerSpec extends ControllerSpec with OptionValues {
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe UNDangerousGoodsCodeController.displayPage(itemId)
+        verifyAudit()
       }
     }
 
@@ -151,6 +154,7 @@ class CommodityDetailsControllerSpec extends ControllerSpec with OptionValues {
         val result = controller.submitForm(itemId)(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
+        verifyAudit()
         thePageNavigatedTo mustBe expectedCall
       }
 

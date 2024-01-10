@@ -78,12 +78,12 @@ class AdditionalInformationController @Inject() (
 
     yesNoAnswer.answer match {
       case YesNoAnswers.yes =>
-        navigator.continueTo(routes.AdditionalInformationAddController.displayPage(itemId))(request)
+        navigator.continueTo(routes.AdditionalInformationAddController.displayPage(itemId))
 
       case YesNoAnswers.no if isClearanceJourney =>
-        navigator.continueTo(AdditionalDocumentsController.displayPage(itemId))(request)
+        navigator.continueTo(AdditionalDocumentsController.displayPage(itemId))
 
-      case _ => navigator.continueTo(IsLicenceRequiredController.displayPage(itemId))(request)
+      case _ => navigator.continueTo(IsLicenceRequiredController.displayPage(itemId))
     }
 
   }

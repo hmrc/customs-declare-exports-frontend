@@ -16,7 +16,7 @@
 
 package controllers.declaration
 
-import base.ControllerSpec
+import base.{AuditedControllerSpec, ControllerSpec}
 import connectors.CodeListConnector
 import controllers.routes.RootController
 import forms.common.{Address, Eori}
@@ -37,7 +37,7 @@ import views.html.declaration.consignor_details
 
 import scala.collection.immutable.ListMap
 
-class ConsignorDetailsControllerSpec extends ControllerSpec {
+class ConsignorDetailsControllerSpec extends ControllerSpec with AuditedControllerSpec {
 
   val consignorDetailsPage = mock[consignor_details]
   val mockCodeListConnector = mock[CodeListConnector]
@@ -49,7 +49,7 @@ class ConsignorDetailsControllerSpec extends ControllerSpec {
     navigator,
     stubMessagesControllerComponents(),
     consignorDetailsPage
-  )(ec, mockCodeListConnector)
+  )(ec, mockCodeListConnector, auditService)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
@@ -114,6 +114,7 @@ class ConsignorDetailsControllerSpec extends ControllerSpec {
           val result = controller.saveAddress()(postRequest(incorrectForm))
 
           status(result) must be(BAD_REQUEST)
+          verifyNoAudit()
         }
       }
     }
@@ -137,6 +138,7 @@ class ConsignorDetailsControllerSpec extends ControllerSpec {
 
           await(result) mustBe aRedirectToTheNextPage
           thePageNavigatedTo mustBe controllers.declaration.routes.RepresentativeAgentController.displayPage
+          verifyAudit()
         }
       }
 
@@ -165,6 +167,7 @@ class ConsignorDetailsControllerSpec extends ControllerSpec {
 
           await(result) mustBe aRedirectToTheNextPage
           thePageNavigatedTo mustBe controllers.declaration.routes.CarrierEoriNumberController.displayPage
+          verifyAudit()
         }
       }
     }
@@ -187,6 +190,7 @@ class ConsignorDetailsControllerSpec extends ControllerSpec {
 
         status(result) must be(SEE_OTHER)
         redirectLocation(result) mustBe Some(RootController.displayPage.url)
+        verifyNoAudit()
       }
     }
 
@@ -199,6 +203,7 @@ class ConsignorDetailsControllerSpec extends ControllerSpec {
 
           status(result) must be(SEE_OTHER)
           redirectLocation(result) mustBe Some(RootController.displayPage.url)
+          verifyNoAudit()
         }
       }
     }

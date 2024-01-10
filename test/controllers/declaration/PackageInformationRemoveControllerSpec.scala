@@ -16,7 +16,7 @@
 
 package controllers.declaration
 
-import base.ControllerSpec
+import base.{AuditedControllerSpec, ControllerSpec}
 import controllers.helpers.SequenceIdHelper.valueOfEso
 import forms.common.YesNoAnswer
 import forms.declaration.PackageInformation
@@ -31,7 +31,8 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import views.html.declaration.packageInformation.package_information_remove
 
-class PackageInformationRemoveControllerSpec extends ControllerSpec with ErrorHandlerMocks with GivenWhenThen with OptionValues {
+class PackageInformationRemoveControllerSpec
+    extends ControllerSpec with AuditedControllerSpec with ErrorHandlerMocks with GivenWhenThen with OptionValues {
 
   val mockRemovePage = mock[package_information_remove]
 
@@ -44,7 +45,7 @@ class PackageInformationRemoveControllerSpec extends ControllerSpec with ErrorHa
       navigator,
       stubMessagesControllerComponents(),
       mockRemovePage
-    )(ec)
+    )(ec, auditService)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
@@ -110,6 +111,7 @@ class PackageInformationRemoveControllerSpec extends ControllerSpec with ErrorHa
 
           status(result) mustBe BAD_REQUEST
           verifyRemovePageInvoked()
+          verifyNoAudit()
         }
 
         "user tries to display page with non-existent package info" in {
@@ -120,6 +122,7 @@ class PackageInformationRemoveControllerSpec extends ControllerSpec with ErrorHa
           status(result) mustBe BAD_REQUEST
           verifyNoInteractions(mockRemovePage)
           verify(mockErrorHandler).redirectToErrorPage(any())
+          verifyNoAudit()
         }
 
         "user tries to remove non-existent package info" in {
@@ -130,6 +133,7 @@ class PackageInformationRemoveControllerSpec extends ControllerSpec with ErrorHa
           status(result) mustBe BAD_REQUEST
           verifyNoInteractions(mockRemovePage)
           verify(mockErrorHandler).redirectToErrorPage(any())
+          verifyNoAudit()
         }
       }
 
@@ -156,6 +160,7 @@ class PackageInformationRemoveControllerSpec extends ControllerSpec with ErrorHa
 
           And("max seq Id remains the same in dec meta")
           valueOfEso[PackageInformation](declaration).value mustBe 1
+          verifyAudit()
         }
 
         "user submits 'No' answer" in {
@@ -168,6 +173,7 @@ class PackageInformationRemoveControllerSpec extends ControllerSpec with ErrorHa
           thePageNavigatedTo mustBe routes.PackageInformationSummaryController.displayPage(item.id)
 
           verifyTheCacheIsUnchanged()
+          verifyNoAudit()
         }
       }
     }

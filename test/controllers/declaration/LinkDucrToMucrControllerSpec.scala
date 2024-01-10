@@ -16,7 +16,7 @@
 
 package controllers.declaration
 
-import base.ControllerSpec
+import base.{AuditedControllerSpec, ControllerSpec}
 import controllers.actions.AmendmentDraftFilterSpec
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
@@ -33,7 +33,7 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import views.html.declaration.link_ducr_to_mucr
 
-class LinkDucrToMucrControllerSpec extends ControllerSpec with AmendmentDraftFilterSpec {
+class LinkDucrToMucrControllerSpec extends ControllerSpec with AuditedControllerSpec with AmendmentDraftFilterSpec {
 
   private val linkDucrToMucrPage = mock[link_ducr_to_mucr]
 
@@ -44,7 +44,7 @@ class LinkDucrToMucrControllerSpec extends ControllerSpec with AmendmentDraftFil
     navigator,
     stubMessagesControllerComponents(),
     linkDucrToMucrPage
-  )(ec)
+  )(ec, auditService)
 
   def nextPageOnTypes: Seq[NextPageOnType] =
     allDeclarationTypes.map(NextPageOnType(_, routes.SectionSummaryController.displayPage(1)))
@@ -118,6 +118,7 @@ class LinkDucrToMucrControllerSpec extends ControllerSpec with AmendmentDraftFil
         val result = controller.submitForm()(postRequest(incorrectForm))
         status(result) must be(BAD_REQUEST)
         verifyPageInvoked
+        verifyNoAudit()
       }
 
       "neither Yes or No have been selected on the page" in {
@@ -126,6 +127,7 @@ class LinkDucrToMucrControllerSpec extends ControllerSpec with AmendmentDraftFil
         val result = controller.submitForm()(postRequest(incorrectForm))
         status(result) must be(BAD_REQUEST)
         verifyPageInvoked
+        verifyNoAudit()
       }
     }
   }
@@ -140,6 +142,7 @@ class LinkDucrToMucrControllerSpec extends ControllerSpec with AmendmentDraftFil
     val result = controller.submitForm()(postRequest(correctForm))
 
     status(result) mustBe SEE_OTHER
+    verifyAudit()
     thePageNavigatedTo mustBe call
   }
 }

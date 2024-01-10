@@ -16,7 +16,7 @@
 
 package controllers.declaration
 
-import base.ControllerWithoutFormSpec
+import base.{AuditedControllerSpec, ControllerWithoutFormSpec}
 import controllers.declaration.routes.PreviousDocumentsSummaryController
 import forms.declaration.{Document, PreviousDocumentsData}
 import models.DeclarationType
@@ -30,7 +30,7 @@ import play.twirl.api.{Html, HtmlFormat}
 import services.{DocumentType, DocumentTypeService}
 import views.html.declaration.previousDocuments.previous_documents
 
-class PreviousDocumentsControllerSpec extends ControllerWithoutFormSpec {
+class PreviousDocumentsControllerSpec extends ControllerWithoutFormSpec with AuditedControllerSpec {
 
   val mockPreviousDocumentsPage = mock[previous_documents]
   val mockDocumentTypeService = mock[DocumentTypeService]
@@ -43,7 +43,7 @@ class PreviousDocumentsControllerSpec extends ControllerWithoutFormSpec {
     mockPreviousDocumentsPage,
     mockExportsCacheService,
     mockDocumentTypeService
-  )(ec)
+  )(ec, auditService)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
@@ -92,6 +92,7 @@ class PreviousDocumentsControllerSpec extends ControllerWithoutFormSpec {
 
         status(result) mustBe BAD_REQUEST
         verifyPage()
+        verifyNoAudit()
       }
 
       "user doesn't provide the Document reference" in {
@@ -102,6 +103,7 @@ class PreviousDocumentsControllerSpec extends ControllerWithoutFormSpec {
 
         status(result) mustBe BAD_REQUEST
         verifyPage()
+        verifyNoAudit()
       }
 
       "user doesn't provide Document type and Document reference" in {
@@ -112,6 +114,7 @@ class PreviousDocumentsControllerSpec extends ControllerWithoutFormSpec {
 
         status(result) mustBe BAD_REQUEST
         verifyPage()
+        verifyNoAudit()
       }
 
       "user put duplicated item" in {
@@ -123,6 +126,7 @@ class PreviousDocumentsControllerSpec extends ControllerWithoutFormSpec {
 
         status(result) mustBe BAD_REQUEST
         verifyPage()
+        verifyNoAudit()
       }
 
       "user reach maximum amount of items" in {
@@ -135,6 +139,7 @@ class PreviousDocumentsControllerSpec extends ControllerWithoutFormSpec {
 
         status(result) mustBe BAD_REQUEST
         verifyPage()
+        verifyNoAudit()
       }
     }
 
@@ -149,6 +154,7 @@ class PreviousDocumentsControllerSpec extends ControllerWithoutFormSpec {
         thePageNavigatedTo mustBe PreviousDocumentsSummaryController.displayPage
 
         verifyPage(0)
+        verifyAudit()
       }
 
       "user fills in all fields" in {
@@ -160,6 +166,7 @@ class PreviousDocumentsControllerSpec extends ControllerWithoutFormSpec {
         thePageNavigatedTo mustBe PreviousDocumentsSummaryController.displayPage
 
         verifyPage(0)
+        verifyAudit()
       }
     }
   }

@@ -16,7 +16,7 @@
 
 package controllers.declaration
 
-import base.ControllerSpec
+import base.{AuditedControllerSpec, ControllerSpec}
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.common.{Address, Eori}
 import forms.declaration.EntityDetails
@@ -34,7 +34,7 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import views.html.declaration.carrier_eori_number
 
-class CarrierEoriNumberControllerSpec extends ControllerSpec with OptionValues {
+class CarrierEoriNumberControllerSpec extends ControllerSpec with AuditedControllerSpec with OptionValues {
 
   val mockCarrierEoriNumberPage = mock[carrier_eori_number]
 
@@ -45,7 +45,7 @@ class CarrierEoriNumberControllerSpec extends ControllerSpec with OptionValues {
     stubMessagesControllerComponents(),
     mockCarrierEoriNumberPage,
     mockExportsCacheService
-  )(ec)
+  )(ec, auditService)
 
   def checkViewInteractions(noOfInvocations: Int = 1): Unit =
     verify(mockCarrierEoriNumberPage, times(noOfInvocations)).apply(any())(any(), any())
@@ -158,6 +158,7 @@ class CarrierEoriNumberControllerSpec extends ControllerSpec with OptionValues {
 
         status(result) mustBe BAD_REQUEST
         checkViewInteractions()
+        verifyNoAudit()
       }
 
       "EORI is not provided but trader selected that it has an EORI" in {
@@ -170,6 +171,7 @@ class CarrierEoriNumberControllerSpec extends ControllerSpec with OptionValues {
 
         status(result) mustBe BAD_REQUEST
         checkViewInteractions()
+        verifyNoAudit()
       }
 
       "no choice is selected and no cached CarrierDetails exist" in {
@@ -182,6 +184,7 @@ class CarrierEoriNumberControllerSpec extends ControllerSpec with OptionValues {
 
         status(result) mustBe BAD_REQUEST
         checkViewInteractions()
+        verifyNoAudit()
       }
     }
   }
@@ -200,6 +203,7 @@ class CarrierEoriNumberControllerSpec extends ControllerSpec with OptionValues {
         thePageNavigatedTo mustBe controllers.declaration.routes.CarrierDetailsController.displayPage
         checkViewInteractions(0)
         theCacheModelUpdated.parties.carrierDetails must be(Some(CarrierDetails(EntityDetails(None, None))))
+        verifyAudit()
       }
 
       "'Yes' is selected" in {
@@ -215,6 +219,7 @@ class CarrierEoriNumberControllerSpec extends ControllerSpec with OptionValues {
         thePageNavigatedTo mustBe controllers.declaration.routes.ConsigneeDetailsController.displayPage
         checkViewInteractions(0)
         theCacheModelUpdated.parties.carrierDetails must be(Some(CarrierDetails(EntityDetails(eoriInput, None))))
+        verifyAudit()
       }
     }
 
@@ -231,6 +236,7 @@ class CarrierEoriNumberControllerSpec extends ControllerSpec with OptionValues {
 
         status(result) must be(SEE_OTHER)
         redirectLocation(result) mustBe Some(controllers.routes.RootController.displayPage.url)
+        verifyNoAudit()
       }
     }
   }

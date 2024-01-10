@@ -16,7 +16,7 @@
 
 package controllers.declaration
 
-import base.ControllerSpec
+import base.{AuditedControllerSpec, ControllerSpec}
 import connectors.CodeListConnector
 import forms.common.Address
 import forms.declaration.EntityDetails
@@ -35,7 +35,7 @@ import views.html.declaration.carrier_details
 
 import scala.collection.immutable.ListMap
 
-class CarrierDetailsControllerSpec extends ControllerSpec {
+class CarrierDetailsControllerSpec extends ControllerSpec with AuditedControllerSpec {
 
   val mockCarrierDetailsPage = mock[carrier_details]
   val mockCodeListConnector = mock[CodeListConnector]
@@ -47,7 +47,7 @@ class CarrierDetailsControllerSpec extends ControllerSpec {
     navigator,
     stubMessagesControllerComponents(),
     mockCarrierDetailsPage
-  )(ec, mockCodeListConnector)
+  )(ec, mockCodeListConnector, auditService)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
@@ -118,6 +118,7 @@ class CarrierDetailsControllerSpec extends ControllerSpec {
           val result = controller.saveAddress()(postRequest(incorrectForm))
 
           status(result) must be(BAD_REQUEST)
+          verifyNoAudit()
         }
       }
     }
@@ -134,6 +135,7 @@ class CarrierDetailsControllerSpec extends ControllerSpec {
           val result = controller.saveAddress()(postRequest(incorrectForm))
 
           status(result) must be(SEE_OTHER)
+          verifyAudit()
         }
       }
 
@@ -178,6 +180,7 @@ class CarrierDetailsControllerSpec extends ControllerSpec {
         val result = controller.saveAddress()(postRequest(incorrectForm))
 
         status(result) must be(BAD_REQUEST)
+        verifyNoAudit()
       }
     }
 
@@ -201,6 +204,7 @@ class CarrierDetailsControllerSpec extends ControllerSpec {
 
           await(result) mustBe aRedirectToTheNextPage
           thePageNavigatedTo mustBe controllers.declaration.routes.ConsigneeDetailsController.displayPage
+          verifyAudit()
         }
       }
 
@@ -222,9 +226,9 @@ class CarrierDetailsControllerSpec extends ControllerSpec {
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(controllers.routes.RootController.displayPage.url)
+          verifyNoAudit()
         }
       }
-
     }
   }
 }

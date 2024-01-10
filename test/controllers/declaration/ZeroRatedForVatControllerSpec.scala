@@ -16,7 +16,7 @@
 
 package controllers.declaration
 
-import base.{ControllerSpec, Injector}
+import base.{AuditedControllerSpec, ControllerSpec, Injector}
 import connectors.CodeLinkConnector
 import controllers.routes.RootController
 import forms.declaration.NactCode
@@ -35,7 +35,7 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import views.html.declaration.zero_rated_for_vat
 
-class ZeroRatedForVatControllerSpec extends ControllerSpec with ErrorHandlerMocks with Injector {
+class ZeroRatedForVatControllerSpec extends ControllerSpec with AuditedControllerSpec with ErrorHandlerMocks with Injector {
 
   val zeroRatedForVatPage = mock[zero_rated_for_vat]
   val codeLinkConnector = mock[CodeLinkConnector]
@@ -54,7 +54,7 @@ class ZeroRatedForVatControllerSpec extends ControllerSpec with ErrorHandlerMock
       stubMessagesControllerComponents(),
       codeLinkConnector,
       zeroRatedForVatPage
-    )(ec)
+    )(ec, auditService)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
@@ -108,6 +108,7 @@ class ZeroRatedForVatControllerSpec extends ControllerSpec with ErrorHandlerMock
         val result = controller.submitForm(item.id)(postRequestAsFormUrlEncoded(wrongAction: _*))
 
         status(result) must be(BAD_REQUEST)
+        verifyNoAudit()
       }
 
       "incorrect data" in {
@@ -116,6 +117,7 @@ class ZeroRatedForVatControllerSpec extends ControllerSpec with ErrorHandlerMock
         val result = controller.submitForm(item.id)(postRequestAsFormUrlEncoded(wrongAction: _*))
 
         status(result) must be(BAD_REQUEST)
+        verifyNoAudit()
       }
     }
 
@@ -128,6 +130,7 @@ class ZeroRatedForVatControllerSpec extends ControllerSpec with ErrorHandlerMock
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe routes.NactCodeSummaryController.displayPage(item.id)
+        verifyAudit()
       }
 
       "VatZeroRatedReduced" in {
@@ -137,6 +140,7 @@ class ZeroRatedForVatControllerSpec extends ControllerSpec with ErrorHandlerMock
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe routes.NactCodeSummaryController.displayPage(item.id)
+        verifyAudit()
       }
 
       "VatZeroRatedExempt" in {
@@ -146,6 +150,7 @@ class ZeroRatedForVatControllerSpec extends ControllerSpec with ErrorHandlerMock
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe routes.NactCodeSummaryController.displayPage(item.id)
+        verifyAudit()
       }
 
       "VatZeroRatedPaid" in {
@@ -155,6 +160,7 @@ class ZeroRatedForVatControllerSpec extends ControllerSpec with ErrorHandlerMock
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe routes.NactCodeSummaryController.displayPage(item.id)
+        verifyAudit()
       }
     }
   }
@@ -199,6 +205,7 @@ class ZeroRatedForVatControllerSpec extends ControllerSpec with ErrorHandlerMock
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(RootController.displayPage.url)
+        verifyNoAudit()
       }
     }
   }

@@ -16,7 +16,7 @@
 
 package controllers.declaration
 
-import base.{ControllerSpec, Injector}
+import base.{AuditedControllerSpec, ControllerSpec, Injector}
 import controllers.helpers.SequenceIdHelper.valueOfEso
 import forms.declaration.PackageInformation
 import mock.ErrorHandlerMocks
@@ -31,7 +31,8 @@ import play.twirl.api.HtmlFormat
 import services.PackageTypesService
 import views.html.declaration.packageInformation.package_information_change
 
-class PackageInformationChangeControllerSpec extends ControllerSpec with OptionValues with ErrorHandlerMocks with Injector {
+class PackageInformationChangeControllerSpec
+    extends ControllerSpec with AuditedControllerSpec with OptionValues with ErrorHandlerMocks with Injector {
 
   val mockChangePage = mock[package_information_change]
   val mockPackageTypesService = instanceOf[PackageTypesService]
@@ -45,7 +46,7 @@ class PackageInformationChangeControllerSpec extends ControllerSpec with OptionV
       mockErrorHandler,
       stubMessagesControllerComponents(),
       mockChangePage
-    )(ec, mockPackageTypesService)
+    )(ec, mockPackageTypesService, auditService)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
@@ -105,6 +106,7 @@ class PackageInformationChangeControllerSpec extends ControllerSpec with OptionV
 
           status(result) mustBe BAD_REQUEST
           verifyChangePageInvoked()
+          verifyNoAudit()
         }
 
         "user makes changes resulting in duplicate data" in {
@@ -121,6 +123,7 @@ class PackageInformationChangeControllerSpec extends ControllerSpec with OptionV
 
           status(result) mustBe BAD_REQUEST
           verifyChangePageInvoked()
+          verifyNoAudit()
         }
 
         "user tries to display page with non-existent package info" in {
@@ -131,6 +134,7 @@ class PackageInformationChangeControllerSpec extends ControllerSpec with OptionV
           status(result) mustBe BAD_REQUEST
           verifyNoInteractions(mockChangePage)
           verify(mockErrorHandler).redirectToErrorPage(any())
+          verifyNoAudit()
         }
 
         "user tries to remove non-existent package info" in {
@@ -140,6 +144,7 @@ class PackageInformationChangeControllerSpec extends ControllerSpec with OptionV
 
           status(result) mustBe BAD_REQUEST
           verify(mockErrorHandler).redirectToErrorPage(any())
+          verifyNoAudit()
         }
       }
 
@@ -160,6 +165,7 @@ class PackageInformationChangeControllerSpec extends ControllerSpec with OptionV
           savedPackage.shippingMarks mustBe Some("1234")
 
           valueOfEso[PackageInformation](declaration).value mustBe 1
+          verifyAudit()
         }
       }
     }

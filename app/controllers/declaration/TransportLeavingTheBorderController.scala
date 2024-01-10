@@ -29,6 +29,7 @@ import models.ExportsDeclaration
 import models.requests.JourneyRequest
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
+import services.audit.AuditService
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.WithUnsafeDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
@@ -47,7 +48,7 @@ class TransportLeavingTheBorderController @Inject() (
   transportAtBorder: transport_leaving_the_border,
   inlandOrBorderHelper: InlandOrBorderHelper,
   supervisingCustomsOfficeHelper: SupervisingCustomsOfficeHelper
-)(implicit ec: ExecutionContext)
+)(implicit ec: ExecutionContext, auditService: AuditService)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithUnsafeDefaultFormBinding {
 
   def displayPage: Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>

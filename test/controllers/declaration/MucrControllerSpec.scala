@@ -16,7 +16,7 @@
 
 package controllers.declaration
 
-import base.ControllerSpec
+import base.{AuditedControllerSpec, ControllerSpec}
 import base.TestHelper._
 import controllers.actions.AmendmentDraftFilterSpec
 import controllers.declaration.routes.SectionSummaryController
@@ -34,12 +34,15 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import views.html.declaration.mucr_code
 
-class MucrControllerSpec extends ControllerSpec with AmendmentDraftFilterSpec {
+class MucrControllerSpec extends ControllerSpec with AuditedControllerSpec with AmendmentDraftFilterSpec {
 
   private val mucrPage = mock[mucr_code]
 
   val controller =
-    new MucrController(mockAuthAction, mockJourneyAction, mockExportsCacheService, navigator, stubMessagesControllerComponents(), mucrPage)(ec)
+    new MucrController(mockAuthAction, mockJourneyAction, mockExportsCacheService, navigator, stubMessagesControllerComponents(), mucrPage)(
+      ec,
+      auditService
+    )
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
@@ -105,6 +108,7 @@ class MucrControllerSpec extends ControllerSpec with AmendmentDraftFilterSpec {
         val result = controller.submitForm()(postRequest(incorrectForm))
         status(result) must be(BAD_REQUEST)
         verifyPageInvoked
+        verifyNoAudit()
       }
 
       "no data has been entered on the page" in {
@@ -113,6 +117,7 @@ class MucrControllerSpec extends ControllerSpec with AmendmentDraftFilterSpec {
         val result = controller.submitForm()(postRequest(incorrectForm))
         status(result) must be(BAD_REQUEST)
         verifyPageInvoked
+        verifyNoAudit()
       }
 
       "data entered is too long" in {
@@ -121,6 +126,7 @@ class MucrControllerSpec extends ControllerSpec with AmendmentDraftFilterSpec {
         val result = controller.submitForm()(postRequest(incorrectForm))
         status(result) must be(BAD_REQUEST)
         verifyPageInvoked
+        verifyNoAudit()
       }
     }
   }
@@ -135,6 +141,7 @@ class MucrControllerSpec extends ControllerSpec with AmendmentDraftFilterSpec {
     val result = controller.submitForm()(postRequest(correctForm))
 
     status(result) mustBe SEE_OTHER
+    verifyAudit()
     thePageNavigatedTo mustBe call
   }
 }

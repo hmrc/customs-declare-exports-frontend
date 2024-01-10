@@ -16,7 +16,7 @@
 
 package controllers.declaration
 
-import base.ControllerSpec
+import base.{AuditedControllerSpec, ControllerSpec}
 import controllers.routes.RootController
 import forms.common.YesNoAnswer
 import forms.declaration.NactCode
@@ -31,7 +31,7 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import views.html.declaration.nact_code_remove
 
-class NactCodeRemoveControllerSpec extends ControllerSpec with OptionValues {
+class NactCodeRemoveControllerSpec extends ControllerSpec with AuditedControllerSpec with OptionValues {
 
   val mockRemovePage = mock[nact_code_remove]
 
@@ -43,7 +43,7 @@ class NactCodeRemoveControllerSpec extends ControllerSpec with OptionValues {
       navigator,
       stubMessagesControllerComponents(),
       mockRemovePage
-    )(ec)
+    )(ec, auditService)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()

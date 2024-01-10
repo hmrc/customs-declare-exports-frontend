@@ -16,7 +16,7 @@
 
 package controllers.declaration
 
-import base.ControllerSpec
+import base.{AuditedControllerSpec, ControllerSpec}
 import controllers.declaration.routes.RepresentativeStatusController
 import forms.common.Eori
 import forms.declaration.{EntityDetails, RepresentativeEntity}
@@ -31,7 +31,7 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import views.html.declaration.representative_details_entity
 
-class RepresentativeEntityControllerSpec extends ControllerSpec with OptionValues {
+class RepresentativeEntityControllerSpec extends ControllerSpec with AuditedControllerSpec with OptionValues {
 
   val mockPage = mock[representative_details_entity]
 
@@ -42,7 +42,7 @@ class RepresentativeEntityControllerSpec extends ControllerSpec with OptionValue
     mockExportsCacheService,
     stubMessagesControllerComponents(),
     mockPage
-  )(ec)
+  )(ec, auditService)
 
   val eori = "GB12345678912345"
 
@@ -111,6 +111,7 @@ class RepresentativeEntityControllerSpec extends ControllerSpec with OptionValue
 
           status(result) mustBe BAD_REQUEST
           verifyPage(1)
+          verifyNoAudit()
         }
       }
     }
@@ -127,6 +128,7 @@ class RepresentativeEntityControllerSpec extends ControllerSpec with OptionValue
         thePageNavigatedTo mustBe RepresentativeStatusController.displayPage
 
         verifyPage(0)
+        verifyAudit()
       }
     }
   }

@@ -29,6 +29,7 @@ import models.requests.JourneyRequest
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import services.TransportCodeService
+import services.audit.AuditService
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.WithUnsafeDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
@@ -48,7 +49,7 @@ class DepartureTransportController @Inject() (
   implicit val transportCodeService: TransportCodeService,
   departureTransportHelper: DepartureTransportHelper,
   departureTransportPage: departure_transport
-)(implicit ec: ExecutionContext)
+)(implicit ec: ExecutionContext, auditService: AuditService)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithUnsafeDefaultFormBinding {
 
   val displayPage: Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>

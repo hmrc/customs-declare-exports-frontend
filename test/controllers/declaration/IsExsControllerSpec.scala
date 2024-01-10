@@ -16,7 +16,7 @@
 
 package controllers.declaration
 
-import base.ControllerSpec
+import base.{AuditedControllerSpec, ControllerSpec}
 import controllers.declaration.routes.{ConsigneeDetailsController, ConsignorEoriNumberController, RepresentativeAgentController}
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.common.{Address, Eori}
@@ -34,12 +34,15 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import views.html.declaration.is_exs
 
-class IsExsControllerSpec extends ControllerSpec with ScalaFutures {
+class IsExsControllerSpec extends ControllerSpec with AuditedControllerSpec with ScalaFutures {
 
   private val isExsPage = mock[is_exs]
 
   private val controller =
-    new IsExsController(mockAuthAction, mockJourneyAction, mockExportsCacheService, navigator, stubMessagesControllerComponents(), isExsPage)(ec)
+    new IsExsController(mockAuthAction, mockJourneyAction, mockExportsCacheService, navigator, stubMessagesControllerComponents(), isExsPage)(
+      ec,
+      auditService
+    )
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
@@ -99,6 +102,7 @@ class IsExsControllerSpec extends ControllerSpec with ScalaFutures {
         val result = controller.submit()(postRequest(emptyForm))
 
         status(result) mustBe BAD_REQUEST
+        verifyNoAudit()
       }
     }
 
@@ -113,6 +117,7 @@ class IsExsControllerSpec extends ControllerSpec with ScalaFutures {
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe ConsignorEoriNumberController.displayPage
+        verifyAudit()
       }
 
       "correctly update UNDangerous goods codes for items" in {
@@ -134,6 +139,7 @@ class IsExsControllerSpec extends ControllerSpec with ScalaFutures {
           Some(UNDangerousGoodsCode(Some("1234"))),
           Some(UNDangerousGoodsCode(None))
         )
+        verifyAudit()
       }
     }
 
@@ -171,6 +177,7 @@ class IsExsControllerSpec extends ControllerSpec with ScalaFutures {
         modelPassedToCache.parties.carrierDetails mustBe None
         modelPassedToCache.parties.consignorDetails mustBe None
         modelPassedToCache.items.head.dangerousGoodsCode mustBe None
+        verifyAudit()
       }
     }
 

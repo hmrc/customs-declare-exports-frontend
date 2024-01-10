@@ -16,7 +16,7 @@
 
 package controllers.declaration
 
-import base.ControllerSpec
+import base.{AuditedControllerSpec, ControllerSpec}
 import base.ExportsTestData.allValuesRequiringToSkipInlandOrBorder
 import controllers.declaration.routes.{
   DepartureTransportController,
@@ -42,7 +42,7 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import views.html.declaration.supervising_customs_office
 
-class SupervisingCustomsOfficeControllerSpec extends ControllerSpec with BeforeAndAfterEach with OptionValues {
+class SupervisingCustomsOfficeControllerSpec extends ControllerSpec with AuditedControllerSpec with BeforeAndAfterEach with OptionValues {
 
   private val inlandOrBorderHelper = instanceOf[InlandOrBorderHelper]
   private val supervisingCustomsOfficeHelper = instanceOf[SupervisingCustomsOfficeHelper]
@@ -57,7 +57,7 @@ class SupervisingCustomsOfficeControllerSpec extends ControllerSpec with BeforeA
     supervisingCustomsOfficePage = supervisingCustomsOfficeTemplate,
     inlandOrBorderHelper = inlandOrBorderHelper,
     supervisingCustomsOfficeHelper = supervisingCustomsOfficeHelper
-  )
+  )(ec, auditService)
 
   private val exampleCustomsOfficeIdentifier = "A1B2C3D4"
   private val exampleWarehouseIdentificationNumber = "SecretStash"
@@ -126,6 +126,7 @@ class SupervisingCustomsOfficeControllerSpec extends ControllerSpec with BeforeA
 
         result mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe InlandOrBorderController.displayPage
+        verifyAudit()
       }
 
       "update cache after successful bind" in {
@@ -135,6 +136,7 @@ class SupervisingCustomsOfficeControllerSpec extends ControllerSpec with BeforeA
 
         val supervisingCustomsOffice = theCacheModelUpdated.locations.supervisingCustomsOffice.value
         supervisingCustomsOffice.supervisingCustomsOffice.value mustBe exampleCustomsOfficeIdentifier
+        verifyAudit()
       }
 
       "return Bad Request if payload is not compatible with model" in {
@@ -144,6 +146,7 @@ class SupervisingCustomsOfficeControllerSpec extends ControllerSpec with BeforeA
         val result = controller.submit()(postRequest(body))
 
         status(result) mustBe BAD_REQUEST
+        verifyNoAudit()
       }
     }
 
@@ -156,6 +159,7 @@ class SupervisingCustomsOfficeControllerSpec extends ControllerSpec with BeforeA
 
         result mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe InlandOrBorderController.displayPage
+        verifyAudit()
       }
 
       "redirect to /inland-transport-details after a successful bind" in {
@@ -165,6 +169,7 @@ class SupervisingCustomsOfficeControllerSpec extends ControllerSpec with BeforeA
 
         result mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe InlandTransportDetailsController.displayPage
+        verifyAudit()
       }
 
       "update cache after successful bind" in {
@@ -174,6 +179,7 @@ class SupervisingCustomsOfficeControllerSpec extends ControllerSpec with BeforeA
 
         val supervisingCustomsOffice = theCacheModelUpdated.locations.supervisingCustomsOffice.value
         supervisingCustomsOffice.supervisingCustomsOffice.value mustBe exampleCustomsOfficeIdentifier
+        verifyAudit()
       }
 
       "return Bad Request if payload is not compatible with model" in {
@@ -183,6 +189,7 @@ class SupervisingCustomsOfficeControllerSpec extends ControllerSpec with BeforeA
         val result = controller.submit()(postRequest(body))
 
         status(result) mustBe BAD_REQUEST
+        verifyNoAudit()
       }
     }
 
@@ -198,6 +205,7 @@ class SupervisingCustomsOfficeControllerSpec extends ControllerSpec with BeforeA
 
               await(result) mustBe aRedirectToTheNextPage
               thePageNavigatedTo mustBe InlandTransportDetailsController.displayPage
+              verifyAudit()
             }
           }
         }
@@ -213,6 +221,7 @@ class SupervisingCustomsOfficeControllerSpec extends ControllerSpec with BeforeA
 
         result mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe InlandOrBorderController.displayPage
+        verifyAudit()
       }
 
       "update cache after successful bind" in {
@@ -222,6 +231,7 @@ class SupervisingCustomsOfficeControllerSpec extends ControllerSpec with BeforeA
 
         val supervisingCustomsOffice = theCacheModelUpdated.locations.supervisingCustomsOffice.value
         supervisingCustomsOffice.supervisingCustomsOffice.value mustBe exampleCustomsOfficeIdentifier
+        verifyAudit()
       }
 
       "return Bad Request if payload is not compatible with model" in {
@@ -231,6 +241,7 @@ class SupervisingCustomsOfficeControllerSpec extends ControllerSpec with BeforeA
         val result = controller.submit()(postRequest(body))
 
         status(result) mustBe BAD_REQUEST
+        verifyNoAudit()
       }
     }
 
@@ -243,6 +254,7 @@ class SupervisingCustomsOfficeControllerSpec extends ControllerSpec with BeforeA
 
         result mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe DepartureTransportController.displayPage
+        verifyAudit()
       }
 
       "redirect to /express-consignment after a successful bind" when {
@@ -255,6 +267,7 @@ class SupervisingCustomsOfficeControllerSpec extends ControllerSpec with BeforeA
 
             result mustBe aRedirectToTheNextPage
             thePageNavigatedTo mustBe ExpressConsignmentController.displayPage
+            verifyAudit()
           }
         }
       }
@@ -266,6 +279,7 @@ class SupervisingCustomsOfficeControllerSpec extends ControllerSpec with BeforeA
 
         val supervisingCustomsOffice = theCacheModelUpdated.locations.supervisingCustomsOffice.value
         supervisingCustomsOffice.supervisingCustomsOffice.value mustBe exampleCustomsOfficeIdentifier
+        verifyAudit()
       }
 
       "return Bad Request if payload is not compatible with model" in {
@@ -275,6 +289,7 @@ class SupervisingCustomsOfficeControllerSpec extends ControllerSpec with BeforeA
         val result = controller.submit()(postRequest(body))
 
         status(result) mustBe BAD_REQUEST
+        verifyNoAudit()
       }
     }
 

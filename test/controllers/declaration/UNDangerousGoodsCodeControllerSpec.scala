@@ -16,7 +16,7 @@
 
 package controllers.declaration
 
-import base.ControllerSpec
+import base.{AuditedControllerSpec, ControllerSpec}
 import controllers.declaration.routes.{
   CommodityMeasureController,
   CusCodeController,
@@ -43,7 +43,7 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import views.html.declaration.un_dangerous_goods_code
 
-class UNDangerousGoodsCodeControllerSpec extends ControllerSpec with OptionValues {
+class UNDangerousGoodsCodeControllerSpec extends ControllerSpec with AuditedControllerSpec with OptionValues {
 
   val mockPage = mock[un_dangerous_goods_code]
 
@@ -54,7 +54,7 @@ class UNDangerousGoodsCodeControllerSpec extends ControllerSpec with OptionValue
     navigator,
     stubMessagesControllerComponents(),
     mockPage
-  )(ec)
+  )(ec, auditService)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
@@ -126,6 +126,7 @@ class UNDangerousGoodsCodeControllerSpec extends ControllerSpec with OptionValue
 
         status(result) mustBe BAD_REQUEST
         verify(mockPage, times(1)).apply(any(), any())(any(), any())
+        verifyNoAudit()
       }
     }
 
@@ -141,6 +142,7 @@ class UNDangerousGoodsCodeControllerSpec extends ControllerSpec with OptionValue
 
           val result = controller.submitForm(item.id)(postRequest(correctForm))
           await(result) mustBe aRedirectToTheNextPage
+          verifyAudit()
           thePageNavigatedTo mustBe expectedCall(item.id)
         }
 
@@ -162,6 +164,7 @@ class UNDangerousGoodsCodeControllerSpec extends ControllerSpec with OptionValue
 
           val result = controller.submitForm(item.id)(postRequest(correctForm))
           await(result) mustBe aRedirectToTheNextPage
+          verifyAudit()
           thePageNavigatedTo mustBe expectedCall(item.id)
         }
 
@@ -184,6 +187,7 @@ class UNDangerousGoodsCodeControllerSpec extends ControllerSpec with OptionValue
           val result = controller.submitForm(itemId)(postRequest(correctForm))
           await(result) mustBe aRedirectToTheNextPage
           thePageNavigatedTo mustBe ZeroRatedForVatController.displayPage(itemId)
+          verifyAudit()
         }
 
         "NatureOfTransaction is 'Sale'" in {
@@ -191,6 +195,7 @@ class UNDangerousGoodsCodeControllerSpec extends ControllerSpec with OptionValue
           val result = controller.submitForm(itemId)(postRequest(correctForm))
           await(result) mustBe aRedirectToTheNextPage
           thePageNavigatedTo mustBe ZeroRatedForVatController.displayPage(itemId)
+          verifyAudit()
         }
       }
 
@@ -203,6 +208,7 @@ class UNDangerousGoodsCodeControllerSpec extends ControllerSpec with OptionValue
             val result = controller.submitForm(item.id)(postRequest(correctForm))
             await(result) mustBe aRedirectToTheNextPage
             thePageNavigatedTo mustBe ZeroRatedForVatController.displayPage(item.id)
+            verifyAudit()
           }
         }
       }

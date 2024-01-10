@@ -16,7 +16,7 @@
 
 package controllers.declaration
 
-import base.ControllerSpec
+import base.{AuditedControllerSpec, ControllerSpec}
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.Yes
 import forms.declaration.additionaldocuments.AdditionalDocument
@@ -32,7 +32,7 @@ import play.twirl.api.HtmlFormat
 import utils.ListItem
 import views.html.declaration.additionalDocuments.additional_document_remove
 
-class AdditionalDocumentRemoveControllerSpec extends ControllerSpec with OptionValues {
+class AdditionalDocumentRemoveControllerSpec extends ControllerSpec with AuditedControllerSpec with OptionValues {
 
   val additionalDocumentRemovePage = mock[additional_document_remove]
 
@@ -44,7 +44,7 @@ class AdditionalDocumentRemoveControllerSpec extends ControllerSpec with OptionV
       navigator,
       stubMessagesControllerComponents(),
       additionalDocumentRemovePage
-    )(ec)
+    )(ec, auditService)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
@@ -134,6 +134,7 @@ class AdditionalDocumentRemoveControllerSpec extends ControllerSpec with OptionV
           thePageNavigatedTo mustBe routes.AdditionalDocumentsController.displayPage(itemId)
 
           theCacheModelUpdated.itemBy(itemId).flatMap(_.additionalDocuments) mustBe Some(AdditionalDocuments(None, Seq.empty))
+          verifyAudit()
         }
 
         "user submits 'No' answer" in {
@@ -146,6 +147,7 @@ class AdditionalDocumentRemoveControllerSpec extends ControllerSpec with OptionV
           thePageNavigatedTo mustBe routes.AdditionalDocumentsController.displayPage(itemId)
 
           verifyTheCacheIsUnchanged()
+          verifyNoAudit()
         }
       }
     }

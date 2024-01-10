@@ -16,7 +16,7 @@
 
 package controllers.declaration
 
-import base.ControllerSpec
+import base.{AuditedControllerSpec, ControllerSpec}
 import controllers.declaration.routes.{AdditionalFiscalReferencesController, AdditionalProcedureCodesController, CommodityDetailsController}
 import forms.declaration.FiscalInformation.AllowedFiscalInformationAnswers._
 import forms.declaration.{AdditionalFiscalReference, AdditionalFiscalReferencesData, FiscalInformation}
@@ -32,7 +32,7 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import views.html.declaration.fiscalInformation.fiscal_information
 
-class FiscalInformationControllerSpec extends ControllerSpec with OptionValues {
+class FiscalInformationControllerSpec extends ControllerSpec with AuditedControllerSpec with OptionValues {
 
   private val mockFiscalInformationPage = mock[fiscal_information]
 
@@ -43,7 +43,7 @@ class FiscalInformationControllerSpec extends ControllerSpec with OptionValues {
     navigator,
     stubMessagesControllerComponents(),
     mockFiscalInformationPage
-  )(ec)
+  )(ec, auditService)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
@@ -120,6 +120,7 @@ class FiscalInformationControllerSpec extends ControllerSpec with OptionValues {
 
         status(result) mustBe BAD_REQUEST
         verifyPageAccessed(1)
+        verifyNoAudit()
       }
     }
 
@@ -133,6 +134,7 @@ class FiscalInformationControllerSpec extends ControllerSpec with OptionValues {
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe routes.AdditionalFiscalReferencesAddController.displayPage(itemId)
         verifyPageAccessed(0)
+        verifyAudit()
       }
 
       "user answer no" in {
@@ -143,6 +145,7 @@ class FiscalInformationControllerSpec extends ControllerSpec with OptionValues {
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe CommodityDetailsController.displayPage(itemId)
         verifyPageAccessed(0)
+        verifyAudit()
       }
 
       "user comes back from Commodity details and is 'fast-forwarded' to see existing additional fiscal references page" in {

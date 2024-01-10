@@ -16,7 +16,7 @@
 
 package controllers.declaration
 
-import base.{ControllerSpec, Injector, TestHelper}
+import base.{AuditedControllerSpec, ControllerSpec, Injector, TestHelper}
 import forms.common.Eori
 import forms.declaration.AdditionalActor
 import mock.ErrorHandlerMocks
@@ -31,7 +31,7 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import views.html.declaration.additionalActors.additional_actors_add
 
-class AdditionalActorsAddControllerSpec extends ControllerSpec with ErrorHandlerMocks with Injector {
+class AdditionalActorsAddControllerSpec extends ControllerSpec with AuditedControllerSpec with ErrorHandlerMocks with Injector {
 
   val declarationAdditionalActorsPage = mock[additional_actors_add]
 
@@ -42,7 +42,7 @@ class AdditionalActorsAddControllerSpec extends ControllerSpec with ErrorHandler
     navigator,
     stubMessagesControllerComponents(),
     declarationAdditionalActorsPage
-  )(ec)
+  )(ec, auditService)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
@@ -115,6 +115,7 @@ class AdditionalActorsAddControllerSpec extends ControllerSpec with ErrorHandler
         val result = controller.saveForm()(postRequestAsFormUrlEncoded(wrongAction: _*))
 
         status(result) must be(BAD_REQUEST)
+        verifyNoAudit()
       }
 
       "user put duplicated item" in {
@@ -125,6 +126,7 @@ class AdditionalActorsAddControllerSpec extends ControllerSpec with ErrorHandler
         val result = controller.saveForm()(postRequestAsFormUrlEncoded(duplication: _*))
 
         status(result) must be(BAD_REQUEST)
+        verifyNoAudit()
       }
 
       "user reach maximum amount of items" in {
@@ -135,6 +137,7 @@ class AdditionalActorsAddControllerSpec extends ControllerSpec with ErrorHandler
         val result = controller.saveForm()(postRequestAsFormUrlEncoded(correctForm: _*))
 
         status(result) must be(BAD_REQUEST)
+        verifyNoAudit()
       }
     }
 
@@ -147,6 +150,7 @@ class AdditionalActorsAddControllerSpec extends ControllerSpec with ErrorHandler
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalActorsSummaryController.displayPage
+        verifyAudit()
       }
 
       "user add correct manufacturer" in {
@@ -156,6 +160,7 @@ class AdditionalActorsAddControllerSpec extends ControllerSpec with ErrorHandler
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalActorsSummaryController.displayPage
+        verifyAudit()
       }
 
       "user add correct freight forwarder" in {
@@ -165,6 +170,7 @@ class AdditionalActorsAddControllerSpec extends ControllerSpec with ErrorHandler
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalActorsSummaryController.displayPage
+        verifyAudit()
       }
 
       "user add correct warehouse keeper" in {
@@ -174,6 +180,7 @@ class AdditionalActorsAddControllerSpec extends ControllerSpec with ErrorHandler
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalActorsSummaryController.displayPage
+        verifyAudit()
       }
     }
   }
