@@ -235,7 +235,7 @@ class DepartureTransportViewSpec extends PageWithButtonsSpec with Injector {
         DataOnTest(
           transportCodeService.transportCodesForV1,
           transportCode,
-          withRequest(additionalType, withBorderModeOfTransportCode(Some(transportCode)), withInlandOrBorder(Some(Border)))
+          withRequest(additionalType, withTransportLeavingTheBorder(Some(transportCode)), withInlandOrBorder(Some(Border)))
         )
       }
     }
@@ -258,12 +258,12 @@ class DepartureTransportViewSpec extends PageWithButtonsSpec with Injector {
           DataOnTest(
             transportCodeService.transportCodesForV3,
             transportCode,
-            withRequest(additionalType, withBorderModeOfTransportCode(Some(transportCode)))
+            withRequest(additionalType, withTransportLeavingTheBorder(Some(transportCode)))
           ),
           DataOnTest(
             transportCodeService.transportCodesForV3WhenPC0019,
             transportCode,
-            withRequest(additionalType, withBorderModeOfTransportCode(Some(transportCode)), withItem(itemWithPC("0019")))
+            withRequest(additionalType, withTransportLeavingTheBorder(Some(transportCode)), withItem(itemWithPC("0019")))
           )
         )
       }

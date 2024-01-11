@@ -57,7 +57,7 @@ class MucrControllerSpec extends ControllerSpec with AuditedControllerSpec with 
   }
 
   def nextPageOnTypes: Seq[NextPageOnType] =
-    allDeclarationTypesExcluding(CLEARANCE).map(NextPageOnType(_, SectionSummaryController.displayPage(1)))
+    nonClearanceJourneys.map(NextPageOnType(_, SectionSummaryController.displayPage(1)))
 
   def theResponseForm: Form[Mucr] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[Mucr]])

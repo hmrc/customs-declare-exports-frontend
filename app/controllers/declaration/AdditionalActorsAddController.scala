@@ -48,9 +48,7 @@ class AdditionalActorsAddController @Inject() (
 )(implicit ec: ExecutionContext, auditService: AuditService)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithUnsafeDefaultFormBinding {
 
-  val validTypes = List(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL)
-
-  def displayPage: Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
+  def displayPage: Action[AnyContent] = (authenticate andThen journeyType(nonClearanceJourneys)) { implicit request =>
     val frm = form.withSubmissionErrors
     request.cacheModel.parties.declarationAdditionalActorsData match {
       case Some(_) => Ok(declarationAdditionalActorsPage(frm.fill(AdditionalActor(None, Some(NoneOfTheAbove.value)))))
@@ -58,7 +56,7 @@ class AdditionalActorsAddController @Inject() (
     }
   }
 
-  def saveForm: Action[AnyContent] = (authenticate andThen journeyType(validTypes)).async { implicit request =>
+  def saveForm: Action[AnyContent] = (authenticate andThen journeyType(nonClearanceJourneys)).async { implicit request =>
     val boundForm = form.bindFromRequest()
     boundForm.fold(
       formWithErrors => Future.successful(BadRequest(declarationAdditionalActorsPage(formWithErrors))),

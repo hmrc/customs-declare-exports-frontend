@@ -272,12 +272,10 @@ class Card5ForItems @Inject() (
       SummaryListRow(key("item.netWeight"), value(commodityMeasure.netMass.getOrElse("")), classes = s"item-$index-net-weight")
     }
 
-  private val journeysForSupplementaryUnits = List(STANDARD, SUPPLEMENTARY)
-
   private def supplementaryUnits(declaration: ExportsDeclaration, item: ExportItem, actionsEnabled: Boolean, index: Int)(
     implicit messages: Messages
   ): Option[SummaryListRow] =
-    if (!journeysForSupplementaryUnits.contains(declaration.`type`)) None
+    if (!isStandardOrSupplementary(declaration)) None
     else
       item.commodityMeasure.flatMap {
         _.supplementaryUnits.map { supplementaryUnits =>

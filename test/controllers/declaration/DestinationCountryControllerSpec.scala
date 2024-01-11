@@ -170,31 +170,30 @@ class DestinationCountryControllerSpec extends ControllerSpec with AuditedContro
     }
 
     "reset the cache for 'Departure Transport', 'Border transport' and 'Transport Country'" when {
-      List(STANDARD, SUPPLEMENTARY).zip(List(ModelCountry("Guernsey", Guernsey), ModelCountry("Jersey", Jersey))).foreach {
-        case (journey, modelCountry) =>
-          s"the 'submitForm' method is invoked and destination country selected is '${modelCountry.countryName}'" in {
-            when(mockCodeListConnector.getCountryCodes(any())).thenReturn(ListMap(modelCountry.countryCode -> modelCountry))
+      standardAndSupplementary.zip(List(ModelCountry("Guernsey", Guernsey), ModelCountry("Jersey", Jersey))).foreach { case (journey, modelCountry) =>
+        s"the 'submitForm' method is invoked and destination country selected is '${modelCountry.countryName}'" in {
+          when(mockCodeListConnector.getCountryCodes(any())).thenReturn(ListMap(modelCountry.countryCode -> modelCountry))
 
-            val departureTransport = withDepartureTransport(Maritime, "10", "identifier")
-            val borderTransport = withBorderTransport(BorderTransport("type", "number"))
-            val transportCountry = withTransportCountry(Some("IT"))
-            withNewCaching(aDeclaration(withType(journey), departureTransport, borderTransport, transportCountry))
+          val departureTransport = withDepartureTransport(Maritime, "10", "identifier")
+          val borderTransport = withBorderTransport(BorderTransport("type", "number"))
+          val transportCountry = withTransportCountry(Some("IT"))
+          withNewCaching(aDeclaration(withType(journey), departureTransport, borderTransport, transportCountry))
 
-            val formData = Json.obj("countryCode" -> modelCountry.countryCode)
+          val formData = Json.obj("countryCode" -> modelCountry.countryCode)
 
-            val result = controller.submit(postRequest(formData))
+          val result = controller.submit(postRequest(formData))
 
-            status(result) mustBe SEE_OTHER
+          status(result) mustBe SEE_OTHER
 
-            val transport = theCacheModelUpdated.transport
-            transport.meansOfTransportOnDepartureType mustBe None
-            transport.meansOfTransportOnDepartureIDNumber mustBe None
-            transport.meansOfTransportCrossingTheBorderType mustBe None
-            transport.meansOfTransportCrossingTheBorderIDNumber mustBe None
-            transport.transportCrossingTheBorderNationality mustBe None
+          val transport = theCacheModelUpdated.transport
+          transport.meansOfTransportOnDepartureType mustBe None
+          transport.meansOfTransportOnDepartureIDNumber mustBe None
+          transport.meansOfTransportCrossingTheBorderType mustBe None
+          transport.meansOfTransportCrossingTheBorderIDNumber mustBe None
+          transport.transportCrossingTheBorderNationality mustBe None
 
-            verifyAudit()
-          }
+          verifyAudit()
+        }
       }
     }
   }

@@ -50,9 +50,7 @@ class InlandTransportDetailsController @Inject() (
 )(implicit ec: ExecutionContext, auditService: AuditService)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithUnsafeDefaultFormBinding {
 
-  private val validJourneys = allDeclarationTypesExcluding(CLEARANCE)
-
-  def displayPage: Action[AnyContent] = (authenticate andThen journeyType(validJourneys)) { implicit request =>
+  def displayPage: Action[AnyContent] = (authenticate andThen journeyType(nonClearanceJourneys)) { implicit request =>
     val frm = form.withSubmissionErrors
     request.cacheModel.locations.inlandModeOfTransportCode match {
       case Some(code) => Ok(inlandTransportDetailsPage(frm.fill(code)))
@@ -60,7 +58,7 @@ class InlandTransportDetailsController @Inject() (
     }
   }
 
-  def submit(): Action[AnyContent] = (authenticate andThen journeyType(validJourneys)).async { implicit request =>
+  def submit(): Action[AnyContent] = (authenticate andThen journeyType(nonClearanceJourneys)).async { implicit request =>
     form
       .bindFromRequest()
       .fold(formWithErrors => Future.successful(BadRequest(inlandTransportDetailsPage(formWithErrors))), validateAndUpdateCache(_))

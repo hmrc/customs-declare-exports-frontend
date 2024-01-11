@@ -17,12 +17,12 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.declaration.routes.{NactCodeAddController, StatisticalValueController}
+import controllers.declaration.routes.NactCodeAddController
+import controllers.helpers.ItemHelper.nextPageAfterNactCodePages
 import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import models.DeclarationType._
-import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc._
@@ -42,18 +42,14 @@ class NactCodeSummaryController @Inject() (
   nactCodesPage: nact_codes
 ) extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithUnsafeDefaultFormBinding {
 
-  import NactCodeSummaryController._
-
-  val validJourneys = List(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL)
-
-  def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType(validJourneys)) { implicit request =>
+  def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType(nonClearanceJourneys)) { implicit request =>
     request.cacheModel.itemBy(itemId).flatMap(_.nactCodes) match {
       case Some(nactCodes) if nactCodes.nonEmpty => Ok(nactCodesPage(itemId, anotherYesNoForm.withSubmissionErrors, nactCodes))
       case _                                     => navigator.continueTo(NactCodeAddController.displayPage(itemId))
     }
   }
 
-  def submitForm(itemId: String): Action[AnyContent] = (authenticate andThen journeyType(validJourneys)) { implicit request =>
+  def submitForm(itemId: String): Action[AnyContent] = (authenticate andThen journeyType(nonClearanceJourneys)) { implicit request =>
     val nactCodes = request.cacheModel.itemBy(itemId).flatMap(_.nactCodes).getOrElse(List.empty)
     anotherYesNoForm
       .bindFromRequest()
@@ -62,24 +58,10 @@ class NactCodeSummaryController @Inject() (
         validYesNo =>
           validYesNo.answer match {
             case YesNoAnswers.yes => navigator.continueTo(NactCodeAddController.displayPage(itemId))
-            case YesNoAnswers.no  => navigator.continueTo(nextPage(itemId))
+            case YesNoAnswers.no  => navigator.continueTo(nextPageAfterNactCodePages(itemId))
           }
       )
   }
 
   private def anotherYesNoForm: Form[YesNoAnswer] = YesNoAnswer.form(errorKey = "declaration.nationalAdditionalCode.add.answer.empty")
-}
-
-object NactCodeSummaryController {
-
-  def nextPage(itemId: String)(implicit request: JourneyRequest[AnyContent]): Call =
-    request.declarationType match {
-      case SUPPLEMENTARY | STANDARD => StatisticalValueController.displayPage(itemId)
-
-      case SIMPLIFIED | OCCASIONAL if request.cacheModel.isLowValueDeclaration(itemId) =>
-        StatisticalValueController.displayPage(itemId)
-
-      case SIMPLIFIED | OCCASIONAL =>
-        routes.PackageInformationSummaryController.displayPage(itemId)
-    }
 }

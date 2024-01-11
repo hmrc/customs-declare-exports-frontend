@@ -21,22 +21,24 @@ import connectors.CodeListConnector
 import controllers.declaration.routes.{ExpressConsignmentController, TransportContainerController}
 import controllers.helpers.TransportSectionHelper.{Guernsey, Jersey}
 import controllers.routes.RootController
+import forms.declaration.ModeOfTransportCode.{FixedTransportInstallations, PostalConsignment, Rail}
 import forms.declaration.TransportCountry
-import forms.declaration.TransportCountry.{hasTransportCountry, transportCountry}
+import forms.declaration.TransportCountry.transportCountry
 import forms.declaration.countries.Country
 import models.DeclarationType._
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
-import org.scalatest.OptionValues
+import org.scalatest.{Assertion, OptionValues}
 import play.api.data.Form
 import play.api.libs.json.Json
-import play.api.mvc.{AnyContentAsEmpty, Call, Request}
+import play.api.mvc.{AnyContentAsEmpty, Call, Request, Result}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import views.html.declaration.transport_country
 
 import scala.collection.immutable.ListMap
+import scala.concurrent.Future
 
 class TransportCountryControllerSpec extends ControllerSpec with AuditedControllerSpec with OptionValues {
 
@@ -71,8 +73,6 @@ class TransportCountryControllerSpec extends ControllerSpec with AuditedControll
     theResponseForm
   }
 
-  val itemId = "itemId"
-
   def theResponseForm: Form[TransportCountry] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[TransportCountry]])
     verify(page).apply(any(), captor.capture())(any(), any())
@@ -88,38 +88,76 @@ class TransportCountryControllerSpec extends ControllerSpec with AuditedControll
 
     onJourney(STANDARD, SUPPLEMENTARY) { request =>
       "return 303 (SEE_OTHER) and redirect to the 'next page'" when {
+
         List(Guernsey, Jersey).foreach { country =>
-          s"the 'displayPage' method is invoked and Destination country is '$country'" in {
-            val destinationCountry = withDestinationCountry(Country(Some(country)))
-            withNewCaching(aDeclarationAfter(request.cacheModel, destinationCountry, withTransportCountry(Some("Some country"))))
+          s"Destination country is '$country' and" when {
 
-            val result = controller.displayPage(getRequest())
+            "the 'displayPage' method is invoked" in {
+              withNewCaching(aDeclarationAfter(request.cacheModel, withDestinationCountry(Country(Some(country)))))
+              verifyRedirection(controller.displayPage(getRequest()))
+            }
 
-            status(result) mustBe SEE_OTHER
-            thePageNavigatedTo mustBe nextPage(request.declarationType)
+            "the 'submitForm' method is invoked" in {
+              withNewCaching(aDeclarationAfter(request.cacheModel, withDestinationCountry(Country(Some(country)))))
 
-            val transport = theCacheModelUpdated.transport
-            transport.transportCrossingTheBorderNationality mustBe None
+              val formData = Json.obj(transportCountry -> countryName)
+              verifyRedirection(controller.submitForm(postRequest(formData)))
+            }
+          }
+        }
+
+        "'Transport Leaving the Border' is 'Rail and" when {
+
+          "the 'displayPage' method is invoked" in {
+            withNewCaching(aDeclarationAfter(request.cacheModel, withTransportLeavingTheBorder(Some(Rail))))
+            verifyRedirection(controller.displayPage(getRequest()))
           }
 
-          s"the 'submitForm' method is invoked and Destination country is '$country'" in {
-            val destinationCountry = withDestinationCountry(Country(Some(country)))
-            withNewCaching(aDeclarationAfter(request.cacheModel, destinationCountry, withTransportCountry(Some("Some country"))))
+          "the 'submitForm' method is invoked" in {
+            withNewCaching(aDeclarationAfter(request.cacheModel, withTransportLeavingTheBorder(Some(Rail))))
 
-            val formData = Json.obj(hasTransportCountry -> "Yes", transportCountry -> countryName)
-            val result = controller.submitForm(postRequest(formData))
-
-            status(result) mustBe SEE_OTHER
-            thePageNavigatedTo mustBe nextPage(request.declarationType)
-
-            val transport = theCacheModelUpdated.transport
-            transport.transportCrossingTheBorderNationality mustBe None
+            val formData = Json.obj(transportCountry -> countryName)
+            verifyRedirection(controller.submitForm(postRequest(formData)))
           }
         }
       }
     }
 
-    onJourney(STANDARD, OCCASIONAL, SUPPLEMENTARY, SIMPLIFIED) { request =>
+    onJourney(STANDARD, SUPPLEMENTARY, OCCASIONAL, SIMPLIFIED) { request =>
+      "return 303 (SEE_OTHER) and redirect to the 'next page'" when {
+        List(FixedTransportInstallations, PostalConsignment).foreach { modeOfTransport =>
+          s"'Transport Leaving the Border' is '$modeOfTransport'" should {
+
+            "the 'displayPage' method is invoked" in {
+              withNewCaching(aDeclarationAfter(request.cacheModel, withTransportLeavingTheBorder(Some(modeOfTransport))))
+              verifyRedirection(controller.displayPage(getRequest()))
+            }
+
+            "the 'submitForm' method is invoked" in {
+              withNewCaching(aDeclarationAfter(request.cacheModel, withTransportLeavingTheBorder(Some(modeOfTransport))))
+
+              val formData = Json.obj(transportCountry -> countryName)
+              verifyRedirection(controller.submitForm(postRequest(formData)))
+            }
+          }
+
+          s"'Inland Mode of Transport' is '$modeOfTransport'" should {
+
+            "the 'displayPage' method is invoked" in {
+              withNewCaching(aDeclarationAfter(request.cacheModel, withInlandModeOfTransportCode(modeOfTransport)))
+              verifyRedirection(controller.displayPage(getRequest()))
+            }
+
+            "the 'submitForm' method is invoked" in {
+              withNewCaching(aDeclarationAfter(request.cacheModel, withInlandModeOfTransportCode(modeOfTransport)))
+
+              val formData = Json.obj(transportCountry -> countryName)
+              verifyRedirection(controller.submitForm(postRequest(formData)))
+            }
+          }
+        }
+      }
+
       "return 200 (OK)" when {
 
         "the 'displayPage' method is invoked and cache is empty" in {
@@ -139,74 +177,71 @@ class TransportCountryControllerSpec extends ControllerSpec with AuditedControll
 
           status(result) mustBe OK
           verify(page, times(1)).apply(any(), any())(any(), any())
-
           theResponseForm.value.get.countryName mustBe Some(countryName)
+        }
+      }
+
+      "the 'submitForm' method is invoked and" when {
+
+        "the user selects a country from the dropdown" should {
+          "update the model" in {
+            withNewCaching(request.cacheModel)
+
+            val formData = Json.obj(transportCountry -> countryName)
+            val result = controller.submitForm(postRequest(formData))
+
+            await(result) mustBe aRedirectToTheNextPage
+            thePageNavigatedTo mustBe nextPage(request.declarationType)
+
+            val transport = theCacheModelUpdated.transport
+            transport.transportCrossingTheBorderNationality.value mustBe TransportCountry(Some(countryName))
+            verifyAudit()
+          }
+        }
+
+        "the form provides an illegal value" should {
+          "return 400 (BAD_REQUEST)" in {
+            withNewCaching(request.cacheModel)
+
+            val formData = Json.obj(transportCountry -> "some country")
+            val result = controller.submitForm(postRequest(formData))
+
+            status(result) mustBe BAD_REQUEST
+            verify(page, times(1)).apply(any(), any())(any(), any())
+            verifyNoAudit()
+          }
         }
       }
     }
 
     onClearance { request =>
       "redirect to the starting page" when {
+
         "the 'displayPage' method is invoked" in {
           withNewCaching(request.cacheModel)
 
           val result = controller.displayPage(getRequest())
           redirectLocation(result) mustBe Some(RootController.displayPage.url)
         }
-      }
-    }
-  }
 
-  "TransportCountryController.submitForm" should {
-    onJourney(STANDARD, OCCASIONAL, SIMPLIFIED, SUPPLEMENTARY) { request =>
-      "return 303 (SEE_OTHER)" when {
-
-        "the user selects the 'No' radio" in {
+        "the 'submitForm' method is invoked" in {
           withNewCaching(request.cacheModel)
 
-          val formData = Json.obj(hasTransportCountry -> "No")
+          val formData = Json.obj(transportCountry -> countryName)
           val result = controller.submitForm(postRequest(formData))
-
-          await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe nextPage(request.declarationType)
-          verifyAudit()
-        }
-
-        "the user selects the 'Yes' radio and a country from the dropdown" in {
-          withNewCaching(request.cacheModel)
-
-          val formData = Json.obj(hasTransportCountry -> "Yes", transportCountry -> countryName)
-          val result = controller.submitForm(postRequest(formData))
-
-          await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe nextPage(request.declarationType)
-          verifyAudit()
-        }
-      }
-
-      "return 400 (BAD_REQUEST)" when {
-        "form is incorrect" in {
-          withNewCaching(request.cacheModel)
-
-          val formData = Json.obj(hasTransportCountry -> "Yes", transportCountry -> "some country")
-          val result = controller.submitForm(postRequest(formData))
-
-          status(result) mustBe BAD_REQUEST
-          verify(page, times(1)).apply(any(), any())(any(), any())
+          redirectLocation(result) mustBe Some(RootController.displayPage.url)
           verifyNoAudit()
         }
       }
     }
 
-    onClearance { request =>
-      "redirect to the starting page" in {
-        withNewCaching(request.cacheModel)
+    def verifyRedirection(result: Future[Result]): Assertion = {
+      status(result) mustBe SEE_OTHER
 
-        val formData = Json.obj(hasTransportCountry -> "Yes", transportCountry -> countryName)
-        val result = controller.submitForm(postRequest(formData))
-        redirectLocation(result) mustBe Some(RootController.displayPage.url)
-        verifyNoAudit()
-      }
+      val declaration = theCacheModelUpdated
+      declaration.transport.transportCrossingTheBorderNationality mustBe None
+
+      thePageNavigatedTo mustBe nextPage(declaration.`type`)
     }
   }
 }

@@ -80,7 +80,7 @@ class SupervisingCustomsOfficeViewSpec extends UnitViewSpec with ExportsTestHelp
 
   "Supervising Customs Office View" when {
 
-    List(STANDARD, OCCASIONAL, SUPPLEMENTARY, SIMPLIFIED).foreach { declarationType =>
+    nonClearanceJourneys.foreach { declarationType =>
       s"declaration type is $declarationType" should {
 
         "display 'Back' button that links to 'Transport Leaving the Border' page" in {

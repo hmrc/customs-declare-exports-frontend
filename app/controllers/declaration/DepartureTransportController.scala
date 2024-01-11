@@ -18,7 +18,7 @@ package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.declaration.routes._
-import controllers.helpers.TransportSectionHelper.skipTransportPages
+import controllers.helpers.TransportSectionHelper.skipDepartureTransport
 import controllers.navigation.Navigator
 import forms.declaration.DepartureTransport
 import forms.declaration.DepartureTransport.form
@@ -72,8 +72,7 @@ class DepartureTransportController @Inject() (
   }
 
   private def submit(fun: () => Future[Result])(implicit request: JourneyRequest[AnyContent]): Future[Result] =
-    if (!(isSimplifiedOrOccasional || skipTransportPages(request.cacheModel))) fun()
-    else updateCache(DepartureTransport(None, None)).map(_ => nextPage)
+    if (skipDepartureTransport(request.cacheModel)) updateCache(DepartureTransport(None, None)).map(_ => nextPage) else fun()
 
   private def nextPage(implicit request: JourneyRequest[AnyContent]): Result = {
     val call =
@@ -85,7 +84,4 @@ class DepartureTransportController @Inject() (
 
   private def updateCache(formData: DepartureTransport)(implicit request: JourneyRequest[AnyContent]): Future[ExportsDeclaration] =
     updateDeclarationFromRequest(_.updateDepartureTransport(formData))
-
-  private def isSimplifiedOrOccasional(implicit request: JourneyRequest[AnyContent]): Boolean =
-    request.isType(SIMPLIFIED) || request.isType(OCCASIONAL)
 }

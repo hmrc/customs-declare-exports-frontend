@@ -33,7 +33,6 @@ trait SupplementaryNavigator extends CacheDependentNavigators {
     case ConsignmentReferences   => routes.DeclarantDetailsController.displayPage
     case ExporterEoriNumber      => routes.DeclarantExporterController.displayPage
     case ExporterDetails         => routes.ExporterEoriNumberController.displayPage
-    case BorderTransport         => routes.DepartureTransportController.displayPage
     case ContainerAdd            => routes.TransportContainerController.displayContainerSummary
     case LocationOfGoods         => routes.DestinationCountryController.displayPage
     case DocumentSummary         => routes.NatureOfTransactionController.displayPage
@@ -60,6 +59,7 @@ trait SupplementaryNavigator extends CacheDependentNavigators {
     case InlandOrBorder            => inlandOrBorderPreviousPage
     case InlandModeOfTransportCode => inlandTransportDetailsPreviousPage
     case DepartureTransport        => departureTransportPreviousPage
+    case BorderTransport           => borderTransportPreviousPage
     case TransportCountry          => transportCountryPreviousPage
     case ContainerFirst            => containerFirstPreviousPageOnSupplementary
     case RepresentativeAgent       => representativeAgentPreviousPage

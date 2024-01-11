@@ -89,7 +89,7 @@ class NactCodesViewSpec extends UnitViewSpec with Injector {
       }
 
       "declaration is a 'low value' one" in {
-        List(OCCASIONAL, SIMPLIFIED).foreach { declarationType =>
+        occasionalAndSimplified.foreach { declarationType =>
           val item = anItem(withItemId(itemId), withProcedureCodes(additionalProcedureCodes = Seq(lowValueDeclaration)))
           val requestWithCache = journeyRequest(aDeclaration(withType(declarationType), withItems(item)))
           val view = createView()(requestWithCache)

@@ -52,7 +52,7 @@ class Card4ForTransactionsSpec extends UnitViewSpec with ExportsTestHelper with 
     }
 
     "show the total amount invoiced" when {
-      List(STANDARD, SUPPLEMENTARY).foreach { declarationType =>
+      standardAndSupplementary.foreach { declarationType =>
         s"the declaration type is $declarationType and" when {
 
           "totalAmountInvoiced is NON-empty" in {

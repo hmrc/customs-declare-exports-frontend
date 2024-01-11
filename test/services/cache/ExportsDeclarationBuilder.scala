@@ -374,11 +374,11 @@ trait ExportsDeclarationBuilder {
   val withoutTransportCountry: ExportsDeclarationModifier =
     declaration => declaration.copy(transport = declaration.transport.copy(transportCrossingTheBorderNationality = None))
 
-  def withBorderModeOfTransportCode(maybeModeOfTransportCode: Option[ModeOfTransportCode]): ExportsDeclarationModifier =
+  def withTransportLeavingTheBorder(maybeModeOfTransportCode: Option[ModeOfTransportCode]): ExportsDeclarationModifier =
     declaration =>
       declaration.copy(transport = declaration.transport.copy(borderModeOfTransportCode = Some(TransportLeavingTheBorder(maybeModeOfTransportCode))))
 
-  val withoutBorderModeOfTransportCode: ExportsDeclarationModifier =
+  val withoutTransportLeavingTheBorder: ExportsDeclarationModifier =
     declaration => declaration.copy(transport = declaration.transport.copy(borderModeOfTransportCode = None))
 
   val withoutMeansOfTransportOnDepartureType: ExportsDeclarationModifier =

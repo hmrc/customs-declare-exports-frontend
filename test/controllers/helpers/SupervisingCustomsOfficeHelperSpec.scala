@@ -105,7 +105,7 @@ class SupervisingCustomsOfficeHelperSpec
       postalOrFTIModeOfTransportCodes.foreach { modeOfTransportCode =>
         s"transportLeavingBoarderCode is ${modeOfTransportCode.value}" should {
           "goto ExpressConsignmentController" in {
-            val declaration = aDeclaration(withType(request.declarationType), withBorderModeOfTransportCode(modeOfTransportCode))
+            val declaration = aDeclaration(withType(request.declarationType), withTransportLeavingTheBorder(modeOfTransportCode))
             supervisingCustomsOfficeHelper.nextPage(declaration) mustBe ExpressConsignmentController.displayPage
           }
         }
@@ -114,7 +114,7 @@ class SupervisingCustomsOfficeHelperSpec
       nonPostalOrFTIModeOfTransportCodes.foreach { modeOfTransportCode =>
         s"transportLeavingBoarderCode is ${modeOfTransportCode}" should {
           "goto DepartureTransportController" in {
-            val declaration = aDeclaration(withType(request.declarationType), withBorderModeOfTransportCode(Some(modeOfTransportCode)))
+            val declaration = aDeclaration(withType(request.declarationType), withTransportLeavingTheBorder(Some(modeOfTransportCode)))
             supervisingCustomsOfficeHelper.nextPage(declaration) mustBe DepartureTransportController.displayPage
           }
         }

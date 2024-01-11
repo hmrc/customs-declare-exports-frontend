@@ -45,14 +45,12 @@ class NactCodeRemoveController @Inject() (
 )(implicit ec: ExecutionContext, auditService: AuditService)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithUnsafeDefaultFormBinding {
 
-  val validTypes = Seq(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL)
-
-  def displayPage(itemId: String, code: String): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
+  def displayPage(itemId: String, code: String): Action[AnyContent] = (authenticate andThen journeyType(nonClearanceJourneys)) { implicit request =>
     Ok(nactCodeRemove(itemId, code, removeYesNoForm.withSubmissionErrors))
   }
 
   def submitForm(itemId: String, code: String): Action[AnyContent] =
-    (authenticate andThen journeyType(validTypes)).async { implicit request =>
+    (authenticate andThen journeyType(nonClearanceJourneys)).async { implicit request =>
       removeYesNoForm
         .bindFromRequest()
         .fold(

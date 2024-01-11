@@ -25,18 +25,18 @@
 @import config.AppConfig
 
 @this(
-        govukLayout: gdsMainTemplate,
-        govukButton: GovukButton,
-        errorSummary: errorSummary,
-        sectionHeader: sectionHeader,
-        exportsInputText: exportsInputText,
-        saveButtons: saveButtons,
-        tariffExpander: tariffExpander,
-        pageTitle: pageTitle,
-        label: label,
-        formHelper: FormWithCSRF,
-        navigator: Navigator,
-        appConfig: AppConfig
+    govukLayout: gdsMainTemplate,
+    govukButton: GovukButton,
+    errorSummary: errorSummary,
+    sectionHeader: sectionHeader,
+    exportsInputText: exportsInputText,
+    saveButtons: saveButtons,
+    tariffExpander: tariffExpander,
+    pageTitle: pageTitle,
+    label: label,
+    formHelper: FormWithCSRF,
+    navigator: Navigator,
+    appConfig: AppConfig
 )
 
 @(form: Form[ContainerAdd])(implicit request: JourneyRequest[_], messages: Messages)
@@ -45,10 +45,9 @@
 
 @govukLayout(
     title = Title("declaration.transportInformation.containers.add.title", "declaration.section.6", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(ContainerAdd)))) {
-
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(ContainerAdd)))
+) {
     @formHelper(action = TransportContainerController.submitAddContainer, 'autoComplete -> "off") {
-
         @errorSummary(form.errors)
 
         @sectionHeader(messages("declaration.section.6"))

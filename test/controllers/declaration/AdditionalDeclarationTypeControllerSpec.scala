@@ -58,7 +58,7 @@ class AdditionalDeclarationTypeControllerSpec extends ControllerSpec with Audite
   }
 
   def nextPageOnTypes: Seq[NextPageOnType] =
-    allDeclarationTypesExcluding(CLEARANCE).map(NextPageOnType(_, DeclarantDetailsController.displayPage)) :+
+    nonClearanceJourneys.map(NextPageOnType(_, DeclarantDetailsController.displayPage)) :+
       NextPageOnType(CLEARANCE, DucrChoiceController.displayPage)
 
   def theResponseForm: Form[AdditionalDeclarationType] = {

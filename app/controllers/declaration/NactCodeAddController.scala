@@ -17,12 +17,14 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
+import controllers.helpers.ItemHelper.nextPageAfterNactCodePages
 import controllers.helpers.MultipleItemsHelper
 import controllers.navigation.Navigator
 import forms.declaration.NactCode.nactCodeLimit
 import forms.declaration.{NactCode, NactCodeFirst}
+import models.DeclarationType.nonClearanceJourneys
+import models.ExportsDeclaration
 import models.requests.JourneyRequest
-import models.{DeclarationType, ExportsDeclaration}
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc._
@@ -46,11 +48,7 @@ class NactCodeAddController @Inject() (
 )(implicit ec: ExecutionContext, auditService: AuditService)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithUnsafeDefaultFormBinding {
 
-  import NactCodeSummaryController._
-
-  val validTypes = Seq(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY, DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL)
-
-  def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
+  def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType(nonClearanceJourneys)) { implicit request =>
     val maybeItem = request.cacheModel.itemBy(itemId)
     maybeItem.flatMap(_.nactCodes) match {
       case Some(nactCode) if nactCode.nonEmpty => Ok(nactCodeAdd(itemId, NactCode.form.withSubmissionErrors))
@@ -63,7 +61,7 @@ class NactCodeAddController @Inject() (
     }
   }
 
-  def submitForm(itemId: String): Action[AnyContent] = (authenticate andThen journeyType(validTypes)).async { implicit request =>
+  def submitForm(itemId: String): Action[AnyContent] = (authenticate andThen journeyType(nonClearanceJourneys)).async { implicit request =>
     val maybeItem = request.cacheModel.itemBy(itemId)
     maybeItem.flatMap(_.nactCodes) match {
       case Some(nactCodes) if nactCodes.nonEmpty => saveAdditionalNactCode(itemId, NactCode.form.bindFromRequest(), nactCodes)
@@ -84,7 +82,7 @@ class NactCodeAddController @Inject() (
         updateExportsCache(itemId, Seq(NactCode(code)))
           .map(_ => navigator.continueTo(routes.NactCodeSummaryController.displayPage(itemId)))
 
-      case None => updateExportsCache(itemId, Seq.empty).map(_ => navigator.continueTo(nextPage(itemId)))
+      case None => updateExportsCache(itemId, Seq.empty).map(_ => navigator.continueTo(nextPageAfterNactCodePages(itemId)))
     }
 
   private def saveAdditionalNactCode(itemId: String, boundForm: Form[NactCode], cachedData: Seq[NactCode])(

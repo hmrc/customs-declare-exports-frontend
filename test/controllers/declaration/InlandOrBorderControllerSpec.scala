@@ -258,7 +258,7 @@ class InlandOrBorderControllerSpec extends ControllerSpec with AuditedController
               val expectedNextPage = ExpressConsignmentController.displayPage
 
               s"redirect to ${expectedNextPage.url}" in {
-                cacheRequest(additionalType, withBorderModeOfTransportCode(modeOfTransportCode))
+                cacheRequest(additionalType, withTransportLeavingTheBorder(modeOfTransportCode))
 
                 val result = await(controller.submitPage()(postRequest(body)))
 
@@ -273,7 +273,7 @@ class InlandOrBorderControllerSpec extends ControllerSpec with AuditedController
             val expectedNextPage = TransportContainerController.displayContainerSummary
 
             s"redirect to ${expectedNextPage.url}" in {
-              cacheRequest(SUPPLEMENTARY_SIMPLIFIED, withBorderModeOfTransportCode(modeOfTransportCode))
+              cacheRequest(SUPPLEMENTARY_SIMPLIFIED, withTransportLeavingTheBorder(modeOfTransportCode))
 
               val result = await(controller.submitPage()(postRequest(body)))
 

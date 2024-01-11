@@ -20,8 +20,9 @@ import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
 import forms.declaration.TransportPayment
 import forms.declaration.TransportPayment._
+import models.DeclarationType._
+import models.ExportsDeclaration
 import models.requests.JourneyRequest
-import models.{DeclarationType, ExportsDeclaration}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.audit.AuditService
@@ -43,7 +44,7 @@ class TransportPaymentController @Inject() (
 )(implicit ec: ExecutionContext, auditService: AuditService)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithUnsafeDefaultFormBinding {
 
-  private val validTypes = Seq(DeclarationType.STANDARD, DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL, DeclarationType.CLEARANCE)
+  private val validTypes = Seq(STANDARD, SIMPLIFIED, OCCASIONAL, CLEARANCE)
 
   def displayPage: Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
     val frm = form.withSubmissionErrors
@@ -53,15 +54,14 @@ class TransportPaymentController @Inject() (
     }
   }
 
-  def submitForm(): Action[AnyContent] =
-    (authenticate andThen journeyType(validTypes)).async { implicit request =>
-      form
-        .bindFromRequest()
-        .fold(
-          formWithErrors => Future.successful(BadRequest(transportPayment(formWithErrors))),
-          transportPayment => updateCache(transportPayment).map(_ => nextPage())
-        )
-    }
+  def submitForm(): Action[AnyContent] = (authenticate andThen journeyType(validTypes)).async { implicit request =>
+    form
+      .bindFromRequest()
+      .fold(
+        formWithErrors => Future.successful(BadRequest(transportPayment(formWithErrors))),
+        transportPayment => updateCache(transportPayment).map(_ => nextPage())
+      )
+  }
 
   private def nextPage()(implicit request: JourneyRequest[AnyContent]): Result =
     navigator.continueTo(routes.TransportContainerController.displayContainerSummary)

@@ -41,9 +41,7 @@ class AdditionalActorsSummaryController @Inject() (
   additionalActorsPage: additional_actors_summary
 ) extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithUnsafeDefaultFormBinding {
 
-  private val validTypes = Seq(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL)
-
-  def displayPage: Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
+  def displayPage: Action[AnyContent] = (authenticate andThen journeyType(nonClearanceJourneys)) { implicit request =>
     request.cacheModel.parties.declarationAdditionalActorsData match {
       case Some(data) if data.actors.nonEmpty => Ok(additionalActorsPage(form.withSubmissionErrors, data.actors))
 
@@ -51,7 +49,7 @@ class AdditionalActorsSummaryController @Inject() (
     }
   }
 
-  def submitForm: Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def submitForm: Action[AnyContent] = (authenticate andThen journeyType(nonClearanceJourneys)) { implicit request =>
     val actors = request.cacheModel.parties.declarationAdditionalActorsData.map(_.actors).getOrElse(Seq.empty)
     form
       .bindFromRequest()

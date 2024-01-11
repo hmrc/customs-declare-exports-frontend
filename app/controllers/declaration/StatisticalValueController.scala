@@ -18,7 +18,6 @@ package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.declaration.routes.PackageInformationSummaryController
-import controllers.helpers.ItemHelper.journeysOnLowValue
 import controllers.navigation.Navigator
 import controllers.routes.RootController
 import forms.declaration.StatisticalValue
@@ -48,7 +47,7 @@ class StatisticalValueController @Inject() (
 )(implicit ec: ExecutionContext, auditService: AuditService)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithUnsafeDefaultFormBinding {
 
-  val validJourneys = List(STANDARD, SUPPLEMENTARY) ::: journeysOnLowValue
+  val validJourneys = standardAndSupplementary ::: occasionalAndSimplified
 
   def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType(validJourneys)) { implicit request =>
     if (redirectToRoot(itemId)) Redirect(RootController.displayPage)
@@ -71,7 +70,7 @@ class StatisticalValueController @Inject() (
   }
 
   private def redirectToRoot(itemId: String)(implicit request: JourneyRequest[_]): Boolean =
-    journeysOnLowValue.contains(request.declarationType) && !request.cacheModel.isLowValueDeclaration(itemId)
+    occasionalAndSimplified.contains(request.declarationType) && !request.cacheModel.isLowValueDeclaration(itemId)
 
   private def updateExportsCache(itemId: String, updatedItem: StatisticalValue)(
     implicit request: JourneyRequest[AnyContent]

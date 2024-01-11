@@ -80,7 +80,9 @@ case class ExportsDeclaration(
 
   def lrn: Option[String] = consignmentReferences.flatMap(_.lrn.map(_.lrn))
   def ducr: Option[Ducr] = consignmentReferences.flatMap(_.ducr)
+
   def inlandModeOfTransportCode: Option[ModeOfTransportCode] = locations.inlandModeOfTransportCode.flatMap(_.inlandModeOfTransportCode)
+
   def transportLeavingBorderCode: Option[ModeOfTransportCode] = transport.borderModeOfTransportCode.flatMap(_.code)
 
   def additionalDocumentsInformation(itemId: String): AdditionalDocuments =

@@ -260,7 +260,7 @@ class SupervisingCustomsOfficeControllerSpec extends ControllerSpec with Audited
       "redirect to /express-consignment after a successful bind" when {
         List(FixedTransportInstallations, PostalConsignment).foreach { modeOfTransport =>
           s"'$modeOfTransport' has been selected on /transport-leaving-the-border" in {
-            val borderModeOfTransportCode = withBorderModeOfTransportCode(Some(modeOfTransport))
+            val borderModeOfTransportCode = withTransportLeavingTheBorder(Some(modeOfTransport))
             withNewCaching(aDeclaration(withType(CLEARANCE), borderModeOfTransportCode))
 
             val result = await(controller.submit()(postRequest(body)))

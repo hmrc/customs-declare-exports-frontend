@@ -45,9 +45,7 @@ class CusCodeController @Inject() (
 )(implicit ec: ExecutionContext, auditService: AuditService)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithUnsafeDefaultFormBinding {
 
-  val validTypes = Seq(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL)
-
-  def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyAction(validTypes)) { implicit request =>
+  def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyAction(nonClearanceJourneys)) { implicit request =>
     val frm = form.withSubmissionErrors
     request.cacheModel.itemBy(itemId).flatMap(_.cusCode) match {
       case Some(cusCode) => Ok(cusCodePage(itemId, frm.fill(cusCode)))
@@ -55,7 +53,7 @@ class CusCodeController @Inject() (
     }
   }
 
-  def submitForm(itemId: String): Action[AnyContent] = (authenticate andThen journeyAction(validTypes)).async { implicit request =>
+  def submitForm(itemId: String): Action[AnyContent] = (authenticate andThen journeyAction(nonClearanceJourneys)).async { implicit request =>
     form
       .bindFromRequest()
       .fold(
