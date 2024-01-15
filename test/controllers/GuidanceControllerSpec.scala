@@ -26,21 +26,12 @@ import views.html.guidance._
 class GuidanceControllerSpec extends ControllerWithoutFormSpec {
 
   val completeDeclarationPage = mock[complete_declaration]
-  val errorExplanationPage = mock[error_explanation]
   val sendByRoroPage = mock[send_by_roro]
   val entryPage = mock[entry]
   val startPage = mock[start]
 
   val controller =
-    new GuidanceController(
-      mockAuthAction,
-      stubMessagesControllerComponents(),
-      completeDeclarationPage,
-      errorExplanationPage,
-      sendByRoroPage,
-      entryPage,
-      startPage
-    )
+    new GuidanceController(mockAuthAction, stubMessagesControllerComponents(), completeDeclarationPage, sendByRoroPage, entryPage, startPage)
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -69,13 +60,6 @@ class GuidanceControllerSpec extends ControllerWithoutFormSpec {
         when(completeDeclarationPage.apply()(any(), any())).thenReturn(HtmlFormat.empty)
 
         val result = controller.completeDeclaration(getRequest())
-        status(result) must be(OK)
-      }
-
-      "the errorExplanation method is invoked" in {
-        when(errorExplanationPage.apply()(any(), any())).thenReturn(HtmlFormat.empty)
-
-        val result = controller.errorExplanation(getRequest())
         status(result) must be(OK)
       }
 
