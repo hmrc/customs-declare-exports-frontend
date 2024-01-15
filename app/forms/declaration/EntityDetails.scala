@@ -70,11 +70,15 @@ object EntityDetails extends FieldMapping {
 
   def addressMapping(implicit messages: Messages, codeListConnector: CodeListConnector): Mapping[EntityDetails] =
     Forms
-      .mapping("address" -> Address.mapping)(address => EntityDetails(None, Some(address)))(entityDetails => entityDetails.address)
+      .mapping("address" -> Address.mapping())(address => EntityDetails(None, Some(address)))(entityDetails => entityDetails.address)
+
+  def addressMappingForConsigneeDetails(implicit messages: Messages, codeListConnector: CodeListConnector): Mapping[EntityDetails] =
+    Forms
+      .mapping("address" -> Address.mapping(35))(address => EntityDetails(None, Some(address)))(entityDetails => entityDetails.address)
 
   def optionalAddressMapping(implicit messages: Messages, codeListConnector: CodeListConnector): Mapping[EntityDetails] =
     Forms
-      .mapping("address" -> optional(Address.mapping))(maybeAddress => EntityDetails(None, maybeAddress))(entityDetails =>
+      .mapping("address" -> optional(Address.mapping()))(maybeAddress => EntityDetails(None, maybeAddress))(entityDetails =>
         Some(entityDetails.address)
       )
 }

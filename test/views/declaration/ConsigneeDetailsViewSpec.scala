@@ -148,7 +148,7 @@ class ConsigneeDetailsViewSpec extends AddressViewSpec with PageWithButtonsSpec 
       }
 
       "display error for addressLine too long" in {
-        assertIncorrectView(validAddress.copy(addressLine = fieldWithLengthOver70), "addressLine", "length")
+        assertIncorrectView(validAddress.copy(addressLine = fieldWithLengthOver35), "addressLine", "length35MaxChars")
       }
 
       "display error for empty townOrCity" in {
@@ -191,8 +191,8 @@ class ConsigneeDetailsViewSpec extends AddressViewSpec with PageWithButtonsSpec 
         assertIncorrectElements(emptyAddress, List("fullName", "addressLine", "townOrCity", "postCode", "country"), "empty")
       }
 
-      "display errors when everything except country has illegal length" in {
-        assertIncorrectElements(addressWithIllegalLengths, List("fullName", "addressLine", "townOrCity", "postCode"), "length")
+      "display errors when everything except country and addressLine has illegal length" in {
+        assertIncorrectElements(addressWithIllegalLengths, List("fullName", "townOrCity", "postCode"), "length")
       }
 
       "display errors when everything is incorrect" in {

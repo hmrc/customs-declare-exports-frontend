@@ -21,6 +21,8 @@
 
 @(form: Form[_], labelPrefix: String = "", addressPrefix: String = "")(implicit request: Request[_], messages: Messages)
 
+@maxLength35Chars = @{if(request.uri.endsWith("/consignee-details")) "35MaxChars" else ""}
+
 @exportsInputText(
     field = form(s"${addressPrefix}.fullName"),
     labelKey = s"$labelPrefix.fullName",
@@ -29,7 +31,7 @@
 
 @exportsInputText(
     field = form(s"${addressPrefix}.addressLine"),
-    labelKey = s"$labelPrefix.addressLine",
+    labelKey = s"${labelPrefix}.addressLine$maxLength35Chars",
     defaultInputClasses = "govuk-input--width-30"
 )
 
