@@ -2607,8 +2607,6 @@ guidance.entry.section.2.list.1.bullet.1.link = Gwasanaeth datganiadau allforio 
 guidance.entry.section.2.list.1.bullet.2 = prynu {0}
 guidance.entry.section.2.list.1.bullet.2.link = meddalwedd a all gyflwyno datganiadau CDS
 
-guidance.error.explanation.title = Codau gwall CDS: disgrifiadau ac esboniadau
-
 guidance.roro.title = Anfon nwyddau i’w hallforio o borthladdoedd gyrru-ymlaen-ac-i-ffwrdd neu drwy Eurotunnel
 guidance.roro.intro = Darganfyddwch beth i’w wneud os ydych yn defnyddio gyrru-ymlaen-ac-i-ffwrdd (RoRo) gan gynnwys Eurotunnel i allforio cludiant ffordd, llwythi ar y rheilffordd neu lwythi ar eu pennau eu hunain o’r DU i wledydd eraill.
 
