@@ -60,7 +60,7 @@ class RejectedNotificationErrorsViewSpec extends UnitViewSpec with ExportsTestHe
     }
 
     "have correct title" in {
-      defaultView.getElementById("title").text mustBe messages("rejected.notification.title")
+      defaultView.getElementById("title").text mustBe messages("rejected.notification.v1.title")
       amendmentView.getElementById("title").text mustBe messages("rejected.amendment.title")
     }
 

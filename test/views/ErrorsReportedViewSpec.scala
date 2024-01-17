@@ -52,7 +52,7 @@ class ErrorsReportedViewSpec extends UnitViewSpec with ExportsTestHelper with In
 
     "have proper messages for labels" in {
       messages must haveTranslationFor("rejected.notification.mrn.missing")
-      messages must haveTranslationFor("rejected.notification.title")
+      messages must haveTranslationFor("rejected.notification.v2.title")
       messages must haveTranslationFor("rejected.amendment.title")
       messages must haveTranslationFor("rejected.notification.table.title")
       messages must haveTranslationFor("rejected.notification.warning")
@@ -75,7 +75,7 @@ class ErrorsReportedViewSpec extends UnitViewSpec with ExportsTestHelper with In
     }
 
     "have correct title" in {
-      defaultView.getElementById("title").text mustBe messages("rejected.notification.title")
+      defaultView.getElementById("title").text mustBe messages("rejected.notification.v2.title")
       amendmentView.getElementById("title").text mustBe messages("rejected.amendment.title")
     }
 
@@ -107,9 +107,9 @@ class ErrorsReportedViewSpec extends UnitViewSpec with ExportsTestHelper with In
       headingm mustBe messages("rejected.notification.table.title")
 
       val headings = defaultView.getElementsByClass("govuk-heading-s")
-      headings.get(0).text() mustBe messages("rejected.notification.guidance.section.1.header")
-      headings.get(1).text() mustBe messages("rejected.notification.guidance.section.2.header")
-      headings.get(2).text() mustBe messages("rejected.notification.guidance.section.3.header")
+      headings.get(1).text() mustBe messages("rejected.notification.guidance.section.1.header")
+      headings.get(2).text() mustBe messages("rejected.notification.guidance.section.2.header")
+      headings.get(3).text() mustBe messages("rejected.notification.guidance.section.3.header")
     }
 
     "have the expected body content" in {

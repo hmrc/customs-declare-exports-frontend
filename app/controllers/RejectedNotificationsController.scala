@@ -67,9 +67,9 @@ class RejectedNotificationsController @Inject() (
     }
   }
 
-  def addToSessionThenDisplay(id: String, errorReportVersion: String): Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
-
-  Future(Redirect(routes.RejectedNotificationsController.displayPage(id)).addingToSession(errorReportView -> errorReportVersion))
+  def addToSessionThenDisplay(id: String, errorReportVersion: String): Action[AnyContent] = (authenticate andThen verifyEmail).async {
+    implicit request =>
+      Future(Redirect(routes.RejectedNotificationsController.displayPage(id)).addingToSession(errorReportView -> errorReportVersion))
   }
 
   def displayPageOnUnacceptedAmendment(actionId: String, draftDeclarationId: Option[String] = None): Action[AnyContent] =
