@@ -495,7 +495,7 @@ declaration.declarant.paragraph = By selecting yes you are confirming that this 
 declaration.declarant.error = Select yes if this is your EORI number
 declaration.declarant.change.eori = No, I need to change my EORI
 
-declaration.linkDucrToMucr.title = Do you want to link this declaration's DUCR to a Master Unique Consignment Reference (MUCR)?
+declaration.linkDucrToMucr.title = Do you want to link this declaration’s DUCR to a Master Unique Consignment Reference (MUCR)?
 declaration.linkDucrToMucr.banner.title = Important: Using a Master Unique Consignment Reference (MUCR)
 declaration.linkDucrToMucr.banner.content = A MUCR is a reference number used to link or associate two or more DUCRs. A MUCR is commonly used to link consignments from different exporters which share space in the same container.
 declaration.linkDucrToMucr.paragraph = You can link one or more DUCRs to a MUCR if your loader or carrier has given you a MUCR.<br><br>You cannot link to a MUCR if your haulier is using the Goods Vehicle Movement Service (GVMS). The haulier will link DUCRs for all goods they are transporting using a Goods Movement Reference (GMR).
@@ -2211,7 +2211,13 @@ rejected.amendment.guidance.section.2.paragraph.1 = If you start but do not fini
 
 rejected.notification.description.heading = Description
 rejected.notification.mrn.missing = No MRN
-rejected.notification.title = Fix declaration errors
+rejected.notification.banner.title = Help us make fixing errors easier
+rejected.notification.v1.banner.text = We’ve created a new, improved page for fixing declaration errors. Switch to the {0} of this page.
+rejected.notification.v1.banner.linkText.0 = new version
+rejected.notification.v2.banner.text = This is a new, improved page for fixing declaration errors. You can switch to the {0} of this page.
+rejected.notification.v2.banner.linkText.0 = original version
+rejected.notification.v1.title = Fix declaration errors
+rejected.notification.v2.title = Fix declaration errors (enhanced version)
 rejected.notification.table.title = Declaration errors
 rejected.notification.warning = You need to fix these errors and resubmit your declaration when you have finished.
 rejected.notification.description.format = Error code {0}.

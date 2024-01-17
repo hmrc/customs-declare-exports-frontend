@@ -31,6 +31,8 @@ object SessionHelper extends Logging {
   val submissionLrn = "submission.lrn"
   val submissionMrn = "submission.mrn"
 
+  val errorReportView = "default"
+
   def getValue(key: String)(implicit request: Request[_]): Option[String] =
     request.session.data.get(key)
 

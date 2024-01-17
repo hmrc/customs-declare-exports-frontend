@@ -14,6 +14,8 @@
  * limitations under the License.
  *@
 
+@import config.AppConfig
+@import config.featureFlags.NewErrorReportConfig
 @import models.declaration.notifications.NotificationError
 @import views.helpers.{BackButton, PointerHelper, Title}
 @import views.html.components.gds._
@@ -31,7 +33,10 @@
     paragraphBody: paragraphBody,
     externalLink: externalLink,
     link: link,
-    notificationErrorHelper: NotificationErrorHelper
+    notificationErrorHelper: NotificationErrorHelper,
+    appConfig: AppConfig,
+    newErrorReportConfig: NewErrorReportConfig,
+    researchBanner: researchBanner
 )
 
 @(submissionId: Option[String],
@@ -45,9 +50,19 @@
     routes.DeclarationDetailsController.displayPage(submissionId.fold(declaration.id)(identity))
 }
 
+@researchBannerBody = @{
+     messages("rejected.notification.v1.banner.text",
+         link(
+            messages("rejected.notification.v1.banner.linkText.0"),
+            routes.RejectedNotificationsController.addToSessionThenDisplay(submissionId.fold(declaration.id)(identity), "new"),
+            style = Some("color:#fff")
+         )
+     )
+}
+
 @title = @{
     if(maybeDeclarationId.isDefined) "rejected.amendment.title"
-    else "rejected.notification.title"
+    else "rejected.notification.v1.title"
 }
 
 @warningText = @{
@@ -78,6 +93,10 @@
 
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-full">
+
+            @if(newErrorReportConfig.isNewErrorReportEnabled) {
+                @researchBanner(title = messages("rejected.notification.banner.title"), body = researchBannerBody)
+            }
 
             @pageTitle(text = messages(title), classes = "govuk-heading-l")
             @sectionHeader(messages("mrn.heading", mrn))
