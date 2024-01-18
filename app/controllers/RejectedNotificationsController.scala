@@ -22,7 +22,7 @@ import controllers.actions.{AuthAction, VerifiedEmailAction}
 import handlers.ErrorHandler
 import models.ExportsDeclaration
 import models.declaration.notifications.{Notification, NotificationError}
-import models.requests.SessionHelper.{errorReportView, getValue, submissionActionId, submissionUuid}
+import models.requests.SessionHelper._
 import play.api.Logging
 import play.api.i18n.I18nSupport
 import play.api.mvc._
@@ -48,7 +48,7 @@ class RejectedNotificationsController @Inject() (
     extends FrontendController(mcc) with I18nSupport with Logging {
 
   def displayPage(id: String): Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
-    if (newErrorReportConfig.isNewErrorReportEnabled && getValue(errorReportView).getOrElse("default") != "original")
+    if (newErrorReportConfig.isNewErrorReportEnabled && getValue(errorReportView).getOrElse("") != errorReportViewVersion.version1)
       errorsReportedController.displayPage(id).apply(request)
     else {
       customsDeclareExportsConnector.findDeclaration(id).flatMap {

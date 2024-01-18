@@ -17,6 +17,7 @@
 @import config.AppConfig
 @import config.featureFlags.NewErrorReportConfig
 @import models.declaration.notifications.NotificationError
+@import models.requests.SessionHelper.errorReportViewVersion
 @import views.helpers.{BackButton, PointerHelper, Title}
 @import views.html.components.gds._
 @import uk.gov.hmrc.govukfrontend.views.html.components._
@@ -54,7 +55,7 @@
      messages("rejected.notification.v1.banner.text",
          link(
             messages("rejected.notification.v1.banner.linkText.0"),
-            routes.RejectedNotificationsController.addToSessionThenDisplay(submissionId.fold(declaration.id)(identity), "new"),
+            routes.RejectedNotificationsController.addToSessionThenDisplay(submissionId.fold(declaration.id)(identity), errorReportViewVersion.version2),
             style = Some("color:#fff")
          )
      )

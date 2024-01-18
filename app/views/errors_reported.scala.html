@@ -23,6 +23,7 @@
 @import models.declaration.errors.ErrorInstance
 @import connectors.CodeListConnector
 @import models.viewmodels.errors.DefaultInterpreter
+@import models.requests.SessionHelper.errorReportViewVersion
 
 @this(
         govukLayout: gdsMainTemplate,
@@ -56,7 +57,7 @@
      messages("rejected.notification.v2.banner.text",
          link(
             messages("rejected.notification.v2.banner.linkText.0"),
-            routes.RejectedNotificationsController.addToSessionThenDisplay(submissionId.fold(declaration.id)(identity), "original"),
+            routes.RejectedNotificationsController.addToSessionThenDisplay(submissionId.fold(declaration.id)(identity), errorReportViewVersion.version1),
             style = Some("color:#fff")
         )
      )
