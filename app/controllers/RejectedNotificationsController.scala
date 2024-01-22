@@ -22,7 +22,7 @@ import controllers.actions.{AuthAction, VerifiedEmailAction}
 import handlers.ErrorHandler
 import models.ExportsDeclaration
 import models.declaration.notifications.{Notification, NotificationError}
-import models.requests.SessionHelper.{getValue, submissionActionId, submissionUuid}
+import models.requests.SessionHelper._
 import play.api.Logging
 import play.api.i18n.I18nSupport
 import play.api.mvc._
@@ -30,7 +30,7 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.{rejected_notification_errors, rejected_notification_errors_tdr}
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class RejectedNotificationsController @Inject() (
@@ -48,7 +48,7 @@ class RejectedNotificationsController @Inject() (
     extends FrontendController(mcc) with I18nSupport with Logging {
 
   def displayPage(id: String): Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
-    if (newErrorReportConfig.isNewErrorReportEnabled)
+    if (newErrorReportConfig.isNewErrorReportEnabled && getValue(errorReportView).getOrElse("") != errorReportViewVersion.version1)
       errorsReportedController.displayPage(id).apply(request)
     else {
       customsDeclareExportsConnector.findDeclaration(id).flatMap {
@@ -65,6 +65,11 @@ class RejectedNotificationsController @Inject() (
         case _ => errorHandler.internalError(s"Declaration($id) not found for a rejected submission??")
       }
     }
+  }
+
+  def addToSessionThenDisplay(id: String, errorReportVersion: String): Action[AnyContent] = (authenticate andThen verifyEmail).async {
+    implicit request =>
+      Future(Redirect(routes.RejectedNotificationsController.displayPage(id)).addingToSession(errorReportView -> errorReportVersion))
   }
 
   def displayPageOnUnacceptedAmendment(actionId: String, draftDeclarationId: Option[String] = None): Action[AnyContent] =

@@ -23,6 +23,7 @@
 @import models.declaration.errors.ErrorInstance
 @import connectors.CodeListConnector
 @import models.viewmodels.errors.DefaultInterpreter
+@import models.requests.SessionHelper.errorReportViewVersion
 
 @this(
         govukLayout: gdsMainTemplate,
@@ -37,7 +38,8 @@
         externalLink: externalLink,
         link: link,
         appConfig: AppConfig,
-        notificationErrorHelper: ErrorsReportedHelper
+        notificationErrorHelper: ErrorsReportedHelper,
+        researchBanner: researchBanner
 )
 
 @(submissionId: Option[String],
@@ -51,9 +53,19 @@
     routes.DeclarationDetailsController.displayPage(submissionId.fold(declaration.id)(identity))
 }
 
+@researchBannerBody = @{
+     messages("rejected.notification.v2.banner.text",
+         link(
+            messages("rejected.notification.v2.banner.linkText.0"),
+            routes.RejectedNotificationsController.addToSessionThenDisplay(submissionId.fold(declaration.id)(identity), errorReportViewVersion.version1),
+            style = Some("color:#fff")
+        )
+     )
+}
+
 @title = @{
     if(maybeDeclarationId.isDefined) "rejected.amendment.title"
-    else "rejected.notification.title"
+    else "rejected.notification.v2.title"
 }
 
 @warningText = @{
@@ -84,6 +96,7 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-full">
 
+            @researchBanner(title = messages("rejected.notification.banner.title"), body = researchBannerBody)
             @pageTitle(text = messages(title), classes = "govuk-heading-l")
             @sectionHeader(messages("mrn.heading", mrn))
 

@@ -29,6 +29,7 @@ GET         /conversation/:client/:conversationId/result   controllers.SecureMes
 
 GET         /submissions/:id/errors-reported               controllers.ErrorsReportedController.displayPage(id: String)
 GET         /submissions/:id/rejected-notifications        controllers.RejectedNotificationsController.displayPage(id: String)
+GET         /submissions/:id/rejected-notifications/:ver   controllers.RejectedNotificationsController.addToSessionThenDisplay(id: String, ver: String)
 GET         /submissions/unaccepted-amendment/:actionId    controllers.RejectedNotificationsController.displayPageOnUnacceptedAmendment(actionId: String, draftDeclarationId: Option[String] ?= None)
 
 # Dashboard

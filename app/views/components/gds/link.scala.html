@@ -22,7 +22,8 @@
   target: Option[String] = None,
   id: Option[String] = None,
   classes: Option[String] = None,
-  textHidden: Option[String] = None
+  textHidden: Option[String] = None,
+  style: Option[String] = None
 )
 
 @caption = @{
@@ -39,6 +40,13 @@
   classes.getOrElse("govuk-link govuk-link--no-visited-state")
 }
 
+@linkStyles = @{
+  style match {
+    case Some(s) => Html("style=" + s)
+    case None => Html("")
+  }
+}
+
 @targetAttrs = @{
   target.map { t =>
     val rel = if (t == "_blank") s""" rel="noopener noreferrer"""" else ""
@@ -47,5 +55,5 @@
 }
 
 @* The <a> tag is split on purpose - to avoid inline-block whitespace problem *@
-<a @targetAttrs @idAttr class="@linkClasses" href="@call"
+<a @targetAttrs @idAttr class="@linkClasses" @linkStyles href="@call"
   >@caption
