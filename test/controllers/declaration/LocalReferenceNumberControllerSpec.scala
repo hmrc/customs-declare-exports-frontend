@@ -78,6 +78,10 @@ class LocalReferenceNumberControllerSpec extends ControllerSpec with AuditedCont
 
   "LocalReferenceNumberControllerSpec" should {
 
+    "correctly trim and convert LRN to upper case characters" in {
+      Lrn.form2Data("qslrn123123123") mustBe Lrn("QSLRN123123123")
+    }
+
     onJourney(STANDARD, SIMPLIFIED, OCCASIONAL, CLEARANCE) { req =>
       "return 200 (OK)" when {
 
