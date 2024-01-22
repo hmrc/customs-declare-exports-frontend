@@ -40,7 +40,7 @@ object Lrn extends DeclarationPage {
 
   val form: Form[Lrn] = Form(mapping("declaration.consignmentReferences.lrn").withPrefix("lrn"))
 
-  def form2Data(lrn: String): Lrn = new Lrn(lrn.trim)
+  def form2Data(lrn: String): Lrn = new Lrn(lrn.trim.toUpperCase)
 
   def model2Form: Lrn => Option[String] =
     model => Some(model.lrn)

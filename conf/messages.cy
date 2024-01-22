@@ -564,9 +564,11 @@ declaration.address.fullName.empty = Nodwch enw
 declaration.address.fullName.error = Mae’n rhaid i’r enw gynnwys rhifau, llythrennau, comas, cysylltnodau a chollnodau’n unig
 declaration.address.fullName.length = Mae’n rhaid i’r enw fod yn 35 o gymeriadau neu lai
 declaration.address.addressLine = Cyfeiriad
+declaration.address.addressLine35MaxChars = Cyfeiriad (caniateir uchafswm o 35 cymeriad)
 declaration.address.addressLine.empty = Nodwch gyfeiriad
 declaration.address.addressLine.error = Mae’n rhaid i’r cyfeiriad gynnwys rhifau, llythrennau, comas, cysylltnodau, collnodau a chromfachau’n unig.
 declaration.address.addressLine.length = Mae’n rhaid i’r cyfeiriad fod yn 70 o gymeriadau neu lai
+declaration.address.addressLine.length35MaxChars = Mae’n rhaid i’r cyfeiriad fod yn 35 o gymeriadau neu lai
 declaration.address.townOrCity = Tref neu ddinas
 declaration.address.townOrCity.empty = Nodwch dref neu ddinas
 declaration.address.townOrCity.error = Mae’n rhaid i’r dref neu’r ddinas gynnwys rhifau, llythrennau, comas, cysylltnodau a chollnodau’n unig
@@ -2612,8 +2614,6 @@ guidance.entry.section.2.list.1.bullet.1 = dechrau defnyddio {0} rhad ac am ddim
 guidance.entry.section.2.list.1.bullet.1.link = Gwasanaeth datganiadau allforio CDS
 guidance.entry.section.2.list.1.bullet.2 = prynu {0}
 guidance.entry.section.2.list.1.bullet.2.link = meddalwedd a all gyflwyno datganiadau CDS
-
-guidance.error.explanation.title = Codau gwall CDS: disgrifiadau ac esboniadau
 
 guidance.roro.title = Anfon nwyddau i’w hallforio o borthladdoedd gyrru-ymlaen-ac-i-ffwrdd neu drwy Eurotunnel
 guidance.roro.intro = Darganfyddwch beth i’w wneud os ydych yn defnyddio gyrru-ymlaen-ac-i-ffwrdd (RoRo) gan gynnwys Eurotunnel i allforio cludiant ffordd, llwythi ar y rheilffordd neu lwythi ar eu pennau eu hunain o’r DU i wledydd eraill.

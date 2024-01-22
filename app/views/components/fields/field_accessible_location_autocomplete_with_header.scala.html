@@ -74,7 +74,7 @@ To avoid problems, we need to remove [] from field.
     @if(hintParagraphs.nonEmpty) {
         <div id="@(fieldNameWithoutBrackets)-hint">
             @hintParagraphs.map { hint =>
-                <p class="govuk-hint">@hint</p>
+                <p class="govuk-hint govuk-!-margin-top-0">@hint</p>
             }
         </div>
     }

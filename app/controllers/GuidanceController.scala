@@ -27,7 +27,6 @@ class GuidanceController @Inject() (
   authenticate: AuthAction,
   mcc: MessagesControllerComponents,
   completeDeclarationPage: complete_declaration,
-  errorExplanationPage: error_explanation,
   sendByRoroPage: send_by_roro,
   entryPage: entry,
   startPage: start
@@ -43,10 +42,6 @@ class GuidanceController @Inject() (
 
   val completeDeclaration: Action[AnyContent] = authenticate { implicit request =>
     Ok(completeDeclarationPage())
-  }
-
-  val errorExplanation: Action[AnyContent] = authenticate { implicit request =>
-    Ok(errorExplanationPage())
   }
 
   val sendByRoro: Action[AnyContent] = authenticate { implicit request =>
