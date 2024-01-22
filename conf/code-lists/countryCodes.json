@@ -420,6 +420,11 @@
     "code": "GN"
   },
   {
+    "en": "Desirade",
+    "cy": "Desirade",
+    "code": "GP"
+  },
+  {
     "en": "Equatorial Guinea",
     "cy": "Guinea Gyhydeddol",
     "code": "GQ"
@@ -1205,9 +1210,74 @@
     "code": "ZA"
   },
   {
+    "en": "Continental Shelf (NW European) - Belgian Sector",
+    "cy": "Continental Shelf (NW European) - Belgian Sector",
+    "code": "ZB"
+  },
+  {
+    "en": "Continental Shelf (NW European) - Greece Sector",
+    "cy": "Continental Shelf (NW European) - Greece Sector",
+    "code": "ZC"
+  },
+  {
+    "en": "Continental Shelf (NW European) - Danish Sector",
+    "cy": "Continental Shelf (NW European) - Danish Sector",
+    "code": "ZD"
+  },
+  {
+    "en": "Continental Shelf (NW European) - Irish Sector",
+    "cy": "Continental Shelf (NW European) - Irish Sector",
+    "code": "ZE"
+  },
+  {
+    "en": "Continental Shelf (NW European) - French Sector",
+    "cy": "Continental Shelf (NW European) - French Sector",
+    "code": "ZF"
+  },
+  {
+    "en": "Continental Shelf (NW European) - German Sector",
+    "cy": "Continental Shelf (NW European) - German Sector",
+    "code": "ZG"
+  },
+  {
+    "en": "Continental Shelf (NW European) - Netherlands Sector",
+    "cy": "Continental Shelf (NW European) - Netherlands Sector",
+    "code": "ZH"
+  },
+  {
+    "en": "Continental Shelf (NW European) - Cyprus Sector",
+    "cy": "Continental Shelf (NW European) - Cyprus Sector",
+    "code": "ZJ"
+  },
+  {
+    "en": "Continental Shelf (NW European) - Finland Sector",
+    "cy": "Continental Shelf (NW European) - Finland Sector",
+    "code": "ZK"
+  },
+  {
+    "en": "Continental Shelf (NW European) - Italy Sector",
+    "cy": "Continental Shelf (NW European) - Italy Sector",
+    "code": "ZL"
+  },
+  {
     "en": "Zambia",
     "cy": "Zambia",
     "code": "ZM"
+  },
+  {
+    "en": "Continental Shelf (NW European) - Norwegian Sector",
+    "cy": "Continental Shelf (NW European) - Norwegian Sector",
+    "code": "ZN"
+  },
+  {
+    "en": "Continental Shelf (NW European) - Sweden Sector",
+    "cy": "Continental Shelf (NW European) - Sweden Sector",
+    "code": "ZS"
+  },
+  {
+    "en": "Continental Shelf (NW European) - United Kingdom Sector",
+    "cy": "Continental Shelf (NW European) - United Kingdom Sector",
+    "code": "ZU"
   },
   {
     "en": "Zimbabwe",
