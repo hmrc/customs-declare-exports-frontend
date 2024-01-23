@@ -187,10 +187,8 @@ tariff.expander.title.common = Rhagor o fanylion am yr hyn sydd ei angen ar y du
 tariff.expander.title.clearance = Rhagor o fanylion am yr hyn sydd ei angen ar y dudalen hon
 tariff.declaration.text = Am fanylion, ewch i {0}.
 
-tariff.declaration.type.text = I gael manylion, ewch i {0} ac {1}.
-tariff.declaration.type.linkText.0 = Elfen Ddata 1/2 - Math o Ddatganiad Ychwanegol (yn agor tab newydd)
-tariff.declaration.type.linkText.1 = codau gweithdrefnau ychwanegol grŵp 3 (yn agor tab newydd)
-tariff.declaration.type.common.linkText.0 = Elfen Ddata 1/2 - Math o Ddatganiad Ychwanegol (yn agor tab newydd)
+tariff.declaration.others.text = I gael manylion, ewch i {0}.
+tariff.declaration.others.linkText = Elfen Ddata 1/2 - Math o Ddatganiad Ychwanegol (yn agor tab newydd)
 
 tariff.declaration.traderReference.common.linkText.0 =  Elfen Ddata 2/4 – Cyfeirnod / UCR (yn agor tab newydd)
 tariff.declaration.traderReference.clearance.linkText.0 = Elfen Ddata 2/1 – Datganiad Symlach/Dogfennau Blaenorol (yn agor tab newydd)

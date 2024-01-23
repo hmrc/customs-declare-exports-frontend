@@ -19,7 +19,6 @@ package config
 import base.UnitWithMocksSpec
 import com.typesafe.config.{Config, ConfigFactory}
 import config.AppConfigSpec.configBareMinimum
-import models.DeclarationType
 import play.api.{Configuration, Environment}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
@@ -36,8 +35,6 @@ class AppConfigSpec extends UnitWithMocksSpec {
         |
         |tracking-consent-frontend.gtm.container=a
         |
-        |list-of-available-journeys="CRT,CAN,SUB"
-        |list-of-available-declarations="STANDARD,SUPPLEMENTARY"
         |microservice.services.features.use-improved-error-messages=true
         |microservice.services.customs-declare-exports.host=localhost
         |microservice.services.customs-declare-exports.port=9875
@@ -236,14 +233,6 @@ class AppConfigSpec extends UnitWithMocksSpec {
       validAppConfig.goodsLocationCodeToLocationTypeFile must be("goodsLocationCodeToLocationTypeLink")
     }
 
-    "load the Declaration options when list-of-available-declarations is defined" in {
-      val choices = validAppConfig.availableDeclarations()
-      choices.size must be(2)
-
-      choices must contain(DeclarationType.STANDARD.toString)
-      choices must contain(DeclarationType.SUPPLEMENTARY.toString)
-    }
-
     "have login continue URL" in {
       validAppConfig.loginContinueUrl must be("http://localhost:9000/customs-declare-exports-frontend")
     }
@@ -331,11 +320,6 @@ class AppConfigSpec extends UnitWithMocksSpec {
 
     "have draft lifetime" in {
       validAppConfig.draftTimeToLive must be(FiniteDuration(30, TimeUnit.DAYS))
-    }
-
-    "have single Declaration type options when list-of-available-declarations is not defined" in {
-      missingAppConfig.availableDeclarations().size must be(1)
-      missingAppConfig.availableDeclarations() must contain(DeclarationType.STANDARD.toString)
     }
 
     "throw an exception" when {
@@ -448,6 +432,7 @@ object AppConfigSpec {
       |urls.nationalAdditionalCodes="https://www.gov.uk/government/publications/national-additional-codes-to-declare-with-data-element-617-of-the-customs-declaration-service"
       |urls.commodityCode9306909000="https://www.trade-tariff.service.gov.uk/xi/commodities/9306909000?country=KP#export"
       |urls.simplifiedDeclPreviousDoc="https://www.gov.uk/government/publications/appendix-1-de-110-requested-and-previous-procedure-codes/requested-procedure-10-permanent-export-or-dispatch#simplified-declaration--previous-document-de-21"
+      |urls.standardDeclarationType="https://www.gov.uk/guidance/making-a-full-export-declaration"
       |urls.combinedPackaging="https://www.gov.uk/government/publications/uk-trade-tariff-cds-volume-3-export-declaration-completion-guide/group-6-goods-identification#combined-packaging"
       |urls.getGoodsMovementReference="https://www.gov.uk/guidance/get-a-goods-movement-reference"
       |urls.additionalInformationAppendix4="https://www.gov.uk/guidance/additional-information-ai-statement-codes-for-data-element-22-of-the-customs-declaration-service-cds"
@@ -476,7 +461,6 @@ object AppConfigSpec {
       |
       |urls.additionalDeclarationType = "https://www.gov.uk/government/publications/uk-trade-tariff-cds-volume-3-export-declaration-completion-guide/group-1-message-information-including-procedure-codes#de-12-additional-declaration-type-box-1-declaration-second-subdivision"
       |urls.declareGoodsExported = "https://www.gov.uk/guidance/declare-commercial-goods-youre-taking-out-of-great-britain-in-your-accompanied-baggage-or-small-vehicles"
-      |urls.simplifiedDeclarationOccasionalUse = "https://www.gov.uk/government/publications/appendix-2-de-111-additional-procedure-codes/additional-procedure-code-3-series"
       |
       |files.codelists.procedureCodes="procedureCodes"
       |files.codelists.procedureCodesC21="procedureCodesC21"

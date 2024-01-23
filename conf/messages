@@ -166,30 +166,40 @@ declaration.summary.section.5 = Section 5 of 6: About the items
 declaration.summary.section.5.item = Section 5 of 6: Declaration item {0}
 declaration.summary.section.6 = Section 6 of 6: Transportation of the goods
 
-declaration.type.description = Which type of declaration do you want to create?
+declaration.type.description = Which type of declaration do you want to make?
+declaration.type.description.other = Select a declaration type
 declaration.type.standard = Standard declaration
-declaration.type.standard.hint = This is a full declaration.
-declaration.type.simplified = Authorised simplified declaration procedure (SDP)
-declaration.type.simplified.hint = A 2-part declaration, only allowed with an authorisation from HMRC.
+declaration.type.standard.hint = The most commonly used type, this includes ‘Arrived’ and ‘Pre-lodged’ declarations.
+declaration.type.other = Other type of declaration
+declaration.type.other.hint = Other types include simplified declarations, customs clearance requests (C21), supplementary declarations, and low value commercial goods.
+declaration.type.warning = If you return to this page to change the declaration type, you must continue through all subsequent sections and questions to avoid submitting an incomplete or invalid declaration.
+declaration.type.simplified = Simplified declaration (regular use)
+declaration.type.simplified.hint = For specific circumstances - requires simplified declaration for exports authorisation (SDE).
 declaration.type.supplementary = Supplementary declaration
 declaration.type.supplementary.hint = Part 2 declarations to be submitted after simplified declaration (regular use) or EIDR.
 declaration.type.occasional = Simplified declaration (occasional use)
-declaration.type.occasional.hint = For unaccompanied export of personal effects or commercial goods worth less than £1,500, excluding excise, controlled or restricted goods.
+declaration.type.occasional.hint = For export of personal effects, low value consignments and non statistical consignments. No SDE authorization is required.
 declaration.type.clearance = Customs clearance request (C21)
 declaration.type.clearance.hint = For dispatches from locations with inventory links, including Notice of Presentation (NOP) for entry into declarant’s records (EIDR).
+declaration.type.insetText.header = Declaring commercial goods exported in accompanied baggage or small vehicles
 declaration.type.insetText.p1 = There is now a quick way to {0}.
-declaration.type.insetText.linkText = declare low value commercial goods for export (opens in new tab)
-declaration.type.insetText.p2 = It applies if you are using accompanied baggage or a small vehicle.
+declaration.type.insetText.linkText = declare commercial goods you are taking out of Great Britain in accompanied baggage or a small vehicle (opens in new tab)
+declaration.type.insetText.p2 = Goods must be under a total value of £1,500 and meet certain other conditions.
 declaration.type.error = Select a declaration type
 
 tariff.expander.title.common = More details about what is required on this page
 tariff.expander.title.clearance = More details about what is required on this page
 tariff.declaration.text = For details, go to {0}.
 
-tariff.declaration.type.text = For details, go to {0} and {1}.
-tariff.declaration.type.linkText.0 = Data Element 1/2 - Additional Declaration Type (opens in new tab)
-tariff.declaration.type.linkText.1 = Appendix 2: Data Element 1/11 - Additional Procedure Codes (opens in new tab)
+tariff.declaration.type.title = More details about standard declarations
+tariff.declaration.type.text.1 = A standard declaration (arrived or pre-lodged) is a full declaration. This means all sections of the declaration must be completed.
+tariff.declaration.type.text.2 = Find details about {0}.
+tariff.declaration.type.linkText.2 = making a full export declaration (opens in a new tab)
 tariff.declaration.type.common.linkText.0 = Data Element 1/2 - Additional Declaration Type (opens in new tab)
+
+tariff.declaration.others.text = This answer will complete<br>{0}.
+tariff.declaration.others.linkText.0 = Data Element 1/2 - Additional Declaration Type (opens in new tab)
+
 tariff.declaration.traderReference.common.linkText.0 = Data Element 2/4 - UCR Reference Number (opens in new tab)
 tariff.declaration.traderReference.clearance.linkText.0 = Data Element 2/1 - Simplified Declaration, Previous Documents (opens in new tab)
 tariff.declaration.ducr.common.linkText.0 = Data Element 2/1 - Simplified Declaration, Previous Documents (opens in new tab)

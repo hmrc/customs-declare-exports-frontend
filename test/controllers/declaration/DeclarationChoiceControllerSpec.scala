@@ -19,15 +19,15 @@ package controllers.declaration
 import base.ControllerWithoutFormSpec
 import controllers.declaration.routes.AdditionalDeclarationTypeController
 import forms.declaration.AuthorisationProcedureCodeChoice.Choice1040
-import forms.declaration.{DeclarationChoice, DeclarationChoiceSpec}
+import forms.declaration.DeclarationChoice.{form, nonStandardJourneys}
 import models.DeclarationType._
 import models.ExportsDeclaration
-import models.declaration.DeclarationStatus
+import models.declaration.DeclarationStatus.AMENDMENT_DRAFT
 import models.requests.SessionHelper
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
 import org.scalatest.OptionValues
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.{JsObject, JsValue, Json}
 import play.api.mvc.{AnyContentAsJson, Request}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -36,12 +36,11 @@ import utils.FakeRequestCSRFSupport._
 import views.html.declaration.declaration_choice
 
 class DeclarationChoiceControllerSpec extends ControllerWithoutFormSpec with OptionValues {
-  import DeclarationChoiceSpec._
 
   private val newDeclarationId = "newDeclarationId"
 
-  val declarationChoice = mock[declaration_choice]
-  val mcc = stubMessagesControllerComponents()
+  private val declarationChoice = mock[declaration_choice]
+  private val mcc = stubMessagesControllerComponents()
 
   val controller = new DeclarationChoiceController(mockAuthAction, mockVerifiedEmailAction, mockExportsCacheService, mcc, declarationChoice)(ec)
 
@@ -78,7 +77,7 @@ class DeclarationChoiceControllerSpec extends ControllerWithoutFormSpec with Opt
       }
 
       "is invoked with data in cache" in {
-        withNewCaching(aDeclaration())
+        withNewCaching(aDeclaration(withType(SUPPLEMENTARY)))
 
         val result = controller.displayPage(getRequest())
         status(result) must be(OK)
@@ -87,7 +86,7 @@ class DeclarationChoiceControllerSpec extends ControllerWithoutFormSpec with Opt
 
     "return 303 (SEE_OTHER)" when {
       "has 'AMENDMENT_DRAFT' status" in {
-        withNewCaching(aDeclaration(withStatus(DeclarationStatus.AMENDMENT_DRAFT)))
+        withNewCaching(aDeclaration(withType(SUPPLEMENTARY), withStatus(AMENDMENT_DRAFT)))
 
         val result = controller.displayPage(getRequest())
 
@@ -103,7 +102,7 @@ class DeclarationChoiceControllerSpec extends ControllerWithoutFormSpec with Opt
         val request = getRequest()
         val result = controller.displayPage(request)
 
-        viewOf(result) must be(declarationChoice(DeclarationChoice.form)(request, controller.messagesApi.preferred(request)))
+        viewOf(result) must be(declarationChoice(form(nonStandardJourneys))(request, controller.messagesApi.preferred(request)))
       }
     }
   }
@@ -114,7 +113,7 @@ class DeclarationChoiceControllerSpec extends ControllerWithoutFormSpec with Opt
       "form is incorrect" in {
         withNoDeclaration()
 
-        val result = controller.submitChoice(postChoiceRequest(incorrectChoiceJSON))
+        val result = controller.submitChoice(postChoiceRequest(Json.obj("type" -> "InvalidChoice")))
 
         status(result) must be(BAD_REQUEST)
         verifyTheCacheIsUnchanged()
@@ -123,12 +122,12 @@ class DeclarationChoiceControllerSpec extends ControllerWithoutFormSpec with Opt
 
     "return 303 (SEE_OTHER)" when {
 
-      allDeclarationTypes.foreach { journeyType =>
+      allDeclarationTypesExcluding(STANDARD).foreach { journeyType =>
         s"user creates a new $journeyType declaration" in {
           withNoDeclaration()
-          withCreateResponse(aDeclaration())
+          withCreateResponse(aDeclaration(withType(journeyType)))
 
-          val result = controller.submitChoice(postChoiceRequest(createChoiceJSON(journeyType.toString), None))
+          val result = controller.submitChoice(postChoiceRequest(type2Json(journeyType), None))
 
           status(result) must be(SEE_OTHER)
           redirectLocation(result) must be(Some(AdditionalDeclarationTypeController.displayPage.url))
@@ -138,7 +137,7 @@ class DeclarationChoiceControllerSpec extends ControllerWithoutFormSpec with Opt
         s"user updates an existing $journeyType declaration" in {
           withNewCaching(aDeclaration(withType(journeyType)))
 
-          val result = controller.submitChoice(postChoiceRequest(createChoiceJSON(journeyType.toString)))
+          val result = controller.submitChoice(postChoiceRequest(type2Json(journeyType)))
 
           status(result) must be(SEE_OTHER)
           redirectLocation(result) must be(Some(AdditionalDeclarationTypeController.displayPage.url))
@@ -146,7 +145,7 @@ class DeclarationChoiceControllerSpec extends ControllerWithoutFormSpec with Opt
         }
 
         s"a $journeyType declaration is existing and has 'AMENDMENT_DRAFT' status (and not allow the user to change it)" in {
-          withNewCaching(aDeclaration(withType(journeyType), withStatus(DeclarationStatus.AMENDMENT_DRAFT)))
+          withNewCaching(aDeclaration(withType(journeyType), withStatus(AMENDMENT_DRAFT)))
 
           val result = controller.submitChoice(postChoiceRequest(Json.obj()))
 
@@ -159,11 +158,11 @@ class DeclarationChoiceControllerSpec extends ControllerWithoutFormSpec with Opt
     }
 
     "sets session declarationUuid to the target declaration being used" when {
-      allDeclarationTypes.foreach { journeyType =>
+      allDeclarationTypesExcluding(STANDARD).foreach { journeyType =>
         s"user creates a new $journeyType declaration" in {
           withCreateResponse(aDeclaration(withId(newDeclarationId), withType(journeyType)))
 
-          val result = controller.submitChoice(postChoiceRequest(createChoiceJSON(journeyType.toString), None))
+          val result = controller.submitChoice(postChoiceRequest(type2Json(journeyType), None))
 
           session(result).get(SessionHelper.declarationUuid).value mustEqual newDeclarationId
         }
@@ -172,7 +171,7 @@ class DeclarationChoiceControllerSpec extends ControllerWithoutFormSpec with Opt
           val dec = aDeclaration(withId(existingDeclarationId), withType(journeyType))
           withNewCaching(aDeclarationAfter(dec, withAuthorisationProcedureCodeChoice(Choice1040)))
 
-          val result = controller.submitChoice()(postChoiceRequest(createChoiceJSON(journeyType.toString)))
+          val result = controller.submitChoice()(postChoiceRequest(type2Json(journeyType)))
 
           session(result).get(SessionHelper.declarationUuid).value mustEqual existingDeclarationId
         }
@@ -180,12 +179,12 @@ class DeclarationChoiceControllerSpec extends ControllerWithoutFormSpec with Opt
     }
 
     "update an existing declaration's journeyType and keep the current authorisationProcedureCodeChoice field value" when {
-      Seq(STANDARD, SUPPLEMENTARY, OCCASIONAL).foreach { journeyType =>
+      List(SUPPLEMENTARY, OCCASIONAL).foreach { journeyType =>
         s"user updates an existing SIMPLIFIED declaration's journeyType to $journeyType" in {
           val dec = aDeclaration(withId(existingDeclarationId), withType(SIMPLIFIED))
           withNewCaching(aDeclarationAfter(dec, withAuthorisationProcedureCodeChoice(Choice1040)))
 
-          val result = controller.submitChoice(postChoiceRequest(createChoiceJSON(journeyType.toString)))
+          val result = controller.submitChoice(postChoiceRequest(type2Json(journeyType)))
           status(result) must be(SEE_OTHER)
 
           val updatedDec = theCacheModelUpdated
@@ -196,12 +195,12 @@ class DeclarationChoiceControllerSpec extends ControllerWithoutFormSpec with Opt
     }
 
     "update an existing declaration's journeyType and clear the current authorisationProcedureCodeChoice field value" when {
-      Seq(CLEARANCE, SIMPLIFIED).foreach { journeyType =>
+      List(CLEARANCE, SIMPLIFIED).foreach { journeyType =>
         s"user updates an existing STANDARD declaration's journeyType to $journeyType" in {
-          val dec = aDeclaration(withId(existingDeclarationId), withType(STANDARD))
+          val dec = aDeclaration(withId(existingDeclarationId), withType(SUPPLEMENTARY))
           withNewCaching(aDeclarationAfter(dec, withAuthorisationProcedureCodeChoice(Choice1040)))
 
-          val result = controller.submitChoice(postChoiceRequest(createChoiceJSON(journeyType.toString)))
+          val result = controller.submitChoice(postChoiceRequest(type2Json(journeyType)))
           status(result) must be(SEE_OTHER)
 
           val updatedDec = theCacheModelUpdated
@@ -210,5 +209,7 @@ class DeclarationChoiceControllerSpec extends ControllerWithoutFormSpec with Opt
         }
       }
     }
+
+    def type2Json(declarationType: DeclarationType): JsObject = Json.obj("type" -> declarationType.toString)
   }
 }

@@ -17,59 +17,76 @@
 package views.declaration
 
 import base.Injector
-import com.typesafe.config.{Config, ConfigFactory}
-import config.{AppConfig, AppConfigSpec}
-import controllers.routes.ChoiceController
+import controllers.declaration.routes.StandardOrOtherJourneyController
 import forms.declaration.DeclarationChoice
-import models.DeclarationType.{STANDARD, SUPPLEMENTARY}
+import forms.declaration.DeclarationChoice.nonStandardJourneys
+import models.DeclarationType._
 import org.jsoup.nodes.Document
 import play.api.data.Form
-import play.api.{Configuration, Environment}
-import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF, GovukButton, GovukDetails, GovukRadios}
-import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 import views.declaration.spec.UnitViewSpec
 import views.helpers.CommonMessages
-import views.html.components.gds._
 import views.html.declaration.declaration_choice
 import views.tags.ViewTest
 
 @ViewTest
 class DeclarationChoiceViewSpec extends UnitViewSpec with CommonMessages with Injector {
 
-  private val form: Form[DeclarationChoice] = DeclarationChoice.form
-  private val choicePage = instanceOf[declaration_choice]
+  private val form: Form[String] = DeclarationChoice.form(nonStandardJourneys)
+  private val page = instanceOf[declaration_choice]
 
-  private def createView(form: Form[DeclarationChoice] = form): Document =
-    choicePage(form)(request, messages)
+  private def createView(frm: Form[String] = form): Document =
+    page(frm)(request, messages)
 
   "Declaration Choice View on empty page" should {
+    val view = createView()
+
+    "display 'Back' button that links to 'Standard Or Other Journey' page" in {
+      val backButton = view.getElementById("back-link")
+      backButton.text() mustBe messages(backToPreviousQuestionCaption)
+      backButton.getElementById("back-link") must haveHref(StandardOrOtherJourneyController.displayPage)
+    }
 
     "display same page title as header" in {
-      val viewWithMessage = createView()
-      viewWithMessage.title() must include(viewWithMessage.getElementsByTag("h1").text())
+      view.title() must include(view.getElementsByTag("h1").text())
+    }
+
+    "display page title" in {
+      view.getElementsByTag("h1").text mustBe messages("declaration.type.description.other")
     }
 
     "display radio buttons with description (not selected)" in {
-      val view = createView(DeclarationChoice.form)
       ensureAllLabelTextIsCorrect(view)
-
-      ensureRadioIsUnChecked(view, "SUPPLEMENTARY")
-      ensureRadioIsUnChecked(view, "STANDARD")
-      ensureRadioIsUnChecked(view, "SIMPLIFIED")
-      ensureRadioIsUnChecked(view, "OCCASIONAL")
-      ensureRadioIsUnChecked(view, "CLEARANCE")
+      ensureRadiosAreUnChecked(view, allDeclarationTypesExcluding(STANDARD))
     }
 
-    "display 'Back' button that links to 'Choice' page" in {
-      val backButton = createView().getElementById("back-link")
+    "display the expected inset text" in {
+      val insetText = view.getElementsByClass("govuk-inset-text")
+      insetText.first.getElementsByClass("govuk-heading-s").text mustBe messages("declaration.type.insetText.header")
 
-      backButton.text() mustBe messages(backToPreviousQuestionCaption)
-      backButton.getElementById("back-link") must haveHref(ChoiceController.displayPage)
+      val paragraphs = insetText.first.getElementsByClass("govuk-body")
+      paragraphs.size mustBe 2
+
+      paragraphs.first.text mustBe messages("declaration.type.insetText.p1", messages("declaration.type.insetText.linkText"))
+
+      val href =
+        "https://www.gov.uk/guidance/declare-commercial-goods-youre-taking-out-of-great-britain-in-your-accompanied-baggage-or-small-vehicles"
+      paragraphs.first.getElementsByTag("a").attr("href") mustBe href
+
+      paragraphs.last.text mustBe messages("declaration.type.insetText.p2")
+    }
+
+    "display the expected tariff details" in {
+      val tariffTitle = view.getElementsByClass("govuk-details__summary-text")
+      tariffTitle.text mustBe messages(s"tariff.expander.title.common")
+
+      val tariffDetails = view.getElementsByClass("govuk-details__text").first
+
+      val expectedText = messages("tariff.declaration.others.text", messages("tariff.declaration.others.linkText.0"))
+      val actualText = removeBlanksIfAnyBeforeDot(tariffDetails.text)
+      actualText mustBe removeLineBreakIfAny(expectedText)
     }
 
     "display 'Continue' button on page" in {
-      val view = createView()
-
       val saveButton = view.select("#submit")
       saveButton.text() mustBe messages(continueCaption)
     }
@@ -78,90 +95,42 @@ class DeclarationChoiceViewSpec extends UnitViewSpec with CommonMessages with In
   "Choice View for invalid input" should {
 
     "display error when no choice is made" in {
-      val view = createView(DeclarationChoice.form.bind(Map[String, String]()))
-
+      val view = createView(form.bind(Map[String, String]()))
       view must haveGovukGlobalErrorSummary
-      view must containErrorElementWithTagAndHref("a", s"#${STANDARD.toString}")
-
+      view must containErrorElementWithTagAndHref("a", s"#${SIMPLIFIED.toString}")
       view must containErrorElementWithMessageKey("declaration.type.error")
     }
 
     "display error when choice is incorrect" in {
-      val view = createView(DeclarationChoice.form.bind(Map("type" -> "incorrect")))
-
+      val view = createView(form.bind(Map("type" -> "incorrect")))
       view must haveGovukGlobalErrorSummary
-      view must containErrorElementWithTagAndHref("a", s"#${STANDARD.toString}")
-
+      view must containErrorElementWithTagAndHref("a", s"#${SIMPLIFIED.toString}")
       view must containErrorElementWithMessageKey("declaration.type.error")
     }
   }
 
   "Choice View when filled" should {
-    "display selected radio button - Create (SUPPLEMENTARY)" in {
-      val view = createView(DeclarationChoice.form.fill(DeclarationChoice(SUPPLEMENTARY)))
-      ensureAllLabelTextIsCorrect(view)
+    "display selected radio button" in {
+      allDeclarationTypesExcluding(STANDARD).foreach { declarationType =>
+        val view = createView(form.fill(declarationType.toString))
+        ensureAllLabelTextIsCorrect(view)
 
-      ensureRadioIsChecked(view, "SUPPLEMENTARY")
-      ensureRadioIsUnChecked(view, "STANDARD")
-      ensureRadioIsUnChecked(view, "SIMPLIFIED")
-      ensureRadioIsUnChecked(view, "OCCASIONAL")
-      ensureRadioIsUnChecked(view, "CLEARANCE")
-    }
-  }
-
-  "Choice View for available declarations" should {
-    "display choices that matches configuration" in {
-      val config: Config =
-        ConfigFactory.parseString(AppConfigSpec.configBareMinimum + """
-                                    |list-of-available-journeys="CRT"
-                                    |list-of-available-declarations="STANDARD"
-                                    |google-analytics.token=N/A
-                                    |google-analytics.host=localhostGoogle
-                                    |files.codelists.doc-type="/code-lists/document-type.json"
-                                  """.stripMargin)
-
-      val conf: Configuration = Configuration(config)
-      val servicesConfig = new ServicesConfig(conf)
-      val appConfig = new AppConfig(conf, Environment.simple(), servicesConfig, "AppName")
-
-      val page = new declaration_choice(
-        gdsMainTemplate,
-        instanceOf[GovukDetails],
-        instanceOf[GovukButton],
-        instanceOf[GovukRadios],
-        instanceOf[errorSummary],
-        instanceOf[exportsInsetText],
-        instanceOf[paragraphBody],
-        instanceOf[externalLink],
-        instanceOf[saveAndContinue],
-        instanceOf[FormWithCSRF],
-        appConfig
-      )
-
-      val view = page(DeclarationChoice.form)(request, messages)
-
-      view.getElementsByTag("label").size mustBe 1
-      view.getElementsByAttributeValue("for", "STANDARD") must containMessageForElements("declaration.type.standard")
-      view.getElementsByClass("govuk-radios__divider").size() mustBe 1
+        view.getElementById(declarationType.toString).getElementsByAttribute("checked").size() mustBe 1
+        ensureRadiosAreUnChecked(view, allDeclarationTypesExcluding(STANDARD, declarationType))
+      }
     }
   }
 
   private def ensureAllLabelTextIsCorrect(view: Document): Unit = {
-    view.getElementsByTag("label").size mustBe 5
-    view.getElementsByAttributeValue("for", "STANDARD") must containMessageForElements("declaration.type.standard")
-    view.getElementsByAttributeValue("for", "SUPPLEMENTARY") must containMessageForElements("declaration.type.supplementary")
-    view.getElementsByAttributeValue("for", "SIMPLIFIED") must containMessageForElements("declaration.type.simplified")
-    view.getElementsByAttributeValue("for", "OCCASIONAL") must containMessageForElements("declaration.type.occasional")
-    view.getElementsByAttributeValue("for", "CLEARANCE") must containMessageForElements("declaration.type.clearance")
+    view.getElementsByTag("label").size mustBe 4
+    allDeclarationTypesExcluding(STANDARD).foreach { declarationType =>
+      val journey = declarationType.toString
+      view.getElementsByAttributeValue("for", journey) must containMessageForElements(s"declaration.type.${journey.toLowerCase}")
+    }
   }
 
-  private def ensureRadioIsChecked(view: Document, elementId: String): Unit = {
-    val option = view.getElementById(elementId).getElementsByAttribute("checked")
-    option.size() mustBe 1
-  }
-
-  private def ensureRadioIsUnChecked(view: Document, elementId: String): Unit = {
-    val option = view.getElementById(elementId)
-    option.attr("checked") mustBe empty
-  }
+  private def ensureRadiosAreUnChecked(view: Document, journeyTypes: Seq[DeclarationType]): Unit =
+    journeyTypes.foreach { journeyType =>
+      view.getElementById(journeyType.toString).attr("checked") mustBe empty
+    }
 }

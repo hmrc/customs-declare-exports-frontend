@@ -17,47 +17,60 @@
 package forms.declaration
 
 import base.UnitSpec
-import play.api.libs.json.{JsObject, JsString, JsValue}
+import forms.declaration.DeclarationChoice.{nonStandardJourneys, standardOrOtherJourneys}
+import play.api.libs.json.{JsString, Json}
 
 class DeclarationChoiceSpec extends UnitSpec {
-  import DeclarationChoiceSpec._
 
   "Validation defined in DeclarationChoice mapping" should {
 
     "attach errors to form" when {
-      "provided with  empty input" in {
-        val form = DeclarationChoice.form.bind(emptyChoiceJSON, JsonBindMaxChars)
+      "provided with empty input" in {
+        List(standardOrOtherJourneys, nonStandardJourneys).foreach { acceptedJourneys =>
+          val form = DeclarationChoice.form(acceptedJourneys).bind(JsString(""), JsonBindMaxChars)
 
-        form.hasErrors must be(true)
-        form.errors.length must equal(1)
-        form.errors.head.message must equal("declaration.type.error")
+          form.hasErrors must be(true)
+          form.errors.length must equal(1)
+          form.errors.head.message must equal("declaration.type.error")
+        }
       }
 
-      "provided with a value not defined in AllowedChoiceValues" in {
-        val form = DeclarationChoice.form.bind(incorrectChoiceJSON, JsonBindMaxChars)
+      "provided with a value NOT defined in standardOrOtherJourneys" in {
+        nonStandardJourneys.foreach { nonAcceptedJourney =>
+          val form = DeclarationChoice.form(standardOrOtherJourneys).bind(Json.obj("type" -> nonAcceptedJourney), JsonBindMaxChars)
 
-        form.hasErrors must be(true)
-        form.errors.length must equal(1)
-        form.errors.head.message must equal("declaration.type.error")
+          form.hasErrors must be(true)
+          form.errors.length must equal(1)
+          form.errors.head.message must equal("declaration.type.error")
+        }
+      }
+
+      "provided with a value NOT defined in nonStandardJourneys" in {
+        standardOrOtherJourneys.foreach { nonAcceptedJourney =>
+          val form = DeclarationChoice.form(nonStandardJourneys).bind(Json.obj("type" -> nonAcceptedJourney), JsonBindMaxChars)
+
+          form.hasErrors must be(true)
+          form.errors.length must equal(1)
+          form.errors.head.message must equal("declaration.type.error")
+        }
       }
     }
 
     "not attach any error" when {
-      "provided with valid input" in {
-        val form = DeclarationChoice.form.bind(correctChoiceJSON, JsonBindMaxChars)
 
-        form.hasErrors must be(false)
+      "provided with a value defined in standardOrOtherJourneys" in {
+        standardOrOtherJourneys.foreach { acceptedJourney =>
+          val form = DeclarationChoice.form(standardOrOtherJourneys).bind(Json.obj("type" -> acceptedJourney), JsonBindMaxChars)
+          form.hasErrors must be(false)
+        }
+      }
+
+      "provided with a value defined in nonStandardJourneys" in {
+        nonStandardJourneys.foreach { acceptedJourney =>
+          val form = DeclarationChoice.form(nonStandardJourneys).bind(Json.obj("type" -> acceptedJourney), JsonBindMaxChars)
+          form.hasErrors must be(false)
+        }
       }
     }
   }
-
-}
-
-object DeclarationChoiceSpec {
-
-  val correctChoiceJSON: JsValue = createChoiceJSON("STANDARD")
-  val incorrectChoiceJSON: JsValue = createChoiceJSON("InvalidChoice")
-  val emptyChoiceJSON: JsValue = JsString("")
-
-  def createChoiceJSON(choiceValue: String = ""): JsValue = JsObject(Map("type" -> JsString(choiceValue)))
 }

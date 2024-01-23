@@ -18,7 +18,6 @@ package config
 
 import com.google.inject.{Inject, Singleton}
 import javax.inject.Named
-import models.DeclarationType
 import play.api.i18n.Lang
 import play.api.{Configuration, Environment}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
@@ -124,8 +123,8 @@ class AppConfig @Inject() (
   val getGoodsMovementReference = loadConfig("urls.getGoodsMovementReference")
 
   val additionalDeclarationType = loadConfig("urls.additionalDeclarationType")
+  val standardDeclarationType = loadConfig("urls.standardDeclarationType")
   val declareGoodsExported = loadConfig("urls.declareGoodsExported")
-  val simplifiedDeclarationOccasionalUse = loadConfig("urls.simplifiedDeclarationOccasionalUse")
 
   val combinedPackaging = loadConfig("urls.combinedPackaging")
 
@@ -236,13 +235,6 @@ class AppConfig @Inject() (
 
   lazy val draftTimeToLive: FiniteDuration =
     servicesConfig.getDuration("draft.timeToLive").asInstanceOf[FiniteDuration]
-
-  def availableDeclarations(): Seq[String] =
-    runModeConfiguration
-      .getOptional[String]("list-of-available-declarations")
-      .map(_.split(","))
-      .getOrElse(Array(DeclarationType.STANDARD.toString))
-      .toSeq
 
   lazy val gtmContainer: String = servicesConfig.getString("tracking-consent-frontend.gtm.container")
 
