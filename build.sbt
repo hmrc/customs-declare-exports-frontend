@@ -53,7 +53,7 @@ lazy val scoverageSettings: Seq[Setting[_]] = Seq(
 )
 
 lazy val commonSettings = Seq(
-  scalaVersion := "2.13.8",
+  scalaVersion := "2.13.12",
   scalacOptions ++= scalacFlags,
   libraryDependencies ++= AppDependencies.compile ++ AppDependencies.test
 )
@@ -68,4 +68,7 @@ lazy val scalacFlags = Seq(
   "-Wconf:src=target/.*:s",  // silence warnings from compiled files
   "-Wconf:msg=match may not be exhaustive:s", // silence warnings about non-exhaustive pattern matching
   "-Wconf:src=test/.*&msg=a type was inferred to be `Object`:s", // silence warnings from mockito reset
+  "-Wconf:cat=unused&src=.*routes.*:s", // silence private val defaultPrefix in class Routes is never used
+  "-Wconf:msg=eq not selected from this instance:s", // silence eq not selected from this instance warning
+  "-Wconf:msg=While parsing annotations in:s" // silence While parsing annotations in warning
 )
