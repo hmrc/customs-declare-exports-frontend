@@ -1373,12 +1373,10 @@ declaration.transportInformation.meansOfTransport.WagonNumber.vBT = Eurotunnel o
 declaration.transportInformation.meansOfTransport.WagonNumber.label = Wagon number
 declaration.transportInformation.meansOfTransport.WagonNumber.hint = For example, 6767 or ‘Unknown’.
 
-declaration.transportInformation.transportCountry.title = Do you know the country where the {0} is registered?
-declaration.transportInformation.transportCountry.roro.body = For Eurotunnel, select France as the country of registration.
-declaration.transportInformation.transportCountry.country.label = Select the country where the {0} is registered
+declaration.transportInformation.transportCountry.title = Select the country where the {0} is registered
+declaration.transportInformation.transportCountry.roro.paragraph = For Eurotunnel, select France as the country of registration.
 declaration.transportInformation.transportCountry.country.error.empty = Select the country where the {0} is registered
 declaration.transportInformation.transportCountry.country.error.invalid = Please, choose a valid country
-declaration.transportInformation.transportCountry.error.empty = Select yes if you know the country where the {0} is registered
 
 declaration.transportInformation.containers.title = You have added 1 container
 declaration.transportInformation.containers.multiple.title = You have added {0} containers
@@ -2175,7 +2173,7 @@ declaration.exitSurvey.line.1 = This is a new service and we want to know what y
 declaration.exitSurvey.line.2 = {0}. Your thoughts and ideas will help us to make improvements.
 declaration.exitSurvey.link = Send us your feedback
 
-declaration.country.dropdown.hint = Type in at least 2 letters to search.
+declaration.country.dropdown.hint = Type in at least 2 letters to search for a country
 
 declaration.draft.title = Your declaration has been saved
 declaration.draft.info = Your information is held until {0}

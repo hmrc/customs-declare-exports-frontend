@@ -94,7 +94,7 @@ class TotalPackageQuantityViewSpec extends UnitViewSpec with ExportsTestHelper w
       }
     }
 
-    List(STANDARD, SUPPLEMENTARY).foreach { declarationType =>
+    standardAndSupplementary.foreach { declarationType =>
       "display back button linking to /invoice-and-exchange-choice" when {
         s"the declaration type $declarationType and" when {
           implicit val request = withRequestOfType(declarationType)

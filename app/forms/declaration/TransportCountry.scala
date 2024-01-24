@@ -18,21 +18,18 @@ package forms.declaration
 
 import connectors.CodeListConnector
 import forms.DeclarationPage
-import forms.MappingHelper.requiredRadioWithArgs
-import forms.common.YesNoAnswer.YesNoAnswers.{no, yes}
 import forms.declaration.TransportCountry.keyForAmend
 import models.AmendmentRow.{forAddedValue, forAmendedValue, forRemovedValue}
 import models.DeclarationType.DeclarationType
 import models.ExportsFieldPointer.ExportsFieldPointer
 import models.viewmodels.TariffContentKey
 import models.{Amendment, FieldMapping}
-import play.api.data.{Form, Forms, Mapping}
 import play.api.data.Forms.text
 import play.api.data.validation.{Constraint, Invalid, Valid, ValidationError}
+import play.api.data.{Form, Forms, Mapping}
 import play.api.i18n.Messages
 import play.api.libs.json.{Json, OFormat}
 import services.Countries.isValidCountryName
-import uk.gov.voa.play.form.ConditionalMappings.mandatoryIfEqual
 import utils.validators.forms.FieldValidator._
 
 case class TransportCountry(countryName: Option[String]) extends Ordered[TransportCountry] with Amendment {
@@ -58,14 +55,14 @@ case class TransportCountry(countryName: Option[String]) extends Ordered[Transpo
 }
 
 object TransportCountry extends DeclarationPage with FieldMapping {
+
   implicit val format: OFormat[TransportCountry] = Json.format[TransportCountry]
 
   val pointer: String = "meansOfTransportCrossingTheBorderNationality"
 
   private val keyForAmend = "declaration.summary.transport.registrationCountry"
 
-  val transportCountry = "transportCountry"
-  val hasTransportCountry = "hasTransportCountry"
+  val transportCountry = "transport-country"
 
   val prefix = "declaration.transportInformation.transportCountry"
 
@@ -74,29 +71,14 @@ object TransportCountry extends DeclarationPage with FieldMapping {
 
   private def mapping(transportMode: String)(implicit messages: Messages, connector: CodeListConnector): Mapping[TransportCountry] =
     Forms.mapping(
-      hasTransportCountry -> requiredRadioWithArgs(s"$prefix.error.empty", List(transportMode)),
-      transportCountry -> mandatoryIfEqual(
-        hasTransportCountry,
-        yes,
-        text
-          .verifying(nonEmptyConstraint(transportMode))
-          .verifying(s"$prefix.country.error.invalid", input => input.isEmpty or isValidCountryName(input))
-      )
-    )(form2Model)(model2Form)
+      transportCountry -> text
+        .verifying(nonEmptyConstraint(transportMode))
+        .verifying(s"$prefix.country.error.invalid", input => input.isEmpty or isValidCountryName(input))
+    )(country => TransportCountry(Some(country)))(_.countryName)
 
   private def nonEmptyConstraint(transportMode: String): Constraint[String] =
     Constraint("constraint.nonEmpty.country") { country =>
       if (country.trim.nonEmpty) Valid else Invalid(List(ValidationError(s"$prefix.country.error.empty", transportMode)))
-    }
-
-  private def form2Model: (String, Option[String]) => TransportCountry = { case (hasTransportCountry, countryName) =>
-    TransportCountry(if (hasTransportCountry == yes) countryName else None)
-  }
-
-  private def model2Form: TransportCountry => Option[(String, Option[String])] =
-    _.countryName match {
-      case Some(name) => Some((yes, Some(name)))
-      case None       => Some((no, None))
     }
 
   override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =

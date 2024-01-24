@@ -42,7 +42,7 @@ class BorderTransportViewSpec extends PageWithButtonsSpec with Injector {
 
   "Border Transport view" when {
 
-    List(STANDARD, OCCASIONAL, SUPPLEMENTARY, SIMPLIFIED).foreach { declarationType =>
+    nonClearanceJourneys.foreach { declarationType =>
       s"DeclarationType is $declarationType and" when {
 
         implicit val request = withRequestOfType(declarationType)
@@ -99,7 +99,7 @@ class BorderTransportViewSpec extends PageWithButtonsSpec with Injector {
       }
     }
 
-    List(STANDARD, SUPPLEMENTARY).foreach { declarationType =>
+    standardAndSupplementary.foreach { declarationType =>
       implicit val request: JourneyRequest[AnyContent] = withRequestOfType(declarationType)
       val view = createView()
 
@@ -110,7 +110,7 @@ class BorderTransportViewSpec extends PageWithButtonsSpec with Injector {
       }
     }
 
-    List(OCCASIONAL, SIMPLIFIED).foreach { declarationType =>
+    occasionalAndSimplified.foreach { declarationType =>
       implicit val request: JourneyRequest[AnyContent] = withRequestOfType(declarationType)
       val view = createView()
 

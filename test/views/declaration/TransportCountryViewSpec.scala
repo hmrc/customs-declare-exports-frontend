@@ -20,9 +20,8 @@ import base.Injector
 import connectors.CodeListConnector
 import controllers.declaration.routes.{BorderTransportController, DepartureTransportController, InlandOrBorderController}
 import controllers.helpers.TransportSectionHelper.nonPostalOrFTIModeOfTransportCodes
-import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.InlandOrBorder.Border
-import forms.declaration.ModeOfTransportCode.{Maritime, RoRo}
+import forms.declaration.ModeOfTransportCode.{Maritime, Rail, RoRo}
 import forms.declaration.TransportCountry
 import forms.declaration.TransportCountry._
 import models.DeclarationType._
@@ -47,9 +46,12 @@ class TransportCountryViewSpec extends PageWithButtonsSpec with Injector {
 
   val page = instanceOf[transport_country]
 
+  val countryCode = "ZA"
+  val countryName = "South Africa"
+
   override def beforeEach(): Unit = {
     super.beforeEach()
-    when(codeListConnector.getCountryCodes(any())).thenReturn(ListMap("GB" -> Country("United Kingdom", "GB")))
+    when(codeListConnector.getCountryCodes(any())).thenReturn(ListMap("ZA" -> Country("South Africa", "ZA")))
   }
 
   override protected def afterEach(): Unit = {
@@ -67,13 +69,17 @@ class TransportCountryViewSpec extends PageWithButtonsSpec with Injector {
   def createView(form: Form[TransportCountry], transportMode: String)(implicit request: JourneyRequest[_]): Document =
     page(transportMode, form)(request, messages)
 
+  // When TransportLeavingTheBorder or InlandModeOfTransportCode are 'Postal' or 'FTI' the page is skipped.
+  // When TransportLeavingTheBorder is 'Rail' the page is also skipped, but only for STANDARD and SUPPLEMENTARY.
+  // In any case, leaving or removing these 3 ModeOfTransport codes in/from the declaration does not affect the
+  // test, as the page's content does not depend on these values.
+
   "TransportCountry View" when {
 
-    List(STANDARD, OCCASIONAL, SUPPLEMENTARY, SIMPLIFIED).foreach { declarationType =>
+    nonClearanceJourneys.foreach { declarationType =>
       s"the declaration's type is $declarationType and" when {
 
-        // When TransportLeavingTheBorder is 'Postal' or 'FTI' the user does not land on the /transport-country page
-        nonPostalOrFTIModeOfTransportCodes.foreach { code =>
+        nonPostalOrFTIModeOfTransportCodes.filterNot(_ == Rail).foreach { code =>
           val transportMode = ModeOfTransportCodeHelper.transportMode(Some(code))
           s"the transport mode is $transportMode" should {
 
@@ -94,32 +100,25 @@ class TransportCountryViewSpec extends PageWithButtonsSpec with Injector {
                 view.getElementsByTag("h1").text mustBe messages(s"$prefix.title", transportMode)
               }
 
-              "display body text" when {
-                "the transport mode is RoRo" in {
+              "display the expected paragraph" when {
+                "'Transport Leaving the Border' is 'RoRo'" in {
                   val body = view.getElementsByClass("govuk-body")
 
                   body.size mustBe (if (code == RoRo) 2 else 1)
 
-                  val expectedText = messages(if (code == RoRo) s"$prefix.roro.body" else exitAndReturnCaption)
+                  val expectedText = messages(if (code == RoRo) s"$prefix.roro.paragraph" else exitAndReturnCaption)
                   body.get(0).text mustBe expectedText
                 }
               }
 
-              "display radio button with Yes option" in {
-                view.getElementById("code_yes").attr("value") mustBe YesNoAnswers.yes
-                view.getElementsByAttributeValue("for", "code_yes") must containMessageForElements("site.yes")
+              "display the expected hint" in {
+                val hint = view.getElementsByClass("govuk-hint")
+                hint.get(0).text mustBe messages("declaration.country.dropdown.hint")
               }
 
-              "display radio button with No option" in {
-                view.getElementById("code_no").attr("value") mustBe YesNoAnswers.no
-                view.getElementsByAttributeValue("for", "code_no") must containMessageForElements("site.no")
-              }
-
-              "display the country's label when the user selects the 'Yes' radio" in {
-                val label = view.getElementsByAttributeValue("for", transportCountry).get(0)
-                label.text mustBe messages(s"$prefix.country.label", transportMode)
-                label.tag.getName mustBe "label"
-                label.id mustBe s"${transportCountry}-label"
+              "display the expected input field" in {
+                val input = view.getElementById(transportCountry)
+                input.tagName mustBe "select"
               }
 
               checkAllSaveButtonsAreDisplayed(view)
@@ -127,18 +126,8 @@ class TransportCountryViewSpec extends PageWithButtonsSpec with Injector {
 
             "display an error" when {
 
-              "the user does not select any radio button" in {
-                val formData = Json.obj(hasTransportCountry -> "", transportCountry -> "")
-                val formWithError = form(transportMode).bind(formData, JsonBindMaxChars)
-                val view = createView(formWithError, transportMode)(journeyRequest(declarationType))
-
-                view must haveGovukGlobalErrorSummary
-                view must containErrorElementWithTagAndHref("a", "#code_yes")
-                view must containErrorElementWithMessage(messages(s"$prefix.error.empty", transportMode))
-              }
-
-              "the user selects the 'Yes' radio but does not enter a country" in {
-                val formData = Json.obj(hasTransportCountry -> YesNoAnswers.yes, transportCountry -> "")
+              "the user does not enter a country" in {
+                val formData = Json.obj(transportCountry -> "")
                 val formWithError = form(transportMode).bind(formData, JsonBindMaxChars)
                 val view = createView(formWithError, transportMode)(journeyRequest(declarationType))
 
@@ -147,8 +136,8 @@ class TransportCountryViewSpec extends PageWithButtonsSpec with Injector {
                 view must containErrorElementWithMessage(messages(s"$prefix.country.error.empty", transportMode))
               }
 
-              "the user selects the 'Yes' radio but enters an invalid country" in {
-                val formData = Json.obj(hasTransportCountry -> YesNoAnswers.yes, transportCountry -> "12345")
+              "the user enters an invalid country" in {
+                val formData = Json.obj(transportCountry -> "12345")
                 val formWithError = form(transportMode).bind(formData, JsonBindMaxChars)
                 val view = createView(formWithError, transportMode)(journeyRequest(declarationType))
 
@@ -162,55 +151,43 @@ class TransportCountryViewSpec extends PageWithButtonsSpec with Injector {
       }
     }
 
-    List(STANDARD, SUPPLEMENTARY).foreach { declarationType =>
+    standardAndSupplementary.foreach { declarationType =>
       s"the declaration's type is $declarationType and" when {
 
-        // When TransportLeavingTheBorder is 'Postal' or 'FTI' the user does not land on the /transport-country page
-        nonPostalOrFTIModeOfTransportCodes.foreach { code =>
+        nonPostalOrFTIModeOfTransportCodes.filterNot(_ == Rail).foreach { code =>
           val transportMode = ModeOfTransportCodeHelper.transportMode(Some(code))
           s"the transport mode is $transportMode" should {
 
-            "contain the expected content" which {
-
-              "display 'Back' button that links to the 'Departure Transport' page" when {
-                "the user selects 'Border' on the /inland-or-border page" in {
-                  implicit val request = withRequestOfType(declarationType, withInlandOrBorder(Some(Border)))
-                  val view = createView(form(transportMode), transportMode)
-                  val backButton = view.getElementById("back-link")
-                  backButton must containMessage("site.backToPreviousQuestion")
-                  backButton.getElementById("back-link") must haveHref(DepartureTransportController.displayPage)
-                }
+            "display 'Back' button that links to the 'Departure Transport' page" when {
+              "the user selects 'Border' on the /inland-or-border page" in {
+                implicit val request = withRequestOfType(declarationType, withInlandOrBorder(Some(Border)))
+                val view = createView(form(transportMode), transportMode)
+                val backButton = view.getElementById("back-link")
+                backButton must containMessage("site.backToPreviousQuestion")
+                backButton.getElementById("back-link") must haveHref(DepartureTransportController.displayPage)
               }
-
             }
-
           }
         }
       }
     }
 
-    List(OCCASIONAL, SIMPLIFIED).foreach { declarationType =>
+    occasionalAndSimplified.foreach { declarationType =>
       s"the declaration's type is $declarationType and" when {
 
-        // When TransportLeavingTheBorder is 'Postal' or 'FTI' the user does not land on the /transport-country page
         nonPostalOrFTIModeOfTransportCodes.foreach { code =>
           val transportMode = ModeOfTransportCodeHelper.transportMode(Some(code))
           s"the transport mode is $transportMode" should {
 
-            "contain the expected content" which {
-
-              "display 'Back' button that links to the 'Departure Transport' page" when {
-                "the user selects 'Border' on the /inland-or-border page" in {
-                  implicit val request = withRequestOfType(declarationType, withInlandOrBorder(Some(Border)))
-                  val view = createView(form(transportMode), transportMode)
-                  val backButton = view.getElementById("back-link")
-                  backButton must containMessage("site.backToPreviousQuestion")
-                  backButton.getElementById("back-link") must haveHref(InlandOrBorderController.displayPage)
-                }
+            "display 'Back' button that links to the 'Inland or Border' page" when {
+              "the user selects 'Border' on the /inland-or-border page" in {
+                implicit val request = withRequestOfType(declarationType, withInlandOrBorder(Some(Border)))
+                val view = createView(form(transportMode), transportMode)
+                val backButton = view.getElementById("back-link")
+                backButton must containMessage("site.backToPreviousQuestion")
+                backButton.getElementById("back-link") must haveHref(InlandOrBorderController.displayPage)
               }
-
             }
-
           }
         }
       }

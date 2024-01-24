@@ -18,10 +18,10 @@ package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.declaration.routes.TransportCountryController
-import controllers.helpers.TransportSectionHelper.skipTransportPages
+import controllers.helpers.TransportSectionHelper.skipBorderTransport
 import controllers.navigation.Navigator
 import forms.declaration.BorderTransport
-import models.DeclarationType.{allDeclarationTypesExcluding, CLEARANCE}
+import models.DeclarationType.nonClearanceJourneys
 import models.ExportsDeclaration
 import models.requests.JourneyRequest
 import play.api.i18n.I18nSupport
@@ -47,9 +47,7 @@ class BorderTransportController @Inject() (
 )(implicit ec: ExecutionContext, auditService: AuditService)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithUnsafeDefaultFormBinding {
 
-  private val validTypes = allDeclarationTypesExcluding(CLEARANCE)
-
-  val displayPage: Action[AnyContent] = (authenticate andThen journeyType(validTypes)).async { implicit request =>
+  val displayPage: Action[AnyContent] = (authenticate andThen journeyType(nonClearanceJourneys)).async { implicit request =>
     val pageToDisplay = () => {
       val transport = request.cacheModel.transport
       val form = BorderTransport.form.withSubmissionErrors
@@ -63,7 +61,7 @@ class BorderTransportController @Inject() (
     submit(pageToDisplay)
   }
 
-  val submitForm: Action[AnyContent] = (authenticate andThen journeyType(validTypes)).async { implicit request =>
+  val submitForm: Action[AnyContent] = (authenticate andThen journeyType(nonClearanceJourneys)).async { implicit request =>
     val verifyFormAndUpdateCache = () =>
       BorderTransport.form
         .bindFromRequest()
@@ -73,7 +71,7 @@ class BorderTransportController @Inject() (
   }
 
   private def submit(fun: () => Future[Result])(implicit request: JourneyRequest[AnyContent]): Future[Result] =
-    if (skipTransportPages(request.cacheModel)) updateCache(BorderTransport("", "")).map(_ => nextPage) else fun()
+    if (skipBorderTransport(request.cacheModel)) updateCache(BorderTransport("", "")).map(_ => nextPage) else fun()
 
   private def nextPage(implicit r: JourneyRequest[AnyContent]): Result =
     navigator.continueTo(TransportCountryController.displayPage)

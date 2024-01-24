@@ -18,7 +18,6 @@ package controllers.declaration
 
 import base.{AuditedControllerSpec, ControllerSpec}
 import controllers.declaration.routes.{NactCodeSummaryController, ZeroRatedForVatController}
-import controllers.helpers.ItemHelper.journeysOnLowValue
 import controllers.routes.RootController
 import forms.declaration.CusCode
 import forms.declaration.CusCode._
@@ -156,7 +155,7 @@ class CusCodeControllerSpec extends ControllerSpec with AuditedControllerSpec {
         }
       }
 
-      journeysOnLowValue.foreach { declarationType =>
+      occasionalAndSimplified.foreach { declarationType =>
         s"on $declarationType journey and" when {
           "the declaration is a 'low value' one " in {
             val item = anItem(withProcedureCodes(additionalProcedureCodes = List(lowValueDeclaration)))

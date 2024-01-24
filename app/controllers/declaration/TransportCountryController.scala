@@ -19,7 +19,7 @@ package controllers.declaration
 import connectors.CodeListConnector
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.declaration.routes.{ExpressConsignmentController, TransportContainerController}
-import controllers.helpers.TransportSectionHelper.skipTransportPages
+import controllers.helpers.TransportSectionHelper.skipTransportCountry
 import controllers.navigation.Navigator
 import forms.declaration.TransportCountry
 import models.DeclarationType._
@@ -47,9 +47,7 @@ class TransportCountryController @Inject() (
 )(implicit ec: ExecutionContext, codeListConnector: CodeListConnector, auditService: AuditService)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithUnsafeDefaultFormBinding {
 
-  private val validTypes = allDeclarationTypesExcluding(CLEARANCE)
-
-  val displayPage: Action[AnyContent] = (authenticate andThen journeyType(validTypes)).async { implicit request =>
+  val displayPage: Action[AnyContent] = (authenticate andThen journeyType(nonClearanceJourneys)).async { implicit request =>
     val pageToDisplay = () => {
       val transportMode = ModeOfTransportCodeHelper.transportMode(request.cacheModel.transportLeavingBorderCode)
       val form = TransportCountry.form(transportMode).withSubmissionErrors
@@ -62,7 +60,7 @@ class TransportCountryController @Inject() (
     submit(pageToDisplay)
   }
 
-  val submitForm: Action[AnyContent] = (authenticate andThen journeyType(validTypes)).async { implicit request =>
+  val submitForm: Action[AnyContent] = (authenticate andThen journeyType(nonClearanceJourneys)).async { implicit request =>
     val verifyFormAndUpdateCache = () => {
       val transportMode = ModeOfTransportCodeHelper.transportMode(request.cacheModel.transportLeavingBorderCode)
       TransportCountry
@@ -74,7 +72,7 @@ class TransportCountryController @Inject() (
   }
 
   private def submit(fun: () => Future[Result])(implicit request: JourneyRequest[AnyContent]): Future[Result] =
-    if (skipTransportPages(request.cacheModel)) updateCache(TransportCountry(None)).map(_ => nextPage) else fun()
+    if (skipTransportCountry(request.cacheModel)) updateCache(TransportCountry(None)).map(_ => nextPage) else fun()
 
   private def nextPage(implicit request: JourneyRequest[AnyContent]): Result = {
     val page = request.declarationType match {

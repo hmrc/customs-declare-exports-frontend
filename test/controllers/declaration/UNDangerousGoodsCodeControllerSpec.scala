@@ -24,7 +24,6 @@ import controllers.declaration.routes.{
   PackageInformationSummaryController,
   ZeroRatedForVatController
 }
-import controllers.helpers.ItemHelper.journeysOnLowValue
 import forms.declaration.CommodityDetails.commodityCodeChemicalPrefixes
 import forms.declaration.NatureOfTransaction.{BusinessPurchase, Sale}
 import forms.declaration.UNDangerousGoodsCode.{dangerousGoodsCodeKey, hasDangerousGoodsCodeKey}
@@ -199,7 +198,7 @@ class UNDangerousGoodsCodeControllerSpec extends ControllerSpec with AuditedCont
         }
       }
 
-      journeysOnLowValue.foreach { declarationType =>
+      occasionalAndSimplified.foreach { declarationType =>
         s"on $declarationType journey and" when {
           "the declaration is a 'low value' one " in {
             val item = anItem(withProcedureCodes(additionalProcedureCodes = List(lowValueDeclaration)))

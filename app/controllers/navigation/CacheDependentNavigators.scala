@@ -223,34 +223,46 @@ trait CacheDependentNavigators {
     if (inlandOrBorderHelper.skipInlandOrBorder(cacheModel)) inlandOrBorderPreviousPage(cacheModel)
     else routes.InlandOrBorderController.displayPage
 
-  protected def departureTransportPreviousPage(cacheModel: ExportsDeclaration): Call = {
-    val gotoInlandTransport = inlandOrBorderHelper.skipInlandOrBorder(cacheModel) || !cacheModel.isInlandOrBorder(Border)
-    if (gotoInlandTransport) routes.InlandTransportDetailsController.displayPage else routes.InlandOrBorderController.displayPage
-  }
-
   protected def departureTransportPreviousPageOnClearance(cacheModel: ExportsDeclaration): Call =
     routes.SupervisingCustomsOfficeController.displayPage
 
-  protected def transportCountryPreviousPage(cacheModel: ExportsDeclaration): Call =
-    if (cacheModel.isInlandOrBorder(InlandOrBorder.Border) && (cacheModel.isType(SIMPLIFIED) || cacheModel.isType(OCCASIONAL)))
-      routes.InlandOrBorderController.displayPage
-    else if (cacheModel.isInlandOrBorder(InlandOrBorder.Border))
-      routes.DepartureTransportController.displayPage
-    else
-      routes.BorderTransportController.displayPage
+  // Must be a lazy val, as full-path Calls are generated at runtime from reverse routing.
+  private lazy val condForTransportPages = List[(ExportsDeclaration => Boolean, Call)](
+    (!isRailModeOfTransport(_), routes.TransportCountryController.displayPage),
+    (!_.isInlandOrBorder(Border), routes.BorderTransportController.displayPage),
+    (!isOccasionalOrSimplified(_), routes.DepartureTransportController.displayPage)
+  )
 
-  protected def expressConsignmentPreviousPage(cacheModel: ExportsDeclaration): Call = {
-    val guernseyOrJersey = isGuernseyOrJerseyDestination(cacheModel)
-    if (cacheModel.isInlandOrBorder(Border)) {
-      val postalOrFTI = isPostalOrFTIModeOfTransport(cacheModel.transportLeavingBorderCode)
-      if (postalOrFTI || guernseyOrJersey) routes.InlandOrBorderController.displayPage
-      else routes.TransportCountryController.displayPage
-    } else {
-      val postalOrFTI = isPostalOrFTIModeOfTransport(cacheModel.inlandModeOfTransportCode)
-      if (postalOrFTI || guernseyOrJersey) routes.InlandTransportDetailsController.displayPage
-      else routes.TransportCountryController.displayPage
+  private val fromBeforeTransportPages = 0
+  private val fromTransportCountry = 1
+  private val fromBorderTransport = 2
+  private val fromDepartureTransport = 3
+
+  private def previousTransportPage(declaration: ExportsDeclaration, fromPage: Int): Call = {
+    lazy val callWhenSkippingTransportPages = {
+      val skipInlandOrBorder = inlandOrBorderHelper.skipInlandOrBorder(declaration)
+      if (!skipInlandOrBorder && declaration.isInlandOrBorder(Border)) routes.InlandOrBorderController.displayPage
+      else routes.InlandTransportDetailsController.displayPage
     }
+
+    if (skipTransportPages(declaration)) callWhenSkippingTransportPages
+    else condForTransportPages.drop(fromPage).find(t => t._1(declaration)).fold(callWhenSkippingTransportPages)(t => t._2)
   }
+
+  protected def departureTransportPreviousPage(cacheModel: ExportsDeclaration): Call =
+    previousTransportPage(cacheModel, fromDepartureTransport)
+
+  protected def borderTransportPreviousPage(cacheModel: ExportsDeclaration): Call =
+    previousTransportPage(cacheModel, fromBorderTransport)
+
+  protected def transportCountryPreviousPage(cacheModel: ExportsDeclaration): Call =
+    previousTransportPage(cacheModel, fromTransportCountry)
+
+  protected def expressConsignmentPreviousPage(cacheModel: ExportsDeclaration): Call =
+    previousTransportPage(cacheModel, fromBeforeTransportPages)
+
+  protected def containerFirstPreviousPageOnSupplementary(cacheModel: ExportsDeclaration): Call =
+    previousTransportPage(cacheModel, fromBeforeTransportPages)
 
   protected def expressConsignmentPreviousPageOnClearance(cacheModel: ExportsDeclaration): Call =
     if (!isPostalOrFTIModeOfTransport(cacheModel.transportLeavingBorderCode)) routes.DepartureTransportController.displayPage
@@ -259,9 +271,6 @@ trait CacheDependentNavigators {
   protected def containerFirstPreviousPage(cacheModel: ExportsDeclaration): Call =
     if (cacheModel.transport.transportPayment.nonEmpty) routes.TransportPaymentController.displayPage
     else routes.ExpressConsignmentController.displayPage
-
-  protected def containerFirstPreviousPageOnSupplementary(cacheModel: ExportsDeclaration): Call =
-    expressConsignmentPreviousPage(cacheModel)
 
   protected def cusCodeOrDangerousGoodsPage(cacheModel: ExportsDeclaration, itemId: String): Call =
     if (cacheModel.isCommodityCodeOfItemPrefixedWith(itemId, CommodityDetails.commodityCodeChemicalPrefixes))

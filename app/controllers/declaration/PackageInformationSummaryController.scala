@@ -43,8 +43,6 @@ class PackageInformationSummaryController @Inject() (
   packageInformationPage: package_information
 ) extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithUnsafeDefaultFormBinding {
 
-  import PackageInformationSummaryController._
-
   def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.cacheModel.itemBy(itemId).flatMap(_.packageInformation) match {
       case Some(items) if items.nonEmpty =>
@@ -70,11 +68,8 @@ class PackageInformationSummaryController @Inject() (
   }
 
   private def yesNoForm: Form[YesNoAnswer] = YesNoAnswer.form(errorKey = "declaration.packageInformation.add.empty")
-}
 
-object PackageInformationSummaryController {
-
-  def nextPage(itemId: String)(implicit request: JourneyRequest[_]): Call =
+  private def nextPage(itemId: String)(implicit request: JourneyRequest[_]): Call =
     request.declarationType match {
       case SUPPLEMENTARY | STANDARD | CLEARANCE => CommodityMeasureController.displayPage(itemId)
       case SIMPLIFIED | OCCASIONAL              => AdditionalInformationRequiredController.displayPage(itemId)

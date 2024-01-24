@@ -74,7 +74,7 @@ class Card6ForTransportSpec extends UnitViewSpec with ExportsTestHelper with Inj
     }
 
     "not display a border-transport row if question not answered" in {
-      val view = card6ForTransport.eval(aDeclarationAfter(declaration, withoutBorderModeOfTransportCode))(messages)
+      val view = card6ForTransport.eval(aDeclarationAfter(declaration, withoutTransportLeavingTheBorder))(messages)
       view.getElementsByClass(borderTransport) mustBe empty
     }
 

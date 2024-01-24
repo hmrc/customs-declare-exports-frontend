@@ -20,7 +20,7 @@ import base.UnitWithMocksSpec
 import connectors.CodeListConnector
 import forms.common.DeclarationPageBaseSpec
 import forms.declaration.ModeOfTransportCode.Maritime
-import forms.declaration.TransportCountry.{hasTransportCountry, prefix, transportCountry}
+import forms.declaration.TransportCountry.{prefix, transportCountry}
 import models.codes.Country
 import models.viewmodels.TariffContentKey
 import org.mockito.ArgumentMatchers.any
@@ -51,41 +51,31 @@ class TransportCountrySpec extends UnitWithMocksSpec with BeforeAndAfterEach wit
 
   implicit val messages = stubMessagesApi().preferred(List(Lang(Locale.ENGLISH)))
 
-  val placeholder = List("declaration.transport.leavingTheBorder.transportMode.sea")
-
   val form = TransportCountry.form(transportMode(Some(Maritime)))
 
-  def formData(yesOrNo: String, country: Option[String]): JsObject =
-    Json.obj(hasTransportCountry -> JsString(yesOrNo), transportCountry -> JsString(country.getOrElse("")))
+  def formData(country: Option[String]): JsObject =
+    Json.obj(transportCountry -> JsString(country.getOrElse("")))
 
   "TransportCountry mapping" should {
 
     "return form with errors" when {
 
-      "provided with no yes/no answer" in {
-        val errors = form.bind(formData("", None), JsonBindMaxChars).errors
-        errors mustBe List(FormError(hasTransportCountry, s"$prefix.error.empty", placeholder))
-      }
-
       "provided with an empty country" in {
-        val errors = form.bind(formData("Yes", None), JsonBindMaxChars).errors
-        errors mustBe List(FormError(transportCountry, s"$prefix.country.error.empty", placeholder))
+        val aTransportMode = List("declaration.transport.leavingTheBorder.transportMode.sea")
+        val errors = form.bind(formData(None), JsonBindMaxChars).errors
+        errors mustBe List(FormError(transportCountry, s"$prefix.country.error.empty", aTransportMode))
       }
 
       "provided with an invalid country" in {
-        val errors = form.bind(formData("Yes", Some("12345")), JsonBindMaxChars).errors
+        val errors = form.bind(formData(Some("12345")), JsonBindMaxChars).errors
         errors mustBe List(FormError(transportCountry, s"$prefix.country.error.invalid"))
       }
     }
 
     "return form without errors" when {
 
-      "provided with a valid country when user selects the Yes radio" in {
-        form.bind(formData("Yes", Some("South Africa")), JsonBindMaxChars).hasErrors mustBe false
-      }
-
-      "provided with no input when user said No" in {
-        form.bind(formData("No", None), JsonBindMaxChars).hasErrors mustBe false
+      "provided with a valid country" in {
+        form.bind(formData(Some("South Africa")), JsonBindMaxChars).hasErrors mustBe false
       }
     }
   }

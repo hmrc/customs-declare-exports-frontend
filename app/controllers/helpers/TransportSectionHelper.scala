@@ -16,10 +16,11 @@
 
 package controllers.helpers
 
-import forms.declaration.{BorderTransport, DepartureTransport, ModeOfTransportCode, TransportCountry}
-import forms.declaration.ModeOfTransportCode.{meaningfulModeOfTransportCodes, FixedTransportInstallations, PostalConsignment}
+import forms.declaration.InlandOrBorder.Border
+import forms.declaration.ModeOfTransportCode.{meaningfulModeOfTransportCodes, FixedTransportInstallations, PostalConsignment, Rail}
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
-import models.DeclarationType.{CLEARANCE, STANDARD, SUPPLEMENTARY}
+import forms.declaration.{BorderTransport, DepartureTransport, ModeOfTransportCode, TransportCountry}
+import models.DeclarationType._
 import models.ExportsDeclaration
 
 object TransportSectionHelper {
@@ -42,27 +43,38 @@ object TransportSectionHelper {
   def isPostalOrFTIModeOfTransport(modeOfTransportCode: Option[ModeOfTransportCode]): Boolean =
     postalOrFTIModeOfTransportCodes.contains(modeOfTransportCode)
 
-  val Guernsey = "GG"
-  val Jersey = "JE"
-
-  private val journeysToTestOnGuernseyOrJersey = List(STANDARD, SUPPLEMENTARY)
-
   def clearCacheOnSkippingTransportPages(declaration: ExportsDeclaration): ExportsDeclaration =
-    if (!skipTransportPages(declaration)) declaration
-    else
+    if (skipTransportPages(declaration))
       declaration
         .updateDepartureTransport(DepartureTransport(None, None))
         .updateBorderTransport(BorderTransport("", ""))
         .updateTransportCountry(TransportCountry(None))
+    else if (isRailModeOfTransport(declaration)) declaration.updateTransportCountry(TransportCountry(None))
+    else declaration
+
+  val Guernsey = "GG"
+  val Jersey = "JE"
 
   def isGuernseyOrJerseyDestination(declaration: ExportsDeclaration): Boolean =
-    declaration.locations.destinationCountry.map(_.code.getOrElse("")) match {
-      case Some(Guernsey) | Some(Jersey) => journeysToTestOnGuernseyOrJersey.contains(declaration.`type`)
+    declaration.locations.destinationCountry.flatMap(_.code) match {
+      case Some(Guernsey) | Some(Jersey) => isStandardOrSupplementary(declaration)
       case _                             => false
     }
+
+  def isRailModeOfTransport(declaration: ExportsDeclaration): Boolean =
+    declaration.transportLeavingBorderCode == Some(Rail) && isStandardOrSupplementary(declaration)
+
+  def skipBorderTransport(declaration: ExportsDeclaration): Boolean =
+    declaration.isInlandOrBorder(Border) || skipTransportPages(declaration)
+
+  def skipDepartureTransport(declaration: ExportsDeclaration): Boolean =
+    isOccasionalOrSimplified(declaration) || skipTransportPages(declaration)
 
   def skipTransportPages(declaration: ExportsDeclaration): Boolean =
     isPostalOrFTIModeOfTransport(declaration.transportLeavingBorderCode) ||
       declaration.`type` != CLEARANCE && isPostalOrFTIModeOfTransport(declaration.inlandModeOfTransportCode) ||
       isGuernseyOrJerseyDestination(declaration)
+
+  def skipTransportCountry(declaration: ExportsDeclaration): Boolean =
+    isRailModeOfTransport(declaration) || skipTransportPages(declaration)
 }

@@ -1375,12 +1375,10 @@ declaration.transportInformation.meansOfTransport.WagonNumber.vBT = Manylion Eur
 declaration.transportInformation.meansOfTransport.WagonNumber.label = Rhif y wagen
 declaration.transportInformation.meansOfTransport.WagonNumber.hint = Er enghraifft, 6767 neu ‘Anhysbys’.
 
-declaration.transportInformation.transportCountry.title = A ydych yn adnabod y wlad lle mae {0} wedi’i gofrestru?
-declaration.transportInformation.transportCountry.roro.body = Ar gyfer Eurotunnel, dewiswch Ffrainc fel gwlad cofrestru.
-declaration.transportInformation.transportCountry.country.label = Dewiswch y wlad lle mae {0} wedi’i gofrestru
+declaration.transportInformation.transportCountry.title = Dewiswch y wlad lle mae {0} wedi’i gofrestru
+declaration.transportInformation.transportCountry.roro.paragraph = Ar gyfer Eurotunnel, dewiswch Ffrainc fel gwlad cofrestru.
 declaration.transportInformation.transportCountry.country.error.empty = Dewiswch y wlad lle mae {0} wedi’i gofrestru
 declaration.transportInformation.transportCountry.country.error.invalid = Dewiswch wlad ddilys
-declaration.transportInformation.transportCountry.error.empty = Dewiswch ‘Iawn’ os ydych yn adnabod y wlad lle mae {0} wedi’i gofrestru
 
 declaration.transportInformation.containers.title = Rydych wedi ychwanegu 1 cynhwysydd
 declaration.transportInformation.containers.multiple.title = Rydych wedi ychwanegu {0} o gynhwysyddion
@@ -2172,7 +2170,7 @@ declaration.exitSurvey.line.1 = Mae hwn yn wasanaeth newydd ac rydym eisiau gwyb
 declaration.exitSurvey.line.2 = {0}. Bydd eich meddyliau a’ch syniadau’n ein helpu i wneud gwelliannau.
 declaration.exitSurvey.link = Anfonwch eich adborth atom
 
-declaration.country.dropdown.hint = Teipiwch 2 lythyren i chwilio.
+declaration.country.dropdown.hint = Teipiwch o leiaf 2 lythyren i chwilio am wlad
 
 declaration.draft.title = Mae’ch datganiad wedi’i gadw
 declaration.draft.info = Caiff eich gwybodaeth ei dal tan {0}

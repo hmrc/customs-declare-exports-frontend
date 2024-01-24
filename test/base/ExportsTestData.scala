@@ -78,7 +78,7 @@ object ExportsTestData extends ExportsDeclarationBuilder with ExportsItemBuilder
   val valuesRequiringToSkipInlandOrBorder = List(
     withAuthorisationHolders(Some(CSE)),
     withAuthorisationHolders(Some(EXRR)),
-    withBorderModeOfTransportCode(Some(RoRo)),
+    withTransportLeavingTheBorder(Some(RoRo)),
     withGoodsLocation(LocationOfGoods("GBAUCBRLHRXXD")) // GBAUCBRLHRXXD => DEP location code
   )
 

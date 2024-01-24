@@ -21,6 +21,7 @@ import controllers.declaration.routes
 import controllers.helpers.TransportSectionHelper._
 import forms.common.YesNoAnswer
 import forms.declaration.InlandOrBorder.Border
+import forms.declaration.ModeOfTransportCode.Rail
 import forms.declaration.countries.Country
 import models.DeclarationType._
 import models.requests.JourneyRequest
@@ -97,7 +98,7 @@ class ExpressConsignmentViewSpec extends UnitViewSpec with CommonMessages with I
           "display a back button linking to the /inland-or-border page" when {
             s"TransportLeavingTheBorder is '${transportCode.value}' and" when {
               "InlandOrBorder is 'Border'" in {
-                val modeOfTransportCode = withBorderModeOfTransportCode(transportCode)
+                val modeOfTransportCode = withTransportLeavingTheBorder(transportCode)
                 implicit val request = withRequestOfType(declarationType, modeOfTransportCode, withInlandOrBorder(Some(Border)))
                 verifyBackButton(createView(), routes.InlandOrBorderController.displayPage)
               }
@@ -117,6 +118,22 @@ class ExpressConsignmentViewSpec extends UnitViewSpec with CommonMessages with I
     }
 
     "DeclarationType is 'STANDARD'" should {
+
+      "display a back button linking to the /border-transport page" when {
+        "TransportLeavingTheBorder is 'Rail'" in {
+          implicit val request = withRequestOfType(STANDARD, withTransportLeavingTheBorder(Some(Rail)))
+          verifyBackButton(createView(), routes.BorderTransportController.displayPage)
+        }
+      }
+
+      "display a back button linking to the /departure-transport page" when {
+        "TransportLeavingTheBorder is 'Rail' and" when {
+          "InlandOrBorder is 'Border'" in {
+            implicit val request = withRequestOfType(STANDARD, withTransportLeavingTheBorder(Some(Rail)), withInlandOrBorder(Some(Border)))
+            verifyBackButton(createView(), routes.DepartureTransportController.displayPage)
+          }
+        }
+      }
 
       List(Guernsey, Jersey).foreach { country =>
         val destinationCountry = withDestinationCountry(Country(Some(country)))
@@ -151,7 +168,7 @@ class ExpressConsignmentViewSpec extends UnitViewSpec with CommonMessages with I
       "display a 'Back' button linking to the 'Departure Transport' page" when {
         nonPostalOrFTIModeOfTransportCodes.foreach { transportCode =>
           s"TransportLeavingTheBorder is '$transportCode'" in {
-            val modeOfTransportCode = withBorderModeOfTransportCode(Some(transportCode))
+            val modeOfTransportCode = withTransportLeavingTheBorder(Some(transportCode))
             implicit val request = withRequestOfType(CLEARANCE, modeOfTransportCode)
             verifyBackButton(createView(), routes.DepartureTransportController.displayPage)
           }
@@ -161,7 +178,7 @@ class ExpressConsignmentViewSpec extends UnitViewSpec with CommonMessages with I
       "display a 'Back' button linking to the 'Supervising Customs Office' page" when {
         postalOrFTIModeOfTransportCodes.foreach { transportCode =>
           s"TransportLeavingTheBorder is '${transportCode.value}'" in {
-            val modeOfTransportCode = withBorderModeOfTransportCode(transportCode)
+            val modeOfTransportCode = withTransportLeavingTheBorder(transportCode)
             implicit val request = withRequestOfType(CLEARANCE, modeOfTransportCode)
             verifyBackButton(createView(), routes.SupervisingCustomsOfficeController.displayPage)
           }
@@ -171,7 +188,7 @@ class ExpressConsignmentViewSpec extends UnitViewSpec with CommonMessages with I
       "display a 'Back' button linking to the 'Supervising Customs Office' page with PC 1040 and APC 000" when {
         postalOrFTIModeOfTransportCodes.foreach { transportCode =>
           s"TransportLeavingTheBorder is '${transportCode.value}'" in {
-            val modeOfTransportCode = withBorderModeOfTransportCode(transportCode)
+            val modeOfTransportCode = withTransportLeavingTheBorder(transportCode)
             val item = withItem(anItem(withProcedureCodes(Some("1040"), Seq("000"))))
             implicit val request = withRequestOfType(CLEARANCE, item, modeOfTransportCode)
             verifyBackButton(createView(), routes.SupervisingCustomsOfficeController.displayPage)

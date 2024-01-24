@@ -136,7 +136,7 @@ class InlandTransportDetailsControllerSpec extends ControllerSpec with AuditedCo
           s"transportMode '$modeOfTransportCode' is selected on the page at /transport-leaving-the-border" in {
 
             And("the same option has not been selected on the page at /inland-transport-details page")
-            withNewCaching(aDeclaration(withType(request.declarationType), withBorderModeOfTransportCode(modeOfTransportCode)))
+            withNewCaching(aDeclaration(withType(request.declarationType), withTransportLeavingTheBorder(modeOfTransportCode)))
 
             val result = controller.submit()(postRequest(body))
             status(result) mustBe BAD_REQUEST

@@ -15,7 +15,7 @@
  *@
 
 @import models.declaration.ExportItem
-@import models.DeclarationType.{DeclarationType, STANDARD, SUPPLEMENTARY}
+@import models.DeclarationType.{DeclarationType, standardAndSupplementary}
 @import play.twirl.api.HtmlFormat
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.helpers.summary.{AdditionalDocumentsHelper, AdditionalInformationHelper, PackageInformationHelper}
@@ -191,7 +191,7 @@
                 )
             )
         ),
-        if (List(STANDARD, SUPPLEMENTARY).contains(declarationType))
+        if (standardAndSupplementary.contains(declarationType))
             item.commodityMeasure.flatMap(commodityMeasure =>
                 commodityMeasure.supplementaryUnits.map(supplementaryUnits =>
                     SummaryListRow(

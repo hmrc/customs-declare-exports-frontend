@@ -128,7 +128,7 @@ class DeclarantExporterViewSpec extends PageWithButtonsSpec with Injector {
       }
 
       "not display the 'Back' button" when {
-        allDeclarationTypesExcluding(CLEARANCE).foreach { declarationType =>
+        nonClearanceJourneys.foreach { declarationType =>
           s"the journey is $declarationType" in {
             implicit val request = withRequestOfType(declarationType, status)
             Option(createView().getElementById("back-link")) mustBe None

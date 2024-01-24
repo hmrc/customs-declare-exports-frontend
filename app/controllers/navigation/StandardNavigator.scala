@@ -44,7 +44,6 @@ trait StandardNavigator extends CacheDependentNavigators {
     case LocationOfGoods            => routes.RoutingCountriesController.displayRoutingCountry
     case AdditionalActorsSummary    => routes.ConsigneeDetailsController.displayPage
     case DocumentSummary            => routes.NatureOfTransactionController.displayPage
-    case BorderTransport            => routes.DepartureTransportController.displayPage
     case ContainerAdd               => routes.TransportContainerController.displayContainerSummary
     case page                       => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on standard")
   }
@@ -69,6 +68,7 @@ trait StandardNavigator extends CacheDependentNavigators {
     case InlandOrBorder            => inlandOrBorderPreviousPage
     case InlandModeOfTransportCode => inlandTransportDetailsPreviousPage
     case DepartureTransport        => departureTransportPreviousPage
+    case BorderTransport           => borderTransportPreviousPage
     case TransportCountry          => transportCountryPreviousPage
     case ExpressConsignment        => expressConsignmentPreviousPage
     case ContainerFirst            => containerFirstPreviousPage

@@ -139,7 +139,7 @@ class TransportContainerAddFirstViewSpec
         "display a back button linking to the /inland-or-border page" when {
           s"TransportLeavingTheBorder is '${transportCode.value}' and" when {
             "InlandOrBorder is 'Border'" in {
-              val modeOfTransportCode = withBorderModeOfTransportCode(transportCode)
+              val modeOfTransportCode = withTransportLeavingTheBorder(transportCode)
               implicit val request = withRequestOfType(SUPPLEMENTARY, modeOfTransportCode, withInlandOrBorder(Some(Border)))
               verifyBackButton(createView(), routes.InlandOrBorderController.displayPage)
             }

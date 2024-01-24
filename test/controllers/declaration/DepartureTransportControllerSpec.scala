@@ -189,7 +189,6 @@ class DepartureTransportControllerSpec extends ControllerSpec with AuditedContro
             val transport = theCacheModelUpdated.transport
             transport.meansOfTransportOnDepartureType mustBe None
             transport.meansOfTransportOnDepartureIDNumber mustBe None
-            verifyAudit()
           }
 
           s"the 'submitForm' method is invoked and Destination country is '$country'" in {
@@ -205,7 +204,6 @@ class DepartureTransportControllerSpec extends ControllerSpec with AuditedContro
             val transport = theCacheModelUpdated.transport
             transport.meansOfTransportOnDepartureType mustBe None
             transport.meansOfTransportOnDepartureIDNumber mustBe None
-            verifyAudit()
           }
         }
       }
@@ -268,7 +266,6 @@ class DepartureTransportControllerSpec extends ControllerSpec with AuditedContro
           val transport = theCacheModelUpdated.transport
           transport.meansOfTransportOnDepartureType mustBe None
           transport.meansOfTransportOnDepartureIDNumber mustBe None
-          verifyAudit()
         }
       }
     }

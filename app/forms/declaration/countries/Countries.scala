@@ -72,9 +72,10 @@ object Countries {
     page: CountryPage,
     cachedCountries: Seq[Country]
   )(implicit messages: Messages, codeListConnector: CodeListConnector): Mapping[Country] =
-    Forms.mapping("countryCode" -> mapping(page, cachedCountries))(country => if (country.nonEmpty) Country(Some(country)) else Country(None))(
-      country => country.code
-    )
+    Forms.mapping("countryCode" -> mapping(page, cachedCountries)) {
+      // apply
+      country => if (country.nonEmpty) Country(Some(country)) else Country(None)
+    }(_.code) // unapply
 
   private def optionalForm(page: CountryPage, cachedCountries: Seq[Country])(
     implicit messages: Messages,

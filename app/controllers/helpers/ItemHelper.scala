@@ -16,12 +16,18 @@
 
 package controllers.helpers
 
-import controllers.declaration.routes.{NactCodeSummaryController, ZeroRatedForVatController}
+import controllers.declaration.routes.{
+  NactCodeSummaryController,
+  PackageInformationSummaryController,
+  StatisticalValueController,
+  ZeroRatedForVatController
+}
 import forms.declaration.NatureOfTransaction
 import forms.declaration.NatureOfTransaction.{BusinessPurchase, Sale}
-import models.DeclarationType.{OCCASIONAL, SIMPLIFIED, STANDARD}
+import models.DeclarationType.{occasionalAndSimplified, OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
 import models.ExportsDeclaration
-import play.api.mvc.Call
+import models.requests.JourneyRequest
+import play.api.mvc.{AnyContent, Call}
 
 object ItemHelper {
 
@@ -30,14 +36,23 @@ object ItemHelper {
     if (toZeroRatedForVatPage) ZeroRatedForVatController.displayPage(itemId) else NactCodeSummaryController.displayPage(itemId)
   }
 
+  def nextPageAfterNactCodePages(itemId: String)(implicit request: JourneyRequest[AnyContent]): Call =
+    request.declarationType match {
+      case SUPPLEMENTARY | STANDARD => StatisticalValueController.displayPage(itemId)
+
+      case SIMPLIFIED | OCCASIONAL if request.cacheModel.isLowValueDeclaration(itemId) =>
+        StatisticalValueController.displayPage(itemId)
+
+      case SIMPLIFIED | OCCASIONAL =>
+        PackageInformationSummaryController.displayPage(itemId)
+    }
+
   private def eligibleForZeroVat(declaration: ExportsDeclaration): Boolean =
     declaration.natureOfTransaction match {
       case Some(NatureOfTransaction(`Sale`) | NatureOfTransaction(`BusinessPurchase`)) => declaration.isType(STANDARD)
       case _                                                                           => false
     }
 
-  val journeysOnLowValue = List(OCCASIONAL, SIMPLIFIED)
-
   private def isLowValueDeclaration(declaration: ExportsDeclaration, itemId: String): Boolean =
-    journeysOnLowValue.contains(declaration.`type`) && declaration.isLowValueDeclaration(itemId)
+    occasionalAndSimplified.contains(declaration.`type`) && declaration.isLowValueDeclaration(itemId)
 }
