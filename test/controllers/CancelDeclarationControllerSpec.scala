@@ -18,7 +18,7 @@ package controllers
 
 import base.{ControllerWithoutFormSpec, Injector}
 import com.codahale.metrics.Timer
-import com.kenshoo.play.metrics.Metrics
+import uk.gov.hmrc.play.bootstrap.metrics.Metrics
 import forms.CancelDeclarationDescription
 import forms.cancellation.CancellationChangeReason.NoLongerRequired
 import metrics.{ExportsMetrics, MetricIdentifiers}

@@ -21,6 +21,7 @@ import config.AppConfig
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import play.api.inject.bind
+import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import play.twirl.api.Html
 import views.declaration.spec.UnitViewSpec
@@ -33,7 +34,7 @@ class PhaseBannerSpec extends UnitViewSpec with BeforeAndAfterEach {
   private val bannerPartial = injector.instanceOf[phaseBanner]
 
   private val requestPath = "/customs-declare-exports/any-page"
-  private implicit val fakeRequest = FakeRequest("GET", requestPath)
+  private implicit val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", requestPath)
 
   private val selfBaseUrlTest = "selfBaseUrlTest"
   private val giveFeedbackLinkTest = "giveFeedbackLinkTest"

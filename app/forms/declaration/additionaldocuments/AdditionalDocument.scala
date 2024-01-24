@@ -46,7 +46,7 @@ import models.{AmendmentOp, ExportsDeclaration, FieldMapping}
 import play.api.data.Forms._
 import play.api.data.{Form, FormError, Forms, Mapping}
 import play.api.i18n.Messages
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.{JsValue, Json, OFormat, OWrites}
 import services.DiffTools.{combinePointers, compareStringDifference, ExportsDeclarationDiff}
 import services.{DiffTools, TaggedAdditionalDocumentCodes, TaggedAuthCodes}
 import uk.gov.voa.play.form.ConditionalMappings.isAnyOf
@@ -83,7 +83,7 @@ case class AdditionalDocument(
 
   def toJson: JsValue = Json.toJson(this)(AdditionalDocument.format)
 
-  implicit val writes = Json.writes[AdditionalDocument]
+  implicit val writes: OWrites[AdditionalDocument] = Json.writes[AdditionalDocument]
 
   def isDefined: Boolean =
     List(documentTypeCode, documentIdentifier, documentStatus, documentStatusReason, issuingAuthorityName, dateOfValidity, documentWriteOff).exists(
@@ -131,7 +131,7 @@ object AdditionalDocument extends DeclarationPage with FieldMapping {
   lazy val keyForStatusReason = s"$itemsPrefix.additionalDocuments.statusReason"
   lazy val keyForTypeCode = s"$itemsPrefix.additionalDocuments.code"
 
-  implicit val format = Json.format[AdditionalDocument]
+  implicit val format: OFormat[AdditionalDocument] = Json.format[AdditionalDocument]
 
   val AdditionalDocumentFormGroupId: String = "additionalDocument"
 

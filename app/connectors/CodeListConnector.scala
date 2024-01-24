@@ -16,7 +16,7 @@
 
 package connectors
 
-import akka.util.Helpers.Requiring
+import org.apache.pekko.util.Helpers.Requiring
 import com.google.inject.ImplementedBy
 import config.AppConfig
 import models.codes._

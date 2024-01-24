@@ -17,10 +17,10 @@
 package models.declaration.notifications
 
 import models.Pointer
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 
 case class NotificationError(validationCode: String, pointer: Option[Pointer], description: Option[String] = None)
 
 object NotificationError {
-  implicit val format = Json.format[NotificationError]
+  implicit val format: OFormat[NotificationError] = Json.format[NotificationError]
 }

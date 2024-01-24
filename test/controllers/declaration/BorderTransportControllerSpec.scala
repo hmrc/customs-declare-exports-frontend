@@ -32,11 +32,12 @@ import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
+import services.TransportCodeService
 import views.html.declaration.border_transport
 
 class BorderTransportControllerSpec extends ControllerSpec with AuditedControllerSpec {
 
-  implicit val transportCodeService = MockTransportCodeService.transportCodeService
+  implicit val transportCodeService: TransportCodeService = MockTransportCodeService.transportCodeService
 
   val borderTransportPage = mock[border_transport]
 

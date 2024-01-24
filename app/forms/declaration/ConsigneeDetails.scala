@@ -24,7 +24,7 @@ import models.ExportsFieldPointer.ExportsFieldPointer
 import models.{AmendmentOp, FieldMapping}
 import play.api.data.{Form, Forms, Mapping}
 import play.api.i18n.Messages
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 import services.DiffTools
 import services.DiffTools.{combinePointers, ExportsDeclarationDiff}
 
@@ -42,7 +42,7 @@ case class ConsigneeDetails(details: EntityDetails) extends DiffTools[ConsigneeD
 
 object ConsigneeDetails extends DeclarationPage with FieldMapping {
 
-  implicit val format = Json.format[ConsigneeDetails]
+  implicit val format: OFormat[ConsigneeDetails] = Json.format[ConsigneeDetails]
 
   val pointer: ExportsFieldPointer = "consigneeDetails"
 

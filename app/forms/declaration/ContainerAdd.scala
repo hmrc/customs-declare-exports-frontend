@@ -21,13 +21,13 @@ import models.DeclarationType.DeclarationType
 import models.viewmodels.TariffContentKey
 import play.api.data.Forms.{optional, text}
 import play.api.data.{Form, Forms}
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 import utils.validators.forms.FieldValidator._
 
 case class ContainerAdd(id: Option[String])
 
 object ContainerAdd extends DeclarationPage {
-  implicit val format = Json.format[ContainerAdd]
+  implicit val format: OFormat[ContainerAdd] = Json.format[ContainerAdd]
 
   val maxContainerIdLength = 17
   val containerIdKey = "id"

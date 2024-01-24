@@ -33,8 +33,8 @@ import scala.collection.immutable.ListMap
 
 class DefaultInterpreterSpec extends UnitSpec with UnitViewSpec with ExportsDeclarationBuilder with ExportsItemBuilder with MockitoSugar {
 
-  implicit val codeListConnector = mock[CodeListConnector]
-  implicit val linkRef = new link()
+  implicit val codeListConnector: CodeListConnector = mock[CodeListConnector]
+  implicit val linkRef: link = new link()
 
   override def beforeEach(): Unit = {
     super.beforeEach()

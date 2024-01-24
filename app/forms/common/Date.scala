@@ -20,7 +20,7 @@ import models.ExportsFieldPointer.ExportsFieldPointer
 import models.FieldMapping
 import play.api.data.{Form, Forms}
 import play.api.data.Forms.{number, optional}
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 import services.{AlteredField, DiffTools, OriginalAndNewValues}
 import services.DiffTools.{compareOptInt, ExportsDeclarationDiff}
 
@@ -48,7 +48,7 @@ case class Date(day: Option[Int], month: Option[Int], year: Option[Int]) extends
 }
 
 object Date extends FieldMapping {
-  implicit val format = Json.format[Date]
+  implicit val format: OFormat[Date] = Json.format[Date]
 
   val pointer: ExportsFieldPointer = "dateOfValidity"
   val dayPointer: ExportsFieldPointer = "day"

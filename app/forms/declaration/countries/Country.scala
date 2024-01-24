@@ -22,7 +22,7 @@ import models.ExportsFieldPointer.ExportsFieldPointer
 import models.declaration.Locations.destinationCountryPointer
 import models.{Amendment, FieldMapping}
 import play.api.i18n.Messages
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 
 case class Country(code: Option[String]) extends Ordered[Country] with Amendment {
 
@@ -54,7 +54,7 @@ object Country extends FieldMapping {
     if (pointer.endsWith(destinationCountryPointer)) "declaration.summary.countries.countryOfDestination"
     else "declaration.summary.countries.routingCountry"
 
-  implicit val format = Json.format[Country]
+  implicit val format: OFormat[Country] = Json.format[Country]
 
   val GB = Country(Some("GB"))
 }

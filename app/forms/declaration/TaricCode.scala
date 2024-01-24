@@ -16,11 +16,11 @@
 
 package forms.declaration
 
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 
 case class TaricCode(taricCode: String)
 
 object TaricCode {
 
-  implicit val format = Json.format[TaricCode]
+  implicit val format: OFormat[TaricCode] = Json.format[TaricCode]
 }

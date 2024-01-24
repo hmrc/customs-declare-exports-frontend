@@ -41,7 +41,7 @@ import scala.collection.immutable.ListMap
 @ViewTest
 class ConsigneeDetailsViewSpec extends AddressViewSpec with PageWithButtonsSpec with Injector {
 
-  implicit val mockCodeListConnector = mock[CodeListConnector]
+  implicit val mockCodeListConnector: CodeListConnector = mock[CodeListConnector]
 
   override def beforeEach(): Unit = {
     super.beforeEach()

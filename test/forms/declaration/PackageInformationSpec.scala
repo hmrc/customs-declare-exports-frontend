@@ -29,7 +29,7 @@ import java.util.Locale
 class PackageInformationSpec extends UnitWithMocksSpec with JourneyTypeTestRunner with DeclarationPageBaseSpec with Injector {
 
   private implicit val messages: Messages = stubMessagesApi().preferred(Seq(Lang(Locale.ENGLISH)))
-  private implicit val packageTypesService = instanceOf[PackageTypesService]
+  private implicit val packageTypesService: PackageTypesService = instanceOf[PackageTypesService]
 
   "Package Information" should {
 

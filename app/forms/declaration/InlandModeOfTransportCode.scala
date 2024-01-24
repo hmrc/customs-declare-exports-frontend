@@ -25,7 +25,7 @@ import models.viewmodels.TariffContentKey
 import models.{Amendment, FieldMapping}
 import play.api.data.{Form, Forms}
 import play.api.i18n.Messages
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 
 case class InlandModeOfTransportCode(inlandModeOfTransportCode: Option[ModeOfTransportCode] = None)
     extends Ordered[InlandModeOfTransportCode] with Amendment {
@@ -59,7 +59,7 @@ object InlandModeOfTransportCode extends DeclarationPage with FieldMapping {
 
   private val keyForAmend = "declaration.summary.transport.inlandModeOfTransport"
 
-  implicit val format = Json.format[InlandModeOfTransportCode]
+  implicit val format: OFormat[InlandModeOfTransportCode] = Json.format[InlandModeOfTransportCode]
 
   val formId = "InlandModeOfTransportCode"
 

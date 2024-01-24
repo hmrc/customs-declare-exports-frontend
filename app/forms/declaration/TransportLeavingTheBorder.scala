@@ -63,7 +63,7 @@ case class TransportLeavingTheBorder(code: Option[ModeOfTransportCode] = None) e
 
 object TransportLeavingTheBorder extends DeclarationPage with FieldMapping {
 
-  implicit val format = Json.format[TransportLeavingTheBorder]
+  implicit val format: OFormat[TransportLeavingTheBorder] = Json.format[TransportLeavingTheBorder]
 
   val pointer: String = "borderModeOfTransportCode.code"
 

@@ -17,7 +17,7 @@
 package models.declaration.notifications
 
 import models.declaration.submissions.SubmissionStatus._
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 
 import java.time.{ZoneId, ZonedDateTime}
 
@@ -47,5 +47,5 @@ case class Notification(actionId: String, mrn: String, dateTimeIssued: ZonedDate
 }
 
 object Notification {
-  implicit val format = Json.format[Notification]
+  implicit val format: OFormat[Notification] = Json.format[Notification]
 }

@@ -42,7 +42,7 @@ import scala.collection.immutable.ListMap
 @ViewTest
 class TransportCountryViewSpec extends PageWithButtonsSpec with Injector {
 
-  implicit val codeListConnector = mock[CodeListConnector]
+  implicit val codeListConnector: CodeListConnector = mock[CodeListConnector]
 
   val page = instanceOf[transport_country]
 

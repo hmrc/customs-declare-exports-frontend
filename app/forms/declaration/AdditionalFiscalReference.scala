@@ -29,7 +29,7 @@ import models.{Amendment, FieldMapping}
 import play.api.data.{Form, Forms, Mapping}
 import play.api.data.Forms.text
 import play.api.i18n.Messages
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 import services.{AlteredField, DiffTools, OriginalAndNewValues}
 import services.Countries._
 import services.DiffTools.{combinePointers, ExportsDeclarationDiff}
@@ -69,7 +69,7 @@ object AdditionalFiscalReference extends DeclarationPage with FieldMapping {
   lazy val keyForAmend = s"$itemsPrefix.VATdetails"
 
   def build(country: String, reference: String): AdditionalFiscalReference = new AdditionalFiscalReference(country, reference.toUpperCase)
-  implicit val format = Json.format[AdditionalFiscalReference]
+  implicit val format: OFormat[AdditionalFiscalReference] = Json.format[AdditionalFiscalReference]
 
   def mapping(implicit messages: Messages, codeListConnector: CodeListConnector): Mapping[AdditionalFiscalReference] =
     Forms.mapping(
@@ -113,7 +113,7 @@ object AdditionalFiscalReferencesData extends FieldMapping {
 
   val pointer: ExportsFieldPointer = "additionalFiscalReferencesData"
 
-  implicit val format = Json.format[AdditionalFiscalReferencesData]
+  implicit val format: OFormat[AdditionalFiscalReferencesData] = Json.format[AdditionalFiscalReferencesData]
 
   def apply(references: Seq[AdditionalFiscalReference]): AdditionalFiscalReferencesData =
     new AdditionalFiscalReferencesData(references)

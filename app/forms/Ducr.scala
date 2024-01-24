@@ -20,13 +20,13 @@ import models.DeclarationType.{CLEARANCE, DeclarationType}
 import models.viewmodels.TariffContentKey
 import play.api.data.Forms.text
 import play.api.data.{Form, Forms, Mapping}
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 import utils.validators.forms.FieldValidator._
 
 case class Ducr(ducr: String)
 
 object Ducr extends DeclarationPage {
-  implicit val format = Json.format[Ducr]
+  implicit val format: OFormat[Ducr] = Json.format[Ducr]
   val mapping: Mapping[Ducr] =
     Forms.mapping(
       "ducr" ->

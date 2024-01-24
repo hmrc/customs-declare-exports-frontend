@@ -32,7 +32,7 @@ import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.data.Form
-import play.api.i18n.Lang
+import play.api.i18n.{Lang, Messages}
 import play.api.libs.json.{JsObject, JsValue}
 import play.api.test.Helpers.stubMessagesApi
 
@@ -43,8 +43,8 @@ class ExporterDetailsSpec
     extends UnitSpec with LightFormMatchers with JourneyTypeTestRunner with DeclarationPageBaseSpec with MockitoSugar with BeforeAndAfterEach {
 
   val emptyExporterDetailsJSON: JsValue = JsObject(Map("details" -> emptyEntityDetailsJSON))
-  implicit val mockCodeListConnector = mock[CodeListConnector]
-  implicit val messages = stubMessagesApi().preferred(Seq(Lang(Locale.ENGLISH)))
+  implicit val mockCodeListConnector: CodeListConnector = mock[CodeListConnector]
+  implicit val messages: Messages = stubMessagesApi().preferred(Seq(Lang(Locale.ENGLISH)))
 
   override def beforeEach(): Unit = {
     super.beforeEach()

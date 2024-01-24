@@ -23,7 +23,7 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.{Assertion, BeforeAndAfterEach}
 import org.scalatestplus.mockito.MockitoSugar
-import play.api.i18n.Lang
+import play.api.i18n.{Lang, Messages}
 import play.api.test.Helpers._
 
 import java.util.Locale
@@ -32,8 +32,8 @@ import scala.collection.immutable.ListMap
 class AddressSpec extends UnitSpec with MockitoSugar with BeforeAndAfterEach {
   import AddressSpec._
 
-  implicit val mockCodeListConnector = mock[CodeListConnector]
-  implicit val messages = stubMessagesApi().preferred(Seq(Lang(Locale.ENGLISH)))
+  implicit val mockCodeListConnector: CodeListConnector = mock[CodeListConnector]
+  implicit val messages: Messages = stubMessagesApi().preferred(Seq(Lang(Locale.ENGLISH)))
 
   override def beforeEach(): Unit = {
     super.beforeEach()

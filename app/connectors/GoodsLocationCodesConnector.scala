@@ -16,7 +16,7 @@
 
 package connectors
 
-import akka.util.Helpers.Requiring
+import org.apache.pekko.util.Helpers.Requiring
 import config.AppConfig
 import models.codes.GoodsLocationCode
 import utils.JsonFile

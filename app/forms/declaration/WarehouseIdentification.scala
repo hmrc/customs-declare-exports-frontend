@@ -28,7 +28,7 @@ import models.{Amendment, FieldMapping}
 import play.api.data.Forms.text
 import play.api.data.{Form, Forms}
 import play.api.i18n.Messages
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 import services.DiffTools.compareOptionalString
 import uk.gov.voa.play.form.ConditionalMappings.mandatoryIfEqual
 import utils.validators.forms.FieldValidator._
@@ -56,7 +56,7 @@ object WarehouseIdentification extends DeclarationPage with FieldMapping {
 
   val keyForAmend = "declaration.summary.transport.warehouse.id"
 
-  implicit val format = Json.format[WarehouseIdentification]
+  implicit val format: OFormat[WarehouseIdentification] = Json.format[WarehouseIdentification]
 
   val formId = "WarehouseIdentification"
 

@@ -20,7 +20,7 @@ import forms.common.YesNoAnswer
 import forms.declaration.additionaldocuments.{AdditionalDocument, DocumentWriteOff}
 import models.ExportsFieldPointer.ExportsFieldPointer
 import models.FieldMapping
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 import services.DiffTools
 import services.DiffTools.{combinePointers, ExportsDeclarationDiff}
 
@@ -51,7 +51,7 @@ object AdditionalDocuments extends FieldMapping {
   val measurementUnitPointerForAmend =
     s"item.$pointer.${AdditionalDocument.pointer}.${DocumentWriteOff.pointer}.${DocumentWriteOff.measurementUnitPointer}"
 
-  implicit val format = Json.format[AdditionalDocuments]
+  implicit val format: OFormat[AdditionalDocuments] = Json.format[AdditionalDocuments]
 
   val maxNumberOfItems = 99
 }

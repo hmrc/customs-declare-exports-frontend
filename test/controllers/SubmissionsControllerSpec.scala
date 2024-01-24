@@ -16,7 +16,7 @@
 
 package controllers
 
-import akka.util.Timeout
+import org.apache.pekko.util.Timeout
 import base.{ControllerWithoutFormSpec, MockExportCacheService}
 import config.PaginationConfig
 import controllers.declaration.routes._

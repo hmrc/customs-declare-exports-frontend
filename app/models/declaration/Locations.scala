@@ -23,7 +23,7 @@ import models.DeclarationMeta.sequenceIdPlaceholder
 import models.ExportsFieldPointer.ExportsFieldPointer
 import models.{AmendmentOp, ExportsDeclaration, FieldMapping}
 import play.api.i18n.Messages
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 import services.DiffTools.{combinePointers, compareDifference, ExportsDeclarationDiff}
 import services.{AlteredField, DiffTools, OriginalAndNewValues}
 
@@ -52,7 +52,7 @@ case class RoutingCountry(sequenceId: Int = sequenceIdPlaceholder, country: Coun
 }
 
 object RoutingCountry {
-  implicit val format = Json.format[RoutingCountry]
+  implicit val format: OFormat[RoutingCountry] = Json.format[RoutingCountry]
 }
 
 case class Locations(
@@ -109,7 +109,7 @@ case class Locations(
 object Locations extends FieldMapping {
   val id = "Locations"
 
-  implicit val format = Json.format[Locations]
+  implicit val format: OFormat[Locations] = Json.format[Locations]
 
   val pointer: ExportsFieldPointer = "locations"
   val originationCountryPointer: ExportsFieldPointer = "originationCountry"

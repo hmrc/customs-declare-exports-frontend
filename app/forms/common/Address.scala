@@ -26,7 +26,7 @@ import models.{AmendmentOp, ExportsDeclaration, FieldMapping}
 import play.api.data.Forms.text
 import play.api.data.{Form, Forms, Mapping}
 import play.api.i18n.Messages
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 import services.Countries._
 import services.DiffTools
 import services.DiffTools.{combinePointers, compareStringDifference, ExportsDeclarationDiff}
@@ -62,7 +62,7 @@ case class Address(
 
 object Address extends FieldMapping {
 
-  implicit val format = Json.format[Address]
+  implicit val format: OFormat[Address] = Json.format[Address]
 
   val pointer: ExportsFieldPointer = "address"
 

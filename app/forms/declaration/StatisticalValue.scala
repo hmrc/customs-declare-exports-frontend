@@ -27,7 +27,7 @@ import models.{Amendment, FieldMapping}
 import play.api.data.Forms.text
 import play.api.data.{Form, Forms, Mapping}
 import play.api.i18n.Messages
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 import utils.validators.forms.FieldValidator._
 
 case class StatisticalValue(statisticalValue: String) extends Ordered[StatisticalValue] with Amendment {
@@ -47,7 +47,7 @@ case class StatisticalValue(statisticalValue: String) extends Ordered[Statistica
 }
 
 object StatisticalValue extends DeclarationPage with FieldMapping {
-  implicit val format = Json.format[StatisticalValue]
+  implicit val format: OFormat[StatisticalValue] = Json.format[StatisticalValue]
 
   val pointer: ExportsFieldPointer = "statisticalValue.statisticalValue"
 

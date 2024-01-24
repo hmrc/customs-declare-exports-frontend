@@ -21,13 +21,13 @@ import forms.MappingHelper.requiredRadio
 import models.DeclarationType.DeclarationType
 import models.viewmodels.TariffContentKey
 import play.api.data.{Form, Forms}
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 import utils.validators.forms.FieldValidator._
 
 case class RepresentativeStatus(statusCode: Option[String])
 
 object RepresentativeStatus extends DeclarationPage {
-  implicit val format = Json.format[RepresentativeStatus]
+  implicit val format: OFormat[RepresentativeStatus] = Json.format[RepresentativeStatus]
 
   import StatusCodes._
   private val representativeStatusCodeAllowedValues =

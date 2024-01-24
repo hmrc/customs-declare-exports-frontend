@@ -18,12 +18,13 @@ package views.declaration.spec
 
 import base.{Injector, JourneyTypeTestRunner, UnitWithMocksSpec}
 import mock.FeatureFlagMocks
+import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import org.jsoup.select.Elements
 import org.scalatest.matchers.{BeMatcher, MatchResult}
 import org.scalatest.{Assertion, OptionValues}
 import play.api.i18n.{Lang, Messages, MessagesApi}
-import play.api.mvc.{Call, Request}
+import play.api.mvc.{AnyContent, Call, Request}
 import services.cache.ExportsTestHelper
 import tools.Stubs
 import views.helpers.CommonMessages
@@ -36,7 +37,7 @@ trait UnitViewSpec
   val itemId = "item1"
   val sequenceId = "1"
 
-  implicit val request = journeyRequest()
+  implicit val request: JourneyRequest[AnyContent] = journeyRequest()
 
   protected implicit def messages(implicit request: Request[_]): Messages =
     new AllMessageKeysAreMandatoryMessages(realMessagesApi.preferred(request))

@@ -28,7 +28,7 @@ import models.{Amendment, FieldMapping}
 import play.api.data.Forms.text
 import play.api.data.{Form, Forms}
 import play.api.i18n.Messages
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 import services.DiffTools.compareOptionalString
 import uk.gov.voa.play.form.ConditionalMappings.mandatoryIfEqual
 import utils.validators.forms.FieldValidator._
@@ -51,7 +51,7 @@ case class UNDangerousGoodsCode(dangerousGoodsCode: Option[String]) extends Orde
 }
 
 object UNDangerousGoodsCode extends DeclarationPage with FieldMapping {
-  implicit val format = Json.format[UNDangerousGoodsCode]
+  implicit val format: OFormat[UNDangerousGoodsCode] = Json.format[UNDangerousGoodsCode]
 
   val pointer: ExportsFieldPointer = "dangerousGoodsCode.dangerousGoodsCode"
 

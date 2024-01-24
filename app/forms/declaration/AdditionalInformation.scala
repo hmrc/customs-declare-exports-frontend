@@ -28,7 +28,7 @@ import models.declaration.ImplicitlySequencedObject
 import play.api.data.{Form, Forms}
 import play.api.data.Forms._
 import play.api.i18n.Messages
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 import services.DiffTools
 import services.DiffTools.{combinePointers, compareStringDifference, ExportsDeclarationDiff}
 import utils.validators.forms.FieldValidator._
@@ -60,7 +60,7 @@ object AdditionalInformation extends DeclarationPage with FieldMapping {
   lazy val keyForCode = s"$itemsPrefix.additionalInformation.code"
   lazy val keyForDescription = s"$itemsPrefix.additionalInformation.description"
 
-  implicit val format = Json.format[AdditionalInformation]
+  implicit val format: OFormat[AdditionalInformation] = Json.format[AdditionalInformation]
 
   val codeForGVMS = "RRS01"
 

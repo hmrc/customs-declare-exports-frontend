@@ -17,7 +17,7 @@
 package services
 
 import base.{Injector, MockConnectors, MockExportCacheService, UnitWithMocksSpec}
-import com.kenshoo.play.metrics.Metrics
+import uk.gov.hmrc.play.bootstrap.metrics.Metrics
 import connectors.CustomsDeclareExportsConnector
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
 import forms.declaration.countries.Country

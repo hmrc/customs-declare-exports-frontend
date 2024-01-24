@@ -21,12 +21,12 @@ import forms.common.Eori
 import models.DeclarationType.DeclarationType
 import models.viewmodels.TariffContentKey
 import play.api.data.{Form, Forms}
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 
 case class RepresentativeEntity(details: EntityDetails)
 
 object RepresentativeEntity extends DeclarationPage {
-  implicit val format = Json.format[RepresentativeEntity]
+  implicit val format: OFormat[RepresentativeEntity] = Json.format[RepresentativeEntity]
 
   val formId = "RepresentativeEntityDetails"
 

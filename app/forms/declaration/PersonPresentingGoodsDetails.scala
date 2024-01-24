@@ -27,7 +27,7 @@ import models.viewmodels.TariffContentKey
 import models.{Amendment, FieldMapping}
 import play.api.data.{Form, Forms}
 import play.api.i18n.Messages
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 import services.DiffTools
 import services.DiffTools.{combinePointers, compareDifference, ExportsDeclarationDiff}
 
@@ -53,7 +53,7 @@ case class PersonPresentingGoodsDetails(eori: Eori) extends DiffTools[PersonPres
 }
 
 object PersonPresentingGoodsDetails extends DeclarationPage with FieldMapping {
-  implicit val format = Json.format[PersonPresentingGoodsDetails]
+  implicit val format: OFormat[PersonPresentingGoodsDetails] = Json.format[PersonPresentingGoodsDetails]
 
   val pointer: ExportsFieldPointer = "personPresentingGoodsDetails"
 

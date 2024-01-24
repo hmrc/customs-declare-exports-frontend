@@ -17,26 +17,26 @@
 package models.declaration.governmentagencygoodsitem
 
 import forms.declaration.{AdditionalFiscalReference, AdditionalInformation}
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 
 object Formats {
 
-  implicit val amountFormat = Json.format[Amount]
-  implicit val measureFormat = Json.format[Measure]
-  implicit val dateTimeStringFormat = Json.format[DateTimeString]
-  implicit val dateTimeElementFormat = Json.format[DateTimeElement]
-  implicit val classificationFormat = Json.format[Classification]
-  implicit val packagingFormat = Json.format[Packaging]
-  implicit val governmentProcedureFormat = Json.format[GovernmentProcedure]
-  implicit val writeOffFormat = Json.format[WriteOff]
-  implicit val governmentAgencyGoodsItemAdditionalDocumentSubmitterformat =
+  implicit val amountFormat: OFormat[Amount] = Json.format[Amount]
+  implicit val measureFormat: OFormat[Measure] = Json.format[Measure]
+  implicit val dateTimeStringFormat: OFormat[DateTimeString] = Json.format[DateTimeString]
+  implicit val dateTimeElementFormat: OFormat[DateTimeElement] = Json.format[DateTimeElement]
+  implicit val classificationFormat: OFormat[Classification] = Json.format[Classification]
+  implicit val packagingFormat: OFormat[Packaging] = Json.format[Packaging]
+  implicit val governmentProcedureFormat: OFormat[GovernmentProcedure] = Json.format[GovernmentProcedure]
+  implicit val writeOffFormat: OFormat[WriteOff] = Json.format[WriteOff]
+  implicit val governmentAgencyGoodsItemAdditionalDocumentSubmitterformat: OFormat[GovernmentAgencyGoodsItemAdditionalDocumentSubmitter] =
     Json.format[GovernmentAgencyGoodsItemAdditionalDocumentSubmitter]
-  implicit val governmentAgencyGoodsItemAdditionalDocumentFormat =
+  implicit val governmentAgencyGoodsItemAdditionalDocumentFormat: OFormat[GovernmentAgencyGoodsItemAdditionalDocument] =
     Json.format[GovernmentAgencyGoodsItemAdditionalDocument]
-  implicit val goodsMeasureFormat = Json.format[GoodsMeasure]
-  implicit val dangerousGoodsFormat = Json.format[DangerousGoods]
-  implicit val commodityFormat = Json.format[Commodity]
-  implicit val governmentAgencyGoodsItemFormat = Json.format[GovernmentAgencyGoodsItem]
+  implicit val goodsMeasureFormat: OFormat[GoodsMeasure] = Json.format[GoodsMeasure]
+  implicit val dangerousGoodsFormat: OFormat[DangerousGoods] = Json.format[DangerousGoods]
+  implicit val commodityFormat: OFormat[Commodity] = Json.format[Commodity]
+  implicit val governmentAgencyGoodsItemFormat: OFormat[GovernmentAgencyGoodsItem] = Json.format[GovernmentAgencyGoodsItem]
 }
 case class GovernmentAgencyGoodsItem(
   sequenceNumeric: Int,

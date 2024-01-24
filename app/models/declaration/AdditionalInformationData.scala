@@ -21,7 +21,7 @@ import forms.common.YesNoAnswer.{No, Yes}
 import forms.declaration.AdditionalInformation
 import models.ExportsFieldPointer.ExportsFieldPointer
 import models.FieldMapping
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 import services.DiffTools
 import services.DiffTools.{combinePointers, ExportsDeclarationDiff}
 
@@ -43,7 +43,7 @@ object AdditionalInformationData extends FieldMapping {
   val codePointerForAmend = s"item.$pointer.${AdditionalInformation.pointer}.${AdditionalInformation.codePointer}"
   val descriptionPointerForAmend = s"item.$pointer.${AdditionalInformation.pointer}.${AdditionalInformation.descriptionPointer}"
 
-  implicit val format = Json.format[AdditionalInformationData]
+  implicit val format: OFormat[AdditionalInformationData] = Json.format[AdditionalInformationData]
 
   def apply(items: Seq[AdditionalInformation]): AdditionalInformationData =
     new AdditionalInformationData(if (items.nonEmpty) Yes else No, items)

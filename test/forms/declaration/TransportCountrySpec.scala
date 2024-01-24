@@ -27,7 +27,7 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
 import play.api.data.FormError
-import play.api.i18n.Lang
+import play.api.i18n.{Lang, Messages}
 import play.api.libs.json.{JsObject, JsString, Json}
 import play.api.test.Helpers.stubMessagesApi
 import views.helpers.ModeOfTransportCodeHelper.transportMode
@@ -37,7 +37,7 @@ import scala.collection.immutable.ListMap
 
 class TransportCountrySpec extends UnitWithMocksSpec with BeforeAndAfterEach with DeclarationPageBaseSpec {
 
-  implicit val codeListConnector = mock[CodeListConnector]
+  implicit val codeListConnector: CodeListConnector = mock[CodeListConnector]
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
@@ -49,7 +49,7 @@ class TransportCountrySpec extends UnitWithMocksSpec with BeforeAndAfterEach wit
     reset(codeListConnector)
   }
 
-  implicit val messages = stubMessagesApi().preferred(List(Lang(Locale.ENGLISH)))
+  implicit val messages: Messages = stubMessagesApi().preferred(List(Lang(Locale.ENGLISH)))
 
   val form = TransportCountry.form(transportMode(Some(Maritime)))
 

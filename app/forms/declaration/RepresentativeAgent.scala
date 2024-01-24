@@ -22,13 +22,13 @@ import forms.common.YesNoAnswer
 import models.DeclarationType.DeclarationType
 import models.viewmodels.TariffContentKey
 import play.api.data.{Form, Forms}
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 import utils.validators.forms.FieldValidator.isContainedIn
 
 case class RepresentativeAgent(representingAgent: String)
 
 object RepresentativeAgent extends DeclarationPage {
-  implicit val format = Json.format[RepresentativeAgent]
+  implicit val format: OFormat[RepresentativeAgent] = Json.format[RepresentativeAgent]
 
   val formId = "RepresentingAgent"
 

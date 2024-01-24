@@ -26,7 +26,7 @@ import models.{Amendment, FieldMapping}
 import play.api.data.Forms.text
 import play.api.data.{Form, Forms, Mapping}
 import play.api.i18n.Messages
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 import utils.validators.forms.FieldValidator.{hasSpecificLength, isEmpty, nonEmpty, _}
 
 case class OfficeOfExit(officeId: String) extends Ordered[OfficeOfExit] with Amendment {
@@ -47,7 +47,7 @@ case class OfficeOfExit(officeId: String) extends Ordered[OfficeOfExit] with Ame
 }
 
 object OfficeOfExit extends DeclarationPage with FieldMapping {
-  implicit val format = Json.format[OfficeOfExit]
+  implicit val format: OFormat[OfficeOfExit] = Json.format[OfficeOfExit]
 
   val pointerBase: String = "officeOfExit"
   val pointer: ExportsFieldPointer = s"$pointerBase.officeId"

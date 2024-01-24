@@ -21,7 +21,7 @@ import models.DeclarationType.DeclarationType
 import models.viewmodels.TariffContentKey
 import play.api.data.{Form, FormError}
 import play.api.data.Forms.mapping
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -30,7 +30,7 @@ case class CopyDeclaration(ducr: Ducr, lrn: Lrn)
 
 object CopyDeclaration extends DeclarationPage {
 
-  implicit val format = Json.format[CopyDeclaration]
+  implicit val format: OFormat[CopyDeclaration] = Json.format[CopyDeclaration]
 
   def form: Form[CopyDeclaration] =
     Form(

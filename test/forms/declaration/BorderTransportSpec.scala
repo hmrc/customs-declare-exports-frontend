@@ -20,8 +20,9 @@ import base.MockTransportCodeService
 import forms.common.DeclarationPageBaseSpec
 import forms.declaration.BorderTransport.{form, radioButtonGroupId}
 import models.viewmodels.TariffContentKey
-import play.api.i18n.Lang
+import play.api.i18n.{Lang, Messages}
 import play.api.test.Helpers._
+import services.TransportCodeService
 
 import java.util.Locale
 
@@ -29,9 +30,9 @@ class BorderTransportSpec extends DeclarationPageBaseSpec {
 
   val prefix = "declaration.transportInformation.meansOfTransport.crossingTheBorder"
 
-  implicit val messages = stubMessagesApi().preferred(Seq(Lang(Locale.ENGLISH)))
+  implicit val messages: Messages = stubMessagesApi().preferred(Seq(Lang(Locale.ENGLISH)))
 
-  implicit val transportCodeService = MockTransportCodeService.transportCodeService
+  implicit val transportCodeService: TransportCodeService = MockTransportCodeService.transportCodeService
 
   "Transport Details form" when {
 

@@ -17,7 +17,7 @@
 package tools
 
 import scala.concurrent.ExecutionContext
-import akka.stream.testkit.NoMaterializer
+import org.apache.pekko.stream.testkit.NoMaterializer
 import com.typesafe.config.{Config, ConfigFactory}
 import config.featureFlags.{BetaBannerConfig, FeatureSwitchConfig}
 import config.{AppConfig, AppConfigSpec}

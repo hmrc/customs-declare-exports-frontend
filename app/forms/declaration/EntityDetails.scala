@@ -26,7 +26,7 @@ import models.{AmendmentOp, ExportsDeclaration, FieldMapping}
 import play.api.data.{Forms, Mapping}
 import play.api.data.Forms.optional
 import play.api.i18n.Messages
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 import services.DiffTools
 import services.DiffTools.{combinePointers, compareDifference, ExportsDeclarationDiff}
 
@@ -52,7 +52,7 @@ case class EntityDetails(
 
 object EntityDetails extends FieldMapping {
 
-  implicit val format = Json.format[EntityDetails]
+  implicit val format: OFormat[EntityDetails] = Json.format[EntityDetails]
 
   val pointer: ExportsFieldPointer = "details"
   val eoriPointer: ExportsFieldPointer = "eori"

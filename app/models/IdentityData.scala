@@ -46,13 +46,13 @@ case class IdentityData(
 )
 
 object IdentityData {
-  implicit val credentialsFormat = Json.format[Credentials]
-  implicit val nameFormat = Json.format[Name]
-  implicit val agentInformationFormat = Json.format[AgentInformation]
-  implicit val mdtpInformationFormat = Json.format[MdtpInformation]
-  implicit val itmpNameFormat = Json.format[ItmpName]
-  implicit val itmpAddressFormat = Json.format[ItmpAddress]
-  implicit val loginTimesFormat = Json.format[LoginTimes]
+  implicit val credentialsFormat: OFormat[Credentials] = Json.format[Credentials]
+  implicit val nameFormat: OFormat[Name] = Json.format[Name]
+  implicit val agentInformationFormat: OFormat[AgentInformation] = Json.format[AgentInformation]
+  implicit val mdtpInformationFormat: OFormat[MdtpInformation] = Json.format[MdtpInformation]
+  implicit val itmpNameFormat: OFormat[ItmpName] = Json.format[ItmpName]
+  implicit val itmpAddressFormat: OFormat[ItmpAddress] = Json.format[ItmpAddress]
+  implicit val loginTimesFormat: OFormat[LoginTimes] = Json.format[LoginTimes]
 
   implicit val format: OFormat[IdentityData] = Json.format[IdentityData]
 }

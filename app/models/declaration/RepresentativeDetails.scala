@@ -24,7 +24,7 @@ import models.declaration.Parties.partiesPrefix
 import models.declaration.RepresentativeDetails.keyForAmend
 import models.{AmendmentOp, FieldMapping}
 import play.api.i18n.Messages
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 import services.DiffTools
 import services.DiffTools.{combinePointers, compareStringDifference, ExportsDeclarationDiff}
 
@@ -55,7 +55,7 @@ case class RepresentativeDetails(details: Option[EntityDetails], statusCode: Opt
 }
 
 object RepresentativeDetails extends FieldMapping {
-  implicit val format = Json.format[RepresentativeDetails]
+  implicit val format: OFormat[RepresentativeDetails] = Json.format[RepresentativeDetails]
 
   val pointer: ExportsFieldPointer = "representativeDetails"
   val statusCodePointer: ExportsFieldPointer = "statusCode"
