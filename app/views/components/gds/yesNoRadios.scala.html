@@ -67,7 +67,7 @@
             value = yesValue,
             content = yesContent,
             conditionalHtml = yesConditionalHtml,
-            hint = yesHint.map{ hint => Hint(content = Text(messages(hint)))},
+            hint = yesHint.map(hint => Hint(content = Text(messages(hint)))),
             checked = form(answerKey).value.contains(yesValue.get)
         ),
         RadioItem(
@@ -75,7 +75,7 @@
             value = noValue,
             content = noContent,
             conditionalHtml = noConditionalHtml,
-            hint = noHint.map{ hint => Hint(content = Text(messages(hint)))},
+            hint = noHint.map(hint => Hint(content = Text(messages(hint)))),
             checked = form(answerKey).value.contains(noValue.get)
         )
     ),

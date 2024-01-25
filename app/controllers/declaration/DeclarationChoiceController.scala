@@ -18,13 +18,11 @@ package controllers.declaration
 
 import controllers.actions.{AuthAction, VerifiedEmailAction}
 import controllers.declaration.routes.AdditionalDeclarationTypeController
-import forms.declaration.DeclarationChoice
 import forms.declaration.DeclarationChoice._
-import models.DeclarationType.{CLEARANCE, DeclarationType, SIMPLIFIED}
-import models.declaration.DeclarationStatus
+import models.DeclarationType.{CLEARANCE, DeclarationType, SIMPLIFIED, STANDARD}
+import models.declaration.DeclarationStatus.INITIAL
 import models.requests.SessionHelper
-import models.{DeclarationMeta, ExportsDeclaration}
-import play.api.Logging
+import models.{DeclarationMeta, DeclarationType, ExportsDeclaration}
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import services.cache.ExportsCacheService
@@ -44,18 +42,20 @@ class DeclarationChoiceController @Inject() (
   mcc: MessagesControllerComponents,
   declarationChoice: declaration_choice
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with Logging with ModelCacheable with WithUnsafeDefaultFormBinding {
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with WithUnsafeDefaultFormBinding {
 
   val displayPage: Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
-    request.declarationId match {
-      case Some(declarationId) =>
-        exportsCacheService.get(declarationId).map {
-          case Some(declaration) if declaration.isAmendmentDraft => nextPage(declarationId)
-          case Some(declaration)                                 => Ok(declarationChoice(form.fill(DeclarationChoice(declaration.`type`))))
-          case _                                                 => Ok(declarationChoice(form))
-        }
+    request.declarationId.fold {
+      Future.successful(Ok(declarationChoice(form(nonStandardJourneys))))
+    } { declarationId =>
+      exportsCacheService.get(declarationId).map {
+        case Some(declaration) if declaration.isAmendmentDraft => nextPage(declarationId)
 
-      case _ => Future.successful(Ok(declarationChoice(form)))
+        case Some(declaration) if !declaration.isType(STANDARD) =>
+          Ok(declarationChoice(form(nonStandardJourneys).fill(declaration.`type`.toString)))
+
+        case _ => Ok(declarationChoice(form(nonStandardJourneys)))
+      }
     }
   }
 
@@ -73,17 +73,18 @@ class DeclarationChoiceController @Inject() (
 
     nextPageOrMaybeDeclaration.flatMap {
       case Left(result) => Future.successful(result)
+
       case Right(maybeDeclaration) =>
-        form
+        form(nonStandardJourneys)
           .bindFromRequest()
           .fold(
             formWithErrors => Future.successful(BadRequest(declarationChoice(formWithErrors))),
             declarationType =>
               maybeDeclaration
-                .map(_.updateType(declarationType.value))
+                .map(_.updateType(DeclarationType.withName(declarationType)))
                 .map(clearAuthorisationProcedureCodeChoiceIfRequired)
                 .map(exportsCacheService.update(_, request.user.eori))
-                .getOrElse(create(declarationType.value, request.user.eori))
+                .getOrElse(create(DeclarationType.withName(declarationType), request.user.eori))
                 .map(declaration => nextPage(declaration.id))
           )
     }
@@ -95,15 +96,10 @@ class DeclarationChoiceController @Inject() (
       case _                      => declaration
     }
 
-  private def create(declarationType: DeclarationType, eori: String)(implicit hc: HeaderCarrier): Future[ExportsDeclaration] =
-    exportsCacheService.create(
-      ExportsDeclaration(
-        id = "",
-        declarationMeta = DeclarationMeta(status = DeclarationStatus.INITIAL, createdDateTime = Instant.now, updatedDateTime = Instant.now),
-        `type` = declarationType
-      ),
-      eori
-    )
+  private def create(declarationType: DeclarationType, eori: String)(implicit hc: HeaderCarrier): Future[ExportsDeclaration] = {
+    val declarationMeta = DeclarationMeta(status = INITIAL, createdDateTime = Instant.now, updatedDateTime = Instant.now)
+    exportsCacheService.create(ExportsDeclaration(id = "", declarationMeta, declarationType), eori)
+  }
 
   private def nextPage(declarationId: String)(implicit request: RequestHeader): Result =
     Redirect(AdditionalDeclarationTypeController.displayPage)

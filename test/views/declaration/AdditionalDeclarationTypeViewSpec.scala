@@ -18,10 +18,9 @@ package views.declaration
 
 import base.Injector
 import config.AppConfig
-import controllers.declaration.routes.DeclarationChoiceController
+import controllers.declaration.routes.{DeclarationChoiceController, StandardOrOtherJourneyController}
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypePage.{form, radioButtonGroupId}
-import models.DeclarationType
 import models.DeclarationType._
 import play.twirl.api.Html
 import views.declaration.spec.UnitViewSpec
@@ -40,14 +39,17 @@ class AdditionalDeclarationTypeViewSpec extends UnitViewSpec with CommonMessages
 
   "Additional Declaration Type View" when {
 
-    DeclarationType.values.foreach { declarationType =>
+    allDeclarationTypes.foreach { declarationType =>
       s"the journey selected was $declarationType" should {
         val view = createView(declarationType)
 
         "display the expected 'Back' button" in {
           val backButton = view.getElementById("back-link")
           backButton.text mustBe messages(backToPreviousQuestionCaption)
-          backButton must haveHref(DeclarationChoiceController.displayPage)
+          val expectedCall =
+            if (declarationType == STANDARD) StandardOrOtherJourneyController.displayPage
+            else DeclarationChoiceController.displayPage
+          backButton must haveHref(expectedCall)
         }
 
         "display the expected section header" in {
@@ -82,7 +84,7 @@ class AdditionalDeclarationTypeViewSpec extends UnitViewSpec with CommonMessages
       }
     }
 
-    DeclarationType.values.filterNot(_ == SUPPLEMENTARY).foreach { declarationType =>
+    allDeclarationTypesExcluding(SUPPLEMENTARY).foreach { declarationType =>
       s"the journey selected was $declarationType" should {
         val view = createView(declarationType)
 

@@ -68,7 +68,6 @@ trait Stubs {
       |draft.timeToLive=1d
       |timeoutDialog.timeout=13min
       |timeoutDialog.countdown=3min
-      |list-of-available-journeys="SMP,STD,CAN,SUB,CON"
       |urls.tradeTariff=tradeTariff
       |urls.classificationHelp=classificationHelp
       |urls.ecicsTool=ecicsTool

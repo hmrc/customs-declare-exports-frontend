@@ -14,11 +14,11 @@
  * limitations under the License.
  *@
 
-@import controllers.declaration.routes.AdditionalDeclarationTypeController
+@import controllers.declaration.routes.{AdditionalDeclarationTypeController, DeclarationChoiceController, StandardOrOtherJourneyController}
 @import controllers.navigation.Navigator
 @import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypePage
 @import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.AdditionalDeclarationType
-@import models.DeclarationType.SUPPLEMENTARY
+@import models.DeclarationType.{STANDARD, SUPPLEMENTARY}
 @import models.requests.JourneyRequest
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.helpers.{AdditionalDeclarationTypeHelper, BackButton, Title}
@@ -39,7 +39,6 @@
     externalLink: externalLink,
     tariffExpander: tariffExpander,
     formHelper: FormWithCSRF,
-    navigator: Navigator,
     appConfig: AppConfig
 )
 
@@ -52,12 +51,17 @@
 }
 
 @classes = @{
-    if(!request.isType(SUPPLEMENTARY)) "govuk-radios--inline" else ""
+    if (!request.isType(SUPPLEMENTARY)) "govuk-radios--inline" else ""
+}
+
+@previousPage = @{
+    if (request.isType(STANDARD)) StandardOrOtherJourneyController.displayPage
+    else DeclarationChoiceController.displayPage
 }
 
 @govukLayout(
     title = Title(s"declaration.declarationType.header.${request.declarationType}", "declaration.section.1", hasErrors = form.hasErrors || form.hasGlobalErrors),
-    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(AdditionalDeclarationTypePage))),
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), previousPage)),
     showDeclarationSummaryLink = false
 ) {
     @formHelper(action = AdditionalDeclarationTypeController.submitForm, 'autoComplete -> "off") {

@@ -18,7 +18,7 @@ package views
 
 import base.OverridableInjector
 import config.ExternalServicesConfig
-import controllers.declaration.routes.DeclarationChoiceController
+import controllers.declaration.routes.StandardOrOtherJourneyController
 import controllers.routes.{FileUploadController, SavedDeclarationsController}
 import org.mockito.Mockito.when
 import play.api.inject.bind
@@ -68,7 +68,7 @@ class ChoiceViewSpec extends UnitViewSpec with CommonMessages {
       val createDeclaration = options.get(0)
       createDeclaration.className().contains("focus")
       createDeclaration.text mustBe messages("declaration.choice.link.create.new")
-      createDeclaration.attr("href") mustBe DeclarationChoiceController.displayPage.url
+      createDeclaration.attr("href") mustBe StandardOrOtherJourneyController.displayPage.url
 
       val continueDraftDeclaration = options.get(1)
       continueDraftDeclaration.text mustBe messages("declaration.choice.link.manage.drafts")

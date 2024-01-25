@@ -1,4 +1,10 @@
 
+# Standard or other journey Choice Page
+
+GET         /standard-or-other                  controllers.declaration.StandardOrOtherJourneyController.displayPage
+
+POST        /standard-or-other                  controllers.declaration.StandardOrOtherJourneyController.submitChoice
+
 # Declaration Choice Page
 
 GET         /declaration-choice                 controllers.declaration.DeclarationChoiceController.displayPage

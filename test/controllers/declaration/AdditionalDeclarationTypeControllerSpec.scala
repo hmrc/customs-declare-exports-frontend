@@ -35,7 +35,7 @@ import views.html.declaration.additional_declaration_type
 
 class AdditionalDeclarationTypeControllerSpec extends ControllerSpec with AuditedControllerSpec with AmendmentDraftFilterSpec {
 
-  val additionalDeclarationTypePage = mock[additional_declaration_type]
+  private val additionalDeclarationTypePage = mock[additional_declaration_type]
 
   val controller = new AdditionalDeclarationTypeController(
     mockAuthAction,

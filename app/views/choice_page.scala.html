@@ -15,7 +15,7 @@
  *@
 
 @import config.ExternalServicesConfig
-@import controllers.declaration.routes.DeclarationChoiceController
+@import controllers.declaration.routes.StandardOrOtherJourneyController
 @import controllers.routes.{FileUploadController, SavedDeclarationsController}
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.dashboard.DashboardHelper.toDashboard
@@ -44,7 +44,7 @@
     @paragraph(link(
         id = Some("create-declaration"),
         text = messages("declaration.choice.link.create.new"),
-        call = DeclarationChoiceController.displayPage,
+        call = StandardOrOtherJourneyController.displayPage,
         classes = Some("govuk-link govuk-link--no-visited-state focus")
     ))
 

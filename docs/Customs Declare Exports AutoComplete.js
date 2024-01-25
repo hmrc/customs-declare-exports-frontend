@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Customs Declare Exports AutoComplete
 // @namespace    http://tampermonkey.net/
-// @version      1.71
+// @version      1.72
 // @description  decs supported: (Std-Arrived A), (Occ-Arrived B), (Smp-Arrived C), (Std-PreLodged D), (Occ-PreLodged E), (Smp-PreLodged F), (Clr-Arrived J), (Clr-PreLodged K), (Sup-SDP Y), (Sup-EIDR Z)
 // @author       You
 // @match        http*://*/customs-declare-exports*
@@ -25,16 +25,16 @@ function setDeclaration(choice) {
 
 function decTypes() {
     const decTypes = [
-        {"name": "Standard-PreLodged", "value": "D", "id": "STANDARD", "addId":"prelodged"},
-        {"name": "Standard-Arrived", "value": "A", "id": "STANDARD", "addId":"arrived"},
-        {"name": "Simplified-PreLodged", "value": "F", "id": "SIMPLIFIED", "addId":"prelodged"},
-        {"name": "Simplified-Arrived", "value": "C", "id": "SIMPLIFIED", "addId":"arrived"},
-        {"name": "Clearance-PreLodged", "value": "K", "id": "CLEARANCE", "addId":"prelodged"},
-        {"name": "Clearance-Arrived", "value": "J", "id": "CLEARANCE", "addId":"arrived"},
-        {"name": "Supplementary-SDP", "value": "Y", "id": "SUPPLEMENTARY", "addId":"simplified"},
-        {"name": "Supplementary-EIDR", "value": "Z", "id": "SUPPLEMENTARY", "addId":"eidr"},
-        {"name": "Occasional-PreLodged", "value": "E", "id": "OCCASIONAL", "addId":"prelodged"},
-        {"name": "Occasional-Arrived", "value": "B", "id": "OCCASIONAL", "addId":"arrived"}
+        {"name": "Standard-PreLodged", "value": "D", "stdId": "STANDARD", "addId":"prelodged"},
+        {"name": "Standard-Arrived", "value": "A", "stdId": "STANDARD", "addId":"arrived"},
+        {"name": "Simplified-PreLodged", "value": "F", "nonStdId": "SIMPLIFIED", "addId":"prelodged"},
+        {"name": "Simplified-Arrived", "value": "C", "nonStdId": "SIMPLIFIED", "addId":"arrived"},
+        {"name": "Clearance-PreLodged", "value": "K", "nonStdId": "CLEARANCE", "addId":"prelodged"},
+        {"name": "Clearance-Arrived", "value": "J", "nonStdId": "CLEARANCE", "addId":"arrived"},
+        {"name": "Supplementary-SDP", "value": "Y", "nonStdId": "SUPPLEMENTARY", "addId":"simplified"},
+        {"name": "Supplementary-EIDR", "value": "Z", "nonStdId": "SUPPLEMENTARY", "addId":"eidr"},
+        {"name": "Occasional-PreLodged", "value": "E", "nonStdId": "OCCASIONAL", "addId":"prelodged"},
+        {"name": "Occasional-Arrived", "value": "B", "nonStdId": "OCCASIONAL", "addId":"arrived"}
     ]
     return decTypes
 }
@@ -120,8 +120,11 @@ function selectFromAutoPredict(element, selected) {
 }
 
 function selectDecType(type) {
-    document.getElementById(decTypes().filter(type =>
-        type["value"] == getDeclaration()).shift()[type]).checked = true
+    let elementId = decTypes().filter(
+        type => type["value"] == getDeclaration()
+    ).shift()[type]
+    if (elementId === undefined && type == "stdId") "NonStandardDeclarationType"
+    document.getElementById(elementId).checked = true
 }
 
 function selectRadioOption(element, index) {
@@ -183,27 +186,32 @@ function choicePage() {
     }
 }
 
-function declarationChoice() {
-    if (currentPageIs('/customs-declare-exports/declaration/declaration-choice')){
+function standardOrOtherDeclaration() {
+    if (currentPageIs('/customs-declare-exports/declaration/standard-or-other')) {
         if (getDeclaration() == 0) {
             alert("Select journey type")
             return
         }
 
-        selectDecType("id")
+        selectDecType("stdId")
         submit()
     }
 }
 
-function dispatchLocation() {
-    if (currentPageIs('/customs-declare-exports/declaration/dispatch-location')){
-        selectRadioOptionFromInputs(document.getElementsByName('dispatchLocation'), 0)
+function nonStandardDeclaration() {
+    if (currentPageIs('/customs-declare-exports/declaration/declaration-choice')) {
+        if (getDeclaration() == 0) {
+            alert("Select journey type")
+            return
+        }
+
+        selectDecType("nonStdId")
         submit()
     }
 }
 
 function additionalDeclarationType() {
-    if (currentPageIs('/customs-declare-exports/declaration/type')){
+    if (currentPageIs('/customs-declare-exports/declaration/type')) {
         selectDecType("addId")
         submit()
     }
@@ -593,7 +601,7 @@ function destinationCountry() {
 
 function countryOfRouting() {
     if (currentPageIs('/customs-declare-exports/declaration/country-of-routing')) {
-        switch(getDeclaration()){
+        switch(getDeclaration()) {
             case 'F':
                 document.getElementById('Yes').click()
                 break
@@ -634,7 +642,7 @@ function officeOfExit() {
             document.getElementById('Yes').click()
         }
 
-        switch(getDeclaration()){
+        switch(getDeclaration()) {
             case 'E':
             case 'F':
             case 'K':
@@ -716,7 +724,7 @@ function addFirstItem() {
 
 function procedureCodes() {
     if (currentPageIs('/customs-declare-exports/declaration/items/.*/procedure-codes')) {
-        switch(getDeclaration()){
+        switch(getDeclaration()) {
             case 'D':
             case 'F':
             case 'J':
@@ -770,7 +778,7 @@ function fiscalReferencesSummary() {
 
 function commodityDetails() {
     if (currentPageIs('/customs-declare-exports/declaration/items/.*/commodity-details')) {
-        switch(getDeclaration()){
+        switch(getDeclaration()) {
             case 'A':
                 document.getElementById("combinedNomenclatureCode").value = '2929100000'
                 document.getElementById('descriptionOfGoods').value ='nonblockingdocumentary'
@@ -804,7 +812,7 @@ function unDangerousGoodsCode() {
 
 function cusCode() {
     if (currentPageIs('/customs-declare-exports/declaration/items/.*/cus-code')) {
-        switch(getDeclaration()){
+        switch(getDeclaration()) {
             case 'A':
             case 'B':
             case 'C':
@@ -894,7 +902,7 @@ function isAdditionalInformationRequired() {
 
 function addAdditionalInformation() {
     if (currentPageIs('/customs-declare-exports/declaration/items/.*/additional-information')) {
-        switch(getDeclaration()){
+        switch(getDeclaration()) {
             case 'K':
             case 'Z':
                 document.getElementById('code').value ='00600'
@@ -1096,7 +1104,7 @@ function warehouseIdentification() {
 
 function supervisingCustomsOffice() {
     if (currentPageIs('/customs-declare-exports/declaration/supervising-customs-office')) {
-        switch(getDeclaration()){
+        switch(getDeclaration()) {
             case 'A':
             case 'D':
             case 'Z':
@@ -1236,8 +1244,8 @@ function completeJourney() {
     // main
     startPage()
     choicePage()
-    declarationChoice()
-    dispatchLocation()
+    standardOrOtherDeclaration()
+    nonStandardDeclaration()
     additionalDeclarationType()
     doYouHaveDucr()
     ducrEntry()

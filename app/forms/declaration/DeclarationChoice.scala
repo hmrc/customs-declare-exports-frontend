@@ -15,26 +15,26 @@
  */
 
 package forms.declaration
+
 import forms.DeclarationPage
 import forms.MappingHelper.requiredRadio
-import models.DeclarationType
-import models.DeclarationType.DeclarationType
-import play.api.data.{Form, Forms}
+import models.DeclarationType.{allDeclarationTypesExcluding, STANDARD}
+import play.api.data.{Form, Forms, Mapping}
 import utils.validators.forms.FieldValidator.isContainedIn
-
-case class DeclarationChoice(value: DeclarationType)
 
 object DeclarationChoice extends DeclarationPage {
 
-  val mapping = Forms.single(
+  val NonStandardDeclarationType = "NonStandardDeclarationType"
+  val StandardDeclarationType = STANDARD.toString
+
+  val standardOrOtherJourneys = List(StandardDeclarationType, NonStandardDeclarationType)
+  val nonStandardJourneys = allDeclarationTypesExcluding(STANDARD).map(_.toString)
+
+  def mapping(acceptedJourneys: Seq[String]): Mapping[String] = Forms.single(
     "type" ->
       requiredRadio("declaration.type.error")
-        .verifying("declaration.type.error", isContainedIn(DeclarationType.values.map(_.toString)))
-        .transform[DeclarationChoice](
-          choice => DeclarationChoice(DeclarationType.values.find(_.toString.equals(choice)).get),
-          choice => choice.value.toString
-        )
+        .verifying("declaration.type.error", isContainedIn(acceptedJourneys))
   )
 
-  def form: Form[DeclarationChoice] = Form(mapping)
+  def form(acceptedJourneys: Seq[String]): Form[String] = Form(mapping(acceptedJourneys))
 }

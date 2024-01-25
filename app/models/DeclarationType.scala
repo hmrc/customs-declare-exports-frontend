@@ -29,7 +29,7 @@ object DeclarationType extends Enumeration {
 
   def allDeclarationTypesExcluding(types: DeclarationType*): Seq[DeclarationType.Value] = allDeclarationTypes diff types
 
-  val nonClearanceJourneys = List(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL)
+  val nonClearanceJourneys = allDeclarationTypesExcluding(CLEARANCE)
   val standardAndSupplementary = List(STANDARD, SUPPLEMENTARY)
   val occasionalAndSimplified = List(OCCASIONAL, SIMPLIFIED)
 
