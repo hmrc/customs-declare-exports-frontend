@@ -52,7 +52,7 @@ class CompleteDeclarationViewSpec extends UnitViewSpec with Injector {
 
     "display all expected section 3's sub-sections" in {
       val subs = view.getElementsByClass("govuk-heading-s")
-      subs.size mustBe 7
+      subs.size mustBe 6
 
       subs.eachText.asScala.zipWithIndex.foreach { sub =>
         val text = sub._1
@@ -63,23 +63,22 @@ class CompleteDeclarationViewSpec extends UnitViewSpec with Injector {
 
     "display all expected links" in {
       val links = view.getElementsByClass("govuk-link--no-visited-state")
-      links.size mustBe 15
+      links.size mustBe 14
 
       links.get(0) must haveHref(guidance.cdsTariffCompletionGuide)
       links.get(1) must haveHref(guidance.commodityCodes)
-      links.get(2) must haveHref(appConfig.commodityCode9306909000)
-      links.get(3) must haveHref(guidance.commodityCodes)
-      links.get(4) must haveHref(guidance.vatRatingForStandardExport)
-      links.get(5) must haveHref(guidance.vatOnGoodsExportedFromUK)
-      links.get(6) must haveHref(guidance.commodityCode2208303000)
-      links.get(7) must haveHref(guidance.aiCodes)
-      links.get(8) must haveHref(guidance.aiCodesForContainers)
-      links.get(9) must haveHref(guidance.additionalDocumentsUnionCodes)
-      links.get(10) must haveHref(guidance.additionalDocumentsReferenceCodes)
-      links.get(11) must haveHref(guidance.commodityCode0306310010)
-      links.get(12) must haveHref(guidance.clearingGoodsFromToUK)
-      links.get(13) must haveHref(guidance.cdsTariffCompletionGuide)
-      links.get(14) must haveHref(guidance.specialProcedures)
+      links.get(2) must haveHref(guidance.commodityCodes)
+      links.get(3) must haveHref(guidance.vatRatingForStandardExport)
+      links.get(4) must haveHref(guidance.vatOnGoodsExportedFromUK)
+      links.get(5) must haveHref(guidance.commodityCode2208303000)
+      links.get(6) must haveHref(guidance.aiCodes)
+      links.get(7) must haveHref(guidance.aiCodesForContainers)
+      links.get(8) must haveHref(guidance.additionalDocumentsUnionCodes)
+      links.get(9) must haveHref(guidance.additionalDocumentsReferenceCodes)
+      links.get(10) must haveHref(guidance.commodityCode0306310010)
+      links.get(11) must haveHref(guidance.clearingGoodsFromToUK)
+      links.get(12) must haveHref(guidance.cdsTariffCompletionGuide)
+      links.get(13) must haveHref(guidance.specialProcedures)
     }
 
     "display all expected bullet lists" in {
