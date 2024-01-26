@@ -9,7 +9,7 @@
   },
   {
     "parentCode":"AQ",
-    "childCodes":["Antartica"]
+    "childCodes":["Antartica","Australian Antarctic Territory","British Antarctic Territory","French Antarctic Territory"]
   },
   {
     "parentCode":"BL",
@@ -92,6 +92,10 @@
     "childCodes":["Channel Islands"]
   },
   {
+    "parentCode":"GP",
+    "childCodes":["St Maarten (North)","Iles des Saintes and Maria-Galante"]
+  },
+  {
     "parentCode":"IE",
     "childCodes":["Republic of Ireland","Eire"]
   },
@@ -102,6 +106,10 @@
   {
     "parentCode":"JE",
     "childCodes":["Channel Islands"]
+  },
+  {
+    "parentCode":"KG",
+    "childCodes":["Kyrgyzstan"]
   },
   {
     "parentCode":"KN",
@@ -173,7 +181,7 @@
   },
   {
     "parentCode":"SH",
-    "childCodes":["St Helena"]
+    "childCodes":["St Helena","Gough"]
   },
   {
     "parentCode":"SZ",
@@ -184,8 +192,12 @@
     "childCodes":["Togo Republic","Togolese Republic","Republic of Togo"]
   },
   {
+    "parentCode": "UM",
+    "childCodes": ["American Polynesia and Oceania","Caroline Islands","Palra Island"]
+  },
+  {
     "parentCode": "US",
-    "childCodes": ["USA"]
+    "childCodes": ["USA","Alaska","Hawaii"]
   },
   {
     "parentCode":"VA",
