@@ -111,61 +111,54 @@
     @paragraphBody(messages(s"$section.3.sub.3.paragraph.1"))
     @paragraphBody(messages(s"$section.3.sub.3.paragraph.2", link(
         text = messages(s"$section.3.sub.3.paragraph.2.link.1"),
-        call = Call("GET", appConfig.commodityCode9306909000)
+        call = Call("GET", guidance.commodityCodes)
+    )))
+    @paragraphBody(messages(s"$section.3.sub.3.paragraph.3"))
+    @paragraphBody(messages(s"$section.3.sub.3.paragraph.4", link(
+        text = messages(s"$section.3.sub.3.paragraph.4.link.1"),
+        call = Call("GET", guidance.vatRatingForStandardExport)
+    ), link(
+        text = messages(s"$section.3.sub.3.paragraph.4.link.2"),
+        call = Call("GET", guidance.vatOnGoodsExportedFromUK)
     )))
 
     @subHeader(3, 4)
     @paragraphBody(messages(s"$section.3.sub.4.paragraph.1"))
     @paragraphBody(messages(s"$section.3.sub.4.paragraph.2", link(
         text = messages(s"$section.3.sub.4.paragraph.2.link.1"),
-        call = Call("GET", guidance.commodityCodes)
-    )))
-    @paragraphBody(messages(s"$section.3.sub.4.paragraph.3"))
-    @paragraphBody(messages(s"$section.3.sub.4.paragraph.4", link(
-        text = messages(s"$section.3.sub.4.paragraph.4.link.1"),
-        call = Call("GET", guidance.vatRatingForStandardExport)
-    ), link(
-        text = messages(s"$section.3.sub.4.paragraph.4.link.2"),
-        call = Call("GET", guidance.vatOnGoodsExportedFromUK)
-    )))
-
-    @subHeader(3, 5)
-    @paragraphBody(messages(s"$section.3.sub.5.paragraph.1"))
-    @paragraphBody(messages(s"$section.3.sub.5.paragraph.2", link(
-        text = messages(s"$section.3.sub.5.paragraph.2.link.1"),
         call = Call("GET", guidance.commodityCode2208303000)
     )))
-    @paragraphBody(messages(s"$section.3.sub.5.paragraph.3"))
+    @paragraphBody(messages(s"$section.3.sub.4.paragraph.3"))
 
-    @subHeader(3, 6)
-    @paragraphBody(messages(s"$section.3.sub.6.paragraph.1", link(
-        text = messages(s"$section.3.sub.6.paragraph.1.link.1"),
+    @subHeader(3, 5)
+    @paragraphBody(messages(s"$section.3.sub.5.paragraph.1", link(
+        text = messages(s"$section.3.sub.5.paragraph.1.link.1"),
         call = Call("GET", guidance.aiCodes)
     )))
-    @paragraphBody(messages(s"$section.3.sub.6.paragraph.2", link(
-        text = messages(s"$section.3.sub.6.paragraph.2.link.1"),
+    @paragraphBody(messages(s"$section.3.sub.5.paragraph.2", link(
+        text = messages(s"$section.3.sub.5.paragraph.2.link.1"),
         call = Call("GET", guidance.aiCodesForContainers)
     )))
 
-    @subHeader(3, 7)
-    @paragraphBody(messages(s"$section.3.sub.7.paragraph.1"))
+    @subHeader(3, 6)
+    @paragraphBody(messages(s"$section.3.sub.6.paragraph.1"))
     @bulletList(List(
-        Html(messages(s"$section.3.sub.7.list.1.bullet.1", link(
-            text = messages(s"$section.3.sub.7.list.1.bullet.1.link.1"),
+        Html(messages(s"$section.3.sub.6.list.1.bullet.1", link(
+            text = messages(s"$section.3.sub.6.list.1.bullet.1.link.1"),
             call = Call("GET", guidance.additionalDocumentsUnionCodes)
         ))),
-        Html(messages(s"$section.3.sub.7.list.1.bullet.2", link(
-            text = messages(s"$section.3.sub.7.list.1.bullet.2.link.1"),
+        Html(messages(s"$section.3.sub.6.list.1.bullet.2", link(
+            text = messages(s"$section.3.sub.6.list.1.bullet.2.link.1"),
             call = Call("GET", guidance.additionalDocumentsReferenceCodes)
         )))
     ))
-    @paragraphBody(messages(s"$section.3.sub.7.paragraph.2"))
-    @paragraphBody(messages(s"$section.3.sub.7.paragraph.3"))
-    @paragraphBody(messages(s"$section.3.sub.7.paragraph.4", link(
-        text = messages(s"$section.3.sub.7.paragraph.4.link.1"),
+    @paragraphBody(messages(s"$section.3.sub.6.paragraph.2"))
+    @paragraphBody(messages(s"$section.3.sub.6.paragraph.3"))
+    @paragraphBody(messages(s"$section.3.sub.6.paragraph.4", link(
+        text = messages(s"$section.3.sub.6.paragraph.4.link.1"),
         call = Call("GET", guidance.commodityCode0306310010)
     )))
-    @paragraphBody(messages(s"$section.3.sub.7.paragraph.5"))
+    @paragraphBody(messages(s"$section.3.sub.6.paragraph.5"))
 
 @* Section 4 *@
 

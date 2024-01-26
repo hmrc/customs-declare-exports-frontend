@@ -118,7 +118,6 @@ class AppConfig @Inject() (
   val nationalClearanceHub = loadConfig("urls.nationalClearanceHub")
   val hmrcExchangeRatesFor2021 = loadConfig("urls.hmrcExchangeRatesFor2021")
   val nationalAdditionalCodes = loadConfig("urls.nationalAdditionalCodes")
-  val commodityCode9306909000 = loadConfig("urls.commodityCode9306909000")
   val simplifiedDeclPreviousDoc = loadConfig("urls.simplifiedDeclPreviousDoc")
   val getGoodsMovementReference = loadConfig("urls.getGoodsMovementReference")
 
