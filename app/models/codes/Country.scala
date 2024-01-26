@@ -16,7 +16,7 @@
 
 package models.codes
 
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 
 case class Country(countryName: String, countryCode: String) extends CommonCode {
   def code: String = countryCode
@@ -26,5 +26,5 @@ case class Country(countryName: String, countryCode: String) extends CommonCode 
 }
 
 object Country {
-  implicit val formats = Json.format[Country]
+  implicit val formats: OFormat[Country] = Json.format[Country]
 }

@@ -36,7 +36,7 @@ import scala.collection.immutable.ListMap
 
 class CountryOfRoutingViewSpec extends PageWithButtonsSpec with ExportsTestHelper with Injector {
 
-  implicit val mockCodeListConnector = mock[CodeListConnector]
+  implicit val mockCodeListConnector: CodeListConnector = mock[CodeListConnector]
 
   val expectedCountryName = "Mauritius"
 

@@ -29,6 +29,7 @@ import models.DeclarationType.STANDARD
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.mvc.Call
+import services.TransportCodeService
 import views.declaration.spec.PageWithButtonsSpec
 import views.helpers.ModeOfTransportCodeHelper
 import views.html.declaration.departure_transport
@@ -43,7 +44,7 @@ class DepartureTransportViewSpec extends PageWithButtonsSpec with Injector {
 
   val page = instanceOf[departure_transport]
 
-  implicit val transportCodeService = MockTransportCodeService.transportCodeService
+  implicit val transportCodeService: TransportCodeService = MockTransportCodeService.transportCodeService
 
   override val typeAndViewInstance = (STANDARD, page(form(transportCodeService.transportCodesForV1))(_, _))
 

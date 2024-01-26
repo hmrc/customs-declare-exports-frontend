@@ -20,7 +20,7 @@ import forms.common.YesNoAnswer
 import forms.declaration.authorisationHolder.AuthorisationHolder
 import models.ExportsFieldPointer.ExportsFieldPointer
 import models.{ExportsDeclaration, FieldMapping}
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 import services.DiffTools
 import services.DiffTools.{combinePointers, ExportsDeclarationDiff}
 
@@ -36,7 +36,7 @@ case class AuthorisationHolders(holders: Seq[AuthorisationHolder], isRequired: O
 }
 
 object AuthorisationHolders extends FieldMapping {
-  implicit val format = Json.format[AuthorisationHolders]
+  implicit val format: OFormat[AuthorisationHolders] = Json.format[AuthorisationHolders]
 
   val pointer: ExportsFieldPointer = "declarationHoldersData"
 

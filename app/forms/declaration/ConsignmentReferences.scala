@@ -23,7 +23,7 @@ import models.DeclarationType.{CLEARANCE, DeclarationType, SUPPLEMENTARY}
 import models.viewmodels.TariffContentKey
 import play.api.data.Forms.{mapping, optional, text}
 import play.api.data.{Form, FormError}
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.validators.forms.FieldValidator._
 
@@ -33,7 +33,7 @@ case class ConsignmentReferences(ducr: Option[Ducr], lrn: Option[Lrn] = None, mr
 
 object ConsignmentReferences extends DeclarationPage {
 
-  implicit val format = Json.format[ConsignmentReferences]
+  implicit val format: OFormat[ConsignmentReferences] = Json.format[ConsignmentReferences]
 
   val ducrId = "ducr.ducr"
 

@@ -26,7 +26,7 @@ import org.mockito.ArgumentMatchers.any
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.data.FormError
-import play.api.i18n.Lang
+import play.api.i18n.{Lang, Messages}
 import play.api.test.Helpers.stubMessagesApi
 import models.codes.{Country => ModelCountry}
 import org.mockito.Mockito.{reset, when}
@@ -36,8 +36,8 @@ import scala.collection.immutable.ListMap
 
 class DestinationCountriesSpec extends DeclarationPageBaseSpec with JourneyTypeTestRunner with MockitoSugar with BeforeAndAfterEach {
 
-  implicit val mockCodeListConnector = mock[CodeListConnector]
-  implicit val messages = stubMessagesApi().preferred(Seq(Lang(Locale.ENGLISH)))
+  implicit val mockCodeListConnector: CodeListConnector = mock[CodeListConnector]
+  implicit val messages: Messages = stubMessagesApi().preferred(Seq(Lang(Locale.ENGLISH)))
 
   override def beforeEach(): Unit = {
     super.beforeEach()

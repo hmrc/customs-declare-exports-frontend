@@ -19,7 +19,7 @@ package controllers.helpers
 import base.UnitSpec
 import play.api.data.Forms.{mapping, text}
 import play.api.data.{Form, FormError}
-import play.api.libs.json.{JsObject, JsString, JsValue, Json}
+import play.api.libs.json.{JsObject, JsString, JsValue, Json, OFormat}
 
 class MultipleItemsHelperSpec extends UnitSpec {
   import MultipleItemsHelperSpec._
@@ -134,7 +134,7 @@ object MultipleItemsHelperSpec {
   case class TestForm(value: String)
 
   object TestForm {
-    implicit val format = Json.format[TestForm]
+    implicit val format: OFormat[TestForm] = Json.format[TestForm]
   }
 
   val errorMessage = "Incorrect value"

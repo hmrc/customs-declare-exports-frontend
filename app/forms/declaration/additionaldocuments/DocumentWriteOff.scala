@@ -29,7 +29,7 @@ import models.{AmendmentOp, FieldMapping}
 import play.api.data.Forms.{optional, text}
 import play.api.data.{Form, FormError, Forms}
 import play.api.i18n.Messages
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 import services.DiffTools
 import services.DiffTools.{combinePointers, compareBigDecimalDifference, compareStringDifference, ExportsDeclarationDiff}
 import utils.validators.forms.FieldValidator._
@@ -69,7 +69,7 @@ object DocumentWriteOff extends FieldMapping {
   private def convert(measurementUnit: Option[String], documentQuantity: Option[String]): DocumentWriteOff =
     new DocumentWriteOff(measurementUnit, documentQuantity.map(BigDecimal(_)))
 
-  implicit val format = Json.format[DocumentWriteOff]
+  implicit val format: OFormat[DocumentWriteOff] = Json.format[DocumentWriteOff]
 
   private val measurementUnitLength = 3
   private val qualifierLength = 1

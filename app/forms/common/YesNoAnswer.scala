@@ -25,7 +25,7 @@ import models.ExportsFieldPointer.ExportsFieldPointer
 import models.declaration.{Parties, Transport}
 import play.api.data.{Form, Forms, Mapping}
 import play.api.i18n.Messages
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 import utils.validators.forms.FieldValidator.isContainedIn
 
 case class YesNoAnswer(answer: String) extends Ordered[YesNoAnswer] with Amendment {
@@ -48,7 +48,7 @@ case class YesNoAnswer(answer: String) extends Ordered[YesNoAnswer] with Amendme
 
 object YesNoAnswer {
 
-  implicit val format = Json.format[YesNoAnswer]
+  implicit val format: OFormat[YesNoAnswer] = Json.format[YesNoAnswer]
 
   private lazy val parties = s"${ExportsDeclaration.pointer}.${Parties.pointer}"
   private lazy val transport = s"${ExportsDeclaration.pointer}.${Transport.pointer}"

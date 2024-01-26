@@ -24,14 +24,14 @@ import models.viewmodels.TariffContentKey
 import models.DeclarationType.DeclarationType
 import play.api.data.Forms.text
 import play.api.data.{Form, Forms}
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 import uk.gov.voa.play.form.ConditionalMappings.mandatoryIfEqual
 import utils.validators.forms.FieldValidator._
 
 case class NactCodeFirst(code: Option[String])
 
 object NactCodeFirst extends DeclarationPage {
-  implicit val format = Json.format[NactCodeFirst]
+  implicit val format: OFormat[NactCodeFirst] = Json.format[NactCodeFirst]
 
   val hasNactCodeKey = "hasNact"
 

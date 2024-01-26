@@ -21,13 +21,13 @@ import forms.MappingHelper.requiredRadio
 import models.declaration.AuthorisationProcedureCode
 import models.declaration.AuthorisationProcedureCode.{values, _}
 import play.api.data.{Form, Forms, Mapping}
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 import utils.validators.forms.FieldValidator.isContainedIn
 
 case class AuthorisationProcedureCodeChoice(code: AuthorisationProcedureCode)
 
 object AuthorisationProcedureCodeChoice extends DeclarationPage {
-  implicit val format = Json.format[AuthorisationProcedureCodeChoice]
+  implicit val format: OFormat[AuthorisationProcedureCodeChoice] = Json.format[AuthorisationProcedureCodeChoice]
 
   val allowedValues: Seq[String] = values.map(_.toString)
 

@@ -21,13 +21,13 @@ import models.DeclarationType.{CLEARANCE, DeclarationType}
 import models.viewmodels.TariffContentKey
 import play.api.data.Forms.text
 import play.api.data.{Form, Forms}
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 import utils.validators.forms.FieldValidator._
 
 case class ProcedureCode(procedureCode: String)
 
 object ProcedureCode extends DeclarationPage {
-  implicit val format = Json.format[ProcedureCode]
+  implicit val format: OFormat[ProcedureCode] = Json.format[ProcedureCode]
 
   val procedureCodeKey = "procedureCode"
   private val procedureCodeLength = 4

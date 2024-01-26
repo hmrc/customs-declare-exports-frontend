@@ -51,8 +51,8 @@ class AdditionalDocumentAddController @Inject() (
 )(implicit ec: ExecutionContext, auditService: AuditService)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithUnsafeDefaultFormBinding {
 
-  implicit val taggedAuthCodes2form = taggedAuthCodes
-  implicit val taggedAdditionalDocCodes2form = taggedAdditionalDocumentCodes
+  implicit val taggedAuthCodes2form: TaggedAuthCodes = taggedAuthCodes
+  implicit val taggedAdditionalDocCodes2form: TaggedAdditionalDocumentCodes = taggedAdditionalDocumentCodes
 
   def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     Ok(additionalDocumentAddPage(itemId, form(request.cacheModel).withSubmissionErrors))

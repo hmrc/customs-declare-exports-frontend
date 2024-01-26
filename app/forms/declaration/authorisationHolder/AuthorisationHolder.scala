@@ -33,7 +33,7 @@ import models.{AmendmentOp, FieldMapping}
 import play.api.data.Forms.{optional, text}
 import play.api.data.{Form, Forms, Mapping}
 import play.api.i18n.Messages
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 import services.DiffTools
 import services.DiffTools.{combinePointers, compareDifference, compareStringDifference, ExportsDeclarationDiff}
 import uk.gov.voa.play.form.ConditionalMappings.mandatoryIfEqual
@@ -74,7 +74,7 @@ object AuthorisationHolder extends DeclarationPage with FieldMapping {
   lazy val keyForEori = s"${partiesPrefix}.holders.holder.eori"
   lazy val keyForTypeCode = s"${partiesPrefix}.holders.holder.type"
 
-  implicit val format = Json.format[AuthorisationHolder]
+  implicit val format: OFormat[AuthorisationHolder] = Json.format[AuthorisationHolder]
 
   val authorisationHolderFormGroupId: String = "authorisationHolder"
   val AuthorisationTypeCodeId = "authorisationTypeCode"

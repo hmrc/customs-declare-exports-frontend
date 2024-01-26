@@ -23,7 +23,7 @@ import forms.declaration.consignor.ConsignorDetails
 import forms.declaration.exporter.ExporterDetails
 import models.{ExportsDeclaration, FieldMapping}
 import models.ExportsFieldPointer.ExportsFieldPointer
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 import services.DiffTools
 import services.DiffTools.{combinePointers, compareDifference, ExportsDeclarationDiff}
 
@@ -80,7 +80,7 @@ case class Parties(
 }
 
 object Parties extends FieldMapping {
-  implicit val format = Json.format[Parties]
+  implicit val format: OFormat[Parties] = Json.format[Parties]
 
   val pointer: ExportsFieldPointer = "parties"
   val isEntryIntoDeclarantsRecordsPointer: ExportsFieldPointer = "personPresentingGoodsDetails.eori"

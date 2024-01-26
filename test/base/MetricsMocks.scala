@@ -17,13 +17,11 @@
 package base
 
 import com.codahale.metrics.MetricRegistry
-import com.kenshoo.play.metrics.Metrics
+import uk.gov.hmrc.play.bootstrap.metrics.Metrics
 
 trait MetricsMocks {
   val metricsMock: Metrics = new Metrics {
     override def defaultRegistry: MetricRegistry = metricRegistryMock
-
-    override def toJson: String = ""
   }
 
   val metricRegistryMock = new MetricRegistry()

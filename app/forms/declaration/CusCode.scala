@@ -27,7 +27,7 @@ import models.{Amendment, FieldMapping}
 import play.api.data.Forms.text
 import play.api.data.{Form, Forms}
 import play.api.i18n.Messages
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 import services.DiffTools.compareOptionalString
 import uk.gov.voa.play.form.ConditionalMappings.mandatoryIfEqual
 import utils.validators.forms.FieldValidator._
@@ -50,7 +50,7 @@ case class CusCode(cusCode: Option[String]) extends Ordered[CusCode] with Amendm
 }
 
 object CusCode extends DeclarationPage with FieldMapping {
-  implicit val format = Json.format[CusCode]
+  implicit val format: OFormat[CusCode] = Json.format[CusCode]
 
   val pointer: ExportsFieldPointer = "cusCode"
 

@@ -27,7 +27,7 @@ import models.{AmendmentOp, FieldMapping}
 import play.api.data.Forms.{mapping, optional, text}
 import play.api.data.{Form, Mapping}
 import play.api.i18n.Messages
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 import services.DiffTools
 import services.DiffTools.{combinePointers, compareStringDifference, ExportsDeclarationDiff}
 import utils.validators.forms.FieldValidator._
@@ -56,7 +56,7 @@ case class CommodityDetails(combinedNomenclatureCode: Option[String], descriptio
 
 object CommodityDetails extends DeclarationPage with FieldMapping {
 
-  implicit val format = Json.format[CommodityDetails]
+  implicit val format: OFormat[CommodityDetails] = Json.format[CommodityDetails]
 
   val pointer: ExportsFieldPointer = "commodityDetails"
   val combinedNomenclatureCodePointer: ExportsFieldPointer = "combinedNomenclatureCode"

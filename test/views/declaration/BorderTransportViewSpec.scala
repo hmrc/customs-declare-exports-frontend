@@ -23,6 +23,7 @@ import models.DeclarationType._
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.mvc.AnyContent
+import services.TransportCodeService
 import views.declaration.spec.PageWithButtonsSpec
 import views.html.declaration.border_transport
 import views.tags.ViewTest
@@ -32,7 +33,7 @@ class BorderTransportViewSpec extends PageWithButtonsSpec with Injector {
 
   val prefix = "declaration.transportInformation.meansOfTransport.crossingTheBorder"
 
-  implicit val transportCodeService = MockTransportCodeService.transportCodeService
+  implicit val transportCodeService: TransportCodeService = MockTransportCodeService.transportCodeService
 
   val page = instanceOf[border_transport]
 

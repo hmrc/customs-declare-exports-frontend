@@ -21,13 +21,13 @@ import models.DeclarationType.{CLEARANCE, DeclarationType}
 import models.viewmodels.TariffContentKey
 import play.api.data.Forms.{optional, text}
 import play.api.data.{Form, Forms}
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 import utils.validators.forms.FieldValidator.{hasSpecificLength, isEmpty, _}
 
 case class AdditionalProcedureCode(additionalProcedureCode: Option[String])
 
 object AdditionalProcedureCode extends DeclarationPage {
-  implicit val format = Json.format[AdditionalProcedureCode]
+  implicit val format: OFormat[AdditionalProcedureCode] = Json.format[AdditionalProcedureCode]
 
   val additionalProcedureCodeKey = "additionalProcedureCode"
   private val additionalProcedureCodeLength = 3

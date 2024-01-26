@@ -45,7 +45,7 @@ class LocationOfGoodsViewSpec extends PageWithButtonsSpec with Injector {
 
   private val appConfig = instanceOf[AppConfig]
 
-  implicit val mockCodeListConnector = mock[CodeListConnector]
+  implicit val mockCodeListConnector: CodeListConnector = mock[CodeListConnector]
 
   override def beforeEach(): Unit = {
     super.beforeEach()

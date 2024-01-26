@@ -21,7 +21,7 @@ import models.DeclarationType.DeclarationType
 import models.viewmodels.TariffContentKey
 import play.api.data.Forms.{mapping, optional, text}
 import play.api.data.{Form, Mapping}
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 import services.TransportCodeService
 import uk.gov.voa.play.form.ConditionalMappings.mandatoryIfEqual
 import utils.validators.forms.FieldValidator.{isContainedIn, noLongerThan, _}
@@ -30,7 +30,7 @@ case class DepartureTransport(meansOfTransportOnDepartureType: Option[String], m
 
 object DepartureTransport extends DeclarationPage {
 
-  implicit val formats = Json.format[DepartureTransport]
+  implicit val formats: OFormat[DepartureTransport] = Json.format[DepartureTransport]
 
   val radioButtonGroupId = "departureTransportType"
 

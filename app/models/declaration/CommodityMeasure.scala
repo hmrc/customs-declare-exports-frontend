@@ -29,7 +29,7 @@ import models.declaration.CommodityMeasure.{
 import models.declaration.ExportItem.itemsPrefix
 import models.{AmendmentOp, FieldMapping}
 import play.api.i18n.Messages
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 import services.DiffTools.{combinePointers, compareStringDifference, ExportsDeclarationDiff}
 import services.DiffTools
 
@@ -60,7 +60,7 @@ case class CommodityMeasure(
 }
 
 object CommodityMeasure extends FieldMapping {
-  implicit val format = Json.format[CommodityMeasure]
+  implicit val format: OFormat[CommodityMeasure] = Json.format[CommodityMeasure]
 
   val pointer: ExportsFieldPointer = "commodityMeasure"
   val supplementaryUnitsPointer: ExportsFieldPointer = "supplementaryUnits"

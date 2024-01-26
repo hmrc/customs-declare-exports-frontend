@@ -27,7 +27,7 @@ import models.{Amendment, FieldMapping}
 import play.api.data.Forms.text
 import play.api.data.{Form, Forms, Mapping}
 import play.api.i18n.Messages
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 import utils.validators.forms.FieldValidator._
 
 case class NactCode(nactCode: String) extends Ordered[NactCode] with Amendment {
@@ -51,7 +51,7 @@ case class NactCode(nactCode: String) extends Ordered[NactCode] with Amendment {
 }
 
 object NactCode extends DeclarationPage with FieldMapping {
-  implicit val format = Json.format[NactCode]
+  implicit val format: OFormat[NactCode] = Json.format[NactCode]
 
   val pointer: ExportsFieldPointer = "nactCode"
   val exemptionPointer: ExportsFieldPointer = "nactExemptionCode"
@@ -81,7 +81,7 @@ object NactCode extends DeclarationPage with FieldMapping {
 
 object ZeroRatedForVat extends DeclarationPage {
 
-  implicit val format = Json.format[NactCode]
+  implicit val format: OFormat[NactCode] = Json.format[NactCode]
 
   val VatZeroRatedYes = "VATZ"
   val VatZeroRatedReduced = "VATR"

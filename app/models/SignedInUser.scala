@@ -16,7 +16,7 @@
 
 package models
 
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 import uk.gov.hmrc.auth.core.Enrolments
 
 case class SignedInUser(eori: String, enrolments: Enrolments, identityData: IdentityData)
@@ -24,11 +24,11 @@ case class SignedInUser(eori: String, enrolments: Enrolments, identityData: Iden
 case class CustomsDeclareExportsResponse(status: Int, message: String)
 
 object CustomsDeclareExportsResponse {
-  implicit val format = Json.format[CustomsDeclareExportsResponse]
+  implicit val format: OFormat[CustomsDeclareExportsResponse] = Json.format[CustomsDeclareExportsResponse]
 }
 
 case class CustomsDeclareExportsMovementsResponse(status: Int, message: String)
 
 object CustomsDeclareExportsMovementsResponse {
-  implicit val format = Json.format[CustomsDeclareExportsMovementsResponse]
+  implicit val format: OFormat[CustomsDeclareExportsMovementsResponse] = Json.format[CustomsDeclareExportsMovementsResponse]
 }

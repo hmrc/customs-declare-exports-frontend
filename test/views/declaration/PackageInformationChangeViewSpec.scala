@@ -37,7 +37,7 @@ class PackageInformationChangeViewSpec extends PageWithButtonsSpec with ExportsT
   import PackageInformationViewSpec._
 
   val packageInfoId = "id"
-  implicit val packageTypesService = instanceOf[PackageTypesService]
+  implicit val packageTypesService: PackageTypesService = instanceOf[PackageTypesService]
 
   val page = instanceOf[package_information_change]
 

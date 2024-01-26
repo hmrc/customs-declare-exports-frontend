@@ -23,7 +23,7 @@ import models.declaration.ExportItem.itemsPrefix
 import models.declaration.ProcedureCodesData.{additionalProcedureCodesPointer, keyForAPCs, keyForPC, procedureCodesPointer}
 import models.{AmendmentOp, FieldMapping}
 import play.api.i18n.Messages
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 import services.DiffTools
 import services.DiffTools.{combinePointers, compareStringDifference, ExportsDeclarationDiff}
 
@@ -58,7 +58,7 @@ case class ProcedureCodesData(procedureCode: Option[String], additionalProcedure
 }
 
 object ProcedureCodesData extends FieldMapping {
-  implicit val format = Json.format[ProcedureCodesData]
+  implicit val format: OFormat[ProcedureCodesData] = Json.format[ProcedureCodesData]
 
   val pointer: ExportsFieldPointer = "procedureCodes"
   val procedureCodesPointer: ExportsFieldPointer = "procedure.code"

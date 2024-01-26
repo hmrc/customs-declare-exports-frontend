@@ -34,7 +34,7 @@ import models.declaration.{ImplicitlySequencedObject, IsoData}
 import play.api.data.Forms.{optional, text}
 import play.api.data.{Form, Forms, Mapping}
 import play.api.i18n.Messages
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 import services.{DiffTools, DocumentTypeService}
 import services.DiffTools.{combinePointers, compareStringDifference, ExportsDeclarationDiff}
 import utils.validators.forms.FieldValidator._
@@ -65,7 +65,7 @@ case class Document(documentType: String, documentReference: String, goodsItemId
 }
 
 object Document extends DeclarationPage with FieldMapping {
-  implicit val format = Json.format[Document]
+  implicit val format: OFormat[Document] = Json.format[Document]
 
   val pointer: ExportsFieldPointer = "documents"
   val documentTypePointer: ExportsFieldPointer = "documentType"
@@ -115,7 +115,7 @@ case class PreviousDocumentsData(documents: Seq[Document]) extends DiffTools[Pre
 }
 
 object PreviousDocumentsData extends FieldMapping {
-  implicit val format = Json.format[PreviousDocumentsData]
+  implicit val format: OFormat[PreviousDocumentsData] = Json.format[PreviousDocumentsData]
 
   val pointer: ExportsFieldPointer = "previousDocuments"
 

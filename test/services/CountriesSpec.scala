@@ -23,7 +23,7 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
-import play.api.i18n.Lang
+import play.api.i18n.{Lang, Messages}
 import play.api.test.Helpers._
 
 import java.util.Locale
@@ -31,8 +31,8 @@ import scala.collection.immutable.ListMap
 
 class CountriesSpec extends UnitSpec with MockitoSugar with BeforeAndAfterEach {
 
-  implicit val mockCodeListConnector = mock[CodeListConnector]
-  implicit val messages = stubMessagesApi().preferred(Seq(Lang(Locale.ENGLISH)))
+  implicit val mockCodeListConnector: CodeListConnector = mock[CodeListConnector]
+  implicit val messages: Messages = stubMessagesApi().preferred(Seq(Lang(Locale.ENGLISH)))
 
   private val gb = Country("United Kingdom", "GB")
   private val pl = Country("Poland", "PL")

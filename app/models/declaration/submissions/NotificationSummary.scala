@@ -17,7 +17,7 @@
 package models.declaration.submissions
 
 import models.declaration.submissions.EnhancedStatus.EnhancedStatus
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 
 import java.time.ZonedDateTime
 import java.util.UUID
@@ -28,7 +28,7 @@ case class NotificationSummary(notificationId: UUID, dateTimeIssued: ZonedDateTi
 }
 
 object NotificationSummary {
-  implicit val formats = Json.format[NotificationSummary]
+  implicit val formats: OFormat[NotificationSummary] = Json.format[NotificationSummary]
 
   implicit val ordering: Ordering[NotificationSummary] =
     Ordering.fromLessThan[NotificationSummary] { (a, b) =>

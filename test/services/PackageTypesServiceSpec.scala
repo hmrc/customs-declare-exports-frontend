@@ -25,7 +25,7 @@ import java.util.Locale
 
 class PackageTypesServiceSpec extends UnitWithMocksSpec with Injector {
 
-  private implicit val packageTypesService = instanceOf[PackageTypesService]
+  private implicit val packageTypesService: PackageTypesService = instanceOf[PackageTypesService]
   private implicit val messages: Messages = stubMessagesApi().preferred(Seq(Lang(Locale.ENGLISH)))
 
   "Package type" should {

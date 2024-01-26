@@ -19,7 +19,7 @@ package models.declaration
 import forms.declaration.AdditionalActor
 import models.ExportsFieldPointer.ExportsFieldPointer
 import models.{ExportsDeclaration, FieldMapping}
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 import services.DiffTools
 import services.DiffTools.{combinePointers, ExportsDeclarationDiff}
 
@@ -41,7 +41,7 @@ object AdditionalActors extends FieldMapping {
   lazy val eoriPointerForAmend = s"$parties.$pointer.${AdditionalActor.pointer}.${AdditionalActor.eoriPointer}"
   lazy val partyTypePointerForAmend = s"$parties.$pointer.${AdditionalActor.pointer}.${AdditionalActor.partyTypePointer}"
 
-  implicit val format = Json.format[AdditionalActors]
+  implicit val format: OFormat[AdditionalActors] = Json.format[AdditionalActors]
 
   val maxNumberOfActors = 99
 }

@@ -29,7 +29,7 @@ import services.{DocumentType, DocumentTypeService}
 class DocumentSpec extends DeclarationPageBaseSpec with OptionValues with MockitoSugar {
 
   val mockDocumentTypeService = mock[DocumentTypeService]
-  implicit val mockMessages = mock[Messages]
+  implicit val mockMessages: Messages = mock[Messages]
 
   when(mockDocumentTypeService.allDocuments()(any())).thenReturn(List(DocumentType("DocumentReference", "DCS")))
 

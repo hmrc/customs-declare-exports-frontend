@@ -17,7 +17,7 @@
 package controllers.actions
 
 import com.google.inject.{ImplementedBy, Inject, ProvidedBy}
-import com.kenshoo.play.metrics.Metrics
+import uk.gov.hmrc.play.bootstrap.metrics.Metrics
 import config.AppConfig
 import controllers.routes
 import models.{IdentityData, SignedInUser}

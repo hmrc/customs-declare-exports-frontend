@@ -19,7 +19,7 @@ package models.declaration.submissions
 import models.declaration.submissions.Action.defaultDateTimeZone
 
 import java.time.{ZoneId, ZonedDateTime}
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 
 case class Action(
   id: String,
@@ -37,7 +37,7 @@ case class Action(
 }
 
 object Action {
-  implicit val format = Json.format[Action]
+  implicit val format: OFormat[Action] = Json.format[Action]
 
   val dateTimeOrdering: Ordering[ZonedDateTime] = Ordering.fromLessThan[ZonedDateTime]((a, b) => b.isBefore(a))
 

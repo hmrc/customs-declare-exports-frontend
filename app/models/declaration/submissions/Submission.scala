@@ -18,7 +18,7 @@ package models.declaration.submissions
 
 import models.declaration.submissions.EnhancedStatus._
 import models.declaration.submissions.RequestType.{CancellationRequest, ExternalAmendmentRequest, SubmissionRequest}
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 
 import java.time.ZonedDateTime
 
@@ -64,7 +64,7 @@ case class Submission(
 
 object Submission {
 
-  implicit val formats = Json.format[Submission]
+  implicit val formats: OFormat[Submission] = Json.format[Submission]
 
   val dateTimeOrdering: Ordering[ZonedDateTime] = Ordering.fromLessThan[ZonedDateTime]((a, b) => b.isBefore(a))
 

@@ -26,7 +26,7 @@ import models.{Amendment, FieldMapping}
 import play.api.data.Forms.{optional, text}
 import play.api.data.{Form, Forms}
 import play.api.i18n.Messages
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 import services.DiffTools.compareOptionalString
 import utils.validators.forms.FieldValidator._
 
@@ -53,7 +53,7 @@ object SupervisingCustomsOffice extends DeclarationPage with FieldMapping {
 
   val keyForAmend = "declaration.summary.transport.supervisingOffice"
 
-  implicit val format = Json.format[SupervisingCustomsOffice]
+  implicit val format: OFormat[SupervisingCustomsOffice] = Json.format[SupervisingCustomsOffice]
 
   val formId = "SupervisingCustomsOffice"
 

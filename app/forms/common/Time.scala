@@ -18,7 +18,7 @@ package forms.common
 
 import play.api.data.Forms.{optional, text}
 import play.api.data.{Form, Forms}
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 import utils.validators.forms.FieldValidator.isContainedIn
 
 case class Time(hour: Option[String], minute: Option[String]) {
@@ -28,7 +28,7 @@ case class Time(hour: Option[String], minute: Option[String]) {
 }
 
 object Time {
-  implicit val format = Json.format[Time]
+  implicit val format: OFormat[Time] = Json.format[Time]
 
   private val validHours = (0 to 23).toList.map(_.toString)
   private val validMinutes = (0 to 59).toList.map(_.toString)

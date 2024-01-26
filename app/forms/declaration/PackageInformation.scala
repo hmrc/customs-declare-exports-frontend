@@ -36,7 +36,7 @@ import models.viewmodels.TariffContentKey
 import play.api.data.Forms.{number, optional, text}
 import play.api.data.{Form, Forms, Mapping}
 import play.api.i18n.Messages
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 import services.DiffTools.{combinePointers, compareIntDifference, compareStringDifference, ExportsDeclarationDiff}
 import services.{DiffTools, PackageTypesService}
 import utils.validators.forms.FieldValidator._
@@ -88,7 +88,7 @@ case class PackageInformation(
 object PackageInformation extends DeclarationPage with FieldMapping {
   import scala.util.Random
 
-  implicit val format = Json.format[PackageInformation]
+  implicit val format: OFormat[PackageInformation] = Json.format[PackageInformation]
 
   val pointer: ExportsFieldPointer = "packageInformation"
   val idPointer: ExportsFieldPointer = "id"

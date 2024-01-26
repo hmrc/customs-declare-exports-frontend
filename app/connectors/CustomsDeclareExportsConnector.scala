@@ -17,7 +17,7 @@
 package connectors
 
 import com.codahale.metrics.Timer
-import com.kenshoo.play.metrics.Metrics
+import uk.gov.hmrc.play.bootstrap.metrics.Metrics
 import config.AppConfig
 import forms.Lrn
 import models._
