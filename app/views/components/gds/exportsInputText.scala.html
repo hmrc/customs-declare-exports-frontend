@@ -20,7 +20,7 @@
 @import views.helpers.InputTextHelper
 @import play.twirl.api.HtmlFormat
 
-@this(govukInput: GovukInput, headingContent: headingContent, label: label, helper: InputTextHelper)
+@this(govukInput: GovukInput, headingContent: headingContent, label: label)
 
 @(
     field: Field,
@@ -62,6 +62,6 @@
     name = field.name,
     value = field.value,
     hint = hintContent,
-    errorMessage = helper.getAnyErrorMessages(field),
-    classes = helper.defineInputClasses(defaultInputClasses, inputClasses)
+    errorMessage = InputTextHelper.getAnyErrorMessages(field),
+    classes = InputTextHelper.defineInputClasses(defaultInputClasses, inputClasses)
 ))

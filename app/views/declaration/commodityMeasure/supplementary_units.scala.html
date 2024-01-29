@@ -35,7 +35,6 @@
     sectionHeader: sectionHeader,
     heading: heading,
     body: paragraphBody,
-    inputTextHelper: InputTextHelper,
     tariffExpander: tariffExpander,
     saveButtons: saveButtons,
     navigator: Navigator,
@@ -66,7 +65,7 @@
             name = field.id,
             value = field.value,
             hint = Some(Hint(content = Text(messages("declaration.supplementaryUnits.hint")))),
-            errorMessage = inputTextHelper.getAnyErrorMessages(field),
+            errorMessage = InputTextHelper.getAnyErrorMessages(field),
             classes = "govuk-input govuk-input--width-10",
             spellcheck = Some(false),
             suffix = Some(PrefixOrSuffix(content = Text(commodityInfo.units)))
