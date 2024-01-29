@@ -56,16 +56,21 @@ class DucrEntryViewSpec extends PageWithButtonsSpec with Injector {
       messages must haveTranslationFor("declaration.consignmentReferences.ducr.error.invalid")
     }
 
+    val view = createView()
+
     "display page title" in {
-      createView().getElementById("title").text() mustBe messages("declaration.ducrEntry.header")
+      val h1 = view.getElementById("title")
+      h1.text mustBe messages("declaration.ducrEntry.header")
+      h1.getElementsByTag("label").first.attr("for") mustBe Ducr.form("ducr").name
+      view.getElementsByClass("govuk-label").size mustBe 1
     }
 
     "display section header" in {
-      createView().getElementById("section-header").text() must include(messages("declaration.section.1"))
+      view.getElementById("section-header").text() must include(messages("declaration.section.1"))
     }
 
     "not display 'Exit and return' button" in {
-      createView().getElementsContainingText("site.exit_and_complete_later") mustBe empty
+      view.getElementsContainingText("site.exit_and_complete_later") mustBe empty
     }
 
     "display data in DUCR input" in {
@@ -75,11 +80,10 @@ class DucrEntryViewSpec extends PageWithButtonsSpec with Injector {
     }
 
     "display inset text for DUCR" in {
-      createView().getElementsByClass("govuk-inset-text").get(0).text mustBe messages("declaration.ducrEntry.ducr.inset.1")
+      view.getElementsByClass("govuk-inset-text").get(0).text mustBe messages("declaration.ducrEntry.ducr.inset.1")
     }
 
     "display error when DUCR is incorrect" in {
-
       val frm = form.fillAndValidate(Ducr(incorrectDUCR))
       val view = createView(frm)
 
@@ -89,7 +93,7 @@ class DucrEntryViewSpec extends PageWithButtonsSpec with Injector {
 
     }
 
-    checkSaveAndContinueButtonIsDisplayed(createView())
+    checkSaveAndContinueButtonIsDisplayed(view)
 
     "display empty input with label for DUCR" in {
 
@@ -101,18 +105,16 @@ class DucrEntryViewSpec extends PageWithButtonsSpec with Injector {
         "declaration.ducrEntry.ducr.paragraph.bullet5"
       )
 
-      createView().getElementsByClass("govuk-label").get(0).text mustBe messages("declaration.ducrEntry.header")
-
       expectedBodyTextListMessageKeys.foreach { messageKey =>
-        createView().getElementsByClass("govuk-list").get(0) must containMessage(messageKey)
+        view.getElementsByClass("govuk-list").get(0) must containMessage(messageKey)
       }
 
-      createView().getElementById("ducr-hint").text mustBe messages("declaration.ducrEntry.ducr.hint")
-      createView().getElementById("ducr").attr("value") mustBe empty
+      view.getElementById("ducr-hint").text mustBe messages("declaration.ducrEntry.ducr.hint")
+      view.getElementById("ducr").attr("value") mustBe empty
     }
 
     "not display empty input with label for MRN" in {
-      createView().getElementsByAttributeValue("for", "mrn") mustBe empty
+      view.getElementsByAttributeValue("for", "mrn") mustBe empty
     }
 
   }

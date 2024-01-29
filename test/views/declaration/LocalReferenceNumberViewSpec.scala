@@ -64,32 +64,36 @@ class LocalReferenceNumberViewSpec extends PageWithButtonsSpec with Injector {
       messages must haveTranslationFor("declaration.consignmentReferences.lrn.error.specialCharacter")
     }
 
+    val view = createView
+
     "display page title" in {
-      createView.getElementById("title").text() mustBe messages("declaration.lrn.header")
+      val h1 = view.getElementById("title")
+      h1.text mustBe messages("declaration.lrn.header")
+      h1.getElementsByTag("label").first.attr("for") mustBe form("lrn").name
+      view.getElementsByClass("govuk-label").size mustBe 1
     }
 
     "display section header" in {
-      createView.getElementById("section-header").text() must include(messages("declaration.section.1"))
+      view.getElementById("section-header").text() must include(messages("declaration.section.1"))
     }
 
     "not display 'Exit and return' button" in {
-      createView.getElementsContainingText("site.exit_and_complete_later") mustBe empty
+      view.getElementsContainingText("site.exit_and_complete_later") mustBe empty
     }
 
     checkSaveAndContinueButtonIsDisplayed(createView)
 
     "not display empty input with label for MRN" in {
-      createView.getElementsByAttributeValue("for", "mrn") mustBe empty
+      view.getElementsByAttributeValue("for", "mrn") mustBe empty
     }
 
-    "display empty input with label for LRN" in {
-      createView.getElementsByAttributeValue("for", "lrn").text() mustBe messages("declaration.lrn.body")
-      createView.getElementById("lrn-hint").text() mustBe messages("declaration.lrn.hint")
-      createView.getElementById("lrn").attr("value") mustBe empty
+    "display empty input with hint" in {
+      view.getElementById("lrn-hint").text() mustBe messages("declaration.lrn.hint")
+      view.getElementById("lrn").attr("value") mustBe empty
     }
 
     "display inset text for LRN" in {
-      createView.getElementsByClass("govuk-inset-text").first().text() mustBe messages("declaration.lrn.inset")
+      view.getElementsByClass("govuk-inset-text").first().text() mustBe messages("declaration.lrn.inset")
     }
 
     "display error for empty LRN" in {
@@ -135,7 +139,7 @@ class LocalReferenceNumberViewSpec extends PageWithButtonsSpec with Injector {
     }
 
     "display 'Back' button that links to 'Declarant Details' page" in {
-      val backButton = createView.getElementById("back-link")
+      val backButton = view.getElementById("back-link")
       backButton must containMessage(backToPreviousQuestionCaption)
       backButton must haveHref(DucrEntryController.displayPage.url)
     }
