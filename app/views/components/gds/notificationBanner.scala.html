@@ -16,9 +16,11 @@
 
 @this()
 
-@(title: String, content: Html)
+@(title: String, content: Html, classes: Seq[String] = List.empty)
 
-<div class="govuk-notification-banner" role="region" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
+@cssClasses = @{ (classes :+ "govuk-notification-banner").mkString(" ") }
+
+<div class="@cssClasses" role="region" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
     <div class="govuk-notification-banner__header">
         <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">@title</h2>
     </div>

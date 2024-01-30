@@ -1475,6 +1475,8 @@ declaration.cusCode.error.empty = Nodwch god CUS
 declaration.cusCode.error.length = Mae’n rhaid i’r cod CUS fod 8 o gymeriadau yn union
 declaration.cusCode.error.specialCharacters = Mae’n rhaid i’r cod CUS gynnwys llythrennau a rhifau’n unig
 
+declaration.nationalAdditionalCode.banner.title = Pwysig: Beth yw cod ychwanegol cenedlaethol?
+declaration.nationalAdditionalCode.banner.content = Mae cod ychwanegol cenedlaethol yn ddosbarthiad, er enghraifft, o gynhyrchion gwin, gwirodydd, cwrw, mathau o danwydd a thybaco. Defnyddir y rhain ynghyd â gwybodaeth arall a gofnodir yn eich datganiad i gyfrifo tollau a threthi.
 declaration.nationalAdditionalCode.addfirst.header = A oes angen ychwanegu cod ychwanegol cenedlaethol?
 declaration.nationalAdditionalCode.addfirst.body = Ychwanegwch god ychwanegol cenedlaethol o {0} os yw eithriadau neu gyfraddau is o drethi yn berthnasol.
 declaration.nationalAdditionalCode.addfirst.body.link = Atodiad 19 (yn agor tab newydd)
