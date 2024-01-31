@@ -20,7 +20,7 @@
 @import views.helpers.InputTextHelper
 @import views.html.components.gds.label
 
-@this(govukTextarea : GovukTextarea, label: label, helper: InputTextHelper)
+@this(govukTextarea : GovukTextarea, label: label)
 
 @(
     field: Field,
@@ -55,7 +55,7 @@
                 value = field.value,
                 hint = hintKey.map(key => Hint(content = Text(messages(key)))),
                 classes = inputClasses.getOrElse(""),
-                errorMessage = helper.getAnyErrorMessages(field)
+                errorMessage = InputTextHelper.getAnyErrorMessages(field)
             ))
         ))).asHtml
     }
@@ -67,7 +67,7 @@
             label = buildLabel,
             hint = hintKey.map(key => Hint(content = Text(messages(key)))),
             classes = inputClasses.getOrElse(""),
-            errorMessage = helper.getAnyErrorMessages(field)
+            errorMessage = InputTextHelper.getAnyErrorMessages(field)
         ))
     }
 }

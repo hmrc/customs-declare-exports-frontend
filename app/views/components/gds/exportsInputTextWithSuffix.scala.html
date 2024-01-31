@@ -18,7 +18,7 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components.{GovukInput, Hint, HtmlContent, Input, PrefixOrSuffix, Text}
 @import views.helpers.InputTextHelper
 
-@this(sectionHeader: sectionHeader, govukInput: GovukInput, helper: InputTextHelper)
+@this(sectionHeader: sectionHeader, govukInput: GovukInput)
 
 @(
     field: Field,
@@ -57,7 +57,7 @@
             hint(hintKey, "govuk-hint"),
             hint(tooltipKey, "govuk-visually-hidden")
         ).flatten)))),
-        errorMessage = helper.getAnyErrorMessages(field),
+        errorMessage = InputTextHelper.getAnyErrorMessages(field),
         classes = "govuk-input govuk-input--width-10",
         spellcheck = Some(false),
         suffix = Some(PrefixOrSuffix(content = Text(messages(suffixKey))))

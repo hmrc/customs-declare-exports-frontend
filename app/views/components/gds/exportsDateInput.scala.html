@@ -17,10 +17,9 @@
 @import forms.common.Date.{dayKey, monthKey, yearKey}
 @import play.twirl.api.HtmlFormat
 @import uk.gov.hmrc.govukfrontend.views.html.components._
-@import views.helpers.InputTextHelper
 @import views.html.components.gds.{heading, label}
 
-@this(dateInput: GovukDateInput, label: label, heading: heading, helper: InputTextHelper)
+@this(dateInput: GovukDateInput, label: label, heading: heading)
 
 @(
   fieldName: String,

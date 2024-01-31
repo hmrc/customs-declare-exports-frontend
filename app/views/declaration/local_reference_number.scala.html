@@ -22,19 +22,19 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.helpers.{BackButton, Title}
 @import views.html.components.gds._
+@import views.html.components.inputs.inputWithTitleAsLabel
 @import play.twirl.api.HtmlFormat
 @import config.AppConfig
 
 @this(
     govukLayout: gdsMainTemplate,
-    pageTitle: pageTitle,
-    exportsInputText: exportsInputText,
     errorSummary: errorSummary,
     sectionHeader: sectionHeader,
     saveButtons: saveButtons,
     tariffExpander: tariffExpander,
-    insetText: exportsInsetText,
     paragraphBody: paragraphBody,
+    insetText: exportsInsetText,
+    inputWithTitleAsLabel: inputWithTitleAsLabel,
     formHelper: FormWithCSRF,
     navigator: Navigator,
     appConfig: AppConfig
@@ -43,10 +43,13 @@
 
 @(form: Form[Lrn])(implicit request: JourneyRequest[_], messages: Messages)
 
-@hasErrors = @{form.hasErrors || form.hasGlobalErrors}
+@body = {
+    @paragraphBody(messages("declaration.lrn.body"))
+    @insetText(HtmlContent(HtmlFormat.fill(List(paragraphBody(messages("declaration.lrn.inset"))))))
+}
 
 @govukLayout(
-    title = Title("declaration.lrn.header", "declaration.section.1", hasErrors = hasErrors),
+    title = Title("declaration.lrn.header", "declaration.section.1", hasErrors = form.hasErrors || form.hasGlobalErrors),
     backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(Lrn))),
     showDeclarationSummaryLink = false) {
 
@@ -54,15 +57,10 @@
         @errorSummary(form.errors)
 
         @sectionHeader(messages("declaration.section.1"))
-        @pageTitle(messages("declaration.lrn.header"))
 
-        @exportsInputText(
-            field = form("lrn"),
-            inputClasses = Some("govuk-input"),
-            bodyHtml = Some(insetText(content = HtmlContent(messages("declaration.lrn.inset")))),
-            hintHtml = Some(paragraphBody(messages("declaration.lrn.hint"), "govuk-hint")),
-            labelKey = "declaration.lrn.body",
-            labelClasses = "govuk-body"
+        @inputWithTitleAsLabel(
+          h1 = "declaration.lrn.header", body, field = form("lrn"),
+          hint = Some(paragraphBody(messages("declaration.lrn.hint"), "govuk-hint"))
         )
 
         @tariffExpander(Lrn, request.declarationType)(messages, appConfig)

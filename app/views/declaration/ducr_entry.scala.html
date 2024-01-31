@@ -21,20 +21,20 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.helpers.{BackButton, Title}
 @import views.html.components.gds._
+@import views.html.components.inputs.inputWithTitleAsLabel
 @import play.twirl.api.HtmlFormat
 @import config.AppConfig
 
 @this(
     govukLayout: gdsMainTemplate,
-    pageTitle: pageTitle,
-    exportsInputText: exportsInputText,
     errorSummary: errorSummary,
     sectionHeader: sectionHeader,
     saveButtons: saveButtons,
     tariffExpander: tariffExpander,
-    insetText: exportsInsetText,
-    bulletList: bulletList,
     paragraphBody: paragraphBody,
+    bulletList: bulletList,
+    insetText: exportsInsetText,
+    inputWithTitleAsLabel: inputWithTitleAsLabel,
     formHelper: FormWithCSRF,
     navigator: Navigator,
     appConfig: AppConfig
@@ -43,16 +43,24 @@
 
 @(form: Form[Ducr])(implicit request: JourneyRequest[_], messages: Messages)
 
-@hasErrors = @{form.hasErrors || form.hasGlobalErrors}
+@body = {
+    @paragraphBody(messages("declaration.ducrEntry.ducr.paragraph"))
 
-@optionalDucrInsetText = @{
-    insetText(content = HtmlContent(HtmlFormat.fill(List(
+    @bulletList(items = List(
+        Html(messages("declaration.ducrEntry.ducr.paragraph.bullet1")),
+        Html(messages("declaration.ducrEntry.ducr.paragraph.bullet2")),
+        Html(messages("declaration.ducrEntry.ducr.paragraph.bullet3")),
+        Html(messages("declaration.ducrEntry.ducr.paragraph.bullet4")),
+        Html(messages("declaration.ducrEntry.ducr.paragraph.bullet5"))
+    ))
+
+    @insetText(HtmlContent(HtmlFormat.fill(List(
         paragraphBody(messages("declaration.ducrEntry.ducr.inset.1"))
     ))))
 }
 
 @govukLayout(
-    title = Title("declaration.ducrEntry.header", "declaration.section.1", hasErrors = hasErrors),
+    title = Title("declaration.ducrEntry.header", "declaration.section.1", hasErrors = form.hasErrors || form.hasGlobalErrors),
     backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(Ducr))),
     showDeclarationSummaryLink = false) {
 
@@ -60,28 +68,10 @@
         @errorSummary(form.errors)
 
         @sectionHeader(messages("declaration.section.1"))
-        @pageTitle(messages("declaration.ducrEntry.header"))
 
-        @paragraphBody(messages("declaration.ducrEntry.ducr.paragraph"))
-
-        @bulletList(
-            items = Seq(
-                Html(messages("declaration.ducrEntry.ducr.paragraph.bullet1")),
-                Html(messages("declaration.ducrEntry.ducr.paragraph.bullet2")),
-                Html(messages("declaration.ducrEntry.ducr.paragraph.bullet3")),
-                Html(messages("declaration.ducrEntry.ducr.paragraph.bullet4")),
-                Html(messages("declaration.ducrEntry.ducr.paragraph.bullet5"))
-            )
-        )
-
-        @optionalDucrInsetText
-
-        @exportsInputText(
-            labelKey = "declaration.ducrEntry.header",
-            labelClasses = "govuk-label govuk-visually-hidden",
-            field = form("ducr"),
-            inputClasses = Some("govuk-input"),
-            hintHtml = Some(paragraphBody(messages("declaration.ducrEntry.ducr.hint"), "govuk-hint"))
+        @inputWithTitleAsLabel(
+          h1 = "declaration.ducrEntry.header", body, field = form("ducr"),
+          hint = Some(paragraphBody(messages("declaration.ducrEntry.ducr.hint"), "govuk-hint"))
         )
 
         @tariffExpander(Ducr, request.declarationType)(messages, appConfig)
