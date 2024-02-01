@@ -28,6 +28,8 @@
     govukLayout: gdsMainTemplate,
     errorSummary: errorSummary,
     sectionHeader: sectionHeader,
+    notificationBanner: notificationBanner,
+    paragraphBody: paragraphBody,
     exportsInputText: exportsInputText,
     saveButtons: saveButtons,
     tariffExpander: tariffExpander,
@@ -50,6 +52,12 @@
         @errorSummary(form.errors)
 
         @sectionHeader(messages("declaration.section.5"))
+
+        @notificationBanner(
+            title = messages("declaration.nationalAdditionalCode.banner.title"),
+            content = paragraphBody(messages("declaration.nationalAdditionalCode.banner.content")),
+            classes = List("govuk-!-margin-top-4")
+        )
 
         @pageTitle(content = Some(HtmlContent(label("declaration.nationalAdditionalCode.addnext.header", nactCodeKey, labelClasses = "govuk-label--xl"))))
 

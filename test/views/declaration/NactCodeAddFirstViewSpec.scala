@@ -48,12 +48,20 @@ class NactCodeAddFirstViewSpec extends PageWithButtonsSpec with Injector {
   "Nact Code Add First View" should {
     val view = createView()
 
+    "display a notification banner" in {
+      val banner = view.getElementsByClass("govuk-notification-banner")
+      banner.size mustBe 1
+
+      banner.get(0).getElementsByClass("govuk-notification-banner__title").text mustBe messages(s"$prefix.banner.title")
+      banner.get(0).getElementsByClass("govuk-notification-banner__content").text mustBe messages(s"$prefix.banner.content")
+    }
+
     "display page title" in {
       view.getElementsByTag("h1") must containMessageForElements(s"$prefix.addfirst.header")
     }
 
     "display the expected body (the text under page's H1)" in {
-      val body = view.getElementsByClass("govuk-body").get(0)
+      val body = view.getElementsByClass("govuk-body").get(1)
       body.text mustBe messages(s"$prefix.addfirst.body", messages(s"$prefix.addfirst.body.link"))
 
       body.child(0) must haveHref(appConfig.nationalAdditionalCodes)

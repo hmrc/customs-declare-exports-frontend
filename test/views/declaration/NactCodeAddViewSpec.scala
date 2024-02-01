@@ -38,11 +38,21 @@ class NactCodeAddViewSpec extends PageWithButtonsSpec with ExportsTestHelper wit
   private def createView(frm: Form[NactCode] = form): Document =
     page(itemId, frm)(journeyRequest(), messages)
 
+  private val prefix = "declaration.nationalAdditionalCode"
+
   "Nact Code Add View" should {
     val view = createView()
 
+    "display a notification banner" in {
+      val banner = view.getElementsByClass("govuk-notification-banner")
+      banner.size mustBe 1
+
+      banner.get(0).getElementsByClass("govuk-notification-banner__title").text mustBe messages(s"$prefix.banner.title")
+      banner.get(0).getElementsByClass("govuk-notification-banner__content").text mustBe messages(s"$prefix.banner.content")
+    }
+
     "display page title" in {
-      view.getElementsByTag("h1") must containMessageForElements("declaration.nationalAdditionalCode.addnext.header")
+      view.getElementsByTag("h1") must containMessageForElements(s"$prefix.addnext.header")
     }
 
     "display 'Back' button that links to 'Nact code summary' page" in {
@@ -60,7 +70,7 @@ class NactCodeAddViewSpec extends PageWithButtonsSpec with ExportsTestHelper wit
       view must haveGovukGlobalErrorSummary
       view must containErrorElementWithTagAndHref("a", "#nactCode")
 
-      view must containErrorElementWithMessageKey("declaration.nationalAdditionalCode.error.empty")
+      view must containErrorElementWithMessageKey(s"$prefix.error.empty")
     }
 
     "display error if incorrect nact code is entered" in {
@@ -69,7 +79,7 @@ class NactCodeAddViewSpec extends PageWithButtonsSpec with ExportsTestHelper wit
       view must haveGovukGlobalErrorSummary
       view must containErrorElementWithTagAndHref("a", "#nactCode")
 
-      view must containErrorElementWithMessageKey("declaration.nationalAdditionalCode.error.invalid")
+      view must containErrorElementWithMessageKey(s"$prefix.error.invalid")
     }
 
   }

@@ -1485,6 +1485,8 @@ declaration.cusCode.error.empty = Enter a CUS code
 declaration.cusCode.error.length = CUS code must be exactly 8 characters
 declaration.cusCode.error.specialCharacters = CUS code must contain only letters and numbers
 
+declaration.nationalAdditionalCode.banner.title = Important: What is a national additional code?
+declaration.nationalAdditionalCode.banner.content = A national additional code is a classification of, for example, wines, spirits, beer, types of fuel and tobacco products. They are used in conjunction with other information recorded in your declaration to calculate duties and taxes.
 declaration.nationalAdditionalCode.addfirst.header = Do you need to add a national additional code?
 declaration.nationalAdditionalCode.addfirst.body = Add a national additional code from {0} if exemptions or reduced rates of taxes are applicable.
 declaration.nationalAdditionalCode.addfirst.body.link = Appendix 19 (opens in new tab)
