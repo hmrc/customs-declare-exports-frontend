@@ -33,7 +33,7 @@ import play.api.mvc.Results.Ok
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
-import views.html.{error_template, rejected_notification_errors, rejected_notification_errors_tdr}
+import views.html.{error_template, rejected_notification_errors}
 
 import scala.concurrent.ExecutionContext.global
 import scala.concurrent.{ExecutionContext, Future}
@@ -41,7 +41,6 @@ import scala.concurrent.{ExecutionContext, Future}
 class RejectedNotificationsControllerSpec extends ControllerWithoutFormSpec with OptionValues with FeatureFlagMocks {
 
   private val mockErrorPage = mock[rejected_notification_errors]
-  private val mockErrorPageForTDR = mock[rejected_notification_errors_tdr]
   private val mockErrorsReportedController = mock[ErrorsReportedController]
 
   private val mcc = stubMessagesControllerComponents()
@@ -55,7 +54,6 @@ class RejectedNotificationsControllerSpec extends ControllerWithoutFormSpec with
     mockNewErrorReportConfig,
     mockErrorsReportedController,
     mockErrorPage,
-    mockErrorPageForTDR,
     mockTdrFeatureFlags
   )(global)
 
@@ -67,7 +65,6 @@ class RejectedNotificationsControllerSpec extends ControllerWithoutFormSpec with
     authorizedUser()
 
     when(mockErrorPage.apply(any(), any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
-    when(mockErrorPageForTDR.apply(any(), any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
     when(mockNewErrorReportConfig.isNewErrorReportEnabled).thenReturn(false)
     when(mockTdrFeatureFlags.showErrorPageVersionForTdr).thenReturn(false)
 
@@ -81,7 +78,7 @@ class RejectedNotificationsControllerSpec extends ControllerWithoutFormSpec with
   }
 
   override protected def afterEach(): Unit = {
-    reset(mockErrorPage, mockErrorPageForTDR, mockNewErrorReportConfig)
+    reset(mockErrorPage, mockNewErrorReportConfig)
     super.afterEach()
   }
 
@@ -119,7 +116,6 @@ class RejectedNotificationsControllerSpec extends ControllerWithoutFormSpec with
         fetchDeclaration(declarationId)
         findNotifications(declarationId)
 
-        verifyResultForTDR(controller.displayPage(declarationId)(getRequest()), None, None)
       }
     }
 
@@ -174,8 +170,6 @@ class RejectedNotificationsControllerSpec extends ControllerWithoutFormSpec with
         fetchDeclaration(failedAction.decId.value)
         fetchLatestNotification(failedNotification)
 
-        val result = controller.displayPageOnUnacceptedAmendment(failedAction.id)(request)
-        verifyResultForTDR(result, failedAction.decId, Some(submissionId))
       }
     }
 
@@ -209,15 +203,6 @@ class RejectedNotificationsControllerSpec extends ControllerWithoutFormSpec with
     val captorDec = ArgumentCaptor.forClass(classOf[Option[String]])
     val captorSub = ArgumentCaptor.forClass(classOf[Option[String]])
     verify(mockErrorPage).apply(captorSub.capture(), any(), any(), captorDec.capture(), any())(any(), any())
-    captorDec.getValue.asInstanceOf[Option[String]] mustBe expectedDec
-    captorSub.getValue.asInstanceOf[Option[String]] mustBe expectedSub
-  }
-
-  private def verifyResultForTDR(result: Future[Result], expectedDec: Option[String], expectedSub: Option[String]): Assertion = {
-    status(result) mustBe OK
-    val captorDec = ArgumentCaptor.forClass(classOf[Option[String]])
-    val captorSub = ArgumentCaptor.forClass(classOf[Option[String]])
-    verify(mockErrorPageForTDR).apply(captorSub.capture(), any(), any(), captorDec.capture(), any())(any(), any())
     captorDec.getValue.asInstanceOf[Option[String]] mustBe expectedDec
     captorSub.getValue.asInstanceOf[Option[String]] mustBe expectedSub
   }

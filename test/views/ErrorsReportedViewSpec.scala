@@ -16,7 +16,8 @@
 
 package views
 
-import base.Injector
+import base.{Injector, OverridableInjector}
+import config.featureFlags.TdrFeatureFlags
 import controllers.routes.{DeclarationDetailsController, SubmissionsController}
 import connectors.CodeListConnector
 import models.declaration.errors.ErrorInstance
@@ -26,21 +27,25 @@ import services.cache.ExportsTestHelper
 import tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.html.errors_reported
+import org.mockito.Mockito.when
+import play.api.inject.bind
 
 class ErrorsReportedViewSpec extends UnitViewSpec with ExportsTestHelper with Injector with Stubs {
 
-  private val page = instanceOf[errors_reported]
   private val codeListConnector = mock[CodeListConnector]
-
   private val declaration = aDeclaration(withConsignmentReferences("DUCR", "lrn"))
+
+  implicit val injector: OverridableInjector = new OverridableInjector(bind[TdrFeatureFlags].toInstance(mockTdrFeatureFlags))
 
   private def view(
     reasons: Seq[ErrorInstance] = Seq.empty,
     maybeDeclarationId: Option[String] = None,
     testMessages: Messages = messages,
     maybeSubmissionId: Option[String] = None
-  ): Document =
+  )(implicit injector: OverridableInjector): Document = {
+    val page = injector.instanceOf[errors_reported]
     page(maybeSubmissionId, declaration, MRN.value, maybeDeclarationId, reasons)(request, testMessages, codeListConnector)
+  }
 
   val submissionId = "submissionId"
   val defaultRejectionCode = "CDS10001"
@@ -122,12 +127,19 @@ class ErrorsReportedViewSpec extends UnitViewSpec with ExportsTestHelper with In
       )
 
       body.get(3).text() mustBe messages("rejected.notification.guidance.section.3.paragraph.1")
+      body.get(4).text() mustBe messages("rejected.notification.guidance.section.3.paragraph.2")
+      body.get(5).text() mustBe messages("rejected.notification.guidance.section.3.paragraph.3")
+    }
 
-      val email = messages("rejected.notification.guidance.section.3.paragraph.2.email")
-      body.get(4).text() mustBe messages("rejected.notification.guidance.section.3.paragraph.2", email)
+    "have the expected body content in TDR" in {
+      when(mockTdrFeatureFlags.showErrorPageVersionForTdr).thenReturn(true)
+      val tdrPage = view()
+      val body = tdrPage.getElementsByClass("govuk-body")
+
+      val email = messages("rejected.notification.tdr.guidance.section.3.paragraph.2.email")
+      body.get(4).text() mustBe messages("rejected.notification.tdr.guidance.section.3.paragraph.2", email)
       val emailElement = body.get(4).getElementsByClass("govuk-link").get(0)
       emailElement.getElementsByAttributeValue("href", s"mailto:$email")
-
     }
 
     "contain the 'check-your-answers' paragraph" in {
