@@ -72,8 +72,14 @@ trait ErrorInterpreter {
       |  <tbody class="govuk-table__body">
       |""".stripMargin)
 
-  def generateFieldTableRow(fieldName: String, originalValue: Option[String], updatedValue: Option[String], call: Option[Html]) =
-    s"""<tr class="govuk-table__row declaration-transport-meansOfTransportOnDepartureIDNumber">
+  def generateFieldTableRow(
+    fieldPointer: Pointer,
+    fieldName: String,
+    originalValue: Option[String],
+    updatedValue: Option[String],
+    call: Option[Html]
+  ) =
+    s"""<tr class="govuk-table__row ${fieldPointer.toString.replaceAll("\\.#?", "-")}">
        |  <td class="govuk-table__cell govuk-table__cell_break-word bold">${fieldName}</td>
        |  <td class="govuk-table__cell govuk-table__cell_break-word">${originalValue.getOrElse("-")}</td>
        |  <td class="govuk-table__cell govuk-table__cell_break-word">${updatedValue.getOrElse("-")}</td>
@@ -91,7 +97,7 @@ trait ErrorInterpreter {
   def generateFieldTable(error: ErrorInstance)(implicit messages: Messages): Seq[Html] =
     error.fieldsInvolved.map { field =>
       val fieldName = messages(field.pointer.messageKey, field.pointer.sequenceArgs: _*)
-      Html(generateFieldTableRow(fieldName, field.originalValue, field.draftValue, field.changeLink))
+      Html(generateFieldTableRow(field.pointer, fieldName, field.originalValue, field.draftValue, field.changeLink))
     }
 
   def errorTitle(error: ErrorInstance)(implicit messages: Messages) = Html(s"""<div class="govuk-summary-card__title-wrapper">
