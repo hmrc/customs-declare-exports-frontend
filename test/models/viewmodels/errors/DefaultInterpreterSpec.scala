@@ -52,6 +52,7 @@ class DefaultInterpreterSpec extends UnitSpec with UnitViewSpec with ExportsDecl
   val colHeader2 = messages("rejected.notification.fieldTable.column.2.title")
   val colHeader3 = messages("rejected.notification.fieldTable.column.3.title")
   val dummyLink = """<a href="">Change</a>"""
+  val fieldPointer = "declaration.items.#1.additionalDocument.#2.documentStatus"
 
   "DefaultInterpreter's generateHtmlFor method is called" that {
     "displays no errors" when {
@@ -62,7 +63,6 @@ class DefaultInterpreterSpec extends UnitSpec with UnitViewSpec with ExportsDecl
         val html = DefaultInterpreter.generateHtmlFor(error).toString
 
         val errorDescription = messages(s"dmsError.$errorCode.title")
-
         html must include("Error 1")
         html must include(errorDescription)
         html must not include govTable
@@ -75,7 +75,7 @@ class DefaultInterpreterSpec extends UnitSpec with UnitViewSpec with ExportsDecl
         val originalVal = "ABC"
         val draftVal = "CBA"
         val field = FieldInvolved(
-          Pointer("declaration.items.#1.additionalDocument.#2.documentStatus"),
+          Pointer(fieldPointer),
           Some(originalVal),
           Some(draftVal),
           Some(Html(dummyLink)),
@@ -94,7 +94,8 @@ class DefaultInterpreterSpec extends UnitSpec with UnitViewSpec with ExportsDecl
         html must include(colHeader3)
         html must include(originalVal)
         html must include(draftVal)
-        html must include(dummyLink.toString())
+        html must include(dummyLink)
+        html must include(fieldPointer.replaceAll("\\.#?", "-"))
       }
     }
 
