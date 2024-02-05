@@ -74,13 +74,7 @@ class DefaultInterpreterSpec extends UnitSpec with UnitViewSpec with ExportsDecl
         val errorCode = "CDS12056"
         val originalVal = "ABC"
         val draftVal = "CBA"
-        val field = FieldInvolved(
-          Pointer(fieldPointer),
-          Some(originalVal),
-          Some(draftVal),
-          Some(Html(dummyLink)),
-          None
-        )
+        val field = FieldInvolved(Pointer(fieldPointer), Some(originalVal), Some(draftVal), Some(Html(dummyLink)), None)
         val error = ErrorInstance(declaration, 1, errorCode, Seq(field))
 
         val html = DefaultInterpreter.generateHtmlFor(error).toString
