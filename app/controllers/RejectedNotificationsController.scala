@@ -27,7 +27,7 @@ import play.api.Logging
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import views.html.{rejected_notification_errors, rejected_notification_errors_tdr}
+import views.html.rejected_notification_errors
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -42,7 +42,6 @@ class RejectedNotificationsController @Inject() (
   newErrorReportConfig: NewErrorReportConfig,
   errorsReportedController: ErrorsReportedController,
   errorsPage: rejected_notification_errors,
-  errorsPageForTDR: rejected_notification_errors_tdr,
   tdrFeatureFlags: TdrFeatureFlags
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with Logging {
@@ -58,8 +57,7 @@ class RejectedNotificationsController @Inject() (
             val mrn = notifications.headOption.map(_.mrn).getOrElse(messages("rejected.notification.mrn.missing"))
             val errors = getRejectedNotificationErrors(notifications)
 
-            if (tdrFeatureFlags.showErrorPageVersionForTdr) Ok(errorsPageForTDR(None, declaration, mrn, None, errors))
-            else Ok(errorsPage(None, declaration, mrn, None, errors))
+            Ok(errorsPage(None, declaration, mrn, None, errors))
           }
 
         case _ => errorHandler.internalError(s"Declaration($id) not found for a rejected submission??")
@@ -107,8 +105,7 @@ class RejectedNotificationsController @Inject() (
     val subId = getValue(submissionUuid)
     val errors = notification.errors
 
-    if (tdrFeatureFlags.showErrorPageVersionForTdr) Ok(errorsPageForTDR(subId, declaration, notification.mrn, Some(decId), errors))
-    else Ok(errorsPage(subId, declaration, notification.mrn, Some(decId), errors))
+    Ok(errorsPage(subId, declaration, notification.mrn, Some(decId), errors))
   }
 
   private def getRejectedNotificationErrors(notifications: Seq[Notification]): Seq[NotificationError] =

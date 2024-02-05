@@ -16,12 +16,14 @@
 
 package views
 
-import base.Injector
+import base.{Injector, OverridableInjector}
+import config.featureFlags.TdrFeatureFlags
 import controllers.declaration.routes.AdditionalDocumentsController
 import controllers.routes.{DeclarationDetailsController, SavedDeclarationsController, SubmissionsController}
 import models.Pointer
 import models.declaration.notifications.NotificationError
 import org.jsoup.nodes.Document
+import org.mockito.Mockito.when
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 import services.cache.ExportsTestHelper
@@ -29,6 +31,7 @@ import tools.Stubs
 import uk.gov.hmrc.play.bootstrap.binders.RedirectUrl
 import views.declaration.spec.UnitViewSpec
 import views.html.rejected_notification_errors
+import play.api.inject.bind
 
 class RejectedNotificationErrorsViewSpec extends UnitViewSpec with ExportsTestHelper with Injector with Stubs {
 
@@ -36,13 +39,17 @@ class RejectedNotificationErrorsViewSpec extends UnitViewSpec with ExportsTestHe
 
   private val declaration = aDeclaration(withConsignmentReferences("DUCR", "lrn"))
 
+  implicit val injector: OverridableInjector = new OverridableInjector(bind[TdrFeatureFlags].toInstance(mockTdrFeatureFlags))
+
   private def view(
     reasons: Seq[NotificationError] = Seq.empty,
     maybeDeclarationId: Option[String] = None,
     testMessages: Messages = messages,
     maybeSubmissionId: Option[String] = None
-  ): Document =
+  )(implicit injector: OverridableInjector): Document = {
+    val page = injector.instanceOf[rejected_notification_errors]
     page(maybeSubmissionId, declaration, MRN.value, maybeDeclarationId, reasons)(request, testMessages)
+  }
 
   val submissionId = "submissionId"
   val defaultRejectionCode = "CDS10001"
@@ -102,14 +109,24 @@ class RejectedNotificationErrorsViewSpec extends UnitViewSpec with ExportsTestHe
 
       body.get(1).text() mustBe messages("rejected.notification.guidance.section.1.paragraph.1")
       body.get(2).text() mustBe messages(
-        "rejected.notification.guidance.section.1.paragraph.2",
-        messages("rejected.notification.guidance.section.1.paragraph.2.link")
+        "rejected.notification.guidance.section.2.paragraph.1",
+        messages("rejected.notification.guidance.section.2.paragraph.1.link")
       )
 
-      body.get(3).text() mustBe messages("rejected.notification.guidance.section.2.paragraph.1")
+      body.get(3).text() mustBe messages("rejected.notification.guidance.section.3.paragraph.1")
+      body.get(4).text() mustBe messages("rejected.notification.guidance.section.3.paragraph.2")
+      body.get(5).text() mustBe messages("rejected.notification.guidance.section.3.paragraph.3")
+    }
 
-      body.get(4).text() mustBe messages("rejected.notification.guidance.section.2.paragraph.2")
-      body.get(5).text() mustBe messages("rejected.notification.guidance.section.2.paragraph.3")
+    "have the expected body content in TDR" in {
+      when(mockTdrFeatureFlags.showErrorPageVersionForTdr).thenReturn(true)
+      val tdrPage = view()
+      val body = tdrPage.getElementsByClass("govuk-body")
+
+      val email = messages("rejected.notification.tdr.guidance.section.3.paragraph.2.email")
+      body.get(4).text() mustBe messages("rejected.notification.tdr.guidance.section.3.paragraph.2", email)
+      val emailElement = body.get(4).getElementsByClass("govuk-link").get(0)
+      emailElement.getElementsByAttributeValue("href", s"mailto:$email")
     }
 
     "contain notifications" when {
@@ -164,6 +181,7 @@ class RejectedNotificationErrorsViewSpec extends UnitViewSpec with ExportsTestHe
     }
 
     "display all other expected content links" in {
+      when(mockTdrFeatureFlags.showErrorPageVersionForTdr).thenReturn(false)
       val reason = NotificationError(defaultRejectionCode, Some(Pointer("declaration.consignmentReferences.lrn")))
 
       val document = view(Seq(reason))

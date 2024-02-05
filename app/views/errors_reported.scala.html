@@ -15,6 +15,7 @@
  *@
 
 @import config.AppConfig
+@import config.featureFlags.TdrFeatureFlags
 @import models.declaration.notifications.NotificationError
 @import views.helpers.{BackButton, PointerHelper, Title}
 @import views.html.components.gds._
@@ -39,7 +40,8 @@
         link: link,
         appConfig: AppConfig,
         notificationErrorHelper: ErrorsReportedHelper,
-        researchBanner: researchBanner
+        researchBanner: researchBanner,
+        tdrFeatureFlags: TdrFeatureFlags,
 )
 
 @(submissionId: Option[String],
@@ -136,17 +138,22 @@
                 )))
 
             @* Section 3 *@
-
             @heading(messages("rejected.notification.guidance.section.3.header"), "govuk-heading-s", "h2")
 
-            @paragraphBody(messages("rejected.notification.guidance.section.3.paragraph.1"))
+            @if(tdrFeatureFlags.showErrorPageVersionForTdr) {
+                @paragraphBody(messages("rejected.notification.tdr.guidance.section.3.paragraph.1"))
 
-            @paragraphBody(messages("rejected.notification.guidance.section.3.paragraph.2",
-                externalLink(
-                    text = messages("rejected.notification.guidance.section.3.paragraph.2.email"),
-                    url = s"mailto:${messages("rejected.notification.guidance.section.3.paragraph.2.email")}"
-                )
-            ))
+                @paragraphBody(messages("rejected.notification.tdr.guidance.section.3.paragraph.2",
+                    externalLink(
+                        text = messages("rejected.notification.tdr.guidance.section.3.paragraph.2.email"),
+                        url = s"mailto:${messages("rejected.notification.tdr.guidance.section.3.paragraph.2.email")}"
+                    )
+                ))
+            } else {
+                @paragraphBody(messages("rejected.notification.guidance.section.3.paragraph.1"))
+                @paragraphBody(messages("rejected.notification.guidance.section.3.paragraph.2"))
+                @paragraphBody(messages("rejected.notification.guidance.section.3.paragraph.3"))
+            }
 
         </div>
     </div>

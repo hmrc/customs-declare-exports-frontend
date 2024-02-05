@@ -15,7 +15,7 @@
  *@
 
 @import config.AppConfig
-@import config.featureFlags.NewErrorReportConfig
+@import config.featureFlags.{NewErrorReportConfig, TdrFeatureFlags}
 @import models.declaration.notifications.NotificationError
 @import models.requests.SessionHelper.errorReportViewVersion
 @import views.helpers.{BackButton, PointerHelper, Title}
@@ -37,6 +37,7 @@
     notificationErrorHelper: NotificationErrorHelper,
     appConfig: AppConfig,
     newErrorReportConfig: NewErrorReportConfig,
+    tdrFeatureFlags: TdrFeatureFlags,
     researchBanner: researchBanner
 )
 
@@ -82,7 +83,7 @@
 
 @guidancePara2Text = @{
     if(maybeDeclarationId.isDefined) "rejected.amendment.guidance.section.2.paragraph.1"
-    else "rejected.notification.guidance.section.1.paragraph.2"
+    else "rejected.notification.guidance.section.2.paragraph.1"
 }
 
 @govukLayout(
@@ -125,21 +126,33 @@
 
             @paragraphBody(messages("rejected.notification.guidance.section.1.paragraph.1"))
 
-            @paragraphBody(messages(guidancePara2Text,
-                link(
-                    text = messages("rejected.notification.guidance.section.1.paragraph.2.link"),
-                    call = routes.SavedDeclarationsController.displayDeclarations()
-                )
-            ))
-
             @* Section 2 *@
 
             @heading(messages("rejected.notification.guidance.section.2.header"), "govuk-heading-s", "h2")
 
-            @paragraphBody(messages("rejected.notification.guidance.section.2.paragraph.1"))
-            @paragraphBody(messages("rejected.notification.guidance.section.2.paragraph.2"))
+            @paragraphBody(messages(guidancePara2Text,
+                link(
+                    text = messages("rejected.notification.guidance.section.2.paragraph.1.link"),
+                    call = routes.SavedDeclarationsController.displayDeclarations()
+                )
+            ))
 
-            @paragraphBody(messages("rejected.notification.guidance.section.2.paragraph.3"))
+            @* Section 3 *@
+            @heading(messages("rejected.notification.guidance.section.3.header"), "govuk-heading-s", "h2")
+
+            @if(tdrFeatureFlags.showErrorPageVersionForTdr) {
+                @paragraphBody(messages("rejected.notification.tdr.guidance.section.3.paragraph.1"))
+                @paragraphBody(messages("rejected.notification.tdr.guidance.section.3.paragraph.2",
+                    externalLink(
+                        text = messages("rejected.notification.tdr.guidance.section.3.paragraph.2.email"),
+                        url = s"mailto:${messages("rejected.notification.tdr.guidance.section.3.paragraph.2.email")}"
+                    )
+                ))
+            } else {
+                @paragraphBody(messages("rejected.notification.guidance.section.3.paragraph.1"))
+                @paragraphBody(messages("rejected.notification.guidance.section.3.paragraph.2"))
+                @paragraphBody(messages("rejected.notification.guidance.section.3.paragraph.3"))
+            }
         </div>
     </div>
 }
