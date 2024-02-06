@@ -220,7 +220,7 @@ object PointerRecord {
     },
     "declaration.parties.representativeDetails.statusCode" -> new PointerRecord() {
       def fetchValue(dec: ExportsDeclaration, args: Int*) = dec.parties.representativeDetails.flatMap(_.statusCode)
-      override val pageLink1Param = Some(RepresentativeEntityController.displayPage)
+      override val pageLink1Param = Some(RepresentativeStatusController.displayPage)
     },
     "declaration.parties.declarationHolders.$.eori" -> new PointerRecord() {
       def fetchValue(dec: ExportsDeclaration, args: Int*) = getDeclarationHolder(dec, args(0)).flatMap(_.eori.map(_.value))
