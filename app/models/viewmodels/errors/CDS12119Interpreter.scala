@@ -65,7 +65,7 @@ object CDS12119Interpreter extends ErrorInterpreter {
     )
   }
 
-  def tableHeader(pointer: Pointer, changeLink: Html)(implicit messages: Messages) = Html(s"""<table class="govuk-table">
+  def tableHeader(fieldPointer: Pointer, changeLink: Html)(implicit messages: Messages) = Html(s"""<table class="govuk-table">
        |  <thead class="govuk-table__head">
        |    <tr class="govuk-table__row">
        |      <th scope="col" class="govuk-table__header"></th>
@@ -76,7 +76,7 @@ object CDS12119Interpreter extends ErrorInterpreter {
        |    </tr>
        |  </thead>
        |  <tbody class="govuk-table__body">
-       |  <tr class="govuk-table__row ${pointer.toString.replaceAll("\\.#?", "-")}">
+       |  <tr class="govuk-table__row ${fieldPointer.toString.replaceAll("\\.#?", "-")}">
        |      <td class="govuk-table__cell govuk-table__cell_break-word bold">${messages("declaration.summary.item.procedureCode")}</td>
        |      <td class="govuk-table__cell govuk-table__cell_break-word"></td>
        |      <td class="govuk-table__cell govuk-table__cell_break-word">${changeLink}</td>
