@@ -738,6 +738,8 @@ declaration.details.view.queries.button = Bwrw golwg dros ymholiadau
 
 declaration.details.readMoreAboutDecStatus.header = Rhagor am statws y datganiad
 declaration.details.readMoreAboutDecStatus.paragraph = Darganfyddwch beth mae gwahanol statws i ddatganiad yn ei olygu
+declaration.details.readMoreAboutDecStatus.rearrivals.header = Gwybodaeth am ‘Nwyddau sy’n cyrraedd eto’
+declaration.details.readMoreAboutDecStatus.rearrivals.paragraph = Mae nwyddau sy’n cyrraedd eto yn cynnwys nwyddau a gyflwynir mewn lleoliad newydd, ar ôl cael eu clirio eisoes i’w hallforio mewn mannau eraill. Gall nwyddau sy’n cyrraedd eto hefyd gynnwys llwythi mawr sy’n cael eu symud mewn dau neu fwy o gynwysyddion. Mae nwyddau sy’n cyrraedd eto yn cael eu cynnal gan lwythwyr cymeradwy yn lleoliad y porthladd newydd. Ni fydd yr wybodaeth ddiweddaraf am nwyddau sy’n cyrraedd eto yn ymddangos yn y gwasanaeth datganiad allforio hwn. Ymgynghorwch â’ch llwythwr neu’ch cludwr ynghylch gwybodaeth am nwyddau sy’n cyrraedd eto.
 declaration.details.readMoreAboutDecStatus.submitted.header = Statws ‘Datganiad wedi’i gyflwyno’
 declaration.details.readMoreAboutDecStatus.submitted.paragraph = Bydd datganiad a gyflwynwyd ymlaen llaw yn dangos pan fydd wedi’i gyflwyno’n llwyddiannus a dod i law CThEF
 declaration.details.readMoreAboutDecStatus.decHasError.header = Statws ‘Mae gan y datganiad wallau’
