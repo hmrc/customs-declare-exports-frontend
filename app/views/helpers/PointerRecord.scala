@@ -232,11 +232,11 @@ object PointerRecord {
     },
     "declaration.transport.meansOfTransportCrossingTheBorderIDNumber" -> new PointerRecord() {
       def fetchValue(dec: ExportsDeclaration, args: Int*) = dec.transport.meansOfTransportOnDepartureIDNumber
-      override val pageLink1Param = Some(DepartureTransportController.displayPage)
+      override val pageLink1Param = Some(BorderTransportController.displayPage)
     },
     "declaration.transport.meansOfTransportCrossingTheBorderType" -> new PointerRecord() {
       def fetchValue(dec: ExportsDeclaration, args: Int*) = dec.transport.meansOfTransportCrossingTheBorderType
-      override val pageLink1Param = Some(DepartureTransportController.displayPage)
+      override val pageLink1Param = Some(BorderTransportController.displayPage)
     },
     "declaration.transport.transportCrossingTheBorderNationality.countryName" -> new PointerRecord() {
       def fetchValue(dec: ExportsDeclaration, args: Int*) = dec.transport.transportCrossingTheBorderNationality.flatMap(_.countryName)
