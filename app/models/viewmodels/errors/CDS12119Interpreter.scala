@@ -32,7 +32,7 @@ object CDS12119Interpreter extends ErrorInterpreter {
       val fieldName = messages(field.pointer.messageKey, field.pointer.sequenceArgs: _*)
       val description = field.description.getOrElse("")
 
-      generateFieldTableRow(fieldName, description, field.changeLink)
+      generateFieldTableRow(field.pointer, fieldName, description, field.changeLink)
     }
 
     val itemIdx = error.fieldsInvolved.headOption.flatMap(_.pointer.sequenceIndexes.headOption).getOrElse(0)
@@ -55,7 +55,7 @@ object CDS12119Interpreter extends ErrorInterpreter {
             errorTitle(error),
             contentHeader,
             HtmlFormat.fill(formattedErrorDescription(error.errorCode)),
-            tableHeader(changeLink),
+            tableHeader(pointer, changeLink),
             HtmlFormat.fill(rows),
             fieldsTableFooter,
             errorFooter
@@ -65,7 +65,7 @@ object CDS12119Interpreter extends ErrorInterpreter {
     )
   }
 
-  def tableHeader(changeLink: Html)(implicit messages: Messages) = Html(s"""<table class="govuk-table">
+  def tableHeader(fieldPointer: Pointer, changeLink: Html)(implicit messages: Messages) = Html(s"""<table class="govuk-table">
        |  <thead class="govuk-table__head">
        |    <tr class="govuk-table__row">
        |      <th scope="col" class="govuk-table__header"></th>
@@ -76,15 +76,15 @@ object CDS12119Interpreter extends ErrorInterpreter {
        |    </tr>
        |  </thead>
        |  <tbody class="govuk-table__body">
-       |  <tr class="govuk-table__row declaration-transport-meansOfTransportOnDepartureIDNumber">
+       |  <tr class="govuk-table__row ${fieldPointer.toString.replaceAll("\\.#?", "-")}">
        |      <td class="govuk-table__cell govuk-table__cell_break-word bold">${messages("declaration.summary.item.procedureCode")}</td>
        |      <td class="govuk-table__cell govuk-table__cell_break-word"></td>
        |      <td class="govuk-table__cell govuk-table__cell_break-word">${changeLink}</td>
        |    </tr>
        |""".stripMargin)
 
-  def generateFieldTableRow(fieldName: String, description: String, call: Option[Html]) = Html(
-    s"""<tr class="govuk-table__row declaration-transport-meansOfTransportOnDepartureIDNumber">
+  def generateFieldTableRow(fieldPointer: Pointer, fieldName: String, description: String, call: Option[Html]) = Html(
+    s"""<tr class="govuk-table__row ${fieldPointer.toString.replaceAll("\\.#?", "-")}">
        |  <td class="govuk-table__cell govuk-table__cell_break-word bold">${fieldName}</td>
        |  <td class="govuk-table__cell govuk-table__cell_break-word">${description}</td>
        |  <td class="govuk-table__cell govuk-table__cell_break-word">${call.getOrElse("")}</td>
