@@ -165,7 +165,7 @@ object PointerRecord {
     },
     "declaration.items.$.additionalFiscalReferences.$.id" -> new PointerRecord() {
       def fetchValue(dec: ExportsDeclaration, args: Int*) =
-        getItem(dec, args(0)).flatMap(getAdditionalFiscalRefs(_, args(1)).map(_.value))
+        getItem(dec, args(0)).flatMap(getAdditionalFiscalRefs(_, args(1)).map(_.country))
       override val pageLink2Param = Some(AdditionalFiscalReferencesController.displayPage)
     },
     "declaration.items.$.additionalFiscalReferences.$.roleCode" -> new PointerRecord() {
