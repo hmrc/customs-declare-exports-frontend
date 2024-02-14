@@ -19,15 +19,18 @@
 @import controllers.navigation.{ItemId, Navigator}
 @import forms.declaration.commodityMeasure.CommodityMeasure
 @import models.requests.JourneyRequest
-@import uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF
+@import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF, Details, GovukDetails, HtmlContent, Text}
 @import views.helpers.{BackButton, Title}
 @import views.html.components.gds._
 
 @this(
     govukLayout: gdsMainTemplate,
+    govukDetails: GovukDetails,
     errorSummary: errorSummary,
     sectionHeader: sectionHeader,
     pageTitle: pageTitle,
+    paragraphBody: paragraphBody,
+    insetText: exportsInsetText,
     inputTextUnits: exportsInputTextWithSuffix,
     saveButtons: saveButtons,
     tariffExpander: tariffExpander,
@@ -38,10 +41,15 @@
 
 @(itemId: String, form: Form[CommodityMeasure])(implicit request: JourneyRequest[_], messages: Messages)
 
-@hasErrors = @{form.hasErrors || form.hasGlobalErrors}
+@expanderContent = {
+    @paragraphBody(messages("declaration.commodityMeasure.expander.paragraph.1"))
+    @paragraphBody(messages("declaration.commodityMeasure.expander.paragraph.2"))
+    @paragraphBody(messages("declaration.commodityMeasure.expander.paragraph.3"))
+    @paragraphBody(messages("declaration.commodityMeasure.expander.paragraph.4"))
+}
 
 @govukLayout(
-    title = Title("declaration.commodityMeasure.title", "declaration.section.5", hasErrors = hasErrors),
+    title = Title("declaration.commodityMeasure.title", "declaration.section.5", hasErrors = form.hasErrors || form.hasGlobalErrors),
     backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(CommodityMeasure, ItemId(itemId))))) {
 
     @formHelper(action = CommodityMeasureController.submitPage(itemId), 'autoComplete -> "off") {
@@ -50,6 +58,17 @@
         @sectionHeader(messages("declaration.section.5"))
 
         @pageTitle(messages("declaration.commodityMeasure.title"))
+
+        @insetText(HtmlContent(paragraphBody(messages("declaration.commodityMeasure.inset.text"))))
+
+        @inputTextUnits(
+            field = form("netMass"),
+            labelKey = "declaration.commodityMeasure.netMass.label",
+            isSubHeading = true,
+            suffixKey = "declaration.commodityMeasure.units",
+            hintKey = Some("declaration.commodityMeasure.netMass.hint"),
+            tooltipKey = Some("declaration.commodityMeasure.units.hint")
+        )
 
         @inputTextUnits(
             field = form("grossMass"),
@@ -60,14 +79,11 @@
             tooltipKey = Some("declaration.commodityMeasure.units.hint")
         )
 
-        @inputTextUnits(
-            field = form("netMass"),
-            labelKey = "declaration.commodityMeasure.netMass.label",
-            isSubHeading = true,
-            suffixKey = "declaration.commodityMeasure.units",
-            hintKey = Some("declaration.commodityMeasure.netMass.hint"),
-            tooltipKey = Some("declaration.commodityMeasure.units.hint")
-        )
+        @govukDetails(Details(
+            id = Some("commodity-measure-info"),
+            summary = Text(messages("declaration.commodityMeasure.expander.title")),
+            content = HtmlContent(expanderContent)
+        ))
 
         @tariffExpander(CommodityMeasure, request.declarationType)(messages, appConfig)
 

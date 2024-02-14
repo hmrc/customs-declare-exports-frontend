@@ -30,40 +30,28 @@ class CommodityMeasureSpec extends UnitSpec with DeclarationPageBaseSpec {
 
     "have no errors" when {
 
-      "user fill only mandatory fields with correct values" in {
+      "user fill mandatory fields with correct values" in {
         form("124.12", "123.12").errors must be(empty)
       }
 
       "net and gross mass are equal" in {
         form("123.12", "123.12").errors must be(empty)
       }
+
+      "mandatory fields are empty" in {
+        form("", "").errors must be(empty)
+      }
+
+      "user provided net mass only" in {
+        form("", "124.12").errors must be(empty)
+      }
+
+      "user provided gross mass only" in {
+        form("123.12", "").errors must be(empty)
+      }
     }
 
     "have errors" when {
-
-      "mandatory fields are empty" in {
-        val result = form("", "")
-
-        val errorKeys = result.errors.map(_.key)
-        val expectedErrorKeys = List("grossMass", "netMass")
-        errorKeys must be(expectedErrorKeys)
-
-        val errorMessages = result.errors.map(_.message)
-        val expectedErrorMessages = List("declaration.commodityMeasure.grossMass.empty", "declaration.commodityMeasure.netMass.empty")
-        errorMessages must be(expectedErrorMessages)
-      }
-
-      "no mandatory fields are present" in {
-        val result = CommodityMeasure.form.bind(Map.empty[String, String])
-
-        val expectedErrorKeys = List("grossMass", "netMass")
-        val errorKeys = result.errors.map(_.key)
-        errorKeys must be(expectedErrorKeys)
-
-        val errorMessages = result.errors.map(_.message)
-        val expectedErrorMessages = List("declaration.commodityMeasure.grossMass.empty", "declaration.commodityMeasure.netMass.empty")
-        errorMessages must be(expectedErrorMessages)
-      }
 
       "data provided by user is incorrect" in {
         val result = form("12345.12333333", "1234.533333333331234")
@@ -88,38 +76,14 @@ class CommodityMeasureSpec extends UnitSpec with DeclarationPageBaseSpec {
         val expectedErrorMessages = List("declaration.commodityMeasure.netMass.error.biggerThanGrossMass")
         errorMessages must be(expectedErrorMessages)
       }
-
-      "user provided net mass only" in {
-        val result = form("", "124.12")
-
-        val errorKeys = result.errors.map(_.key)
-        val expectedErrorKeys = List("grossMass")
-        errorKeys must be(expectedErrorKeys)
-
-        val errorMessages = result.errors.map(_.message)
-        val expectedErrorMessages = List("declaration.commodityMeasure.grossMass.empty")
-        errorMessages must be(expectedErrorMessages)
-      }
-
-      "user provided gross mass only" in {
-        val result = form("123.12", "")
-
-        val errorKeys = result.errors.map(_.key)
-        val expectedErrorKeys = List("netMass")
-        errorKeys must be(expectedErrorKeys)
-
-        val errorMessages = result.errors.map(_.message)
-        val expectedErrorMessages = List("declaration.commodityMeasure.netMass.empty")
-        errorMessages must be(expectedErrorMessages)
-      }
     }
   }
 
   override def getCommonTariffKeys(messageKey: String): Seq[TariffContentKey] =
-    Seq(TariffContentKey(s"${messageKey}.common"))
+    List(TariffContentKey(s"${messageKey}.1.common"), TariffContentKey(s"${messageKey}.2.common"), TariffContentKey(s"${messageKey}.3.common"))
 
   override def getClearanceTariffKeys(messageKey: String): Seq[TariffContentKey] =
-    Seq(TariffContentKey(s"${messageKey}.clearance"))
+    List(TariffContentKey(s"${messageKey}.clearance"))
 
   "CommodityMeasure" when {
     testTariffContentKeys(CommodityMeasure, "tariff.declaration.item.commodityMeasure")

@@ -16,7 +16,7 @@
 
 package views.declaration.commodityMeasure
 
-import base.Injector
+import base.{Injector, MockAuthAction}
 import controllers.declaration.routes.{CommodityDetailsController, PackageInformationSummaryController, UNDangerousGoodsCodeController}
 import forms.declaration.IsExs
 import forms.declaration.commodityMeasure.CommodityMeasure
@@ -32,73 +32,72 @@ import views.html.declaration.commodityMeasure.commodity_measure
 import views.tags.ViewTest
 
 @ViewTest
-class CommodityMeasureViewSpec extends PageWithButtonsSpec with Injector {
+class CommodityMeasureViewSpec extends PageWithButtonsSpec with Injector with MockAuthAction {
 
-  val page = instanceOf[commodity_measure]
+  private val page = instanceOf[commodity_measure]
 
   override val typeAndViewInstance = (STANDARD, page(itemId, form)(_, _))
+
+  private val detailsPrefix = "declaration.commodityMeasure.expander.paragraph"
+  private val tariffPrefix = "tariff.declaration.item.commodityMeasure"
 
   def createView(frm: Form[CommodityMeasure] = form)(implicit request: JourneyRequest[_]): Document =
     page(itemId, frm)(request, messages)
 
-  "Commodity Measure View on empty page" should {
+  "Commodity Measure View" should {
     onJourney(STANDARD, SUPPLEMENTARY, CLEARANCE) { implicit request =>
       val view = createView()
-
-      "display page title" in {
-        view.getElementsByTag("h1").text mustBe messages("declaration.commodityMeasure.title")
-      }
 
       "display section header" in {
         view.getElementById("section-header").text mustBe messages("declaration.section.5")
       }
 
-      "display empty input with label for gross mass" in {
-        val label = view.getElementsByTag("label").get(0)
-        label.getElementsByAttributeValue("for", "grossMass").size mustBe 1
-        label.text mustBe messages("declaration.commodityMeasure.grossMass.label")
+      "display page title" in {
+        view.getElementsByTag("h1").text mustBe messages("declaration.commodityMeasure.title")
+      }
 
-        val hint = s"${messages("declaration.commodityMeasure.grossMass.hint")}${messages("declaration.commodityMeasure.units.hint")}"
-        view.getElementsByClass("govuk-hint").get(0).text mustBe hint
-
-        view.getElementById("grossMass").attr("value") mustBe empty
+      "display the inset text after the title" in {
+        view.getElementsByClass("govuk-inset-text").text mustBe messages("declaration.commodityMeasure.inset.text")
       }
 
       "display empty input with label for net mass" in {
-        val label = view.getElementsByTag("label").get(1)
+        val label = view.getElementsByTag("label").get(0)
         label.getElementsByAttributeValue("for", "netMass").size mustBe 1
         label.text mustBe messages("declaration.commodityMeasure.netMass.label")
 
         val hint = s"${messages("declaration.commodityMeasure.netMass.hint")}${messages("declaration.commodityMeasure.units.hint")}"
-        view.getElementsByClass("govuk-hint").get(2).text mustBe hint
+        view.getElementsByClass("govuk-hint").get(0).text mustBe hint
 
         view.getElementById("netMass").attr("value") mustBe empty
       }
 
+      "display empty input with label for gross mass" in {
+        val label = view.getElementsByTag("label").get(1)
+        label.getElementsByAttributeValue("for", "grossMass").size mustBe 1
+        label.text mustBe messages("declaration.commodityMeasure.grossMass.label")
+
+        val hint = s"${messages("declaration.commodityMeasure.grossMass.hint")}${messages("declaration.commodityMeasure.units.hint")}"
+        view.getElementsByClass("govuk-hint").get(2).text mustBe hint
+
+        view.getElementById("grossMass").attr("value") mustBe empty
+      }
+
+      "display a details expander" in {
+        val view = createView()
+        view.getElementsByClass("govuk-details__summary").first.text mustBe messages("declaration.commodityMeasure.expander.title")
+        val details = view.getElementsByClass("govuk-details__text").first
+
+        val expectedText =
+          s"""${messages(s"$detailsPrefix.1")}
+             |${messages(s"$detailsPrefix.2")}
+             |${messages(s"$detailsPrefix.3")}
+             |${messages(s"$detailsPrefix.4")}
+          """.stripMargin.replace('\n', ' ').trim
+
+        removeBlanksIfAnyBeforeDot(details.text) mustBe expectedText
+      }
+
       checkAllSaveButtonsAreDisplayed(createView())
-    }
-  }
-
-  "Commodity Measure with invalid input" should {
-    onJourney(STANDARD, SUPPLEMENTARY, CLEARANCE) { implicit request =>
-      "display error when nothing is entered" in {
-        val view = createView(form.bind(Map("grossMass" -> "", "netMass" -> "")))
-
-        view must haveGovukGlobalErrorSummary
-        view must containErrorElementWithTagAndHref("a", "#netMass")
-        view must containErrorElementWithTagAndHref("a", "#grossMass")
-
-        view must containErrorElementWithMessageKey("declaration.commodityMeasure.netMass.empty")
-        view must containErrorElementWithMessageKey("declaration.commodityMeasure.grossMass.empty")
-      }
-
-      "display error when net mass is empty" in {
-        val view = createView(form.bind(Map("grossMass" -> "10.00", "netMass" -> "")))
-
-        view must haveGovukGlobalErrorSummary
-        view must containErrorElementWithTagAndHref("a", "#netMass")
-        view must containErrorElementWithMessageKey("declaration.commodityMeasure.netMass.empty")
-      }
 
       "display error when net mass is incorrect" in {
         val view = createView(form.bind(Map("grossMass" -> "20.99", "netMass" -> "10.0055345")))
@@ -106,14 +105,6 @@ class CommodityMeasureViewSpec extends PageWithButtonsSpec with Injector {
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#netMass")
         view must containErrorElementWithMessageKey("declaration.commodityMeasure.netMass.error")
-      }
-
-      "display error when gross mass is empty" in {
-        val view = createView(form.bind(Map("grossMass" -> "", "netMass" -> "10.00")))
-
-        view must haveGovukGlobalErrorSummary
-        view must containErrorElementWithTagAndHref("a", "#grossMass")
-        view must containErrorElementWithMessageKey("declaration.commodityMeasure.grossMass.empty")
       }
 
       "display error when gross mass is incorrect" in {
@@ -124,11 +115,7 @@ class CommodityMeasureViewSpec extends PageWithButtonsSpec with Injector {
 
         view must containErrorElementWithMessageKey("declaration.commodityMeasure.grossMass.error")
       }
-    }
-  }
 
-  "Commodity Measure View when filled" should {
-    onJourney(STANDARD, SUPPLEMENTARY, CLEARANCE) { implicit request =>
       "display data in net mass input" in {
         val form = CommodityMeasure.form.fill(CommodityMeasure(Some(""), Some("123")))
         val view = createView(form)
@@ -153,14 +140,36 @@ class CommodityMeasureViewSpec extends PageWithButtonsSpec with Injector {
     }
   }
 
-  "Commodity Measure back links" should {
+  "Commodity Measure view" should {
 
     onJourney(STANDARD, SUPPLEMENTARY) { implicit request =>
+      val view = createView()
+
       "display 'Back' button that links to 'Package Information' page" in {
-        val backButton = createView().getElementById("back-link")
+        val backButton = view.getElementById("back-link")
 
         backButton must containMessage("site.backToPreviousQuestion")
         backButton must haveHref(PackageInformationSummaryController.displayPage(itemId).url)
+      }
+
+      "display the expected tariff expander" in {
+        view.getElementsByClass("govuk-details__summary").last.text mustBe messages("tariff.expander.title.common")
+        val tariffText = view.getElementsByClass("govuk-details__text").last
+
+        val expectedText =
+          s"""${messages(s"$tariffPrefix.1.common.text")}
+             |${messages(s"$tariffPrefix.2.common.text")}
+             |${messages(
+            s"$tariffPrefix.3.common.text",
+            messages(s"$tariffPrefix.3.common.linkText.0"),
+            messages(s"$tariffPrefix.3.common.linkText.1")
+          )}
+          """.stripMargin.replace('\n', ' ').trim
+
+        removeBlanksIfAnyBeforeDot(tariffText.text) mustBe expectedText
+
+        val links = tariffText.getElementsByClass("govuk-link")
+        links.get(0) must haveHref(appConfig.tariffGuideUrl(s"urls.$tariffPrefix.3.common.0"))
       }
     }
 
@@ -191,6 +200,21 @@ class CommodityMeasureViewSpec extends PageWithButtonsSpec with Injector {
         "procedure code was '1234'" in {
           viewHasBackLinkForProcedureCodeAndExsStatus("1234", "ANY", PackageInformationSummaryController.displayPage(itemId))
         }
+      }
+
+      "display the expected tariff expander" in {
+        val view = createView()
+        view.getElementsByClass("govuk-details__summary").last.text mustBe messages("tariff.expander.title.clearance")
+        val tariffText = view.getElementsByClass("govuk-details__text").last
+
+        val expectedText =
+          messages(s"$tariffPrefix.clearance.text", messages(s"$tariffPrefix.clearance.linkText.0"), messages(s"$tariffPrefix.clearance.linkText.1"))
+
+        removeBlanksIfAnyBeforeDot(tariffText.text) mustBe expectedText
+
+        val links = tariffText.getElementsByClass("govuk-link")
+        links.get(0) must haveHref(appConfig.tariffGuideUrl(s"urls.$tariffPrefix.clearance.0"))
+        links.get(1) must haveHref(appConfig.tariffGuideUrl(s"urls.$tariffPrefix.clearance.1"))
       }
     }
   }
