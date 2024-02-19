@@ -19,19 +19,40 @@ package controllers
 import base.ControllerWithoutFormSpec
 import models.UnauthorisedReason.{UrlDirect, UserEoriNotAllowed, UserIsAgent, UserIsNotEnrolled}
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
+import org.mockito.Mockito.{reset, verify, when}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
-import views.html.{unauthorised, unauthorisedAgent, unauthorisedEori}
+import views.html.{unauthorised, unauthorisedAgent, unauthorisedEoriInTdr}
 
 class UnauthorisedControllerSpec extends ControllerWithoutFormSpec {
 
   val unauthorisedPage = mock[unauthorised]
-  val unauthorisedEoriPage = mock[unauthorisedEori]
+  val unauthorisedEoriInTdrPage = mock[unauthorisedEoriInTdr]
   val unauthorisedAgentPage = mock[unauthorisedAgent]
 
   val controller =
-    new UnauthorisedController(mockTdrFeatureFlags, stubMessagesControllerComponents(), unauthorisedPage, unauthorisedEoriPage, unauthorisedAgentPage)
+    new UnauthorisedController(
+      mockTdrFeatureFlags,
+      stubMessagesControllerComponents(),
+      unauthorisedPage,
+      unauthorisedEoriInTdrPage,
+      unauthorisedAgentPage
+    )
+
+  override protected def beforeEach(): Unit = {
+    super.beforeEach()
+
+    when(mockTdrFeatureFlags.isTdrUnauthorisedMessageEnabled).thenReturn(false)
+    when(unauthorisedPage(any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(unauthorisedEoriInTdrPage()(any(), any())).thenReturn(HtmlFormat.empty)
+    when(unauthorisedAgentPage(any())(any(), any())).thenReturn(HtmlFormat.empty)
+  }
+
+  override protected def afterEach(): Unit = {
+    super.afterEach()
+
+    reset(mockTdrFeatureFlags, unauthorisedPage, unauthorisedEoriInTdrPage, unauthorisedAgentPage)
+  }
 
   "Unauthorised controller" should {
 
@@ -40,43 +61,50 @@ class UnauthorisedControllerSpec extends ControllerWithoutFormSpec {
       "onPageLoad method is invoked and" when {
 
         "user has insufficient enrolments" in {
-          when(unauthorisedPage(any())(any(), any())).thenReturn(HtmlFormat.empty)
           val result = controller.onPageLoad(UserIsNotEnrolled)(getRequest())
           status(result) must be(OK)
+
+          verify(unauthorisedPage).apply(any())(any(), any())
         }
 
-        "user has sufficient enrollments but the EORI is not in the allow list" in {
-          when(unauthorisedEoriPage()(any(), any())).thenReturn(HtmlFormat.empty)
+        "user has sufficient enrollments but the EORI is not in the allow list (TDR disabled)" in {
           val result = controller.onPageLoad(UserEoriNotAllowed)(getRequest())
           status(result) must be(OK)
+
+          verify(unauthorisedPage).apply(any())(any(), any())
         }
 
-        "tdr is enabled" in {
+        "user has sufficient enrollments but the EORI is not in the allow list (TDR enabled)" in {
           when(mockTdrFeatureFlags.isTdrUnauthorisedMessageEnabled).thenReturn(true)
-          when(unauthorisedEoriPage()(any(), any())).thenReturn(HtmlFormat.empty)
+
           val result = controller.onPageLoad(UrlDirect)(getRequest())
           status(result) must be(OK)
+
+          verify(unauthorisedEoriInTdrPage).apply()(any(), any())
         }
 
         "someone travels to the URL directly" in {
-          when(unauthorisedPage(any())(any(), any())).thenReturn(HtmlFormat.empty)
           val result = controller.onPageLoad(UrlDirect)(getRequest())
           status(result) must be(OK)
+
+          verify(unauthorisedPage).apply(any())(any(), any())
         }
       }
 
       "onAgentKickOut method is invoked and" when {
 
         "User has agent affinity group" in {
-          when(unauthorisedAgentPage(any())(any(), any())).thenReturn(HtmlFormat.empty)
           val result = controller.onAgentKickOut(UserIsAgent)(getRequest())
           status(result) must be(OK)
+
+          verify(unauthorisedAgentPage).apply(any())(any(), any())
         }
 
         "someone travels to the URL directly" in {
-          when(unauthorisedAgentPage(any())(any(), any())).thenReturn(HtmlFormat.empty)
           val result = controller.onAgentKickOut(UrlDirect)(getRequest())
           status(result) must be(OK)
+
+          verify(unauthorisedAgentPage).apply(any())(any(), any())
         }
       }
     }
