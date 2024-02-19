@@ -168,8 +168,12 @@ declaration.summary.section.5.item = Adran 5 o 6: Eitem ddatganiad {0}
 declaration.summary.section.6 = Adran 6 o 6: Cludo’r nwyddau
 
 declaration.type.description = Pa fath o ddatganiad rydych am ei greu?
+declaration.type.description.other = Dewiswch fath o ddatganiad
 declaration.type.standard = Datganiad safonol
 declaration.type.standard.hint = Mae hwn yn Ddatganiad llawn.
+declaration.type.other = Math arall o ddatganiad
+declaration.type.other.hint = Mae mathau eraill yn cynnwys datganiadau symlach, ceisiadau i glirio’r tollau (C21), datganiadau atodol, a nwyddau masnachol gwerth isel.
+declaration.type.warning = Os byddwch yn dod yn ôl i’r dudalen hon i newid y math o ddatganiad, bydd yn rhaid i chi fynd yn eich blaen drwy’r holl adrannau a chwestiynau dilynol er mwyn osgoi cyflwyno datganiad anghyflawn neu annilys.
 declaration.type.simplified = Gweithdrefn datganiad symlach (SDP) awdurdodedig
 declaration.type.simplified.hint = Datganiad 2 ran, dim ond yn cael ei ganiatáu gydag awdurdodiad gan CThEF.
 declaration.type.supplementary = Datganiad atodol
@@ -186,6 +190,11 @@ declaration.type.error = Dewiswch fath o ddatganiad
 tariff.expander.title.common = Rhagor o fanylion am yr hyn sydd ei angen ar y dudalen hon
 tariff.expander.title.clearance = Rhagor o fanylion am yr hyn sydd ei angen ar y dudalen hon
 tariff.declaration.text = Am fanylion, ewch i {0}.
+
+tariff.declaration.type.title = Rhagor o fanylion am ddatganiadau safonol
+tariff.declaration.type.text.1 = Mae datganiad safonol (hynny yw un sydd wedi cyrraedd neu wedi’i gyflwyno ymlaen llaw) yn ddatganiad llawn. Mae hyn yn golygu bod rhaid cwblhau pob adran o’r datganiad.
+tariff.declaration.type.text.2 = Dewch o hyd i fanylion am {0}.
+tariff.declaration.type.linkText.2 = wneud datganiad allforio llawn (yn agor tab newydd)
 
 tariff.declaration.others.text = I gael manylion, ewch i {0}.
 tariff.declaration.others.linkText = Elfen Ddata 1/2 - Math o Ddatganiad Ychwanegol (yn agor tab newydd)
