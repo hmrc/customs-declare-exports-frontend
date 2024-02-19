@@ -35,7 +35,7 @@
     homepageUrl = "https://www.gov.uk",
     serviceName = Some(messages("service.name")),
     serviceUrl = ChoiceController.displayPage.url,
-    language = language.En,
+    language = if(messages.lang.code == "en") language.En else language.Cy,
     containerClasses = "govuk-width-container",
     signOutHref = signOutHref
 ))
