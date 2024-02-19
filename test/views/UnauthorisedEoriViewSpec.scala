@@ -18,13 +18,13 @@ package views
 
 import base.Injector
 import views.declaration.spec.UnitViewSpec
-import views.html.unauthorisedEori
+import views.html.unauthorisedEoriInTdr
 import views.tags.ViewTest
 
 @ViewTest
 class UnauthorisedEoriViewSpec extends UnitViewSpec with Injector {
 
-  val page = instanceOf[unauthorisedEori]
+  val page = instanceOf[unauthorisedEoriInTdr]
 
   val view = page()(request, messages)
 
