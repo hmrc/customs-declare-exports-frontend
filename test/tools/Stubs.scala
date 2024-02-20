@@ -78,7 +78,10 @@ trait Stubs {
       |files.codelists.doc-type="/code-lists/document-type.json"
     """.stripMargin)
 
-  val minimalConfiguration = Configuration(minimalConfig)
+  private val minimalConfiguration = Configuration(minimalConfig)
+  private val tudorCrownConfig = TudorCrownConfig(minimalConfiguration)
+
+  private def govukHeader: GovukHeader = new GovukHeader(tudorCrownConfig)
 
   private val environment = Environment.simple()
 
@@ -90,8 +93,8 @@ trait Stubs {
   val minimalAppConfig = appConfig
 
   val gdsGovukLayout = new GovukLayout(
-    new GovukTemplate(govukHeader = new GovukHeader(), govukFooter = new GovukFooter(), new GovukSkipLink(), new FixedWidthPageLayout()),
-    new GovukHeader(),
+    new GovukTemplate(govukHeader = govukHeader, govukFooter = new GovukFooter(), new GovukSkipLink(), new FixedWidthPageLayout()),
+    govukHeader,
     new GovukFooter(),
     new GovukBackLink(),
     new TwoThirdsMainContent(),
@@ -99,8 +102,8 @@ trait Stubs {
   )
 
   val gdsGovukFlexibleLayout = new govukFlexibleLayout(
-    new GovukTemplate(govukHeader = new GovukHeader(), govukFooter = new GovukFooter(), new GovukSkipLink(), new FixedWidthPageLayout()),
-    new GovukHeader(),
+    new GovukTemplate(govukHeader = govukHeader, govukFooter = new GovukFooter(), new GovukSkipLink(), new FixedWidthPageLayout()),
+    govukHeader,
     new GovukFooter(),
     new GovukBackLink()
   )
@@ -112,9 +115,12 @@ trait Stubs {
 
   val viewDeclarationSummaryLink = new viewDeclarationSummaryLink(new link(), new paragraph())
 
-  val govukHeader = new GovukHeader()
   val pBanner = new phaseBanner(new GovukPhaseBanner(new GovukTag()), minimalAppConfig)
-  val sHeader = new siteHeader(new HmrcHeader(new HmrcBanner(), new HmrcUserResearchBanner(), new GovukPhaseBanner(new GovukTag())))
+
+  val sHeader = new siteHeader(
+    new HmrcHeader(new HmrcBanner(tudorCrownConfig), new HmrcUserResearchBanner(), new GovukPhaseBanner(new GovukTag()), tudorCrownConfig)
+  )
+
   val hmrcTimeoutDialogHelper = new HmrcTimeoutDialogHelper(new HmrcTimeoutDialog, new TimeoutDialogConfig(minimalConfiguration))
   val hmrcLanguageSelectHelper = new HmrcLanguageSelectHelper(new HmrcLanguageSelect, new LanguageConfig(minimalConfiguration))
 
