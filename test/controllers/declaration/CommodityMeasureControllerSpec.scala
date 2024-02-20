@@ -99,7 +99,7 @@ class CommodityMeasureControllerSpec extends ControllerSpec with AuditedControll
         "form is incorrect" in {
           withNewCaching(aDeclaration(withType(request.declarationType)))
 
-          val incorrectForm = Json.toJson(CommodityMeasure(None, None))(format)
+          val incorrectForm = Json.toJson(CommodityMeasure(Some("0"), None))(format)
 
           val result = controller.submitPage("itemId")(postRequest(incorrectForm))
 

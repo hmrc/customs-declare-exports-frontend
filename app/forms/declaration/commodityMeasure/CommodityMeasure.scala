@@ -16,8 +16,6 @@
 
 package forms.declaration.commodityMeasure
 
-import scala.util.Try
-
 import forms.DeclarationPage
 import forms.mappings.CrossFieldFormatter
 import models.DeclarationType.{CLEARANCE, DeclarationType}
@@ -26,6 +24,8 @@ import models.viewmodels.TariffContentKey
 import play.api.data.Forms.of
 import play.api.data.{Form, Forms}
 import utils.validators.forms.FieldValidator._
+
+import scala.util.Try
 
 case class CommodityMeasure(grossMass: Option[String], netMass: Option[String])
 
@@ -49,17 +49,14 @@ object CommodityMeasure extends DeclarationPage {
     "grossMass" -> of(
       CrossFieldFormatter(
         secondaryKey = "",
-        constraints = Seq(
-          ("declaration.commodityMeasure.grossMass.empty", (gross: String, _: String) => nonEmpty(gross)),
-          ("declaration.commodityMeasure.grossMass.error", (gross: String, _: String) => isEmpty(gross) or massFormatValidation(gross))
-        )
+        constraints =
+          Seq(("declaration.commodityMeasure.grossMass.error", (gross: String, _: String) => isEmpty(gross) or massFormatValidation(gross)))
       )
     ),
     "netMass" -> of(
       CrossFieldFormatter(
         secondaryKey = "grossMass",
         constraints = Seq(
-          ("declaration.commodityMeasure.netMass.empty", (net: String, _: String) => nonEmpty(net)),
           ("declaration.commodityMeasure.netMass.error", (net: String, _: String) => isEmpty(net) or massFormatValidation(net)),
           (
             "declaration.commodityMeasure.netMass.error.biggerThanGrossMass",
@@ -78,8 +75,11 @@ object CommodityMeasure extends DeclarationPage {
     }.getOrElse(false)
 
   override def defineTariffContentKeys(declarationType: DeclarationType): Seq[TariffContentKey] =
-    if (declarationType == CLEARANCE)
-      List(TariffContentKey("tariff.declaration.item.commodityMeasure.clearance"))
+    if (declarationType == CLEARANCE) List(TariffContentKey("tariff.declaration.item.commodityMeasure.clearance"))
     else
-      List(TariffContentKey("tariff.declaration.item.commodityMeasure.common"))
+      List(
+        TariffContentKey("tariff.declaration.item.commodityMeasure.1.common"),
+        TariffContentKey("tariff.declaration.item.commodityMeasure.2.common"),
+        TariffContentKey("tariff.declaration.item.commodityMeasure.3.common")
+      )
 }
