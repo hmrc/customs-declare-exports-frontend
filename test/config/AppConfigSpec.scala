@@ -417,7 +417,6 @@ object AppConfigSpec {
       |urls.tariffCdsChiefSupplement="http://tariffCdsChiefSupplement"
       |urls.notesForMucrConsolidation="http://notesForMucrConsolidation"
       |urls.arriveOrDepartExportsService="http://arriveOrDepartExportsService"
-      |urls.customsDeclarationsGoodsTakenOutOfEu="http://customsDeclarationsGoodsTakenOutOfEu"
       |urls.tradeTariffSections = "http://tradeTariffSections"
       |urls.additionalDocumentsLicenceTypes = "http://additionalDocumentsLicenceTypes"
       |urls.additionalDocumentsUnionCodes = "http://additionalDocumentsUnionCodes"
