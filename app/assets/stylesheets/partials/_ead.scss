@@ -36,7 +36,7 @@
 .ead-border {
   border: 2px solid #000000;
   min-height: 400px;
-  margin-top: 50px;
+  margin-top: 20px;
   padding: 10px 10px;
 }
 
@@ -137,10 +137,11 @@ h3.ead-body {
     text-align: right;
   }
   .ead-header {
+    margin-top: 20px;
     text-align: center;
   }
   .ead-heading {
-    margin-bottom: 15px;
+    margin-bottom: 60px;
     font-size: 21px;
     font-weight: bold;
   }
