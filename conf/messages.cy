@@ -182,6 +182,7 @@ declaration.type.occasional = Datganiad symlach (defnydd achlysurol)
 declaration.type.occasional.hint = Ar gyfer allforio eiddo personol neu nwyddau masnachol ar eu pen eu hunain os ydynt yn werth llai na £1,500, ac eithrio nwyddau ecséis, neu nwyddau o dan reolaeth neu gyfyngiadau.
 declaration.type.clearance = Cais am glirio’r tollau (C21)
 declaration.type.clearance.hint = Ar gyfer anfon o leoliadau gyda chysylltiadau â stocrestrau, gan gynnwys Hysbysiad o Gyflwyniad (NOP) i’w gofnodi yng nghofnodion y datganydd (EIDR).
+declaration.type.insetText.header = Datgan nwyddau masnachol a gaiff eu hallforio mewn bagiau sy’n dod gyda chi neu mewn cerbydau bach
 declaration.type.insetText.p1 = Erbyn hyn, mae ffordd gyflym o wneud {0}.
 declaration.type.insetText.linkText = datgan nwyddau masnachol gwerth isel i’w hallforio (yn agor tab newydd)
 declaration.type.insetText.p2 = Mae’n berthnasol os ydych yn defnyddio bagiau sy’n dod gyda chi neu gerbyd bach.
@@ -197,7 +198,7 @@ tariff.declaration.type.text.2 = Dewch o hyd i fanylion am {0}.
 tariff.declaration.type.linkText.2 = wneud datganiad allforio llawn (yn agor tab newydd)
 
 tariff.declaration.others.text = I gael manylion, ewch i {0}.
-tariff.declaration.others.linkText = Elfen Ddata 1/2 - Math o Ddatganiad Ychwanegol (yn agor tab newydd)
+tariff.declaration.others.linkText.0 = Elfen Ddata 1/2 – Math Ychwanegol o Ddatganiad (yn agor tab newydd)
 
 tariff.declaration.traderReference.common.linkText.0 =  Elfen Ddata 2/4 – Cyfeirnod / UCR (yn agor tab newydd)
 tariff.declaration.traderReference.clearance.linkText.0 = Elfen Ddata 2/1 – Datganiad Symlach/Dogfennau Blaenorol (yn agor tab newydd)
