@@ -196,6 +196,7 @@ tariff.declaration.type.title = Rhagor o fanylion am ddatganiadau safonol
 tariff.declaration.type.text.1 = Mae datganiad safonol (hynny yw un sydd wedi cyrraedd neu wedi’i gyflwyno ymlaen llaw) yn ddatganiad llawn. Mae hyn yn golygu bod rhaid cwblhau pob adran o’r datganiad.
 tariff.declaration.type.text.2 = Dewch o hyd i fanylion am {0}.
 tariff.declaration.type.linkText.2 = wneud datganiad allforio llawn (yn agor tab newydd)
+tariff.declaration.type.common.linkText.0 = Elfen Ddata 1/2 – Math Ychwanegol o Ddatganiad (yn agor tab newydd)
 
 tariff.declaration.others.text = I gael manylion, ewch i {0}.
 tariff.declaration.others.linkText.0 = Elfen Ddata 1/2 – Math Ychwanegol o Ddatganiad (yn agor tab newydd)
