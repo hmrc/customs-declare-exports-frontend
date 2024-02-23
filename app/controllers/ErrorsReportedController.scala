@@ -82,7 +82,7 @@ class ErrorsReportedController @Inject() (
 
               declarationsAndNotificationsInvolved.flatMap {
                 case (Some(declaration), maybeDraftInProgress, Some(notification)) =>
-                  val errors = errorsReportedHelper.generateErrorRows(Some(notification), declaration, maybeDraftInProgress, false)
+                  val errors = errorsReportedHelper.generateErrorRows(Some(notification), declaration, maybeDraftInProgress, true)
 
                   Future.successful(
                     Ok(
