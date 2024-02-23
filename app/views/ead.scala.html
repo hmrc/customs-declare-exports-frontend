@@ -27,45 +27,43 @@
 
 @govukLayout(
   title = Title("ead.template.title"),
-   backButton = getValue(submissionUuid).map{ id =>
+   backButton = getValue(submissionUuid).map { id =>
      BackButton(messages("site.back"), routes.DeclarationDetailsController.displayPage(id))
    },
   useCustomContentWidth = true
 ) {
-
- <div class="govuk-grid-row ead-row">
-
-  <div class="govuk-grid-column-full ead-heading">
-
+<div class="ead-heading">
     <h1 class="ead-header">@messages("ead.template.title")</h1>
 
     <div>
      <p class="govuk-body-l govuk-!-margin-bottom-6 ead-label">@messages("ead.template.printable")</p>
      @print_page_button()
     </div>
-  </div>
+</div>
 
-  <div class="govuk-grid-column-one-half">
-   <!-- Declarant details -->
-   <div class="govuk-summary-list__row">
-    <h3 class="govuk-!-margin-top-1 ead-body">@messages("ead.template.eori"):</h3>
-    <p class="lead govuk-!-margin-bottom-3 ead-body">@mrnStatus.eori</p>
-   </div>
+<div class="govuk-grid-row ead-row">
 
-   <!-- Declaration type -->
-   <div class="govuk-summary-list__row">
-    <h3 class="govuk-!-margin-top-1 ead-body">@messages("ead.template.declarationType"):</h3>
-    <p class="lead ead-body">@DeclarationType.translate(mrnStatus.declarationType)</p>
-   </div>
-  </div>
+    <div class="govuk-grid-column-one-half">
+        <!-- Declarant details -->
+        <div class="govuk-summary-list__row">
+            <h3 class="govuk-!-margin-top-1 ead-body">@messages("ead.template.eori"):</h3>
+            <p class="lead govuk-!-margin-bottom-3 ead-body">@mrnStatus.eori</p>
+        </div>
 
-  <div class="govuk-grid-column-one-half coleadimage">
-   <!-- Declaration type -->
-   <img src="data:image/png;base64,@base64Image" class="ead-img" alt="@messages("ead.template.barcodeAltText")">
-  </div>
+        <!-- Declaration type -->
+        <div class="govuk-summary-list__row">
+            <h3 class="govuk-!-margin-top-1 ead-body">@messages("ead.template.declarationType"):</h3>
+            <p class="lead ead-body">@DeclarationType.translate(mrnStatus.declarationType)</p>
+        </div>
+    </div>
 
- </div>
- <div class="govuk-grid-row ead-row">
+    <div class="govuk-grid-column-one-half coleadimage">
+        <!-- Declaration type -->
+        <img src="data:image/png;base64,@base64Image" class="ead-img" alt="@messages("ead.template.barcodeAltText")">
+    </div>
+</div>
+
+<div class="govuk-grid-row ead-row">
 
   <div class="govuk-grid-column-one-half">
    <!-- DUCR -->
@@ -110,8 +108,6 @@
    </div>
   </div>
 
-  <div class="govuk-grid-column-full">
-  </div>
  </div>
 
  <div class="govuk-grid-row eadborder-row ead-row">
@@ -146,12 +142,7 @@
 
  <div class="govuk-grid-row ead-row">
   <div class="govuk-grid-column-full">
-   <!-- Print repeater: -->
-   <p class="govuk-body">
-    <a class="govuk-link govuk-link--no-visited-state ceds-print-link" onclick="window.print()">
-      @messages("site.print")
-    </a>
-   </p>
+     @print_page_button(marginTop = 2, marginBottom = 2)
   </div>
  </div>
 

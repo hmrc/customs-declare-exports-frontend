@@ -95,6 +95,8 @@
     <script @CSPNonce.attr >window.GOVUKFrontend.initAll();</script>
 
     <script @CSPNonce.attr src='@Assets.versioned("javascripts/preventMultipleFormSubmissions.js")'></script>
+
+    <script @CSPNonce.attr src='@Assets.versioned("javascripts/print-page-button.js")'></script>
 }
 
 @beforeContentBlock = {
@@ -128,6 +130,7 @@
 
 @content = {
     @contentBlock
+
     @hmrcReportTechnicalIssue(
         ReportTechnicalIssue(
             serviceCode = appConfig.appName,
