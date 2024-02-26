@@ -24,7 +24,7 @@ import mock.FeatureFlagMocks
 import models.declaration.notifications.Notification
 import models.declaration.submissions.Action
 import models.requests.SessionHelper.submissionUuid
-import org.mockito.ArgumentCaptor
+import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
 import org.scalatest.{Assertion, OptionValues}
@@ -69,7 +69,7 @@ class ErrorsReportedControllerSpec extends ControllerWithoutFormSpec with Option
   }
 
   override protected def afterEach(): Unit = {
-    reset(mockErrorsReportedPage, mockCustomsDeclareExportsConnector)
+    reset(mockErrorsReportedPage, mockCustomsDeclareExportsConnector, mockErrorsReportedHelper)
     super.afterEach()
   }
 
@@ -82,14 +82,14 @@ class ErrorsReportedControllerSpec extends ControllerWithoutFormSpec with Option
         fetchDraftByParent(declarationId)
         findNotifications(declarationId)
 
-        verifyResult(controller.displayPage(declarationId)(getRequest()), None, None)
+        verifyResult(controller.displayPage(declarationId)(getRequest()), None, None, false)
       }
 
       "declaration and notifications are found but no draft declaration" in {
         fetchDeclaration(declarationId)
         findNotifications(declarationId)
 
-        verifyResult(controller.displayPage(declarationId)(getRequest()), None, None)
+        verifyResult(controller.displayPage(declarationId)(getRequest()), None, None, false)
       }
 
       "the declaration is found but the Submission has no notifications" in {
@@ -98,7 +98,7 @@ class ErrorsReportedControllerSpec extends ControllerWithoutFormSpec with Option
         when(mockCustomsDeclareExportsConnector.findNotifications(any())(any(), any()))
           .thenReturn(Future.successful(List.empty))
 
-        verifyResult(controller.displayPage(declarationId)(getRequest()), None, None)
+        verifyResult(controller.displayPage(declarationId)(getRequest()), None, None, false)
       }
     }
 
@@ -130,7 +130,7 @@ class ErrorsReportedControllerSpec extends ControllerWithoutFormSpec with Option
         fetchLatestNotification(failedNotification)
 
         val result = controller.displayPageOnUnacceptedAmendment(failedAction.id)(request)
-        verifyResult(result, failedAction.decId, Some(submissionId))
+        verifyResult(result, failedAction.decId, Some(submissionId), true)
       }
 
       "for a draft declaration of an unaccepted amendment" in {
@@ -139,7 +139,7 @@ class ErrorsReportedControllerSpec extends ControllerWithoutFormSpec with Option
         fetchLatestNotification(failedNotification)
 
         val result = controller.displayPageOnUnacceptedAmendment(failedAction.id, Some(draftDeclarationId))(request)
-        verifyResult(result, Some(draftDeclarationId), Some(submissionId))
+        verifyResult(result, Some(draftDeclarationId), Some(submissionId), true)
       }
     }
 
@@ -168,11 +168,12 @@ class ErrorsReportedControllerSpec extends ControllerWithoutFormSpec with Option
     }
   }
 
-  private def verifyResult(result: Future[Result], expectedDec: Option[String], expectedSub: Option[String]): Assertion = {
+  private def verifyResult(result: Future[Result], expectedDec: Option[String], expectedSub: Option[String], isAmendment: Boolean): Assertion = {
     status(result) mustBe OK
     val captorDec = ArgumentCaptor.forClass(classOf[Option[String]])
     val captorSub = ArgumentCaptor.forClass(classOf[Option[String]])
     verify(mockErrorsReportedPage).apply(captorSub.capture(), any(), any(), captorDec.capture(), any())(any(), any(), any())
+    verify(mockErrorsReportedHelper).generateErrorRows(any(), any(), any(), ArgumentMatchers.eq(isAmendment))(any())
     captorDec.getValue.asInstanceOf[Option[String]] mustBe expectedDec
     captorSub.getValue.asInstanceOf[Option[String]] mustBe expectedSub
   }
