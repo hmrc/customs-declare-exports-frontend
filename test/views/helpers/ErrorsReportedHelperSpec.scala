@@ -35,8 +35,9 @@ class ErrorsReportedHelperSpec extends UnitViewSpec with Injector with MockitoSu
   val linkComp = instanceOf[link]
   val paragraphBody = instanceOf[paragraphBody]
   val codeListConenector = mock[CodeListConnector]
+  val countryHelper: CountryHelper = mock[CountryHelper]
 
-  val errorRepHelper = new ErrorsReportedHelper(linkComp, codeListConenector, paragraphBody)
+  val errorRepHelper = new ErrorsReportedHelper(linkComp, codeListConenector, paragraphBody, countryHelper)
   val validationCode = "CDS12056"
 
   "ErrorsReportedHelper" should {

@@ -24,16 +24,20 @@ import javax.inject.{Inject, Singleton}
 @Singleton
 class DocumentTypeService @Inject() (codeListConnector: CodeListConnector) {
 
-  private def documentCodesMap()(implicit messages: Messages): Map[String, DocumentType] =
-    codeListConnector.getDocumentTypes(messages.lang.toLocale)
-
+  import DocumentTypeService._
   def allDocuments()(implicit messages: Messages): List[DocumentType] =
-    documentCodesMap().map(_._2).toList
+    documentCodesMap(codeListConnector).map(_._2).toList
 
   def findByCode(code: String)(implicit messages: Messages): DocumentType =
-    documentCodesMap()(messages)(code)
+    DocumentTypeService.findByCode(codeListConnector, code)
 }
 
 object DocumentTypeService {
   val exclusionKey = "ExcludeFromDropdown"
+
+  private def documentCodesMap(codeListConnector: CodeListConnector)(implicit messages: Messages): Map[String, DocumentType] =
+    codeListConnector.getDocumentTypes(messages.lang.toLocale)
+
+  def findByCode(codeListConnector: CodeListConnector, code: String)(implicit messages: Messages): DocumentType =
+    documentCodesMap(codeListConnector)(messages)(code)
 }
