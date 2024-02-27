@@ -801,6 +801,10 @@ amendment.details.unavailable.paragraph = Mae hyn oherwydd nad oes gennym yr wyb
 
 amendment.details.title = Manylion y diwygiad
 amendment.details.title.external = Manylion y datganiad wedi’u diweddaru
+amendment.details.last.updated = Diweddarwyd diwethaf ar:
+amendment.details.reason.amendment = Rheswm dros y diwygiad:
+amendment.details.heading.lists = Diwygiad gwneud i:
+amendment.details.description = Disgrifiad
 amendment.details.previous.value = Gwerth blaenorol
 amendment.details.amended.value = Gwerth diwygiedig
 

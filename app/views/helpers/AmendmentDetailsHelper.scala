@@ -23,10 +23,10 @@ import forms.declaration.Document.documentTypePointer
 import forms.declaration.PackageInformation._
 import forms.declaration._
 import forms.declaration.additionaldocuments.{AdditionalDocument, DocumentWriteOff}
+import forms.declaration.authorisationHolder.AuthorisationHolder
 import forms.declaration.carrier.CarrierDetails
 import forms.declaration.consignor.ConsignorDetails
 import forms.declaration.countries.Country
-import forms.declaration.authorisationHolder.AuthorisationHolder
 import forms.declaration.exporter.ExporterDetails
 import forms.declaration.officeOfExit.OfficeOfExit
 import models.AmendmentRow._
@@ -44,7 +44,7 @@ import play.twirl.api.Html
 import services.DiffTools.ExportsDeclarationDiff
 import services._
 import views.helpers.AmendmentDetailsHelper._
-import views.html.components.gds.paragraphBody
+import views.helpers.summary.SummaryHelper.classes
 
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter.ISO_OFFSET_DATE_TIME
@@ -54,17 +54,27 @@ import javax.inject.{Inject, Singleton}
 class AmendmentDetailsHelper @Inject() (
   countryHelper: CountryHelper,
   documentTypeService: DocumentTypeService,
-  packageTypesService: PackageTypesService,
-  paragraph: paragraphBody
+  packageTypesService: PackageTypesService
 )(implicit codeListConnector: CodeListConnector)
     extends Logging {
 
   def dateOfAmendment(timestamp: ZonedDateTime)(implicit messages: Messages): Html =
-    paragraph(s"""<br/>
-         |<time class="date-of-amendment" datetime="${ISO_OFFSET_DATE_TIME.format(timestamp)}">
+    Html(s"""
+         |<h2 class="govuk-heading-s govuk-!-margin-top-6 govuk-!-margin-bottom-0">${messages("amendment.details.last.updated")}</h2>
+         |<time class="govuk-body date-of-amendment" datetime="${ISO_OFFSET_DATE_TIME.format(timestamp)}">
          |  ${ViewDates.formatDateAtTime(timestamp)}
          |</time>
-         |<br/>
+         |""".stripMargin)
+
+  def reasonForAmend(reason: String)(implicit messages: Messages): Html =
+    Html(s"""
+         |<h2 class="govuk-heading-s govuk-!-margin-top-4 govuk-!-margin-bottom-0">${messages("amendment.details.reason.amendment")}</h2>
+         |<span class="govuk-body reason-of-amendment">$reason</span>
+         |""".stripMargin)
+
+  def headingOfAmendments(implicit messages: Messages): Html =
+    Html(s"""
+         |<h2 class="govuk-heading-s govuk-!-margin-top-4 govuk-!-margin-bottom-3">${messages("amendment.details.heading.lists")}</h2>
          |""".stripMargin)
 
   private case class Section(id: String, alteredFields: Seq[AlteredField], sequenceId: String = "")
@@ -75,7 +85,10 @@ class AmendmentDetailsHelper @Inject() (
         sectionRoutesAndLocations(differences) ++
         sectionTransaction(differences) ++
         sectionItems(differences) ++
-        sectionTransport(differences)).flatMap(handleSection)
+        sectionTransport(differences))
+        .filterNot(_.alteredFields.isEmpty)
+        .zipWithIndex
+        .map { case (section, index) => cardOfAmendments(section, index == 0) }
     )
 
   private def section(sectionId: String, differences: ExportsDeclarationDiff): Seq[Section] =
@@ -104,7 +117,7 @@ class AmendmentDetailsHelper @Inject() (
         .filter(_.fieldPointer.startsWith(locations))
         .filter { difference =>
           val parts = difference.fieldPointer.split('.')
-          parts.size > 2 && routesAndLocationsIds.contains(parts(2))
+          parts.length > 2 && routesAndLocationsIds.contains(parts(2))
         }
         .map(countryToUserValue)
 
@@ -117,7 +130,7 @@ class AmendmentDetailsHelper @Inject() (
     val alteredFields =
       differences.filter { difference =>
         val parts = difference.fieldPointer.split('.')
-        parts.size > 1 && transactionIds.contains(parts(1))
+        parts.length > 1 && transactionIds.contains(parts(1))
       }
         .map(af => if (af.fieldPointer.startsWith(previousDocuments)) documentTypeToUserValue(af) else af)
 
@@ -133,28 +146,35 @@ class AmendmentDetailsHelper @Inject() (
     List(Section(transport, alteredFields))
   }
 
-  private def handleSection(section: Section)(implicit messages: Messages): Option[Html] =
-    if (section.alteredFields.isEmpty) None
-    else Some(new Html(List(h2(section), listOfAmendments(section.alteredFields))))
-
-  private def h2(section: Section)(implicit messages: Messages): Html =
-    Html(s"""<h2 class="govuk-heading-m">${messages(h2Mappings(section.id), section.sequenceId)}</h2>""")
-
-  private def listOfAmendments(alteredFields: Seq[AlteredField])(implicit messages: Messages): Html =
+  private def cardOfAmendments(section: Section, isFirstSection: Boolean)(implicit messages: Messages): Html =
     Html(s"""
-         |<table class="govuk-table">
-         |  <thead class="govuk-table__head">
-         |    <tr class="govuk-table__row">
-         |      <th scope="col" class="govuk-table__header"></th>
-         |      <th scope="col" class="govuk-table__header">${messages("amendment.details.previous.value")}</th>
-         |      <th scope="col" class="govuk-table__header">${messages("amendment.details.amended.value")}</th>
-         |    </tr>
-         |  </thead>
-         |  <tbody class="govuk-table__body">
-         |    ${alteredFields.map(handleDifference).mkString}
-         |  </tbody>
-         |</table>
+         |<div class="govuk-summary-card${if (isFirstSection) " govuk-summary-card-margin-top-0" else ""}">
+         |  <div class="govuk-summary-card__title-wrapper">
+         |    <h2 class="govuk-summary-card__title ${classes(classMappings(section.id))}-card">
+         |      ${messages(h2Mappings(section.id), section.sequenceId)}
+         |    </h2>
+         |  </div>
+         |  <div class="govuk-summary-card__content">
+         |    ${tableOfAmendments(section.alteredFields)}
+         |  </div>
+         |</div>
          |""".stripMargin)
+
+  private def tableOfAmendments(alteredFields: Seq[AlteredField])(implicit messages: Messages): String =
+    s"""
+     |<table class="govuk-table">
+     |  <thead class="govuk-table__head">
+     |    <tr class="govuk-table__row">
+     |      <th scope="col" class="govuk-table__header">${messages("amendment.details.description")}</th>
+     |      <th scope="col" class="govuk-table__header">${messages("amendment.details.previous.value")}</th>
+     |      <th scope="col" class="govuk-table__header">${messages("amendment.details.amended.value")}</th>
+     |    </tr>
+     |  </thead>
+     |  <tbody class="govuk-table__body">
+     |    ${alteredFields.map(handleDifference).mkString}
+     |  </tbody>
+     |</table>
+     |""".stripMargin
 
   private def handleDifference(alteredField: AlteredField)(implicit messages: Messages): String =
     (alteredField.values.originalVal, alteredField.values.newVal) match {
@@ -276,28 +296,28 @@ object AmendmentDetailsHelper {
   private val summary = "declaration.summary"
 
   private val declaration = ExportsDeclaration.pointer
-  private val items = s"${declaration}.${ExportItem.pointer}"
-  private val locations = s"${declaration}.${Locations.pointer}"
-  private val parties = s"${declaration}.${Parties.pointer}"
+  private val items = s"$declaration.${ExportItem.pointer}"
+  private val locations = s"$declaration.${Locations.pointer}"
+  private val parties = s"$declaration.${Parties.pointer}"
   private val transaction = "transaction"
-  private val transport = s"${declaration}.${Transport.pointer}"
+  private val transport = s"$declaration.${Transport.pointer}"
 
   private val inlandModeOfTransport = s"$locations.${InlandModeOfTransportCode.pointer}"
-  private val previousDocuments = s"${declaration}.${PreviousDocumentsData.pointer}"
+  private val previousDocuments = s"$declaration.${PreviousDocumentsData.pointer}"
   private val supervisingCustomsOffice = s"$locations.${SupervisingCustomsOffice.pointer}"
   private val warehouseIdentification = s"$locations.${WarehouseIdentification.pointer}"
 
-  private def address(key: String): String = s"${parties}.$key.${Address.pointer}"
-  private def addressMsg(key: String): String = s"${partiesPrefix}.$key.address"
+  private def address(key: String): String = s"$parties.$key.${Address.pointer}"
+  private def addressMsg(key: String): String = s"$partiesPrefix.$key.address"
 
-  private val carrier = s"${parties}.${CarrierDetails.pointer}"
-  private val consignee = s"${parties}.${ConsigneeDetails.pointer}"
-  private val consignor = s"${parties}.${ConsignorDetails.pointer}"
-  private val declarant = s"${parties}.${DeclarantDetails.pointer}"
-  private val exporter = s"${parties}.${ExporterDetails.pointer}"
-  private val representative = s"${parties}.${RepresentativeDetails.pointer}"
+  private val carrier = s"$parties.${CarrierDetails.pointer}"
+  private val consignee = s"$parties.${ConsigneeDetails.pointer}"
+  private val consignor = s"$parties.${ConsignorDetails.pointer}"
+  private val declarant = s"$parties.${DeclarantDetails.pointer}"
+  private val exporter = s"$parties.${ExporterDetails.pointer}"
+  private val representative = s"$parties.${RepresentativeDetails.pointer}"
 
-  private val totals = s"${declaration}.${InvoiceAndPackageTotals.pointer}"
+  private val totals = s"$declaration.${InvoiceAndPackageTotals.pointer}"
 
   private val h2Mappings = Map(
     parties -> s"$summary.section.2",
@@ -307,39 +327,41 @@ object AmendmentDetailsHelper {
     transport -> s"$summary.section.6"
   )
 
+  private val classMappings = Map(parties -> 1, locations -> 2, transaction -> 3, items -> 4, transport -> 5)
+
   private val fieldIdMappings: Map[String, String] = Map(
-    s"$carrier.${EntityDetails.eoriPointer}" -> s"${partiesPrefix}.carrier.eori",
+    s"$carrier.${EntityDetails.eoriPointer}" -> s"$partiesPrefix.carrier.eori",
     s"${address(CarrierDetails.pointer)}.${Address.fullNamePointer}" -> s"${addressMsg("carrier")}.fullName",
     s"${address(CarrierDetails.pointer)}.${Address.addressLinePointer}" -> s"${addressMsg("carrier")}.addressLine",
     s"${address(CarrierDetails.pointer)}.${Address.townOrCityPointer}" -> s"${addressMsg("carrier")}.townOrCity",
     s"${address(CarrierDetails.pointer)}.${Address.postCodePointer}" -> s"${addressMsg("carrier")}.postCode",
     s"${address(CarrierDetails.pointer)}.${Address.countryPointer}" -> s"${addressMsg("carrier")}.country",
-    s"$consignee.${EntityDetails.eoriPointer}" -> s"${partiesPrefix}.consignee.eori",
+    s"$consignee.${EntityDetails.eoriPointer}" -> s"$partiesPrefix.consignee.eori",
     s"${address(ConsigneeDetails.pointer)}.${Address.fullNamePointer}" -> s"${addressMsg("consignee")}.fullName",
     s"${address(ConsigneeDetails.pointer)}.${Address.addressLinePointer}" -> s"${addressMsg("consignee")}.addressLine",
     s"${address(ConsigneeDetails.pointer)}.${Address.townOrCityPointer}" -> s"${addressMsg("consignee")}.townOrCity",
     s"${address(ConsigneeDetails.pointer)}.${Address.postCodePointer}" -> s"${addressMsg("consignee")}.postCode",
     s"${address(ConsigneeDetails.pointer)}.${Address.countryPointer}" -> s"${addressMsg("consignee")}.country",
-    s"$consignor.${EntityDetails.eoriPointer}" -> s"${partiesPrefix}.consignor.eori",
+    s"$consignor.${EntityDetails.eoriPointer}" -> s"$partiesPrefix.consignor.eori",
     s"${address(ConsignorDetails.pointer)}.${Address.fullNamePointer}" -> s"${addressMsg("consignor")}.fullName",
     s"${address(ConsignorDetails.pointer)}.${Address.addressLinePointer}" -> s"${addressMsg("consignor")}.addressLine",
     s"${address(ConsignorDetails.pointer)}.${Address.townOrCityPointer}" -> s"${addressMsg("consignor")}.townOrCity",
     s"${address(ConsignorDetails.pointer)}.${Address.postCodePointer}" -> s"${addressMsg("consignor")}.postCode",
     s"${address(ConsignorDetails.pointer)}.${Address.countryPointer}" -> s"${addressMsg("consignor")}.country",
-    s"$declarant.${EntityDetails.eoriPointer}" -> s"${partiesPrefix}.declarant.eori",
+    s"$declarant.${EntityDetails.eoriPointer}" -> s"$partiesPrefix.declarant.eori",
     s"${address(DeclarantDetails.pointer)}.${Address.fullNamePointer}" -> s"${addressMsg("declarant")}.fullName",
     s"${address(DeclarantDetails.pointer)}.${Address.addressLinePointer}" -> s"${addressMsg("declarant")}.addressLine",
     s"${address(DeclarantDetails.pointer)}.${Address.townOrCityPointer}" -> s"${addressMsg("declarant")}.townOrCity",
     s"${address(DeclarantDetails.pointer)}.${Address.postCodePointer}" -> s"${addressMsg("declarant")}.postCode",
     s"${address(DeclarantDetails.pointer)}.${Address.countryPointer}" -> s"${addressMsg("declarant")}.country",
-    s"$exporter.${EntityDetails.eoriPointer}" -> s"${partiesPrefix}.exporter.eori",
+    s"$exporter.${EntityDetails.eoriPointer}" -> s"$partiesPrefix.exporter.eori",
     s"${address(ExporterDetails.pointer)}.${Address.fullNamePointer}" -> s"${addressMsg("exporter")}.fullName",
     s"${address(ExporterDetails.pointer)}.${Address.addressLinePointer}" -> s"${addressMsg("exporter")}.addressLine",
     s"${address(ExporterDetails.pointer)}.${Address.townOrCityPointer}" -> s"${addressMsg("exporter")}.townOrCity",
     s"${address(ExporterDetails.pointer)}.${Address.postCodePointer}" -> s"${addressMsg("exporter")}.postCode",
     s"${address(ExporterDetails.pointer)}.${Address.countryPointer}" -> s"${addressMsg("exporter")}.country",
-    s"$representative.${RepresentativeDetails.statusCodePointer}" -> s"${partiesPrefix}.representative.type",
-    s"$representative.${EntityDetails.eoriPointer}" -> s"${partiesPrefix}.representative.eori",
+    s"$representative.${RepresentativeDetails.statusCodePointer}" -> s"$partiesPrefix.representative.type",
+    s"$representative.${EntityDetails.eoriPointer}" -> s"$partiesPrefix.representative.eori",
     s"${address(RepresentativeDetails.pointer)}.${Address.fullNamePointer}" -> s"${addressMsg("representative")}.fullName",
     s"${address(RepresentativeDetails.pointer)}.${Address.addressLinePointer}" -> s"${addressMsg("representative")}.addressLine",
     s"${address(RepresentativeDetails.pointer)}.${Address.townOrCityPointer}" -> s"${addressMsg("representative")}.townOrCity",
@@ -350,10 +372,10 @@ object AmendmentDetailsHelper {
     AuthorisationHolders.eoriPointerForAmend -> AuthorisationHolder.keyForEori,
     AuthorisationHolders.typeCodePointerForAmend -> AuthorisationHolder.keyForTypeCode,
     s"$parties.${PersonPresentingGoodsDetails.pointer}.${Eori.pointer}" -> s"$summary.parties.personPresentingGoods",
-    s"$totals.${totalAmountInvoicedPointer}" -> s"$summary.transaction.itemAmount",
-    s"$totals.${totalAmountInvoicedCurrencyPointer}" -> s"$summary.transaction.currencyCode",
-    s"$totals.${exchangeRatePointer}" -> s"$summary.transaction.exchangeRate",
-    s"$totals.${totalPackagePointer}" -> s"$summary.transaction.totalNoOfPackages",
+    s"$totals.$totalAmountInvoicedPointer" -> s"$summary.transaction.itemAmount",
+    s"$totals.$totalAmountInvoicedCurrencyPointer" -> s"$summary.transaction.currencyCode",
+    s"$totals.$exchangeRatePointer" -> s"$summary.transaction.exchangeRate",
+    s"$totals.$totalPackagePointer" -> s"$summary.transaction.totalNoOfPackages",
     s"$previousDocuments.${Document.pointer}.${Document.documentTypePointer}" -> Document.keyForType,
     s"$previousDocuments.${Document.pointer}.${Document.documentReferencePointer}" -> Document.keyForReference,
     s"$previousDocuments.${Document.pointer}.${Document.goodsItemIdentifierPointer}" -> Document.keyForItemNumber,
@@ -367,12 +389,12 @@ object AmendmentDetailsHelper {
     s"item.${ProcedureCodesData.pointer}.$additionalProcedureCodesPointer" -> ProcedureCodesData.keyForAPC,
     s"item.${CommodityDetails.pointer}.$combinedNomenclatureCodePointer" -> CommodityDetails.keyForCode,
     s"item.${CommodityDetails.pointer}.$descriptionOfGoodsPointer" -> CommodityDetails.keyForDescription,
-    s"item.${PackageInformation.pointer}.${numberOfPackagesPointer}" -> keyForNumberOfPackages,
-    s"item.${PackageInformation.pointer}.${shippingMarksPointer}" -> keyForShippingMarksPointer,
-    s"item.${PackageInformation.pointer}.${typesOfPackagesPointer}" -> keyForTypesOfPackages,
-    s"item.${CommodityMeasure.pointer}.${grossMassPointer}" -> keyForGrossMass,
-    s"item.${CommodityMeasure.pointer}.${netMassPointer}" -> keyForNetMass,
-    s"item.${CommodityMeasure.pointer}.${supplementaryUnitsPointer}" -> keyForSupplementaryUnits,
+    s"item.${PackageInformation.pointer}.$numberOfPackagesPointer" -> keyForNumberOfPackages,
+    s"item.${PackageInformation.pointer}.$shippingMarksPointer" -> keyForShippingMarksPointer,
+    s"item.${PackageInformation.pointer}.$typesOfPackagesPointer" -> keyForTypesOfPackages,
+    s"item.${CommodityMeasure.pointer}.$grossMassPointer" -> keyForGrossMass,
+    s"item.${CommodityMeasure.pointer}.$netMassPointer" -> keyForNetMass,
+    s"item.${CommodityMeasure.pointer}.$supplementaryUnitsPointer" -> keyForSupplementaryUnits,
     AdditionalInformationData.codePointerForAmend -> AdditionalInformation.keyForCode,
     AdditionalInformationData.descriptionPointerForAmend -> AdditionalInformation.keyForDescription,
     AdditionalDocuments.dateOfValidityPointerForAmend -> AdditionalDocument.keyForDateOfValidity,

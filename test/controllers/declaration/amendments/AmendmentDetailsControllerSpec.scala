@@ -21,7 +21,7 @@ import controllers.routes.RootController
 import mock.ErrorHandlerMocks
 import models.DeclarationMeta
 import models.declaration.DeclarationStatus.COMPLETE
-import models.declaration.submissions.{Action, Submission}
+import models.declaration.submissions.Action
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.{any, anyString, refEq}
 import org.mockito.Mockito.{reset, verify, when}
@@ -37,8 +37,8 @@ import scala.concurrent.Future
 
 class AmendmentDetailsControllerSpec extends ControllerWithoutFormSpec with ErrorHandlerMocks with OptionValues {
 
-  val amendmentDetails = mock[amendment_details]
-  val unavailableAmendmentDetails = mock[unavailable_amendment_details]
+  private val amendmentDetails = mock[amendment_details]
+  private val unavailableAmendmentDetails = mock[unavailable_amendment_details]
 
   val controller = new AmendmentDetailsController(
     mockAuthAction,
@@ -58,7 +58,7 @@ class AmendmentDetailsControllerSpec extends ControllerWithoutFormSpec with Erro
     setupErrorHandler()
 
     when(mockDeclarationAmendmentsConfig.isEnabled).thenReturn(true)
-    when(amendmentDetails.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(amendmentDetails.apply(any(), any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
     when(unavailableAmendmentDetails.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
@@ -168,17 +168,19 @@ class AmendmentDetailsControllerSpec extends ControllerWithoutFormSpec with Erro
       when(mockCustomsDeclareExportsConnector.findSubmissionByAction(anyString())(any(), any()))
         .thenReturn(Future.successful(Some(submission)))
 
-      val declaration = aDeclaration().copy(declarationMeta = declarationMeta)
+      val declaration = aDeclaration(withConsignmentReferences()).copy(declarationMeta = declarationMeta)
       when(mockCustomsDeclareExportsConnector.findDeclaration(any())(any(), any()))
         .thenReturn(Future.successful(Some(declaration)))
 
       val result = controller.displayPage(submission.actions(0).id)(request)
       status(result) mustBe OK
 
-      val submissionCaptor: ArgumentCaptor[Submission] = ArgumentCaptor.forClass(classOf[Submission])
+      val submissionCaptor: ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
+      val ducrCaptor: ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
       val actionCaptor: ArgumentCaptor[Action] = ArgumentCaptor.forClass(classOf[Action])
-      verify(amendmentDetails).apply(submissionCaptor.capture(), actionCaptor.capture(), any())(any(), any())
-      submissionCaptor.getValue.uuid mustBe submission.uuid
+      verify(amendmentDetails).apply(submissionCaptor.capture(), ducrCaptor.capture(), any(), actionCaptor.capture(), any())(any(), any())
+      submissionCaptor.getValue mustBe submission.uuid
+      ducrCaptor.getValue mustBe DUCR
       actionCaptor.getValue.id mustBe submission.actions(0).id
     }
   }
