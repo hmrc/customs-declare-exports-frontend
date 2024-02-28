@@ -186,8 +186,8 @@
   },
   {
     "code": "CDS12070",
-    "en": "For example, you have entered a value that requires another field to be completed, or makes another field invalid",
-    "cy": "Er enghraifft, rydych wedi nodi gwerth sy\u00e2\u0080\u0099n gofyn am gwblhau maes arall, neu\u00e2\u0080\u0099n gwneud maes arall yn annilys"
+    "en": "For example, a Means of Transport or Registration of Nationality code is missing or has been entered incorrectly",
+    "cy": "Er enghraifft, mae cod Cofrestru Cenedligrwydd neu Ddull Cludo ar goll neu wedi\u2019i nodi\u2019n anghywir"
   },
   {
     "code": "CDS12071",
