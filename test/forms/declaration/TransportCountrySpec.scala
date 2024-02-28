@@ -75,7 +75,7 @@ class TransportCountrySpec extends UnitWithMocksSpec with BeforeAndAfterEach wit
     "return form without errors" when {
 
       "provided with a valid country" in {
-        form.bind(formData(Some("South Africa")), JsonBindMaxChars).hasErrors mustBe false
+        form.bind(formData(Some("ZA")), JsonBindMaxChars).hasErrors mustBe false
       }
     }
   }

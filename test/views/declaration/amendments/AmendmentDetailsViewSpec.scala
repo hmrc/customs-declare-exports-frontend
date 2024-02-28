@@ -345,11 +345,11 @@ object AmendmentDetailsViewSpec {
       ) ++
       amendment(
         s"$transport.meansOfTransportCrossingTheBorderNationality",
-        TransportCountry(Some("France")),
-        TransportCountry(Some("Italy")),
+        TransportCountry(Some("FR")),
+        TransportCountry(Some("IT")),
         transport,
-        "France",
-        "Italy",
+        "FR",
+        "IT",
         s"${keys(transport)}.registrationCountry"
       ) ++
       amendment(
