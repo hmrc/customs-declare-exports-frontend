@@ -38,7 +38,7 @@ object AmendmentRow {
 
   def forAmendedValue(pointer: ExportsFieldPointer, fieldId: String, oldValue: String, newValue: String): String =
     s"""<tr class="govuk-table__row ${pointer.replaceAll("\\.#?", "-")}">
-       |  <td class="govuk-table__cell govuk-table__cell_break-word bold">$fieldId</th>
+       |  <td class="govuk-table__cell govuk-table__cell_break-word">$fieldId</th>
        |  <td class="govuk-table__cell govuk-table__cell_break-word">$oldValue</td>
        |  <td class="govuk-table__cell govuk-table__cell_break-word">$newValue</td>
        |</tr>""".stripMargin

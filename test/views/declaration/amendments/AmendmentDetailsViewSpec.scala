@@ -96,11 +96,11 @@ case class MultiRowDifference(alteredField: AlteredField, expectedSection: Strin
 @ViewTest
 class AmendmentDetailsViewSpec extends UnitViewSpec with CommonMessages with Injector with MockAuthAction {
 
-  val documentTypeService = mock[DocumentTypeService]
+  private val documentTypeService = mock[DocumentTypeService]
   when(documentTypeService.findByCode(refEq("T2M"))(any())).thenReturn(DocumentType("T2M Proof", "T2M"))
   when(documentTypeService.findByCode(refEq("952"))(any())).thenReturn(DocumentType("TIR Carnet", "952"))
 
-  val packageTypesService = mock[PackageTypesService]
+  private val packageTypesService = mock[PackageTypesService]
   when(packageTypesService.findByCode(refEq("ZB"))(any())).thenReturn(PackageType("ZB", "Bag, large"))
   when(packageTypesService.findByCode(refEq("ZZ"))(any())).thenReturn(PackageType("ZZ", "Mutually defined"))
 
@@ -109,10 +109,12 @@ class AmendmentDetailsViewSpec extends UnitViewSpec with CommonMessages with Inj
 
   private val page = injector.instanceOf[amendment_details]
 
+  private val ducr = "ducr"
+  private val reason = Some("Some reason")
   private val verifiedEmailRequest = buildVerifiedEmailRequest(request, exampleUser)
 
   def createView(differences: ExportsDeclarationDiff = List.empty): Appendable =
-    page(submission, action, differences)(verifiedEmailRequest, messages)
+    page(submission.uuid, ducr, reason, action, differences)(verifiedEmailRequest, messages)
 
   "AmendmentDetails page" should {
     val view = createView()
@@ -128,34 +130,49 @@ class AmendmentDetailsViewSpec extends UnitViewSpec with CommonMessages with Inj
     }
 
     "display the expected page title for external amendments" in {
-      val view = page(submission, action.copy(requestType = ExternalAmendmentRequest), List.empty)(verifiedEmailRequest, messages)
+      val view = page(submission.uuid, ducr, reason, action.copy(requestType = ExternalAmendmentRequest), List.empty)(verifiedEmailRequest, messages)
       view.getElementsByTag("h1").text mustBe messages("amendment.details.title.external")
     }
 
-    "display the expected MRN paragraph" in {
-      view.getElementById("section-header").text mustBe messages("mrn.heading", submission.mrn.value)
+    "display the expected DUCR header" in {
+      view.getElementById("section-header").text mustBe messages("amendment.details.ducr.heading", ducr)
     }
 
-    "display the expected date paragraph" in {
+    "display the date of the last update" in {
+      view.getElementsByClass("govuk-heading-s").get(0).text mustBe messages("amendment.details.last.updated")
       view.getElementsByTag("time").text mustBe ViewDates.formatDateAtTime(action.requestTimestamp)
     }
 
+    "display the amendment reason" in {
+      view.getElementsByClass("govuk-heading-s").get(1).text mustBe messages("amendment.details.reason.amendment")
+      view.getElementsByClass("reason-of-amendment").text mustBe reason.value
+    }
+
+    "display the heading before the amendments" in {
+      view.getElementsByClass("govuk-heading-s").get(2).text mustBe messages("amendment.details.heading.lists")
+    }
+
     "display the expected table structure" in {
-      val view = createView(List(singleRowDifferences.head.alteredField))
-      val table = view.getElementsByTag("table").get(0)
+      val cards = createView(List(singleRowDifferences.head.alteredField)).getElementsByClass("govuk-summary-card")
+      cards.size mustBe 1
+      val card = cards.get(0)
+
+      card.getElementsByTag("h2").text mustBe messages("declaration.summary.section.6")
+
+      val table = card.getElementsByTag("table").get(0)
       val headers = table.getElementsByClass("govuk-table__header")
       headers.size() mustBe 3
-      headers.get(0).text mustBe ""
+      headers.get(0).text mustBe messages("amendment.details.description")
       headers.get(1).text mustBe messages("amendment.details.previous.value")
       headers.get(2).text mustBe messages("amendment.details.amended.value")
     }
 
     "display the expected differences in single rows" in {
       singleRowDifferences.foreach { difference =>
-        val view = createView(List(difference.alteredField))
-        view.getElementsByTag("h2").get(0).text mustBe messages(h2(difference.expectedSection), "1")
+        val card = createView(List(difference.alteredField)).getElementsByClass("govuk-summary-card").get(0)
+        card.getElementsByTag("h2").text mustBe messages(h2(difference.expectedSection), "1")
 
-        val tbody = view.getElementsByTag("tbody").get(0)
+        val tbody = card.getElementsByTag("tbody").get(0)
 
         val columns = tbody.getElementsByClass("govuk-table__cell")
         columns.size() mustBe 3
@@ -169,10 +186,10 @@ class AmendmentDetailsViewSpec extends UnitViewSpec with CommonMessages with Inj
     "display the expected differences in multiple rows" in {
       multiRowDifferences.foreach { difference =>
         val expectedRows = difference.expectedKeysVals.size
-        val view = createView(List(difference.alteredField))
-        view.getElementsByTag("h2").get(0).text mustBe messages(h2(difference.expectedSection), "1")
+        val card = createView(List(difference.alteredField)).getElementsByClass("govuk-summary-card").get(0)
+        card.getElementsByTag("h2").text mustBe messages(h2(difference.expectedSection), "1")
 
-        val tbody = view.getElementsByTag("tbody").get(0)
+        val tbody = card.getElementsByTag("tbody").get(0)
 
         val cells = tbody.getElementsByClass("govuk-table__cell")
         cells.size() mustBe expectedRows * 3

@@ -19,21 +19,15 @@
 @import models.declaration.submissions.RequestType.ExternalAmendmentRequest
 @import models.requests.VerifiedEmailRequest
 @import services.DiffTools.ExportsDeclarationDiff
-@import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.helpers.{AmendmentDetailsHelper, BackButton, Title}
-@import views.html.components.gds._
+@import views.html.components.gds.{gdsMainTemplate, heading, sectionHeader}
 
-@this(
-  govukLayout: gdsMainTemplate,
-  govukTable: GovukTable,
-  heading: heading,
-  paragraph: paragraphBody,
-  sectionHeader: sectionHeader,
-  helper: AmendmentDetailsHelper
-)
+@this(govukLayout: gdsMainTemplate, heading: heading, sectionHeader: sectionHeader, helper: AmendmentDetailsHelper)
 
 @(
-  submission: Submission,
+  submissionId: String,
+  ducr: String,
+  maybeReason: Option[String],
   action: Action,
   differences: ExportsDeclarationDiff
 )(implicit request: VerifiedEmailRequest[_], messages: Messages)
@@ -47,14 +41,20 @@
 
 @govukLayout(
     title = Title(h1),
-    backButton = Some(BackButton(messages("site.back"), routes.DeclarationDetailsController.displayPage(submission.uuid))),
+    backButton = Some(BackButton(messages("site.back"), DeclarationDetailsController.displayPage(submissionId))),
     useCustomContentWidth = true,
     showDeclarationSummaryLink = false
 ) {
-    @heading(messages(h1))
-    @sectionHeader(messages("mrn.heading", submission.mrn.getOrElse("")))
+    @heading(messages(h1), "govuk-heading-xl govuk-!-margin-bottom-2")
+    @sectionHeader(messages("amendment.details.ducr.heading", ducr))
 
     @helper.dateOfAmendment(action.requestTimestamp)
 
+    @maybeReason.map(helper.reasonForAmend)
+
+    @helper.headingOfAmendments
+
     @helper.amendments(differences)
+
+    <div class="govuk-!-margin-top-6"></div>
 }

@@ -22,6 +22,7 @@ import connectors.CustomsDeclareExportsConnector
 import controllers.actions.{AuthAction, VerifiedEmailAction}
 import controllers.routes.RootController
 import handlers.ErrorHandler
+import models.ExportsDeclaration
 import models.declaration.submissions.{Action => ActionOfSubmission, Submission}
 import models.requests.VerifiedEmailRequest
 import play.api.Logging
@@ -70,9 +71,10 @@ class AmendmentDetailsController @Inject() (
             } {
               connector.findDeclaration(_).flatMap {
                 case Some(parentDeclaration) =>
+                  val reason = declaration.statementDescription
                   val differences = declaration.createDiff(parentDeclaration)
                   logger.debug(s"""\n================\n${differences.map(_.toString).mkString("\n")}\n================""")
-                  Future.successful(Ok(amendmentDetails(submission, action, differences)))
+                  Future.successful(Ok(amendmentDetails(submission.uuid, ducr(declaration), reason, action, differences)))
 
                 case _ =>
                   errorHandler.internalError(s"No parent Declaration found for Declaration($declarationId) on /amendment-details??")
@@ -84,4 +86,7 @@ class AmendmentDetailsController @Inject() (
 
       case _ => Future.successful(Ok(unavailableAmendmentDetails(submission.uuid)))
     }
+
+  private def ducr(declaration: ExportsDeclaration): String =
+    declaration.consignmentReferences.flatMap(_.ducr).fold("")(_.ducr)
 }

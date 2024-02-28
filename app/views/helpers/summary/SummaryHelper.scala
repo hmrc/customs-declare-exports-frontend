@@ -24,10 +24,9 @@ import play.twirl.api.Html
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{HtmlContent, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist._
 import views.helpers.ActionItemBuilder.actionSummaryItem
+import views.helpers.summary.SummaryHelper.classes
 
 trait SummaryHelper {
-
-  val classes = Array("references", "parties", "routes-and-locations", "transaction", "items", "transport")
 
   def card(sectionId: Int)(implicit messages: Messages): Option[Card] = {
     require(sectionId >= 1 && sectionId <= classes.length)
@@ -74,6 +73,8 @@ trait SummaryHelper {
 object SummaryHelper {
 
   val addItemLinkId = "add-item"
+
+  val classes = Array("references", "parties", "routes-and-locations", "transaction", "items", "transport")
 
   val continuePlaceholder = "continue-saved-declaration"
 

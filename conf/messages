@@ -799,6 +799,11 @@ amendment.details.unavailable.paragraph = This is because we do not have the mos
 
 amendment.details.title = Amendment details
 amendment.details.title.external = Declaration details updated
+amendment.details.ducr.heading = DUCR: {0}
+amendment.details.last.updated = Last updated on:
+amendment.details.reason.amendment = Reason for amendment:
+amendment.details.heading.lists = Amendment made to:
+amendment.details.description = Description
 amendment.details.previous.value = Previous value
 amendment.details.amended.value = Amended value
 
