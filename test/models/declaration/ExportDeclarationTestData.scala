@@ -76,7 +76,7 @@ object ExportDeclarationTestData {
       meansOfTransportOnDepartureIDNumber = Some("123112yu78"),
       meansOfTransportCrossingTheBorderType = Some("40"),
       meansOfTransportCrossingTheBorderIDNumber = Some("1234567878ui"),
-      transportCrossingTheBorderNationality = Some(TransportCountry(Some("Portugal")))
+      transportCrossingTheBorderNationality = Some(TransportCountry(Some("PT")))
     ),
     parties = Parties(
       exporterDetails = Some(correctExporterDetails),

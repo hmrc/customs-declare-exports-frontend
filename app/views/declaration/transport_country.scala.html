@@ -64,7 +64,7 @@
         @components.fields.field_accessible_location_autocomplete_with_header(
             field = form(transportCountry),
             hintParagraphs = List(messages("declaration.country.dropdown.hint")),
-            countryKey = (c: Country) => c.countryName
+            countryKey = _.countryCode
         )
 
         @tariffExpander(TransportCountry, request.declarationType)(messages, appConfig)
