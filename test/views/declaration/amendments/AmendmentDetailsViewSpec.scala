@@ -348,8 +348,8 @@ object AmendmentDetailsViewSpec {
         TransportCountry(Some("FR")),
         TransportCountry(Some("IT")),
         transport,
-        "FR",
-        "IT",
+        "France",
+        "Italy",
         s"${keys(transport)}.registrationCountry"
       ) ++
       amendment(
