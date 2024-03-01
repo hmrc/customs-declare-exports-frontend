@@ -25,15 +25,23 @@ import javax.inject.{Inject, Singleton}
 @Singleton
 class PackageTypesService @Inject() (codeListConnector: CodeListConnector) {
 
+  import PackageTypesService._
+
   def all(implicit messages: Messages): List[PackageType] =
-    packageTypesMap.values.toList.sortBy(_.description)
+    packageTypesMap(codeListConnector).values.toList.sortBy(_.description)
 
   def findByCode(code: String)(implicit messages: Messages): PackageType =
-    packageTypesMap.getOrElse(code, PackageType(code, "Unknown package type"))
-
-  def packageTypesMap(implicit messages: Messages): Map[String, PackageType] =
-    codeListConnector.getPackageTypes(messages.lang.toLocale)
+    PackageTypesService.findByCode(codeListConnector, code)
 
   def typesOfPackagesText(typesOfPackages: Option[String])(implicit messages: Messages): Option[String] =
     typesOfPackages.map(types => findByCode(types).asText)
+}
+
+object PackageTypesService {
+
+  def findByCode(codeListConnector: CodeListConnector, code: String)(implicit messages: Messages): PackageType =
+    packageTypesMap(codeListConnector).getOrElse(code, PackageType(code, "Unknown package type"))
+
+  def packageTypesMap(codeListConnector: CodeListConnector)(implicit messages: Messages): Map[String, PackageType] =
+    codeListConnector.getPackageTypes(messages.lang.toLocale)
 }

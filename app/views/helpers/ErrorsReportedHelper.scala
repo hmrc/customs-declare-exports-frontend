@@ -33,7 +33,8 @@ import views.html.components.gds.{link, paragraphBody}
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class ErrorsReportedHelper @Inject() (link: link, codeListConnector: CodeListConnector, paragraphBody: paragraphBody) extends Logging {
+class ErrorsReportedHelper @Inject() (link: link, codeListConnector: CodeListConnector, paragraphBody: paragraphBody, countryHelper: CountryHelper)
+    extends Logging {
 
   def generateErrorRows(
     maybeNotification: Option[Notification],
@@ -51,8 +52,11 @@ class ErrorsReportedHelper @Inject() (link: link, codeListConnector: CodeListCon
               logger.warn(s"PointerRecord MISSING for '${errorPointer.pattern}''")
               PointerRecord.defaultPointerRecord
             }
-            val originalValue = pointerRecord.fetchValue(declaration, errorPointer.sequenceIndexes: _*)
-            val draftValue = draftDecInProgress.flatMap(pointerRecord.fetchValue(_, errorPointer.sequenceIndexes: _*))
+            val originalValue =
+              pointerRecord.fetchReadableValue(declaration, errorPointer.sequenceIndexes: _*)(messages, countryHelper, codeListConnector)
+            val draftValue = draftDecInProgress.flatMap(
+              pointerRecord.fetchReadableValue(_, errorPointer.sequenceIndexes: _*)(messages, countryHelper, codeListConnector)
+            )
             val updatedValue = if (draftValue != originalValue) draftValue else None
 
             val changeLink = errorChangeAction(errorCode, errorPointer, pointerRecord, declaration, isAmendment)

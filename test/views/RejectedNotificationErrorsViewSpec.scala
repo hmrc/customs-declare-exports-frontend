@@ -99,8 +99,8 @@ class RejectedNotificationErrorsViewSpec extends UnitViewSpec with ExportsTestHe
       headingm mustBe messages("rejected.notification.table.title")
 
       val headings = defaultView.getElementsByClass("govuk-heading-s")
-      headings.get(0).text() mustBe messages("rejected.notification.guidance.section.1.header")
-      headings.get(1).text() mustBe messages("rejected.notification.guidance.section.2.header")
+      headings.get(0).text() mustBe messages("rejected.notification.banner.title")
+      headings.get(1).text() mustBe messages("rejected.notification.guidance.section.1.header")
     }
 
     "have the expected body content" in {
@@ -187,8 +187,8 @@ class RejectedNotificationErrorsViewSpec extends UnitViewSpec with ExportsTestHe
       val document = view(Seq(reason))
 
       val links = document.getElementsByClass("govuk-link--no-visited-state")
-      links.size mustBe 2
-      links.get(1) must haveHref(SavedDeclarationsController.displayDeclarations())
+      links.size mustBe 3
+      links.get(2) must haveHref(SavedDeclarationsController.displayDeclarations())
     }
 
     "contain change error link" when {
@@ -206,7 +206,7 @@ class RejectedNotificationErrorsViewSpec extends UnitViewSpec with ExportsTestHe
       "link for the error exists" in {
         val view = page(None, declaration, MRN.value, None, Seq(noteError))(request, messages)
 
-        val changeLink = view.getElementsByClass("govuk-link").get(3)
+        val changeLink = view.getElementsByClass("govuk-link").get(4)
         changeLink must haveHref(
           SubmissionsController.amendErrors(declaration.id, urlPattern, messages("dmsError.CDS12062.title"), false, RedirectUrl(expectedUrl.url)).url
         )
@@ -215,7 +215,7 @@ class RejectedNotificationErrorsViewSpec extends UnitViewSpec with ExportsTestHe
       "link for the error exists for amended declarations which has been rejected" in {
         val view = page(Some(submissionId), declaration, MRN.value, Some("declarationId"), Seq(noteError))(request, messages)
 
-        val changeLink = view.getElementsByClass("govuk-link").get(3)
+        val changeLink = view.getElementsByClass("govuk-link").get(4)
         changeLink must haveHref(
           SubmissionsController.amendErrors(declaration.id, urlPattern, messages("dmsError.CDS12062.title"), true, RedirectUrl(expectedUrl.url)).url
         )
