@@ -20,9 +20,10 @@ import base.Injector
 import connectors.CodeListConnector
 import forms.common.Eori
 import forms.declaration.AdditionalActor
+import models.Pointer
 import models.declaration.notifications.{Notification, NotificationError}
 import models.declaration.submissions.SubmissionStatus
-import models.Pointer
+import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import services.cache.{ExportsDeclarationBuilder, ExportsItemBuilder}
 import views.declaration.spec.UnitViewSpec
@@ -30,13 +31,15 @@ import views.html.components.gds.{link, paragraphBody}
 
 import java.time.ZonedDateTime
 
-class ErrorsReportedHelperSpec extends UnitViewSpec with Injector with MockitoSugar with ExportsDeclarationBuilder with ExportsItemBuilder {
+class ErrorsReportedHelperSpec
+    extends UnitViewSpec with Injector with MockitoSugar with ExportsDeclarationBuilder with ExportsItemBuilder with BeforeAndAfterEach {
 
+  val codeListConnector: CodeListConnector = instanceOf[CodeListConnector]
+  val pointerRecords = instanceOf[PointerRecords]
   val linkComp = instanceOf[link]
   val paragraphBody = instanceOf[paragraphBody]
-  val codeListConenector = mock[CodeListConnector]
 
-  val errorRepHelper = new ErrorsReportedHelper(linkComp, codeListConenector, paragraphBody)
+  val errorRepHelper = new ErrorsReportedHelper(linkComp, codeListConnector, pointerRecords, paragraphBody)
   val validationCode = "CDS12056"
 
   "ErrorsReportedHelper" should {
@@ -132,6 +135,23 @@ class ErrorsReportedHelperSpec extends UnitViewSpec with Injector with MockitoSu
         errors.head.fieldsInvolved.head.pointer mustBe fieldPointer
         errors.head.fieldsInvolved.head.originalValue mustBe Some("1")
         errors.head.fieldsInvolved.head.draftValue mustBe Some("2")
+      }
+    }
+
+    "Return short country names for the values" when {
+
+      "a field that has a cached country code is in error" in {
+        val fieldPointer = Pointer("declaration.transport.transportCrossingTheBorderNationality.countryName")
+        val notificationErrors = Seq(NotificationError(validationCode, Some(fieldPointer), None))
+        val notification = Notification("actionId", "mrn", ZonedDateTime.now(), SubmissionStatus.ACCEPTED, notificationErrors)
+        val originalDec = aDeclaration(withTransportCountry(Some("ZA")))
+        val updatedDec = Some(aDeclaration(withTransportCountry(Some("GB"))))
+        val errors = errorRepHelper.generateErrorRows(Some(notification), originalDec, updatedDec, false)
+
+        errors.size mustBe 1
+        errors.head.fieldsInvolved.head.pointer mustBe fieldPointer
+        errors.head.fieldsInvolved.head.originalValue mustBe Some("South Africa")
+        errors.head.fieldsInvolved.head.draftValue mustBe Some("United Kingdom, Great Britain, Northern Ireland")
       }
     }
   }
