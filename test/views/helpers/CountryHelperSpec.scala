@@ -18,10 +18,15 @@ package views.helpers
 
 import base.{Injector, UnitSpec}
 import models.codes.Country
+import play.api.i18n.{Lang, Messages}
+import play.api.test.Helpers.stubMessagesApi
+
+import java.util.Locale
 
 class CountryHelperSpec extends UnitSpec with Injector {
 
   val countryHelper = instanceOf[CountryHelper]
+  implicit val messages: Messages = stubMessagesApi().preferred(Seq(Lang(Locale.ENGLISH)))
 
   "CountryHelper getShortNameForCountry" should {
     "get the short name for a country when it is available" in {
@@ -34,6 +39,16 @@ class CountryHelperSpec extends UnitSpec with Injector {
       countryHelper.getShortNameForCountry(
         Country("New Caledonia, Including Loyalty Islands (Lifou, Mare and Ouvea)", "NC")
       ) mustBe "New Caledonia, Including Loyalty Islands (Lifou, Mare and Ouvea)"
+    }
+  }
+
+  "CountryHelper getShortNameForCountryCode" should {
+    "get the short name for a country when it is available" in {
+      countryHelper.getShortNameForCountryCode("US") mustBe "The United States of America"
+    }
+
+    "get the full name for a country when a short name is not available" in {
+      countryHelper.getShortNameForCountryCode("NC") mustBe "New Caledonia, Including Loyalty Islands (Lifou, Mare and Ouvea)"
     }
   }
 }

@@ -33,8 +33,13 @@ import views.html.components.gds.{link, paragraphBody}
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class ErrorsReportedHelper @Inject() (link: link, codeListConnector: CodeListConnector, paragraphBody: paragraphBody, countryHelper: CountryHelper)
-    extends Logging {
+class ErrorsReportedHelper @Inject() (
+  link: link,
+  codeListConnector: CodeListConnector,
+  pointerRecords: PointerRecords,
+  paragraphBody: paragraphBody,
+  countryHelper: CountryHelper
+) extends Logging {
 
   def generateErrorRows(
     maybeNotification: Option[Notification],
@@ -48,18 +53,17 @@ class ErrorsReportedHelper @Inject() (link: link, codeListConnector: CodeListCon
       errorsGroupedByCode.zipWithIndex.map { case ((errorCode, errors), idx) =>
         val errorFieldsInvolved = errors.flatMap { error =>
           error.pointer.map { errorPointer =>
-            val pointerRecord = PointerRecord.library.get(errorPointer.pattern).getOrElse {
-              logger.warn(s"PointerRecord MISSING for '${errorPointer.pattern}''")
-              PointerRecord.defaultPointerRecord
+            val record = pointerRecords.library.get(errorPointer.pattern).getOrElse {
+              logger.warn(s"PointerRecords MISSING for '${errorPointer.pattern}''")
+              pointerRecords.defaultPointerRecord
             }
             val originalValue =
-              pointerRecord.fetchReadableValue(declaration, errorPointer.sequenceIndexes: _*)(messages, countryHelper, codeListConnector)
-            val draftValue = draftDecInProgress.flatMap(
-              pointerRecord.fetchReadableValue(_, errorPointer.sequenceIndexes: _*)(messages, countryHelper, codeListConnector)
-            )
+              record.fetchReadableValue(declaration, errorPointer.sequenceIndexes: _*)(messages)
+            val draftValue =
+              draftDecInProgress.flatMap(record.fetchReadableValue(_, errorPointer.sequenceIndexes: _*)(messages))
             val updatedValue = if (draftValue != originalValue) draftValue else None
 
-            val changeLink = errorChangeAction(errorCode, errorPointer, pointerRecord, declaration, isAmendment)
+            val changeLink = errorChangeAction(errorCode, errorPointer, record, declaration, isAmendment)
 
             FieldInvolved(errorPointer, originalValue, updatedValue, changeLink, error.description)
           }
