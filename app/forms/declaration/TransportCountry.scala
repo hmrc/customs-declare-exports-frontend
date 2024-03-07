@@ -29,7 +29,8 @@ import play.api.data.validation.{Constraint, Invalid, Valid, ValidationError}
 import play.api.data.{Form, Forms, Mapping}
 import play.api.i18n.Messages
 import play.api.libs.json.{Json, OFormat}
-import services.Countries.isValidCountryName
+import services.Countries
+import services.Countries.isValidCountryCode
 import utils.validators.forms.FieldValidator._
 
 case class TransportCountry(countryName: Option[String]) extends Ordered[TransportCountry] with Amendment {
@@ -73,8 +74,12 @@ object TransportCountry extends DeclarationPage with FieldMapping {
     Forms.mapping(
       transportCountry -> text
         .verifying(nonEmptyConstraint(transportMode))
-        .verifying(s"$prefix.country.error.invalid", input => input.isEmpty or isValidCountryName(input))
-    )(country => TransportCountry(Some(country)))(_.countryName)
+        .verifying(s"$prefix.country.error.invalid", input => input.isEmpty or isValidCountryCode(input))
+    )(country => TransportCountry(Some(country)))(country => country.countryName.map(convertToCode))
+
+  // TODO Remove when transport country field migrated
+  private def convertToCode(nameOrCode: String)(implicit messages: Messages, codeListConnector: CodeListConnector): String =
+    if (Countries.isValidCountryCode(nameOrCode)) nameOrCode else Countries.findByName(nameOrCode).map(_.countryCode).getOrElse("")
 
   private def nonEmptyConstraint(transportMode: String): Constraint[String] =
     Constraint("constraint.nonEmpty.country") { country =>

@@ -32,6 +32,12 @@ object Countries {
     codes.map(codeToCountryMap(_))
   }
 
+  def findByName(name: String)(implicit messages: Messages, codeListConnector: CodeListConnector): Option[Country] =
+    codeListConnector
+      .getCountryCodes(messages.lang.toLocale)
+      .find(codeCountryPair => codeCountryPair._2.countryName == name)
+      .map(_._2)
+
   def isValidCountryCode(countryCode: String)(implicit messages: Messages, codeListConnector: CodeListConnector): Boolean =
     codeListConnector
       .getCountryCodes(messages.lang.toLocale)

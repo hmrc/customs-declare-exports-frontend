@@ -37,7 +37,7 @@ class Card6ForTransportSpec extends UnitViewSpec with ExportsTestHelper with Inj
     withSupervisingCustomsOffice(Some(SupervisingCustomsOffice(Some("23456")))),
     withInlandOrBorder(Some(Border)),
     withInlandModeOfTransportCode(Maritime),
-    withTransportCountry(Some("Some country"))
+    withTransportCountry(Some("GB"))
   )
 
   private val card6ForTransport = instanceOf[Card6ForTransport]
@@ -252,7 +252,18 @@ class Card6ForTransportSpec extends UnitViewSpec with ExportsTestHelper with Inj
       val row = view.getElementsByClass(activeTransportCountry)
 
       val call = Some(TransportCountryController.displayPage)
-      checkSummaryRow(row, "transport.registrationCountry", "Some country", call, "transport.registrationCountry")
+      checkSummaryRow(row, "transport.registrationCountry", "United Kingdom, Great Britain, Northern Ireland", call, "transport.registrationCountry")
+    }
+
+    // TODO Remove when transport country field migrated
+    "show the transport-country when country is a name in the cache" in {
+      val declarationWithTransportCountryAsName =
+        aDeclarationAfter(declaration, withTransportCountry(Some("United Kingdom, Great Britain, Northern Ireland")))
+      val view = card6ForTransport.eval(declarationWithTransportCountryAsName)(messages)
+      val row = view.getElementsByClass(activeTransportCountry)
+
+      val call = Some(TransportCountryController.displayPage)
+      checkSummaryRow(row, "transport.registrationCountry", "United Kingdom, Great Britain, Northern Ireland", call, "transport.registrationCountry")
     }
 
     "not display an 'transport-country' row if question not answered" in {

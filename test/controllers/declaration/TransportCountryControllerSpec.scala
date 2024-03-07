@@ -187,14 +187,14 @@ class TransportCountryControllerSpec extends ControllerSpec with AuditedControll
           "update the model" in {
             withNewCaching(request.cacheModel)
 
-            val formData = Json.obj(transportCountry -> countryName)
+            val formData = Json.obj(transportCountry -> countryCode)
             val result = controller.submitForm(postRequest(formData))
 
             await(result) mustBe aRedirectToTheNextPage
             thePageNavigatedTo mustBe nextPage(request.declarationType)
 
             val transport = theCacheModelUpdated.transport
-            transport.transportCrossingTheBorderNationality.value mustBe TransportCountry(Some(countryName))
+            transport.transportCrossingTheBorderNationality.value mustBe TransportCountry(Some(countryCode))
             verifyAudit()
           }
         }

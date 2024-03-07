@@ -139,9 +139,11 @@ class AmendmentDetailsHelper @Inject() (
 
   private lazy val transportIds = List(inlandModeOfTransport, supervisingCustomsOffice, warehouseIdentification)
 
-  private def sectionTransport(differences: ExportsDeclarationDiff): Seq[Section] = {
+  private def sectionTransport(differences: ExportsDeclarationDiff)(implicit messages: Messages): Seq[Section] = {
     val alteredFields =
-      differences.filter(af => af.fieldPointer.startsWith(transport) || transportIds.exists(af.fieldPointer.startsWith))
+      differences
+        .filter(af => af.fieldPointer.startsWith(transport) || transportIds.exists(af.fieldPointer.startsWith))
+        .map(countryToUserValue)
 
     List(Section(transport, alteredFields))
   }
@@ -224,6 +226,16 @@ class AmendmentDetailsHelper @Inject() (
     val values = (af.values.originalVal, af.values.newVal) match {
       case (None, Some(country: Country)) => OriginalAndNewValues(None, Some(Country(fetchCountry(country.code))))
       case (Some(country: Country), None) => OriginalAndNewValues(Some(Country(fetchCountry(country.code))), None)
+
+      case (None, Some(country: TransportCountry)) =>
+        OriginalAndNewValues(None, Some(TransportCountry(country.countryName.map(countryHelper.getShortNameForTransportCountry))))
+      case (Some(country: TransportCountry), None) =>
+        OriginalAndNewValues(Some(TransportCountry(country.countryName.map(countryHelper.getShortNameForTransportCountry))), None)
+      case (Some(oldCountry: TransportCountry), Some(newCountry: TransportCountry)) =>
+        OriginalAndNewValues(
+          Some(TransportCountry(oldCountry.countryName.map(countryHelper.getShortNameForTransportCountry))),
+          Some(TransportCountry(newCountry.countryName.map(countryHelper.getShortNameForTransportCountry)))
+        )
 
       case (None, Some(routingCountry: RoutingCountry)) => OriginalAndNewValues(None, updateRoutingCountry(routingCountry))
       case (Some(routingCountry: RoutingCountry), None) => OriginalAndNewValues(updateRoutingCountry(routingCountry), None)

@@ -24,6 +24,7 @@ import play.api.libs.json.{JsValue, Json}
 import services.Countries
 
 import javax.inject.{Inject, Singleton}
+import scala.util.Try
 
 @Singleton
 class CountryHelper @Inject() (codeLinkConnector: CodeLinkConnector)(implicit codeListConnector: CodeListConnector) {
@@ -53,6 +54,28 @@ class CountryHelper @Inject() (codeLinkConnector: CodeLinkConnector)(implicit co
       .getShortNamesForCountryCode(country.countryCode)
       .flatMap(_.headOption)
       .getOrElse(country.countryName)
+
+  def getShortNameForCountryCode(code: String)(implicit messages: Messages): String = {
+    val country = Countries.findByCode(code)
+    codeLinkConnector
+      .getShortNamesForCountryCode(country.countryCode)
+      .flatMap(_.headOption)
+      .getOrElse(country.countryName)
+  }
+
+  // TODO Remove when transport country field migrated
+  // This is to provide a defensive read of TransportCountry.countryName, which can now be a country code or name
+  def getShortNameForTransportCountry(codeOrName: String)(implicit messages: Messages): String = {
+    val country = Try(Countries.findByCode(codeOrName))
+    country.fold(
+      _ => codeOrName,
+      country =>
+        codeLinkConnector
+          .getShortNamesForCountryCode(country.countryCode)
+          .flatMap(_.headOption)
+          .getOrElse(country.countryName)
+    )
+  }
 
   def listOfRoutingCountries(implicit messages: Messages, request: JourneyRequest[_]): Seq[models.codes.Country] =
     request.cacheModel.locations.routingCountries
