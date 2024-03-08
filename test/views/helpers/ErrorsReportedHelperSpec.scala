@@ -16,7 +16,7 @@
 
 package views.helpers
 
-import base.{Injector, OverridableInjector}
+import base.Injector
 import connectors.CodeListConnector
 import forms.common.Eori
 import forms.declaration.AdditionalActor
@@ -26,7 +26,6 @@ import models.declaration.submissions.SubmissionStatus
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import play.api.inject.bind
 import services.cache.{ExportsDeclarationBuilder, ExportsItemBuilder}
 import views.declaration.spec.UnitViewSpec
 import views.html.components.gds.{link, paragraphBody}
@@ -44,11 +43,7 @@ class ErrorsReportedHelperSpec extends UnitViewSpec with Injector with MockitoSu
 
   implicit val codeListConnector: CodeListConnector = mock[CodeListConnector]
 
-  private val injector = new OverridableInjector(bind[CountryHelper].toInstance(countryHelper))
-
-  private val pointerRecords = injector.instanceOf[PointerRecords]
-
-  val errorRepHelper = new ErrorsReportedHelper(linkComp, codeListConnector, pointerRecords, paragraphBody, countryHelper)
+  val errorRepHelper = new ErrorsReportedHelper(linkComp, codeListConnector, paragraphBody, countryHelper)
   val validationCode = "CDS12056"
 
   "ErrorsReportedHelper" should {

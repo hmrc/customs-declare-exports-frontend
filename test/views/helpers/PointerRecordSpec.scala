@@ -16,7 +16,7 @@
 
 package views.helpers
 
-import base.{Injector, OverridableInjector}
+import base.Injector
 import connectors.CodeListConnector
 import forms.common.YesNoAnswer.{Yes, YesNoAnswers}
 import forms.common.{Address, Date, Eori}
@@ -24,16 +24,15 @@ import forms.declaration.InlandOrBorder.Border
 import forms.declaration.ModeOfTransportCode.Maritime
 import forms.declaration.NatureOfTransaction.BusinessPurchase
 import forms.declaration.TransportPayment.cash
-import forms.declaration.{SupervisingCustomsOffice, _}
 import forms.declaration.additionaldocuments.{AdditionalDocument, DocumentWriteOff}
 import forms.declaration.authorisationHolder.AuthorizationTypeCodes.CSE
 import forms.declaration.countries.Country
+import forms.declaration._
 import models.codes.{Country => ModelCountry}
 import models.declaration.{AdditionalDocuments, CommodityMeasure, Container}
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.when
 import org.scalatest.Assertion
-import play.api.inject.bind
 import services.DocumentType
 import services.cache.ExportsTestHelper
 import services.model.PackageType
@@ -53,10 +52,6 @@ class PointerRecordSpec extends UnitViewSpec with ExportsTestHelper with Injecto
   when(codeListConnector.getCountryCodes(any())).thenReturn(ListMap(countryGB.countryCode -> countryGB, countryIT.countryCode -> countryIT))
   when(codeListConnector.getPackageTypes(any())).thenReturn(ListMap(typeOfPackage.code -> typeOfPackage))
   when(codeListConnector.getDocumentTypes(any())).thenReturn(ListMap(previousDocType.code -> previousDocType))
-
-  private val injector = new OverridableInjector(bind[CountryHelper].toInstance(countryHelper), bind[CodeListConnector].toInstance(codeListConnector))
-
-  private val pointerRecords = injector.instanceOf[PointerRecords]
 
   "PointerRecord" can {
     "find a record for the following pointers" in {
@@ -251,7 +246,7 @@ class PointerRecordSpec extends UnitViewSpec with ExportsTestHelper with Injecto
 
   def validatePointerValues(pointer: String, rawValue: Option[String], readableValue: Option[String], args: Int*): Assertion =
     withClue(s"pointer is '$pointer'") {
-      val maybePointerRecord = pointerRecords.library.get(pointer)
+      val maybePointerRecord = PointerRecord.library.get(pointer)
       val displayValue = if (readableValue.isDefined) readableValue else rawValue
 
       maybePointerRecord.isDefined mustBe true

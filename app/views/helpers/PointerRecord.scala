@@ -25,23 +25,26 @@ import play.api.i18n.Messages
 import play.api.mvc.Call
 import services.{DocumentTypeService, PackageTypesService}
 
-import javax.inject.{Inject, Singleton}
-
 trait PointerRecord {
   def fetchRawValue(dec: ExportsDeclaration, args: Int*): Option[String]
-  def fetchReadableValue(dec: ExportsDeclaration, args: Int*)(implicit msgs: Messages): Option[String]
+  def fetchReadableValue(
+    dec: ExportsDeclaration,
+    args: Int*
+  )(implicit msgs: Messages, countryHelper: CountryHelper, codeListConnector: CodeListConnector): Option[String]
   val pageLink1Param: Option[Call] = None
   val pageLink2Param: Option[String => Call] = None
 }
 
 abstract class DefaultPointerRecord extends PointerRecord {
-  def fetchReadableValue(dec: ExportsDeclaration, args: Int*)(implicit msgs: Messages): Option[String] =
+  def fetchReadableValue(
+    dec: ExportsDeclaration,
+    args: Int*
+  )(implicit msgs: Messages, countryHelper: CountryHelper, codeListConnector: CodeListConnector): Option[String] =
     fetchRawValue(dec, args: _*)
 }
 
 // scalastyle:off
-@Singleton
-class PointerRecords @Inject() (countryHelper: CountryHelper, codeListConnector: CodeListConnector) {
+object PointerRecord {
 
   val getItem = (dec: ExportsDeclaration, idx: Int) => dec.items.lift(idx)
   val getAdditionalDocument = (item: ExportItem, idx: Int) => item.additionalDocuments.flatMap(_.documents.lift(idx))
@@ -83,7 +86,10 @@ class PointerRecords @Inject() (countryHelper: CountryHelper, codeListConnector:
   val library: Map[String, PointerRecord] = Map(
     "declaration.typeCode" -> new DefaultPointerRecord() {
       def fetchRawValue(dec: ExportsDeclaration, args: Int*) = Option(dec.`type`.toString)
-      override def fetchReadableValue(dec: ExportsDeclaration, args: Int*)(implicit msgs: Messages) =
+      override def fetchReadableValue(
+        dec: ExportsDeclaration,
+        args: Int*
+      )(implicit msgs: Messages, countryHelper: CountryHelper, codeListConnector: CodeListConnector) =
         fetchRawValue(dec, args: _*).map(raw => msgs(s"declaration.type.${raw.toLowerCase}"))
     },
     "declaration.items.$.statisticalValue.statisticalValue" -> new DefaultPointerRecord() {
@@ -175,7 +181,10 @@ class PointerRecords @Inject() (countryHelper: CountryHelper, codeListConnector:
     "declaration.items.$.additionalFiscalReferences.$.id" -> new DefaultPointerRecord() {
       def fetchRawValue(dec: ExportsDeclaration, args: Int*) =
         getItem(dec, args(0)).flatMap(getAdditionalFiscalRefs(_, args(1)).map(_.country))
-      override def fetchReadableValue(dec: ExportsDeclaration, args: Int*)(implicit msgs: Messages): Option[String] =
+      override def fetchReadableValue(
+        dec: ExportsDeclaration,
+        args: Int*
+      )(implicit msgs: Messages, countryHelper: CountryHelper, codeListConnector: CodeListConnector): Option[String] =
         fetchRawValue(dec, args: _*).map(countryHelper.getShortNameForCountryCode)
       override val pageLink2Param = Some(AdditionalFiscalReferencesController.displayPage)
     },
@@ -200,7 +209,10 @@ class PointerRecords @Inject() (countryHelper: CountryHelper, codeListConnector:
       def fetchRawValue(dec: ExportsDeclaration, args: Int*) =
         getItem(dec, args(0)).flatMap(getPackageInformation(_, args(1)).flatMap(_.typesOfPackages))
       override val pageLink2Param = Some(PackageInformationSummaryController.displayPage)
-      override def fetchReadableValue(dec: ExportsDeclaration, args: Int*)(implicit msgs: Messages): Option[String] =
+      override def fetchReadableValue(
+        dec: ExportsDeclaration,
+        args: Int*
+      )(implicit msgs: Messages, countryHelper: CountryHelper, codeListConnector: CodeListConnector): Option[String] =
         fetchRawValue(dec, args: _*).map(code => PackageTypesService.findByCode(codeListConnector, code).asText)
     },
     "declaration.items.size" -> new DefaultPointerRecord() {
@@ -234,7 +246,10 @@ class PointerRecords @Inject() (countryHelper: CountryHelper, codeListConnector:
     "declaration.parties.representativeDetails.statusCode" -> new DefaultPointerRecord() {
       def fetchRawValue(dec: ExportsDeclaration, args: Int*) = dec.parties.representativeDetails.flatMap(_.statusCode)
       override val pageLink1Param = Some(RepresentativeStatusController.displayPage)
-      override def fetchReadableValue(dec: ExportsDeclaration, args: Int*)(implicit msgs: Messages): Option[String] =
+      override def fetchReadableValue(
+        dec: ExportsDeclaration,
+        args: Int*
+      )(implicit msgs: Messages, countryHelper: CountryHelper, codeListConnector: CodeListConnector): Option[String] =
         fetchRawValue(dec, args: _*).map(code => msgs(s"declaration.summary.parties.representative.type.$code"))
     },
     "declaration.parties.declarationHolders.$.eori" -> new DefaultPointerRecord() {
@@ -252,13 +267,19 @@ class PointerRecords @Inject() (countryHelper: CountryHelper, codeListConnector:
     "declaration.transport.meansOfTransportCrossingTheBorderType" -> new DefaultPointerRecord() {
       def fetchRawValue(dec: ExportsDeclaration, args: Int*) = dec.transport.meansOfTransportCrossingTheBorderType
       override val pageLink1Param = Some(BorderTransportController.displayPage)
-      override def fetchReadableValue(dec: ExportsDeclaration, args: Int*)(implicit msgs: Messages): Option[String] =
+      override def fetchReadableValue(
+        dec: ExportsDeclaration,
+        args: Int*
+      )(implicit msgs: Messages, countryHelper: CountryHelper, codeListConnector: CodeListConnector): Option[String] =
         fetchRawValue(dec, args: _*).map(code => msgs(s"declaration.summary.transport.border.meansOfTransport.$code"))
     },
     "declaration.transport.transportCrossingTheBorderNationality.countryName" -> new DefaultPointerRecord() {
       def fetchRawValue(dec: ExportsDeclaration, args: Int*) = dec.transport.transportCrossingTheBorderNationality.flatMap(_.countryName)
 
-      override def fetchReadableValue(dec: ExportsDeclaration, args: Int*)(implicit msgs: Messages): Option[String] =
+      override def fetchReadableValue(
+        dec: ExportsDeclaration,
+        args: Int*
+      )(implicit msgs: Messages, countryHelper: CountryHelper, codeListConnector: CodeListConnector): Option[String] =
         fetchRawValue(dec, args: _*).map(countryHelper.getShortNameForCountryCode)
       override val pageLink1Param = Some(TransportCountryController.displayPage)
     },
@@ -269,7 +290,10 @@ class PointerRecords @Inject() (countryHelper: CountryHelper, codeListConnector:
           value <- ModeOfTransportCode.valueToCodeAll.get(code).map(_.toString)
         } yield value
       override val pageLink1Param = Some(TransportLeavingTheBorderController.displayPage)
-      override def fetchReadableValue(dec: ExportsDeclaration, args: Int*)(implicit msgs: Messages): Option[String] =
+      override def fetchReadableValue(
+        dec: ExportsDeclaration,
+        args: Int*
+      )(implicit msgs: Messages, countryHelper: CountryHelper, codeListConnector: CodeListConnector): Option[String] =
         fetchRawValue(dec, args: _*).map(code => msgs(s"declaration.summary.transport.inlandModeOfTransport.$code"))
     },
     "declaration.parties.carrierDetails.details.eori" -> new DefaultPointerRecord() {
@@ -299,19 +323,28 @@ class PointerRecords @Inject() (countryHelper: CountryHelper, codeListConnector:
     "declaration.transport.transportPayment.paymentMethod" -> new DefaultPointerRecord() {
       def fetchRawValue(dec: ExportsDeclaration, args: Int*) = dec.transport.transportPayment.map(_.paymentMethod)
       override val pageLink1Param = Some(TransportPaymentController.displayPage)
-      override def fetchReadableValue(dec: ExportsDeclaration, args: Int*)(implicit msgs: Messages): Option[String] =
+      override def fetchReadableValue(
+        dec: ExportsDeclaration,
+        args: Int*
+      )(implicit msgs: Messages, countryHelper: CountryHelper, codeListConnector: CodeListConnector): Option[String] =
         fetchRawValue(dec, args: _*).map(code => msgs(s"declaration.summary.transport.payment.$code"))
     },
     "declaration.locations.destinationCountries.countriesOfRouting.$" -> new DefaultPointerRecord() {
       def fetchRawValue(dec: ExportsDeclaration, args: Int*) = getRoutingCountry(dec, args(0)).flatMap(_.country.code)
       override val pageLink1Param = Some(RoutingCountriesController.displayRoutingCountry)
-      override def fetchReadableValue(dec: ExportsDeclaration, args: Int*)(implicit msgs: Messages): Option[String] =
+      override def fetchReadableValue(
+        dec: ExportsDeclaration,
+        args: Int*
+      )(implicit msgs: Messages, countryHelper: CountryHelper, codeListConnector: CodeListConnector): Option[String] =
         fetchRawValue(dec, args: _*).map(countryHelper.getShortNameForCountryCode)
     },
     "declaration.locations.destinationCountries.countryOfDestination" -> new DefaultPointerRecord() {
       def fetchRawValue(dec: ExportsDeclaration, args: Int*) = dec.locations.destinationCountry.flatMap(_.code)
       override val pageLink1Param = Some(DestinationCountryController.displayPage)
-      override def fetchReadableValue(dec: ExportsDeclaration, args: Int*)(implicit msgs: Messages): Option[String] =
+      override def fetchReadableValue(
+        dec: ExportsDeclaration,
+        args: Int*
+      )(implicit msgs: Messages, countryHelper: CountryHelper, codeListConnector: CodeListConnector): Option[String] =
         fetchRawValue(dec, args: _*).map(countryHelper.getShortNameForCountryCode)
     },
     "declaration.totalNumberOfItems.exchangeRate" -> new DefaultPointerRecord() {
@@ -351,7 +384,10 @@ class PointerRecords @Inject() (countryHelper: CountryHelper, codeListConnector:
     "declaration.natureOfTransaction.natureType" -> new DefaultPointerRecord() {
       def fetchRawValue(dec: ExportsDeclaration, args: Int*) = dec.natureOfTransaction.map(_.natureType)
       override val pageLink1Param = Some(NatureOfTransactionController.displayPage)
-      override def fetchReadableValue(dec: ExportsDeclaration, args: Int*)(implicit msgs: Messages): Option[String] =
+      override def fetchReadableValue(
+        dec: ExportsDeclaration,
+        args: Int*
+      )(implicit msgs: Messages, countryHelper: CountryHelper, codeListConnector: CodeListConnector): Option[String] =
         fetchRawValue(dec, args: _*).map(code => msgs(s"declaration.summary.transaction.natureOfTransaction.$code"))
     },
     "declaration.parties.additionalActors" -> new DefaultPointerRecord() {
@@ -389,7 +425,10 @@ class PointerRecords @Inject() (countryHelper: CountryHelper, codeListConnector:
           motCode <- imotCode.inlandModeOfTransportCode
         } yield motCode.value
       override val pageLink1Param = Some(InlandTransportDetailsController.displayPage)
-      override def fetchReadableValue(dec: ExportsDeclaration, args: Int*)(implicit msgs: Messages): Option[String] =
+      override def fetchReadableValue(
+        dec: ExportsDeclaration,
+        args: Int*
+      )(implicit msgs: Messages, countryHelper: CountryHelper, codeListConnector: CodeListConnector): Option[String] =
         fetchRawValue(dec, args: _*).map { code =>
           val motc = ModeOfTransportCode.valueToCodeAll.get(code)
           ModeOfTransportCodeHelper.transportMode(motc, false)
@@ -398,7 +437,10 @@ class PointerRecords @Inject() (countryHelper: CountryHelper, codeListConnector:
     "declaration.departureTransport.meansOfTransportOnDepartureType" -> new DefaultPointerRecord() {
       def fetchRawValue(dec: ExportsDeclaration, args: Int*) = dec.transport.meansOfTransportOnDepartureType
       override val pageLink1Param = Some(DepartureTransportController.displayPage)
-      override def fetchReadableValue(dec: ExportsDeclaration, args: Int*)(implicit msgs: Messages): Option[String] =
+      override def fetchReadableValue(
+        dec: ExportsDeclaration,
+        args: Int*
+      )(implicit msgs: Messages, countryHelper: CountryHelper, codeListConnector: CodeListConnector): Option[String] =
         fetchRawValue(dec, args: _*).map(code => msgs(s"declaration.summary.transport.departure.meansOfTransport.$code"))
     },
     "declaration.locations.goodsLocation.nameOfLocation" -> new DefaultPointerRecord() {
@@ -432,7 +474,10 @@ class PointerRecords @Inject() (countryHelper: CountryHelper, codeListConnector:
     "declaration.previousDocuments.$.documentType" -> new DefaultPointerRecord() {
       def fetchRawValue(dec: ExportsDeclaration, args: Int*) = getPreviousDocument(dec, args(0)).map(_.documentType)
       override val pageLink1Param = Some(PreviousDocumentsSummaryController.displayPage)
-      override def fetchReadableValue(dec: ExportsDeclaration, args: Int*)(implicit msgs: Messages): Option[String] =
+      override def fetchReadableValue(
+        dec: ExportsDeclaration,
+        args: Int*
+      )(implicit msgs: Messages, countryHelper: CountryHelper, codeListConnector: CodeListConnector): Option[String] =
         fetchRawValue(dec, args: _*).map(code => DocumentTypeService.findByCode(codeListConnector, code).asText)
     },
     "declaration.previousDocuments.$.goodsItemIdentifier" -> new DefaultPointerRecord() {
