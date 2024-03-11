@@ -48,18 +48,17 @@ class ErrorsReportedHelper @Inject() (link: link, codeListConnector: CodeListCon
       errorsGroupedByCode.zipWithIndex.map { case ((errorCode, errors), idx) =>
         val errorFieldsInvolved = errors.flatMap { error =>
           error.pointer.map { errorPointer =>
-            val pointerRecord = PointerRecord.library.get(errorPointer.pattern).getOrElse {
-              logger.warn(s"PointerRecord MISSING for '${errorPointer.pattern}''")
+            val record = PointerRecord.library.get(errorPointer.pattern).getOrElse {
+              logger.warn(s"PointerRecords MISSING for '${errorPointer.pattern}''")
               PointerRecord.defaultPointerRecord
             }
             val originalValue =
-              pointerRecord.fetchReadableValue(declaration, errorPointer.sequenceIndexes: _*)(messages, countryHelper, codeListConnector)
-            val draftValue = draftDecInProgress.flatMap(
-              pointerRecord.fetchReadableValue(_, errorPointer.sequenceIndexes: _*)(messages, countryHelper, codeListConnector)
-            )
+              record.fetchReadableValue(declaration, errorPointer.sequenceIndexes: _*)(messages, countryHelper, codeListConnector)
+            val draftValue =
+              draftDecInProgress.flatMap(record.fetchReadableValue(_, errorPointer.sequenceIndexes: _*)(messages, countryHelper, codeListConnector))
             val updatedValue = if (draftValue != originalValue) draftValue else None
 
-            val changeLink = errorChangeAction(errorCode, errorPointer, pointerRecord, declaration, isAmendment)
+            val changeLink = errorChangeAction(errorCode, errorPointer, record, declaration, isAmendment)
 
             FieldInvolved(errorPointer, originalValue, updatedValue, changeLink, error.description)
           }

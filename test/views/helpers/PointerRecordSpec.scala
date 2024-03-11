@@ -24,10 +24,10 @@ import forms.declaration.InlandOrBorder.Border
 import forms.declaration.ModeOfTransportCode.Maritime
 import forms.declaration.NatureOfTransaction.BusinessPurchase
 import forms.declaration.TransportPayment.cash
-import forms.declaration.{SupervisingCustomsOffice, _}
 import forms.declaration.additionaldocuments.{AdditionalDocument, DocumentWriteOff}
 import forms.declaration.authorisationHolder.AuthorizationTypeCodes.CSE
 import forms.declaration.countries.Country
+import forms.declaration._
 import models.codes.{Country => ModelCountry}
 import models.declaration.{AdditionalDocuments, CommodityMeasure, Container}
 import org.mockito.ArgumentMatchers.{any, eq => meq}
@@ -45,8 +45,8 @@ class PointerRecordSpec extends UnitViewSpec with ExportsTestHelper with Injecto
   import PointerRecordSpec._
 
   implicit val countryHelper: CountryHelper = mock[CountryHelper]
-  when(countryHelper.getShortNameForCountry(meq(countryGB))).thenReturn(countryGB.countryName)
-  when(countryHelper.getShortNameForCountry(meq(countryIT))).thenReturn(countryIT.countryName)
+  when(countryHelper.getShortNameForCountryCode(meq(countryGB.countryCode))(any())).thenReturn(countryGB.countryName)
+  when(countryHelper.getShortNameForCountryCode(meq(countryIT.countryCode))(any())).thenReturn(countryIT.countryName)
 
   implicit val codeListConnector: CodeListConnector = mock[CodeListConnector]
   when(codeListConnector.getCountryCodes(any())).thenReturn(ListMap(countryGB.countryCode -> countryGB, countryIT.countryCode -> countryIT))
@@ -99,7 +99,7 @@ class PointerRecordSpec extends UnitViewSpec with ExportsTestHelper with Injecto
       validatePointerValues("declaration.parties.declarationHolders.$.eori", authorisationHolderEori, 0)
       validatePointerValues("declaration.parties.declarationHolders.$.authorisationTypeCode", CSE.toString, 0)
       validatePointerValues("declaration.transport.meansOfTransportCrossingTheBorderIDNumber", meansOfTransportCrossingTheBorderIDNumber)
-      validatePointerValues("declaration.transport.transportCrossingTheBorderNationality.countryName", countryIT.countryName, countryIT.countryName)
+      validatePointerValues("declaration.transport.transportCrossingTheBorderNationality.countryName", countryIT.countryCode, countryIT.countryName)
       validatePointerValues(
         "declaration.borderTransport.modeCode",
         Maritime.toString,
@@ -227,7 +227,7 @@ class PointerRecordSpec extends UnitViewSpec with ExportsTestHelper with Injecto
     withPreviousDocuments(Document(previousDocType.code, previousDocReference, Some(goodsItemIdentifier))),
     withNatureOfTransaction(BusinessPurchase),
     withBorderTransport(meansOfTransportCrossingTheBorderType, meansOfTransportCrossingTheBorderIDNumber),
-    withTransportCountry(Some(countryIT.countryName)),
+    withTransportCountry(Some(countryIT.countryCode)),
     withWarehouseIdentification(Some(WarehouseIdentification(Some(warehouseIdentificationId)))),
     withSupervisingCustomsOffice(Some(SupervisingCustomsOffice(Some(supervisingCustomsOffice)))),
     withInlandOrBorder(Some(Border)),

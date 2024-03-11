@@ -54,6 +54,14 @@ class CountryHelper @Inject() (codeLinkConnector: CodeLinkConnector)(implicit co
       .flatMap(_.headOption)
       .getOrElse(country.countryName)
 
+  def getShortNameForCountryCode(code: String)(implicit messages: Messages): String = {
+    val country = Countries.findByCode(code)
+    codeLinkConnector
+      .getShortNamesForCountryCode(country.countryCode)
+      .flatMap(_.headOption)
+      .getOrElse(country.countryName)
+  }
+
   def listOfRoutingCountries(implicit messages: Messages, request: JourneyRequest[_]): Seq[models.codes.Country] =
     request.cacheModel.locations.routingCountries
       .flatMap(_.country.code)
