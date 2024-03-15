@@ -82,16 +82,19 @@ class LinkDucrToMucrViewSpec extends UnitViewSpec with CommonMessages with Injec
         view.getElementById("code_no") must beSelected
       }
 
-      "display the 'MUCR consolidation' details" in {
-        val detailsTitle = view.getElementsByClass("govuk-details__summary-text").first.text
-        detailsTitle mustBe messages("tariff.declaration.linkDucrToMucr.caption")
+      "display the 'MUCR consolidation' expander" in {
+        val expanderTitle = view.getElementsByClass("govuk-details__summary-text").first.text
+        expanderTitle mustBe messages("tariff.declaration.linkDucrToMucr.title")
 
-        val detailsHint1 = view.getElementById("link-ducr-to-mucr-hint")
-        detailsHint1.child(0) must haveHref(appConfig.notesForMucrConsolidationUrl)
+        val declarationType = if (request.isType(CLEARANCE)) "clearance" else "common"
+        val expectedHref = appConfig.tariffGuideUrl(s"urls.tariff.declaration.linkDucrToMucr.$declarationType.0")
 
-        removeBlanksIfAnyBeforeDot(detailsHint1.text) mustBe messages(
-          "tariff.declaration.linkDucrToMucr.text",
-          messages("tariff.declaration.linkDucrToMucr.linkText.0")
+        val expanderText = view.getElementsByClass("govuk-details__text").first
+        expanderText.child(0) must haveHref(expectedHref)
+
+        removeBlanksIfAnyBeforeDot(expanderText.text) mustBe messages(
+          "tariff.declaration.linkDucrToMucr.common.text",
+          messages("tariff.declaration.linkDucrToMucr.common.linkText.0")
         ).replace("<br><br>", " ")
       }
     }

@@ -86,7 +86,6 @@ class ConfirmDucrViewSpec extends PageWithButtonsSpec with Injector with MockAut
 
     "display the correct tariff expander" should {
       "in non-Clearance journeys" in {
-
         val tariffText = view.getElementsByClass("govuk-details__text").get(1)
 
         removeBlanksIfAnyBeforeDot(tariffText.text) mustBe messages(
