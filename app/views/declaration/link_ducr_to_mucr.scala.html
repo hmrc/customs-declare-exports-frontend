@@ -15,7 +15,7 @@
  *@
 
 @import config.AppConfig
-@import controllers.declaration.routes
+@import controllers.declaration.routes.LinkDucrToMucrController
 @import controllers.navigation.Navigator
 @import forms.common.YesNoAnswer
 @import forms.declaration.LinkDucrToMucr
@@ -28,14 +28,12 @@
 
 @this(
     govukLayout: gdsMainTemplate,
-    govukDetails : GovukDetails,
     yesNoRadios: yesNoRadios,
     errorSummary: errorSummary,
     sectionHeader: sectionHeader,
     heading: heading,
-    paragraph: paragraphBody,
-    externalLink: externalLink,
     insetText: exportsInsetText,
+    tariffExpander: tariffExpander,
     saveButtons: saveButtons,
     formHelper: FormWithCSRF,
     navigator: Navigator,
@@ -48,21 +46,11 @@
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 
-@mucrDetails = {
-    @paragraph(
-        id = Some("link-ducr-to-mucr-hint"),
-        message = messages("tariff.declaration.linkDucrToMucr.text", externalLink(
-            text = messages("tariff.declaration.linkDucrToMucr.linkText.0"),
-            url = appConfig.notesForMucrConsolidationUrl
-        ))
-    )
-}
-
 @govukLayout(
     title = Title("declaration.linkDucrToMucr.title", "declaration.section.1", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(LinkDucrToMucr)))) {
 
-    @formHelper(action = routes.LinkDucrToMucrController.submitForm, 'autoComplete -> "off") {
+    @formHelper(action = LinkDucrToMucrController.submitForm, 'autoComplete -> "off") {
         @errorSummary(yesNoErrors(form.errors))
 
         @sectionHeader(messages("declaration.section.1"))
@@ -87,10 +75,7 @@
             ))
         )
 
-        @govukDetails(Details(
-            summary = Text(messages("tariff.declaration.linkDucrToMucr.caption")),
-            content = HtmlContent(mucrDetails)
-        ))
+        @tariffExpander(LinkDucrToMucr, request.declarationType, Some("tariff.declaration.linkDucrToMucr.title"))(messages, appConfig)
 
         @saveButtons()
     }
