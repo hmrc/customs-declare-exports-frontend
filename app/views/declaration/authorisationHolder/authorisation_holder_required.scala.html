@@ -48,7 +48,7 @@
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 
 @govukLayout(
-    title = Title("declaration.authorisationHolderRequired.title", "declaration.section.2", hasErrors = hasErrors),
+    title = Title(authorisationHolderRequiredHelper.title, "declaration.section.2", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(AuthorisationHolderRequired)))) {
 
     @formHelper(action = routes.AuthorisationHolderRequiredController.submitForm, 'autoComplete -> "off") {
@@ -58,7 +58,7 @@
 
         @govukFieldset(Fieldset(
             legend = Some(Legend(
-                content = Text(authorisationHolderRequiredHelper.title),
+                content = Text(messages(authorisationHolderRequiredHelper.title)),
                 classes = gdsPageLegend,
                 isPageHeading = true
             )),

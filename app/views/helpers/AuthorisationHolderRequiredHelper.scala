@@ -76,11 +76,11 @@ class AuthorisationHolderRequiredHelper @Inject() (bulletList: bulletList, govuk
     }
   }
 
-  def title(implicit messages: Messages, request: JourneyRequest[_]): String = {
+  def title(implicit request: JourneyRequest[_]): String = {
     val model = request.cacheModel
     (model.`type`, model.additionalDeclarationType, model.parties.authorisationProcedureCodeChoice) match {
-      case (STANDARD, Some(STANDARD_PRE_LODGED), Choice1040) => messages(s"$key.title.standard.prelodged.1040")
-      case _                                                 => messages(s"$key.title")
+      case (STANDARD, Some(STANDARD_PRE_LODGED), Choice1040) => s"$key.title.standard.prelodged.1040"
+      case _                                                 => s"$key.title"
     }
   }
 
