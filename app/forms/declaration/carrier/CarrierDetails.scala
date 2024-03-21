@@ -18,6 +18,7 @@ package forms.declaration.carrier
 
 import connectors.CodeListConnector
 import forms.DeclarationPage
+import forms.common.Eori
 import forms.declaration.EntityDetails
 import models.DeclarationType.{CLEARANCE, DeclarationType}
 import models.viewmodels.TariffContentKey
@@ -27,7 +28,7 @@ import play.api.data.{Form, Forms, Mapping}
 import play.api.i18n.Messages
 import play.api.libs.json.{Json, OFormat}
 import services.DiffTools
-import services.DiffTools.{combinePointers, ExportsDeclarationDiff}
+import services.DiffTools.{ExportsDeclarationDiff, combinePointers}
 
 case class CarrierDetails(details: EntityDetails) extends DiffTools[CarrierDetails] with AmendmentOp {
 
@@ -69,6 +70,8 @@ object CarrierDetails extends DeclarationPage with FieldMapping {
         }
       case Some(_) => CarrierDetails(EntityDetails(carrierEoriDetails.eori, None))
     }
+
+  def from(eori: String): CarrierDetails = CarrierDetails(EntityDetails(Some(Eori(eori)), None))
 
   override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
     Seq(TariffContentKey(s"tariff.declaration.carrierAddress.${DeclarationPage.getJourneyTypeSpecialisation(decType)}"))

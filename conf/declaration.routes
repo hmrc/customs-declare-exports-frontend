@@ -141,6 +141,12 @@ GET         /representation-type-agreed          controllers.declaration.Represe
 
 POST        /representation-type-agreed          controllers.declaration.RepresentativeStatusController.submitForm
 
+# Third Party Goods Transportation
+
+GET         /third-party-goods-transportation    controllers.declaration.ThirdPartyGoodsTransportationController.displayPage
+
+POST        /third-party-goods-transportation    controllers.declaration.ThirdPartyGoodsTransportationController.submitPage
+
 # Carrier Eori Number (if known)
 
 GET         /carrier-eori-number                 controllers.declaration.CarrierEoriNumberController.displayPage

@@ -25,6 +25,7 @@ import forms.declaration.NatureOfTransaction.{BusinessPurchase, Sale}
 import forms.declaration._
 import models.DeclarationType._
 import models.ExportsDeclaration
+import models.requests.JourneyRequest
 import play.api.mvc.Call
 import services.TaggedAuthCodes
 
@@ -156,20 +157,19 @@ trait CacheDependentNavigators {
         routes.ConsignorEoriNumberController.displayPage
     }
 
-  protected def consigneeDetailsPreviousPage(cacheModel: ExportsDeclaration): Call =
-    if (cacheModel.parties.carrierDetails.flatMap(_.details.eori).isEmpty)
-      routes.CarrierDetailsController.displayPage
-    else
-      routes.CarrierEoriNumberController.displayPage
+  protected def consigneeDetailsPreviousPage(cacheModel: ExportsDeclaration)(implicit request: JourneyRequest[_]): Call =
+    cacheModel.isUsingOwnTransport match {
+      case Some(true)                                                             => routes.ThirdPartyGoodsTransportationController.displayPage
+      case _ if cacheModel.parties.carrierDetails.flatMap(_.details.eori).isEmpty => routes.CarrierDetailsController.displayPage
+      case _                                                                      => routes.CarrierEoriNumberController.displayPage
+    }
 
   protected def consigneeDetailsClearancePreviousPage(cacheModel: ExportsDeclaration): Call =
-    if (cacheModel.isExs)
-      consigneeDetailsPreviousPage(cacheModel)
-    else {
-      if (cacheModel.isDeclarantExporter)
-        routes.IsExsController.displayPage
-      else
-        routes.RepresentativeStatusController.displayPage
+    cacheModel.isExs match {
+      case false if cacheModel.isDeclarantExporter                                => routes.IsExsController.displayPage
+      case false                                                                  => routes.RepresentativeStatusController.displayPage
+      case _ if cacheModel.parties.carrierDetails.flatMap(_.details.eori).isEmpty => routes.CarrierDetailsController.displayPage
+      case _                                                                      => routes.CarrierEoriNumberController.displayPage
     }
 
   protected def representativeAgentClearancePreviousPage(cacheModel: ExportsDeclaration): Call =

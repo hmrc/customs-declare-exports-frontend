@@ -34,24 +34,25 @@ import views.helpers.summary.Card2ForParties
 trait CommonNavigator extends CacheDependentNavigators {
 
   val common: PartialFunction[DeclarationPage, Call] = {
-    case DeclarationChoice            => ChoiceController.displayPage
-    case Lrn                          => routes.DucrEntryController.displayPage
-    case Mucr                         => routes.LinkDucrToMucrController.displayPage
-    case RepresentativeEntity         => routes.RepresentativeAgentController.displayPage
-    case RepresentativeStatus         => routes.RepresentativeEntityController.displayPage
-    case ProcedureCode                => routes.ItemsSummaryController.displayItemsSummaryPage
-    case ExportItem                   => routes.SectionSummaryController.displayPage(4)
-    case DocumentChangeOrRemove       => routes.PreviousDocumentsSummaryController.displayPage
-    case TransportLeavingTheBorder    => routes.SectionSummaryController.displayPage(5)
-    case WarehouseIdentification      => routes.TransportLeavingTheBorderController.displayPage
-    case TransportPayment             => routes.ExpressConsignmentController.displayPage
-    case CarrierDetails               => routes.CarrierEoriNumberController.displayPage
-    case InvoiceAndExchangeRateChoice => routes.SectionSummaryController.displayPage(3)
-    case InvoiceAndExchangeRate       => routes.InvoiceAndExchangeRateChoiceController.displayPage
-    case TraderReference              => routes.DucrChoiceController.displayPage
-    case ConfirmDucr                  => routes.TraderReferenceController.displayPage
-    case RoutingCountryPage           => routes.RoutingCountriesController.displayRoutingQuestion
-    case DestinationCountryPage       => routes.SectionSummaryController.displayPage(2)
+    case DeclarationChoice                 => ChoiceController.displayPage
+    case Lrn                               => routes.DucrEntryController.displayPage
+    case Mucr                              => routes.LinkDucrToMucrController.displayPage
+    case RepresentativeEntity              => routes.RepresentativeAgentController.displayPage
+    case RepresentativeStatus              => routes.RepresentativeEntityController.displayPage
+    case ProcedureCode                     => routes.ItemsSummaryController.displayItemsSummaryPage
+    case ExportItem                        => routes.SectionSummaryController.displayPage(4)
+    case DocumentChangeOrRemove            => routes.PreviousDocumentsSummaryController.displayPage
+    case TransportLeavingTheBorder         => routes.SectionSummaryController.displayPage(5)
+    case WarehouseIdentification           => routes.TransportLeavingTheBorderController.displayPage
+    case TransportPayment                  => routes.ExpressConsignmentController.displayPage
+    case CarrierDetails                    => routes.CarrierEoriNumberController.displayPage
+    case InvoiceAndExchangeRateChoice      => routes.SectionSummaryController.displayPage(3)
+    case InvoiceAndExchangeRate            => routes.InvoiceAndExchangeRateChoiceController.displayPage
+    case TraderReference                   => routes.DucrChoiceController.displayPage
+    case ConfirmDucr                       => routes.TraderReferenceController.displayPage
+    case RoutingCountryPage                => routes.RoutingCountriesController.displayRoutingQuestion
+    case DestinationCountryPage            => routes.SectionSummaryController.displayPage(2)
+    case ThirdPartyGoodsTransportationPage => routes.DeclarantExporterController.displayPage
   }
 
   val commonItem: PartialFunction[DeclarationPage, String => Call] = {

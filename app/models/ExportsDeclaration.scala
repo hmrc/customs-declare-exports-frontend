@@ -31,6 +31,7 @@ import models.ExportsDeclaration.isCodePrefixedWith
 import models.ExportsFieldPointer.ExportsFieldPointer
 import models.declaration.ProcedureCodesData.lowValueDeclaration
 import models.declaration._
+import models.requests.JourneyRequest
 import play.api.libs.json._
 import services.DiffTools
 import services.DiffTools.{combinePointers, compareDifference, compareIntDifference, ExportsDeclarationDiff}
@@ -80,6 +81,15 @@ case class ExportsDeclaration(
 
   def lrn: Option[String] = consignmentReferences.flatMap(_.lrn.map(_.lrn))
   def ducr: Option[Ducr] = consignmentReferences.flatMap(_.ducr)
+
+  def isUsingOwnTransport(implicit request: JourneyRequest[_]): Option[Boolean] = {
+    val carrierEori = request.cacheModel.parties.carrierDetails.flatMap(_.details.eori).map(_.value)
+    carrierEori match {
+      case Some(eori) if eori == request.eori => Some(true) // Using own transport
+      case Some(_)                            => Some(false) // Using third party
+      case _                                  => None // Indeterminate
+    }
+  }
 
   def inlandModeOfTransportCode: Option[ModeOfTransportCode] = locations.inlandModeOfTransportCode.flatMap(_.inlandModeOfTransportCode)
 
