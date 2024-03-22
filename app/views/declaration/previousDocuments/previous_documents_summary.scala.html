@@ -60,7 +60,7 @@
 
 @header = @{
   val documentsSize = documents.size
-  if(documentsSize == 1) Text(messages("declaration.previousDocuments.summary.header.singular"))
+  if (documentsSize == 1) Text(messages("declaration.previousDocuments.summary.header.singular"))
   else Text(messages("declaration.previousDocuments.summary.header.plural", documentsSize))
 }
 
@@ -118,9 +118,9 @@
     }
 }
 
-@govukLayout(
-    title = Title("declaration.previousDocuments.summary.title", "declaration.section.4", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages(backButtonText), backLink))
+@govukLayout.apply(
+  title = templateHelper.titleInHead(documents, hasErrors),
+  backButton = Some(BackButton(messages(backButtonText), backLink))
 ) {
     @formHelper(action = routes.PreviousDocumentsSummaryController.submit, 'autoComplete -> "off") {
 

@@ -42,8 +42,13 @@ class PreviousDocumentsHelper @Inject() (
   externalLink: externalLink,
   paragraphBody: paragraphBody
 ) {
-
   private val prefix = "declaration.previousDocuments"
+
+  def titleInHead(documents: Seq[Document], hasErrors: Boolean): Title = {
+    val documentsSize = documents.size
+    if (documentsSize == 1) Title("declaration.previousDocuments.summary.header.singular", "declaration.section.4", hasErrors = hasErrors)
+    else Title("declaration.previousDocuments.summary.header.plural", "declaration.section.4", documentsSize.toString, hasErrors = hasErrors)
+  }
 
   def bodyUnderTitle(implicit messages: Messages, request: JourneyRequest[_]): Html = {
     val bodyBulletList = bulletList(List(Html(messages(s"$prefix.body.bullet.1")), Html(messages(s"$prefix.body.bullet.2"))))
