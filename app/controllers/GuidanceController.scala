@@ -28,13 +28,8 @@ class GuidanceController @Inject() (
   mcc: MessagesControllerComponents,
   completeDeclarationPage: complete_declaration,
   sendByRoroPage: send_by_roro,
-  entryPage: entry,
-  startPage: start
+  entryPage: entry
 ) extends FrontendController(mcc) with I18nSupport {
-
-  val start: Action[AnyContent] = authenticate { implicit request =>
-    Ok(startPage())
-  }
 
   val entry: Action[AnyContent] = authenticate { implicit request =>
     Ok(entryPage())

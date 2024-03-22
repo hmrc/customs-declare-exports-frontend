@@ -45,7 +45,7 @@ class EntryViewSpec extends UnitViewSpec with Stubs with Injector {
       links.get(1) must haveHref(guidance.takingCommercialGoodsOnYourPerson)
       links.get(2) must haveHref(guidance.exportingByPost)
       links.get(3) must haveHref(controllers.routes.GuidanceController.sendByRoro.url)
-      links.get(4) must haveHref(controllers.routes.GuidanceController.start.url)
+      links.get(4) must haveHref(controllers.routes.ChoiceController.displayPage.url)
       links.get(5) must haveHref(guidance.cdsDeclarationSoftware)
       links.get(6) must haveHref(guidance.addATeamMember)
     }

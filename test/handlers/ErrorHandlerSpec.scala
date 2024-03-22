@@ -37,7 +37,7 @@ class ErrorHandlerSpec extends UnitWithMocksSpec with Stubs with OptionValues wi
 
   override val configuration: Configuration = Configuration(
     "urls.login" -> "http://localhost:9949/auth-login-stub/gg-sign-in",
-    "urls.loginContinue" -> "http://localhost:6791/customs-declare-exports/start"
+    "urls.loginContinue" -> "http://localhost:6791/customs-declare-exports/choice"
   )
 
   val errorPage = instanceOf[error_template]
@@ -66,12 +66,12 @@ class ErrorHandlerSpec extends UnitWithMocksSpec with Stubs with OptionValues wi
 
       val error = new NoActiveSession("A user is not logged in") {}
       val result = Future.successful(errorHandler.resolveError(request, error))
-      val start = "http://localhost:6791/customs-declare-exports/start"
+      val choice = "http://localhost:6791/customs-declare-exports/choice"
 
       status(result) mustBe Status.SEE_OTHER
 
       val expectedLocation =
-        s"http://localhost:9949/auth-login-stub/gg-sign-in?continue=${urlEncode(start)}"
+        s"http://localhost:9949/auth-login-stub/gg-sign-in?continue=${urlEncode(choice)}"
 
       redirectLocation(result) mustBe Some(expectedLocation)
     }

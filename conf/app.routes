@@ -91,7 +91,6 @@ GET         /you-have-signed-out                           controllers.SignOutCo
 
 # Guidance pages
 
-GET         /start                                         controllers.GuidanceController.start
 GET         /entry                                         controllers.GuidanceController.entry
 GET         /complete-declaration                          controllers.GuidanceController.completeDeclaration
 GET         /send-by-roro                                  controllers.GuidanceController.sendByRoro

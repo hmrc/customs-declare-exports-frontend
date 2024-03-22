@@ -2576,43 +2576,7 @@ ead.template.versionId = Dynodydd y Fersiwn
 
 guidance.subHeading = Arweiniad
 
-guidance.start.title = Datgan eich nwyddau i’w hallforio o’r DU i wledydd eraill
-guidance.start.intro.paragraph.1 = Sut i ddatgan nwyddau rydych yn eu hallforio o’r DU drwy ddefnyddio gwasanaeth datganiad allforio ar-lein CDS.
-guidance.start.intro.paragraph.2 = Mae’r gwasanaeth datganiad allforio CDS yn blatfform digidol sy’n rhad ac am ddim, sy’n cael ei gyflwyno ochr yn ochr â’r System Allforio Genedlaethol (NES).
-
-guidance.start.section.1.header = Cyn i chi ddechrau
-guidance.start.section.1.paragraph.1 = Er mwyn gwneud datganiad allforio, bydd angen y canlynol arnoch:
-guidance.start.section.1.list.1.bullet.1 = rhif {0}
-guidance.start.section.1.list.1.bullet.1.link = EORI
-guidance.start.section.1.list.1.bullet.2 = mynediad at {0}
-guidance.start.section.1.list.1.bullet.2.link = Gwasanaeth Datganiadau Tollau
-guidance.start.section.1.list.1.bullet.3 = rhifau EORI y ‘partïon’ perthnasol - eich asiant (neu’ch cleient, os mai chi yw’r asiant), trefnydd anfon nwyddau, cludwr, ceidwad y warws (ar gyfer ecséis) neu gyfunwr (os defnyddiwyd un) - neu, ar gyfer cludwyr neu allforwyr nad oes ganddynt EORI neu os nad yw’n hysbys, mae’n bosibl defnyddio’r cyfeiriad cofrestredig yn lle
-guidance.start.section.1.list.1.bullet.4 = y {0} cywir ar gyfer y nwyddau
-guidance.start.section.1.list.1.bullet.4.link = cod nwyddau
-guidance.start.section.1.list.1.bullet.5 = disgrifiad o’r eitem, gan gynnwys gwerth, pwysau, maint a math o ddeunydd pacio
-guidance.start.section.1.list.1.bullet.6 = manylion lle bydd y nwyddau’n cael eu hanfon a’r cludiant sydd wedi’i ddefnyddio
-guidance.start.section.1.list.1.bullet.7 = cyfeirnodau’r anfoneb a’r rhestr bacio (ni fydd angen i chi uwchlwytho’r dogfennau hyn oni bai bod gofyn i chi, ond bydd angen i chi nodi’r cyfeirnodau)
-guidance.start.section.1.paragraph.2 = I ddefnyddio’r gwasanaeth ar-lein, bydd angen i chi ddeall y prosesau newydd. Dod o hyd i ragor yn y canllaw: {0}.
-guidance.start.section.1.paragraph.2.link = Cwblhau datganiad allforio ar-lein drwy ddefnyddio’r Gwasanaeth Datganiadau Tollau
-
-guidance.start.section.2.header = Sut i ddatgan
-guidance.start.section.2.paragraph.1 = Gallwch gael mynediad at y gwasanaeth ar-lein yn uniongyrchol i wneud eich datganiad.
-guidance.start.section.2.paragraph.2 = Os ydych yn defnyddio porthladdoedd gyrru-ymlaen-ac-i-ffwrdd Dover, Eurotunnel neu Gaergybi, darllenwch drwy ganllaw {0}.
-guidance.start.section.2.paragraph.2.link = Anfon nwyddau i’w hallforio o borthladdoedd gyrru-ymlaen-ac-i-ffwrdd neu drwy Eurotunnel
-guidance.start.section.2.button = Dechrau nawr
-
-guidance.start.section.3.header = Os oes angen help arnoch
-guidance.start.section.3.paragraph.1 = Os byddwch yn mewngofnodi gyda Dynodydd Defnyddiwr (ID) a chyfrinair ar gyfer Porth y Llywodraeth a ddefnyddiwyd ar gyfer eich busnes a dywedwyd wrthych fod yn rhaid i chi ddilysu’ch e-bost ar gyfer CDS, gallwch naill ai wneud hynny ar unwaith neu ofyn i rywun arall yn eich busnes wneud hyn drwy {0}.
-guidance.start.section.3.paragraph.1.link = Rheoli’ch cyfeiriad e-bost ar gyfer y Gwasanaeth Datganiadau Tollau
-guidance.start.section.3.paragraph.2 = Os na allwch fewngofnodi gyda Dynodydd Defnyddiwr (ID) a chyfrinair ar gyfer Porth y Llywodraeth a ddefnyddiwyd ar gyfer eich busnes, mae angen i chi wneud yn siŵr eich bod yn defnyddio’r manylion ar gyfer y cyfrif sydd â’r rhif EORI ac sydd wedi’i gofrestru ar gyfer CDS.
-guidance.start.section.3.paragraph.3 = Os gofynnwyd i chi unrhyw gwestiynau diogelwch pellach, mae’n bosibl bod y gwasanaeth yn gofyn am rif cofrestru TAW (VRN) ar gyfer eich cwmni - dylai’r manylion rydych yn eu defnyddio i fewngofnodi ar gyfer eich cofrestriad CDS a’ch cofrestriad TAW fod yr un rhai.
-guidance.start.section.3.paragraph.4 = Os oes problem gyda’r gwasanaeth, ac ni allwch ddod o hyd i’r ateb yng nghanllaw {0}, ffoniwch y ddesg gymorth.
-guidance.start.section.3.paragraph.4.link = Cwblhau datganiad allforio ar-lein drwy ddefnyddio’r Gwasanaeth Datganiadau Tollau
-guidance.start.section.3.paragraph.5 = Ffôn: 0300 200 3705
-guidance.start.section.3.paragraph.6 = Dydd Llun i Ddydd Gwener, 08:30 i 17.00 (heblaw am benwythnosau a gwyliau’r banc)
-
 guidance.entry.title = Mae’n rhaid i chi ddatgan y nwyddau cyn iddynt adael Prydain Fawr.
-
 guidance.entry.section.1.paragraph.1 = Mae’n rhaid i chi ddatgan y nwyddau cyn iddynt gyrraedd y porthladd neu’r lleoliad ble maent yn gadael Prydain Fawr.
 guidance.entry.section.1.paragraph.2 = Gallwch {0}, fel trefnydd anfon nwyddau, asiant tollau, neu drwy ddefnyddio’r Post Brenhinol neu gwmni cludo.
 guidance.entry.section.1.paragraph.2.link.1 = cael rhywun i ddelio â datganiadau tollau ar eich rhan
