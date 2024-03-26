@@ -28,10 +28,9 @@ class GuidanceControllerSpec extends ControllerWithoutFormSpec {
   val completeDeclarationPage = mock[complete_declaration]
   val sendByRoroPage = mock[send_by_roro]
   val entryPage = mock[entry]
-  val startPage = mock[start]
 
   val controller =
-    new GuidanceController(mockAuthAction, stubMessagesControllerComponents(), completeDeclarationPage, sendByRoroPage, entryPage, startPage)
+    new GuidanceController(mockAuthAction, stubMessagesControllerComponents(), completeDeclarationPage, sendByRoroPage, entryPage)
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -41,13 +40,6 @@ class GuidanceControllerSpec extends ControllerWithoutFormSpec {
   "GuidanceController" should {
 
     "return 200 (OK)" when {
-
-      "the start method is invoked" in {
-        when(startPage.apply()(any(), any())).thenReturn(HtmlFormat.empty)
-
-        val result = controller.start(getRequest())
-        status(result) must be(OK)
-      }
 
       "the entry method is invoked" in {
         when(entryPage.apply()(any(), any())).thenReturn(HtmlFormat.empty)

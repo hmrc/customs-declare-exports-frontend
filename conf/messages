@@ -2587,43 +2587,7 @@ ead.template.versionId = Version ID
 
 guidance.subHeading = Guidance
 
-guidance.start.title = Declare your goods for export from the UK to other countries
-guidance.start.intro.paragraph.1 = How to declare goods you export from the UK using the CDS export declaration online service.
-guidance.start.intro.paragraph.2 = The CDS export declaration service is a free digital platform being introduced alongside the National Export System (NES).
-
-guidance.start.section.1.header = Before you start
-guidance.start.section.1.paragraph.1 = To make an export declaration, you will need to have:
-guidance.start.section.1.list.1.bullet.1 = an {0} number
-guidance.start.section.1.list.1.bullet.1.link = EORI
-guidance.start.section.1.list.1.bullet.2 = access to the {0}
-guidance.start.section.1.list.1.bullet.2.link = Customs Declaration Service
-guidance.start.section.1.list.1.bullet.3 = the EORI numbers of the relevant ‘parties’ - your agent (or client, if you are the agent), freight forwarder, carrier, haulier, warehouse keeper (for excise) or consolidator (if used) - or, for carriers or exporters who do not have an EORI or if it is not known, the registered address may be used instead
-guidance.start.section.1.list.1.bullet.4 = the right {0} for the goods
-guidance.start.section.1.list.1.bullet.4.link = commodity code
-guidance.start.section.1.list.1.bullet.5 = a description of the item, including the value, weight, size and type of packaging
-guidance.start.section.1.list.1.bullet.6 = details of where the goods will be sent and the transport used
-guidance.start.section.1.list.1.bullet.7 = invoice and packing list references (you will not need to upload these documents unless you are asked to, but you will need to enter the reference numbers)
-guidance.start.section.1.paragraph.2 = To use the online service, you will need to understand the new processes. Find out more in the guide: {0}.
-guidance.start.section.1.paragraph.2.link = Completing an online export declaration using the Customs Declaration Service
-
-guidance.start.section.2.header = How to declare
-guidance.start.section.2.paragraph.1 = You can access the online service directly to make your declaration.
-guidance.start.section.2.paragraph.2 = If you are using roll on roll off ports of Dover, Eurotunnel or Holyhead, read through the guide {0}.
-guidance.start.section.2.paragraph.2.link = Sending goods for export from roll on roll off ports or via Eurotunnel
-guidance.start.section.2.button = Start now
-
-guidance.start.section.3.header = If you need help
-guidance.start.section.3.paragraph.1 = If you sign in with the Government Gateway user ID and password used for your business and you are told you must verify your email for CDS, you can either do that immediately or ask someone else in your business to do this on {0}.
-guidance.start.section.3.paragraph.1.link = Manage your email address for the Customs Declaration Service
-guidance.start.section.3.paragraph.2 = If you cannot sign in with the Government Gateway user ID and password used for your business, you need to ensure you are using the details for the account that has the EORI number and is registered for CDS.
-guidance.start.section.3.paragraph.3 = If you are asked any further security questions, the service may be asking for VAT registration number (VRN) for your company - the details that you use to sign in for your CDS registration and your VAT registration should be the same ones.
-guidance.start.section.3.paragraph.4 = If you have a problem with the service, and you cannot find the answer in the guide {0}, call the helpdesk.
-guidance.start.section.3.paragraph.4.link = Completing an online export declaration using the Customs Declaration Service
-guidance.start.section.3.paragraph.5 = Telephone: 0300 322 9434
-guidance.start.section.3.paragraph.6 = Monday to Friday, 9am to 5pm (except public holidays)
-
 guidance.entry.title = You need to declare the goods before they leave Great Britain
-
 guidance.entry.section.1.paragraph.1 = You must declare the goods before they get to the port or location where they are leaving Great Britain.
 guidance.entry.section.1.paragraph.2 = You can {0}, such as a freight forwarder, customs agent, or by using the Royal Mail or a courier company.
 guidance.entry.section.1.paragraph.2.link.1 = get someone to deal with customs declarations for you
