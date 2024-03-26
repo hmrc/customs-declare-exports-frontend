@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package views.declaration.addtionalDocuments
+package views.declaration.additionalDocuments
 
 import base.{Injector, MockTaggedCodes, TestHelper}
 import config.AppConfig
