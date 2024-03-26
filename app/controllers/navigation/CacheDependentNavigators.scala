@@ -94,11 +94,18 @@ trait CacheDependentNavigators {
     else
       routes.CommodityDetailsController.displayPage(itemId)
 
-  protected def additionalDocumentsPreviousPage(declaration: ExportsDeclaration, itemId: String): Call = {
-    val isLicenseRequired = taggedAuthCodes.hasAuthCodeRequiringAdditionalDocs(declaration) || declaration.isLicenseRequired(itemId)
-    if (isLicenseRequired) routes.IsLicenceRequiredController.displayPage(itemId)
+  protected def additionalDocumentsPreviousPage(declaration: ExportsDeclaration, itemId: String): Call =
+    if (declaration.listOfAdditionalDocuments(itemId).nonEmpty) routes.AdditionalDocumentsController.displayPage(itemId)
+    else {
+      val isLicenseRequired = taggedAuthCodes.hasAuthCodeRequiringAdditionalDocs(declaration) || declaration.isLicenseRequired(itemId)
+      if (isLicenseRequired) routes.IsLicenceRequiredController.displayPage(itemId)
+      else routes.AdditionalDocumentsRequiredController.displayPage(itemId)
+    }
+
+  protected def additionalDocumentsClearancePreviousPage(declaration: ExportsDeclaration, itemId: String): Call =
+    if (declaration.listOfAdditionalDocuments(itemId).nonEmpty) routes.AdditionalDocumentsController.displayPage(itemId)
+    else if (taggedAuthCodes.hasAuthCodeRequiringAdditionalDocs(declaration)) additionalDocumentsSummaryClearancePreviousPage(declaration, itemId)
     else routes.AdditionalDocumentsRequiredController.displayPage(itemId)
-  }
 
   protected def additionalDocumentsSummaryClearancePreviousPage(cacheModel: ExportsDeclaration, itemId: String): Call =
     if (cacheModel.listOfAdditionalInformationOfItem(itemId).nonEmpty)
@@ -111,12 +118,6 @@ trait CacheDependentNavigators {
       routes.AdditionalInformationController.displayPage(itemId)
     else
       routes.AdditionalInformationRequiredController.displayPage(itemId)
-
-  protected def additionalDocumentsClearancePreviousPage(declaration: ExportsDeclaration, itemId: String): Call =
-    if (declaration.listOfAdditionalDocuments(itemId).nonEmpty)
-      routes.AdditionalDocumentsController.displayPage(itemId)
-    else if (taggedAuthCodes.hasAuthCodeRequiringAdditionalDocs(declaration)) additionalDocumentsSummaryClearancePreviousPage(declaration, itemId)
-    else routes.AdditionalDocumentsRequiredController.displayPage(itemId)
 
   protected def additionalInformationAddPreviousPage(cacheModel: ExportsDeclaration, itemId: String): Call =
     if (cacheModel.itemBy(itemId).flatMap(_.additionalInformation).exists(_.items.nonEmpty))

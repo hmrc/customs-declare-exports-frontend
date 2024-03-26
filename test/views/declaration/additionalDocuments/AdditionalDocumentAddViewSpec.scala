@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package views.declaration.addtionalDocuments
+package views.declaration.additionalDocuments
 
 import base.{Injector, MockTaggedCodes}
 import controllers.declaration.routes.{
@@ -95,8 +95,8 @@ class AdditionalDocumentAddViewSpec extends UnitViewSpec with Injector with Mock
     }
 
     "additional documents are present" should {
-      onJourney(CLEARANCE)(TestDeclaration.withDocs) { implicit request =>
-        "display a 'Back' button that links to the 'Additional Documents Required' page" in {
+      onJourney(CLEARANCE, STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL)(TestDeclaration.withDocs) { implicit request =>
+        "display a 'Back' button that links to the 'Additional Documents' page" in {
           verifyBackButton(AdditionalDocumentsController.displayPage(itemId))
         }
       }
