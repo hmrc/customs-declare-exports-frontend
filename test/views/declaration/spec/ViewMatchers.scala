@@ -157,7 +157,7 @@ trait ViewMatchers {
 
   class TranslationKeyMatcher(key: String) extends Matcher[Messages] {
     override def apply(left: Messages): MatchResult = MatchResult(
-      matches = left.isDefinedAt(key),
+      matches = left.isDefinedAt(key) && !left(key).isBlank,
       rawFailureMessage = s"$key is not defined in Messages",
       rawNegatedFailureMessage = s"$key is defined in Messages"
     )

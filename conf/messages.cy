@@ -531,6 +531,16 @@ declaration.declarant.exporter.answer.no = Na, rwy’n cynrychioli’r allforiwr
 declaration.declarant.exporter.answer.no.hint = Er enghraifft, trefnydd anfon nwyddau neu frocer tollau.
 declaration.declarant.exporter.error = Dewiswch ‘Iawn’ os mai chi yw’r allforiwr
 
+declaration.thirdPartyGoodsTransportation.title = A fydd y nwyddau’n cael eu symud gan gludwr trydydd parti?
+declaration.thirdPartyGoodsTransportation.body = Mae hyn yn cynnwys cludwyr nwyddau ar y ffordd a RoRo, a chariwyr cwmni hedfan neu dros y môr.
+declaration.thirdPartyGoodsTransportation.radio.yes = Iawn
+declaration.thirdPartyGoodsTransportation.radio.no = Na, rydym yn defnyddio dull cludo ein hunain
+declaration.thirdPartyGoodsTransportation.radio.text = Dull o gludo ynghlwm wrth yr EORI, sef {0}
+declaration.thirdPartyGoodsTransportation.radio.error = Mae’n rhaid i chi ddewis un o’r opsiynau
+declaration.thirdPartyGoodsTransportation.expander.title = Os yw mwy nag un cariwr neu gludwr dan sylw
+declaration.thirdPartyGoodsTransportation.expander.paragraph.1 = Dim ond un cariwr neu gludwr sydd angen ei enwi. Pan mae sawl cludwr ynghlwm, cyfnodwch yr un sy’n cludo’r nwyddau yn y man cychwyn.
+declaration.thirdPartyGoodsTransportation.expander.paragraph.2 = Er enghraifft, ar gyfer fferi Gyrru-ymlaen-ac-i-ffwrdd, enwch gwnni cludo’r gyrrwr. Ar gyfer y Cefnfor a’r Awyr, cofnodwch y Cwmni Llongau neu’r Cwmni Hedfan.
+
 declaration.consignee.title = Ble bydd y nwyddau’n cael eu danfon?
 declaration.consignee.paragraph1 = Nodwch enw’r busnes, y sefydliad neu’r unigolyn sy’n cael y nwyddau, a’r cyfeiriad lle bydd y nwyddau’n cael eu danfon.
 declaration.consignee.paragraph2 = Dylai fod yn enw’r mewnforiwr neu’r cynrychiolydd a awdurdodwyd i gael y nwyddau.

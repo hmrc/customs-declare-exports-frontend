@@ -68,7 +68,7 @@ class DeclarantExporterController @Inject() (
       request.declarationType match {
         case DeclarationType.SUPPLEMENTARY => routes.ConsigneeDetailsController.displayPage
         case DeclarationType.CLEARANCE     => routes.IsExsController.displayPage
-        case _                             => routes.CarrierEoriNumberController.displayPage
+        case _                             => routes.ThirdPartyGoodsTransportationController.displayPage
       }
 
   private def updateCache(declarantIsExporter: DeclarantIsExporter)(implicit r: JourneyRequest[AnyContent]): Future[ExportsDeclaration] =

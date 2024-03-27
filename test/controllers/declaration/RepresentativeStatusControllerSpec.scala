@@ -17,7 +17,7 @@
 package controllers.declaration
 
 import base.{AuditedControllerSpec, ControllerSpec}
-import controllers.declaration.routes.{CarrierEoriNumberController, ConsigneeDetailsController}
+import controllers.declaration.routes.{ConsigneeDetailsController, ThirdPartyGoodsTransportationController}
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.{IsExs, RepresentativeStatus}
 import models.DeclarationType._
@@ -133,7 +133,7 @@ class RepresentativeStatusControllerSpec extends ControllerSpec with AuditedCont
     }
 
     onJourney(STANDARD, SIMPLIFIED, OCCASIONAL) { request =>
-      "return 303 (SEE_OTHER) and redirect to carrier details page" in {
+      "return 303 (SEE_OTHER) and redirect to third party goods transport page" in {
         withNewCaching(request.cacheModel)
 
         val correctForm = Json.toJson(RepresentativeStatus(Some(statusCode)))
@@ -141,7 +141,7 @@ class RepresentativeStatusControllerSpec extends ControllerSpec with AuditedCont
         val result = controller.submitForm()(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe CarrierEoriNumberController.displayPage
+        thePageNavigatedTo mustBe ThirdPartyGoodsTransportationController.displayPage
 
         verifyPage(0)
         verifyAudit()
@@ -150,7 +150,7 @@ class RepresentativeStatusControllerSpec extends ControllerSpec with AuditedCont
 
     onClearance { request =>
       "when user answered 'Yes' to the question of whether this is an EXS" should {
-        "return 303 (SEE_OTHER) and redirect to carrier details page" in {
+        "return 303 (SEE_OTHER) and redirect to third party goods transport page" in {
           val cachedParties = request.cacheModel.parties.copy(isExs = Some(IsExs(YesNoAnswers.yes)))
           withNewCaching(request.cacheModel.copy(parties = cachedParties))
 
@@ -159,7 +159,7 @@ class RepresentativeStatusControllerSpec extends ControllerSpec with AuditedCont
           val result = controller.submitForm()(postRequest(correctForm))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe CarrierEoriNumberController.displayPage
+          thePageNavigatedTo mustBe ThirdPartyGoodsTransportationController.displayPage
 
           verifyPage(0)
           verifyAudit()

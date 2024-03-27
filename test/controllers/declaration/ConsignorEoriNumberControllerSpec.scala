@@ -17,7 +17,7 @@
 package controllers.declaration
 
 import base.{AuditedControllerSpec, ControllerSpec}
-import controllers.declaration.routes.{ConsignorDetailsController, RepresentativeAgentController}
+import controllers.declaration.routes.{ConsignorDetailsController, ThirdPartyGoodsTransportationController}
 import controllers.routes.RootController
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.common.{Address, Eori}
@@ -209,7 +209,7 @@ class ConsignorEoriNumberControllerSpec extends ControllerSpec with AuditedContr
         val result = controller.submit()(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe RepresentativeAgentController.displayPage
+        thePageNavigatedTo mustBe ThirdPartyGoodsTransportationController.displayPage
         checkViewInteractions(0)
         theCacheModelUpdated.parties.consignorDetails must be(Some(ConsignorDetails(EntityDetails(eoriInput, None))))
         verifyAudit()

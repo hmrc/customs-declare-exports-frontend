@@ -30,7 +30,7 @@
     answerKey: String = "yesNo",
     hint: Option[Hint] = None,
     yesHint: Option[String] = None,
-    noHint: Option[String] = None,
+    noHint: Option[Seq[String]] = None,
     yesConditionalHtml: Option[Html] = None,
     noConditionalHtml: Option[Html] = None,
     inline: Boolean = false
@@ -75,7 +75,7 @@
             value = noValue,
             content = noContent,
             conditionalHtml = noConditionalHtml,
-            hint = noHint.map(hint => Hint(content = Text(messages(hint)))),
+            hint = noHint.map(args => Hint(content = Text(messages(args.head, args.tail: _*)))),
             checked = form(answerKey).value.contains(noValue.get)
         )
     ),

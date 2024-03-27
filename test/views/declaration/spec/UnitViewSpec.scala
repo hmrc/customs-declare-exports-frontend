@@ -21,15 +21,12 @@ import mock.FeatureFlagMocks
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import org.jsoup.select.Elements
-import org.scalatest.matchers.{BeMatcher, MatchResult}
 import org.scalatest.{Assertion, OptionValues}
 import play.api.i18n.{Lang, Messages, MessagesApi}
 import play.api.mvc.{AnyContent, Call, Request}
 import services.cache.ExportsTestHelper
 import tools.Stubs
 import views.helpers.CommonMessages
-
-import java.util.Locale
 
 trait UnitViewSpec
     extends UnitWithMocksSpec with CommonMessages with FeatureFlagMocks with JourneyTypeTestRunner with OptionValues with Stubs with ViewMatchers {
@@ -44,7 +41,20 @@ trait UnitViewSpec
 
   protected def messages(key: String, args: Any*)(implicit request: Request[_]): String = messages(request)(key, args: _*)
 
+  protected def messagesCy: Messages =
+    new AllMessageKeysAreMandatoryMessages(realMessagesApi.preferred(Seq(Lang.apply("cy"))))
+
+  protected def messagesCy(key: String, args: Any*)(implicit request: Request[_]): String = messages(request)(key, args: _*)
+
   val realMessagesApi = UnitViewSpec.realMessagesApi
+
+  def checkMessages(keys: String*): Unit =
+    "check messages present including Welsh" in {
+      keys.map { key =>
+        messages must haveTranslationFor(key)
+        messagesCy must haveTranslationFor(key)
+      }
+    }
 
   def checkErrorsSummary(view: Document): Assertion = {
     view.getElementById("error-summary-heading").text() must be("error.summary.title")
@@ -79,25 +89,6 @@ trait UnitViewSpec
       row must haveSummaryActionWithPlaceholder(url)
     }
   }
-}
-
-class MessagesKeyMatcher(key: String) extends BeMatcher[String] {
-  override def apply(left: String): MatchResult =
-    if (left == key) {
-      val missing = MessagesKeyMatcher.langs.find(lang => !UnitViewSpec.realMessagesApi.isDefinedAt(key)(lang))
-      val language = missing.map(_.toLocale.getDisplayLanguage())
-      MatchResult(
-        missing.isEmpty,
-        s"${language.getOrElse("None of languages")} does not have translation for $key",
-        s"$key have translation for ${language.getOrElse("every language")}"
-      )
-    } else {
-      MatchResult(matches = false, s"$left is not $key", s"$left is $key")
-    }
-}
-
-object MessagesKeyMatcher {
-  val langs: Seq[Lang] = Seq(Lang(Locale.ENGLISH))
 }
 
 object UnitViewSpec extends Injector with ExportsTestHelper {

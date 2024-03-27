@@ -43,6 +43,9 @@ trait JourneyTypeTestRunner extends UnitSpec with ExportsTestHelper {
 
   def onJourney(types: DeclarationType*) = new JourneyRunner(types: _*)
 
+  def onJourney(types: Seq[DeclarationType], modifiers: ExportsDeclarationModifier*)(f: JourneyRequest[_] => Unit): Unit =
+    onJourney(types: _*)(aDeclaration(modifiers: _*))(f)
+
   class JourneyRunner(types: DeclarationType*) {
 
     def apply(f: JourneyRequest[_] => Unit): Unit = apply(aDeclaration())(f)

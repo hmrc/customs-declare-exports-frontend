@@ -19,7 +19,9 @@ package controllers.declaration
 import connectors.CodeListConnector
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
+import controllers.declaration.routes._
 import forms.declaration.consignor.ConsignorDetails
+import models.DeclarationType.CLEARANCE
 import models.requests.JourneyRequest
 import models.{DeclarationType, ExportsDeclaration}
 import play.api.data.Form
@@ -65,12 +67,11 @@ class ConsignorDetailsController @Inject() (
       )
   }
 
-  private def nextPage()(implicit request: JourneyRequest[_]): Call =
-    if (request.cacheModel.isDeclarantExporter) {
-      controllers.declaration.routes.CarrierEoriNumberController.displayPage
-    } else {
-      controllers.declaration.routes.RepresentativeAgentController.displayPage
-    }
+  private def nextPage()(implicit request: JourneyRequest[_]): Call = request.cacheModel.`type` match {
+    case CLEARANCE                                   => ThirdPartyGoodsTransportationController.displayPage
+    case _ if request.cacheModel.isDeclarantExporter => CarrierEoriNumberController.displayPage
+    case _                                           => RepresentativeAgentController.displayPage
+  }
 
   private def updateCache(formData: ConsignorDetails)(implicit request: JourneyRequest[AnyContent]): Future[ExportsDeclaration] =
     updateDeclarationFromRequest { model =>

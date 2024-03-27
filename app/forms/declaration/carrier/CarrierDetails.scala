@@ -18,6 +18,7 @@ package forms.declaration.carrier
 
 import connectors.CodeListConnector
 import forms.DeclarationPage
+import forms.common.Eori
 import forms.declaration.EntityDetails
 import models.DeclarationType.{CLEARANCE, DeclarationType}
 import models.viewmodels.TariffContentKey
@@ -69,6 +70,8 @@ object CarrierDetails extends DeclarationPage with FieldMapping {
         }
       case Some(_) => CarrierDetails(EntityDetails(carrierEoriDetails.eori, None))
     }
+
+  def from(eori: String): CarrierDetails = CarrierDetails(EntityDetails(Some(Eori(eori)), None))
 
   override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
     Seq(TariffContentKey(s"tariff.declaration.carrierAddress.${DeclarationPage.getJourneyTypeSpecialisation(decType)}"))

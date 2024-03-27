@@ -216,6 +216,10 @@ tariff.declaration.mucr.common.linkText.0 = Data Element 2/1 Simplified Declarat
 tariff.declaration.declarantDetails.common.linkText.0 = Data Element 3/18 - Declarant Identification Number (opens in new tab)
 tariff.declaration.areYouTheExporter.common.linkText.0 = Data Element 3/2 - Exporter Identification Number (opens in new tab)
 tariff.declaration.areYouTheExporter.common.1.text = A ‘Yes’ answer will send 00400 EXPORTER for Data Element 2/2, which is required if you are the exporter.
+tariff.declaration.thirdPartyGoodsTransportation.0.common.text.0 = For details, go to {0}.
+tariff.declaration.thirdPartyGoodsTransportation.0.common.linkText.0 = Data Element 3/2 - Exporter Identification Number (opens in new tab)
+tariff.declaration.thirdPartyGoodsTransportation.1.common.text.0 = For details, go to {0}.
+tariff.declaration.thirdPartyGoodsTransportation.1.common.linkText.0 = Data Element 3/32 - Carrier Identification Number (opens in new tab)
 tariff.declaration.exporterEoriNumber.common.linkText.0 = Data Element 3/2 - Exporter Identification Number (opens in new tab)
 tariff.declaration.exporterAddress.common.linkText.0 = Data Element 3/1 - Exporter (opens in new tab)
 tariff.declaration.consignorEoriNumber.clearance.linkText.0 = Data Element 3/8 - Consignor Identification Number (opens in new tab)
@@ -527,6 +531,16 @@ declaration.declarant.exporter.body = The exporter is the seller, or the person 
 declaration.declarant.exporter.answer.no = No, I’m representing the exporter
 declaration.declarant.exporter.answer.no.hint = For example, a freight forwarder or customs broker.
 declaration.declarant.exporter.error = Select yes if you are the exporter
+
+declaration.thirdPartyGoodsTransportation.title = Will the goods be moved by a third party carrier or haulier?
+declaration.thirdPartyGoodsTransportation.body = This includes road and RoRo hauliers, airline or maritime carriers.
+declaration.thirdPartyGoodsTransportation.radio.yes = Yes
+declaration.thirdPartyGoodsTransportation.radio.no = No, we use our own transport
+declaration.thirdPartyGoodsTransportation.radio.text = Transport linked to EORI {0}
+declaration.thirdPartyGoodsTransportation.radio.error = You must select one of the options
+declaration.thirdPartyGoodsTransportation.expander.title = If more than one carrier or haulier is involved
+declaration.thirdPartyGoodsTransportation.expander.paragraph.1 = Only one named carrier or haulier is required. Where multiple carriers are involved, record the one carrying the goods at the point of embarkation.
+declaration.thirdPartyGoodsTransportation.expander.paragraph.2 = For example, for Roll On Roll Off ferries, name the haulage company of the driver. For Deep Sea and Air, record the Shipping Line or Airline company.
 
 declaration.consignee.title = Where will the goods be delivered?
 declaration.consignee.paragraph1 = Enter the name of the business, organisation or individual taking delivery of the goods, and the address where the goods will be delivered.
