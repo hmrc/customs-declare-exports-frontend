@@ -19,7 +19,7 @@ package controllers.declaration
 import base.{AuditedControllerSpec, ControllerSpec}
 import connectors.CodeListConnector
 import controllers.routes.RootController
-import forms.common.{Address, Eori}
+import forms.common.Address
 import forms.declaration.EntityDetails
 import forms.declaration.consignor.ConsignorDetails
 import models.DeclarationType
@@ -120,7 +120,7 @@ class ConsignorDetailsControllerSpec extends ControllerSpec with AuditedControll
     }
 
     onJourney(CLEARANCE) { request =>
-      "return 303 (SEE_OTHER) and redirect to representative details page" when {
+      "return 303 (SEE_OTHER) and redirect to third party goods transportation page" when {
         "form is correct" in {
           withNewCaching(request.cacheModel)
 
@@ -137,36 +137,7 @@ class ConsignorDetailsControllerSpec extends ControllerSpec with AuditedControll
           val result = controller.saveAddress()(postRequest(correctForm))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.RepresentativeAgentController.displayPage
-          verifyAudit()
-        }
-      }
-
-      "return 303 (SEE_OTHER) and redirect to carrier details page" when {
-        "form is correct" in {
-          withNewCaching(
-            aDeclaration(
-              withType(DeclarationType.CLEARANCE),
-              withDeclarantIsExporter(),
-              withDeclarantDetails(eori = Some(Eori("GB12345678"))),
-              withExporterDetails(eori = Some(Eori("GB12345678")))
-            )
-          )
-
-          val correctForm =
-            Json.toJson(
-              ConsignorDetails(
-                EntityDetails(
-                  None,
-                  Some(Address("John Smith", "1 Export Street", "Leeds", "LS1 2PW", "United Kingdom, Great Britain, Northern Ireland"))
-                )
-              )
-            )
-
-          val result = controller.saveAddress()(postRequest(correctForm))
-
-          await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.CarrierEoriNumberController.displayPage
+          thePageNavigatedTo mustBe controllers.declaration.routes.ThirdPartyGoodsTransportationController.displayPage
           verifyAudit()
         }
       }

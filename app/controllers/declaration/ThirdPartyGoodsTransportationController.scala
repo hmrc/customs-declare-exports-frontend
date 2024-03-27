@@ -20,8 +20,9 @@ import controllers.actions.{AuthAction, JourneyAction}
 import controllers.declaration.routes._
 import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
-import forms.common.YesNoAnswer.form
 import forms.declaration.carrier.CarrierDetails
+import models.DeclarationType
+import models.DeclarationType._
 import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
@@ -42,17 +43,21 @@ class ThirdPartyGoodsTransportationController @Inject() (
   override val exportsCacheService: ExportsCacheService,
   navigator: Navigator,
   thirdPartyGoodTransportPage: third_party_goods_transportation
-) (implicit ec: ExecutionContext, auditService: AuditService)extends FrontendController(mcc) with WithUnsafeDefaultFormBinding with I18nSupport with SubmissionErrors with ModelCacheable {
+)(implicit ec: ExecutionContext, auditService: AuditService)
+    extends FrontendController(mcc) with WithUnsafeDefaultFormBinding with I18nSupport with SubmissionErrors with ModelCacheable {
 
-  val displayPage: Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    val frm = YesNoAnswer.form(errorKey = "declaration.thirdPartyGoodsTransportation.radio.error")
-    Ok(thirdPartyGoodTransportPage(populateForm(frm)))
+  private val formWithErrorKey = YesNoAnswer.form(errorKey = "declaration.thirdPartyGoodsTransportation.radio.error")
+
+  private val allowedJourneys = Seq(STANDARD, OCCASIONAL, SIMPLIFIED, CLEARANCE)
+
+  val displayPage: Action[AnyContent] = (authenticate andThen journeyType(allowedJourneys)) { implicit request =>
+    Ok(thirdPartyGoodTransportPage(populateForm(formWithErrorKey.withSubmissionErrors)))
   }
 
-  val submitPage: Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    form()
+  val submitPage: Action[AnyContent] = (authenticate andThen journeyType(allowedJourneys)) { implicit request =>
+    formWithErrorKey
       .bindFromRequest()
-      .fold(formWithErrors => BadRequest(thirdPartyGoodTransportPage(formWithErrors)), answer => navigator.continueTo(nextPage(answer)))
+      .fold(formWithErrors => BadRequest(thirdPartyGoodTransportPage(formWithErrors)), answer => navigator.continueTo(saveAndRedirect(answer)))
   }
 
   private def populateForm(form: Form[YesNoAnswer])(implicit request: JourneyRequest[_]): Form[YesNoAnswer] =
@@ -62,11 +67,13 @@ class ThirdPartyGoodsTransportationController @Inject() (
       case _           => form
     }
 
-  private def nextPage(answer: YesNoAnswer)(implicit request: JourneyRequest[_]): Call = Some(answer) match {
+  private def saveAndRedirect(answer: YesNoAnswer)(implicit request: JourneyRequest[_]): Call = Some(answer) match {
     case YesNoAnswer.Yes => CarrierEoriNumberController.displayPage
-    case _ => updateDeclarationFromRequest(model =>
-        model.copy(parties = model.parties.copy(carrierDetails = Some(CarrierDetails.from(request.eori)))))
-      ConsigneeDetailsController.displayPage
+    case _ =>
+      updateDeclarationFromRequest(model => model.copy(parties = model.parties.copy(carrierDetails = Some(CarrierDetails.from(request.eori)))))
+      request.declarationType match {
+        case DeclarationType.CLEARANCE => IsExsController.displayPage
+        case _                         => ConsigneeDetailsController.displayPage
+      }
   }
-
 }

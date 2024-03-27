@@ -322,6 +322,13 @@ function isDeclarantExporter() {
     }
 }
 
+function thirdPartyGoodsTransportation() {
+    if (currentPageIs('/customs-declare-exports/declaration/third-party-goods-transportation')) {
+        document.getElementById('code_no').checked = 'checked'
+        submit()
+    }
+}
+
 function exporterDetails() {
     if (currentPageIs('/customs-declare-exports/declaration/exporter-address')) {
         document.getElementById('details_address_fullName').value = 'Exporters R Us'
@@ -1261,6 +1268,7 @@ function completeJourney() {
     personPresentingGoodsDetails()
     declarantDetails()
     isDeclarantExporter()
+    thirdPartyGoodsTransportation()
     exporterEoriNumber()
     exporterDetails()
     isExs()

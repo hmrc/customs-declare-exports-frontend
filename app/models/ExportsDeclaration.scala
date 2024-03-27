@@ -87,7 +87,7 @@ case class ExportsDeclaration(
     carrierEori match {
       case Some(eori) if eori == request.eori => Some(true) // Using own transport
       case Some(_)                            => Some(false) // Using third party
-      case _                                  => None // Indeterminate
+      case _                                  => None // Not answered
     }
   }
 

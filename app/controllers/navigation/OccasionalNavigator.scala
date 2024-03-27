@@ -61,18 +61,19 @@ trait OccasionalNavigator extends CacheDependentNavigators {
   }
 
   def occasionalCacheDependent(implicit request: JourneyRequest[_]): PartialFunction[DeclarationPage, ExportsDeclaration => Call] = {
-    case CarrierEoriNumber         => carrierEoriNumberPreviousPage
-    case ConsigneeDetails          => consigneeDetailsPreviousPage
-    case DeclarantIsExporter       => declarantIsExporterPreviousPage
-    case RepresentativeAgent       => representativeAgentPreviousPage
-    case Document                  => previousDocumentsPreviousPage
-    case InlandOrBorder            => inlandOrBorderPreviousPage
-    case InlandModeOfTransportCode => inlandTransportDetailsPreviousPage
-    case DepartureTransport        => departureTransportPreviousPage
-    case BorderTransport           => borderTransportPreviousPage
-    case TransportCountry          => transportCountryPreviousPage
-    case ExpressConsignment        => expressConsignmentPreviousPage
-    case ContainerFirst            => containerFirstPreviousPage
+    case CarrierEoriNumber                 => carrierEoriNumberPreviousPage
+    case ConsigneeDetails                  => consigneeDetailsPreviousPage
+    case DeclarantIsExporter               => declarantIsExporterPreviousPage
+    case RepresentativeAgent               => representativeAgentPreviousPage
+    case Document                          => previousDocumentsPreviousPage
+    case InlandOrBorder                    => inlandOrBorderPreviousPage
+    case InlandModeOfTransportCode         => inlandTransportDetailsPreviousPage
+    case DepartureTransport                => departureTransportPreviousPage
+    case BorderTransport                   => borderTransportPreviousPage
+    case TransportCountry                  => transportCountryPreviousPage
+    case ExpressConsignment                => expressConsignmentPreviousPage
+    case ContainerFirst                    => containerFirstPreviousPage
+    case ThirdPartyGoodsTransportationPage => thirdPartyGoodsTransportationPreviousPage
   }
 
   val occasionalCacheItemDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, String) => Call] = {

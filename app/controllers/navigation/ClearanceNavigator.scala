@@ -26,6 +26,7 @@ import forms.declaration.commodityMeasure.CommodityMeasure
 import forms.declaration.consignor.{ConsignorDetails, ConsignorEoriNumber}
 import forms.declaration.exporter.{ExporterDetails, ExporterEoriNumber}
 import models.ExportsDeclaration
+import models.requests.JourneyRequest
 import play.api.mvc.Call
 
 trait ClearanceNavigator extends CacheDependentNavigators {
@@ -56,17 +57,18 @@ trait ClearanceNavigator extends CacheDependentNavigators {
     case page                          => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on clearance")
   }
 
-  val clearanceCacheDependent: PartialFunction[DeclarationPage, ExportsDeclaration => Call] = {
-    case DeclarantIsExporter => declarantIsExporterPreviousPage
-    case CarrierEoriNumber   => carrierEoriNumberClearancePreviousPage
-    case ExporterEoriNumber  => exporterEoriNumberClearancePreviousPage
-    case ConsigneeDetails    => consigneeDetailsClearancePreviousPage
-    case RepresentativeAgent => representativeAgentClearancePreviousPage
-    case IsExs               => isExsClearancePreviousPage
-    case Document            => previousDocumentsPreviousPage
-    case DepartureTransport  => departureTransportPreviousPageOnClearance
-    case ContainerFirst      => containerFirstPreviousPage
-    case ExpressConsignment  => expressConsignmentPreviousPageOnClearance
+  def clearanceCacheDependent(implicit request: JourneyRequest[_]): PartialFunction[DeclarationPage, ExportsDeclaration => Call] = {
+    case DeclarantIsExporter               => declarantIsExporterPreviousPage
+    case CarrierEoriNumber                 => carrierEoriNumberClearancePreviousPage
+    case ExporterEoriNumber                => exporterEoriNumberClearancePreviousPage
+    case ConsigneeDetails                  => consigneeDetailsClearancePreviousPage
+    case RepresentativeAgent               => representativeAgentClearancePreviousPage
+    case IsExs                             => isExsClearancePreviousPage
+    case Document                          => previousDocumentsPreviousPage
+    case DepartureTransport                => departureTransportPreviousPageOnClearance
+    case ContainerFirst                    => containerFirstPreviousPage
+    case ExpressConsignment                => expressConsignmentPreviousPageOnClearance
+    case ThirdPartyGoodsTransportationPage => thirdPartyGoodsTransportationPreviousPage
   }
 
   val clearanceCacheItemDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, String) => Call] = {

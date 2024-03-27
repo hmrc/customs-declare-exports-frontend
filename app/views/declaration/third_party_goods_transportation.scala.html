@@ -23,6 +23,7 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF
 @import views.html.components.gds._
 @import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.helpers.ErrorMapper.yesNoErrors
 @import views.helpers.{BackButton, Title}
 
 @this(
@@ -54,7 +55,7 @@
   backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(ThirdPartyGoodsTransportationPage)))) {
 
   @formHelper(action = ThirdPartyGoodsTransportationController.submitPage, 'autoComplete -> "off") {
-    @errorSummary(form.errors)
+    @errorSummary(yesNoErrors(form.errors))
 
     @sectionHeader(messages("declaration.section.2"))
     @heading(messages("declaration.thirdPartyGoodsTransportation.title"))

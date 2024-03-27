@@ -17,15 +17,15 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.declaration.routes.{CarrierEoriNumberController, ConsigneeDetailsController}
+import controllers.declaration.routes.{ConsigneeDetailsController, ThirdPartyGoodsTransportationController}
 import controllers.navigation.Navigator
 import forms.DeclarationPage
 import forms.declaration.RepresentativeStatus.form
 import forms.declaration.{RepresentativeEntity, RepresentativeStatus}
 import models.DeclarationType._
+import models.ExportsDeclaration
 import models.declaration.RepresentativeDetails
 import models.requests.JourneyRequest
-import models.ExportsDeclaration
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import services.audit.AuditService
@@ -71,11 +71,11 @@ class RepresentativeStatusController @Inject() (
     declarationType match {
       case SUPPLEMENTARY => ConsigneeDetailsController.displayPage
 
-      case STANDARD | SIMPLIFIED | OCCASIONAL => CarrierEoriNumberController.displayPage
+      case STANDARD | SIMPLIFIED | OCCASIONAL => ThirdPartyGoodsTransportationController.displayPage
 
       case CLEARANCE =>
         if (declaration.isNotExs) ConsigneeDetailsController.displayPage
-        else CarrierEoriNumberController.displayPage
+        else ThirdPartyGoodsTransportationController.displayPage
     }
 
   private def navigationForm(implicit request: JourneyRequest[AnyContent]): DeclarationPage =

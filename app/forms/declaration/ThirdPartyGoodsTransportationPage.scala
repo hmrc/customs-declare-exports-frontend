@@ -22,5 +22,8 @@ import models.viewmodels.TariffContentKey
 
 object ThirdPartyGoodsTransportationPage extends DeclarationPage {
   override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
-    Seq(TariffContentKey(s"tariff.declaration.thirdPartyGoodsTransportation.0.common"), TariffContentKey(s"tariff.declaration.thirdPartyGoodsTransportation.1.common"))
+    Seq(
+      TariffContentKey(s"tariff.declaration.thirdPartyGoodsTransportation.0.common"),
+      TariffContentKey(s"tariff.declaration.thirdPartyGoodsTransportation.1.common")
+    )
 }
