@@ -81,10 +81,7 @@
       if(seals.isEmpty)
         Some(Fieldset(
             legend = Some(Legend(
-                content = HtmlContent(Html(
-                    sectionHeader(messages("declaration.section.6")) +
-                    messages("declaration.seal.add.first", containerId)
-                )),
+                content = HtmlContent(Html(messages("declaration.seal.add.first", containerId))),
                 classes = gdsPageLegend,
                 isPageHeading = true
             ))
@@ -114,11 +111,12 @@
     @formHelper(action = SealController.submitSummaryAction(containerId), 'autoComplete -> "off") {
         @errorSummary(yesNoErrors(form.errors))
 
+        @sectionHeader(messages("declaration.section.6"))
+
         @if(seals.isEmpty){
             @addSealRadios
             @tariffExpander(Seal, request.declarationType)(messages, appConfig)
         } else {
-            @sectionHeader(messages("declaration.section.6"))
             @govukFieldset(Fieldset(
                 legend = Some(Legend(
                     content = Text(
