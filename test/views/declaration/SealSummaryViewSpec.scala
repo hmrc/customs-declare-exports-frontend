@@ -47,9 +47,8 @@ class SealSummaryViewSpec extends PageWithButtonsSpec with Injector {
 
     "display page title for no seals" in {
       val noSealsView = createView(seals = Seq.empty)
-      val sectionHeader = messages("declaration.section.6")
       val title = messages("declaration.seal.add.first", containerId)
-      noSealsView.getElementsByClass(Styles.gdsPageLegend).text() must be((sectionHeader + title).text())
+      noSealsView.getElementsByClass(Styles.gdsPageLegend).text() mustBe title
       noSealsView.title() must include(title)
     }
 
