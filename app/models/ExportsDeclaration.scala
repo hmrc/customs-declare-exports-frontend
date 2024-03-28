@@ -107,6 +107,8 @@ case class ExportsDeclaration(
 
   def containerBy(containerId: String): Option[Container] = containers.find(_.id.equalsIgnoreCase(containerId))
 
+  def containerBySeqId(seqId: String): Option[Container] = containers.find(_.sequenceId == seqId.toInt)
+
   def containers: Seq[Container] = transport.containers.getOrElse(Seq.empty)
 
   def seals: Seq[Seal] = containers.flatMap(_.seals)
