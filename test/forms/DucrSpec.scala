@@ -24,7 +24,7 @@ class DucrSpec extends UnitWithMocksSpec {
   "Ducr" should {
 
     "correctly convert DUCR to upper case characters" in {
-      Ducr.form2Data("9gb123456664559-1abc") mustBe Ducr("9GB123456664559-1ABC")
+      Ducr.form.bind(Map("ducr" -> "9gb123456664559-1abc")).get mustBe Ducr("9GB123456664559-1ABC")
     }
   }
 
@@ -42,7 +42,7 @@ class DucrSpec extends UnitWithMocksSpec {
 
     "has no errors for correct Ducr" in {
 
-      val correctDucr = Ducr("9GB123456664559-1H7(1)")
+      val correctDucr = Ducr("9GB123456664559-1H7(1)-/")
       val filledForm = Form(Ducr.mapping).fillAndValidate(correctDucr)
 
       filledForm.errors mustBe empty
