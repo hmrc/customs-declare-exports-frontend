@@ -24,7 +24,7 @@ import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import handlers.ErrorHandler
 import models.DeclarationType.CLEARANCE
-import models.ExportsDeclaration
+import models.{DeclarationMeta, ExportsDeclaration}
 import models.declaration.ExportItem
 import models.declaration.submissions.Submission
 import models.requests.JourneyRequest
@@ -107,8 +107,8 @@ class RemoveItemsSummaryController @Inject() (
     implicit request: JourneyRequest[AnyContent]
   ): Future[Result] =
     findParentDeclaration flatMap {
-      case Some(parentDeclaration) =>
-        customsDeclareExportsConnector.findSubmissionByLatestDecId(parentDeclaration.id) flatMap {
+      case Some(parentDeclaration @ ExportsDeclaration(_, Some(DeclarationMeta(_,_,_,_,_,_,_,_,Some(associatedSubmissionId))), _, _, _, _, _, _, _, _, _, _, _, _, _)) =>
+        customsDeclareExportsConnector.findSubmission(associatedSubmissionId) flatMap {
           case Some(submission) => Future.successful(canItemBeRemoved(item, parentDeclaration, remove, cannotRemove(submission)))
           case _                => errorHandler.internalError(noSubmissionErrorMsg(parentDeclaration.id))
         }
