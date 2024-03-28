@@ -463,6 +463,10 @@ object PointerRecord {
       def fetchRawValue(dec: ExportsDeclaration, args: Int*) = getContainer(dec, args(0)).map(_.id)
       override val pageLink1Param = Some(TransportContainerController.displayContainerSummary)
     },
+    "declaration.containers.container.$.seals.seal.$.id" -> new DefaultPointerRecord() {
+      def fetchRawValue(dec: ExportsDeclaration, args: Int*) = getSeal(dec.containers(args(0)), args(1)).map(_.id)
+      override val pageLink2Param = Some(SealController.displaySealSummary)
+    },
     "declaration.previousDocuments.$.documentCategory" -> new DefaultPointerRecord() {
       def fetchRawValue(dec: ExportsDeclaration, args: Int*) = Option.empty[String]
       override val pageLink1Param = Some(PreviousDocumentsSummaryController.displayPage)
