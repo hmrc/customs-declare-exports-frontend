@@ -24,6 +24,7 @@ import controllers.routes.SavedDeclarationsController
 import forms.{Lrn, LrnValidator}
 import handlers.ErrorHandler
 import mock.ErrorHandlerMocks
+import models.declaration.DeclarationStatus.AMENDMENT_DRAFT
 import org.jsoup.Jsoup
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
@@ -32,6 +33,7 @@ import org.scalatest.OptionValues
 import play.api.data.FormError
 import play.api.test.Helpers._
 import play.twirl.api.{Html, HtmlFormat}
+import services.cache.SubmissionBuilder
 import uk.gov.hmrc.http.HeaderCarrier
 import views.helpers.ActionItemBuilder.lastUrlPlaceholder
 import views.helpers.summary.SummaryHelper.{continuePlaceholder, lrnDuplicateError, noItemsError}
@@ -41,7 +43,8 @@ import views.html.error_template
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class SummaryControllerSpec extends ControllerWithoutFormSpec with AuditedControllerSpec with ErrorHandlerMocks with OptionValues {
+class SummaryControllerSpec
+    extends ControllerWithoutFormSpec with AuditedControllerSpec with ErrorHandlerMocks with OptionValues with SubmissionBuilder {
 
   private val amendmentSummaryPage = mock[amendment_summary]
   private val normalSummaryPage = mock[normal_summary_page]
@@ -81,57 +84,148 @@ class SummaryControllerSpec extends ControllerWithoutFormSpec with AuditedContro
     super.afterEach()
   }
 
-  "SummaryController.displayPage" should {
+  "SummaryController.displayPage" when {
 
-    "return 200 (OK)" when {
+    "declaration is a draft declaration" when {
+      "declaration contains mandatory data" should {
 
-      "declaration contains mandatory data" when {
+        "return 200 (OK)" when {
+          "ready for submission" in {
+            val declaration = aDeclaration(withConsignmentReferences())
+            withNewCaching(declaration.copy(declarationMeta = declaration.declarationMeta.copy(readyForSubmission = Some(true))))
 
-        "ready for submission" in {
-          val declaration = aDeclaration(withConsignmentReferences())
-          withNewCaching(declaration.copy(declarationMeta = declaration.declarationMeta.copy(readyForSubmission = Some(true))))
+            val result = controller.displayPage(getRequest())
+
+            status(result) mustBe OK
+            verify(normalSummaryPage, times(1)).apply(eqTo(normalModeBackLink), any(), any())(any(), any(), any())
+            verify(mockSummaryPageNoData, times(0)).apply()(any(), any())
+          }
+
+          "saved declaration" when {
+
+            "readyForSubmission exists" in {
+              val declaration = aDeclaration(withConsignmentReferences())
+              withNewCaching(declaration.copy(declarationMeta = declaration.declarationMeta.copy(readyForSubmission = Some(false))))
+
+              val result = controller.displayPage(getRequest())
+
+              status(result) mustBe OK
+              verify(normalSummaryPage, times(1)).apply(eqTo(normalModeBackLink), any(), any())(any(), any(), any())
+              verify(mockSummaryPageNoData, times(0)).apply()(any(), any())
+            }
+
+            "readyForSubmission does not exist" in {
+              val declaration = aDeclaration(withConsignmentReferences())
+              withNewCaching(declaration.copy(declarationMeta = declaration.declarationMeta.copy(readyForSubmission = None)))
+
+              val result = controller.displayPage(getRequest())
+
+              status(result) mustBe OK
+              verify(normalSummaryPage, times(1)).apply(eqTo(normalModeBackLink), any(), any())(any(), any(), any())
+              verify(mockSummaryPageNoData, times(0)).apply()(any(), any())
+            }
+          }
+        }
+
+        "declaration doesn't contain mandatory data" in {
+          withNewCaching(aDeclaration())
 
           val result = controller.displayPage(getRequest())
 
           status(result) mustBe OK
-          verify(normalSummaryPage, times(1)).apply(eqTo(normalModeBackLink), any(), any())(any(), any(), any())
-          verify(mockSummaryPageNoData, times(0)).apply()(any(), any())
+          verify(normalSummaryPage, times(0)).apply(any(), any(), any())(any(), any(), any())
+          verify(mockSummaryPageNoData, times(1)).apply()(any(), any())
         }
+      }
+    }
 
-        "saved declaration" when {
+    "declaration is an amendment draft declaration" when {
+      "declaration contains mandatory data" should {
 
-          "readyForSubmission exists" in {
-            val declaration = aDeclaration(withConsignmentReferences())
-            withNewCaching(declaration.copy(declarationMeta = declaration.declarationMeta.copy(readyForSubmission = Some(false))))
+        "return 200 (OK)" when {
+          "ready for submission" in {
+            val declaration = aDeclaration(withConsignmentReferences(), withStatus(AMENDMENT_DRAFT))
+            when(mockCustomsDeclareExportsConnector.findSubmission(any())(any(), any()))
+              .thenReturn(Future.successful(Some(emptySubmission(declaration, "eori"))))
+            withNewCaching(
+              declaration.copy(declarationMeta =
+                declaration.declarationMeta.copy(readyForSubmission = Some(true), associatedSubmissionId = Some(declaration.id))
+              )
+            )
 
             val result = controller.displayPage(getRequest())
 
             status(result) mustBe OK
-            verify(normalSummaryPage, times(1)).apply(eqTo(normalModeBackLink), any(), any())(any(), any(), any())
+            verify(amendmentSummaryPage, times(1)).apply(eqTo(declaration.id))(any(), any(), any())
+            verify(normalSummaryPage, times(0)).apply(any(), any(), any())(any(), any(), any())
             verify(mockSummaryPageNoData, times(0)).apply()(any(), any())
           }
 
-          "readyForSubmission does not exist" in {
-            val declaration = aDeclaration(withConsignmentReferences())
-            withNewCaching(declaration.copy(declarationMeta = declaration.declarationMeta.copy(readyForSubmission = None)))
+          "saved declaration" when {
 
-            val result = controller.displayPage(getRequest())
+            "readyForSubmission exists" in {
+              val declaration = aDeclaration(withConsignmentReferences(), withStatus(AMENDMENT_DRAFT))
+              when(mockCustomsDeclareExportsConnector.findSubmission(any())(any(), any()))
+                .thenReturn(Future.successful(Some(emptySubmission(declaration, "eori"))))
+              withNewCaching(
+                declaration.copy(declarationMeta =
+                  declaration.declarationMeta.copy(readyForSubmission = Some(false), associatedSubmissionId = Some(declaration.id))
+                )
+              )
 
-            status(result) mustBe OK
-            verify(normalSummaryPage, times(1)).apply(eqTo(normalModeBackLink), any(), any())(any(), any(), any())
-            verify(mockSummaryPageNoData, times(0)).apply()(any(), any())
+              val result = controller.displayPage(getRequest())
+
+              status(result) mustBe OK
+              verify(amendmentSummaryPage, times(1)).apply(eqTo(declaration.id))(any(), any(), any())
+              verify(normalSummaryPage, times(0)).apply(any(), any(), any())(any(), any(), any())
+              verify(mockSummaryPageNoData, times(0)).apply()(any(), any())
+            }
+
+            "readyForSubmission does not exist" in {
+              val declaration = aDeclaration(withConsignmentReferences(), withStatus(AMENDMENT_DRAFT))
+              when(mockCustomsDeclareExportsConnector.findSubmission(any())(any(), any()))
+                .thenReturn(Future.successful(Some(emptySubmission(declaration, "eori"))))
+              withNewCaching(
+                declaration
+                  .copy(declarationMeta = declaration.declarationMeta.copy(readyForSubmission = None, associatedSubmissionId = Some(declaration.id)))
+              )
+
+              val result = controller.displayPage(getRequest())
+
+              status(result) mustBe OK
+              verify(amendmentSummaryPage, times(1)).apply(eqTo(declaration.id))(any(), any(), any())
+              verify(normalSummaryPage, times(0)).apply(any(), any(), any())(any(), any(), any())
+              verify(mockSummaryPageNoData, times(0)).apply()(any(), any())
+            }
           }
         }
       }
 
-      "declaration doesn't contain mandatory data" in {
-        withNewCaching(aDeclaration())
+      "return 500 (INTERNAL_SERVER_ERROR)" when {
+        "submissionId session variable is not set" in {
+          val declaration = aDeclaration(withConsignmentReferences(), withStatus(AMENDMENT_DRAFT))
+          withNewCaching(
+            declaration.copy(declarationMeta = declaration.declarationMeta.copy(readyForSubmission = Some(false), associatedSubmissionId = None))
+          )
 
-        val result = controller.displayPage(getRequest())
+          val result = controller.displayPage(getRequest())
 
-        status(result) mustBe OK
-        verify(normalSummaryPage, times(0)).apply(any(), any(), any())(any(), any(), any())
-        verify(mockSummaryPageNoData, times(1)).apply()(any(), any())
+          status(result) mustBe INTERNAL_SERVER_ERROR
+        }
+
+        "submissionId session variable is set but can not be found" in {
+          val declaration = aDeclaration(withConsignmentReferences(), withStatus(AMENDMENT_DRAFT))
+          when(mockCustomsDeclareExportsConnector.findSubmission(any())(any(), any())).thenReturn(Future.successful(None))
+          withNewCaching(
+            declaration.copy(declarationMeta =
+              declaration.declarationMeta.copy(readyForSubmission = Some(false), associatedSubmissionId = Some(declaration.id))
+            )
+          )
+
+          val result = controller.displayPage(getRequest())
+
+          status(result) mustBe INTERNAL_SERVER_ERROR
+        }
       }
     }
 

@@ -31,7 +31,8 @@ case class DeclarationMeta(
   updatedDateTime: Instant,
   summaryWasVisited: Option[Boolean] = None,
   readyForSubmission: Option[Boolean] = None,
-  maxSequenceIds: Map[String, Int] = Map("dummy" -> sequenceIdPlaceholder)
+  maxSequenceIds: Map[String, Int] = Map("dummy" -> sequenceIdPlaceholder),
+  associatedSubmissionId: Option[String] = None
 )
 
 object DeclarationMeta {
