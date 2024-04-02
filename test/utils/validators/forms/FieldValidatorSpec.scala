@@ -1041,7 +1041,7 @@ class FieldValidatorSpec extends UnitSpec {
         isValidDucr("9GB123456789012-1") mustBe true
         isValidDucr("0GB123456664559-1234567890123456789") mustBe true
         isValidDucr("9GB123456789012-AB12/(1)") mustBe true
-        isValidDucr("9gb123456789012-ab12/(1)") mustBe true
+        isValidDucr("8GB123456375879-101SHIP-1") mustBe true
       }
     }
 
@@ -1050,6 +1050,10 @@ class FieldValidatorSpec extends UnitSpec {
       "DUCR is invalid" in {
         withClue("Not starting with single year digit") {
           isValidDucr("GB0123456664559-1234567890123456789") mustBe false
+        }
+
+        withClue("Alphas are not upper case") {
+          isValidDucr("9gb123456789012-ab12/(1)") mustBe false
         }
 
         withClue("Country code not present") {
@@ -1064,7 +1068,6 @@ class FieldValidatorSpec extends UnitSpec {
         }
 
         withClue("Invalid character present in EORI") {
-          isValidDucr("9GB12A456789012-AB12")
           isValidDucr("91B12-456664559-AB12") mustBe false
           isValidDucr("9GB12$456664559-AB12") mustBe false
           isValidDucr("9GB12ö456664559-AB12") mustBe false
@@ -1081,7 +1084,6 @@ class FieldValidatorSpec extends UnitSpec {
 
         withClue("Invalid character present in trader ref") {
           isValidDucr("91B123456664559-AB12$") mustBe false
-          isValidDucr("9GB123456664559-AB12-") mustBe false
           isValidDucr("9GB123456664559-AB12ö") mustBe false
         }
       }

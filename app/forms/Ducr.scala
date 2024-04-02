@@ -31,13 +31,14 @@ object Ducr extends DeclarationPage {
     Forms.mapping(
       "ducr" ->
         text()
+          .transform(_.toUpperCase, identity[String])
           .verifying("declaration.consignmentReferences.ducr.error.empty", nonEmpty)
           .verifying("declaration.consignmentReferences.ducr.error.invalid", isEmpty or isValidDucr)
     )(form2Data)(Ducr.unapply)
 
   val form: Form[Ducr] = Form(mapping)
 
-  def form2Data(ducr: String): Ducr = new Ducr(ducr.toUpperCase)
+  def form2Data(ducr: String): Ducr = new Ducr(ducr)
 
   def model2Form: Ducr => Option[String] =
     model => Some(model.ducr)
