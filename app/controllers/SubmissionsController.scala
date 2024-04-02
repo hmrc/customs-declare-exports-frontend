@@ -76,20 +76,22 @@ class SubmissionsController @Inject() (
   def viewDeclaration(id: String): Action[AnyContent] = authAndEmailActions.async { implicit request =>
     val maybeError = for {
       maybeDeclaration <- customsDeclareExportsConnector.findDeclaration(id)
-      maybeSubmission <- maybeDeclaration.flatMap(_.declarationMeta.associatedSubmissionId)
-        .fold(Future.failed[Option[Submission]](new Exception("Could not find declaration with an associatedSubmissionId!"))) { associatedSubmissionId =>
-          customsDeclareExportsConnector.findSubmission(associatedSubmissionId)
+      maybeSubmission <- maybeDeclaration
+        .flatMap(_.declarationMeta.associatedSubmissionId)
+        .fold(Future.failed[Option[Submission]](new Exception("Could not find declaration with an associatedSubmissionId!"))) {
+          associatedSubmissionId =>
+            customsDeclareExportsConnector.findSubmission(associatedSubmissionId)
         }
-    } yield {
-      (maybeDeclaration, maybeSubmission) match {
-        case (Some(declaration), Some(submission)) =>
-          Ok(submittedDeclarationPage(submission, declaration))
-        case _ =>
-          errorHandler.internalServerError(s"Failed to find submission relating to declaration with Id of $id")
-      }
+    } yield (maybeDeclaration, maybeSubmission) match {
+      case (Some(declaration), Some(submission)) =>
+        Ok(submittedDeclarationPage(submission, declaration))
+      case _ =>
+        errorHandler.internalServerError(s"Failed to find submission relating to declaration with Id of $id")
     }
 
-    maybeError.recover( ex => errorHandler.internalServerError(s"Error finding submission relating to declaration with Id of $id. Error '${ex.getMessage}'"))
+    maybeError.recover(ex =>
+      errorHandler.internalServerError(s"Error finding submission relating to declaration with Id of $id. Error '${ex.getMessage}'")
+    )
   }
 
   private def findOrCreateDraftForAmendment(rejectedParentId: String, redirect: Result)(implicit request: AuthenticatedRequest[_]): Future[Result] =

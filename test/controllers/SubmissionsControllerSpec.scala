@@ -124,7 +124,7 @@ class SubmissionsControllerSpec extends ControllerWithoutFormSpec with MockExpor
         when(mockCustomsDeclareExportsConnector.findSubmission(any())(any(), any()))
           .thenReturn(Future.successful(None))
 
-        val result =controller.viewDeclaration("some-id")(getRequest())
+        val result = controller.viewDeclaration("some-id")(getRequest())
         status(result) mustBe INTERNAL_SERVER_ERROR
         getInternalServerError must startWith("Error finding submission relating to declaration with Id of")
       }
@@ -136,7 +136,7 @@ class SubmissionsControllerSpec extends ControllerWithoutFormSpec with MockExpor
         when(mockCustomsDeclareExportsConnector.findSubmission(any())(any(), any()))
           .thenReturn(Future.successful(None))
 
-        val result =controller.viewDeclaration("some-id")(getRequest())
+        val result = controller.viewDeclaration("some-id")(getRequest())
         status(result) mustBe INTERNAL_SERVER_ERROR
         getInternalServerError must startWith("Error finding submission relating to declaration with Id of")
       }
@@ -148,7 +148,7 @@ class SubmissionsControllerSpec extends ControllerWithoutFormSpec with MockExpor
         when(mockCustomsDeclareExportsConnector.findSubmission(any())(any(), any()))
           .thenReturn(Future.successful(None))
 
-        val result =controller.viewDeclaration("some-id")(getRequest())
+        val result = controller.viewDeclaration("some-id")(getRequest())
         status(result) mustBe INTERNAL_SERVER_ERROR
         getInternalServerError must startWith("Error finding submission relating to declaration with Id of")
       }
@@ -160,7 +160,7 @@ class SubmissionsControllerSpec extends ControllerWithoutFormSpec with MockExpor
         when(mockCustomsDeclareExportsConnector.findSubmission(any())(any(), any()))
           .thenReturn(Future.failed(throwable))
 
-        val result =controller.viewDeclaration("some-id")(getRequest())
+        val result = controller.viewDeclaration("some-id")(getRequest())
         status(result) mustBe INTERNAL_SERVER_ERROR
         getInternalServerError must startWith("Error finding submission relating to declaration with Id of")
       }
@@ -172,7 +172,7 @@ class SubmissionsControllerSpec extends ControllerWithoutFormSpec with MockExpor
         when(mockCustomsDeclareExportsConnector.findSubmission(any())(any(), any()))
           .thenReturn(Future.successful(None))
 
-        val result =controller.viewDeclaration("some-id")(getRequest())
+        val result = controller.viewDeclaration("some-id")(getRequest())
         status(result) mustBe INTERNAL_SERVER_ERROR
         getInternalServerError must startWith("Failed to find submission relating to declaration with Id of")
       }
