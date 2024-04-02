@@ -108,9 +108,9 @@ class RemoveItemsSummaryController @Inject() (
   ): Future[Result] =
     findParentDeclaration flatMap {
       case Some(parentDeclaration) =>
-        customsDeclareExportsConnector.findSubmissionByLatestDecId(parentDeclaration.id) flatMap {
+        customsDeclareExportsConnector.findSubmission(parentDeclaration.declarationMeta.associatedSubmissionId.getOrElse("MISSING")) flatMap {
           case Some(submission) => Future.successful(canItemBeRemoved(item, parentDeclaration, remove, cannotRemove(submission)))
-          case _                => errorHandler.internalError(noSubmissionErrorMsg(parentDeclaration.id))
+          case _                => errorHandler.internalError(noSubmissionErrorMsg(parentDeclaration.declarationMeta.associatedSubmissionId))
         }
       case _ => errorHandler.internalError(noParentDecIdMsg)
     }
@@ -140,8 +140,8 @@ class RemoveItemsSummaryController @Inject() (
     if (declaration.isType(CLEARANCE) || declaration.requiresWarehouseId) declaration
     else declaration.copy(locations = declaration.locations.copy(warehouseIdentification = None))
 
-  private def noSubmissionErrorMsg(parentDeclarationId: String) =
-    s"Could not find submission from latestDecId [${parentDeclarationId}]"
+  private def noSubmissionErrorMsg(maybeAssociatedSubmissionId: Option[String]) =
+    s"Could not find submission for associatedSubmissionId [${maybeAssociatedSubmissionId}]"
 
   private def noParentDecIdMsg(implicit request: JourneyRequest[AnyContent]) =
     s"Could not find parentDecId from declaration [${request.cacheModel.id}]"

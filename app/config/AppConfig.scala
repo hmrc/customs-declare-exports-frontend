@@ -167,11 +167,6 @@ class AppConfig @Inject() (
     throw new IllegalStateException("Missing configuration for CDS Exports single Submission by Action URI")
   )
 
-  lazy val submissionByLatestDecIdPath = servicesConfig.getConfString(
-    "customs-declare-exports.submissionLatestDecId",
-    throw new IllegalStateException("Missing configuration for CDS Exports single Submission.latestDecId URI")
-  )
-
   lazy val actionPath = servicesConfig.getConfString(
     "customs-declare-exports.action",
     throw new IllegalStateException("Missing configuration for CDS Exports single Submission's Action URI")

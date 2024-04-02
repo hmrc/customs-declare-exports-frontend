@@ -98,44 +98,83 @@ class SubmissionsControllerSpec extends ControllerWithoutFormSpec with MockExpor
 
   super.afterEach()
 
+  val throwable: Throwable = new IllegalArgumentException("Whoopse")
+
   "SubmissionsController on viewDeclaration" should {
 
     "return 200 (OK)" when {
-      "there is a Declaration with given ID in the cache" which {
+      "there is a Declaration with given ID in the cache that has an associatedSubmissionId present that exists" in {
+        when(mockCustomsDeclareExportsConnector.findDeclaration(any())(any(), any()))
+          .thenReturn(Future.successful(Some(aDeclaration(withId("some-id"), withAssociatedSubmissionId(Some(submission.uuid))))))
 
-        "has related Notifications" in {
-          when(mockCustomsDeclareExportsConnector.findDeclaration(any())(any(), any()))
-            .thenReturn(Future.successful(Some(aDeclaration(withId("some-id")))))
+        when(mockCustomsDeclareExportsConnector.findSubmission(any())(any(), any()))
+          .thenReturn(Future.successful(Some(submission)))
 
-          when(mockCustomsDeclareExportsConnector.findSubmissionByLatestDecId(any())(any(), any()))
-            .thenReturn(Future.successful(Some(submission)))
+        val result = controller.viewDeclaration("some-id")(getRequest())
 
-          val result = controller.viewDeclaration("some-id")(getRequest())
-
-          status(result) mustBe OK
-        }
-
-        "has NO related Notifications" in {
-          when(mockCustomsDeclareExportsConnector.findDeclaration(any())(any(), any()))
-            .thenReturn(Future.successful(Some(aDeclaration(withId("some-id")))))
-
-          when(mockCustomsDeclareExportsConnector.findSubmissionByLatestDecId(any())(any(), any()))
-            .thenReturn(Future.successful(None))
-
-          val result = controller.viewDeclaration("some-id")(getRequest())
-          status(result) mustBe INTERNAL_SERVER_ERROR
-
-        }
+        status(result) mustBe OK
       }
     }
 
-    "return 303 (SEE_OTHER)" when {
-      "there is no Declaration with given ID in the cache" in {
-        when(mockCustomsDeclareExportsConnector.findDeclaration(any())(any(), any())).thenReturn(Future.successful(None))
-        when(mockCustomsDeclareExportsConnector.findNotifications(any())(any(), any())).thenReturn(Future.successful(Seq.empty))
+    "return 500 (INTERNAL_SERVER_ERROR)" when {
+      "when findDeclaration method returns failed future" in {
+        when(mockCustomsDeclareExportsConnector.findDeclaration(any())(any(), any()))
+          .thenReturn(Future.failed(throwable))
+
+        when(mockCustomsDeclareExportsConnector.findSubmission(any())(any(), any()))
+          .thenReturn(Future.successful(None))
 
         val result = controller.viewDeclaration("some-id")(getRequest())
         status(result) mustBe INTERNAL_SERVER_ERROR
+        getInternalServerError must startWith("Error finding submission relating to declaration with Id of")
+      }
+
+      "when findDeclaration method returns a None" in {
+        when(mockCustomsDeclareExportsConnector.findDeclaration(any())(any(), any()))
+          .thenReturn(Future.successful(None))
+
+        when(mockCustomsDeclareExportsConnector.findSubmission(any())(any(), any()))
+          .thenReturn(Future.successful(None))
+
+        val result = controller.viewDeclaration("some-id")(getRequest())
+        status(result) mustBe INTERNAL_SERVER_ERROR
+        getInternalServerError must startWith("Error finding submission relating to declaration with Id of")
+      }
+
+      "when findDeclaration method returns a declaration with no declarationMeta.associatedSubmissionId defined" in {
+        when(mockCustomsDeclareExportsConnector.findDeclaration(any())(any(), any()))
+          .thenReturn(Future.successful(Some(aDeclaration(withId("some-id"), withAssociatedSubmissionId(None)))))
+
+        when(mockCustomsDeclareExportsConnector.findSubmission(any())(any(), any()))
+          .thenReturn(Future.successful(None))
+
+        val result = controller.viewDeclaration("some-id")(getRequest())
+        status(result) mustBe INTERNAL_SERVER_ERROR
+        getInternalServerError must startWith("Error finding submission relating to declaration with Id of")
+      }
+
+      "when findSubmission method returns a failed future" in {
+        when(mockCustomsDeclareExportsConnector.findDeclaration(any())(any(), any()))
+          .thenReturn(Future.successful(Some(aDeclaration(withId("some-id"), withAssociatedSubmissionId(Some(submission.uuid))))))
+
+        when(mockCustomsDeclareExportsConnector.findSubmission(any())(any(), any()))
+          .thenReturn(Future.failed(throwable))
+
+        val result = controller.viewDeclaration("some-id")(getRequest())
+        status(result) mustBe INTERNAL_SERVER_ERROR
+        getInternalServerError must startWith("Error finding submission relating to declaration with Id of")
+      }
+
+      "when findSubmission method returns a None" in {
+        when(mockCustomsDeclareExportsConnector.findDeclaration(any())(any(), any()))
+          .thenReturn(Future.successful(Some(aDeclaration(withId("some-id"), withAssociatedSubmissionId(Some(submission.uuid))))))
+
+        when(mockCustomsDeclareExportsConnector.findSubmission(any())(any(), any()))
+          .thenReturn(Future.successful(None))
+
+        val result = controller.viewDeclaration("some-id")(getRequest())
+        status(result) mustBe INTERNAL_SERVER_ERROR
+        getInternalServerError must startWith("Failed to find submission relating to declaration with Id of")
       }
     }
   }
@@ -217,5 +256,11 @@ class SubmissionsControllerSpec extends ControllerWithoutFormSpec with MockExpor
     status(result) mustBe SEE_OTHER
     redirectLocation(result).get mustBe expectedRedirect
     session(result).get(declarationUuid) mustBe Some(declarationId)
+  }
+
+  protected def getInternalServerError: String = {
+    val callCaptor: ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
+    verify(mockErrorHandler).internalServerError(callCaptor.capture())(any())
+    callCaptor.getValue
   }
 }
