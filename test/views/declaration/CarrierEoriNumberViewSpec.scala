@@ -17,7 +17,7 @@
 package views.declaration
 
 import base.Injector
-import controllers.declaration.routes.RepresentativeStatusController
+import controllers.declaration.routes
 import forms.common.Eori
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.carrier.CarrierEoriNumber
@@ -53,7 +53,7 @@ class CarrierEoriNumberViewSpec extends UnitViewSpec with CommonMessages with Ex
       "display 'Back' button that links to 'Exporter Details' page" in {
         val backButton = view.getElementById("back-link")
         backButton must containMessage("site.backToPreviousQuestion")
-        backButton.getElementById("back-link") must haveHref(RepresentativeStatusController.displayPage)
+        backButton.getElementById("back-link") must haveHref(routes.ThirdPartyGoodsTransportationController.displayPage)
       }
 
       "display section header" in {

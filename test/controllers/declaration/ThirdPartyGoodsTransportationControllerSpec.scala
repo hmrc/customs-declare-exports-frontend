@@ -18,7 +18,7 @@ package controllers.declaration
 
 import base.{AuditedControllerSpec, ControllerSpec}
 import controllers.declaration.routes._
-import forms.common.YesNoAnswer
+import forms.common.{Eori, YesNoAnswer}
 import forms.common.YesNoAnswer.YesNoAnswers
 import models.DeclarationType.STANDARD
 import org.mockito.{ArgumentCaptor, Mockito}
@@ -100,6 +100,17 @@ class ThirdPartyGoodsTransportationControllerSpec extends ControllerSpec with Au
         thePageNavigatedTo mustBe CarrierEoriNumberController.displayPage
         verifyTheCacheIsUnchanged()
         verifyNoAudit()
+      }
+
+      "redirect when user answers yes having previously answered no" in {
+        withNewCaching(aDeclaration(withCarrierDetails(eori = Some(Eori("12345")))))
+
+        val result = await(controller.submitPage(postRequest(yesAnswer)))
+
+        result mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe CarrierEoriNumberController.displayPage
+        theCacheModelUpdated.parties.carrierDetails mustBe empty
+        verifyAudit()
       }
 
       "update cache and redirect when user answers no" in {

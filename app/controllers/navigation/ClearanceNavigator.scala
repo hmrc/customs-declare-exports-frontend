@@ -48,6 +48,7 @@ trait ClearanceNavigator extends CacheDependentNavigators {
     case ConsignorEoriNumber          => routes.IsExsController.displayPage
     case ConsignorDetails             => routes.ConsignorEoriNumberController.displayPage
     case DocumentSummary              => routes.SectionSummaryController.displayPage(3)
+    case CarrierEoriNumber            => routes.ThirdPartyGoodsTransportationController.displayPage
     case page                         => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on clearance")
   }
 
@@ -59,7 +60,6 @@ trait ClearanceNavigator extends CacheDependentNavigators {
 
   def clearanceCacheDependent(implicit request: JourneyRequest[_]): PartialFunction[DeclarationPage, ExportsDeclaration => Call] = {
     case DeclarantIsExporter               => declarantIsExporterPreviousPage
-    case CarrierEoriNumber                 => carrierEoriNumberClearancePreviousPage
     case ExporterEoriNumber                => exporterEoriNumberClearancePreviousPage
     case ConsigneeDetails                  => consigneeDetailsClearancePreviousPage
     case RepresentativeAgent               => representativeAgentClearancePreviousPage

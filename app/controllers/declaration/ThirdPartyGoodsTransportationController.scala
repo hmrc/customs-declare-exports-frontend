@@ -21,7 +21,6 @@ import controllers.declaration.routes._
 import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
 import forms.declaration.carrier.CarrierDetails
-import models.DeclarationType
 import models.DeclarationType._
 import models.requests.JourneyRequest
 import play.api.data.Form
@@ -68,12 +67,12 @@ class ThirdPartyGoodsTransportationController @Inject() (
     }
 
   private def saveAndRedirect(answer: YesNoAnswer)(implicit request: JourneyRequest[_]): Call = Some(answer) match {
-    case YesNoAnswer.Yes => CarrierEoriNumberController.displayPage
+    case YesNoAnswer.Yes =>
+      if (request.cacheModel.parties.carrierDetails.flatMap(_.details.eori).exists(_.value == request.eori))
+        updateDeclarationFromRequest(model => model.copy(parties = model.parties.copy(carrierDetails = None)))
+      CarrierEoriNumberController.displayPage
     case _ =>
       updateDeclarationFromRequest(model => model.copy(parties = model.parties.copy(carrierDetails = Some(CarrierDetails.from(request.eori)))))
-      request.declarationType match {
-        case DeclarationType.CLEARANCE => IsExsController.displayPage
-        case _                         => ConsigneeDetailsController.displayPage
-      }
+      ConsigneeDetailsController.displayPage
   }
 }

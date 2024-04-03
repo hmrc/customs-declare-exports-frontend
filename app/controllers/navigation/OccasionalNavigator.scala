@@ -46,6 +46,7 @@ trait OccasionalNavigator extends CacheDependentNavigators {
     case AdditionalActorsSummary    => routes.ConsigneeDetailsController.displayPage
     case DocumentSummary            => routes.SectionSummaryController.displayPage(3)
     case ContainerAdd               => routes.TransportContainerController.displayContainerSummary
+    case CarrierEoriNumber          => routes.ThirdPartyGoodsTransportationController.displayPage
     case page                       => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on occasional")
   }
 
@@ -61,7 +62,6 @@ trait OccasionalNavigator extends CacheDependentNavigators {
   }
 
   def occasionalCacheDependent(implicit request: JourneyRequest[_]): PartialFunction[DeclarationPage, ExportsDeclaration => Call] = {
-    case CarrierEoriNumber                 => carrierEoriNumberPreviousPage
     case ConsigneeDetails                  => consigneeDetailsPreviousPage
     case DeclarantIsExporter               => declarantIsExporterPreviousPage
     case RepresentativeAgent               => representativeAgentPreviousPage

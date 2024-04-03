@@ -46,6 +46,7 @@ trait SimplifiedNavigator extends CacheDependentNavigators {
     case LocationOfGoods            => routes.RoutingCountriesController.displayRoutingCountry
     case AdditionalActorsSummary    => routes.ConsigneeDetailsController.displayPage
     case DocumentSummary            => routes.SectionSummaryController.displayPage(3)
+    case CarrierEoriNumber          => routes.ThirdPartyGoodsTransportationController.displayPage
     case page                       => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on simplified")
   }
 
@@ -62,7 +63,6 @@ trait SimplifiedNavigator extends CacheDependentNavigators {
 
   def simplifiedCacheDependent(implicit request: JourneyRequest[_]): PartialFunction[DeclarationPage, ExportsDeclaration => Call] = {
     case DeclarantIsExporter               => declarantIsExporterPreviousPage
-    case CarrierEoriNumber                 => carrierEoriNumberPreviousPage
     case Document                          => previousDocumentsPreviousPage
     case ConsigneeDetails                  => consigneeDetailsPreviousPage
     case RepresentativeAgent               => representativeAgentPreviousPage

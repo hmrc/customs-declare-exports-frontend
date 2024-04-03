@@ -46,6 +46,7 @@ trait StandardNavigator extends CacheDependentNavigators {
     case AdditionalActorsSummary    => routes.ConsigneeDetailsController.displayPage
     case DocumentSummary            => routes.NatureOfTransactionController.displayPage
     case ContainerAdd               => routes.TransportContainerController.displayContainerSummary
+    case CarrierEoriNumber          => routes.ThirdPartyGoodsTransportationController.displayPage
     case page                       => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on standard")
   }
 
@@ -60,7 +61,6 @@ trait StandardNavigator extends CacheDependentNavigators {
   }
 
   def standardCacheDependent(implicit request: JourneyRequest[_]): PartialFunction[DeclarationPage, ExportsDeclaration => Call] = {
-    case CarrierEoriNumber                 => carrierEoriNumberPreviousPage
     case ConsigneeDetails                  => consigneeDetailsPreviousPage
     case DeclarantIsExporter               => declarantIsExporterPreviousPage
     case RepresentativeAgent               => representativeAgentPreviousPage
