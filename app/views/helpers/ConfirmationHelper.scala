@@ -213,8 +213,8 @@ class ConfirmationHelper @Inject() (
             externalLink(messages("declaration.confirmation.whatYouCanDoNow.paragraph.2.link"), FileUploadController.startFileUpload(mrn).url)
           )
         )
-
         List(Some(title), nonGvmsParagraph, Some(paragraph1), Some(paragraph2)).flatten
+
       case Some(GOODS_ARRIVED) | Some(GOODS_ARRIVED_MESSAGE) if nonGvmsParagraph.isDefined => List(Some(title), nonGvmsParagraph).flatten
       case Some(GOODS_ARRIVED) | Some(GOODS_ARRIVED_MESSAGE)                               => List.empty
       case Some(CLEARED) if isArrived(confirmation) =>

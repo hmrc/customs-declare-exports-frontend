@@ -34,7 +34,7 @@
     govukSummaryList: GovukSummaryList,
     errorSummary: errorSummary,
     saveButtons: saveButtons,
-    yesNoRadios: yesNoRadios,
+    addAnotherQuestion: addAnotherQuestion,
     formHelper: FormWithCSRF
 )(implicit codeListConnector: CodeListConnector)
 
@@ -44,6 +44,7 @@
 
 @informationTable = {
     @govukSummaryList(SummaryList(
+        classes = "govuk-!-margin-bottom-6",
         rows = Seq(
             SummaryListRow(
                 Key(Text(messages("declaration.additionalFiscalReferences.country.header"))),
@@ -74,7 +75,7 @@
             )),
             html = HtmlFormat.fill(List(
                 informationTable,
-                yesNoRadios(form),
+                addAnotherQuestion("", form),
                 saveButtons()
             ))
         ))
