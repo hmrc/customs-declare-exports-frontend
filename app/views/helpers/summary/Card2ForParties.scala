@@ -153,26 +153,22 @@ class Card2ForParties @Inject() (
 
   private def carrierDetails(parties: Parties, actionsEnabled: Boolean)(implicit messages: Messages): Seq[Option[SummaryListRow]] =
     parties.carrierDetails.map { carrierDetails =>
-      eoriAndOrAddress(carrierDetails.details, "carrier", CarrierEoriNumberController.displayPage, actionsEnabled, "address")
+      eoriAndOrAddress(carrierDetails.details, "carrier", CarrierEoriNumberController.displayPage, actionsEnabled)
     }.getOrElse(Seq.empty)
 
   private def consigneeDetails(parties: Parties, actionsEnabled: Boolean)(implicit messages: Messages): Seq[Option[SummaryListRow]] =
     parties.consigneeDetails.map { consigneeDetails =>
-      eoriAndOrAddress(consigneeDetails.details, "consignee", ConsigneeDetailsController.displayPage, actionsEnabled, "address")
+      eoriAndOrAddress(consigneeDetails.details, "consignee", ConsigneeDetailsController.displayPage, actionsEnabled)
     }.getOrElse(Seq.empty)
 
   private def consignorDetails(parties: Parties, actionsEnabled: Boolean)(implicit messages: Messages): Seq[Option[SummaryListRow]] =
     parties.consignorDetails.map { consignorDetails =>
-      eoriAndOrAddress(consignorDetails.details, "consignor", ConsignorEoriNumberController.displayPage, actionsEnabled, "address")
+      eoriAndOrAddress(consignorDetails.details, "consignor", ConsignorEoriNumberController.displayPage, actionsEnabled)
     }.getOrElse(Seq.empty)
 
-  private def eoriAndOrAddress(
-    details: EntityDetails,
-    fieldId: String,
-    call: Call,
-    actionsEnabled: Boolean,
-    defaultOnMissingDetails: String = "eori"
-  )(implicit messages: Messages): Seq[Option[SummaryListRow]] = {
+  private def eoriAndOrAddress(details: EntityDetails, fieldId: String, call: Call, actionsEnabled: Boolean)(
+    implicit messages: Messages
+  ): Seq[Option[SummaryListRow]] = {
 
     def row(fieldValue: String, eoriOrAddress: String): SummaryListRow =
       SummaryListRow(
@@ -185,9 +181,8 @@ class Card2ForParties @Inject() (
     def addressValue(address: Address): String =
       List(address.fullName, address.addressLine, address.townOrCity, address.postCode, address.country).mkString("<br>")
 
-    if (details.eori.isDefined || details.address.isDefined)
-      List(details.eori.map(eori => row(eori.value, "eori")), details.address.map(address => row(addressValue(address), "address")))
-    else List(Some(row("", defaultOnMissingDetails)))
+    if (details.eori.isEmpty && details.address.isEmpty) List(None)
+    else List(details.eori.map(eori => row(eori.value, "eori")), details.address.map(address => row(addressValue(address), "address")))
   }
 }
 
