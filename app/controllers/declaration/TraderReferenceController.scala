@@ -20,6 +20,7 @@ import controllers.actions.{AmendmentDraftFilter, AuthAction, JourneyAction}
 import controllers.declaration.routes.ConfirmDucrController
 import controllers.navigation.Navigator
 import forms.Ducr
+import forms.Ducr.generateDucrPrefix
 import forms.declaration.{ConsignmentReferences, TraderReference}
 import models.DeclarationType.{allDeclarationTypesExcluding, SUPPLEMENTARY}
 import models.ExportsDeclaration
@@ -32,7 +33,6 @@ import uk.gov.hmrc.play.bootstrap.controller.WithUnsafeDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.trader_reference
 
-import java.time.ZoneId
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -70,12 +70,8 @@ class TraderReferenceController @Inject() (
       )
   }
 
-  private def generateDucr(traderReference: TraderReference)(implicit request: JourneyRequest[_]): Ducr = {
-    val lastDigitOfYear = request.cacheModel.declarationMeta.createdDateTime.atZone(ZoneId.of("Europe/London")).getYear.toString.last
-    val eori = request.eori.toUpperCase
-
-    Ducr(s"${lastDigitOfYear}GB${eori.dropWhile(_.isLetter)}-${traderReference.value}")
-  }
+  private def generateDucr(traderReference: TraderReference)(implicit request: JourneyRequest[_]): Ducr =
+    Ducr(s"$generateDucrPrefix${traderReference.value}")
 
   private def updateCache(generatedDucr: Ducr)(implicit request: JourneyRequest[_]): Future[ExportsDeclaration] = {
     val existingConsignmentRefs = request.cacheModel.consignmentReferences

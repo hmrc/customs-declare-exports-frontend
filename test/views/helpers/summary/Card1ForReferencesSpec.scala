@@ -134,7 +134,7 @@ class Card1ForReferencesSpec extends UnitViewSpec with ExportsTestHelper with In
 
         val call = Some(ConsignmentReferencesController.displayPage)
         checkSummaryRow(view.getElementsByClass("ducr"), "references.ducr", ducr, call, "references.ducr")
-        checkSummaryRow(view.getElementsByClass("lrn"), "references.supplementary.lrn", lrn, call, "references.lrn")
+        checkSummaryRow(view.getElementsByClass("lrn"), "references.lrn", lrn, call, "references.lrn")
       }
     }
 

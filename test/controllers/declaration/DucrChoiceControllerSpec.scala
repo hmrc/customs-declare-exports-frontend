@@ -142,7 +142,7 @@ class DucrChoiceControllerSpec extends ControllerSpec with AuditedControllerSpec
 
             status(result) mustBe SEE_OTHER
             thePageNavigatedTo mustBe TraderReferenceController.displayPage
-            verifyNoAudit()
+            verifyAudit()
           }
         }
       }

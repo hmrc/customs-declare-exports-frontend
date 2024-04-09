@@ -64,8 +64,9 @@ class DucrChoiceController @Inject() (
       .fold(
         formWithErrors => Future.successful(BadRequest(ducrChoicePage(formWithErrors))),
         yesNoAnswer =>
-          if (yesNoAnswer.answer == no) Future.successful(navigator.continueTo(TraderReferenceController.displayPage))
-          else updateCache.map(_ => navigator.continueTo(nextPage(request)))
+          updateCache.map { _ =>
+            navigator.continueTo(if (yesNoAnswer.answer == no) TraderReferenceController.displayPage else nextPage(request))
+          }
       )
   }
 

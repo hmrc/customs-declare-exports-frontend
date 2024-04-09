@@ -17,7 +17,7 @@
 package controllers.actions
 
 import base.ControllerWithoutFormSpec
-import base.ExportsTestData.newUser
+import base.ExportsTestData.{eori, newUser}
 import config.{AppConfig, ExternalServicesConfig}
 import controllers.{routes, ChoiceController}
 import models.UnauthorisedReason.{UrlDirect, UserEoriNotAllowed, UserIsAgent, UserIsNotEnrolled}
@@ -40,7 +40,7 @@ class AuthActionSpec extends ControllerWithoutFormSpec {
   override val appConfig = mock[AppConfig]
   val externalServicesConfig = mock[ExternalServicesConfig]
 
-  override val mockAuthAction = new AuthActionImpl(mockAuthConnector, new EoriAllowList(Seq(authEori)), mcc, metricsMock, appConfig)
+  override val mockAuthAction = new AuthActionImpl(mockAuthConnector, new EoriAllowList(Seq(eori)), mcc, metricsMock, appConfig)
 
   val controller = new ChoiceController(mockAuthAction, mockVerifiedEmailAction, mcc, choicePage)
 
@@ -76,7 +76,7 @@ class AuthActionSpec extends ControllerWithoutFormSpec {
 
     "redirect to login page when a NoActiveSession type exception is thrown" in {
       val loginPageUrl = Some(s"${appConfig.loginUrl}?continue=${URLEncoder.encode(appConfig.loginContinueUrl, "UTF-8")}")
-      unauthorizedUser(new BearerTokenExpired())
+      unauthorizedUser(BearerTokenExpired())
 
       val result = controller.displayPage(getRequest())
 
@@ -95,7 +95,7 @@ class AuthActionSpec extends ControllerWithoutFormSpec {
       }
 
       "EORI is not on allow list" in {
-        authorizedUser(newUser("11111", "external1"))
+        authorizedUser(newUser("GB1234567890", "external1"))
 
         val result = controller.displayPage(getRequest())
 
@@ -107,7 +107,7 @@ class AuthActionSpec extends ControllerWithoutFormSpec {
 
         "user does not enter a TDRSecret value" in {
           when(appConfig.maybeTdrHashSalt).thenReturn(tdrHashSalt)
-          authorizedUser(newUser(authEori, "external1", None))
+          authorizedUser(newUser(eori, "external1", None))
 
           val result = controller.displayPage(getRequest())
 
@@ -117,7 +117,7 @@ class AuthActionSpec extends ControllerWithoutFormSpec {
 
         "user enters a non-matching TDRSecret value" in {
           when(appConfig.maybeTdrHashSalt).thenReturn(tdrHashSalt)
-          authorizedUser(newUser(authEori, "external1", Some("IncorrectValue")))
+          authorizedUser(newUser(eori, "external1", Some("IncorrectValue")))
 
           val result = controller.displayPage(getRequest())
 

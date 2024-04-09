@@ -16,7 +16,7 @@
 
 package services.cache
 
-import base.ExportsTestData.newUser
+import base.ExportsTestData.{eori, newUser}
 import base.RequestBuilder
 import forms.declaration._
 import models.DeclarationType.{DeclarationType, STANDARD}
@@ -45,13 +45,13 @@ trait ExportsTestHelper extends ExportsDeclarationBuilder with ExportsItemBuilde
   )
 
   protected def journeyRequest(`type`: DeclarationType = STANDARD): JourneyRequest[AnyContent] =
-    new JourneyRequest(buildVerifiedEmailRequest(FakeRequest("", "").withCSRFToken, newUser("12345", "12345")), declaration(`type`))
+    new JourneyRequest(buildVerifiedEmailRequest(FakeRequest("", "").withCSRFToken, newUser(eori, "12345")), declaration(`type`))
 
   protected def journeyRequest(declaration: ExportsDeclaration): JourneyRequest[AnyContent] =
-    new JourneyRequest(buildVerifiedEmailRequest(FakeRequest("", "").withCSRFToken, newUser("12345", "12345")), declaration)
+    new JourneyRequest(buildVerifiedEmailRequest(FakeRequest("", "").withCSRFToken, newUser(eori, "12345")), declaration)
 
   protected def journeyRequest(declaration: ExportsDeclaration, session: (String, String)*): JourneyRequest[AnyContent] = {
     val request = FakeRequest("", "").withSession(session: _*).withCSRFToken
-    new JourneyRequest(buildVerifiedEmailRequest(request, newUser("12345", "12345")), declaration)
+    new JourneyRequest(buildVerifiedEmailRequest(request, newUser(eori, "12345")), declaration)
   }
 }

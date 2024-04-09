@@ -1797,7 +1797,6 @@ declaration.summary.references.mrn = MRN of simplified declaration
 declaration.summary.references.mrn.change = Change MRN
 declaration.summary.references.eidr = Date of EIDR
 declaration.summary.references.eidr.change = Change Date of EIDR
-declaration.summary.references.supplementary.lrn = LRN
 declaration.summary.references.lrn = Your reference (LRN)
 declaration.summary.references.lrn.change = Change LRN
 declaration.summary.references.linkDucrToMucr = Link to a MUCR

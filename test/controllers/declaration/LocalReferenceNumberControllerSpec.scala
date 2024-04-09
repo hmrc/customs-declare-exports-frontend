@@ -62,7 +62,8 @@ class LocalReferenceNumberControllerSpec extends ControllerSpec with AuditedCont
     reset(lrnValidator, lrnPage)
   }
 
-  def nextPageOnTypes: Seq[NextPageOnType] = allDeclarationTypes.map(NextPageOnType(_, LinkDucrToMucrController.displayPage))
+  def nextPageOnTypes: Seq[NextPageOnType] =
+    allDeclarationTypesExcluding(SUPPLEMENTARY).map(NextPageOnType(_, LinkDucrToMucrController.displayPage))
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     withNewCaching(aDeclaration(withType(STANDARD)))

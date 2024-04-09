@@ -16,10 +16,11 @@
 
 package views.declaration
 
+import base.ExportsTestData.lrn
 import base.{ExportsTestData, Injector}
-import controllers.declaration.routes.DucrChoiceController
+import controllers.declaration.routes.{ConfirmDucrController, DucrChoiceController}
 import forms.Ducr
-import forms.Ducr.form
+import forms.Ducr.{form, generateDucrPrefix}
 import models.DeclarationType._
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
@@ -57,6 +58,22 @@ class DucrEntryViewSpec extends PageWithButtonsSpec with Injector {
     }
 
     val view = createView()
+
+    "display 'Back' button that links to 'Ducr-Choice' page" in {
+      val backButton = view.getElementById("back-link")
+      backButton must containMessage(backToPreviousQuestionCaption)
+      backButton must haveHref(DucrChoiceController.displayPage.url)
+    }
+
+    "display 'Back' button that links to 'Confirm-Ducr' page" when {
+      "the Ducr's prefix is auto-generated" in {
+        val ducr = s"${generateDucrPrefix(withRequestOfType(STANDARD))}reference"
+        val view = createView()(withRequestOfType(STANDARD, withConsignmentReferences(ducr, lrn)))
+        val backButton = view.getElementById("back-link")
+        backButton must containMessage(backToPreviousQuestionCaption)
+        backButton must haveHref(ConfirmDucrController.displayPage.url)
+      }
+    }
 
     "display page title" in {
       val h1 = view.getElementById("title")
@@ -120,15 +137,6 @@ class DucrEntryViewSpec extends PageWithButtonsSpec with Injector {
   }
 
   "Ducr Entry View" should {
-
-    onJourney(STANDARD, CLEARANCE, OCCASIONAL, SIMPLIFIED) { implicit request =>
-      "display 'Back' button that links to 'Ducr Choice' page" in {
-        val backButton = createView().getElementById("back-link")
-        backButton must containMessage(backToPreviousQuestionCaption)
-        backButton must haveHref(DucrChoiceController.displayPage.url)
-      }
-    }
-
     onJourney(STANDARD, CLEARANCE, OCCASIONAL, SIMPLIFIED) { implicit request =>
       "display the expected tariff details" in {
         val key = "common"
