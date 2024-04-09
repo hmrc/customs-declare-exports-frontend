@@ -18,12 +18,7 @@ package views.declaration
 
 import base.Injector
 import connectors.CodeListConnector
-import controllers.declaration.routes.{
-  CarrierDetailsController,
-  DeclarantExporterController,
-  RepresentativeStatusController,
-  ThirdPartyGoodsTransportationController
-}
+import controllers.declaration.routes.{CarrierDetailsController, DeclarantExporterController, IsExsController, RepresentativeStatusController, ThirdPartyGoodsTransportationController}
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.common.{Address, AddressSpec, Eori}
 import forms.declaration.ConsigneeDetails.form
@@ -260,6 +255,16 @@ class ConsigneeDetailsViewSpec extends AddressViewSpec with PageWithButtonsSpec 
 
         backButton.text() mustBe messages(backToPreviousQuestionCaption)
         backButton.attr("href") mustBe RepresentativeStatusController.displayPage.url
+      }
+
+      "display 'Back' button that links to /is-this-exs page" in {
+        val cachedParties = Parties(isExs = Some(IsExs(YesNoAnswers.no)), declarantIsExporter = Some(DeclarantIsExporter(YesNoAnswers.yes)))
+        val requestWithCachedParties = journeyRequest(request.cacheModel.copy(parties = cachedParties))
+
+        val backButton = createView()(requestWithCachedParties).getElementById("back-link")
+
+        backButton.text() mustBe messages(backToPreviousQuestionCaption)
+        backButton.attr("href") mustBe IsExsController.displayPage.url
       }
     }
 

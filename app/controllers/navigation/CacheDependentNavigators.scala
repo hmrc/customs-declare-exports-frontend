@@ -176,6 +176,7 @@ trait CacheDependentNavigators {
   protected def consigneeDetailsClearancePreviousPage(cacheModel: ExportsDeclaration)(implicit request: JourneyRequest[_]): Call =
     cacheModel.isUsingOwnTransport match {
       case Some(true)                                                             => routes.ThirdPartyGoodsTransportationController.displayPage
+      case _ if !cacheModel.isExs && cacheModel.isDeclarantExporter               => routes.IsExsController.displayPage
       case _ if !cacheModel.isExs                                                 => routes.RepresentativeStatusController.displayPage
       case _ if cacheModel.parties.carrierDetails.flatMap(_.details.eori).isEmpty => routes.CarrierDetailsController.displayPage
       case _                                                                      => routes.CarrierEoriNumberController.displayPage
