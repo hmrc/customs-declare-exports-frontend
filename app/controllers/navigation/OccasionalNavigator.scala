@@ -18,7 +18,7 @@ package controllers.navigation
 
 import controllers.declaration.routes
 import forms.declaration.RoutingCountryQuestionYesNo.{ChangeCountryPage, RemoveCountryPage, RoutingCountryQuestionPage}
-import forms.{DeclarationPage, Ducr}
+import forms.DeclarationPage
 import forms.declaration._
 import forms.declaration.additionaldocuments._
 import forms.declaration.carrier.CarrierEoriNumber
@@ -33,7 +33,6 @@ trait OccasionalNavigator extends CacheDependentNavigators {
     case DeclarantDetails           => routes.AdditionalDeclarationTypeController.displayPage
     case LinkDucrToMucr             => routes.LocalReferenceNumberController.displayPage
     case DucrChoice                 => routes.DeclarantDetailsController.displayPage
-    case Ducr                       => routes.DucrChoiceController.displayPage
     case ConsignmentReferences      => routes.DeclarantDetailsController.displayPage
     case ExporterEoriNumber         => routes.DeclarantExporterController.displayPage
     case ExporterDetails            => routes.ExporterEoriNumberController.displayPage

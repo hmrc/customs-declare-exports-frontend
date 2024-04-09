@@ -55,7 +55,8 @@ class DucrEntryControllerSpec extends ControllerSpec with AuditedControllerSpec 
     reset(ducrEntryPage)
   }
 
-  def nextPageOnTypes: Seq[NextPageOnType] = allDeclarationTypes.map(NextPageOnType(_, LocalReferenceNumberController.displayPage))
+  def nextPageOnTypes: Seq[NextPageOnType] =
+    allDeclarationTypesExcluding(SUPPLEMENTARY).map(NextPageOnType(_, LocalReferenceNumberController.displayPage))
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     withNewCaching(aDeclaration())

@@ -20,11 +20,13 @@ import controllers.declaration.routes
 import controllers.helpers.AuthorisationHolderHelper.userCanLandOnIsAuthRequiredPage
 import controllers.helpers.TransportSectionHelper._
 import controllers.helpers.{InlandOrBorderHelper, SupervisingCustomsOfficeHelper, TransportSectionHelper}
+import forms.Ducr.generateDucrPrefix
 import forms.declaration.InlandOrBorder.Border
 import forms.declaration.NatureOfTransaction.{BusinessPurchase, Sale}
 import forms.declaration._
 import models.DeclarationType._
 import models.ExportsDeclaration
+import models.requests.JourneyRequest
 import play.api.mvc.Call
 import services.TaggedAuthCodes
 
@@ -34,6 +36,18 @@ trait CacheDependentNavigators {
   val taggedAuthCodes: TaggedAuthCodes
   val inlandOrBorderHelper: InlandOrBorderHelper
   val supervisingCustomsOfficeHelper: SupervisingCustomsOfficeHelper
+
+  protected def ducrEntryPreviousPage(cacheModel: ExportsDeclaration)(implicit request: JourneyRequest[_]): Call =
+    cacheModel.ducr.fold(routes.DucrChoiceController.displayPage) { ducr =>
+      if (ducr.ducr.startsWith(generateDucrPrefix)) routes.ConfirmDucrController.displayPage
+      else routes.DucrChoiceController.displayPage
+    }
+
+  protected def lrnPreviousPage(cacheModel: ExportsDeclaration)(implicit request: JourneyRequest[_]): Call =
+    cacheModel.ducr.fold(routes.DucrChoiceController.displayPage) { ducr =>
+      if (ducr.ducr.startsWith(generateDucrPrefix)) routes.ConfirmDucrController.displayPage
+      else routes.DucrEntryController.displayPage
+    }
 
   protected def nactCodeFirstPreviousPage(cacheModel: ExportsDeclaration, itemId: String): Call =
     cacheModel.natureOfTransaction match {

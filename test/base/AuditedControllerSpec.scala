@@ -36,12 +36,12 @@ trait AuditedControllerSpec extends MockitoSugar with BeforeAndAfterEach {
     when(auditService.auditAllPagesUserInput(any(), any())(any())).thenReturn(Future.successful(Success))
   }
 
-  def verifyAudit() = {
+  def verifyAudit(): Unit = {
     verify(auditService, times(1)).auditAllPagesUserInput(any(), any())(any())
     reset(auditService)
   }
 
-  def verifyNoAudit() = {
+  def verifyNoAudit(): Unit = {
     verifyNoInteractions(auditService)
     reset(auditService)
   }

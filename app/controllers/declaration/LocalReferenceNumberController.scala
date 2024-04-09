@@ -22,6 +22,7 @@ import controllers.navigation.Navigator
 import forms.Lrn.form
 import forms.declaration.ConsignmentReferences
 import forms.{Lrn, LrnValidator}
+import models.DeclarationType.{allDeclarationTypesExcluding, SUPPLEMENTARY}
 import models.requests.JourneyRequest
 import play.api.i18n.I18nSupport
 import play.api.mvc._
@@ -48,7 +49,9 @@ class LocalReferenceNumberController @Inject() (
 
   val nextPage: JourneyRequest[_] => Call = _ => LinkDucrToMucrController.displayPage
 
-  private val actionFilters = authenticate andThen journeyAction andThen nextPageIfAmendmentDraft
+  private val validTypes = allDeclarationTypesExcluding(SUPPLEMENTARY)
+
+  private val actionFilters = authenticate andThen journeyAction(validTypes) andThen nextPageIfAmendmentDraft
 
   val displayPage: Action[AnyContent] = actionFilters { implicit request =>
     val frm = form.withSubmissionErrors

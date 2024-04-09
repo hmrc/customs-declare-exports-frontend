@@ -1798,7 +1798,6 @@ declaration.summary.references.mrn = MRN y datganiad sydd wedi’i symleiddio
 declaration.summary.references.mrn.change = Newidiwch yr MRN
 declaration.summary.references.eidr = Dyddiad yr EIDR
 declaration.summary.references.eidr.change = Newidiwch Ddyddiad yr EIDR
-declaration.summary.references.supplementary.lrn = Cyfeirnod Lleol (LRN)
 declaration.summary.references.lrn = Eich cyfeirnod (LRN)
 declaration.summary.references.lrn.change = Newidiwch yr LRN
 declaration.summary.references.linkDucrToMucr = Cysylltiad i MUCR

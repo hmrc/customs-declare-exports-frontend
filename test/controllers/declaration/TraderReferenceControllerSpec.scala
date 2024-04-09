@@ -16,6 +16,7 @@
 
 package controllers.declaration
 
+import base.ExportsTestData.eori
 import base.{AuditedControllerSpec, ControllerSpec}
 import controllers.actions.AmendmentDraftFilterSpec
 import controllers.declaration.routes.ConfirmDucrController
@@ -76,7 +77,7 @@ class TraderReferenceControllerSpec extends ControllerSpec with AuditedControlle
 
   private val dummyTraderRef = TraderReference("INVOICE123/4")
   private val lastDigitOfYear = ZonedDateTime.now().getYear.toString.last
-  private val dummyDucr = Ducr(s"${lastDigitOfYear}GB${authEori.dropWhile(_.isLetter)}-${dummyTraderRef.value}")
+  private val dummyDucr = Ducr(s"${lastDigitOfYear}GB${eori.dropWhile(_.isLetter)}-${dummyTraderRef.value}")
   private val dummyConRefs = ConsignmentReferences(Some(dummyDucr))
 
   "TraderReferenceController" should {

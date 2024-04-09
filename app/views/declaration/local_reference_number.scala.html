@@ -14,17 +14,17 @@
  * limitations under the License.
  *@
 
+@import config.AppConfig
 @import controllers.declaration.routes.LocalReferenceNumberController
 @import controllers.navigation.Navigator
 @import forms.Lrn
 @import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
 @import models.requests.JourneyRequest
+@import play.twirl.api.HtmlFormat
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.helpers.{BackButton, Title}
 @import views.html.components.gds._
 @import views.html.components.inputs.inputWithTitleAsLabel
-@import play.twirl.api.HtmlFormat
-@import config.AppConfig
 
 @this(
     govukLayout: gdsMainTemplate,

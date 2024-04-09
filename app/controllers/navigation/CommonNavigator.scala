@@ -25,9 +25,10 @@ import forms.declaration.commodityMeasure.SupplementaryUnits
 import forms.declaration.countries.Countries.{DestinationCountryPage, RoutingCountryPage}
 import forms.declaration.officeOfExit.OfficeOfExit
 import forms.declaration.procedurecodes.{AdditionalProcedureCode, ProcedureCode}
-import forms.{DeclarationPage, Lrn}
+import forms.{DeclarationPage, Ducr, Lrn}
 import models.ExportsDeclaration
 import models.declaration.ExportItem
+import models.requests.JourneyRequest
 import play.api.mvc.Call
 import views.helpers.summary.Card2ForParties
 
@@ -35,7 +36,6 @@ trait CommonNavigator extends CacheDependentNavigators {
 
   val common: PartialFunction[DeclarationPage, Call] = {
     case DeclarationChoice            => ChoiceController.displayPage
-    case Lrn                          => routes.DucrEntryController.displayPage
     case Mucr                         => routes.LinkDucrToMucrController.displayPage
     case RepresentativeEntity         => routes.RepresentativeAgentController.displayPage
     case RepresentativeStatus         => routes.RepresentativeEntityController.displayPage
@@ -64,7 +64,9 @@ trait CommonNavigator extends CacheDependentNavigators {
     case SupplementaryUnits                => routes.CommodityMeasureController.displayPage
   }
 
-  val commonCacheDependent: PartialFunction[DeclarationPage, ExportsDeclaration => Call] = {
+  def commonCacheDependent(implicit request: JourneyRequest[_]): PartialFunction[DeclarationPage, ExportsDeclaration => Call] = {
+    case Ducr                             => ducrEntryPreviousPage
+    case Lrn                              => lrnPreviousPage
     case AuthorisationHolderRequired      => authorisationHolderRequiredPreviousPage
     case AuthorisationHolder              => authorisationHolderAddPreviousPage
     case AuthorisationHolderSummary       => authorisationHolderRequiredPreviousPage

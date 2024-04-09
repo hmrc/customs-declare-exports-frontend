@@ -197,8 +197,6 @@ class Card1ForReferences @Inject() (
   }
 
   private def lrn(declaration: ExportsDeclaration, actionsEnabled: Boolean)(implicit messages: Messages): Option[SummaryListRow] = {
-    def label: String = if (declaration.isType(SUPPLEMENTARY)) "references.supplementary.lrn" else "references.lrn"
-
     def action: Option[Actions] =
       if (declaration.isAmendmentDraft) None
       else {
@@ -207,7 +205,7 @@ class Card1ForReferences @Inject() (
       }
 
     declaration.consignmentReferences.flatMap(_.lrn).map { lrn =>
-      SummaryListRow(key(label), value(lrn.lrn), classes = "lrn", action)
+      SummaryListRow(key("references.lrn"), value(lrn.lrn), classes = "lrn", action)
     }
   }
 

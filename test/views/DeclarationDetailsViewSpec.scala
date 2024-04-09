@@ -16,7 +16,8 @@
 
 package views
 
-import base.{ExportsTestData, Injector, OverridableInjector, RequestBuilder}
+import base.ExportsTestData.{eori, newUser}
+import base.{Injector, OverridableInjector, RequestBuilder}
 import config.ExternalServicesConfig
 import config.featureFlags._
 import controllers.declaration.amendments.routes.AmendDeclarationController
@@ -54,7 +55,7 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
   private val mrn = "mrn"
   private val now = ZonedDateTime.now
 
-  private val user = ExportsTestData.newUser(ExportsTestData.eori, "Id")
+  private val user = newUser(eori, "Id")
   private val testEmail = "testEmail@mail.org"
 
   private val uuid = "uuid1"
