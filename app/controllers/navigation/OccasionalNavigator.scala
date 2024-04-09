@@ -62,18 +62,17 @@ trait OccasionalNavigator extends CacheDependentNavigators {
   }
 
   def occasionalCacheDependent(implicit request: JourneyRequest[_]): PartialFunction[DeclarationPage, ExportsDeclaration => Call] = {
-    case ConsigneeDetails                  => consigneeDetailsPreviousPage
-    case DeclarantIsExporter               => declarantIsExporterPreviousPage
-    case RepresentativeAgent               => representativeAgentPreviousPage
-    case Document                          => previousDocumentsPreviousPage
-    case InlandOrBorder                    => inlandOrBorderPreviousPage
-    case InlandModeOfTransportCode         => inlandTransportDetailsPreviousPage
-    case DepartureTransport                => departureTransportPreviousPage
-    case BorderTransport                   => borderTransportPreviousPage
-    case TransportCountry                  => transportCountryPreviousPage
-    case ExpressConsignment                => expressConsignmentPreviousPage
-    case ContainerFirst                    => containerFirstPreviousPage
-    case ThirdPartyGoodsTransportationPage => thirdPartyGoodsTransportationPreviousPage
+    case ConsigneeDetails          => consigneeDetailsPreviousPage
+    case DeclarantIsExporter       => declarantIsExporterPreviousPage
+    case RepresentativeAgent       => representativeAgentPreviousPage
+    case Document                  => previousDocumentsPreviousPage
+    case InlandOrBorder            => inlandOrBorderPreviousPage
+    case InlandModeOfTransportCode => inlandTransportDetailsPreviousPage
+    case DepartureTransport        => departureTransportPreviousPage
+    case BorderTransport           => borderTransportPreviousPage
+    case TransportCountry          => transportCountryPreviousPage
+    case ExpressConsignment        => expressConsignmentPreviousPage
+    case ContainerFirst            => containerFirstPreviousPage
   }
 
   val occasionalCacheItemDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, String) => Call] = {

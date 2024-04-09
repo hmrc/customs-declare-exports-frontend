@@ -59,16 +59,15 @@ trait ClearanceNavigator extends CacheDependentNavigators {
   }
 
   def clearanceCacheDependent(implicit request: JourneyRequest[_]): PartialFunction[DeclarationPage, ExportsDeclaration => Call] = {
-    case DeclarantIsExporter               => declarantIsExporterPreviousPage
-    case ExporterEoriNumber                => exporterEoriNumberClearancePreviousPage
-    case ConsigneeDetails                  => consigneeDetailsClearancePreviousPage
-    case RepresentativeAgent               => representativeAgentClearancePreviousPage
-    case IsExs                             => isExsClearancePreviousPage
-    case Document                          => previousDocumentsPreviousPage
-    case DepartureTransport                => departureTransportPreviousPageOnClearance
-    case ContainerFirst                    => containerFirstPreviousPage
-    case ExpressConsignment                => expressConsignmentPreviousPageOnClearance
-    case ThirdPartyGoodsTransportationPage => thirdPartyGoodsTransportationPreviousPage
+    case DeclarantIsExporter => declarantIsExporterPreviousPage
+    case ExporterEoriNumber  => exporterEoriNumberClearancePreviousPage
+    case ConsigneeDetails    => consigneeDetailsClearancePreviousPage
+    case RepresentativeAgent => representativeAgentClearancePreviousPage
+    case IsExs               => isExsClearancePreviousPage
+    case Document            => previousDocumentsPreviousPage
+    case DepartureTransport  => departureTransportPreviousPageOnClearance
+    case ContainerFirst      => containerFirstPreviousPage
+    case ExpressConsignment  => expressConsignmentPreviousPageOnClearance
   }
 
   val clearanceCacheItemDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, String) => Call] = {

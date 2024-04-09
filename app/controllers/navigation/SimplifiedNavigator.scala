@@ -62,18 +62,17 @@ trait SimplifiedNavigator extends CacheDependentNavigators {
   }
 
   def simplifiedCacheDependent(implicit request: JourneyRequest[_]): PartialFunction[DeclarationPage, ExportsDeclaration => Call] = {
-    case DeclarantIsExporter               => declarantIsExporterPreviousPage
-    case Document                          => previousDocumentsPreviousPage
-    case ConsigneeDetails                  => consigneeDetailsPreviousPage
-    case RepresentativeAgent               => representativeAgentPreviousPage
-    case InlandModeOfTransportCode         => inlandTransportDetailsPreviousPage
-    case InlandOrBorder                    => inlandOrBorderPreviousPage
-    case DepartureTransport                => departureTransportPreviousPage
-    case BorderTransport                   => borderTransportPreviousPage
-    case TransportCountry                  => transportCountryPreviousPage
-    case ExpressConsignment                => expressConsignmentPreviousPage
-    case ContainerFirst                    => containerFirstPreviousPage
-    case ThirdPartyGoodsTransportationPage => thirdPartyGoodsTransportationPreviousPage
+    case DeclarantIsExporter       => declarantIsExporterPreviousPage
+    case Document                  => previousDocumentsPreviousPage
+    case ConsigneeDetails          => consigneeDetailsPreviousPage
+    case RepresentativeAgent       => representativeAgentPreviousPage
+    case InlandModeOfTransportCode => inlandTransportDetailsPreviousPage
+    case InlandOrBorder            => inlandOrBorderPreviousPage
+    case DepartureTransport        => departureTransportPreviousPage
+    case BorderTransport           => borderTransportPreviousPage
+    case TransportCountry          => transportCountryPreviousPage
+    case ExpressConsignment        => expressConsignmentPreviousPage
+    case ContainerFirst            => containerFirstPreviousPage
   }
 
   val simplifiedCacheItemDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, String) => Call] = {

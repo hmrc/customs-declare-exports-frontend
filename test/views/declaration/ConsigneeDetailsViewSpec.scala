@@ -18,7 +18,13 @@ package views.declaration
 
 import base.Injector
 import connectors.CodeListConnector
-import controllers.declaration.routes.{CarrierDetailsController, DeclarantExporterController, IsExsController, RepresentativeStatusController, ThirdPartyGoodsTransportationController}
+import controllers.declaration.routes.{
+  CarrierDetailsController,
+  DeclarantExporterController,
+  IsExsController,
+  RepresentativeStatusController,
+  ThirdPartyGoodsTransportationController
+}
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.common.{Address, AddressSpec, Eori}
 import forms.declaration.ConsigneeDetails.form
