@@ -923,6 +923,7 @@ declaration.routingCountries.body.p1 = Os yw’r nwyddau’n mynd ar ffyrdd neu 
 declaration.routingCountries.body.p2 = Mae’n ddigon i ddarparu’r gwledydd rydych yn eu deall ar hyn o bryd i fod ar y llwybr arfaethedig.
 declaration.routingCountries.table.header = Gwledydd y llwybr
 
+declaration.routingCountries.remove.hint = Tynnu {0} o’r rhestr o wledydd cyfeirio
 declaration.routingCountries.duplication = Gwlad y llwybr eisoes wedi ychwanegu
 declaration.routingCountries.limit = Uchafswm o wledydd ar y llwybr wedi’u hychwanegu
 

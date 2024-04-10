@@ -921,6 +921,7 @@ declaration.routingCountries.body.p1 = If goods are going by road or rail, add t
 declaration.routingCountries.body.p2 = It is enough to provide the countries that you currently understand to be in the intended route.
 declaration.routingCountries.table.header = Countries of routing
 
+declaration.routingCountries.remove.hint = Remove {0} from countries of routing
 declaration.routingCountries.duplication = Routing country already added
 declaration.routingCountries.limit = Maximum number of routing countries added
 
