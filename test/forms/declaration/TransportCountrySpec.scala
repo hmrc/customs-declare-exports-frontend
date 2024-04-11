@@ -86,4 +86,22 @@ class TransportCountrySpec extends UnitWithMocksSpec with BeforeAndAfterEach wit
   "TransportCountry" when {
     testTariffContentKeysNoSpecialisation(TransportCountry, "tariff.declaration.transportCountry")
   }
+
+  // TODO remove resilient reads tests once 5606 migration has been deployed successfully
+  "TransportCountry" when {
+    "reading from the database" should {
+      "read countryName field" in {
+        val jsonWithName = Json.parse("""{ "countryName": "France" }""")
+        val expected = TransportCountry(Some("France"))
+
+        jsonWithName.as[TransportCountry] mustBe expected
+      }
+      "read countryCode field" in {
+        val jsonWithName = Json.parse("""{ "countryCode": "FR" }""")
+        val expected = TransportCountry(Some("FR"))
+
+        jsonWithName.as[TransportCountry] mustBe expected
+      }
+    }
+  }
 }
