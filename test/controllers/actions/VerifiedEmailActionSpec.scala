@@ -41,7 +41,7 @@ class VerifiedEmailActionSpec extends ControllerWithoutFormSpec with Injector wi
   lazy val action = new ActionTestWrapper(backendConnector, mcc)
 
   lazy val sampleEmailAddress = "example@example.com"
-  lazy val sampleEori = EORI("12345")
+  lazy val sampleEori = EORI(ExportsTestData.eori)
   lazy val user = ExportsTestData.newUser(sampleEori.value, "Id")
 
   lazy val verifiedEmail = Email(sampleEmailAddress, deliverable = true)

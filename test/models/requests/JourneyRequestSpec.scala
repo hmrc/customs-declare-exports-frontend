@@ -16,6 +16,7 @@
 
 package models.requests
 
+import base.ExportsTestData.eori
 import base.{MockAuthAction, UnitWithMocksSpec}
 import models.DeclarationType
 import services.cache.ExportsDeclarationBuilder
@@ -29,18 +30,16 @@ class JourneyRequestSpec extends UnitWithMocksSpec with ExportsDeclarationBuilde
   "Journey request" should {
 
     "have a correct declaration type" in {
-
       request.declarationType mustBe DeclarationType.OCCASIONAL
     }
 
     "check if type is contained in allowed values" in {
-
       request.isType(DeclarationType.CLEARANCE) mustBe false
       request.isType(DeclarationType.OCCASIONAL, DeclarationType.CLEARANCE) mustBe true
     }
 
     "check if eori is correct" in {
-      request.eori mustBe "12345"
+      request.eori mustBe eori
     }
   }
 }

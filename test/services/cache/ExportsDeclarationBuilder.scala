@@ -65,6 +65,9 @@ trait ExportsDeclarationBuilder {
 
   def withId(id: String = uuid): ExportsDeclarationModifier = _.copy(id = id)
 
+  def withAssociatedSubmissionId(submissionId: Option[String]): ExportsDeclarationModifier =
+    cache => cache.copy(declarationMeta = cache.declarationMeta.copy(associatedSubmissionId = submissionId))
+
   // ************************************************* Builders ********************************************************
 
   def withReadyForSubmission(readyForSubmission: Boolean = true): ExportsDeclarationModifier =

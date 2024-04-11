@@ -34,7 +34,6 @@ trait StandardNavigator extends CacheDependentNavigators {
     case DeclarantDetails           => routes.AdditionalDeclarationTypeController.displayPage
     case LinkDucrToMucr             => routes.LocalReferenceNumberController.displayPage
     case DucrChoice                 => routes.DeclarantDetailsController.displayPage
-    case Ducr                       => routes.DucrChoiceController.displayPage
     case ConsignmentReferences      => routes.DeclarantDetailsController.displayPage
     case ExporterEoriNumber         => routes.DeclarantExporterController.displayPage
     case ExporterDetails            => routes.ExporterEoriNumberController.displayPage

@@ -18,7 +18,8 @@ package views.declaration
 
 import base.ExportsTestData._
 import base.{Injector, TestHelper}
-import controllers.declaration.routes.DucrEntryController
+import controllers.declaration.routes.{ConfirmDucrController, DucrEntryController}
+import forms.Ducr.generateDucrPrefix
 import forms.Lrn
 import forms.Lrn.form
 import models.DeclarationType._
@@ -42,15 +43,15 @@ class LocalReferenceNumberViewSpec extends PageWithButtonsSpec with Injector {
   def createView(maybeForm: Option[Form[Lrn]])(implicit request: JourneyRequest[_]): Document =
     page(maybeForm.getOrElse(form))(request, messages)
 
+  def createView(form: Form[Lrn])(implicit request: JourneyRequest[_]): Document =
+    createView(Some(form))(request)
+
   def viewOnInvalidInput(lrn: Lrn)(implicit request: JourneyRequest[_]): Document = {
     val frm = form.fillAndValidate(lrn)
     val view = createView(frm)
     view must haveGovukGlobalErrorSummary
     view
   }
-
-  private def createView(form: Form[Lrn])(implicit request: JourneyRequest[_]): Document =
-    createView(Some(form))(request)
 
   "Local Reference Number view" should {
 
@@ -65,6 +66,22 @@ class LocalReferenceNumberViewSpec extends PageWithButtonsSpec with Injector {
     }
 
     val view = createView
+
+    "display 'Back' button that links to 'Ducr-Entry' page" in {
+      val backButton = view.getElementById("back-link")
+      backButton must containMessage(backToPreviousQuestionCaption)
+      backButton must haveHref(DucrEntryController.displayPage.url)
+    }
+
+    "display 'Back' button that links to 'Confirm-Ducr' page" when {
+      "the Ducr's prefix is auto-generated" in {
+        val ducr = s"${generateDucrPrefix(withRequestOfType(STANDARD))}reference"
+        val view = createView(withRequestOfType(STANDARD, withConsignmentReferences(ducr, lrn)))
+        val backButton = view.getElementById("back-link")
+        backButton must containMessage(backToPreviousQuestionCaption)
+        backButton must haveHref(ConfirmDucrController.displayPage.url)
+      }
+    }
 
     "display page title" in {
       val h1 = view.getElementById("title")
@@ -136,12 +153,6 @@ class LocalReferenceNumberViewSpec extends PageWithButtonsSpec with Injector {
       val frm = form.fill(Lrn(lrn))
       val view = createView(frm)
       view.getElementById("lrn").attr("value") mustBe lrn
-    }
-
-    "display 'Back' button that links to 'Declarant Details' page" in {
-      val backButton = view.getElementById("back-link")
-      backButton must containMessage(backToPreviousQuestionCaption)
-      backButton must haveHref(DucrEntryController.displayPage.url)
     }
   }
 }

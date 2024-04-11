@@ -71,7 +71,7 @@ function dropDown() {
     selectList.onchange = function (e) { setDeclaration(this.value) }
 
     // empty on start
-    if (currentPageIs('/customs-declare-exports/start')) {
+    if (currentPageIs('/customs-declare-exports/choice')) {
         selectList.value = 0
         setDeclaration(0)
     } else {
@@ -123,7 +123,9 @@ function selectDecType(type) {
     let elementId = decTypes().filter(
         type => type["value"] == getDeclaration()
     ).shift()[type]
-    if (elementId === undefined && type == "stdId") "NonStandardDeclarationType"
+    if (elementId === undefined && type == "stdId") {
+        elementId = "NonStandardDeclarationType"
+    }
     document.getElementById(elementId).checked = true
 }
 
@@ -169,11 +171,6 @@ function getRandomInt(min, max) {
 }
 
 // actual pages
-function startPage() {
-    if (currentPageIs('/customs-declare-exports/start')) {
-        document.getElementsByClassName('govuk-button')[0].click()
-    }
-}
 
 function choicePage() {
     if (currentPageIs('/customs-declare-exports/choice')) {
@@ -681,7 +678,7 @@ function invoiceAndExchangeRate() {
         selectRadioOptionFromInputs(document.getElementsByName('agreedExchangeRate'), 0)
         document.getElementById('code_yes').checked = 'checked'
         document.getElementById('exchangeRate').value ='1.49'
-        document.getElementById('totalAmountInvoicedCurrency').value ='Pounds Sterling - GBP'
+        selectFromAutoPredict(document.getElementById('totalAmountInvoicedCurrency-container'), 'GBP')
         document.getElementById('totalAmountInvoiced').value ='567640'
         submit()
     }
@@ -1165,7 +1162,7 @@ function borderTransport() {
 
 function transportCountry() {
     if (currentPageIs('/customs-declare-exports/declaration/transport-country')) {
-        selectFromAutoPredict(document.getElementById('transport-country-container'), 'South Africa')
+        selectFromAutoPredict(document.getElementById('transport-country-container'), 'ZA')
         submit()
     }
 }
@@ -1248,7 +1245,6 @@ function copyDeclaration() {
 // grand journey
 function completeJourney() {
     // main
-    startPage()
     choicePage()
     standardOrOtherDeclaration()
     nonStandardDeclaration()

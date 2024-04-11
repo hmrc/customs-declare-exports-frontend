@@ -16,16 +16,16 @@
 
 package views.declaration.summary
 
+import base.ExportsTestData.{eori, newUser}
 import controllers.routes.{DeclarationDetailsController, SavedDeclarationsController}
 import models.ExportsDeclaration
 import models.declaration.DeclarationStatus.AMENDMENT_DRAFT
-import play.twirl.api.HtmlFormat.Appendable
-import views.html.declaration.amendments.amendment_summary
-import base.ExportsTestData.newUser
 import models.requests.JourneyRequest
-import play.api.test.FakeRequest
-import utils.FakeRequestCSRFSupport.CSRFFakeRequest
 import play.api.http.HeaderNames
+import play.api.test.FakeRequest
+import play.twirl.api.HtmlFormat.Appendable
+import utils.FakeRequestCSRFSupport.CSRFFakeRequest
+import views.html.declaration.amendments.amendment_summary
 
 class AmendmentSummaryViewSpec extends SummaryViewSpec {
 
@@ -50,11 +50,10 @@ class AmendmentSummaryViewSpec extends SummaryViewSpec {
 
     "should display correct back link" when {
       "referer is the /saved-declarations page" in {
+        val user = newUser(eori, "12345")
         val fakeReferer = Map(HeaderNames.REFERER -> ".../saved-declarations")
-        val journeyWithHeader = new JourneyRequest(
-          buildVerifiedEmailRequest(FakeRequest("", "").withHeaders(fakeReferer.toSeq: _*).withCSRFToken, newUser("12345", "12345")),
-          declaration
-        )
+        val emailRequest = buildVerifiedEmailRequest(FakeRequest("", "").withHeaders(fakeReferer.toSeq: _*).withCSRFToken, user)
+        val journeyWithHeader = new JourneyRequest(emailRequest, declaration)
         val viewWithHeaders = amendmentSummaryPage(submissionId)(journeyWithHeader, messages, minimalAppConfig)
         val backButton = viewWithHeaders.getElementById("back-link")
 

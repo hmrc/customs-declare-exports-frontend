@@ -26,6 +26,7 @@ import models.requests.AuthenticatedRequest
 import models.requests.SessionHelper.declarationUuid
 import models.responses.FlashKeys
 import controllers.routes.RootController
+import models.declaration.submissions.Submission
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import play.api.Logging
@@ -73,16 +74,24 @@ class SubmissionsController @Inject() (
     }
 
   def viewDeclaration(id: String): Action[AnyContent] = authAndEmailActions.async { implicit request =>
-    customsDeclareExportsConnector.findDeclaration(id).flatMap {
-      case Some(declaration) =>
-        customsDeclareExportsConnector.findSubmissionByLatestDecId(id) flatMap {
-          case Some(submission) =>
-            Future.successful(Ok(submittedDeclarationPage(submission, declaration)))
-          case _ =>
-            errorHandler.internalError(s"Cannot find submission from latestDecId $id")
+    val maybeError = for {
+      maybeDeclaration <- customsDeclareExportsConnector.findDeclaration(id)
+      maybeSubmission <- maybeDeclaration
+        .flatMap(_.declarationMeta.associatedSubmissionId)
+        .fold(Future.failed[Option[Submission]](new Exception("Could not find declaration with an associatedSubmissionId!"))) {
+          associatedSubmissionId =>
+            customsDeclareExportsConnector.findSubmission(associatedSubmissionId)
         }
-      case None => errorHandler.internalError(s"Cannot find declaration from $id")
+    } yield (maybeDeclaration, maybeSubmission) match {
+      case (Some(declaration), Some(submission)) =>
+        Ok(submittedDeclarationPage(submission, declaration))
+      case _ =>
+        errorHandler.internalServerError(s"Failed to find submission relating to declaration with Id of $id")
     }
+
+    maybeError.recover(ex =>
+      errorHandler.internalServerError(s"Error finding submission relating to declaration with Id of $id. Error '${ex.getMessage}'")
+    )
   }
 
   private def findOrCreateDraftForAmendment(rejectedParentId: String, redirect: Result)(implicit request: AuthenticatedRequest[_]): Future[Result] =

@@ -17,7 +17,7 @@
 package controllers.navigation
 
 import controllers.declaration.routes
-import forms.{DeclarationPage, Ducr}
+import forms.DeclarationPage
 import forms.declaration._
 import forms.declaration.RoutingCountryQuestionYesNo.{ChangeCountryPage, RemoveCountryPage, RoutingCountryQuestionPage}
 import forms.declaration.additionaldocuments.{AdditionalDocument, AdditionalDocumentsRequired, AdditionalDocumentsSummary}
@@ -34,7 +34,6 @@ trait ClearanceNavigator extends CacheDependentNavigators {
   val clearance: PartialFunction[DeclarationPage, Call] = {
     case EntryIntoDeclarantsRecords   => routes.SectionSummaryController.displayPage(1)
     case DucrChoice                   => routes.AdditionalDeclarationTypeController.displayPage
-    case Ducr                         => routes.DucrChoiceController.displayPage
     case ConsignmentReferences        => routes.AdditionalDeclarationTypeController.displayPage
     case LinkDucrToMucr               => routes.LocalReferenceNumberController.displayPage
     case ExporterDetails              => routes.ExporterEoriNumberController.displayPage

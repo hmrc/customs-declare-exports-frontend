@@ -87,11 +87,13 @@ class ErrorsReportedHelper @Inject() (link: link, codeListConnector: CodeListCon
   }
 
   private val containsItemsSeqRegEx = """.*items\.\$.*""".r
+  private val containsContainersSeqRegEx = """.*container\.\$.*""".r
   private val containsDecDetailsEoriRegEx = """^declaration.declarantDetails.details.eori$""".r
 
   def getChangeLinkCall(pointer: Pointer, pointerRecord: PointerRecord, declaration: ExportsDeclaration): Option[Call] =
     pointer.pattern match {
       case containsItemsSeqRegEx(_*)       => getItemId(pointer, pointerRecord, declaration)
+      case containsContainersSeqRegEx(_*)  => getContainerId(pointer, pointerRecord, declaration)
       case containsDecDetailsEoriRegEx(_*) => getDecDetailsEoriChangeLinkUrl(pointer, pointerRecord, declaration)
       case _                               => pointerRecord.pageLink1Param
     }
@@ -104,6 +106,20 @@ class ErrorsReportedHelper @Inject() (link: link, codeListConnector: CodeListCon
 
     maybeItemId
       .map(itemId => pointerRecord.pageLink2Param.map(_(itemId)).orElse(pointerRecord.pageLink1Param))
+      .getOrElse {
+        logger.warn(s"Was not able to specialise the provided error change link url for declaration ${declaration.id}")
+        None
+      }
+  }
+
+  private def getContainerId(pointer: Pointer, record: PointerRecord, declaration: ExportsDeclaration): Option[Call] = {
+    val maybeContainerId = for {
+      seqId <- pointer.sequenceArgs.headOption
+      container <- declaration.containerBySeqId(seqId)
+    } yield container.id
+
+    maybeContainerId
+      .map(containerId => record.pageLink2Param.map(_(containerId)).orElse(record.pageLink1Param))
       .getOrElse {
         logger.warn(s"Was not able to specialise the provided error change link url for declaration ${declaration.id}")
         None

@@ -20,6 +20,7 @@ import controllers.declaration.routes
 import controllers.helpers.AuthorisationHolderHelper.userCanLandOnIsAuthRequiredPage
 import controllers.helpers.TransportSectionHelper._
 import controllers.helpers.{InlandOrBorderHelper, SupervisingCustomsOfficeHelper, TransportSectionHelper}
+import forms.Ducr.generateDucrPrefix
 import forms.declaration.InlandOrBorder.Border
 import forms.declaration.NatureOfTransaction.{BusinessPurchase, Sale}
 import forms.declaration._
@@ -35,6 +36,18 @@ trait CacheDependentNavigators {
   val taggedAuthCodes: TaggedAuthCodes
   val inlandOrBorderHelper: InlandOrBorderHelper
   val supervisingCustomsOfficeHelper: SupervisingCustomsOfficeHelper
+
+  protected def ducrEntryPreviousPage(cacheModel: ExportsDeclaration)(implicit request: JourneyRequest[_]): Call =
+    cacheModel.ducr.fold(routes.DucrChoiceController.displayPage) { ducr =>
+      if (ducr.ducr.startsWith(generateDucrPrefix)) routes.ConfirmDucrController.displayPage
+      else routes.DucrChoiceController.displayPage
+    }
+
+  protected def lrnPreviousPage(cacheModel: ExportsDeclaration)(implicit request: JourneyRequest[_]): Call =
+    cacheModel.ducr.fold(routes.DucrChoiceController.displayPage) { ducr =>
+      if (ducr.ducr.startsWith(generateDucrPrefix)) routes.ConfirmDucrController.displayPage
+      else routes.DucrEntryController.displayPage
+    }
 
   protected def nactCodeFirstPreviousPage(cacheModel: ExportsDeclaration, itemId: String): Call =
     cacheModel.natureOfTransaction match {
@@ -104,11 +117,18 @@ trait CacheDependentNavigators {
     else
       routes.CommodityDetailsController.displayPage(itemId)
 
-  protected def additionalDocumentsPreviousPage(declaration: ExportsDeclaration, itemId: String): Call = {
-    val isLicenseRequired = taggedAuthCodes.hasAuthCodeRequiringAdditionalDocs(declaration) || declaration.isLicenseRequired(itemId)
-    if (isLicenseRequired) routes.IsLicenceRequiredController.displayPage(itemId)
+  protected def additionalDocumentsPreviousPage(declaration: ExportsDeclaration, itemId: String): Call =
+    if (declaration.listOfAdditionalDocuments(itemId).nonEmpty) routes.AdditionalDocumentsController.displayPage(itemId)
+    else {
+      val isLicenseRequired = taggedAuthCodes.hasAuthCodeRequiringAdditionalDocs(declaration) || declaration.isLicenseRequired(itemId)
+      if (isLicenseRequired) routes.IsLicenceRequiredController.displayPage(itemId)
+      else routes.AdditionalDocumentsRequiredController.displayPage(itemId)
+    }
+
+  protected def additionalDocumentsClearancePreviousPage(declaration: ExportsDeclaration, itemId: String): Call =
+    if (declaration.listOfAdditionalDocuments(itemId).nonEmpty) routes.AdditionalDocumentsController.displayPage(itemId)
+    else if (taggedAuthCodes.hasAuthCodeRequiringAdditionalDocs(declaration)) additionalDocumentsSummaryClearancePreviousPage(declaration, itemId)
     else routes.AdditionalDocumentsRequiredController.displayPage(itemId)
-  }
 
   protected def additionalDocumentsSummaryClearancePreviousPage(cacheModel: ExportsDeclaration, itemId: String): Call =
     if (cacheModel.listOfAdditionalInformationOfItem(itemId).nonEmpty)
@@ -121,12 +141,6 @@ trait CacheDependentNavigators {
       routes.AdditionalInformationController.displayPage(itemId)
     else
       routes.AdditionalInformationRequiredController.displayPage(itemId)
-
-  protected def additionalDocumentsClearancePreviousPage(declaration: ExportsDeclaration, itemId: String): Call =
-    if (declaration.listOfAdditionalDocuments(itemId).nonEmpty)
-      routes.AdditionalDocumentsController.displayPage(itemId)
-    else if (taggedAuthCodes.hasAuthCodeRequiringAdditionalDocs(declaration)) additionalDocumentsSummaryClearancePreviousPage(declaration, itemId)
-    else routes.AdditionalDocumentsRequiredController.displayPage(itemId)
 
   protected def additionalInformationAddPreviousPage(cacheModel: ExportsDeclaration, itemId: String): Call =
     if (cacheModel.itemBy(itemId).flatMap(_.additionalInformation).exists(_.items.nonEmpty))

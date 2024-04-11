@@ -16,14 +16,15 @@
 
 package controllers.declaration
 
+import base.ExportsTestData.eori
 import base.{AuditedControllerSpec, ControllerSpec}
 import controllers.declaration.routes._
-import forms.common.{Eori, YesNoAnswer}
 import forms.common.YesNoAnswer.YesNoAnswers
+import forms.common.{Eori, YesNoAnswer}
 import models.DeclarationType.STANDARD
-import org.mockito.{ArgumentCaptor, Mockito}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{verify, when}
+import org.mockito.{ArgumentCaptor, Mockito}
 import org.scalatest.BeforeAndAfterEach
 import play.api.data.Form
 import play.api.http.Status.BAD_REQUEST
@@ -103,7 +104,7 @@ class ThirdPartyGoodsTransportationControllerSpec extends ControllerSpec with Au
       }
 
       "redirect when user answers yes having previously answered no" in {
-        withNewCaching(aDeclaration(withCarrierDetails(eori = Some(Eori("12345")))))
+        withNewCaching(aDeclaration(withCarrierDetails(eori = Some(Eori(eori)))))
 
         val result = await(controller.submitPage(postRequest(yesAnswer)))
 
@@ -122,7 +123,7 @@ class ThirdPartyGoodsTransportationControllerSpec extends ControllerSpec with Au
         thePageNavigatedTo mustBe ConsigneeDetailsController.displayPage
 
         val carrierEoriNumber = theCacheModelUpdated.parties.carrierDetails.get.details.eori.get.value
-        carrierEoriNumber mustBe authEori
+        carrierEoriNumber mustBe eori
         verifyAudit()
       }
 

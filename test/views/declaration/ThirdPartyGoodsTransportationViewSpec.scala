@@ -16,6 +16,7 @@
 
 package views.declaration
 
+import base.ExportsTestData.eori
 import base.Injector
 import controllers.declaration.routes
 import forms.common.{Address, Eori, YesNoAnswer}
@@ -70,7 +71,7 @@ class ThirdPartyGoodsTransportationViewSpec extends UnitViewSpec with Injector {
       "display radio buttons" in {
         view.getElementsByAttributeValue("for", "code_yes") must containMessageForElements("declaration.thirdPartyGoodsTransportation.radio.yes")
         view.getElementsByAttributeValue("for", "code_no") must containMessageForElements("declaration.thirdPartyGoodsTransportation.radio.no")
-        view.getElementById("code_no-item-hint") must containMessage("declaration.thirdPartyGoodsTransportation.radio.text", "12345")
+        view.getElementById("code_no-item-hint") must containMessage("declaration.thirdPartyGoodsTransportation.radio.text", eori)
       }
 
       "display expander" in {

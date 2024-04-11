@@ -75,20 +75,15 @@ class SummaryController @Inject() (
     def result(submissionId: String): Result =
       Ok(Html(amendment_summary(submissionId).toString().replace(s"?$lastUrlPlaceholder", "")))
 
-    getValue(submissionUuid) match {
-      case Some(submissionId) => Future.successful(result(submissionId))
-
-      case _ =>
-        request.cacheModel.declarationMeta.parentDeclarationId.fold {
-          val msg = s"Missing parentDeclarationId for 'AMENDMENT_DRAFT' declaration(${request.cacheModel.id})"
-          errorHandler.internalError(msg)
-        } { parentDecId =>
-          connector.findSubmissionByLatestDecId(parentDecId) flatMap {
-            case Some(submission) => Future.successful(result(submission.uuid).addingToSession(submissionUuid -> submission.uuid))
-            case _ =>
-              errorHandler.internalError(s"Cannot associate submission to parentDecId: $parentDecId from declaration ${request.cacheModel.id}")
-          }
-        }
+    request.cacheModel.declarationMeta.associatedSubmissionId.fold {
+      val msg = s"Missing associatedSubmissionId for 'AMENDMENT_DRAFT' declaration(${request.cacheModel.id})"
+      errorHandler.internalError(msg)
+    } { associatedSubmissionId =>
+      connector.findSubmission(associatedSubmissionId) flatMap {
+        case Some(submission) => Future.successful(result(submission.uuid).addingToSession(submissionUuid -> submission.uuid))
+        case _ =>
+          errorHandler.internalError(s"Cannot find associated submission to declaration ${request.cacheModel.id}")
+      }
     }
   }
 

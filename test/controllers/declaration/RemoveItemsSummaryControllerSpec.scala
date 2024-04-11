@@ -118,14 +118,15 @@ class RemoveItemsSummaryControllerSpec
           when(mockCustomsDeclareExportsConnector.findDeclaration(any())(any(), any()))
             .thenReturn(Future.successful(Some(parentDeclaration)))
 
-          when(mockCustomsDeclareExportsConnector.findSubmissionByLatestDecId(any())(any(), any()))
+          when(mockCustomsDeclareExportsConnector.findSubmission(any())(any(), any()))
             .thenReturn(Future.successful(Some(submission)))
 
           val cachedData = aDeclaration(
             withType(request.declarationType),
             withItem(exportItem),
             withParentDeclarationId(parentDeclarationId),
-            withStatus(DeclarationStatus.AMENDMENT_DRAFT)
+            withStatus(DeclarationStatus.AMENDMENT_DRAFT),
+            withAssociatedSubmissionId(Some(submission.uuid))
           )
           withNewCaching(cachedData)
 
@@ -171,6 +172,40 @@ class RemoveItemsSummaryControllerSpec
             withStatus(DeclarationStatus.AMENDMENT_DRAFT)
           )
           withNewCaching(cachedData)
+
+          val result = controller.displayRemoveItemConfirmationPage(itemId)(getRequest())
+
+          status(result) mustBe INTERNAL_SERVER_ERROR
+        }
+
+        "associatedSubmissionId is not defined" in {
+          val cachedData = aDeclaration(
+            withType(request.declarationType),
+            withItem(exportItem),
+            withParentDeclarationId(parentDeclarationId),
+            withStatus(DeclarationStatus.AMENDMENT_DRAFT),
+            withAssociatedSubmissionId(None)
+          )
+          withNewCaching(cachedData)
+
+          when(mockCustomsDeclareExportsConnector.findSubmission(any())(any(), any())).thenReturn(Future.successful(None))
+
+          val result = controller.displayRemoveItemConfirmationPage(itemId)(getRequest())
+
+          status(result) mustBe INTERNAL_SERVER_ERROR
+        }
+
+        "associatedSubmissionId is present but not found" in {
+          val cachedData = aDeclaration(
+            withType(request.declarationType),
+            withItem(exportItem),
+            withParentDeclarationId(parentDeclarationId),
+            withStatus(DeclarationStatus.AMENDMENT_DRAFT),
+            withAssociatedSubmissionId(Some(submission.uuid))
+          )
+          withNewCaching(cachedData)
+
+          when(mockCustomsDeclareExportsConnector.findSubmission(any())(any(), any())).thenReturn(Future.successful(None))
 
           val result = controller.displayRemoveItemConfirmationPage(itemId)(getRequest())
 

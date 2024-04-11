@@ -17,27 +17,33 @@
 package forms
 
 import models.DeclarationType.{CLEARANCE, DeclarationType}
+import models.requests.JourneyRequest
 import models.viewmodels.TariffContentKey
 import play.api.data.Forms.text
 import play.api.data.{Form, Forms, Mapping}
 import play.api.libs.json.{Json, OFormat}
 import utils.validators.forms.FieldValidator._
 
+import java.time.ZoneId
+
 case class Ducr(ducr: String)
 
 object Ducr extends DeclarationPage {
+
   implicit val format: OFormat[Ducr] = Json.format[Ducr]
+
   val mapping: Mapping[Ducr] =
     Forms.mapping(
       "ducr" ->
         text()
+          .transform(_.toUpperCase, identity[String])
           .verifying("declaration.consignmentReferences.ducr.error.empty", nonEmpty)
           .verifying("declaration.consignmentReferences.ducr.error.invalid", isEmpty or isValidDucr)
     )(form2Data)(Ducr.unapply)
 
   val form: Form[Ducr] = Form(mapping)
 
-  def form2Data(ducr: String): Ducr = new Ducr(ducr.toUpperCase)
+  def form2Data(ducr: String): Ducr = new Ducr(ducr)
 
   def model2Form: Ducr => Option[String] =
     model => Some(model.ducr)
@@ -47,4 +53,10 @@ object Ducr extends DeclarationPage {
       case CLEARANCE => Seq(TariffContentKey("tariff.declaration.ducr.clearance"))
       case _         => Seq(TariffContentKey("tariff.declaration.ducr.common"))
     }
+
+  def generateDucrPrefix(implicit request: JourneyRequest[_]): String = {
+    val lastDigitOfYear = request.cacheModel.declarationMeta.createdDateTime.atZone(ZoneId.of("Europe/London")).getYear.toString.last
+    val eori = request.eori.toUpperCase
+    s"${lastDigitOfYear}GB${eori.dropWhile(_.isLetter)}-"
+  }
 }
