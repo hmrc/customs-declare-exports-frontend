@@ -32,6 +32,7 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.panel.Panel
 import uk.gov.hmrc.govukfrontend.views.viewmodels.table.Table
 import uk.gov.hmrc.govukfrontend.views.viewmodels.warningtext.WarningText
+import views.components.gds.Styles.gdsPageHeading
 import views.dashboard.DashboardHelper.toDashboard
 import views.helpers.ViewDates.formatTimeDate
 import views.html.components.buttons.print_page_button
@@ -88,7 +89,7 @@ class ConfirmationHelper @Inject() (
     AdditionalDeclarationType.isArrived(from(confirmation.declarationType))
 
   private def needsDocuments(implicit confirmation: Confirmation, messages: Messages): Html = {
-    val title = pageTitle(messages("declaration.confirmation.needsDocument.title"))
+    val title = pageTitle(messages("declaration.confirmation.needsDocument.title"), s"$gdsPageHeading $classForACs")
     val warning = govukWarningText(
       WarningText(iconFallbackText = Some(messages("site.warning")), content = Text(messages("declaration.confirmation.needsDocument.warning")))
     )
@@ -97,7 +98,7 @@ class ConfirmationHelper @Inject() (
   }
 
   private def other(implicit confirmation: Confirmation, messages: Messages): Html = {
-    val title = pageTitle(messages("declaration.confirmation.other.title"))
+    val title = pageTitle(messages("declaration.confirmation.other.title"), s"$gdsPageHeading $classForACs")
     val body1 = paragraph(
       messages(
         s"declaration.confirmation.other.body.1",
@@ -159,7 +160,7 @@ class ConfirmationHelper @Inject() (
     )
 
   private def panel(implicit confirmation: Confirmation, messages: Messages): Html =
-    govukPanel(Panel(title = Text(messages(s"declaration.confirmation.$status.title"))))
+    govukPanel(Panel(classes = classForACs, title = Text(messages(s"declaration.confirmation.$status.title"))))
 
   private def whatHappensNext(implicit confirmation: Confirmation, messages: Messages): List[Html] = {
     val next1 = paragraph(
@@ -171,7 +172,7 @@ class ConfirmationHelper @Inject() (
     )
 
     val acceptanceTime =
-      if (confirmation.submission.latestEnhancedStatus == Some(RECEIVED)) None
+      if (confirmation.submission.latestEnhancedStatus.contains(RECEIVED)) None
       else confirmation.submission.enhancedStatusLastUpdated.map(formatTimeDate(_))
 
     val next2Args =
@@ -256,6 +257,10 @@ class ConfirmationHelper @Inject() (
     s"""<span class="govuk-!-font-weight-bold">${value}</span>"""
 
   private val sectionBreak = Html(s"""<hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">""")
+
+  // Used in the Acceptance tests as common identifier for the different versions of the
+  // confirmation page while waiting to switch from the holding page to the confirmation page.
+  private val classForACs = "confirmation-content"
 }
 
 object ConfirmationHelper {

@@ -51,9 +51,9 @@ class NactCodeAddController @Inject() (
   def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType(nonClearanceJourneys)) { implicit request =>
     val maybeItem = request.cacheModel.itemBy(itemId)
     maybeItem.flatMap(_.nactCodes) match {
-      case Some(nactCode) if nactCode.nonEmpty => Ok(nactCodeAdd(itemId, NactCode.form.withSubmissionErrors))
+      case Some(nactCodes) if nactCodes.nonEmpty => Ok(nactCodeAdd(itemId, NactCode.form.withSubmissionErrors))
 
-      case Some(_) =>
+      case Some(_) => // Empty list of National codes
         val form = NactCodeFirst.form.fill(NactCodeFirst(None)).withSubmissionErrors
         Ok(nactCodeAddFirstPage(itemId, form))
 
