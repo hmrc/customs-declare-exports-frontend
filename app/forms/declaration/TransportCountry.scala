@@ -28,7 +28,8 @@ import play.api.data.Forms.text
 import play.api.data.validation.{Constraint, Invalid, Valid, ValidationError}
 import play.api.data.{Form, Forms, Mapping}
 import play.api.i18n.Messages
-import play.api.libs.json.{Json, OFormat}
+import play.api.libs.functional.syntax.toFunctionalBuilderOps
+import play.api.libs.json._
 import services.Countries.isValidCountryCode
 import utils.validators.forms.FieldValidator._
 
@@ -55,8 +56,13 @@ case class TransportCountry(countryName: Option[String]) extends Ordered[Transpo
 }
 
 object TransportCountry extends DeclarationPage with FieldMapping {
-
-  implicit val format: OFormat[TransportCountry] = Json.format[TransportCountry]
+  // TODO remove resilient reads once 5606 migration has been deployed successfully
+  private val reads: Reads[TransportCountry] = (
+    (__ \ "countryName").readNullable[String] and
+      (__ \ "countryCode").readNullable[String]
+  )((name, code) => TransportCountry(code.orElse(name)))
+  private val writes: Writes[TransportCountry] = Json.writes[TransportCountry]
+  implicit val format: Format[TransportCountry] = Format(reads, writes)
 
   val pointer: String = "meansOfTransportCrossingTheBorderNationality"
 
