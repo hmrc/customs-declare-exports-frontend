@@ -16,7 +16,6 @@
 
 package views.helpers.summary
 
-import connectors.CodeListConnector
 import controllers.declaration.routes._
 import forms.declaration.ModeOfTransportCode.Empty
 import models.ExportsDeclaration
@@ -25,7 +24,6 @@ import models.requests.JourneyRequest
 import play.api.i18n.Messages
 import play.api.mvc.Call
 import play.twirl.api.{Html, HtmlFormat}
-import services.Countries
 import uk.gov.hmrc.govukfrontend.views.html.components.{GovukSummaryList, SummaryList}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import views.helpers.CountryHelper
@@ -34,8 +32,7 @@ import views.helpers.summary.SummaryHelper.hasTransportData
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class Card6ForTransport @Inject() (govukSummaryList: GovukSummaryList, countryHelper: CountryHelper)(implicit codeListConnector: CodeListConnector)
-    extends SummaryCard {
+class Card6ForTransport @Inject() (govukSummaryList: GovukSummaryList, countryHelper: CountryHelper) extends SummaryCard {
 
   def eval(declaration: ExportsDeclaration, actionsEnabled: Boolean = true)(implicit messages: Messages): Html =
     if (hasTransportData(declaration)) content(declaration, actionsEnabled) else HtmlFormat.empty
@@ -157,9 +154,9 @@ class Card6ForTransport @Inject() (govukSummaryList: GovukSummaryList, countryHe
 
   private def transportCrossingTheBorder(transport: Transport, actionsEnabled: Boolean)(implicit messages: Messages): Option[SummaryListRow] =
     transport.transportCrossingTheBorderNationality.map { transportCrossingTheBorderNationality =>
-      lazy val country = transportCrossingTheBorderNationality.countryName.map { code =>
-        countryHelper.getShortNameForCountry(Countries.findByCode(code))
-      }.getOrElse(messages("declaration.summary.unknown"))
+      lazy val country = transportCrossingTheBorderNationality.countryCode
+        .map(countryHelper.getShortNameForCountryCode)
+        .getOrElse(messages("declaration.summary.unknown"))
 
       SummaryListRow(
         key("transport.registrationCountry"),

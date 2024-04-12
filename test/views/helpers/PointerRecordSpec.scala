@@ -99,7 +99,7 @@ class PointerRecordSpec extends UnitViewSpec with ExportsTestHelper with Injecto
       validatePointerValues("declaration.parties.declarationHolders.$.eori", authorisationHolderEori, 0)
       validatePointerValues("declaration.parties.declarationHolders.$.authorisationTypeCode", CSE.toString, 0)
       validatePointerValues("declaration.transport.meansOfTransportCrossingTheBorderIDNumber", meansOfTransportCrossingTheBorderIDNumber)
-      validatePointerValues("declaration.transport.transportCrossingTheBorderNationality.countryName", countryIT.countryCode, countryIT.countryName)
+      validatePointerValues("declaration.transport.transportCrossingTheBorderNationality.countryCode", countryIT.countryCode, countryIT.countryName)
       validatePointerValues(
         "declaration.borderTransport.modeCode",
         Maritime.toString,

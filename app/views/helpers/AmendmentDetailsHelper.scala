@@ -16,7 +16,6 @@
 
 package views.helpers
 
-import connectors.CodeListConnector
 import forms.common.{Address, Eori}
 import forms.declaration.CommodityDetails.{combinedNomenclatureCodePointer, descriptionOfGoodsPointer}
 import forms.declaration.Document.documentTypePointer
@@ -55,8 +54,7 @@ class AmendmentDetailsHelper @Inject() (
   countryHelper: CountryHelper,
   documentTypeService: DocumentTypeService,
   packageTypesService: PackageTypesService
-)(implicit codeListConnector: CodeListConnector)
-    extends Logging {
+) extends Logging {
 
   def dateOfAmendment(timestamp: ZonedDateTime)(implicit messages: Messages): Html =
     Html(s"""
@@ -218,7 +216,7 @@ class AmendmentDetailsHelper @Inject() (
 
   private def countryToUserValue(af: AlteredField)(implicit messages: Messages): AlteredField = {
     def fetchCountry(countryCode: Option[String]): Option[String] =
-      Some(countryCode.fold("")(code => countryHelper.getShortNameForCountry(Countries.findByCode(code))))
+      Some(countryCode.fold("")(countryHelper.getShortNameForCountryCode))
 
     def updateRoutingCountry(routingCountry: RoutingCountry): Option[RoutingCountry] =
       Some(routingCountry.copy(country = Country(fetchCountry(routingCountry.country.code))))
@@ -227,12 +225,12 @@ class AmendmentDetailsHelper @Inject() (
       case (None, Some(country: Country)) => OriginalAndNewValues(None, Some(Country(fetchCountry(country.code))))
       case (Some(country: Country), None) => OriginalAndNewValues(Some(Country(fetchCountry(country.code))), None)
 
-      case (None, Some(country: TransportCountry)) => OriginalAndNewValues(None, Some(TransportCountry(fetchCountry(country.countryName))))
-      case (Some(country: TransportCountry), None) => OriginalAndNewValues(Some(TransportCountry(fetchCountry(country.countryName))), None)
+      case (None, Some(country: TransportCountry)) => OriginalAndNewValues(None, Some(TransportCountry(fetchCountry(country.countryCode))))
+      case (Some(country: TransportCountry), None) => OriginalAndNewValues(Some(TransportCountry(fetchCountry(country.countryCode))), None)
       case (Some(oldCountry: TransportCountry), Some(newCountry: TransportCountry)) =>
         OriginalAndNewValues(
-          Some(TransportCountry(fetchCountry(oldCountry.countryName))),
-          Some(TransportCountry(fetchCountry(newCountry.countryName)))
+          Some(TransportCountry(fetchCountry(oldCountry.countryCode))),
+          Some(TransportCountry(fetchCountry(newCountry.countryCode)))
         )
 
       case (None, Some(routingCountry: RoutingCountry)) => OriginalAndNewValues(None, updateRoutingCountry(routingCountry))

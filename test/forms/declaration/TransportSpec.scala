@@ -37,7 +37,7 @@ class TransportSpec extends UnitSpec {
       "borderModeOfTransportCode" -> Json.obj("code" -> "3"),
       "meansOfTransportOnDepartureType" -> "means-of-transport-on-departure",
       "meansOfTransportOnDepartureIDNumber" -> "means-of-transport-on-departure-id-number",
-      "transportCrossingTheBorderNationality" -> Json.obj("countryName" -> "crossing-the-border-nationality"),
+      "transportCrossingTheBorderNationality" -> Json.obj("countryCode" -> "crossing-the-border-nationality"),
       "meansOfTransportCrossingTheBorderType" -> "crossing-the-border-type",
       "meansOfTransportCrossingTheBorderIDNumber" -> "crossing-the-border-id-number"
     )

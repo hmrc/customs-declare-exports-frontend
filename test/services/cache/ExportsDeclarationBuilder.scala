@@ -406,9 +406,9 @@ trait ExportsDeclarationBuilder {
   ): ExportsDeclarationModifier =
     withBorderTransport(BorderTransport(meansOfTransportCrossingTheBorderType, meansOfTransportCrossingTheBorderIDNumber))
 
-  def withTransportCountry(countryName: Option[String]): ExportsDeclarationModifier =
+  def withTransportCountry(countryCode: Option[String]): ExportsDeclarationModifier =
     declaration =>
-      declaration.copy(transport = declaration.transport.copy(transportCrossingTheBorderNationality = Some(TransportCountry(countryName))))
+      declaration.copy(transport = declaration.transport.copy(transportCrossingTheBorderNationality = Some(TransportCountry(countryCode))))
 
   val withoutCarrierDetails: ExportsDeclarationModifier =
     cache => cache.copy(parties = cache.parties.copy(carrierDetails = None))

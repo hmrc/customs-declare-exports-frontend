@@ -100,7 +100,7 @@ class TransportCountryControllerSpec extends ControllerSpec with AuditedControll
             "the 'submitForm' method is invoked" in {
               withNewCaching(aDeclarationAfter(request.cacheModel, withDestinationCountry(Country(Some(country)))))
 
-              val formData = Json.obj(transportCountry -> countryName)
+              val formData = Json.obj(transportCountry -> countryCode)
               verifyRedirection(controller.submitForm(postRequest(formData)))
             }
           }
@@ -116,7 +116,7 @@ class TransportCountryControllerSpec extends ControllerSpec with AuditedControll
           "the 'submitForm' method is invoked" in {
             withNewCaching(aDeclarationAfter(request.cacheModel, withTransportLeavingTheBorder(Some(Rail))))
 
-            val formData = Json.obj(transportCountry -> countryName)
+            val formData = Json.obj(transportCountry -> countryCode)
             verifyRedirection(controller.submitForm(postRequest(formData)))
           }
         }
@@ -136,7 +136,7 @@ class TransportCountryControllerSpec extends ControllerSpec with AuditedControll
             "the 'submitForm' method is invoked" in {
               withNewCaching(aDeclarationAfter(request.cacheModel, withTransportLeavingTheBorder(Some(modeOfTransport))))
 
-              val formData = Json.obj(transportCountry -> countryName)
+              val formData = Json.obj(transportCountry -> countryCode)
               verifyRedirection(controller.submitForm(postRequest(formData)))
             }
           }
@@ -151,7 +151,7 @@ class TransportCountryControllerSpec extends ControllerSpec with AuditedControll
             "the 'submitForm' method is invoked" in {
               withNewCaching(aDeclarationAfter(request.cacheModel, withInlandModeOfTransportCode(modeOfTransport)))
 
-              val formData = Json.obj(transportCountry -> countryName)
+              val formData = Json.obj(transportCountry -> countryCode)
               verifyRedirection(controller.submitForm(postRequest(formData)))
             }
           }
@@ -171,13 +171,13 @@ class TransportCountryControllerSpec extends ControllerSpec with AuditedControll
         }
 
         "the 'displayPage' method is invoked and cache contains data" in {
-          withNewCaching(aDeclarationAfter(request.cacheModel, withTransportCountry(Some(countryName))))
+          withNewCaching(aDeclarationAfter(request.cacheModel, withTransportCountry(Some(countryCode))))
 
           val result = controller.displayPage(getRequest())
 
           status(result) mustBe OK
           verify(page, times(1)).apply(any(), any())(any(), any())
-          theResponseForm.value.get.countryName mustBe Some(countryName)
+          theResponseForm.value.get.countryCode mustBe Some(countryCode)
         }
       }
 
@@ -227,7 +227,7 @@ class TransportCountryControllerSpec extends ControllerSpec with AuditedControll
         "the 'submitForm' method is invoked" in {
           withNewCaching(request.cacheModel)
 
-          val formData = Json.obj(transportCountry -> countryName)
+          val formData = Json.obj(transportCountry -> countryCode)
           val result = controller.submitForm(postRequest(formData))
           redirectLocation(result) mustBe Some(RootController.displayPage.url)
           verifyNoAudit()

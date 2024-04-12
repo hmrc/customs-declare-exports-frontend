@@ -210,7 +210,7 @@ case class ExportsDeclaration(
   }
 
   def updateTransportCountry(transportCountry: TransportCountry): ExportsDeclaration =
-    copy(transport = transport.copy(transportCrossingTheBorderNationality = transportCountry.countryName.map(_ => transportCountry)))
+    copy(transport = transport.copy(transportCrossingTheBorderNationality = transportCountry.countryCode.map(_ => transportCountry)))
 
   def removeAuthorisationProcedureCodeChoice: ExportsDeclaration =
     copy(parties = parties.copy(authorisationProcedureCodeChoice = None))
