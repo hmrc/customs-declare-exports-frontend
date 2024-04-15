@@ -18,10 +18,17 @@ package views.declaration
 
 import base.Injector
 import connectors.CodeListConnector
-import controllers.declaration.routes.{CarrierDetailsController, DeclarantExporterController, IsExsController, RepresentativeStatusController}
+import controllers.declaration.routes.{
+  CarrierDetailsController,
+  DeclarantExporterController,
+  IsExsController,
+  RepresentativeStatusController,
+  ThirdPartyGoodsTransportationController
+}
 import forms.common.YesNoAnswer.YesNoAnswers
-import forms.common.{Address, AddressSpec}
+import forms.common.{Address, AddressSpec, Eori}
 import forms.declaration.ConsigneeDetails.form
+import forms.declaration.carrier.CarrierDetails
 import forms.declaration.{ConsigneeDetails, DeclarantIsExporter, EntityDetails, IsExs}
 import models.DeclarationType._
 import models.codes.Country
@@ -236,14 +243,14 @@ class ConsigneeDetailsViewSpec extends AddressViewSpec with PageWithButtonsSpec 
         backButton.attr("href") mustBe CarrierDetailsController.displayPage.url
       }
 
-      "display 'Back' button that links to 'Is Exs?' page" in {
-        val cachedParties = Parties(isExs = Some(IsExs(YesNoAnswers.no)), declarantIsExporter = Some(DeclarantIsExporter(YesNoAnswers.yes)))
+      "display 'Back' button that links to third party goods transport page" in {
+        val cachedParties = Parties(carrierDetails = Some(CarrierDetails(EntityDetails(Some(Eori(request.eori)), None))))
         val requestWithCachedParties = journeyRequest(request.cacheModel.copy(parties = cachedParties))
 
         val backButton = createView()(requestWithCachedParties).getElementById("back-link")
 
         backButton.text() mustBe messages(backToPreviousQuestionCaption)
-        backButton.attr("href") mustBe IsExsController.displayPage.url
+        backButton.attr("href") mustBe ThirdPartyGoodsTransportationController.displayPage.url
       }
 
       "display 'Back' button that links to 'Representative Status' page" in {
@@ -254,6 +261,16 @@ class ConsigneeDetailsViewSpec extends AddressViewSpec with PageWithButtonsSpec 
 
         backButton.text() mustBe messages(backToPreviousQuestionCaption)
         backButton.attr("href") mustBe RepresentativeStatusController.displayPage.url
+      }
+
+      "display 'Back' button that links to /is-this-exs page" in {
+        val cachedParties = Parties(isExs = Some(IsExs(YesNoAnswers.no)), declarantIsExporter = Some(DeclarantIsExporter(YesNoAnswers.yes)))
+        val requestWithCachedParties = journeyRequest(request.cacheModel.copy(parties = cachedParties))
+
+        val backButton = createView()(requestWithCachedParties).getElementById("back-link")
+
+        backButton.text() mustBe messages(backToPreviousQuestionCaption)
+        backButton.attr("href") mustBe IsExsController.displayPage.url
       }
     }
 

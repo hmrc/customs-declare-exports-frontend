@@ -65,16 +65,17 @@ trait CommonNavigator extends CacheDependentNavigators {
   }
 
   def commonCacheDependent(implicit request: JourneyRequest[_]): PartialFunction[DeclarationPage, ExportsDeclaration => Call] = {
-    case Ducr                             => ducrEntryPreviousPage
-    case Lrn                              => lrnPreviousPage
-    case AuthorisationHolderRequired      => authorisationHolderRequiredPreviousPage
-    case AuthorisationHolder              => authorisationHolderAddPreviousPage
-    case AuthorisationHolderSummary       => authorisationHolderRequiredPreviousPage
-    case Card2ForParties                  => card2ForPartiesPreviousPage
-    case SupervisingCustomsOffice         => supervisingCustomsOfficePreviousPage
-    case AuthorisationProcedureCodeChoice => authorisationProcedureCodeChoicePreviousPage
-    case OfficeOfExit                     => officeOfExitPreviousPage
-    case NatureOfTransaction              => natureOfTransactionPreviousPage
+    case Ducr                              => ducrEntryPreviousPage
+    case Lrn                               => lrnPreviousPage
+    case AuthorisationHolderRequired       => authorisationHolderRequiredPreviousPage
+    case AuthorisationHolder               => authorisationHolderAddPreviousPage
+    case AuthorisationHolderSummary        => authorisationHolderRequiredPreviousPage
+    case Card2ForParties                   => card2ForPartiesPreviousPage
+    case SupervisingCustomsOffice          => supervisingCustomsOfficePreviousPage
+    case AuthorisationProcedureCodeChoice  => authorisationProcedureCodeChoicePreviousPage
+    case OfficeOfExit                      => officeOfExitPreviousPage
+    case NatureOfTransaction               => natureOfTransactionPreviousPage
+    case ThirdPartyGoodsTransportationPage => thirdPartyGoodsTransportationPreviousPage
   }
 
   val commonCacheItemDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, String) => Call] = {

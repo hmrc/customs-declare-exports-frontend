@@ -73,6 +73,15 @@ trait CacheDependentNavigators {
         routes.SectionSummaryController.displayPage(1)
     }
 
+  protected def thirdPartyGoodsTransportationPreviousPage(cacheModel: ExportsDeclaration): Call =
+    cacheModel.`type` match {
+      case CLEARANCE =>
+        if (cacheModel.parties.consignorDetails.flatMap(_.details.eori).isDefined) routes.ConsignorEoriNumberController.displayPage
+        else routes.ConsignorDetailsController.displayPage
+      case _ if cacheModel.isDeclarantExporter => routes.DeclarantExporterController.displayPage
+      case _                                   => routes.RepresentativeStatusController.displayPage
+    }
+
   protected def officeOfExitPreviousPage(cacheModel: ExportsDeclaration): Call = {
     val skipLocationOfGoods = cacheModel.isAmendmentDraft || taggedAuthCodes.skipLocationOfGoods(cacheModel)
     if (!skipLocationOfGoods) routes.LocationOfGoodsController.displayPage
@@ -171,20 +180,20 @@ trait CacheDependentNavigators {
         routes.ConsignorEoriNumberController.displayPage
     }
 
-  protected def consigneeDetailsPreviousPage(cacheModel: ExportsDeclaration): Call =
-    if (cacheModel.parties.carrierDetails.flatMap(_.details.eori).isEmpty)
-      routes.CarrierDetailsController.displayPage
-    else
-      routes.CarrierEoriNumberController.displayPage
+  protected def consigneeDetailsPreviousPage(cacheModel: ExportsDeclaration)(implicit request: JourneyRequest[_]): Call =
+    cacheModel.isUsingOwnTransport match {
+      case Some(true)                                                             => routes.ThirdPartyGoodsTransportationController.displayPage
+      case _ if cacheModel.parties.carrierDetails.flatMap(_.details.eori).isEmpty => routes.CarrierDetailsController.displayPage
+      case _                                                                      => routes.CarrierEoriNumberController.displayPage
+    }
 
-  protected def consigneeDetailsClearancePreviousPage(cacheModel: ExportsDeclaration): Call =
-    if (cacheModel.isExs)
-      consigneeDetailsPreviousPage(cacheModel)
-    else {
-      if (cacheModel.isDeclarantExporter)
-        routes.IsExsController.displayPage
-      else
-        routes.RepresentativeStatusController.displayPage
+  protected def consigneeDetailsClearancePreviousPage(cacheModel: ExportsDeclaration)(implicit request: JourneyRequest[_]): Call =
+    cacheModel.isUsingOwnTransport match {
+      case Some(true)                                                             => routes.ThirdPartyGoodsTransportationController.displayPage
+      case _ if !cacheModel.isExs && cacheModel.isDeclarantExporter               => routes.IsExsController.displayPage
+      case _ if !cacheModel.isExs                                                 => routes.RepresentativeStatusController.displayPage
+      case _ if cacheModel.parties.carrierDetails.flatMap(_.details.eori).isEmpty => routes.CarrierDetailsController.displayPage
+      case _                                                                      => routes.CarrierEoriNumberController.displayPage
     }
 
   protected def representativeAgentClearancePreviousPage(cacheModel: ExportsDeclaration): Call =
