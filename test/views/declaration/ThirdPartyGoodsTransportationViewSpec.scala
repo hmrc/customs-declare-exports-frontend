@@ -49,7 +49,10 @@ class ThirdPartyGoodsTransportationViewSpec extends UnitViewSpec with Injector {
         "declaration.thirdPartyGoodsTransportation.radio.error",
         "declaration.thirdPartyGoodsTransportation.expander.title",
         "declaration.thirdPartyGoodsTransportation.expander.paragraph.1",
-        "declaration.thirdPartyGoodsTransportation.expander.paragraph.2"
+        "declaration.thirdPartyGoodsTransportation.expander.paragraph.2",
+        "tariff.declaration.thirdPartyGoodsTransportation.common.text",
+        "tariff.declaration.thirdPartyGoodsTransportation.common.linkText.0",
+        "tariff.declaration.thirdPartyGoodsTransportation.common.linkText.1"
       )
 
       "display page title" in {
@@ -83,6 +86,22 @@ class ThirdPartyGoodsTransportationViewSpec extends UnitViewSpec with Injector {
 
       "display tariff expander" in {
         Option(view.getElementById("tariffReference")) mustBe defined
+
+        val tariffTitle = view.getElementsByClass("govuk-details__summary-text").last
+        tariffTitle.text mustBe messages(s"tariff.expander.title.common")
+
+        val tariffDetails = view.getElementsByClass("govuk-details__text").last.text
+
+        val expectedText =
+          removeLineBreakIfAny(
+            messages(
+              "tariff.declaration.thirdPartyGoodsTransportation.common.text",
+              messages("tariff.declaration.thirdPartyGoodsTransportation.common.linkText.0"),
+              messages("tariff.declaration.thirdPartyGoodsTransportation.common.linkText.1")
+            )
+          )
+
+        removeBlanksIfAnyBeforeDot(tariffDetails) mustBe expectedText
       }
 
       "display error when all entered input is incorrect" in {
