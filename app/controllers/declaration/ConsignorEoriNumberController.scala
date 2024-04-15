@@ -18,9 +18,11 @@ package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
+import controllers.declaration.routes._
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.consignor.ConsignorEoriNumber.form
 import forms.declaration.consignor.{ConsignorDetails, ConsignorEoriNumber}
+import models.DeclarationType.CLEARANCE
 import models.requests.JourneyRequest
 import models.{DeclarationType, ExportsDeclaration}
 import play.api.data.Form
@@ -45,7 +47,7 @@ class ConsignorEoriNumberController @Inject() (
 )(implicit ec: ExecutionContext, auditService: AuditService)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithUnsafeDefaultFormBinding {
 
-  val validJourneys = Seq(DeclarationType.CLEARANCE)
+  val validJourneys: Seq[DeclarationType.Value] = Seq(CLEARANCE)
 
   def displayPage: Action[AnyContent] = (authenticate andThen journeyType(validJourneys)) { implicit request =>
     val frm = form.withSubmissionErrors
@@ -71,12 +73,12 @@ class ConsignorEoriNumberController @Inject() (
   }
 
   private def nextPage(hasEori: String)(implicit request: JourneyRequest[_]): Call =
-    if (hasEori == YesNoAnswers.yes && request.cacheModel.isDeclarantExporter) {
-      controllers.declaration.routes.CarrierEoriNumberController.displayPage
-    } else if (hasEori == YesNoAnswers.yes) {
-      controllers.declaration.routes.RepresentativeAgentController.displayPage
-    } else {
-      controllers.declaration.routes.ConsignorDetailsController.displayPage
+    request.cacheModel.`type` match {
+      case CLEARANCE if hasEori == YesNoAnswers.yes                                   => ThirdPartyGoodsTransportationController.displayPage
+      case CLEARANCE                                                                  => ConsignorDetailsController.displayPage
+      case _ if hasEori == YesNoAnswers.yes && request.cacheModel.isDeclarantExporter => CarrierEoriNumberController.displayPage
+      case _ if hasEori == YesNoAnswers.yes                                           => RepresentativeAgentController.displayPage
+      case _                                                                          => ConsignorDetailsController.displayPage
     }
 
   private def updateCache(formData: ConsignorEoriNumber, savedConsignorDetails: Option[ConsignorDetails])(

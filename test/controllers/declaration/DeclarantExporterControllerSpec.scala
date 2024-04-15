@@ -17,7 +17,12 @@
 package controllers.declaration
 
 import base.{AuditedControllerSpec, ControllerSpec}
-import controllers.declaration.routes.{CarrierEoriNumberController, ConsigneeDetailsController, ExporterEoriNumberController, IsExsController}
+import controllers.declaration.routes.{
+  ConsigneeDetailsController,
+  ExporterEoriNumberController,
+  IsExsController,
+  ThirdPartyGoodsTransportationController
+}
 import forms.declaration.DeclarantIsExporter
 import models.DeclarationType
 import org.mockito.ArgumentCaptor
@@ -131,7 +136,7 @@ class DeclarantExporterControllerSpec extends ControllerSpec with AuditedControl
     }
 
     onJourney(DeclarationType.STANDARD, DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL) { request =>
-      "return 303 (SEE_OTHER) and redirect to carrier page when declarant is exporter" in {
+      "return 303 (SEE_OTHER) and redirect to third party goods transport page when declarant is exporter" in {
         withNewCaching(request.cacheModel)
 
         val correctForm = Json.toJson(DeclarantIsExporter("Yes"))
@@ -139,7 +144,7 @@ class DeclarantExporterControllerSpec extends ControllerSpec with AuditedControl
         val result = controller.submitForm()(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe CarrierEoriNumberController.displayPage
+        thePageNavigatedTo mustBe ThirdPartyGoodsTransportationController.displayPage
 
         verifyPage(0)
         verifyAudit()

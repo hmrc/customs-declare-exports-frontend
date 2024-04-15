@@ -217,6 +217,8 @@ tariff.declaration.mucr.common.linkText.0 = Elfen Ddata 2/1 - Datganiad Symlach,
 tariff.declaration.declarantDetails.common.linkText.0 = Elfen Ddata 3/18 - Rhif Adnabod y Datganydd (yn agor tab newydd)
 tariff.declaration.areYouTheExporter.common.linkText.0 = Elfen Ddata 3/2 - Rhif Adnabod yr Allforiwr (yn agor tab newydd)
 tariff.declaration.areYouTheExporter.common.1.text = Bydd ateb ‘Iawn’ yn anfon 00400 ALLFORWR ar gyfer Elfen Ddata 2/2, sy’n ofynnol os mai chi yw’r allforiwr.
+tariff.declaration.thirdPartyGoodsTransportation.0.common.linkText.0 = Elfen Ddata 3/2 - Rhif Adnabod yr Allforiwr (yn agor tab newydd)
+tariff.declaration.thirdPartyGoodsTransportation.1.common.linkText.0 = Elfen Ddata 3/32 - Rhif Adnabod y Cludwr (yn agor tab newydd)
 tariff.declaration.exporterEoriNumber.common.linkText.0 = Elfen Ddata 3/2 - Rhif Adnabod yr Allforiwr (yn agor tab newydd)
 tariff.declaration.exporterAddress.common.linkText.0 = Elfen Ddata 3/1 - Allforiwr (yn agor tab newydd)
 tariff.declaration.consignorEoriNumber.clearance.linkText.0 = Elfen Ddata 3/8 - Rhif Adnabod yr Anfonydd (yn agor tab newydd)
@@ -527,6 +529,16 @@ declaration.declarant.exporter.body = Yr allforiwr yw’r gwerthwr, neu’r pers
 declaration.declarant.exporter.answer.no = Na, rwy’n cynrychioli’r allforiwr
 declaration.declarant.exporter.answer.no.hint = Er enghraifft, trefnydd anfon nwyddau neu frocer tollau.
 declaration.declarant.exporter.error = Dewiswch ‘Iawn’ os mai chi yw’r allforiwr
+
+declaration.thirdPartyGoodsTransportation.title = A fydd y nwyddau’n cael eu symud gan gludwr trydydd parti?
+declaration.thirdPartyGoodsTransportation.body = Mae hyn yn cynnwys cludwyr nwyddau ar y ffordd a RoRo, a chariwyr cwmni hedfan neu dros y môr.
+declaration.thirdPartyGoodsTransportation.radio.yes = Iawn
+declaration.thirdPartyGoodsTransportation.radio.no = Na, rydym yn defnyddio dull cludo ein hunain
+declaration.thirdPartyGoodsTransportation.radio.text = Dull o gludo ynghlwm wrth yr EORI, sef {0}
+declaration.thirdPartyGoodsTransportation.radio.error = Mae’n rhaid i chi ddewis un o’r opsiynau
+declaration.thirdPartyGoodsTransportation.expander.title = Os yw mwy nag un cariwr neu gludwr dan sylw
+declaration.thirdPartyGoodsTransportation.expander.paragraph.1 = Dim ond un cariwr neu gludwr sydd angen ei enwi. Pan mae sawl cludwr ynghlwm, cyfnodwch yr un sy’n cludo’r nwyddau yn y man cychwyn.
+declaration.thirdPartyGoodsTransportation.expander.paragraph.2 = Er enghraifft, ar gyfer fferi Gyrru-ymlaen-ac-i-ffwrdd, enwch gwnni cludo’r gyrrwr. Ar gyfer y Cefnfor a’r Awyr, cofnodwch y Cwmni Llongau neu’r Cwmni Hedfan.
 
 declaration.consignee.title = Ble bydd y nwyddau’n cael eu danfon?
 declaration.consignee.paragraph1 = Nodwch enw’r busnes, y sefydliad neu’r unigolyn sy’n cael y nwyddau, a’r cyfeiriad lle bydd y nwyddau’n cael eu danfon.
