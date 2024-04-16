@@ -27,7 +27,7 @@ import models.declaration.DeclarationStatus.DeclarationStatus
 import models.declaration.submissions.{Submission, SubmissionAmendment}
 import play.api.Logging
 import play.api.libs.json.{JsObject, Json}
-import services.audit.AuditTypes.{AmendmentCancellation, AmendmentPayload, Audit, SubmissionPayload}
+import services.audit.AuditTypes.{AmendmentCancellation, AmendmentCancellationPayload, AmendmentPayload, Audit, SubmissionPayload}
 import services.audit.{AuditService, AuditTypes, EventData}
 import services.view.AmendmentAction.{AmendmentAction, Cancellation, Resubmission}
 import uk.gov.hmrc.http.HeaderCarrier
@@ -77,12 +77,10 @@ class SubmissionService @Inject() (connector: CustomsDeclareExportsConnector, au
         case Some(parentDeclaration) =>
           val timerContext = metrics.startTimer(submissionAmendmentMetric)
           val isCancellation = amendmentAction == Cancellation
-          val auditType =
-            if (isCancellation) AmendmentCancellation
-            else {
-              auditService.auditAllPagesUserInput(AmendmentPayload, declaration)
-              AuditTypes.Amendment
-            }
+
+          val preAndPostAuditTypes =
+            if (isCancellation) (AmendmentCancellationPayload, AmendmentCancellation)
+            else (AmendmentPayload, AuditTypes.Amendment)
 
           val fieldPointers =
             if (isCancellation) List("")
@@ -92,20 +90,29 @@ class SubmissionService @Inject() (connector: CustomsDeclareExportsConnector, au
             }
 
           val submissionAmendment = SubmissionAmendment(submissionId, declaration.id, isCancellation, fieldPointers)
-          val result =
+          val result = auditService.auditAllPagesUserInput(preAndPostAuditTypes._1, declaration).flatMap { _ =>
             if (amendmentAction == Resubmission) connector.resubmitAmendment(submissionAmendment)
             else connector.submitAmendment(submissionAmendment)
+          }
 
           result.andThen {
             case Success(conversationId) =>
-              auditAmendmentSubmission(eori, declaration, parentDeclaration, amendmentSubmission, conversationId, Success.toString, auditType)
+              auditAmendmentSubmission(
+                eori,
+                declaration,
+                parentDeclaration,
+                amendmentSubmission,
+                conversationId,
+                Success.toString,
+                preAndPostAuditTypes._2
+              )
               metrics.incrementCounter(submissionAmendmentMetric)
               timerContext.stop()
 
             case Failure(exception) =>
               logProgress(declaration, "Amendment Submission Failed")
               logger.error(s"Error response from backend $exception")
-              auditAmendmentSubmission(eori, declaration, parentDeclaration, amendmentSubmission, "N/A", Failure.toString, auditType)
+              auditAmendmentSubmission(eori, declaration, parentDeclaration, amendmentSubmission, "N/A", Failure.toString, preAndPostAuditTypes._2)
           }
             .map(Some(_))
 
@@ -189,6 +196,7 @@ class SubmissionService @Inject() (connector: CustomsDeclareExportsConnector, au
       EventData.decType.toString -> additionalDeclarationType.map(_.toString).getOrElse(""),
       EventData.lrn.toString -> lrn.getOrElse(""),
       EventData.ducr.toString -> ducr.getOrElse(""),
+      EventData.changeReason.toString -> amendmentSubmission.reason,
       EventData.fullName.toString -> amendmentSubmission.fullName,
       EventData.jobRole.toString -> amendmentSubmission.jobRole,
       EventData.email.toString -> amendmentSubmission.email,

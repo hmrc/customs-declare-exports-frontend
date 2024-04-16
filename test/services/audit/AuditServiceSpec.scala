@@ -152,12 +152,12 @@ trait AuditTestSupport extends UnitWithMocksSpec with ExportsDeclarationBuilder 
 
   val extendedCancellationEvent = ExtendedDataEvent(
     auditSource = appConfig.appName,
-    auditType = AuditTypes.Cancellation.toString,
+    auditType = AuditTypes.CancellationPayload.toString,
     tags = AuditExtensions
       .auditHeaderCarrier(hc)
       .toAuditTags(
-        transactionName = s"export-declaration-${AuditTypes.Cancellation.toString.toLowerCase}-payload-request",
-        path = s"customs-declare-exports/${AuditTypes.Cancellation.toString}/full-payload"
+        transactionName = s"export-declaration-${AuditTypes.CancellationPayload.toString.toLowerCase}-payload-request",
+        path = s"customs-declare-exports/${AuditTypes.CancellationPayload.toString}/full-payload"
       ),
     detail = Json
       .toJson(auditCarrierDetails)

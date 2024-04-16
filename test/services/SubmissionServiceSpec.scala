@@ -33,6 +33,7 @@ import services.audit.{AuditService, AuditTypes, EventData}
 import services.cache.SubmissionBuilder
 import services.view.AmendmentAction.{Cancellation, Resubmission, Submission => SubmitAmendment}
 import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.play.audit.http.connector.AuditResult
 
 import scala.concurrent.ExecutionContext.global
 import scala.concurrent.Future
@@ -163,6 +164,7 @@ class SubmissionServiceSpec
     "successfully submit to the back end a valid amendment" in {
       when(connector.findDeclaration(any())(any(), any())).thenReturn(Future.successful(Some(parentDeclaration)))
       when(connector.submitAmendment(any())(any(), any())).thenReturn(Future.successful(expectedActionId))
+      when(auditService.auditAllPagesUserInput(any(), any())(any())).thenReturn(Future.successful(AuditResult.Success))
 
       val result = submissionService.submitAmendment(eori, amendedDecl, amendmentSubmission, submissionId, SubmitAmendment)(hc, global)
       result.futureValue mustBe Some(expectedActionId)
@@ -184,6 +186,7 @@ class SubmissionServiceSpec
     "successfully resubmit to the back end a failed amendment" in {
       when(connector.findDeclaration(any())(any(), any())).thenReturn(Future.successful(Some(parentDeclaration)))
       when(connector.resubmitAmendment(any())(any(), any())).thenReturn(Future.successful(expectedActionId))
+      when(auditService.auditAllPagesUserInput(any(), any())(any())).thenReturn(Future.successful(AuditResult.Success))
 
       val result = submissionService.submitAmendment(eori, amendedDecl, amendmentSubmission, submissionId, Resubmission)(hc, global)
       result.futureValue mustBe Some(expectedActionId)
@@ -205,9 +208,13 @@ class SubmissionServiceSpec
     "successfully submit to the back end a valid amendment cancellation" in {
       when(connector.findDeclaration(any())(any(), any())).thenReturn(Future.successful(Some(parentDeclaration)))
       when(connector.submitAmendment(any())(any(), any())).thenReturn(Future.successful(expectedActionId))
+      when(auditService.auditAllPagesUserInput(any(), any())(any())).thenReturn(Future.successful(AuditResult.Success))
 
       val result = submissionService.submitAmendment(eori, amendedDecl, amendmentSubmission, submissionId, Cancellation)(hc, global)
       result.futureValue mustBe Some(expectedActionId)
+
+      verify(auditService).auditAllPagesUserInput(equalTo(AuditTypes.AmendmentCancellationPayload), equalTo(amendedDecl))(any())
+      verify(auditService).auditAmendmentSent(equalTo(AuditTypes.AmendmentCancellation), any())(any())
 
       val expectedSubmissionAmendment = SubmissionAmendment(submissionId, "id2", true, List(""))
       verify(connector).submitAmendment(equalTo(expectedSubmissionAmendment))(any(), any())

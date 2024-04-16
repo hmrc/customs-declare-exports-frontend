@@ -27,7 +27,7 @@ import models.CancellationStatus.CancellationResult
 import models.requests.SessionHelper._
 import models.{CancelDeclaration, CancellationAlreadyRequested}
 import org.mockito.ArgumentMatchers
-import org.mockito.ArgumentMatchers.any
+import org.mockito.ArgumentMatchers.{any, eq => equalTo}
 import org.mockito.Mockito.{verify, when}
 import play.api.libs.json.{JsValue, Json}
 import play.api.test.Helpers._
@@ -86,6 +86,15 @@ class CancelDeclarationControllerSpec extends ControllerWithoutFormSpec with Err
 
         verify(mockAuditService).auditAllPagesDeclarationCancellation(any())(any())
       }
+    }
+
+    "call audit service with expected auditTypes" in new SetUp {
+      cancelDeclarationResponse()
+      val result = controller.onSubmit(postRequestWithSession(correctCancelDeclarationJSON, sessionData.toSeq))
+      status(result) must be(SEE_OTHER)
+
+      verify(mockAuditService).auditAllPagesDeclarationCancellation(any())(any())
+      verify(mockAuditService).audit(equalTo(AuditTypes.Cancellation), any())(any())
     }
 
     "return a 303 redirect to holding page" when {
