@@ -78,9 +78,9 @@ class SubmissionService @Inject() (connector: CustomsDeclareExportsConnector, au
           val timerContext = metrics.startTimer(submissionAmendmentMetric)
           val isCancellation = amendmentAction == Cancellation
 
-          val auditTypeAndFunction =
-            if (isCancellation) (AmendmentCancellation, () => auditService.auditAllPagesUserInput(AmendmentCancellationPayload, declaration))
-            else (AuditTypes.Amendment, () => auditService.auditAllPagesUserInput(AmendmentPayload, declaration))
+          val preAndPostAuditTypes =
+            if (isCancellation) (AmendmentCancellationPayload, AmendmentCancellation)
+            else (AmendmentPayload, AuditTypes.Amendment)
 
           val fieldPointers =
             if (isCancellation) List("")
@@ -90,7 +90,7 @@ class SubmissionService @Inject() (connector: CustomsDeclareExportsConnector, au
             }
 
           val submissionAmendment = SubmissionAmendment(submissionId, declaration.id, isCancellation, fieldPointers)
-          val result = auditTypeAndFunction._2().flatMap { _ =>
+          val result = auditService.auditAllPagesUserInput(preAndPostAuditTypes._1, declaration).flatMap { _ =>
             if (amendmentAction == Resubmission) connector.resubmitAmendment(submissionAmendment)
             else connector.submitAmendment(submissionAmendment)
           }
@@ -104,7 +104,7 @@ class SubmissionService @Inject() (connector: CustomsDeclareExportsConnector, au
                 amendmentSubmission,
                 conversationId,
                 Success.toString,
-                auditTypeAndFunction._1
+                preAndPostAuditTypes._2
               )
               metrics.incrementCounter(submissionAmendmentMetric)
               timerContext.stop()
@@ -112,7 +112,7 @@ class SubmissionService @Inject() (connector: CustomsDeclareExportsConnector, au
             case Failure(exception) =>
               logProgress(declaration, "Amendment Submission Failed")
               logger.error(s"Error response from backend $exception")
-              auditAmendmentSubmission(eori, declaration, parentDeclaration, amendmentSubmission, "N/A", Failure.toString, auditTypeAndFunction._1)
+              auditAmendmentSubmission(eori, declaration, parentDeclaration, amendmentSubmission, "N/A", Failure.toString, preAndPostAuditTypes._2)
           }
             .map(Some(_))
 
