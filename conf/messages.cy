@@ -588,7 +588,6 @@ declaration.address.fullName.empty = Nodwch enw
 declaration.address.fullName.error = Mae’n rhaid i’r enw gynnwys rhifau, llythrennau, comas, cysylltnodau a chollnodau’n unig
 declaration.address.fullName.length = Mae’n rhaid i’r enw fod yn 35 o gymeriadau neu lai
 declaration.address.addressLine = Cyfeiriad
-declaration.address.addressLine35MaxChars = Cyfeiriad (caniateir uchafswm o 35 cymeriad)
 declaration.address.addressLine.empty = Nodwch gyfeiriad
 declaration.address.addressLine.error = Mae’n rhaid i’r cyfeiriad gynnwys rhifau, llythrennau, comas, cysylltnodau, collnodau a chromfachau’n unig.
 declaration.address.addressLine.length = Mae’n rhaid i’r cyfeiriad fod yn 70 o gymeriadau neu lai

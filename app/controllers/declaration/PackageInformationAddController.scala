@@ -18,15 +18,15 @@ package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.declaration.PackageInformationAddController.PackageInformationFormGroupId
+import controllers.declaration.routes.PackageInformationSummaryController
 import controllers.helpers.MultipleItemsHelper
-import controllers.helpers.SequenceIdHelper.handleSequencing
 import controllers.helpers.PackageInformationHelper.allCachedPackageInformation
+import controllers.helpers.SequenceIdHelper.handleSequencing
 import controllers.navigation.Navigator
 import forms.declaration.PackageInformation
-import forms.declaration.PackageInformation.form
+import forms.declaration.PackageInformation.{form, limit, typeId}
 import models.ExportsDeclaration
 import models.requests.JourneyRequest
-import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import services.PackageTypesService
@@ -34,6 +34,7 @@ import services.audit.AuditService
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.WithUnsafeDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
+import utils.validators.forms.AutoCompleteFieldBinding
 import views.html.declaration.packageInformation.package_information_add
 
 import javax.inject.Inject
@@ -47,28 +48,22 @@ class PackageInformationAddController @Inject() (
   mcc: MessagesControllerComponents,
   packageInformationPage: package_information_add
 )(implicit ec: ExecutionContext, packageTypesService: PackageTypesService, auditService: AuditService)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithUnsafeDefaultFormBinding {
+    extends FrontendController(mcc) with AutoCompleteFieldBinding with I18nSupport with ModelCacheable with SubmissionErrors
+    with WithUnsafeDefaultFormBinding {
 
   def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     Ok(packageInformationPage(itemId, form.withSubmissionErrors))
   }
 
   def submitForm(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    val boundForm = form.bindFromRequest()
-    saveInformation(itemId, boundForm, allCachedPackageInformation(itemId))
-  }
-
-  private def saveInformation(itemId: String, boundForm: Form[PackageInformation], cachedData: Seq[PackageInformation])(
-    implicit request: JourneyRequest[AnyContent]
-  ): Future[Result] =
+    val binding = form.bindFromRequest(formValuesFromRequest(typeId))
     MultipleItemsHelper
-      .add(boundForm, cachedData, PackageInformation.limit, fieldId = PackageInformationFormGroupId, "declaration.packageInformation")
+      .add(binding, allCachedPackageInformation(itemId), limit, PackageInformationFormGroupId, "declaration.packageInformation")
       .fold(
         formWithErrors => Future.successful(BadRequest(packageInformationPage(itemId, formWithErrors))),
-        packageInformation =>
-          updateCache(itemId, packageInformation)
-            .map(_ => navigator.continueTo(routes.PackageInformationSummaryController.displayPage(itemId)))
+        updateCache(itemId, _).map(_ => navigator.continueTo(PackageInformationSummaryController.displayPage(itemId)))
       )
+  }
 
   private def updateCache(itemId: String, packageInformation: Seq[PackageInformation])(
     implicit request: JourneyRequest[AnyContent]

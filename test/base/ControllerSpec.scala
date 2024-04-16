@@ -45,7 +45,8 @@ trait ControllerSpec
 
   implicit val ec: ExecutionContext = ExecutionContext.global
 
-  protected def addActionUrlEncoded(field: String = ""): (String, String) = if (field.isEmpty) (Add.toString, field) else (AddField.toString, field)
+  protected def addActionUrlEncoded(field: String = ""): (String, String) =
+    if (field.isEmpty) (Add.toString, field) else (AddField.toString, field)
 
   protected val saveAndContinueActionUrlEncoded: (String, String) = (SaveAndContinue.toString, "")
 
@@ -107,6 +108,8 @@ trait ControllerSpec
     when(form.errors).thenReturn(Seq(submissionFormError))
     form
   }
+
+  def fieldIdOnError(fieldId: String): String = s"$fieldId-autocomp"
 
   "Controller" should {
     "return form with submission errors" in {

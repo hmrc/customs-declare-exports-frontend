@@ -32,6 +32,7 @@ import models.requests.JourneyRequest
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.{reset, verify, when}
+import org.mockito.stubbing.OngoingStubbing
 import org.scalatest.OptionValues
 import org.scalatest.concurrent.ScalaFutures
 import play.api.data.{Form, FormError}
@@ -71,7 +72,7 @@ class AdditionalProcedureCodesControllerSpec
   private val procedureCodeDataInvalid = ProcedureCodesData(Some("0000"), Seq.empty[String])
   private val validAdditionalProcedureCodes = Seq(AdditionalProcedureCodeModel(NO_APC_APPLIES_CODE, "None"))
 
-  private def templateParameters: (Form[AdditionalProcedureCode], Seq[String]) = {
+  private def theResponseForm: (Form[AdditionalProcedureCode], Seq[String]) = {
     val formCaptor = ArgumentCaptor.forClass(classOf[Form[AdditionalProcedureCode]])
     val dataCaptor = ArgumentCaptor.forClass(classOf[Seq[String]])
     verify(additionalProcedureCodesPage).apply(any(), formCaptor.capture(), any(), any(), dataCaptor.capture())(any(), any())
@@ -98,16 +99,14 @@ class AdditionalProcedureCodesControllerSpec
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     withNewCaching(aDeclaration(withType(DeclarationType.STANDARD), withItem(ExportItem(itemId, procedureCodes = Some(procedureCodeDataValid)))))
     await(controller.displayPage(itemId)(request))
-    templateParameters._1
+    theResponseForm._1
   }
 
   "AdditionalProcedureCodesController on displayOutcomePage" should {
 
     "return 200 (OK)" when {
-
       onEveryDeclarationJourney() { request =>
         "display page method is invoked with empty additionalProcedureCodes in cache" in {
-
           withNewCaching(aDeclaration(withType(request.declarationType), withItem(ExportItem(itemId, procedureCodes = Some(procedureCodeDataValid)))))
 
           val result = controller.displayPage(itemId)(getRequest())
@@ -115,13 +114,12 @@ class AdditionalProcedureCodesControllerSpec
           status(result) mustBe OK
           verify(additionalProcedureCodesPage).apply(any(), any(), any(), any(), any())(any(), any())
 
-          val (responseForm, responseSeq) = templateParameters
+          val (responseForm, responseSeq) = theResponseForm
           responseForm.value mustBe empty
           responseSeq mustBe empty
         }
 
         "display page method is invoked with data in cache" in {
-
           val item = ExportItem(itemId, procedureCodes = Some(procedureCodeDataValid))
           withNewCaching(aDeclaration(withType(request.declarationType), withItem(item)))
 
@@ -130,7 +128,7 @@ class AdditionalProcedureCodesControllerSpec
           status(result) mustBe OK
           verify(additionalProcedureCodesPage).apply(any(), any(), any(), any(), any())(any(), any())
 
-          val (responseForm, responseSeq) = templateParameters
+          val (responseForm, responseSeq) = theResponseForm
           responseForm.value mustBe empty
           responseSeq mustBe Seq.empty[String]
         }
@@ -163,7 +161,6 @@ class AdditionalProcedureCodesControllerSpec
   }
 
   "AdditionalProcedureCodesController on submitAdditionalProcedureCodes" when {
-
     val validExportItem = ExportItem(itemId, procedureCodes = Some(procedureCodeDataValid))
 
     onEveryDeclarationJourney() { implicit request =>
@@ -171,7 +168,7 @@ class AdditionalProcedureCodesControllerSpec
         "return 400 (BAD_REQUEST)" in {
           withNewCaching(aDeclaration(withType(request.declarationType), withItem(validExportItem)))
 
-          val formData = Seq(("additionalProcedureCode", sampleProcedureCode), ("WrongAction", ""))
+          val formData = Seq((additionalProcedureCodeKey, sampleProcedureCode), ("WrongAction", ""))
 
           val result = controller.submitAdditionalProcedureCodes(itemId)(postRequestAsFormUrlEncoded(formData: _*))
 
@@ -182,17 +179,15 @@ class AdditionalProcedureCodesControllerSpec
 
       "provided with 'Add' Action" when {
         "cache currently contains no AdditionalProcedureCodes for this item" when {
-
           testBadCodes(validExportItem, addActionUrlEncoded())
 
           "provided with correct code" should {
-
             testAddCodeSuccess(validExportItem, addActionUrlEncoded())
 
             "redirect to AdditionalProcedureCodes page" in {
               prepareCache(validExportItem)
 
-              val correctForm = Seq(("additionalProcedureCode", "123"), addActionUrlEncoded())
+              val correctForm = Seq((additionalProcedureCodeKey, "123"), addActionUrlEncoded())
               val result = controller.submitAdditionalProcedureCodes(itemId)(postRequestAsFormUrlEncoded(correctForm: _*))
 
               status(result) mustBe SEE_OTHER
@@ -217,7 +212,7 @@ class AdditionalProcedureCodesControllerSpec
             "redirect to AdditionalProcedureCodes page" in {
               prepareCache(exportItem)
 
-              val correctForm = Seq(("additionalProcedureCode", "123"), addActionUrlEncoded())
+              val correctForm = Seq((additionalProcedureCodeKey, "123"), addActionUrlEncoded())
               val result = controller.submitAdditionalProcedureCodes(itemId)(postRequestAsFormUrlEncoded(correctForm: _*))
 
               status(result) mustBe SEE_OTHER
@@ -229,7 +224,6 @@ class AdditionalProcedureCodesControllerSpec
 
       "provided with 'Save and Continue' Action" when {
         "cache currently contains no AdditionalProcedureCodes for this item" when {
-
           testBadCodes(validExportItem, saveAndContinueActionUrlEncoded)
 
           "provided with correct code" should {
@@ -238,7 +232,7 @@ class AdditionalProcedureCodesControllerSpec
               saveAndContinueActionUrlEncoded
             )
 
-            val correctForm = Seq(("additionalProcedureCode", "123"), saveAndContinueActionUrlEncoded)
+            val correctForm = Seq((additionalProcedureCodeKey, "123"), saveAndContinueActionUrlEncoded)
 
             "redirect to FiscalInformation page" when {
               "the ProcedureCode in cache is '1042'" in {
@@ -300,7 +294,7 @@ class AdditionalProcedureCodesControllerSpec
         "cache contains some AdditionalProcedureCodes for this item" when {
 
           "provided with empty code" should {
-            val formData = Seq(("additionalProcedureCode", ""), saveAndContinueActionUrlEncoded)
+            val formData = Seq((additionalProcedureCodeKey, ""), saveAndContinueActionUrlEncoded)
 
             "redirect to FiscalInformation page" when {
               "the ProcedureCode in cache is '1042'" in {
@@ -332,12 +326,14 @@ class AdditionalProcedureCodesControllerSpec
           "provided with incorrect code" should {
             "return 400 (BAD_REQUEST)" in {
               prepareCache(exportItem)
-              val formData = Seq(("additionalProcedureCode", "incorrect"), saveAndContinueActionUrlEncoded)
+              val formData = Seq((additionalProcedureCodeKey, "incorrect"), saveAndContinueActionUrlEncoded)
 
               val result = controller.submitAdditionalProcedureCodes(itemId)(postRequestAsFormUrlEncoded(formData: _*))
 
               status(result) mustBe BAD_REQUEST
               verify(additionalProcedureCodesPage).apply(any(), any(), any(), any(), any())(any(), any())
+
+              theResponseForm._1.errors.head.messages.head mustBe "declaration.additionalProcedureCodes.error.invalid"
             }
           }
 
@@ -347,7 +343,7 @@ class AdditionalProcedureCodesControllerSpec
 
             testAddCodeSuccess(exportItem, saveAndContinueActionUrlEncoded)
 
-            val correctForm = Seq(("additionalProcedureCode", "123"), saveAndContinueActionUrlEncoded)
+            val correctForm = Seq((additionalProcedureCodeKey, "123"), saveAndContinueActionUrlEncoded)
 
             "redirect to FiscalInformation page" when {
               "the ProcedureCode in cache is '1042'" in {
@@ -412,7 +408,6 @@ class AdditionalProcedureCodesControllerSpec
       }
 
       "provided with 'Remove' Action" when {
-
         val removeAction = (Remove.toString, "123")
 
         "AdditionalProcedureCodes cache is empty" should {
@@ -439,7 +434,6 @@ class AdditionalProcedureCodesControllerSpec
         }
 
         "AdditionalProcedureCodes cache is NOT empty" should {
-
           val exportItem = ExportItem(itemId, procedureCodes = Some(ProcedureCodesData(Some(sampleProcedureCode), Seq("111", "123"))))
 
           "remove the code from cache" in {
@@ -487,33 +481,39 @@ class AdditionalProcedureCodesControllerSpec
     "provided with empty code" should {
       "return 400 (BAD_REQUEST)" in {
         prepareCache(exportItem)
-        val formData = Seq(("additionalProcedureCode", ""), formAction)
+        val formData = Seq((additionalProcedureCodeKey, ""), formAction)
 
         val result = controller.submitAdditionalProcedureCodes(itemId)(postRequestAsFormUrlEncoded(formData: _*))
 
         status(result) mustBe BAD_REQUEST
         verify(additionalProcedureCodesPage).apply(any(), any(), any(), any(), any())(any(), any())
+
+        theResponseForm._1.errors.head.messages.head mustBe "declaration.additionalProcedureCodes.error.empty"
       }
     }
 
     "provided with incorrect code" should {
       "return 400 (BAD_REQUEST)" in {
         prepareCache(exportItem)
-        val formData = Seq(("additionalProcedureCode", "incorrect"), addActionUrlEncoded())
+        val formData = Seq((additionalProcedureCodeKey, "incorrect"), addActionUrlEncoded())
 
         val result = controller.submitAdditionalProcedureCodes(itemId)(postRequestAsFormUrlEncoded(formData: _*))
 
         status(result) mustBe BAD_REQUEST
         verify(additionalProcedureCodesPage).apply(any(), any(), any(), any(), any())(any(), any())
+
+        theResponseForm._1.errors.head.messages.head mustBe "declaration.additionalProcedureCodes.error.invalid"
       }
     }
   }
 
-  private def testCodesWithCachePopulated(defaultExportItem: ExportItem, formAction: (String, String))(implicit request: JourneyRequest[_]) = {
+  // scalastyle:off
+  private def testCodesWithCachePopulated(defaultExportItem: ExportItem, formAction: (String, String))(implicit request: JourneyRequest[_]): Unit = {
+
     "provided with duplicated code" should {
       "return 400 (BAD_REQUEST)" in {
         prepareCache(defaultExportItem)
-        val formData = Seq(("additionalProcedureCode", "111"), formAction)
+        val formData = Seq((additionalProcedureCodeKey, "111"), formAction)
 
         val result = controller.submitAdditionalProcedureCodes(itemId)(postRequestAsFormUrlEncoded(formData: _*))
 
@@ -526,7 +526,7 @@ class AdditionalProcedureCodesControllerSpec
       "return 400 (BAD_REQUEST)" in {
         val item = ExportItem(itemId, procedureCodes = Some(ProcedureCodesData(Some(sampleProcedureCode), Seq.fill(limitOfCodes)("111"))))
         prepareCache(item)
-        val formData = Seq(("additionalProcedureCode", "123"), formAction)
+        val formData = Seq((additionalProcedureCodeKey, "123"), formAction)
 
         val result = controller.submitAdditionalProcedureCodes(itemId)(postRequestAsFormUrlEncoded(formData: _*))
 
@@ -539,13 +539,13 @@ class AdditionalProcedureCodesControllerSpec
       "return 400 with form validation error" in {
         val item = ExportItem(itemId, procedureCodes = Some(ProcedureCodesData(Some(sampleProcedureCode), Seq("111"))))
         prepareCache(item)
-        val formData = Seq(("additionalProcedureCode", NO_APC_APPLIES_CODE), formAction)
+        val formData = Seq((additionalProcedureCodeKey, NO_APC_APPLIES_CODE), formAction)
 
         val result = controller.submitAdditionalProcedureCodes(itemId)(postRequestAsFormUrlEncoded(formData: _*))
 
         status(result) mustBe BAD_REQUEST
 
-        val (form, responseSeq) = templateParameters
+        val (form, responseSeq) = theResponseForm
         form.errors.length mustBe 1
         form.errors.head mustBe FormError(additionalProcedureCodeKey, "declaration.additionalProcedureCodes.error.tripleZero.notFirstCode")
         responseSeq mustBe Seq("111")
@@ -556,22 +556,23 @@ class AdditionalProcedureCodesControllerSpec
       "return 400 with form validation error" in {
         val item = ExportItem(itemId, procedureCodes = Some(ProcedureCodesData(Some(sampleProcedureCode), Seq(NO_APC_APPLIES_CODE))))
         prepareCache(item)
-        val formData = Seq(("additionalProcedureCode", "111"), formAction)
+        val formData = Seq((additionalProcedureCodeKey, "111"), formAction)
 
         val result = controller.submitAdditionalProcedureCodes(itemId)(postRequestAsFormUrlEncoded(formData: _*))
 
         status(result) mustBe BAD_REQUEST
 
-        val (form, responseSeq) = templateParameters
+        val (form, responseSeq) = theResponseForm
         form.errors.length mustBe 1
         form.errors.head mustBe FormError(additionalProcedureCodeKey, "declaration.additionalProcedureCodes.error.tripleZero.alreadyPresent")
         responseSeq mustBe Seq(NO_APC_APPLIES_CODE)
       }
     }
   }
+  // scalastyle:on
 
-  private def testAddCodeSuccess(defaultExportItem: ExportItem, formAction: (String, String))(implicit request: JourneyRequest[_]) = {
-    val correctForm = Seq(("additionalProcedureCode", "123"), formAction)
+  private def testAddCodeSuccess(defaultExportItem: ExportItem, formAction: (String, String))(implicit request: JourneyRequest[_]): Unit = {
+    val correctForm = Seq((additionalProcedureCodeKey, "123"), formAction)
 
     "add the code to the cache" in {
       prepareCache(defaultExportItem)
@@ -601,7 +602,7 @@ class AdditionalProcedureCodesControllerSpec
     }
   }
 
-  private def prepareMocks(item: ExportItem) =
+  private def prepareMocks(item: ExportItem): Option[OngoingStubbing[Option[ProcedureCode]]] =
     for {
       procedureCodeData <- item.procedureCodes
       procedureCode <- procedureCodeData.procedureCode

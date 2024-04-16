@@ -50,7 +50,7 @@
 @inputFields = {
     @formGroupWrapper(field = form(AdditionalFiscalReferencesFormGroupId)){
         @components.fields.field_accessible_autocomplete(
-            field = form("country"),
+            field = form(AdditionalFiscalReference.countryId),
             label = messages("declaration.additionalFiscalReferences.country"),
             labelClass = Some("govuk-label--m"),
             emptySelectValue = messages("declaration.additionalFiscalReferences.country.empty"),

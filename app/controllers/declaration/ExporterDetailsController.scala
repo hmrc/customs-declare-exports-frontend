@@ -19,6 +19,7 @@ package controllers.declaration
 import connectors.CodeListConnector
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.navigation.Navigator
+import forms.common.Address.{addressId, countryId}
 import forms.declaration.exporter.ExporterDetails
 import models.requests.JourneyRequest
 import models.{DeclarationType, ExportsDeclaration}
@@ -29,6 +30,7 @@ import services.audit.AuditService
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.WithUnsafeDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
+import utils.validators.forms.AutoCompleteFieldBinding
 import views.html.declaration.exporter_address
 
 import javax.inject.Inject
@@ -42,9 +44,10 @@ class ExporterDetailsController @Inject() (
   mcc: MessagesControllerComponents,
   exporterDetailsPage: exporter_address
 )(implicit ec: ExecutionContext, codeListConnector: CodeListConnector, auditService: AuditService)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithUnsafeDefaultFormBinding {
+    extends FrontendController(mcc) with AutoCompleteFieldBinding with I18nSupport with ModelCacheable with SubmissionErrors
+    with WithUnsafeDefaultFormBinding {
 
-  def displayPage: Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  val displayPage: Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     val frm = form.withSubmissionErrors
     request.cacheModel.parties.exporterDetails match {
       case Some(data) => Ok(exporterDetailsPage(frm.fill(data)))
@@ -52,18 +55,16 @@ class ExporterDetailsController @Inject() (
     }
   }
 
-  def saveAddress(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  val saveAddress: Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     form
-      .bindFromRequest()
+      .bindFromRequest(formValuesFromRequest(s"$addressId.$countryId"))
       .fold(
-        (formWithErrors: Form[ExporterDetails]) => Future.successful(BadRequest(exporterDetailsPage(formWithErrors))),
-        form =>
-          updateCache(form)
-            .map(_ => navigator.continueTo(nextPage))
+        formWithErrors => Future.successful(BadRequest(exporterDetailsPage(formWithErrors))),
+        updateCache(_).map(_ => navigator.continueTo(nextPage))
       )
   }
 
-  def nextPage(implicit request: JourneyRequest[AnyContent]): Call =
+  private def nextPage(implicit request: JourneyRequest[AnyContent]): Call =
     request.declarationType match {
       case DeclarationType.CLEARANCE => controllers.declaration.routes.IsExsController.displayPage
       case _                         => controllers.declaration.routes.RepresentativeAgentController.displayPage

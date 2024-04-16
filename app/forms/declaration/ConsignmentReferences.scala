@@ -55,7 +55,7 @@ object ConsignmentReferences extends DeclarationPage {
           .verifying("declaration.consignmentReferences.supplementary.mrn.error.empty", isPresent(_))
       case _ =>
         optional(text())
-          .verifying("error.notRequired", isMissing(_))
+          .verifying("error.notRequired", isNone(_))
           .transform(_.map(Mrn(_)), (o: Option[Mrn]) => o.map(_.value))
     }
 
@@ -68,7 +68,7 @@ object ConsignmentReferences extends DeclarationPage {
         ).verifying("declaration.consignmentReferences.supplementary.eidr.error.empty", isPresent(_))
       case _ =>
         optional(text())
-          .verifying("error.notRequired", isMissing(_))
+          .verifying("error.notRequired", isNone(_))
     }
 
     Form(

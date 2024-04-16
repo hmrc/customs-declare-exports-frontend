@@ -74,7 +74,7 @@ object Address extends FieldMapping {
 
   private lazy val parties = s"${ExportsDeclaration.pointer}.${Parties.pointer}"
 
-  lazy val mappingsForAmendment = Map(
+  lazy val mappingsForAmendment: Map[String, String] = Map(
     s"${parties}.carrierDetails" -> s"${partiesPrefix}.carrier.address",
     s"${parties}.carrierDetails.address" -> s"${partiesPrefix}.carrier.address",
     s"${parties}.consigneeDetails" -> s"${partiesPrefix}.consignee.address",
@@ -88,6 +88,9 @@ object Address extends FieldMapping {
     s"${parties}.representativeDetails" -> s"${partiesPrefix}.representative.address",
     s"${parties}.representativeDetails.address" -> s"${partiesPrefix}.representative.address"
   )
+
+  val addressId = "details.address"
+  val countryId = "country"
 
   def mapping(addressMaxLength: Int = 70)(implicit messages: Messages, codeListConnector: CodeListConnector): Mapping[Address] = {
     val lengthError = if (addressMaxLength == 35) "length35MaxChars" else "length"
@@ -109,7 +112,7 @@ object Address extends FieldMapping {
         .verifying("declaration.address.postCode.empty", nonEmpty)
         .verifying("declaration.address.postCode.error", isEmpty or isAlphanumericWithSpaceAndHyphen)
         .verifying("declaration.address.postCode.length", isEmpty or noLongerThan(9)),
-      "country" -> text()
+      countryId -> text()
         .verifying("declaration.address.country.empty", nonEmpty)
         .verifying("declaration.address.country.error", input => input.isEmpty || isValidCountryName(input) || isValidCountryCode(input))
     )(Address.apply)(Address.unapply)

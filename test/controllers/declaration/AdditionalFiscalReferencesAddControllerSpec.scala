@@ -18,6 +18,7 @@ package controllers.declaration
 
 import base.{AuditedControllerSpec, ControllerSpec}
 import connectors.CodeListConnector
+import forms.declaration.AdditionalFiscalReference.countryId
 import forms.declaration.{AdditionalFiscalReference, AdditionalFiscalReferencesData}
 import mock.{ErrorHandlerMocks, ItemActionMocks}
 import models.DeclarationType
@@ -27,6 +28,7 @@ import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
 import play.api.data.Form
+import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsEmpty, Request, Result}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
@@ -78,9 +80,9 @@ class AdditionalFiscalReferencesAddControllerSpec extends ControllerSpec with Au
   }
 
   "Additional fiscal references controller" should {
+    val item = anItem()
 
     "return 200 (OK)" when {
-
       "display page method is invoked" in {
         val item = anItem()
         withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY), withItem(item)))
@@ -90,62 +92,75 @@ class AdditionalFiscalReferencesAddControllerSpec extends ControllerSpec with Au
       }
     }
 
-    "return 400 (BAD_REQUEST) during saving" when {
+    "return 400 (BAD_REQUEST)" when {
 
-      "user put incorrect data" in {
-        val item = anItem()
+      "no values are entered" in {
+        withNewCaching(aDeclaration(withItem(item)))
+
+        val incorrectForm = Json.obj(fieldIdOnError(countryId) -> "", "reference" -> "")
+        val result = controller.submitForm(item.id)(postRequest(incorrectForm))
+
+        status(result) mustBe BAD_REQUEST
+        verifyNoAudit()
+
+        val errors = theResponseForm.errors
+        errors(0).messages.head mustBe "declaration.additionalFiscalReferences.country.empty"
+        errors(1).messages.head mustBe "declaration.additionalFiscalReferences.reference.empty"
+      }
+
+      "user enter incorrect data" in {
         withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY), withItem(item)))
 
-        val incorrectForm = Seq(("country", "PL"), ("reference", "!@#$"), saveAndContinueActionUrlEncoded)
+        val incorrectForm = Json.obj(fieldIdOnError(countryId) -> "!@#$", "reference" -> "!@#$")
 
-        val result = controller.submitForm(item.id)(postRequestAsFormUrlEncoded(incorrectForm: _*))
+        val result = controller.submitForm(item.id)(postRequest(incorrectForm))
 
         status(result) must be(BAD_REQUEST)
         verifyNoAudit()
+
+        val errors = theResponseForm.errors
+        errors(0).messages.head mustBe "declaration.additionalFiscalReferences.country.error"
+        errors(1).messages.head mustBe "declaration.additionalFiscalReferences.reference.error"
       }
 
       "user adds duplicated item" in {
-        val itemCacheData =
-          ExportItem("itemId", additionalFiscalReferencesData = Some(AdditionalFiscalReferencesData(Seq(AdditionalFiscalReference("PL", "12345")))))
-        val cachedData = aDeclaration(withType(DeclarationType.SUPPLEMENTARY), withItem(itemCacheData))
-        withNewCaching(cachedData)
+        val additionalFiscalReferencesData = AdditionalFiscalReferencesData(Seq(AdditionalFiscalReference("PL", "12345")))
+        val item = ExportItem("itemId", additionalFiscalReferencesData = Some(additionalFiscalReferencesData))
+        withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY), withItem(item)))
 
-        val duplicatedForm: Seq[(String, String)] =
-          Seq(("country", "PL"), ("reference", "12345"), saveAndContinueActionUrlEncoded)
+        val duplicatedForm = Json.obj(countryId -> "PL", "reference" -> "12345")
 
-        val result = controller.submitForm(itemCacheData.id)(postRequestAsFormUrlEncoded(duplicatedForm: _*))
+        val result = controller.submitForm(item.id)(postRequest(duplicatedForm))
 
         status(result) must be(BAD_REQUEST)
         verifyNoAudit()
+
+        theResponseForm.errors.head.messages.head mustBe "declaration.additionalFiscalReferences.error.duplicate"
       }
 
       "user reaches maximum amount of items" in {
-        val itemCacheData = ExportItem(
-          "itemId",
-          additionalFiscalReferencesData = Some(AdditionalFiscalReferencesData(Seq.fill(99)(AdditionalFiscalReference("PL", "12345"))))
-        )
-        val cachedData = aDeclaration(withType(DeclarationType.SUPPLEMENTARY), withItem(itemCacheData))
-        withNewCaching(cachedData)
+        val additionalFiscalReferencesData = AdditionalFiscalReferencesData(Seq.fill(99)(AdditionalFiscalReference("PL", "12345")))
+        val item = ExportItem("itemId", additionalFiscalReferencesData = Some(additionalFiscalReferencesData))
+        withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY), withItem(item)))
 
-        val form: Seq[(String, String)] =
-          Seq(("country", "PL"), ("reference", "54321"), saveAndContinueActionUrlEncoded)
+        val correctForm = Json.obj(countryId -> "PL", "reference" -> "54321")
 
-        val result = controller.submitForm(itemCacheData.id)(postRequestAsFormUrlEncoded(form: _*))
+        val result = controller.submitForm(item.id)(postRequest(correctForm))
+
         status(result) must be(BAD_REQUEST)
         verifyNoAudit()
+
+        theResponseForm.errors.head.messages.head mustBe "supplementary.limit"
       }
     }
 
     "return 303 (SEE_OTHER)" when {
       "user correctly adds new item" in {
-        val item = anItem()
         withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY), withItem(item)))
 
-        val correctForm: Seq[(String, String)] =
-          Seq(("country", "PL"), ("reference", "12345"), saveAndContinueActionUrlEncoded)
+        val correctForm = Json.obj(countryId -> "PL", "reference" -> "12345")
 
-        val result: Future[Result] =
-          controller.submitForm(item.id)(postRequestAsFormUrlEncoded(correctForm: _*))
+        val result: Future[Result] = controller.submitForm(item.id)(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe routes.AdditionalFiscalReferencesController.displayPage(item.id)

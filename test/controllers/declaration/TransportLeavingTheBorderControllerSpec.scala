@@ -65,7 +65,7 @@ class TransportLeavingTheBorderControllerSpec extends ControllerSpec with Audite
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     authorizedUser()
-    withNewCaching(aDeclaration(withType(STANDARD)))
+    withNewCaching(aStandardDeclaration)
     when(transportLeavingTheBorder.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 

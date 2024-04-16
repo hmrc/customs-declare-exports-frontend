@@ -55,11 +55,13 @@ object SupervisingCustomsOffice extends DeclarationPage with FieldMapping {
 
   implicit val format: OFormat[SupervisingCustomsOffice] = Json.format[SupervisingCustomsOffice]
 
+  val fieldId = "supervisingCustomsOffice"
+
   val formId = "SupervisingCustomsOffice"
 
   val mapping = Forms
     .mapping(
-      "supervisingCustomsOffice" -> optional(
+      fieldId -> optional(
         text()
           .verifying("declaration.warehouse.supervisingCustomsOffice.error", isAlphanumeric and hasSpecificLength(8))
       )

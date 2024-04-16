@@ -19,10 +19,10 @@
 @import controllers.routes.Assets
 @import views.html.helper.CSPNonce
 
-@(  field: Field,
-    emptySelectValue: String,
-    items: List[AutoCompleteItem],
-    rightElement: Option[Html] = None
+@(field: Field,
+  emptySelectValue: String,
+  items: List[AutoCompleteItem],
+  rightElement: Option[Html] = None
 )(implicit request: Request[_], messages: Messages)
 
 @*

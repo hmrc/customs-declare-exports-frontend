@@ -17,7 +17,6 @@
 package utils.validators.forms
 
 import java.util.regex.Pattern
-
 import scala.util.{Success, Try}
 
 object FieldValidator {
@@ -51,11 +50,11 @@ object FieldValidator {
 
   val isPresent: Option[_] => Boolean = _.nonEmpty
 
-  val isMissing: Option[_] => Boolean = _.isEmpty
+  val isNone: Option[_] => Boolean = _.isEmpty
 
-  val isEmpty: String => Boolean = (input: String) => input.isEmpty
+  val isEmpty: String => Boolean = _.trim.isEmpty
 
-  val nonEmpty: String => Boolean = (input: String) => input.trim.nonEmpty
+  val nonEmpty: String => Boolean = _.trim.nonEmpty
 
   val isTrue: Boolean => Boolean = (input: Boolean) => input
 
@@ -176,9 +175,6 @@ object FieldValidator {
     val (countryCode, number) = eori.splitAt(2)
     countryCode.forall(_.isLetter) && number.forall(_.isDigit) && isInRange(eoriDigitsAmountMin, eoriDigitsAmountMax)(number.length)
   }
-
-  private val officeOfExitPattern = Pattern.compile("^[a-zA-Z]{2}[0-9]{6}$")
-  val isValidOfficeOfExit: String => Boolean = (name: String) => officeOfExitPattern.matcher(name).matches()
 
   private val ducrPattern = Pattern.compile("[0-9]{1}[A-Z]{2}[0-9]{12}[-]{1}[-/()A-Z0-9]{1,19}")
   val isValidDucr: String => Boolean = ducrPattern.matcher(_).matches()

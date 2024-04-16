@@ -24,7 +24,7 @@ import models.DeclarationType.DeclarationType
 import models.declaration.InvoiceAndPackageTotals
 import models.viewmodels.TariffContentKey
 import play.api.data.Forms.{optional, text}
-import play.api.data.{Form, Forms, Mapping}
+import play.api.data.{FieldMapping, Form, Forms, Mapping}
 import uk.gov.voa.play.form.Condition
 import utils.validators.forms.FieldValidator._
 
@@ -124,59 +124,63 @@ object InvoiceAndExchangeRate extends DeclarationPage {
   override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
     List(TariffContentKey("tariff.declaration.totalNumbersOfItems.common"))
 
-  private def validateExchangeRate = AdditionalConstraintsMapping(
-    optional(text()).transform(_.map(_.toUpperCase), (o: Option[String]) => o),
-    Seq(
-      ConditionalConstraint(
-        isFieldIgnoreCaseString(agreedExchangeRateYesNo, YesNoAnswers.yes) and isFieldNotEmpty(exchangeRate),
-        rateFieldErrorKey,
-        isNotOnlyCommasOption and validateOptionWithoutCommas(ofPattern(exchangeRatePattern))
-      ),
-      ConditionalConstraint(
-        isFieldIgnoreCaseString(agreedExchangeRateYesNo, YesNoAnswers.yes),
-        exchangeRateYesRadioSelectedErrorKey,
-        nonEmptyOptionString
+  private def validateExchangeRate: AdditionalConstraintsMapping[Option[String]] =
+    AdditionalConstraintsMapping(
+      optional(text()).transform(_.map(_.toUpperCase), (o: Option[String]) => o),
+      Seq(
+        ConditionalConstraint(
+          isFieldIgnoreCaseString(agreedExchangeRateYesNo, YesNoAnswers.yes) and isFieldNotEmpty(exchangeRate),
+          rateFieldErrorKey,
+          isNotOnlyCommasOption and validateOptionWithoutCommas(ofPattern(exchangeRatePattern))
+        ),
+        ConditionalConstraint(
+          isFieldIgnoreCaseString(agreedExchangeRateYesNo, YesNoAnswers.yes),
+          exchangeRateYesRadioSelectedErrorKey,
+          nonEmptyOptionString
+        )
       )
     )
-  )
 
-  private def validateTotalAmountInvoiced = AdditionalConstraintsMapping(
-    optional(text()).transform(_.map(_.toUpperCase), (o: Option[String]) => o),
-    Seq(
-      ConditionalConstraint(
-        isFieldIgnoreCaseString(totalAmountInvoicedCurrency, "GBP") and isAmountLessThan(totalAmountInvoiced),
-        invoiceFieldErrorLessThan100000Key,
-        isEmptyOptionString
-      ),
-      ConditionalConstraint(
-        isFieldNotEmpty(totalAmountInvoiced),
-        invoiceFieldErrorKey,
-        isEmptyOptionString or (isNotOnlyCommasOption and validateOptionWithoutCommas(ofPattern(totalAmountInvoicedPattern)))
-      ),
-      ConditionalConstraint(isFieldEmpty(totalAmountInvoiced), invoiceFieldErrorEmptyKey, nonEmptyOptionString)
-    )
-  )
-
-  private def validateTotalAmountInvoicedCurrency = AdditionalConstraintsMapping(
-    optional(text()).transform(_.map(_.toUpperCase), (o: Option[String]) => o),
-    Seq(
-      ConditionalConstraint(
-        isFieldEmpty(totalAmountInvoicedCurrency) and isFieldNotEmpty(totalAmountInvoiced),
-        invoiceCurrencyFieldErrorKey,
-        (_: Option[String]) => false
-      ),
-      ConditionalConstraint(
-        isFieldIgnoreCaseString(agreedExchangeRateYesNo, YesNoAnswers.yes) and isFieldNotEmpty(exchangeRate),
-        invoiceCurrencyFieldWithExchangeRateErrorKey,
-        isEmptyOptionString or equalsIgnoreCaseOptionString("GBP")
-      ),
-      ConditionalConstraint(
-        isFieldEmpty(exchangeRate),
-        invoiceCurrencyFieldWithoutExchangeRateErrorKey,
-        isEmptyOptionString or (isAlphabeticOptionString and lengthInRangeOptionString(3)(3))
+  private def validateTotalAmountInvoiced: AdditionalConstraintsMapping[Option[String]] =
+    AdditionalConstraintsMapping(
+      optional(text()).transform(_.map(_.toUpperCase), (o: Option[String]) => o),
+      Seq(
+        ConditionalConstraint(
+          isFieldIgnoreCaseString(totalAmountInvoicedCurrency, "GBP") and isAmountLessThan(totalAmountInvoiced),
+          invoiceFieldErrorLessThan100000Key,
+          isEmptyOptionString
+        ),
+        ConditionalConstraint(
+          isFieldNotEmpty(totalAmountInvoiced),
+          invoiceFieldErrorKey,
+          isEmptyOptionString or (isNotOnlyCommasOption and validateOptionWithoutCommas(ofPattern(totalAmountInvoicedPattern)))
+        ),
+        ConditionalConstraint(isFieldEmpty(totalAmountInvoiced), invoiceFieldErrorEmptyKey, nonEmptyOptionString)
       )
     )
-  )
 
-  private def validateAgreedExchangeRateYesNo = requiredRadio(exchangeRateNoAnswerErrorKey, YesNoAnswer.allowedValues)
+  private def validateTotalAmountInvoicedCurrency: AdditionalConstraintsMapping[Option[String]] =
+    AdditionalConstraintsMapping(
+      optional(text()).transform(_.map(_.toUpperCase), (o: Option[String]) => o),
+      Seq(
+        ConditionalConstraint(
+          isFieldEmpty(totalAmountInvoicedCurrency) and isFieldNotEmpty(totalAmountInvoiced),
+          invoiceCurrencyFieldErrorKey,
+          (_: Option[String]) => false
+        ),
+        ConditionalConstraint(
+          isFieldIgnoreCaseString(agreedExchangeRateYesNo, YesNoAnswers.yes) and isFieldNotEmpty(exchangeRate),
+          invoiceCurrencyFieldWithExchangeRateErrorKey,
+          isEmptyOptionString or equalsIgnoreCaseOptionString("GBP")
+        ),
+        ConditionalConstraint(
+          isFieldEmpty(exchangeRate),
+          invoiceCurrencyFieldWithoutExchangeRateErrorKey,
+          isEmptyOptionString or (isAlphabeticOptionString and lengthInRangeOptionString(3)(3))
+        )
+      )
+    )
+
+  private def validateAgreedExchangeRateYesNo: FieldMapping[String] =
+    requiredRadio(exchangeRateNoAnswerErrorKey, YesNoAnswer.allowedValues)
 }

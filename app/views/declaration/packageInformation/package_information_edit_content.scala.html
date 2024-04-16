@@ -60,7 +60,7 @@
 @formGroupWrapper(field = form(PackageInformationFormGroupId)){
 
     @components.fields.field_accessible_autocomplete(
-        field = form("typesOfPackages"),
+        field = form(PackageInformation.typeId),
         label = messages("declaration.packageInformation.typesOfPackages.label"),
         labelClass = Some("govuk-label--m"),
         isSubHeading = true,

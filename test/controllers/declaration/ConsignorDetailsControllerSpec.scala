@@ -78,68 +78,86 @@ class ConsignorDetailsControllerSpec extends ControllerSpec with AuditedControll
   }
 
   "Consignor Details controller" should {
+    val declaration = aDeclaration(withType(CLEARANCE))
 
-    onJourney(CLEARANCE) { request =>
-      "return 200 (OK)" when {
+    "return 200 (OK)" when {
 
-        "display page method is invoked and cache is empty" in {
-          withNewCaching(request.cacheModel)
+      "display page method is invoked and cache is empty" in {
+        withNewCaching(declaration)
 
-          val result = controller.displayPage(getRequest())
-          status(result) must be(OK)
-        }
-
-        "display page method is invoked and cache contains data" in {
-          withNewCaching(
-            aDeclarationAfter(
-              request.cacheModel,
-              withConsignorDetails(
-                None,
-                Some(Address("John Smith", "1 Export Street", "Leeds", "LS1 2PW", "United Kingdom, Great Britain, Northern Ireland"))
-              )
-            )
-          )
-
-          val result = controller.displayPage(getRequest())
-          status(result) must be(OK)
-        }
+        val result = controller.displayPage(getRequest())
+        status(result) must be(OK)
       }
 
-      "return 400 (BAD_REQUEST)" when {
-        "form is incorrect" in {
-          withNewCaching(request.cacheModel)
+      "display page method is invoked and cache contains data" in {
+        val address = Address("John Smith", "1 Export Street", "Leeds", "LS1 2PW", "United Kingdom, Great Britain, Northern Ireland")
+        withNewCaching(aDeclaration(withType(CLEARANCE), withConsignorDetails(None, Some(address))))
 
-          val incorrectForm = Json.toJson(ConsignorDetails(EntityDetails(None, None)))
-
-          val result = controller.saveAddress()(postRequest(incorrectForm))
-
-          status(result) must be(BAD_REQUEST)
-          verifyNoAudit()
-        }
+        val result = controller.displayPage(getRequest())
+        status(result) must be(OK)
       }
     }
 
-    onJourney(CLEARANCE) { request =>
-      "return 303 (SEE_OTHER) and redirect to third party goods transportation page" when {
-        "form is correct" in {
-          withNewCaching(request.cacheModel)
+    "return 400 (BAD_REQUEST)" when {
+      val prefix = "details.address"
 
-          val correctForm =
-            Json.toJson(
-              ConsignorDetails(
-                EntityDetails(
-                  None,
-                  Some(Address("John Smith", "1 Export Street", "Leeds", "LS1 2PW", "United Kingdom, Great Britain, Northern Ireland"))
-                )
-              )
-            )
+      "no value is entered" in {
+        withNewCaching(declaration)
 
-          val result = controller.saveAddress()(postRequest(correctForm))
+        val incorrectForm = Json.obj(s"$prefix.fullName" -> "", s"$prefix.addressLine" -> "", s"$prefix.townOrCity" -> "", s"$prefix.postCode" -> "")
+        val result = controller.saveAddress(postRequest(incorrectForm))
 
-          await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.ThirdPartyGoodsTransportationController.displayPage
-          verifyAudit()
-        }
+        status(result) mustBe BAD_REQUEST
+        verifyNoAudit()
+
+        val errors = theResponseForm.errors
+        errors(0).messages.head mustBe "declaration.address.fullName.empty"
+        errors(1).messages.head mustBe "declaration.address.addressLine.empty"
+        errors(2).messages.head mustBe "declaration.address.townOrCity.empty"
+        errors(3).messages.head mustBe "declaration.address.postCode.empty"
+        errors(4).messages.head mustBe "declaration.address.country.empty"
+      }
+
+      "the entered values are incorrect" in {
+        withNewCaching(declaration)
+
+        val incorrectForm = Json.obj(
+          s"$prefix.fullName" -> "$".repeat(36),
+          s"$prefix.addressLine" -> "$".repeat(71),
+          s"$prefix.townOrCity" -> "$".repeat(36),
+          s"$prefix.postCode" -> "$".repeat(10),
+          s"$prefix.country" -> "TTTT"
+        )
+        val result = controller.saveAddress(postRequest(incorrectForm))
+
+        status(result) mustBe BAD_REQUEST
+        verifyNoAudit()
+
+        val errors = theResponseForm.errors
+        errors(0).messages.head mustBe "declaration.address.fullName.error"
+        errors(1).messages.head mustBe "declaration.address.fullName.length"
+        errors(2).messages.head mustBe "declaration.address.addressLine.error"
+        errors(3).messages.head mustBe "declaration.address.addressLine.length"
+        errors(4).messages.head mustBe "declaration.address.townOrCity.error"
+        errors(5).messages.head mustBe "declaration.address.townOrCity.length"
+        errors(6).messages.head mustBe "declaration.address.postCode.error"
+        errors(7).messages.head mustBe "declaration.address.postCode.length"
+        errors(8).messages.head mustBe "declaration.address.country.error"
+      }
+    }
+
+    "return 303 (SEE_OTHER) and redirect to third party goods transportation page" when {
+      "form is correct" in {
+        withNewCaching(declaration)
+
+        val address = Address("John Smith", "1 Export Street", "Leeds", "LS1 2PW", "United Kingdom, Great Britain, Northern Ireland")
+        val correctForm = Json.toJson(ConsignorDetails(EntityDetails(None, Some(address))))
+
+        val result = controller.saveAddress(postRequest(correctForm))
+
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe controllers.declaration.routes.ThirdPartyGoodsTransportationController.displayPage
+        verifyAudit()
       }
     }
 
@@ -147,17 +165,10 @@ class ConsignorDetailsControllerSpec extends ControllerSpec with AuditedControll
       "redirect to start" in {
         withNewCaching(request.cacheModel)
 
-        val correctForm =
-          Json.toJson(
-            ConsignorDetails(
-              EntityDetails(
-                None,
-                Some(Address("John Smith", "1 Export Street", "Leeds", "LS1 2PW", "United Kingdom, Great Britain, Northern Ireland"))
-              )
-            )
-          )
+        val address = Address("John Smith", "1 Export Street", "Leeds", "LS1 2PW", "United Kingdom, Great Britain, Northern Ireland")
+        val correctForm = Json.toJson(ConsignorDetails(EntityDetails(None, Some(address))))
 
-        val result = controller.saveAddress()(postRequest(correctForm))
+        val result = controller.saveAddress(postRequest(correctForm))
 
         status(result) must be(SEE_OTHER)
         redirectLocation(result) mustBe Some(RootController.displayPage.url)

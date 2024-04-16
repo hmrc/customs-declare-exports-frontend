@@ -71,9 +71,11 @@ object AdditionalFiscalReference extends DeclarationPage with FieldMapping {
   def build(country: String, reference: String): AdditionalFiscalReference = new AdditionalFiscalReference(country, reference.toUpperCase)
   implicit val format: OFormat[AdditionalFiscalReference] = Json.format[AdditionalFiscalReference]
 
+  val countryId = "country"
+
   def mapping(implicit messages: Messages, codeListConnector: CodeListConnector): Mapping[AdditionalFiscalReference] =
     Forms.mapping(
-      "country" -> text()
+      countryId -> text()
         .verifying("declaration.additionalFiscalReferences.country.empty", _.trim.nonEmpty)
         .verifying("declaration.additionalFiscalReferences.country.error", input => input.isEmpty || isValidCountryCode(input)),
       "reference" -> text()

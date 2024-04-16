@@ -20,6 +20,7 @@ import connectors.CodeListConnector
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.declaration.routes.ConsigneeDetailsController
 import controllers.navigation.Navigator
+import forms.common.Address.{addressId, countryId}
 import forms.declaration.carrier.CarrierDetails
 import models.DeclarationType._
 import models.requests.JourneyRequest
@@ -31,6 +32,7 @@ import services.audit.AuditService
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.WithUnsafeDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
+import utils.validators.forms.AutoCompleteFieldBinding
 import views.html.declaration.carrier_details
 
 import javax.inject.Inject
@@ -44,11 +46,12 @@ class CarrierDetailsController @Inject() (
   mcc: MessagesControllerComponents,
   carrierDetailsPage: carrier_details
 )(implicit ec: ExecutionContext, codeListConnector: CodeListConnector, auditService: AuditService)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithUnsafeDefaultFormBinding {
+    extends FrontendController(mcc) with AutoCompleteFieldBinding with I18nSupport with ModelCacheable with SubmissionErrors
+    with WithUnsafeDefaultFormBinding {
 
   private val validTypes = Seq(STANDARD, SIMPLIFIED, OCCASIONAL, CLEARANCE)
 
-  def displayPage: Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
+  val displayPage: Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
     request.cacheModel.parties.carrierDetails match {
       case Some(data) => Ok(carrierDetailsPage(form.fill(data)))
       case _          => Ok(carrierDetailsPage(form))
@@ -58,9 +61,9 @@ class CarrierDetailsController @Inject() (
   private def form(implicit request: JourneyRequest[_]): Form[CarrierDetails] =
     CarrierDetails.form(request.declarationType).withSubmissionErrors
 
-  def saveAddress(): Action[AnyContent] = (authenticate andThen journeyType(validTypes)).async { implicit request =>
+  val saveAddress: Action[AnyContent] = (authenticate andThen journeyType(validTypes)).async { implicit request =>
     form
-      .bindFromRequest()
+      .bindFromRequest(formValuesFromRequest(s"$addressId.$countryId"))
       .fold(
         formWithErrors => Future.successful(BadRequest(carrierDetailsPage(formWithErrors))),
         updateCache(_).map(_ => navigator.continueTo(ConsigneeDetailsController.displayPage))

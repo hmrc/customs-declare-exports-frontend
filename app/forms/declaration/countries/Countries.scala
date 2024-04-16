@@ -50,6 +50,8 @@ object Countries {
       Seq(TariffContentKey("tariff.declaration.countryOfRouting.common"))
   }
 
+  val fieldId = "countryCode"
+
   private val invalidDestinationCountry = "GB"
 
   private def mapping(
@@ -72,7 +74,7 @@ object Countries {
     page: CountryPage,
     cachedCountries: Seq[Country]
   )(implicit messages: Messages, codeListConnector: CodeListConnector): Mapping[Country] =
-    Forms.mapping("countryCode" -> mapping(page, cachedCountries)) {
+    Forms.mapping(fieldId -> mapping(page, cachedCountries)) {
       // apply
       country => if (country.nonEmpty) Country(Some(country)) else Country(None)
     }(_.code) // unapply
@@ -81,7 +83,7 @@ object Countries {
     implicit messages: Messages,
     codeListConnector: CodeListConnector
   ): Mapping[Country] =
-    Forms.mapping("countryCode" -> optional(mapping(page, cachedCountries)))(Country.apply)(Country.unapply)
+    Forms.mapping(fieldId -> optional(mapping(page, cachedCountries)))(Country.apply)(Country.unapply)
 
   def form(
     page: CountryPage,

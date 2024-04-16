@@ -63,7 +63,7 @@ class LinkDucrToMucrControllerSpec extends ControllerSpec with AuditedController
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     authorizedUser()
-    withNewCaching(aDeclaration(withType(STANDARD)))
+    withNewCaching(aStandardDeclaration)
     when(linkDucrToMucrPage.apply(any[Form[YesNoAnswer]])(any(), any())).thenReturn(HtmlFormat.empty)
   }
 

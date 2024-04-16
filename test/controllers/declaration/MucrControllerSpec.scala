@@ -47,7 +47,7 @@ class MucrControllerSpec extends ControllerSpec with AuditedControllerSpec with 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     authorizedUser()
-    withNewCaching(aDeclaration(withType(STANDARD)))
+    withNewCaching(aStandardDeclaration)
     when(mucrPage.apply(any[Form[Mucr]])(any(), any())).thenReturn(HtmlFormat.empty)
   }
 

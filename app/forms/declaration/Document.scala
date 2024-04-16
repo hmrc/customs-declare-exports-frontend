@@ -76,6 +76,9 @@ object Document extends DeclarationPage with FieldMapping {
   lazy val keyForReference = "declaration.summary.transaction.previousDocuments.reference"
   lazy val keyForType = "declaration.summary.transaction.previousDocuments.type"
 
+  val documentTypeId = "documentType"
+  val documentRefId = "documentReference"
+
   val formId = "PreviousDocuments"
 
   def form(docService: DocumentTypeService)(implicit messages: Messages): Form[Document] = {
@@ -85,12 +88,12 @@ object Document extends DeclarationPage with FieldMapping {
   }
 
   private def documentTypeMapping(docService: DocumentTypeService)(implicit messages: Messages): (String, Mapping[String]) =
-    "documentType" -> text()
+    documentTypeId -> text()
       .verifying("declaration.previousDocuments.documentCode.empty", nonEmpty)
       .verifying("declaration.previousDocuments.documentCode.error", isEmpty or isContainedIn(docService.allDocuments().map(_.code)))
 
   private def documentReferenceMapping: (String, Mapping[String]) =
-    "documentReference" -> text()
+    documentRefId -> text()
       .transform(_.trim, (s: String) => s)
       .verifying("declaration.previousDocuments.documentReference.empty", nonEmpty)
       .verifying("declaration.previousDocuments.documentReference.error", isEmpty or isAlphanumericWithSpecialCharacters(Set(' ', '-', '/', ':')))

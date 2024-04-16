@@ -21,7 +21,7 @@ import controllers.actions.{AuthAction, JourneyAction}
 import controllers.declaration.AdditionalFiscalReferencesAddController.AdditionalFiscalReferencesFormGroupId
 import controllers.navigation.Navigator
 import controllers.helpers.MultipleItemsHelper
-import forms.declaration.AdditionalFiscalReference.form
+import forms.declaration.AdditionalFiscalReference.{countryId, form}
 import forms.declaration.AdditionalFiscalReferencesData._
 import forms.declaration.{AdditionalFiscalReference, AdditionalFiscalReferencesData}
 import models.requests.JourneyRequest
@@ -33,6 +33,7 @@ import services.audit.AuditService
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.WithUnsafeDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
+import utils.validators.forms.AutoCompleteFieldBinding
 import views.html.declaration.fiscalInformation.additional_fiscal_references_add
 
 import javax.inject.Inject
@@ -46,7 +47,8 @@ class AdditionalFiscalReferencesAddController @Inject() (
   mcc: MessagesControllerComponents,
   additionalFiscalReferencesPage: additional_fiscal_references_add
 )(implicit ec: ExecutionContext, codeListConnector: CodeListConnector, auditService: AuditService)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithUnsafeDefaultFormBinding {
+    extends FrontendController(mcc) with AutoCompleteFieldBinding with I18nSupport with ModelCacheable with SubmissionErrors
+    with WithUnsafeDefaultFormBinding {
 
   def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     val frm = form.withSubmissionErrors
@@ -54,8 +56,7 @@ class AdditionalFiscalReferencesAddController @Inject() (
   }
 
   def submitForm(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    val boundForm = form.bindFromRequest()
-
+    val boundForm = form.bindFromRequest(formValuesFromRequest(countryId))
     boundForm.fold(
       formWithErrors => Future.successful(BadRequest(additionalFiscalReferencesPage(itemId, formWithErrors))),
       _ => saveAndContinue(itemId, boundForm, cachedData(itemId))

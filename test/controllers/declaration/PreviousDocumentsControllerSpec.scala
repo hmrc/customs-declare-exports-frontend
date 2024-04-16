@@ -18,6 +18,7 @@ package controllers.declaration
 
 import base.{AuditedControllerSpec, ControllerWithoutFormSpec}
 import controllers.declaration.routes.PreviousDocumentsSummaryController
+import forms.declaration.Document.{documentRefId, documentTypeId}
 import forms.declaration.{Document, PreviousDocumentsData}
 import models.DeclarationType
 import org.mockito.ArgumentCaptor
@@ -60,7 +61,7 @@ class PreviousDocumentsControllerSpec extends ControllerWithoutFormSpec with Aud
     super.afterEach()
   }
 
-  def theResponse: Form[Document] = {
+  def theResponseForm: Form[Document] = {
     val formCaptor = ArgumentCaptor.forClass(classOf[Form[Document]])
     verify(mockPreviousDocumentsPage).apply(formCaptor.capture())(any(), any())
     formCaptor.getValue
@@ -78,43 +79,51 @@ class PreviousDocumentsControllerSpec extends ControllerWithoutFormSpec with Aud
         status(result) mustBe OK
         verifyPage()
 
-        theResponse.value mustBe empty
+        theResponseForm.value mustBe empty
       }
     }
 
     "return 400 (BAD_REQUEST)" when {
 
       "user doesn't provide the Document type" in {
-        withNewCaching(aDeclaration(withoutPreviousDocuments))
+        withNewCaching(aStandardDeclaration)
 
-        val emptyForm = Json.toJson(Document("", "reference", Some("123")))
-        val result = controller.submit()(postRequest(emptyForm))
+        val emptyForm = Json.obj(documentTypeId -> "", documentRefId -> "123")
+        val result = controller.submit(postRequest(emptyForm))
 
         status(result) mustBe BAD_REQUEST
         verifyPage()
         verifyNoAudit()
+
+        theResponseForm.errors.head.messages.head mustBe "declaration.previousDocuments.documentCode.empty"
       }
 
       "user doesn't provide the Document reference" in {
-        withNewCaching(aDeclaration(withoutPreviousDocuments))
+        withNewCaching(aStandardDeclaration)
 
-        val emptyForm = Json.toJson(Document("355", "", Some("123")))
-        val result = controller.submit()(postRequest(emptyForm))
+        val emptyForm = Json.obj(documentTypeId -> "355", documentRefId -> "")
+        val result = controller.submit(postRequest(emptyForm))
 
         status(result) mustBe BAD_REQUEST
         verifyPage()
         verifyNoAudit()
+
+        theResponseForm.errors.head.messages.head mustBe "declaration.previousDocuments.documentReference.empty"
       }
 
       "user doesn't provide Document type and Document reference" in {
-        withNewCaching(aDeclaration(withoutPreviousDocuments))
+        withNewCaching(aStandardDeclaration)
 
-        val emptyForm = Json.toJson(Document("", "", Some("123")))
-        val result = controller.submit()(postRequest(emptyForm))
+        val emptyForm = Json.obj(documentTypeId -> "", documentRefId -> "")
+        val result = controller.submit(postRequest(emptyForm))
 
         status(result) mustBe BAD_REQUEST
         verifyPage()
         verifyNoAudit()
+
+        val errors = theResponseForm.errors
+        errors(0).messages.head mustBe "declaration.previousDocuments.documentCode.empty"
+        errors(1).messages.head mustBe "declaration.previousDocuments.documentReference.empty"
       }
 
       "user put duplicated item" in {
@@ -131,7 +140,8 @@ class PreviousDocumentsControllerSpec extends ControllerWithoutFormSpec with Aud
 
       "user reach maximum amount of items" in {
         val document = Document("355", "reference", Some("123"))
-        withNewCaching(aDeclaration(withPreviousDocuments(PreviousDocumentsData(Seq.fill(PreviousDocumentsData.maxAmountOfItems)(document)))))
+        val documents = List.fill(PreviousDocumentsData.maxAmountOfItems)(document)
+        withNewCaching(aDeclaration(withPreviousDocuments(PreviousDocumentsData(documents))))
 
         val correctForm = Json.toJson(Document("355", "reference", None))
 
@@ -148,7 +158,7 @@ class PreviousDocumentsControllerSpec extends ControllerWithoutFormSpec with Aud
       "user fills in Document type and Document reference" in {
         val correctForm = Json.toJson(Document("355", "reference", None))
 
-        val result = controller.submit()(postRequest(correctForm))
+        val result = controller.submit(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe PreviousDocumentsSummaryController.displayPage
@@ -160,7 +170,7 @@ class PreviousDocumentsControllerSpec extends ControllerWithoutFormSpec with Aud
       "user fills in all fields" in {
         val correctForm = Json.toJson(Document("355", "reference", Some("123")))
 
-        val result = controller.submit()(postRequest(correctForm))
+        val result = controller.submit(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe PreviousDocumentsSummaryController.displayPage

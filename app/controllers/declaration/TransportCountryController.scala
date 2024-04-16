@@ -31,6 +31,7 @@ import services.audit.AuditService
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.WithUnsafeDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
+import utils.validators.forms.AutoCompleteFieldBinding
 import views.helpers.ModeOfTransportCodeHelper
 import views.html.declaration.transport_country
 
@@ -45,7 +46,8 @@ class TransportCountryController @Inject() (
   mcc: MessagesControllerComponents,
   transportCountry: transport_country
 )(implicit ec: ExecutionContext, codeListConnector: CodeListConnector, auditService: AuditService)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithUnsafeDefaultFormBinding {
+    extends FrontendController(mcc) with AutoCompleteFieldBinding with I18nSupport with ModelCacheable with SubmissionErrors
+    with WithUnsafeDefaultFormBinding {
 
   val displayPage: Action[AnyContent] = (authenticate andThen journeyType(nonClearanceJourneys)).async { implicit request =>
     val pageToDisplay = () => {
@@ -65,7 +67,7 @@ class TransportCountryController @Inject() (
       val transportMode = ModeOfTransportCodeHelper.transportMode(request.cacheModel.transportLeavingBorderCode)
       TransportCountry
         .form(transportMode)
-        .bindFromRequest()
+        .bindFromRequest(formValuesFromRequest(TransportCountry.transportCountry))
         .fold(formWithErrors => Future.successful(BadRequest(transportCountry(transportMode, formWithErrors))), updateCache(_).map(_ => nextPage))
     }
     submit(verifyFormAndUpdateCache)

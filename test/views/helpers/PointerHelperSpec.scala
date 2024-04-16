@@ -16,11 +16,11 @@
 
 package views.helpers
 
-import base.{Injector, UnitSpec}
 import base.ExportsTestData.eori
+import base.{Injector, UnitSpec}
 import controllers.declaration.routes
 import forms.common.Eori
-import models.DeclarationType.{CLEARANCE, STANDARD}
+import models.DeclarationType.CLEARANCE
 import models.Pointer
 import services.cache.ExportsTestHelper
 
@@ -92,7 +92,7 @@ class PointerHelperSpec extends UnitSpec with ExportsTestHelper with Injector {
         }
 
         "also has a declaration that is NOT of type CLEARANCE, EXS=true and personPresentingGoodsDetails is populated" in {
-          val result = PointerHelper.getChangeLinkCall(Some(Pointer("declaration.declarantDetails.details.eori")), aDeclaration(withType(STANDARD)))
+          val result = PointerHelper.getChangeLinkCall(Some(Pointer("declaration.declarantDetails.details.eori")), aStandardDeclaration)
 
           result.isDefined mustBe true
           result.get mustBe routes.DeclarantDetailsController.displayPage

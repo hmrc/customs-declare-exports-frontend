@@ -62,8 +62,6 @@ class SupervisingCustomsOfficeControllerSpec extends ControllerSpec with Audited
   private val exampleCustomsOfficeIdentifier = "A1B2C3D4"
   private val exampleWarehouseIdentificationNumber = "SecretStash"
 
-  private val standardCacheModel = aDeclaration(withType(STANDARD))
-
   private val supplementaryCacheModel = aDeclaration(withType(SUPPLEMENTARY))
 
   private val simplifiedCacheModel = aDeclaration(withType(SIMPLIFIED))
@@ -77,7 +75,7 @@ class SupervisingCustomsOfficeControllerSpec extends ControllerSpec with Audited
   }
 
   override protected def afterEach(): Unit = {
-    Mockito.reset(supervisingCustomsOfficeTemplate)
+    Mockito.reset(auditService, supervisingCustomsOfficeTemplate)
     super.afterEach()
   }
 
@@ -120,9 +118,9 @@ class SupervisingCustomsOfficeControllerSpec extends ControllerSpec with Audited
     "we are on standard declaration journey" should {
 
       "redirect to /inland-or-border after a successful bind" in {
-        withNewCaching(standardCacheModel)
+        withNewCaching(aStandardDeclaration)
 
-        val result = await(controller.submit()(postRequest(body)))
+        val result = await(controller.submit(postRequest(body)))
 
         result mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe InlandOrBorderController.displayPage
@@ -130,23 +128,13 @@ class SupervisingCustomsOfficeControllerSpec extends ControllerSpec with Audited
       }
 
       "update cache after successful bind" in {
-        withNewCaching(standardCacheModel)
+        withNewCaching(aStandardDeclaration)
 
-        await(controller.submit()(postRequest(body)))
+        await(controller.submit(postRequest(body)))
 
         val supervisingCustomsOffice = theCacheModelUpdated.locations.supervisingCustomsOffice.value
         supervisingCustomsOffice.supervisingCustomsOffice.value mustBe exampleCustomsOfficeIdentifier
         verifyAudit()
-      }
-
-      "return Bad Request if payload is not compatible with model" in {
-        withNewCaching(standardCacheModel)
-
-        val body = Json.obj("supervisingCustomsOffice" -> "A")
-        val result = controller.submit()(postRequest(body))
-
-        status(result) mustBe BAD_REQUEST
-        verifyNoAudit()
       }
     }
 
@@ -155,7 +143,7 @@ class SupervisingCustomsOfficeControllerSpec extends ControllerSpec with Audited
       "redirect to /inland-or-border after a successful bind" in {
         withNewCaching(withRequest(SUPPLEMENTARY_SIMPLIFIED).cacheModel)
 
-        val result = await(controller.submit()(postRequest(body)))
+        val result = await(controller.submit(postRequest(body)))
 
         result mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe InlandOrBorderController.displayPage
@@ -165,7 +153,7 @@ class SupervisingCustomsOfficeControllerSpec extends ControllerSpec with Audited
       "redirect to /inland-transport-details after a successful bind" in {
         withNewCaching(withRequest(SUPPLEMENTARY_EIDR).cacheModel)
 
-        val result = await(controller.submit()(postRequest(body)))
+        val result = await(controller.submit(postRequest(body)))
 
         result mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe InlandTransportDetailsController.displayPage
@@ -175,21 +163,11 @@ class SupervisingCustomsOfficeControllerSpec extends ControllerSpec with Audited
       "update cache after successful bind" in {
         withNewCaching(supplementaryCacheModel)
 
-        await(controller.submit()(postRequest(body)))
+        await(controller.submit(postRequest(body)))
 
         val supervisingCustomsOffice = theCacheModelUpdated.locations.supervisingCustomsOffice.value
         supervisingCustomsOffice.supervisingCustomsOffice.value mustBe exampleCustomsOfficeIdentifier
         verifyAudit()
-      }
-
-      "return Bad Request if payload is not compatible with model" in {
-        withNewCaching(supplementaryCacheModel)
-
-        val body = Json.obj("supervisingCustomsOffice" -> "A")
-        val result = controller.submit()(postRequest(body))
-
-        status(result) mustBe BAD_REQUEST
-        verifyNoAudit()
       }
     }
 
@@ -201,7 +179,7 @@ class SupervisingCustomsOfficeControllerSpec extends ControllerSpec with Audited
               initMockNavigatorForMultipleCallsInTheSameTest()
               withNewCaching(withRequest(additionalType, modifier).cacheModel)
 
-              val result = controller.submit()(postRequest(body))
+              val result = controller.submit(postRequest(body))
 
               await(result) mustBe aRedirectToTheNextPage
               thePageNavigatedTo mustBe InlandTransportDetailsController.displayPage
@@ -217,7 +195,7 @@ class SupervisingCustomsOfficeControllerSpec extends ControllerSpec with Audited
       "redirect to /inland-or-border after a successful bind" in {
         withNewCaching(simplifiedCacheModel)
 
-        val result = await(controller.submit().apply(postRequest(body)))
+        val result = await(controller.submit.apply(postRequest(body)))
 
         result mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe InlandOrBorderController.displayPage
@@ -227,21 +205,11 @@ class SupervisingCustomsOfficeControllerSpec extends ControllerSpec with Audited
       "update cache after successful bind" in {
         withNewCaching(simplifiedCacheModel)
 
-        await(controller.submit()(postRequest(body)))
+        await(controller.submit(postRequest(body)))
 
         val supervisingCustomsOffice = theCacheModelUpdated.locations.supervisingCustomsOffice.value
         supervisingCustomsOffice.supervisingCustomsOffice.value mustBe exampleCustomsOfficeIdentifier
         verifyAudit()
-      }
-
-      "return Bad Request if payload is not compatible with model" in {
-        withNewCaching(simplifiedCacheModel)
-
-        val body = Json.obj("supervisingCustomsOffice" -> "A")
-        val result = controller.submit()(postRequest(body))
-
-        status(result) mustBe BAD_REQUEST
-        verifyNoAudit()
       }
     }
 
@@ -250,7 +218,7 @@ class SupervisingCustomsOfficeControllerSpec extends ControllerSpec with Audited
       "redirect to /departure-transport after a successful bind" in {
         withNewCaching(clearanceCacheModel)
 
-        val result = await(controller.submit()(postRequest(body)))
+        val result = await(controller.submit(postRequest(body)))
 
         result mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe DepartureTransportController.displayPage
@@ -263,7 +231,7 @@ class SupervisingCustomsOfficeControllerSpec extends ControllerSpec with Audited
             val borderModeOfTransportCode = withTransportLeavingTheBorder(Some(modeOfTransport))
             withNewCaching(aDeclaration(withType(CLEARANCE), borderModeOfTransportCode))
 
-            val result = await(controller.submit()(postRequest(body)))
+            val result = await(controller.submit(postRequest(body)))
 
             result mustBe aRedirectToTheNextPage
             thePageNavigatedTo mustBe ExpressConsignmentController.displayPage
@@ -275,21 +243,11 @@ class SupervisingCustomsOfficeControllerSpec extends ControllerSpec with Audited
       "update cache after successful bind" in {
         withNewCaching(clearanceCacheModel)
 
-        await(controller.submit()(postRequest(body)))
+        await(controller.submit(postRequest(body)))
 
         val supervisingCustomsOffice = theCacheModelUpdated.locations.supervisingCustomsOffice.value
         supervisingCustomsOffice.supervisingCustomsOffice.value mustBe exampleCustomsOfficeIdentifier
         verifyAudit()
-      }
-
-      "return Bad Request if payload is not compatible with model" in {
-        withNewCaching(clearanceCacheModel)
-
-        val body = Json.obj("supervisingCustomsOffice" -> "A")
-        val result = controller.submit()(postRequest(body))
-
-        status(result) mustBe BAD_REQUEST
-        verifyNoAudit()
       }
     }
 
@@ -316,11 +274,27 @@ class SupervisingCustomsOfficeControllerSpec extends ControllerSpec with Audited
           s"${if (expectedCachedInlandOrBorder.isEmpty) "" else "not "} reset InlandOrBorder after a successful bind" in {
             withNewCaching(withRequest(additionalType, withInlandOrBorder(Some(actualCachedInlandOrBorder))).cacheModel)
 
-            await(controller.submit()(postRequest(body)))
+            await(controller.submit(postRequest(body)))
 
             theCacheModelUpdated.locations.inlandOrBorder mustBe expectedCachedInlandOrBorder
           }
         }
+      }
+    }
+  }
+
+  "SupervisingCustomsOfficeController" should {
+    "return a 400 (BAD_REQUEST)" when {
+      "the entered value is incorrect or not a list's option" in {
+        withNewCaching(aStandardDeclaration)
+
+        val incorrectForm = Json.obj(fieldIdOnError(SupervisingCustomsOffice.fieldId) -> "!@#$")
+        val result = controller.submit(postRequest(incorrectForm))
+
+        status(result) mustBe BAD_REQUEST
+        verifyNoAudit()
+
+        theResponseForm.errors.head.messages.head mustBe "declaration.warehouse.supervisingCustomsOffice.error"
       }
     }
   }

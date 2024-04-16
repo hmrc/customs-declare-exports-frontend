@@ -20,7 +20,7 @@ import controllers.actions.{AuthAction, JourneyAction}
 import controllers.helpers.{InlandOrBorderHelper, SupervisingCustomsOfficeHelper}
 import controllers.navigation.Navigator
 import forms.declaration.SupervisingCustomsOffice
-import forms.declaration.SupervisingCustomsOffice.form
+import forms.declaration.SupervisingCustomsOffice.{fieldId, form}
 import models.requests.JourneyRequest
 import models.ExportsDeclaration
 import play.api.i18n.I18nSupport
@@ -29,6 +29,7 @@ import services.audit.AuditService
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.WithUnsafeDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
+import utils.validators.forms.AutoCompleteFieldBinding
 import views.html.declaration.supervising_customs_office
 
 import javax.inject.Inject
@@ -44,9 +45,10 @@ class SupervisingCustomsOfficeController @Inject() (
   inlandOrBorderHelper: InlandOrBorderHelper,
   supervisingCustomsOfficeHelper: SupervisingCustomsOfficeHelper
 )(implicit ec: ExecutionContext, auditService: AuditService)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithUnsafeDefaultFormBinding {
+    extends FrontendController(mcc) with AutoCompleteFieldBinding with I18nSupport with ModelCacheable with SubmissionErrors
+    with WithUnsafeDefaultFormBinding {
 
-  def displayPage: Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  val displayPage: Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     val frm = form.withSubmissionErrors
     request.cacheModel.locations.supervisingCustomsOffice match {
       case Some(data) => Ok(supervisingCustomsOfficePage(frm.fill(data)))
@@ -54,9 +56,9 @@ class SupervisingCustomsOfficeController @Inject() (
     }
   }
 
-  def submit(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  val submit: Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     form
-      .bindFromRequest()
+      .bindFromRequest(formValuesFromRequest(fieldId))
       .fold(
         formWithErrors => Future.successful(BadRequest(supervisingCustomsOfficePage(formWithErrors))),
         updateCache(_).map(declaration => navigator.continueTo(supervisingCustomsOfficeHelper.nextPage(declaration)))

@@ -21,6 +21,7 @@ import connectors.CodeListConnector
 import controllers.declaration.routes.OfficeOfExitController
 import controllers.routes.RootController
 import forms.declaration.LocationOfGoods
+import forms.declaration.LocationOfGoods.locationId
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.SUPPLEMENTARY_EIDR
 import models.DeclarationType
 import models.codes.{Country, GoodsLocationCode}
@@ -31,7 +32,7 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.OptionValues
 import play.api.data.Form
-import play.api.libs.json.{JsObject, JsString, JsValue, Json}
+import play.api.libs.json.{JsString, Json}
 import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
@@ -156,7 +157,7 @@ class LocationOfGoodsControllerSpec extends ControllerSpec with AuditedControlle
 
     "update the declaration" when {
       "information provided by the user are correct" in {
-        val correctForm: JsValue = JsObject(Map("yesNo" -> JsString("Yes"), "glc" -> JsString("PLAUEMAEMAEMA"), "code" -> JsString("")))
+        val correctForm = Json.obj("yesNo" -> "Yes", locationId -> "PLAUEMAEMAEMA", "code" -> "")
         val result = controller.saveLocation(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
@@ -169,6 +170,39 @@ class LocationOfGoodsControllerSpec extends ControllerSpec with AuditedControlle
     }
 
     "return 400 (BAD_REQUEST)" when {
+
+      "no value is entered" in {
+        val incorrectForm = Json.obj("yesNo" -> "", fieldIdOnError(locationId) -> "")
+        val result = controller.saveLocation(postRequest(incorrectForm))
+
+        status(result) mustBe BAD_REQUEST
+        verifyNoAudit()
+
+        theResponseForm.errors.head.messages.head mustBe "error.yesNo.required"
+      }
+
+      "no location code is entered" in {
+        val incorrectForm = Json.obj("yesNo" -> "Yes", fieldIdOnError(locationId) -> "")
+        val result = controller.saveLocation(postRequest(incorrectForm))
+
+        status(result) mustBe BAD_REQUEST
+        verifyNoAudit()
+
+        theResponseForm.errors.head.messages.head mustBe "declaration.locationOfGoods.code.empty"
+      }
+
+      "the entered value is incorrect or not a list's option" in {
+        val incorrectForm = Json.obj("yesNo" -> "Yes", fieldIdOnError(locationId) -> "!@#$")
+        val result = controller.saveLocation(postRequest(incorrectForm))
+
+        status(result) mustBe BAD_REQUEST
+        verifyNoAudit()
+
+        val errors = theResponseForm.errors
+        errors(0).messages.head mustBe "declaration.locationOfGoods.code.error"
+        errors(1).messages.head mustBe "declaration.locationOfGoods.code.error.length"
+      }
+
       "form is incorrect" in {
         val incorrectForm = Json.toJson(LocationOfGoods("incorrect"))
 

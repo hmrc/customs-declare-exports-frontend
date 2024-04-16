@@ -20,7 +20,7 @@ import controllers.actions.{AuthAction, JourneyAction}
 import controllers.declaration.routes.AdditionalProcedureCodesController
 import controllers.navigation.Navigator
 import forms.declaration.procedurecodes.ProcedureCode
-import forms.declaration.procedurecodes.ProcedureCode.form
+import forms.declaration.procedurecodes.ProcedureCode.{form, procedureCodeKey}
 import models.DeclarationType.CLEARANCE
 import models.ExportsDeclaration
 import models.declaration.ProcedureCodesData
@@ -31,6 +31,7 @@ import services.audit.AuditService
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.WithUnsafeDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
+import utils.validators.forms.AutoCompleteFieldBinding
 import views.html.declaration.procedureCodes.procedure_codes
 
 import javax.inject.Inject
@@ -44,7 +45,8 @@ class ProcedureCodesController @Inject() (
   mcc: MessagesControllerComponents,
   procedureCodesPage: procedure_codes
 )(implicit ec: ExecutionContext, auditService: AuditService)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithUnsafeDefaultFormBinding {
+    extends FrontendController(mcc) with AutoCompleteFieldBinding with I18nSupport with ModelCacheable with SubmissionErrors
+    with WithUnsafeDefaultFormBinding {
 
   def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     val frm = form.withSubmissionErrors
@@ -58,12 +60,10 @@ class ProcedureCodesController @Inject() (
 
   def submitProcedureCodes(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     form
-      .bindFromRequest()
+      .bindFromRequest(formValuesFromRequest(procedureCodeKey))
       .fold(
         formWithErrors => Future.successful(BadRequest(procedureCodesPage(itemId, formWithErrors))),
-        correctProcedureCode =>
-          updateCache(itemId, correctProcedureCode)
-            .map(_ => navigator.continueTo(AdditionalProcedureCodesController.displayPage(itemId)))
+        updateCache(itemId, _).map(_ => navigator.continueTo(AdditionalProcedureCodesController.displayPage(itemId)))
       )
   }
 

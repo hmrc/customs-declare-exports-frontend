@@ -71,24 +71,27 @@ object LocationOfGoods extends DeclarationPage {
 
   def form(implicit messages: Messages, codeListConnector: CodeListConnector): Form[LocationOfGoods] = Form(mapping)
 
+  val locationId = "glc"
+
   private def mapping(implicit messages: Messages, codeListConnector: CodeListConnector): Mapping[LocationOfGoods] =
     Forms.mapping(
       "yesNo" -> requiredRadio("error.yesNo.required", YesNoAnswer.allowedValues),
-      "glc" -> conditionalFieldMapping(YesNoAnswers.yes),
+      locationId -> conditionalFieldMapping(YesNoAnswers.yes),
       "code" -> conditionalFieldMapping(YesNoAnswers.no)
     )(form2Data)(model2Form)
 
   private def conditionalFieldMapping(
     yesnoAnswer: String
-  )(implicit messages: Messages, codeListConnector: CodeListConnector): Mapping[Option[String]] = mandatoryIfEqual(
-    "yesNo",
-    yesnoAnswer,
-    text()
-      .transform(_.trim, (s: String) => s)
-      .verifying("declaration.locationOfGoods.code.empty", nonEmpty)
-      .verifying("declaration.locationOfGoods.code.error", isEmpty or isValidFormat)
-      .verifying("declaration.locationOfGoods.code.error.length", isEmpty or (noShorterThan(10) and noLongerThan(39)))
-  )
+  )(implicit messages: Messages, codeListConnector: CodeListConnector): Mapping[Option[String]] =
+    mandatoryIfEqual(
+      "yesNo",
+      yesnoAnswer,
+      text()
+        .transform(_.trim, (s: String) => s)
+        .verifying("declaration.locationOfGoods.code.empty", nonEmpty)
+        .verifying("declaration.locationOfGoods.code.error", isEmpty or isValidFormat)
+        .verifying("declaration.locationOfGoods.code.error.length", isEmpty or (noShorterThan(10) and noLongerThan(39)))
+    )
 
   private def isValidFormat(implicit messages: Messages, codeListConnector: CodeListConnector): String => Boolean =
     value =>

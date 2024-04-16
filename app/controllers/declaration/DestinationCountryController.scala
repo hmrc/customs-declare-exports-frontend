@@ -31,6 +31,7 @@ import services.audit.AuditService
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.WithUnsafeDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
+import utils.validators.forms.AutoCompleteFieldBinding
 import views.html.declaration.destinationCountries.destination_country
 
 import javax.inject.{Inject, Singleton}
@@ -46,7 +47,8 @@ class DestinationCountryController @Inject() (
   taggedAuthCodes: TaggedAuthCodes,
   destinationCountryPage: destination_country
 )(implicit ec: ExecutionContext, codeListConnector: CodeListConnector, auditService: AuditService)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithUnsafeDefaultFormBinding {
+    extends FrontendController(mcc) with AutoCompleteFieldBinding with I18nSupport with ModelCacheable with SubmissionErrors
+    with WithUnsafeDefaultFormBinding {
 
   val displayPage: Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     val form = (request.cacheModel.locations.destinationCountry match {
@@ -60,7 +62,7 @@ class DestinationCountryController @Inject() (
   val submit: Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     Countries
       .form(DestinationCountryPage)
-      .bindFromRequest()
+      .bindFromRequest(formValuesFromRequest(Countries.fieldId))
       .fold(
         formWithErrors => Future.successful(BadRequest(destinationCountryPage(formWithErrors))),
         validCountry =>

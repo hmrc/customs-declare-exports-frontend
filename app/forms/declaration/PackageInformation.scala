@@ -114,9 +114,11 @@ object PackageInformation extends DeclarationPage with FieldMapping {
   def data2Form(data: PackageInformation): Option[(Option[String], Option[Int], Option[String])] =
     Some((data.typesOfPackages, data.numberOfPackages, data.shippingMarks))
 
+  val typeId = "typesOfPackages"
+
   def mapping(implicit messages: Messages, packageTypesService: PackageTypesService): Mapping[PackageInformation] = Forms
     .mapping(
-      "typesOfPackages" -> optional(
+      typeId -> optional(
         text()
           .verifying("declaration.packageInformation.typesOfPackages.error", isContainedIn(packageTypesService.all.map(_.code)))
       ).verifying("declaration.packageInformation.typesOfPackages.empty", isPresent),
