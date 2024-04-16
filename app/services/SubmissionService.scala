@@ -27,7 +27,7 @@ import models.declaration.DeclarationStatus.DeclarationStatus
 import models.declaration.submissions.{Submission, SubmissionAmendment}
 import play.api.Logging
 import play.api.libs.json.{JsObject, Json}
-import services.audit.AuditTypes.{AmendmentCancellation, AmendmentPayload, Audit, SubmissionPayload}
+import services.audit.AuditTypes.{AmendmentCancellation, AmendmentCancellationPayload, AmendmentPayload, Audit, SubmissionPayload}
 import services.audit.{AuditService, AuditTypes, EventData}
 import services.view.AmendmentAction.{AmendmentAction, Cancellation, Resubmission}
 import uk.gov.hmrc.http.HeaderCarrier
@@ -79,8 +79,8 @@ class SubmissionService @Inject() (connector: CustomsDeclareExportsConnector, au
           val isCancellation = amendmentAction == Cancellation
 
           val auditTypeAndFunction =
-            if (isCancellation) (AmendmentCancellation, () => auditService.auditAllPagesUserInput(AmendmentCancellation, declaration))
-             else (AuditTypes.Amendment, () => auditService.auditAllPagesUserInput(AmendmentPayload, declaration))
+            if (isCancellation) (AmendmentCancellation, () => auditService.auditAllPagesUserInput(AmendmentCancellationPayload, declaration))
+            else (AuditTypes.Amendment, () => auditService.auditAllPagesUserInput(AmendmentPayload, declaration))
 
           val fieldPointers =
             if (isCancellation) List("")
@@ -90,14 +90,22 @@ class SubmissionService @Inject() (connector: CustomsDeclareExportsConnector, au
             }
 
           val submissionAmendment = SubmissionAmendment(submissionId, declaration.id, isCancellation, fieldPointers)
-          val result = auditTypeAndFunction._2().flatMap{_ =>
+          val result = auditTypeAndFunction._2().flatMap { _ =>
             if (amendmentAction == Resubmission) connector.resubmitAmendment(submissionAmendment)
             else connector.submitAmendment(submissionAmendment)
           }
 
           result.andThen {
             case Success(conversationId) =>
-              auditAmendmentSubmission(eori, declaration, parentDeclaration, amendmentSubmission, conversationId, Success.toString, auditTypeAndFunction._1)
+              auditAmendmentSubmission(
+                eori,
+                declaration,
+                parentDeclaration,
+                amendmentSubmission,
+                conversationId,
+                Success.toString,
+                auditTypeAndFunction._1
+              )
               metrics.incrementCounter(submissionAmendmentMetric)
               timerContext.stop()
 

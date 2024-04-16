@@ -25,7 +25,7 @@ import forms.declaration.{AmendmentSubmission, LegalDeclaration}
 import metrics.{ExportsMetrics, MetricIdentifiers}
 import models.declaration.DeclarationStatus
 import models.declaration.submissions.{Action, Submission, SubmissionAmendment}
-import org.mockito.ArgumentMatchers.{any, notNull, eq => equalTo}
+import org.mockito.ArgumentMatchers.{any, eq => equalTo, notNull}
 import org.mockito.Mockito.{reset, verify, when}
 import org.scalatest.OptionValues
 import org.scalatest.concurrent.ScalaFutures
@@ -213,7 +213,7 @@ class SubmissionServiceSpec
       val result = submissionService.submitAmendment(eori, amendedDecl, amendmentSubmission, submissionId, Cancellation)(hc, global)
       result.futureValue mustBe Some(expectedActionId)
 
-      verify(auditService).auditAllPagesUserInput(equalTo(AuditTypes.AmendmentCancellation), equalTo(amendedDecl))(any())
+      verify(auditService).auditAllPagesUserInput(equalTo(AuditTypes.AmendmentCancellationPayload), equalTo(amendedDecl))(any())
       verify(auditService).auditAmendmentSent(equalTo(AuditTypes.AmendmentCancellation), any())(any())
 
       val expectedSubmissionAmendment = SubmissionAmendment(submissionId, "id2", true, List(""))
