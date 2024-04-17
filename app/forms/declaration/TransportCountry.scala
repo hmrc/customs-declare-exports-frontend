@@ -28,41 +28,34 @@ import play.api.data.Forms.text
 import play.api.data.validation.{Constraint, Invalid, Valid, ValidationError}
 import play.api.data.{Form, Forms, Mapping}
 import play.api.i18n.Messages
-import play.api.libs.functional.syntax.toFunctionalBuilderOps
 import play.api.libs.json._
 import services.Countries.isValidCountryCode
 import utils.validators.forms.FieldValidator._
 
-case class TransportCountry(countryName: Option[String]) extends Ordered[TransportCountry] with Amendment {
+case class TransportCountry(countryCode: Option[String]) extends Ordered[TransportCountry] with Amendment {
 
   override def compare(that: TransportCountry): Int =
-    (countryName, that.countryName) match {
+    (countryCode, that.countryCode) match {
       case (None, None)                    => 0
       case (_, None)                       => 1
       case (None, _)                       => -1
       case (Some(current), Some(original)) => current.compare(original)
     }
 
-  def value: String = countryName.getOrElse("")
+  def value: String = countryCode.getOrElse("")
 
   def valueAdded(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
-    countryName.fold("")(forAddedValue(pointer, messages(keyForAmend), _))
+    countryCode.fold("")(forAddedValue(pointer, messages(keyForAmend), _))
 
   def valueAmended(newValue: Amendment, pointer: ExportsFieldPointer)(implicit messages: Messages): String =
     forAmendedValue(pointer, messages(keyForAmend), value, newValue.value)
 
   def valueRemoved(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
-    countryName.fold("")(forRemovedValue(pointer, messages(keyForAmend), _))
+    countryCode.fold("")(forRemovedValue(pointer, messages(keyForAmend), _))
 }
 
 object TransportCountry extends DeclarationPage with FieldMapping {
-  // TODO remove resilient reads once 5606 migration has been deployed successfully
-  private val reads: Reads[TransportCountry] = (
-    (__ \ "countryName").readNullable[String] and
-      (__ \ "countryCode").readNullable[String]
-  )((name, code) => TransportCountry(code.orElse(name)))
-  private val writes: Writes[TransportCountry] = Json.writes[TransportCountry]
-  implicit val format: Format[TransportCountry] = Format(reads, writes)
+  implicit val format: OFormat[TransportCountry] = Json.format[TransportCountry]
 
   val pointer: String = "meansOfTransportCrossingTheBorderNationality"
 
@@ -80,7 +73,7 @@ object TransportCountry extends DeclarationPage with FieldMapping {
       transportCountry -> text
         .verifying(nonEmptyConstraint(transportMode))
         .verifying(s"$prefix.country.error.invalid", input => input.isEmpty or isValidCountryCode(input))
-    )(country => TransportCountry(Some(country)))(_.countryName)
+    )(country => TransportCountry(Some(country)))(_.countryCode)
 
   private def nonEmptyConstraint(transportMode: String): Constraint[String] =
     Constraint("constraint.nonEmpty.country") { country =>

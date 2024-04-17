@@ -273,8 +273,8 @@ object PointerRecord {
       )(implicit msgs: Messages, countryHelper: CountryHelper, codeListConnector: CodeListConnector): Option[String] =
         fetchRawValue(dec, args: _*).map(code => msgs(s"declaration.summary.transport.border.meansOfTransport.$code"))
     },
-    "declaration.transport.transportCrossingTheBorderNationality.countryName" -> new DefaultPointerRecord() {
-      def fetchRawValue(dec: ExportsDeclaration, args: Int*) = dec.transport.transportCrossingTheBorderNationality.flatMap(_.countryName)
+    "declaration.transport.transportCrossingTheBorderNationality.countryCode" -> new DefaultPointerRecord() {
+      def fetchRawValue(dec: ExportsDeclaration, args: Int*) = dec.transport.transportCrossingTheBorderNationality.flatMap(_.countryCode)
 
       override def fetchReadableValue(
         dec: ExportsDeclaration,

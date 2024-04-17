@@ -145,7 +145,7 @@ class ErrorsReportedHelperSpec extends UnitViewSpec with Injector with MockitoSu
     "Return short country names for the values" when {
 
       "a field that has a cached country code is in error" in {
-        val fieldPointer = Pointer("declaration.transport.transportCrossingTheBorderNationality.countryName")
+        val fieldPointer = Pointer("declaration.transport.transportCrossingTheBorderNationality.countryCode")
         val notificationErrors = Seq(NotificationError(validationCode, Some(fieldPointer), None))
         val notification = Notification("actionId", "mrn", ZonedDateTime.now(), SubmissionStatus.ACCEPTED, notificationErrors)
         val originalDec = aDeclaration(withTransportCountry(Some("ZA")))
