@@ -188,7 +188,7 @@ class Card6ForTransportSpec extends UnitViewSpec with ExportsTestHelper with Inj
 
       val row = view.getElementsByClass(transportReference)
       row must haveSummaryKey(messages("declaration.summary.transport.departure.meansOfTransport.header"))
-      row must haveSummaryValue("")
+      row must haveSummaryValue("None")
       row must haveSummaryActionWithPlaceholder(DepartureTransportController.displayPage)
     }
 
