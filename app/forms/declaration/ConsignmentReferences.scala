@@ -52,7 +52,7 @@ object ConsignmentReferences extends DeclarationPage {
     val mrnMapping = (decType, additionalDecType) match {
       case (SUPPLEMENTARY, Some(AdditionalDeclarationType.SUPPLEMENTARY_SIMPLIFIED)) =>
         optional(Mrn.mapping("declaration.consignmentReferences.supplementary.mrn"))
-          .verifying("declaration.consignmentReferences.supplementary.mrn.error.empty", isPresent(_))
+          .verifying("declaration.consignmentReferences.supplementary.mrn.error.empty", isSome(_))
       case _ =>
         optional(text())
           .verifying("error.notRequired", isNone(_))
@@ -65,7 +65,7 @@ object ConsignmentReferences extends DeclarationPage {
           text()
             .verifying("declaration.consignmentReferences.supplementary.eidr.error.empty", nonEmpty)
             .verifying("declaration.consignmentReferences.supplementary.eidr.error.invalid", isEmpty or (isNumeric and hasSpecificLength(8)))
-        ).verifying("declaration.consignmentReferences.supplementary.eidr.error.empty", isPresent(_))
+        ).verifying("declaration.consignmentReferences.supplementary.eidr.error.empty", isSome(_))
       case _ =>
         optional(text())
           .verifying("error.notRequired", isNone(_))

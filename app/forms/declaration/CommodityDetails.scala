@@ -76,7 +76,7 @@ object CommodityDetails extends DeclarationPage with FieldMapping {
 
   private def mappingCombinedNomenclatureCodeRequired: Mapping[Option[String]] =
     mappingCombinedNomenclatureCodeOptional
-      .verifying("declaration.commodityDetails.combinedNomenclatureCode.error.empty", isPresent)
+      .verifying("declaration.commodityDetails.combinedNomenclatureCode.error.empty", isSome)
 
   private def mappingCombinedNomenclatureCodeOptional: Mapping[Option[String]] =
     optional(
@@ -95,7 +95,7 @@ object CommodityDetails extends DeclarationPage with FieldMapping {
       text()
         .verifying("declaration.commodityDetails.description.error.empty", nonEmpty)
         .verifying("declaration.commodityDetails.description.error.length", isEmpty or noLongerThan(descriptionOfGoodsMaxLength))
-    ).verifying("declaration.commodityDetails.description.error.empty", isPresent)
+    ).verifying("declaration.commodityDetails.description.error.empty", isSome)
 
   private val mappingDescriptionOfGoodsOptional =
     optional(

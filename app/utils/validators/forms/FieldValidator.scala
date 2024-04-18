@@ -48,7 +48,7 @@ object FieldValidator {
   private val allowedNewLineChars = Set('\r', '\n')
   private val allowedHyphenChar = Set('-')
 
-  val isPresent: Option[_] => Boolean = _.nonEmpty
+  val isSome: Option[_] => Boolean = _.nonEmpty
 
   val isNone: Option[_] => Boolean = _.isEmpty
 
