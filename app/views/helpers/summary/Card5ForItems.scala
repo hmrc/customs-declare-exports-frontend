@@ -229,7 +229,7 @@ class Card5ForItems @Inject() (
     item.nactCodes.map { nactCodes =>
       SummaryListRow(
         key("item.nationalAdditionalCodes"),
-        value(if (nactCodes.isEmpty) messages("site.none") else nactCodes.map(_.nactCode).mkString(", ")),
+        value(nactCodes.map(_.nactCode).mkString(", ")),
         classes = s"item-$index-national-additional-codes",
         changeLink(NactCodeSummaryController.displayPage(item.id), "item.nationalAdditionalCodes", actionsEnabled, Some(index))
       )

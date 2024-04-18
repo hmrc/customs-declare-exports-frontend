@@ -58,9 +58,11 @@ trait SummaryHelper {
   def markCardOnErrors(html: Html, hasErrors: Boolean): Html =
     if (hasErrors) Html(html.toString.replace(target, replacement)) else html
 
-  def value(rowValue: String): Value = Value(Text(rowValue))
+  def value(rowValue: String)(implicit messages: Messages): Value =
+    Value(Text(if (rowValue.trim.isEmpty) messages("site.none") else rowValue))
 
-  def valueHtml(rowValue: String): Value = Value(HtmlContent(rowValue))
+  def valueHtml(rowValue: String)(implicit messages: Messages): Value =
+    Value(HtmlContent(if (rowValue.trim.isEmpty) messages("site.none") else rowValue))
 
   def valueKey(rowValue: String)(implicit messages: Messages): Value = Value(Text(messages(rowValue)))
 
