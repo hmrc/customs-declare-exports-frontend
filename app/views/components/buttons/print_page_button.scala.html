@@ -19,7 +19,7 @@
 @(marginTop: Int = 0, marginBottom: Int = 0)(implicit request: Request[_], messages: Messages)
 
 <p class="govuk-body govuk-!-display-none-print govuk-!-margin-top-@{marginTop} govuk-!-margin-bottom-@{marginBottom}">
-    <a class="govuk-link govuk-link--no-visited-state ceds-print-link">
+    <button class="govuk-link govuk-link--no-visited-state govuk-body-m ceds-print-link" data-track-category="printButton" data-track-action="clicked" data-track-label="Print this page" data-module="print-link" data-print-link-module-started="true">
         @messages("site.print")
-    </a>
+    </button>
 </p>
