@@ -101,6 +101,10 @@ object PointerRecord {
       def fetchRawValue(dec: ExportsDeclaration, args: Int*) = Option.empty[String]
       override val pageLink2Param = Some(AdditionalDocumentsController.displayPage)
     },
+    "declaration.items.$.additionalDocument.documentTypeCode" -> new DefaultPointerRecord() {
+      def fetchRawValue(dec: ExportsDeclaration, args: Int*) = None
+      override val pageLink2Param = Some(AdditionalDocumentsController.displayPage)
+    },
     "declaration.items.$.additionalDocument.$.documentTypeCode" -> new DefaultPointerRecord() {
       def fetchRawValue(dec: ExportsDeclaration, args: Int*) =
         getItem(dec, args(0)).flatMap(getAdditionalDocument(_, args(1)).flatMap(_.documentTypeCode))
@@ -135,6 +139,11 @@ object PointerRecord {
       def fetchRawValue(dec: ExportsDeclaration, args: Int*) =
         getItem(dec, args(0)).flatMap(getAdditionalDocument(_, args(1)).flatMap(_.documentWriteOff).flatMap(_.documentQuantity.map(_.toString())))
       override val pageLink2Param = Some(AdditionalDocumentsController.displayPage)
+    },
+    "declaration.items.$.additionalInformation.code" -> new DefaultPointerRecord() {
+      def fetchRawValue(dec: ExportsDeclaration, args: Int*) =
+        getItem(dec, args(0)).flatMap(_.additionalInformation.map(_.items.size.toString))
+      override val pageLink2Param = Some(AdditionalInformationController.displayPage)
     },
     "declaration.items.$.additionalInformation.$.code" -> new DefaultPointerRecord() {
       def fetchRawValue(dec: ExportsDeclaration, args: Int*) =
@@ -260,6 +269,10 @@ object PointerRecord {
       def fetchRawValue(dec: ExportsDeclaration, args: Int*) = getDeclarationHolder(dec, args(0)).flatMap(_.authorisationTypeCode)
       override val pageLink1Param = Some(AuthorisationHolderSummaryController.displayPage)
     },
+    "declaration.parties.declarationHolders.authorisationTypeCode" -> new DefaultPointerRecord() {
+      def fetchRawValue(dec: ExportsDeclaration, args: Int*) = Some(dec.authorisationHolders.size.toString)
+      override val pageLink1Param = Some(AuthorisationHolderSummaryController.displayPage)
+    },
     "declaration.transport.meansOfTransportCrossingTheBorderIDNumber" -> new DefaultPointerRecord() {
       def fetchRawValue(dec: ExportsDeclaration, args: Int*) = dec.transport.meansOfTransportCrossingTheBorderIDNumber
       override val pageLink1Param = Some(BorderTransportController.displayPage)
@@ -328,6 +341,10 @@ object PointerRecord {
         args: Int*
       )(implicit msgs: Messages, countryHelper: CountryHelper, codeListConnector: CodeListConnector): Option[String] =
         fetchRawValue(dec, args: _*).map(code => msgs(s"declaration.summary.transport.payment.$code"))
+    },
+    "declaration.locations.destinationCountries.countriesOfRouting" -> new DefaultPointerRecord() {
+      def fetchRawValue(dec: ExportsDeclaration, args: Int*) = Some(dec.locations.routingCountries.size.toString)
+      override val pageLink1Param = Some(RoutingCountriesController.displayRoutingCountry)
     },
     "declaration.locations.destinationCountries.countriesOfRouting.$" -> new DefaultPointerRecord() {
       def fetchRawValue(dec: ExportsDeclaration, args: Int*) = getRoutingCountry(dec, args(0)).flatMap(_.country.code)
