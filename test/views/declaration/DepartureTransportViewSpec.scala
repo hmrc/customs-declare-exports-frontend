@@ -25,12 +25,14 @@ import forms.declaration.InlandOrBorder.{Border, Inland}
 import forms.declaration.ModeOfTransportCode.{RoRo, Road}
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
 import forms.declaration.{ModeOfTransportCode, TransportCodes}
-import models.DeclarationType.STANDARD
+import models.DeclarationType.{DeclarationType, STANDARD}
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
+import play.api.i18n.Messages
 import play.api.mvc.Call
+import play.twirl.api.HtmlFormat.Appendable
 import services.TransportCodeService
-import views.declaration.spec.PageWithButtonsSpec
+import views.declaration.spec.UnitViewSpec
 import views.helpers.ModeOfTransportCodeHelper
 import views.html.declaration.departure_transport
 import views.tags.ViewTest
@@ -38,7 +40,7 @@ import views.tags.ViewTest
 import scala.jdk.CollectionConverters.IteratorHasAsScala
 
 @ViewTest
-class DepartureTransportViewSpec extends PageWithButtonsSpec with Injector {
+class DepartureTransportViewSpec extends UnitViewSpec with Injector {
 
   private val prefix = "declaration.transportInformation.meansOfTransport"
 
@@ -46,10 +48,13 @@ class DepartureTransportViewSpec extends PageWithButtonsSpec with Injector {
 
   implicit val transportCodeService: TransportCodeService = MockTransportCodeService.transportCodeService
 
-  override val typeAndViewInstance = (STANDARD, page(form(transportCodeService.transportCodesForV1))(_, _))
+  val typeAndViewInstance: (DeclarationType, (JourneyRequest[_], Messages) => Appendable) =
+    (STANDARD, page(form(transportCodeService.transportCodesForV1))(_, _))
 
   def createView(transportCodes: TransportCodes = transportCodeService.transportCodesForV1)(implicit request: JourneyRequest[_]): Document =
     page(form(transportCodes))(request, messages)
+
+  override def checkAllSaveButtonsAreDisplayed(view: Document): Unit = checkSaveAndContinueButtonIsDisplayed(view)
 
   "Departure Transport View" should {
 
