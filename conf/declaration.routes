@@ -308,7 +308,7 @@ POST        /items/:itemId/additional-procedure-codes        controllers.declara
 
 # Fiscal Information
 
-GET         /items/:itemId/fiscal-information    controllers.declaration.FiscalInformationController.displayPage(itemId, fastForward: Boolean ?= false)
+GET         /items/:itemId/fiscal-information    controllers.declaration.FiscalInformationController.displayPage(itemId)
 
 POST        /items/:itemId/fiscal-information   controllers.declaration.FiscalInformationController.saveFiscalInformation(itemId)
 
@@ -319,13 +319,13 @@ GET         /items/:itemId/additional-fiscal-references-list        controllers.
 
 POST        /items/:itemId/additional-fiscal-references-list        controllers.declaration.AdditionalFiscalReferencesController.submitForm(itemId)
 
-GET         /items/:itemId/additional-fiscal-references             controllers.declaration.AdditionalFiscalReferencesAddController.displayPage(itemId)
+GET         /items/:itemId/additional-fiscal-references             controllers.declaration.AdditionalFiscalReferenceAddController.displayPage(itemId)
 
-POST        /items/:itemId/additional-fiscal-references             controllers.declaration.AdditionalFiscalReferencesAddController.submitForm(itemId)
+POST        /items/:itemId/additional-fiscal-references             controllers.declaration.AdditionalFiscalReferenceAddController.submitForm(itemId)
 
-GET         /items/:itemId/additional-fiscal-references/:id/remove   controllers.declaration.AdditionalFiscalReferencesRemoveController.displayPage(itemId, id)
+GET         /items/:itemId/additional-fiscal-references/:id/remove   controllers.declaration.AdditionalFiscalReferenceRemoveController.displayPage(itemId, id)
 
-POST        /items/:itemId/additional-fiscal-references/:id/remove   controllers.declaration.AdditionalFiscalReferencesRemoveController.submitForm(itemId, id)
+POST        /items/:itemId/additional-fiscal-references/:id/remove   controllers.declaration.AdditionalFiscalReferenceRemoveController.submitForm(itemId, id)
 
 # Commodity Details
 

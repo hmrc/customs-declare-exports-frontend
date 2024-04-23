@@ -36,8 +36,8 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
     withItemId(itemId),
     withSequenceId(sequenceId.toInt),
     withProcedureCodes(Some("1234"), Seq("000", "111")),
-    withFiscalInformation(FiscalInformation("Yes")),
-    withAdditionalFiscalReferenceData(AdditionalFiscalReferencesData(Seq(AdditionalFiscalReference("GB", "1234")))),
+    withFiscalInformation(),
+    withAdditionalFiscalReferenceData(),
     withStatisticalValue("123"),
     withCommodityDetails(CommodityDetails(Some("1234567890"), Some("description"))),
     withUNDangerousGoodsCode(UNDangerousGoodsCode(Some("345"))),
@@ -92,7 +92,9 @@ class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injec
 
       "have a 'VAT answer' row" in {
         val row = view.getElementsByClass("item-1-VATdetails-row")
-        checkSummaryRow(row, "item.VATdetails", "GB1234", None, "ign")
+
+        val expected = s"${fiscalReference.country}${fiscalReference.reference}"
+        checkSummaryRow(row, "item.VATdetails", expected, None, "ign")
       }
 
       "have a 'commodity code' row" in {

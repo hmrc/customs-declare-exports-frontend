@@ -17,6 +17,7 @@
 package controllers.declaration
 
 import base.{AuditedControllerSpec, ControllerSpec}
+import controllers.declaration.routes.{AdditionalFiscalReferencesController, FiscalInformationController}
 import forms.common.YesNoAnswer
 import forms.declaration.{AdditionalFiscalReference, AdditionalFiscalReferencesData}
 import org.mockito.ArgumentCaptor
@@ -28,14 +29,14 @@ import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import utils.ListItem
-import views.html.declaration.fiscalInformation.additional_fiscal_references_remove
+import views.html.declaration.fiscalInformation.additional_fiscal_reference_remove
 
-class AdditionalFiscalReferencesRemoveControllerSpec extends ControllerSpec with AuditedControllerSpec with OptionValues {
+class AdditionalFiscalReferenceRemoveControllerSpec extends ControllerSpec with AuditedControllerSpec with OptionValues {
 
-  val mockRemovePage = mock[additional_fiscal_references_remove]
+  val mockRemovePage = mock[additional_fiscal_reference_remove]
 
   val controller =
-    new AdditionalFiscalReferencesRemoveController(
+    new AdditionalFiscalReferenceRemoveController(
       mockAuthAction,
       mockJourneyAction,
       mockExportsCacheService,
@@ -43,6 +44,10 @@ class AdditionalFiscalReferencesRemoveControllerSpec extends ControllerSpec with
       stubMessagesControllerComponents(),
       mockRemovePage
     )(ec, auditService)
+
+  private val referenceId = ListItem.createId(0, fiscalReference)
+  private val item = anItem()
+  private val itemWithAdditionalReference = anItem(withItemId(item.id), withAdditionalFiscalReferenceData())
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
@@ -56,7 +61,7 @@ class AdditionalFiscalReferencesRemoveControllerSpec extends ControllerSpec with
   }
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
-    withNewCaching(aDeclaration(withItem(itemWithTwoAdditionalReferences)))
+    withNewCaching(aDeclaration(withItem(itemWithAdditionalReference)))
     await(controller.displayPage(item.id, referenceId)(request))
     theResponseForm
   }
@@ -73,24 +78,14 @@ class AdditionalFiscalReferencesRemoveControllerSpec extends ControllerSpec with
     captor.getValue
   }
 
-  private def verifyRemovePageInvoked(numberOfTimes: Int = 1) =
+  private def verifyRemovePageInvoked(numberOfTimes: Int = 1): HtmlFormat.Appendable =
     verify(mockRemovePage, times(numberOfTimes)).apply(any(), any(), any(), any())(any(), any())
-
-  val additionalReference = AdditionalFiscalReference("FR", "12345")
-  val additionalReferenceOther = AdditionalFiscalReference("PL", "54321")
-  val referenceId = ListItem.createId(0, additionalReference)
-  val item = anItem()
-  val itemWithAdditionalReference =
-    anItem(withItemId(item.id), withAdditionalFiscalReferenceData(AdditionalFiscalReferencesData(Seq(additionalReference))))
-  val itemWithTwoAdditionalReferences =
-    anItem(withItemId(item.id), withAdditionalFiscalReferenceData(AdditionalFiscalReferencesData(Seq(additionalReference, additionalReferenceOther))))
 
   "AdditionalFiscalReferences Remove Controller" must {
 
     onEveryDeclarationJourney() { request =>
       "return 200 (OK)" that {
         "display page method is invoked" in {
-
           withNewCaching(aDeclarationAfter(request.cacheModel, withItem(itemWithAdditionalReference)))
 
           val result = controller.displayPage(item.id, referenceId)(getRequest())
@@ -98,9 +93,8 @@ class AdditionalFiscalReferencesRemoveControllerSpec extends ControllerSpec with
           status(result) mustBe OK
           verifyRemovePageInvoked()
 
-          theAdditionalReference mustBe additionalReference
+          theAdditionalReference mustBe fiscalReference
         }
-
       }
 
       "return 400 (BAD_REQUEST)" when {
@@ -124,23 +118,8 @@ class AdditionalFiscalReferencesRemoveControllerSpec extends ControllerSpec with
           val result = controller.displayPage(item.id, "ref-id")(getRequest())
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalFiscalReferencesController.displayPage(item.id)
+          thePageNavigatedTo mustBe AdditionalFiscalReferencesController.displayPage(item.id)
           verifyNoAudit()
-        }
-
-        "user submits 'Yes' answer when multiple additional information exists" in {
-          withNewCaching(aDeclarationAfter(request.cacheModel, withItem(itemWithTwoAdditionalReferences)))
-
-          val requestBody = Seq("yesNo" -> "Yes")
-          val result = controller.submitForm(item.id, referenceId)(postRequestAsFormUrlEncoded(requestBody: _*))
-
-          await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalFiscalReferencesController.displayPage(item.id)
-
-          theCacheModelUpdated
-            .itemBy(item.id)
-            .flatMap(_.additionalFiscalReferencesData) mustBe Some(AdditionalFiscalReferencesData(Seq(additionalReferenceOther)))
-          verifyAudit()
         }
 
         "user submits 'Yes' answer when single additional information exists" in {
@@ -150,9 +129,28 @@ class AdditionalFiscalReferencesRemoveControllerSpec extends ControllerSpec with
           val result = controller.submitForm(item.id, referenceId)(postRequestAsFormUrlEncoded(requestBody: _*))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.FiscalInformationController.displayPage(item.id)
+          thePageNavigatedTo mustBe FiscalInformationController.displayPage(item.id)
 
           theCacheModelUpdated.itemBy(item.id).flatMap(_.additionalFiscalReferencesData) mustBe Some(AdditionalFiscalReferencesData(Seq.empty))
+          verifyAudit()
+        }
+
+        val fiscalReference2 = AdditionalFiscalReference("PL", "54321")
+        val itemWithTwoAdditionalReferences =
+          anItem(withItemId(item.id), withAdditionalFiscalReferenceData(AdditionalFiscalReferencesData(Seq(fiscalReference, fiscalReference2))))
+
+        "user submits 'Yes' answer when multiple additional information exists" in {
+          withNewCaching(aDeclarationAfter(request.cacheModel, withItem(itemWithTwoAdditionalReferences)))
+
+          val requestBody = Seq("yesNo" -> "Yes")
+          val result = controller.submitForm(item.id, referenceId)(postRequestAsFormUrlEncoded(requestBody: _*))
+
+          await(result) mustBe aRedirectToTheNextPage
+          thePageNavigatedTo mustBe AdditionalFiscalReferencesController.displayPage(item.id)
+
+          theCacheModelUpdated
+            .itemBy(item.id)
+            .flatMap(_.additionalFiscalReferencesData) mustBe Some(AdditionalFiscalReferencesData(Seq(fiscalReference2)))
           verifyAudit()
         }
 
@@ -163,7 +161,7 @@ class AdditionalFiscalReferencesRemoveControllerSpec extends ControllerSpec with
           val result = controller.submitForm(item.id, referenceId)(postRequestAsFormUrlEncoded(requestBody: _*))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe controllers.declaration.routes.AdditionalFiscalReferencesController.displayPage(item.id)
+          thePageNavigatedTo mustBe AdditionalFiscalReferencesController.displayPage(item.id)
 
           verifyTheCacheIsUnchanged()
           verifyNoAudit()

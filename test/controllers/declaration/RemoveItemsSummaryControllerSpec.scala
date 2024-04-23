@@ -20,8 +20,7 @@ import base.ControllerWithoutFormSpec
 import controllers.declaration.routes.{ItemsSummaryController, SectionSummaryController, SummaryController}
 import controllers.helpers.SequenceIdHelper.valueOfEso
 import forms.common.YesNoAnswer.YesNoAnswers
-import forms.declaration.FiscalInformation.AllowedFiscalInformationAnswers
-import forms.declaration.{AdditionalFiscalReference, AdditionalFiscalReferencesData, FiscalInformation, WarehouseIdentification}
+import forms.declaration.WarehouseIdentification
 import mock.ErrorHandlerMocks
 import models.DeclarationType._
 import models.declaration.{CommodityMeasure, DeclarationStatus, ExportItem}
@@ -67,8 +66,8 @@ class RemoveItemsSummaryControllerSpec
     withSequenceId(1),
     withItemId(itemId),
     withProcedureCodes(),
-    withFiscalInformation(FiscalInformation(AllowedFiscalInformationAnswers.yes)),
-    withAdditionalFiscalReferenceData(AdditionalFiscalReferencesData(Seq(AdditionalFiscalReference("GB", "12")))),
+    withFiscalInformation(),
+    withAdditionalFiscalReferenceData(),
     withStatisticalValue(),
     withPackageInformation(),
     withAdditionalInformation("code", "description"),

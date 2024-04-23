@@ -32,18 +32,18 @@ import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.WithUnsafeDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.ListItem
-import views.html.declaration.fiscalInformation.additional_fiscal_references_remove
+import views.html.declaration.fiscalInformation.additional_fiscal_reference_remove
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class AdditionalFiscalReferencesRemoveController @Inject() (
+class AdditionalFiscalReferenceRemoveController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
   navigator: Navigator,
   mcc: MessagesControllerComponents,
-  removePage: additional_fiscal_references_remove
+  removePage: additional_fiscal_reference_remove
 )(implicit ec: ExecutionContext, auditService: AuditService)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithUnsafeDefaultFormBinding {
 

@@ -18,14 +18,20 @@ package services.cache
 
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.No
-import forms.declaration._
+import forms.declaration.{FiscalInformation, _}
 import forms.declaration.additionaldocuments.AdditionalDocument
+import models.declaration.ProcedureCodesData.osrProcedureCode
 import models.declaration.{CommodityMeasure => CommodityMeasureModel, _}
 
 import java.util.UUID
 
 // scalastyle:off
 trait ExportsItemBuilder {
+
+  val fiscalInformation: FiscalInformation = FiscalInformation("Yes")
+  val fiscalReference: AdditionalFiscalReference = AdditionalFiscalReference("PL", "REFERENCE")
+  val listOfFiscalReferences: Seq[AdditionalFiscalReference] = List(fiscalReference)
+  val fiscalReferences: AdditionalFiscalReferencesData = AdditionalFiscalReferencesData(listOfFiscalReferences)
 
   private def uuid: String = UUID.randomUUID.toString
 
@@ -47,16 +53,16 @@ trait ExportsItemBuilder {
 
   def withoutProcedureCodes(): ItemModifier = _.copy(procedureCodes = None)
 
-  def withProcedureCodes(procedureCode: Option[String] = Some("1042"), additionalProcedureCodes: Seq[String] = Seq.empty): ItemModifier =
+  def withProcedureCodes(procedureCode: Option[String] = Some(osrProcedureCode), additionalProcedureCodes: Seq[String] = Seq.empty): ItemModifier =
     _.copy(procedureCodes = Some(ProcedureCodesData(procedureCode, additionalProcedureCodes)))
 
   def withCommodityMeasure(commodityMeasure: CommodityMeasureModel): ItemModifier =
     _.copy(commodityMeasure = Some(commodityMeasure))
 
-  def withFiscalInformation(fiscalInformation: FiscalInformation): ItemModifier =
+  def withFiscalInformation(fiscalInformation: FiscalInformation = fiscalInformation): ItemModifier =
     _.copy(fiscalInformation = Some(fiscalInformation))
 
-  def withAdditionalFiscalReferenceData(data: AdditionalFiscalReferencesData): ItemModifier =
+  def withAdditionalFiscalReferenceData(data: AdditionalFiscalReferencesData = fiscalReferences): ItemModifier =
     _.copy(additionalFiscalReferencesData = Some(data))
 
   def withCommodityDetails(data: CommodityDetails): ItemModifier =

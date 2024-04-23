@@ -149,7 +149,7 @@ class AdditionalProcedureCodesController @Inject() (
 
       case (None, _) =>
         if (cachedAdditionalProcedureCodes.nonEmpty)
-          nextPage(action, itemId, cachedData.procedureCode, request.cacheModel)
+          nextPage(action, itemId, request.cacheModel)
         else
           errorHandler(Seq((additionalProcedureCodeKey, "declaration.additionalProcedureCodes.error.empty")))
 
@@ -164,7 +164,7 @@ class AdditionalProcedureCodesController @Inject() (
 
       case (Some(code), _) =>
         updateCache(itemId, ProcedureCodesData(None, cachedAdditionalProcedureCodes :+ code))
-          .flatMap(nextPage(action, itemId, cachedData.procedureCode, _))
+          .flatMap(nextPage(action, itemId, _))
     }
   }
 
@@ -192,14 +192,14 @@ class AdditionalProcedureCodesController @Inject() (
     updateDeclarationFromRequest(updatedModel(_))
   }
 
-  private def nextPage(action: FormAction, itemId: String, maybeProcedureCode: Option[String], declaration: ExportsDeclaration)(
+  private def nextPage(action: FormAction, itemId: String, declaration: ExportsDeclaration)(
     implicit request: JourneyRequest[AnyContent]
   ): Future[Result] =
-    (action, maybeProcedureCode) match {
-      case (Add, _) =>
+    action match {
+      case Add =>
         Future.successful(navigator.continueTo(routes.AdditionalProcedureCodesController.displayPage(itemId)))
 
-      case (_, Some(code)) if ProcedureCodesData.osrProcedureCodes.contains(code) =>
+      case _ if declaration.hasOsrProcedureCode(itemId) =>
         Future.successful(navigator.continueTo(routes.FiscalInformationController.displayPage(itemId)))
 
       case _ =>

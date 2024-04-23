@@ -73,7 +73,7 @@
                     TableRow(
                         content = HtmlContent(link(
                             messages("site.remove"),
-                            AdditionalFiscalReferencesRemoveController.displayPage(itemId, createId(index, additionalReference)),
+                            AdditionalFiscalReferenceRemoveController.displayPage(itemId, createId(index, additionalReference)),
                             textHidden = Some(messages("declaration.additionalInformation.table.remove.hint", additionalReference.reference))
                         )),
                         classes = "govuk-table__cell--numeric",

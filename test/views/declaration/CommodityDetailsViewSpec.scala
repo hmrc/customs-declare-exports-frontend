@@ -17,8 +17,8 @@
 package views.declaration
 
 import base.Injector
-import controllers.declaration.routes.FiscalInformationController
-import forms.declaration.CommodityDetails
+import controllers.declaration.routes.{AdditionalFiscalReferencesController, AdditionalProcedureCodesController, FiscalInformationController}
+import forms.declaration.{CommodityDetails, FiscalInformation}
 import models.DeclarationType
 import models.DeclarationType.DeclarationType
 import models.requests.JourneyRequest
@@ -85,9 +85,33 @@ class CommodityDetailsViewSpec extends UnitViewSpec with Injector {
       view.getElementById(CommodityDetails.descriptionOfGoodsKey).text mustBe expectedDescription
     }
 
-    "display 'Back' button that links to 'Fiscal Information' page with 'fast-forward' enabled" in {
+    "display 'Back' button that links to the 'Additional Procedure Codes' page" in {
       val backButton = view.getElementById("back-link")
-      backButton.getElementById("back-link") must haveHref(FiscalInformationController.displayPage(itemId, true))
+      backButton.getElementById("back-link") must haveHref(AdditionalProcedureCodesController.displayPage(itemId))
+    }
+
+    "display 'Back' button that links to the 'Fiscal References List' page" when {
+      "Procedure code is for Onward Supply Relief and fiscal information are entered" in {
+        val item = anItem(withItemId(itemId), withProcedureCodes(), withFiscalInformation(), withAdditionalFiscalReferenceData())
+        val declaration = aDeclaration(withType(declarationType), withItem(item))
+
+        val view = createView(commodityDetails.fold(form)(form.fill))(journeyRequest(declaration))
+
+        val backButton = view.getElementById("back-link")
+        backButton.getElementById("back-link") must haveHref(AdditionalFiscalReferencesController.displayPage(itemId))
+      }
+    }
+
+    "display 'Back' button that links to the 'Onward Supply Relief' page" when {
+      "Procedure code is for Onward Supply Relief and fiscal information are NOT entered" in {
+        val item = anItem(withItemId(itemId), withProcedureCodes(), withFiscalInformation(FiscalInformation("No")))
+        val declaration = aDeclaration(withType(declarationType), withItem(item))
+
+        val view = createView(commodityDetails.fold(form)(form.fill))(journeyRequest(declaration))
+
+        val backButton = view.getElementById("back-link")
+        backButton.getElementById("back-link") must haveHref(FiscalInformationController.displayPage(itemId))
+      }
     }
 
     "display 'Save and continue' button on page" in {

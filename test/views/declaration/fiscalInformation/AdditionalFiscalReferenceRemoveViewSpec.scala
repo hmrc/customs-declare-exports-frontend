@@ -25,16 +25,16 @@ import models.DeclarationType.STANDARD
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import views.declaration.spec.PageWithButtonsSpec
-import views.html.declaration.fiscalInformation.additional_fiscal_references_remove
+import views.html.declaration.fiscalInformation.additional_fiscal_reference_remove
 import views.tags.ViewTest
 
 @ViewTest
-class AdditionalFiscalReferencesRemoveViewSpec extends PageWithButtonsSpec with Injector {
+class AdditionalFiscalReferenceRemoveViewSpec extends PageWithButtonsSpec with Injector {
 
   val referenceId = "0.200378103"
   val additionalReference = AdditionalFiscalReference("FR", "12345")
 
-  val page = instanceOf[additional_fiscal_references_remove]
+  val page = instanceOf[additional_fiscal_reference_remove]
 
   override val typeAndViewInstance = (STANDARD, page(itemId, referenceId, additionalReference, form())(_, _))
 

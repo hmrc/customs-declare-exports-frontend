@@ -17,12 +17,11 @@
 package controllers.declaration
 
 import base.ControllerSpec
-import controllers.declaration.routes.CommodityDetailsController
+import controllers.declaration.routes.{CommodityDetailsController, FiscalInformationController}
 import forms.common.YesNoAnswer
-import forms.declaration.{AdditionalFiscalReference, AdditionalFiscalReferencesData}
+import forms.declaration.FiscalInformation
+import forms.declaration.FiscalInformation.AllowedFiscalInformationAnswers
 import mock.{ErrorHandlerMocks, ItemActionMocks}
-import models.DeclarationType
-import models.declaration.ExportItem
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -47,6 +46,8 @@ class AdditionalFiscalReferencesControllerSpec extends ControllerSpec with ItemA
     additionalFiscalReferencesPage
   )
 
+  private val item = anItem(withFiscalInformation(), withAdditionalFiscalReferenceData())
+
   override protected def beforeEach(): Unit = {
     super.beforeEach()
 
@@ -68,7 +69,6 @@ class AdditionalFiscalReferencesControllerSpec extends ControllerSpec with ItemA
   }
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
-    val item = anItem(withAdditionalFiscalReferenceData(AdditionalFiscalReferencesData(Seq(AdditionalFiscalReference("GB", "123124124")))))
     withNewCaching(aDeclaration(withItem(item)))
     await(controller.displayPage(item.id)(request))
     theResponseForm
@@ -79,15 +79,38 @@ class AdditionalFiscalReferencesControllerSpec extends ControllerSpec with ItemA
 
   "Additional fiscal references controller" should {
 
+    "be redirected to /commodity-details" when {
+
+      List(None, Some(FiscalInformation(AllowedFiscalInformationAnswers.no))).foreach { fiscalInfo =>
+        val infoToPrint = fiscalInfo.fold("None")(_.onwardSupplyRelief)
+
+        s"on landing on the page, the cached value for /fiscal-information is '$infoToPrint'" in {
+          withNewCaching(aDeclaration(withItem(item.copy(fiscalInformation = fiscalInfo))))
+
+          val result: Future[Result] = controller.displayPage(item.id)(getRequest())
+
+          await(result) mustBe aRedirectToTheNextPage
+          thePageNavigatedTo mustBe CommodityDetailsController.displayPage(item.id)
+        }
+      }
+    }
+
+    "be redirected to /fiscal-information" when {
+      "the declaration has no 'Fiscal References'" in {
+        withNewCaching(aDeclaration(withItem(item.copy(additionalFiscalReferencesData = None))))
+
+        val result: Future[Result] = controller.displayPage(item.id)(getRequest())
+
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe FiscalInformationController.displayPage(item.id)
+      }
+    }
+
     "return 200 (OK)" when {
-
       "display page method is invoked with data in cache" in {
-        val itemCacheData =
-          ExportItem("itemId", additionalFiscalReferencesData = Some(AdditionalFiscalReferencesData(Seq(AdditionalFiscalReference("PL", "12345")))))
-        val cachedData = aDeclaration(withType(DeclarationType.SUPPLEMENTARY), withItem(itemCacheData))
-        withNewCaching(cachedData)
+        withNewCaching(aDeclaration(withItem(item)))
 
-        val result: Future[Result] = controller.displayPage(itemCacheData.id)(getRequest())
+        val result: Future[Result] = controller.displayPage(item.id)(getRequest())
 
         status(result) must be(OK)
         verifyPageInvoked()
@@ -95,15 +118,12 @@ class AdditionalFiscalReferencesControllerSpec extends ControllerSpec with ItemA
     }
 
     "return 400 (BAD_REQUEST)" when {
-
       "user provide wrong action" in {
-        val item = anItem()
-        withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY), withItem(item)))
+        withNewCaching(aDeclaration(withItem(item)))
 
-        val wrongAction: Seq[(String, String)] = Seq(("country", "PL"), ("reference", "12345"), ("WrongAction", ""))
+        val incorrectForm = Json.obj("yesNo" -> "wrong")
 
-        val result: Future[Result] =
-          controller.submitForm(item.id)(postRequestAsFormUrlEncoded(wrongAction: _*))
+        val result = controller.submitForm(item.id)(postRequest(incorrectForm))
 
         status(result) must be(BAD_REQUEST)
       }
@@ -112,30 +132,17 @@ class AdditionalFiscalReferencesControllerSpec extends ControllerSpec with ItemA
     "return 303 (SEE_OTHER)" when {
 
       "user submits valid Yes answer" in {
-        val item = anItem()
-        withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY), withItem(item)))
+        withNewCaching(aDeclaration(withItem(item)))
 
         val requestBody = Json.obj("yesNo" -> "Yes")
         val result = controller.submitForm(item.id)(postRequest(requestBody))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe routes.AdditionalFiscalReferencesAddController.displayPage(item.id)
-      }
-
-      "user submits valid Yes answer in error-fix mode" in {
-        val item = anItem()
-        withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY), withItem(item)))
-
-        val requestBody = Json.obj("yesNo" -> "Yes")
-        val result = controller.submitForm(item.id)(postRequest(requestBody))
-
-        await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe routes.AdditionalFiscalReferencesAddController.displayPage(item.id)
+        thePageNavigatedTo mustBe routes.AdditionalFiscalReferenceAddController.displayPage(item.id)
       }
 
       "user submits valid No answer" in {
-        val item = anItem()
-        withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY), withItem(item)))
+        withNewCaching(aDeclaration(withItem(item)))
 
         val requestBody = Json.obj("yesNo" -> "No")
         val result = controller.submitForm(item.id)(postRequest(requestBody))

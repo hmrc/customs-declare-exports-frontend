@@ -42,14 +42,16 @@ class AdditionalFiscalReferencesController @Inject() (
 ) extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithUnsafeDefaultFormBinding {
 
   def displayPage(itemId: String): Action[AnyContent] = itemAction(itemId) { implicit request =>
-    val form = yesNoForm.withSubmissionErrors
-    cachedAdditionalReferencesData(itemId, request) match {
-      case Some(data) if data.references.nonEmpty =>
-        Ok(additionalFiscalReferencesPage(itemId, form, data.references))
+    if (request.cacheModel.hasFiscalInformation(itemId)) {
+      cachedAdditionalReferencesData(itemId, request) match {
+        case Some(data) if data.references.nonEmpty =>
+          val form = yesNoForm.withSubmissionErrors
+          Ok(additionalFiscalReferencesPage(itemId, form, data.references))
 
-      case Some(_) => navigator.continueTo(routes.AdditionalFiscalReferencesAddController.displayPage(itemId))
-      case _       => navigator.continueTo(FiscalInformationController.displayPage(itemId))
-    }
+        case Some(_) => navigator.continueTo(routes.AdditionalFiscalReferenceAddController.displayPage(itemId))
+        case _       => navigator.continueTo(FiscalInformationController.displayPage(itemId))
+      }
+    } else navigator.continueTo(CommodityDetailsController.displayPage(itemId))
   }
 
   def submitForm(itemId: String): Action[AnyContent] = itemAction(itemId) { implicit request =>
@@ -61,7 +63,7 @@ class AdditionalFiscalReferencesController @Inject() (
           BadRequest(additionalFiscalReferencesPage(itemId, formWithErrors, data))
         },
         _.answer match {
-          case YesNoAnswers.yes => navigator.continueTo(routes.AdditionalFiscalReferencesAddController.displayPage(itemId))
+          case YesNoAnswers.yes => navigator.continueTo(routes.AdditionalFiscalReferenceAddController.displayPage(itemId))
           case YesNoAnswers.no  => navigator.continueTo(CommodityDetailsController.displayPage(itemId))
         }
       )

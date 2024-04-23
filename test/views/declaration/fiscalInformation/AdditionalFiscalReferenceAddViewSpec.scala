@@ -18,7 +18,7 @@ package views.declaration.fiscalInformation
 
 import base.Injector
 import connectors.CodeListConnector
-import controllers.declaration.routes.FiscalInformationController
+import controllers.declaration.routes.{AdditionalFiscalReferencesController, FiscalInformationController}
 import forms.declaration.AdditionalFiscalReference
 import forms.declaration.AdditionalFiscalReference.form
 import models.DeclarationType._
@@ -29,13 +29,13 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import play.api.data.Form
 import views.declaration.spec.PageWithButtonsSpec
-import views.html.declaration.fiscalInformation.additional_fiscal_references_add
+import views.html.declaration.fiscalInformation.additional_fiscal_reference_add
 import views.tags.ViewTest
 
 import scala.collection.immutable.ListMap
 
 @ViewTest
-class AdditionalFiscalReferencesAddViewSpec extends PageWithButtonsSpec with Injector {
+class AdditionalFiscalReferenceAddViewSpec extends PageWithButtonsSpec with Injector {
 
   implicit val mockCodeListConnector: CodeListConnector = mock[CodeListConnector]
 
@@ -49,7 +49,7 @@ class AdditionalFiscalReferencesAddViewSpec extends PageWithButtonsSpec with Inj
     super.afterEach()
   }
 
-  val page = instanceOf[additional_fiscal_references_add]
+  val page = instanceOf[additional_fiscal_reference_add]
 
   override val typeAndViewInstance = (STANDARD, page(itemId, form, Seq.empty)(_, _))
 
@@ -78,11 +78,25 @@ class AdditionalFiscalReferencesAddViewSpec extends PageWithButtonsSpec with Inj
         view.getElementById("reference").attr("value") mustBe empty
       }
 
-      "display 'Back' button to Fiscal Information page" in {
-        val backButton = view.getElementById("back-link")
+      "display 'Back' button to the 'Fiscal Information' page" when {
+        "no Additional Fiscal References are entered yet" in {
+          val backButton = view.getElementById("back-link")
 
-        backButton.text() mustBe messages(backToPreviousQuestionCaption)
-        backButton must haveHref(FiscalInformationController.displayPage(itemId))
+          backButton.text() mustBe messages(backToPreviousQuestionCaption)
+          backButton must haveHref(FiscalInformationController.displayPage(itemId))
+        }
+      }
+
+      "display 'Back' button to 'Fiscal Reference List' page" when {
+        "Additional Fiscal References are already entered" in {
+          val item = anItem(withItemId(itemId), withAdditionalFiscalReferenceData())
+          val view = createView()(journeyRequest(aDeclarationAfter(request.cacheModel, withItems(item))))
+
+          val backButton = view.getElementById("back-link")
+
+          backButton.text() mustBe messages(backToPreviousQuestionCaption)
+          backButton must haveHref(AdditionalFiscalReferencesController.displayPage(itemId))
+        }
       }
 
       "display 'For more information about this' summary text" in {
