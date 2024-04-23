@@ -27,7 +27,7 @@ import play.api.data.Forms.text
 import play.api.data.{Form, Forms, Mapping}
 import play.api.i18n.Messages
 import play.api.libs.json.{Json, OFormat}
-import utils.validators.forms.FieldValidator.{hasSpecificLength, isEmpty, nonEmpty, _}
+import utils.validators.forms.FieldValidator.{hasSpecificLength, nonEmpty, _}
 
 case class OfficeOfExit(officeId: String) extends Ordered[OfficeOfExit] with Amendment {
 
@@ -54,18 +54,18 @@ object OfficeOfExit extends DeclarationPage with FieldMapping {
 
   private val keyForAmend = "declaration.summary.locations.officeOfExit"
 
-  private val officeId = "officeId"
+  def form: Form[OfficeOfExit] = Form(OfficeOfExit.mapping)
+
+  val fieldId = "officeId"
 
   val formId = "OfficeOfExit"
 
-  val mapping: Mapping[OfficeOfExit] = Forms.mapping(
-    officeId -> text()
+  private val mapping: Mapping[OfficeOfExit] = Forms.mapping(
+    fieldId -> text()
       .verifying("declaration.officeOfExit.empty", nonEmpty)
       .verifying("declaration.officeOfExit.length", isEmpty or hasSpecificLength(8))
       .verifying("declaration.officeOfExit.specialCharacters", isEmpty or isAlphanumeric)
   )(OfficeOfExit.apply)(OfficeOfExit.unapply)
-
-  def form: Form[OfficeOfExit] = Form(OfficeOfExit.mapping)
 
   override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
     Seq(TariffContentKey(s"tariff.declaration.officeOfExit.${DeclarationPage.getJourneyTypeSpecialisation(decType)}"))

@@ -17,6 +17,7 @@
 @import config.AppConfig
 @import controllers.declaration.routes.CarrierDetailsController
 @import controllers.navigation.Navigator
+@import forms.common.Address
 @import forms.declaration.carrier.CarrierDetails
 @import models.requests.JourneyRequest
 @import play.twirl.api.HtmlFormat
@@ -78,7 +79,7 @@
             classes = "govuk-label govuk-label--m"
         )
 
-        @group_address(form, "declaration.address", "details.address")
+        @group_address(form, "declaration.address", Address.addressId)
 
         @tariffExpander(CarrierDetails, request.declarationType)(messages, appConfig)
 

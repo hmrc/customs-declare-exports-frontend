@@ -50,7 +50,7 @@
     @formGroupWrapper(field = form(PreviousDocumentsFormGroupId)) {
 
         @field_accessible_autocomplete(
-            field = form("documentType"),
+            field = form(Document.documentTypeId),
             label = messages("declaration.previousDocuments.documentCode"),
             labelClass = Some("govuk-label--m"),
             bodyHtml = Some(templateHelper.helpForDocumentCode),
@@ -59,7 +59,7 @@
         )
 
         @exportsInputText(
-            field = form("documentReference"),
+            field = form(Document.documentRefId),
             labelKey = "declaration.previousDocuments.documentReference",
             labelClasses = "govuk-label govuk-label--m",
             bodyHtml = Some(templateHelper.helpForDocumentReference)

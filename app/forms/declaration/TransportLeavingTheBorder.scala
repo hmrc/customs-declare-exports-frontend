@@ -78,7 +78,7 @@ object TransportLeavingTheBorder extends DeclarationPage with FieldMapping {
     Constraint[Option[ModeOfTransportCode]]("constraint.maybe.roro.required") { code =>
       def validateWhenNotGVM: ValidationResult = {
         val key = if (isClearance) s"$errorKey.empty.optional" else s"$errorKey.empty"
-        if (isPresent(code)) Valid else Invalid(ValidationError(key))
+        if (isSome(code)) Valid else Invalid(ValidationError(key))
       }
 
       maybeLocationOfGoods.fold(validateWhenNotGVM) { locationOfGoods =>

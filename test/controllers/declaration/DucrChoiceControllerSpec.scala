@@ -49,7 +49,7 @@ class DucrChoiceControllerSpec extends ControllerSpec with AuditedControllerSpec
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     authorizedUser()
-    withNewCaching(aDeclaration(withType(STANDARD)))
+    withNewCaching(aStandardDeclaration)
     when(ducrChoicePage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 

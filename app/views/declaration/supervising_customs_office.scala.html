@@ -46,8 +46,8 @@
 
 @govukLayout(
     title = Title("declaration.warehouse.supervisingCustomsOffice.title", "declaration.section.6", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(SupervisingCustomsOffice)))){
-
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(SupervisingCustomsOffice)))
+){
     @formHelper(action = SupervisingCustomsOfficeController.submit, 'autoComplete -> "off") {
         @errorSummary(form.errors)
 
@@ -58,10 +58,8 @@
         @paragraphBody(messages("declaration.warehouse.supervisingCustomsOffice.paragraph.2"))
         @paragraphBody(messages("declaration.warehouse.supervisingCustomsOffice.paragraph.3"))
 
-        
-
         @components.fields.field_accessible_autocomplete_with_header(
-            field = form("supervisingCustomsOffice"),
+            field = form(SupervisingCustomsOffice.fieldId),
             label = messages("declaration.warehouse.supervisingCustomsOffice.title"),
             labelClass = Some("govuk-visually-hidden"),
             emptySelectValue = messages("declaration.warehouse.supervisingCustomsOffice.label"),

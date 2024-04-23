@@ -56,7 +56,7 @@
 
 @goodsLocationInputYes(field: Field) = {
     @field_accessible_autocomplete(
-        field = form("glc"),
+        field = form(LocationOfGoods.locationId),
         label = messages("declaration.locationOfGoods.yesNo.yesHint"),
         labelClass = Some("govuk-label--s"),
         hintParagraphs = List(messages("declaration.locationOfGoods.yesNo.yes.hint")),

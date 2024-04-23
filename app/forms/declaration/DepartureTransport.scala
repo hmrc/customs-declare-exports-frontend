@@ -41,7 +41,7 @@ object DepartureTransport extends DeclarationPage {
 
     def mappingForRadioDepartureType(transportCodes: TransportCodes): Mapping[Option[String]] =
       optional(text.verifying(s"$prefix.error.incorrect", isContainedIn(transportCodes.asList.map(_.value))))
-        .verifying(s"$prefix.error.empty${if (isV3WhenPC0019) ".v3" else ""}", isPresent)
+        .verifying(s"$prefix.error.empty${if (isV3WhenPC0019) ".v3" else ""}", isSome)
 
     Form(
       mapping(

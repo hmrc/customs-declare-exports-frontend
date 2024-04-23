@@ -92,7 +92,7 @@ class NactCodeAddFirstViewSpec extends PageWithButtonsSpec with Injector {
         }
 
         "not entered nature-of-transaction" in {
-          val view = createView()(journeyRequest(aDeclaration(withType(STANDARD))))
+          val view = createView()(journeyRequest(aStandardDeclaration))
           view.getElementById("back-link") must haveHref(UNDangerousGoodsCodeController.displayPage(itemId))
         }
       }

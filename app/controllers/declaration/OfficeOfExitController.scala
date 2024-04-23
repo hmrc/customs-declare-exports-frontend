@@ -20,15 +20,16 @@ import controllers.actions.{AuthAction, JourneyAction}
 import controllers.declaration.routes.SectionSummaryController
 import controllers.navigation.Navigator
 import forms.declaration.officeOfExit.OfficeOfExit
-import forms.declaration.officeOfExit.OfficeOfExit.form
-import models.requests.JourneyRequest
+import forms.declaration.officeOfExit.OfficeOfExit.{fieldId, form}
 import models.ExportsDeclaration
+import models.requests.JourneyRequest
 import play.api.i18n.I18nSupport
-import play.api.mvc._
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.audit.AuditService
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.WithUnsafeDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
+import utils.validators.forms.AutoCompleteFieldBinding
 import views.html.declaration.office_of_exit
 
 import javax.inject.Inject
@@ -42,18 +43,19 @@ class OfficeOfExitController @Inject() (
   officeOfExitPage: office_of_exit,
   override val exportsCacheService: ExportsCacheService
 )(implicit ec: ExecutionContext, auditService: AuditService)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithUnsafeDefaultFormBinding {
+    extends FrontendController(mcc) with AutoCompleteFieldBinding with I18nSupport with ModelCacheable with SubmissionErrors
+    with WithUnsafeDefaultFormBinding {
 
-  def displayPage: Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  val displayPage: Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.cacheModel.locations.officeOfExit match {
       case Some(data) => Ok(officeOfExitPage(form.withSubmissionErrors.fill(data)))
       case _          => Ok(officeOfExitPage(form.withSubmissionErrors))
     }
   }
 
-  def saveOffice(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  val saveOffice: Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     form
-      .bindFromRequest()
+      .bindFromRequest(formValuesFromRequest(fieldId))
       .fold(
         formWithErrors => Future.successful(BadRequest(officeOfExitPage(formWithErrors))),
         updateCache(_).map(_ => navigator.continueTo(SectionSummaryController.displayPage(3)))

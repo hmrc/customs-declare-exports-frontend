@@ -54,4 +54,6 @@ trait ExportsTestHelper extends ExportsDeclarationBuilder with ExportsItemBuilde
     val request = FakeRequest("", "").withSession(session: _*).withCSRFToken
     new JourneyRequest(buildVerifiedEmailRequest(request, newUser(eori, "12345")), declaration)
   }
+
+  val aStandardDeclaration: ExportsDeclaration = aDeclaration(withType(STANDARD))
 }

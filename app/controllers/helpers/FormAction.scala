@@ -23,6 +23,7 @@ sealed trait FormAction {
 }
 
 object FormAction {
+
   private val addLabel = "Add"
   private val addFieldLabel = "AddField"
   private val saveAndContinueLabel = "SaveAndContinue"

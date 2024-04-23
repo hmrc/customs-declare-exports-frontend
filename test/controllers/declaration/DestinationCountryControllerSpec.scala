@@ -23,6 +23,7 @@ import controllers.helpers.TransportSectionHelper.{Guernsey, Jersey}
 import forms.declaration.BorderTransport
 import forms.declaration.ModeOfTransportCode.Maritime
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.SUPPLEMENTARY_EIDR
+import forms.declaration.countries.Countries.fieldId
 import forms.declaration.countries.Country
 import models.DeclarationType._
 import models.codes.{Country => ModelCountry}
@@ -103,15 +104,43 @@ class DestinationCountryControllerSpec extends ControllerSpec with AuditedContro
     }
 
     "return 400 (BAD_REQUEST)" when {
-      "form contains incorrect country" in {
-        withNewCaching(aDeclaration())
 
-        val incorrectForm = Json.obj("countryCode" -> "incorrect")
+      "no value is entered" in {
+        withNewCaching(aStandardDeclaration)
 
+        val incorrectForm = Json.obj(fieldIdOnError(fieldId) -> "")
         val result = controller.submit(postRequest(incorrectForm))
 
         status(result) mustBe BAD_REQUEST
         verifyNoAudit()
+
+        theResponseForm.errors.head.messages.head mustBe "declaration.destinationCountry.empty"
+      }
+
+      "the entered value is incorrect or not a list's option" in {
+        withNewCaching(aStandardDeclaration)
+
+        val incorrectForm = Json.obj(fieldIdOnError(fieldId) -> "!@#$")
+        val result = controller.submit(postRequest(incorrectForm))
+
+        status(result) mustBe BAD_REQUEST
+        verifyNoAudit()
+
+        theResponseForm.errors.head.messages.head mustBe "declaration.destinationCountry.error"
+      }
+
+      "the entered country is 'GB'" in {
+        withNewCaching(aStandardDeclaration)
+
+        val incorrectForm = Json.obj(fieldIdOnError(fieldId) -> "GB")
+        val result = controller.submit(postRequest(incorrectForm))
+
+        status(result) mustBe BAD_REQUEST
+        verifyNoAudit()
+
+        val errors = theResponseForm.errors
+        errors(0).messages.head mustBe "declaration.destinationCountry.error"
+        errors(1).messages.head mustBe "declaration.destinationCountry.error.uk"
       }
     }
 

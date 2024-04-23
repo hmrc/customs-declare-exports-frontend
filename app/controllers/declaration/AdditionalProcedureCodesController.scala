@@ -37,6 +37,7 @@ import services.cache.ExportsCacheService
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.controller.WithUnsafeDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
+import utils.validators.forms.AutoCompleteFieldBinding
 import views.html.declaration.procedureCodes.additional_procedure_codes
 
 import javax.inject.Inject
@@ -52,7 +53,8 @@ class AdditionalProcedureCodesController @Inject() (
   additionalProcedureCodesPage: additional_procedure_codes,
   supervisingCustomsOfficeHelper: SupervisingCustomsOfficeHelper
 )(implicit ec: ExecutionContext, auditService: AuditService)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithUnsafeDefaultFormBinding {
+    extends FrontendController(mcc) with AutoCompleteFieldBinding with I18nSupport with ModelCacheable with SubmissionErrors
+    with WithUnsafeDefaultFormBinding {
 
   private val emptyProcedureCodesData = ProcedureCodesData(None, Seq())
 
@@ -70,7 +72,7 @@ class AdditionalProcedureCodesController @Inject() (
   }
 
   def submitAdditionalProcedureCodes(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    val boundForm = form.bindFromRequest()
+    val boundForm = form.bindFromRequest(formValuesFromRequest(additionalProcedureCodeKey))
     val formAction = FormAction.bindFromRequest()
 
     val (maybeCachedProcedureCode, cachedData) = getCachedData(itemId)

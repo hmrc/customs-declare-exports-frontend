@@ -114,21 +114,23 @@ object PackageInformation extends DeclarationPage with FieldMapping {
   def data2Form(data: PackageInformation): Option[(Option[String], Option[Int], Option[String])] =
     Some((data.typesOfPackages, data.numberOfPackages, data.shippingMarks))
 
+  val typeId = "typesOfPackages"
+
   def mapping(implicit messages: Messages, packageTypesService: PackageTypesService): Mapping[PackageInformation] = Forms
     .mapping(
-      "typesOfPackages" -> optional(
+      typeId -> optional(
         text()
           .verifying("declaration.packageInformation.typesOfPackages.error", isContainedIn(packageTypesService.all.map(_.code)))
-      ).verifying("declaration.packageInformation.typesOfPackages.empty", isPresent),
+      ).verifying("declaration.packageInformation.typesOfPackages.empty", isSome),
       "numberOfPackages" -> optional(
         number()
           .verifying("declaration.packageInformation.numberOfPackages.error", isInRange(NumberOfPackagesLimitLower, NumberOfPackagesLimitUpper))
-      ).verifying("declaration.packageInformation.numberOfPackages.error", isPresent),
+      ).verifying("declaration.packageInformation.numberOfPackages.error", isSome),
       "shippingMarks" -> optional(
         text()
           .verifying("declaration.packageInformation.shippingMark.characterError", isEmpty or isAlphanumericWithAllowedSpecialCharacters)
           .verifying("declaration.packageInformation.shippingMark.lengthError", isEmpty or noLongerThan(42))
-      ).verifying("declaration.packageInformation.shippingMark.empty", isPresent)
+      ).verifying("declaration.packageInformation.shippingMark.empty", isSome)
     )(form2Data)(data2Form)
 
   def form(implicit messages: Messages, packageTypesService: PackageTypesService): Form[PackageInformation] = Form(mapping)

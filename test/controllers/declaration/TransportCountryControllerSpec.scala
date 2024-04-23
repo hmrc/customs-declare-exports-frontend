@@ -182,7 +182,6 @@ class TransportCountryControllerSpec extends ControllerSpec with AuditedControll
       }
 
       "the 'submitForm' method is invoked and" when {
-
         "the user selects a country from the dropdown" should {
           "update the model" in {
             withNewCaching(request.cacheModel)
@@ -196,19 +195,6 @@ class TransportCountryControllerSpec extends ControllerSpec with AuditedControll
             val transport = theCacheModelUpdated.transport
             transport.transportCrossingTheBorderNationality.value mustBe TransportCountry(Some(countryCode))
             verifyAudit()
-          }
-        }
-
-        "the form provides an illegal value" should {
-          "return 400 (BAD_REQUEST)" in {
-            withNewCaching(request.cacheModel)
-
-            val formData = Json.obj(transportCountry -> "some country")
-            val result = controller.submitForm(postRequest(formData))
-
-            status(result) mustBe BAD_REQUEST
-            verify(page, times(1)).apply(any(), any())(any(), any())
-            verifyNoAudit()
           }
         }
       }
@@ -232,6 +218,33 @@ class TransportCountryControllerSpec extends ControllerSpec with AuditedControll
           redirectLocation(result) mustBe Some(RootController.displayPage.url)
           verifyNoAudit()
         }
+      }
+    }
+
+    "return 400 (BAD_REQUEST)" when {
+
+      "no value is entered" in {
+        withNewCaching(aStandardDeclaration)
+
+        val incorrectForm = Json.obj(fieldIdOnError(transportCountry) -> "")
+        val result = controller.submitForm(postRequest(incorrectForm))
+
+        status(result) mustBe BAD_REQUEST
+        verifyNoAudit()
+
+        theResponseForm.errors.head.messages.head mustBe "declaration.transportInformation.transportCountry.country.error.empty"
+      }
+
+      "the entered value is incorrect or not a list's option" in {
+        withNewCaching(aStandardDeclaration)
+
+        val incorrectForm = Json.obj(fieldIdOnError(transportCountry) -> "!@#$")
+        val result = controller.submitForm(postRequest(incorrectForm))
+
+        status(result) mustBe BAD_REQUEST
+        verifyNoAudit()
+
+        theResponseForm.errors.head.messages.head mustBe "declaration.transportInformation.transportCountry.country.error.invalid"
       }
     }
 

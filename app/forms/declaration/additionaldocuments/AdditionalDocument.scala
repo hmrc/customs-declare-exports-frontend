@@ -156,7 +156,7 @@ object AdditionalDocument extends DeclarationPage with FieldMapping {
       text()
         .verifying(keyWhenDocumentTypeCodeEmpty, nonEmpty)
         .verifying("declaration.additionalDocument.code.error", isEmpty or (hasSpecificLength(4) and isAlphanumeric))
-    ).verifying(keyWhenDocumentTypeCodeEmpty, isPresent)
+    ).verifying(keyWhenDocumentTypeCodeEmpty, isSome)
 
     val nonEmptyOptionString = (input: Option[String]) => nonEmpty(input.getOrElse(""))
 

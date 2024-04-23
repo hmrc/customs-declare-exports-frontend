@@ -18,6 +18,7 @@ package controllers.declaration
 
 import base.{AuditedControllerSpec, ControllerSpec}
 import forms.declaration.officeOfExit.OfficeOfExit
+import forms.declaration.officeOfExit.OfficeOfExit.fieldId
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -68,66 +69,82 @@ class OfficeOfExitControllerSpec extends ControllerSpec with AuditedControllerSp
     theResponseForm
   }
 
-  "should return a 200 (OK)" when {
-    onEveryDeclarationJourney() { request =>
-      "display page method is invoked and cache is empty" in {
-        withNewCaching(request.cacheModel)
+  "OfficeOfExitController" should {
 
-        val result = controller.displayPage(getRequest())
+    "return a 200 (OK)" when {
+      onEveryDeclarationJourney() { request =>
+        "display page method is invoked and cache is empty" in {
+          withNewCaching(request.cacheModel)
 
-        status(result) mustBe OK
-        checkViewInteractions()
+          val result = controller.displayPage(getRequest())
 
-        theResponseForm.value mustBe empty
-      }
+          status(result) mustBe OK
+          checkViewInteractions()
 
-      "display page method is invoked and cache contains Office Of Exit inside UK" in {
-        val officeId = "GB123456"
-        withNewCaching(aDeclarationAfter(request.cacheModel, withOfficeOfExit(officeId)))
+          theResponseForm.value mustBe empty
+        }
 
-        val result = controller.displayPage(getRequest())
+        "display page method is invoked and cache contains Office Of Exit inside UK" in {
+          val officeId = "GB123456"
+          withNewCaching(aDeclarationAfter(request.cacheModel, withOfficeOfExit(officeId)))
 
-        status(result) mustBe OK
-        checkViewInteractions()
+          val result = controller.displayPage(getRequest())
 
-        theResponseForm.value.value.officeId mustBe officeId
+          status(result) mustBe OK
+          checkViewInteractions()
+
+          theResponseForm.value.value.officeId mustBe officeId
+        }
       }
     }
-  }
 
-  "should return a 400 (BAD_REQUEST)" when {
-    onEveryDeclarationJourney() { request =>
-      "form is incorrect" in {
-        withNewCaching(request.cacheModel)
+    "return a 303 (SEE_OTHER)" when {
 
-        val incorrectForm = Json.toJson(OfficeOfExit("!@#$"))
+      onEveryDeclarationJourney() { request =>
+        "a UK Office of Exit is being used" in {
+          withNewCaching(request.cacheModel)
 
-        val result = controller.saveOffice()(postRequest(incorrectForm))
+          val officeOfExitInput = "GB123456"
+
+          val correctForm = Json.toJson(OfficeOfExit(officeOfExitInput))
+
+          val result = controller.saveOffice(postRequest(correctForm))
+
+          await(result) mustBe aRedirectToTheNextPage
+          thePageNavigatedTo mustBe routes.SectionSummaryController.displayPage(3)
+          checkViewInteractions(0)
+          theCacheModelUpdated.locations.officeOfExit must be(Some(OfficeOfExit(officeOfExitInput)))
+          verifyAudit()
+        }
+      }
+    }
+
+    "return 400 (BAD_REQUEST)" when {
+
+      "no value is entered" in {
+        withNewCaching(aStandardDeclaration)
+
+        val incorrectForm = Json.obj(fieldIdOnError(fieldId) -> "")
+        val result = controller.saveOffice(postRequest(incorrectForm))
 
         status(result) mustBe BAD_REQUEST
-        checkViewInteractions()
         verifyNoAudit()
+
+        theResponseForm.errors.head.messages.head mustBe "declaration.officeOfExit.empty"
       }
-    }
-  }
 
-  "should return a 303 (SEE_OTHER)" when {
+      "the entered value is incorrect or not a list's option" in {
+        withNewCaching(aStandardDeclaration)
 
-    onEveryDeclarationJourney() { request =>
-      "a UK Office of Exit is being used" in {
-        withNewCaching(request.cacheModel)
+        val incorrectForm = Json.obj(fieldIdOnError(fieldId) -> "!@#$")
+        val result = controller.saveOffice(postRequest(incorrectForm))
 
-        val officeOfExitInput = "GB123456"
+        status(result) mustBe BAD_REQUEST
+        verifyNoAudit()
 
-        val correctForm = Json.toJson(OfficeOfExit(officeOfExitInput))
-
-        val result = controller.saveOffice()(postRequest(correctForm))
-
-        await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe routes.SectionSummaryController.displayPage(3)
-        checkViewInteractions(0)
-        theCacheModelUpdated.locations.officeOfExit must be(Some(OfficeOfExit(officeOfExitInput)))
-        verifyAudit()
+        val errors = theResponseForm.errors
+        errors(0).messages.head mustBe "declaration.officeOfExit.length"
+        errors(1).messages.head mustBe "declaration.officeOfExit.specialCharacters"
       }
     }
   }

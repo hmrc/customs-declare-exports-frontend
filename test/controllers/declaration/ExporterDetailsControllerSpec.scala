@@ -80,6 +80,7 @@ class ExporterDetailsControllerSpec extends ControllerSpec with AuditedControlle
   }
 
   "Exporter Details Controller" should {
+
     onJourney(STANDARD, SUPPLEMENTARY, OCCASIONAL, SIMPLIFIED) { request =>
       "return 200 OK" when {
 
@@ -100,22 +101,12 @@ class ExporterDetailsControllerSpec extends ControllerSpec with AuditedControlle
 
       }
 
-      "return 400 bad request" when {
-        "form contains errors" in {
-          withNewCaching(request.cacheModel)
-          val body = Json.obj("details" -> Json.obj("eori" -> "!nva!id"))
-          val response = controller.saveAddress()(postRequest(body))
-          status(response) mustBe BAD_REQUEST
-          verifyNoAudit()
-        }
-      }
-
       "return 303 (SEE_OTHER) and redirect to representative details page" when {
         "correct form is submitted" in {
           withNewCaching(request.cacheModel)
           val exporterDetails = ExporterDetails(EntityDetails(eori, address))
           val body = Json.toJson(exporterDetails)
-          val response = await(controller.saveAddress()(postRequest(body)))
+          val response = await(controller.saveAddress(postRequest(body)))
 
           response mustBe aRedirectToTheNextPage
           thePageNavigatedTo mustBe RepresentativeAgentController.displayPage
@@ -129,12 +120,60 @@ class ExporterDetailsControllerSpec extends ControllerSpec with AuditedControlle
         "correct form is submitted" in {
           withNewCaching(request.cacheModel)
           val body = Json.obj("details" -> Json.obj("eori" -> "GB213472539481923"))
-          val response = await(controller.saveAddress()(postRequest(body)))
+          val response = await(controller.saveAddress(postRequest(body)))
 
           response mustBe aRedirectToTheNextPage
           thePageNavigatedTo mustBe IsExsController.displayPage
           verifyAudit()
         }
+      }
+    }
+
+    "return 400 (BAD_REQUEST)" when {
+      val prefix = "details.address"
+
+      "no value is entered" in {
+        withNewCaching(aStandardDeclaration)
+
+        val incorrectForm = Json.obj(s"$prefix.fullName" -> "", s"$prefix.addressLine" -> "", s"$prefix.townOrCity" -> "", s"$prefix.postCode" -> "")
+        val result = controller.saveAddress(postRequest(incorrectForm))
+
+        status(result) mustBe BAD_REQUEST
+        verifyNoAudit()
+
+        val errors = theResponseForm.errors
+        errors(0).messages.head mustBe "declaration.address.fullName.empty"
+        errors(1).messages.head mustBe "declaration.address.addressLine.empty"
+        errors(2).messages.head mustBe "declaration.address.townOrCity.empty"
+        errors(3).messages.head mustBe "declaration.address.postCode.empty"
+        errors(4).messages.head mustBe "declaration.address.country.empty"
+      }
+
+      "the entered values are incorrect" in {
+        withNewCaching(aStandardDeclaration)
+
+        val incorrectForm = Json.obj(
+          s"$prefix.fullName" -> "$".repeat(36),
+          s"$prefix.addressLine" -> "$".repeat(71),
+          s"$prefix.townOrCity" -> "$".repeat(36),
+          s"$prefix.postCode" -> "$".repeat(10),
+          s"$prefix.country" -> "TTTT"
+        )
+        val result = controller.saveAddress(postRequest(incorrectForm))
+
+        status(result) mustBe BAD_REQUEST
+        verifyNoAudit()
+
+        val errors = theResponseForm.errors
+        errors(0).messages.head mustBe "declaration.address.fullName.error"
+        errors(1).messages.head mustBe "declaration.address.fullName.length"
+        errors(2).messages.head mustBe "declaration.address.addressLine.error"
+        errors(3).messages.head mustBe "declaration.address.addressLine.length"
+        errors(4).messages.head mustBe "declaration.address.townOrCity.error"
+        errors(5).messages.head mustBe "declaration.address.townOrCity.length"
+        errors(6).messages.head mustBe "declaration.address.postCode.error"
+        errors(7).messages.head mustBe "declaration.address.postCode.length"
+        errors(8).messages.head mustBe "declaration.address.country.error"
       }
     }
   }

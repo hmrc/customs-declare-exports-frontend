@@ -34,6 +34,7 @@ import services.audit.AuditService
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.WithUnsafeDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
+import utils.validators.forms.AutoCompleteFieldBinding
 import views.html.declaration.destinationCountries.{country_of_routing, routing_country_question}
 
 import javax.inject.Inject
@@ -48,9 +49,10 @@ class RoutingCountriesController @Inject() (
   routingQuestionPage: routing_country_question,
   countryOfRoutingPage: country_of_routing
 )(implicit ec: ExecutionContext, codeListConnector: CodeListConnector, auditService: AuditService)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithUnsafeDefaultFormBinding {
+    extends FrontendController(mcc) with AutoCompleteFieldBinding with I18nSupport with ModelCacheable with SubmissionErrors
+    with WithUnsafeDefaultFormBinding {
 
-  def displayRoutingQuestion(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  val displayRoutingQuestion: Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     val form = formFirst().withSubmissionErrors
     request.cacheModel.locations.hasRoutingCountries match {
       case Some(answer) => Ok(routingQuestionPage(form.fill(answer)))
@@ -58,7 +60,7 @@ class RoutingCountriesController @Inject() (
     }
   }
 
-  def submitRoutingAnswer(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  val submitRoutingAnswer: Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     formFirst(cachedCountries)
       .bindFromRequest()
       .fold(
@@ -74,7 +76,7 @@ class RoutingCountriesController @Inject() (
       )
   }
 
-  def displayRoutingCountry(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  val displayRoutingCountry: Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.cacheModel.locations.hasRoutingCountries match {
       case Some(answer) if answer => Ok(countryOfRoutingPage(Countries.form(RoutingCountryPage).withSubmissionErrors))
 
@@ -82,11 +84,11 @@ class RoutingCountriesController @Inject() (
     }
   }
 
-  def submitRoutingCountry(): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  val submitRoutingCountry: Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     val isFormEmpty = Countries
       .form(RoutingCountryPage, cachedCountries)
-      .bindFromRequest()
-      .apply("countryCode")
+      .bindFromRequest(formValuesFromRequest(Countries.fieldId))
+      .apply(Countries.fieldId)
       .value
       .forall(_.isEmpty)
 
@@ -122,7 +124,7 @@ class RoutingCountriesController @Inject() (
   private def validateAndRedirect(redirect: Result)(implicit request: JourneyRequest[AnyContent]): Future[Result] =
     Countries
       .form(RoutingCountryPage, cachedCountries)
-      .bindFromRequest()
+      .bindFromRequest(formValuesFromRequest(Countries.fieldId))
       .fold(
         formWithErrors => Future.successful(BadRequest(countryOfRoutingPage(formWithErrors))),
         routingCountry => {

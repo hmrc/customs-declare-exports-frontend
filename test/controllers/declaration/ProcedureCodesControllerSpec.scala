@@ -20,6 +20,7 @@ import base.{AuditedControllerSpec, ControllerSpec}
 import controllers.declaration.routes.AdditionalProcedureCodesController
 import forms.declaration._
 import forms.declaration.procedurecodes.ProcedureCode
+import forms.declaration.procedurecodes.ProcedureCode.procedureCodeKey
 import mock.ErrorHandlerMocks
 import models.DeclarationType._
 import models.declaration.ProcedureCodesData.warehouseRequiredProcedureCodes
@@ -30,13 +31,14 @@ import org.mockito.Mockito.{never, reset, verify, when}
 import org.scalatest.OptionValues
 import org.scalatest.concurrent.ScalaFutures
 import play.api.data.Form
+import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import views.declaration.PackageInformationViewSpec
 import views.html.declaration.procedureCodes.procedure_codes
 
-class ProcedureCodeControllerSpec extends ControllerSpec with AuditedControllerSpec with ErrorHandlerMocks with OptionValues with ScalaFutures {
+class ProcedureCodesControllerSpec extends ControllerSpec with AuditedControllerSpec with ErrorHandlerMocks with OptionValues with ScalaFutures {
 
   private val procedureCodesPage = mock[procedure_codes]
 
@@ -50,12 +52,6 @@ class ProcedureCodeControllerSpec extends ControllerSpec with AuditedControllerS
   )(ec, auditService)
 
   val itemId = "itemId12345"
-
-  def templateParameters: Form[ProcedureCode] = {
-    val formCaptor = ArgumentCaptor.forClass(classOf[Form[ProcedureCode]])
-    verify(procedureCodesPage).apply(any(), formCaptor.capture())(any(), any())
-    formCaptor.getValue
-  }
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
@@ -72,7 +68,13 @@ class ProcedureCodeControllerSpec extends ControllerSpec with AuditedControllerS
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     withNewCaching(aDeclaration())
     await(controller.displayPage(itemId)(request))
-    templateParameters
+    theResponseForm
+  }
+
+  def theResponseForm: Form[ProcedureCode] = {
+    val captor = ArgumentCaptor.forClass(classOf[Form[ProcedureCode]])
+    verify(procedureCodesPage).apply(any(), captor.capture())(any(), any())
+    captor.getValue
   }
 
   "ProcedureCodesController on displayOutcomePage" should {
@@ -87,8 +89,7 @@ class ProcedureCodeControllerSpec extends ControllerSpec with AuditedControllerS
           status(result) mustBe OK
           verify(procedureCodesPage).apply(any(), any())(any(), any())
 
-          val responseForm = templateParameters
-          responseForm.value mustBe empty
+          theResponseForm.value mustBe empty
         }
 
         "display page method is invoked with data in cache" in {
@@ -100,8 +101,7 @@ class ProcedureCodeControllerSpec extends ControllerSpec with AuditedControllerS
           status(result) mustBe OK
           verify(procedureCodesPage).apply(any(), any())(any(), any())
 
-          val responseForm = templateParameters
-          responseForm.value.value.procedureCode mustBe "1234"
+          theResponseForm.value.value.procedureCode mustBe "1234"
         }
       }
     }
@@ -115,34 +115,6 @@ class ProcedureCodeControllerSpec extends ControllerSpec with AuditedControllerS
     val warehouseIdentification = WarehouseIdentification(Some("WarehouseId"))
 
     onEveryDeclarationJourney() { request =>
-      "provided with incorrect code" should {
-        "return 400 (BAD_REQUEST)" in {
-          withNewCaching(aDeclaration(withType(request.declarationType)))
-
-          val incorrectForm = Seq(("procedureCode", "12345"))
-
-          val result = controller.submitProcedureCodes(itemId)(postRequestAsFormUrlEncoded(incorrectForm: _*))
-
-          status(result) mustBe BAD_REQUEST
-          verify(procedureCodesPage).apply(any(), any())(any(), any())
-          verifyNoAudit()
-        }
-      }
-
-      "provided with empty code" should {
-        "return 400 (BAD_REQUEST)" in {
-          withNewCaching(aDeclaration(withType(request.declarationType)))
-
-          val incorrectForm = Seq(("procedureCode", ""))
-
-          val result = controller.submitProcedureCodes(itemId)(postRequestAsFormUrlEncoded(incorrectForm: _*))
-
-          status(result) mustBe BAD_REQUEST
-          verify(procedureCodesPage).apply(any(), any())(any(), any())
-          verifyNoAudit()
-        }
-      }
-
       "provided with correct code" should {
         "redirect to AdditionalProcedureCodes page" in {
           withNewCaching(aDeclaration(withType(request.declarationType), withItem(anItem(withItemId(itemId)))))
@@ -158,7 +130,6 @@ class ProcedureCodeControllerSpec extends ControllerSpec with AuditedControllerS
       }
 
       "provided with correct code" when {
-
         "cache was empty" should {
 
           "update cache with new Procedure Code" in {
@@ -352,6 +323,36 @@ class ProcedureCodeControllerSpec extends ControllerSpec with AuditedControllerS
             verifyAudit()
           }
         }
+      }
+    }
+  }
+
+  "ProcedureCodesController" should {
+
+    "return 400 (BAD_REQUEST)" when {
+
+      "no value is entered" in {
+        withNewCaching(aDeclaration(withItem(anItem(withItemId(itemId)))))
+
+        val incorrectForm = Json.obj(fieldIdOnError(procedureCodeKey) -> "")
+        val result = controller.submitProcedureCodes(itemId)(postRequest(incorrectForm))
+
+        status(result) mustBe BAD_REQUEST
+        verifyNoAudit()
+
+        theResponseForm.errors.head.messages.head mustBe "declaration.procedureCodes.error.empty"
+      }
+
+      "the entered value is incorrect or not a list's option" in {
+        withNewCaching(aDeclaration(withItem(anItem(withItemId(itemId)))))
+
+        val incorrectForm = Json.obj(fieldIdOnError(procedureCodeKey) -> "!@#$")
+        val result = controller.submitProcedureCodes(itemId)(postRequest(incorrectForm))
+
+        status(result) mustBe BAD_REQUEST
+        verifyNoAudit()
+
+        theResponseForm.errors.head.messages.head mustBe "declaration.procedureCodes.error.invalid"
       }
     }
   }

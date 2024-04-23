@@ -77,7 +77,7 @@ class StandardOrOtherJourneyControllerSpec extends ControllerWithoutFormSpec wit
       }
 
       "is invoked with data in cache" in {
-        withNewCaching(aDeclaration(withType(STANDARD)))
+        withNewCaching(aStandardDeclaration)
 
         val result = controller.displayPage(getRequest())
         status(result) must be(OK)

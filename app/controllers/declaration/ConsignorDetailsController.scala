@@ -18,19 +18,20 @@ package controllers.declaration
 
 import connectors.CodeListConnector
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.navigation.Navigator
 import controllers.declaration.routes._
+import controllers.navigation.Navigator
+import forms.common.Address.{addressId, countryId}
 import forms.declaration.consignor.ConsignorDetails
 import models.DeclarationType.CLEARANCE
 import models.requests.JourneyRequest
 import models.{DeclarationType, ExportsDeclaration}
-import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import services.audit.AuditService
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.WithUnsafeDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
+import utils.validators.forms.AutoCompleteFieldBinding
 import views.html.declaration.consignor_details
 
 import javax.inject.Inject
@@ -44,11 +45,12 @@ class ConsignorDetailsController @Inject() (
   mcc: MessagesControllerComponents,
   consignorDetailsPage: consignor_details
 )(implicit ec: ExecutionContext, codeListConnector: CodeListConnector, auditService: AuditService)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithUnsafeDefaultFormBinding {
+    extends FrontendController(mcc) with AutoCompleteFieldBinding with I18nSupport with ModelCacheable with SubmissionErrors
+    with WithUnsafeDefaultFormBinding {
 
-  val validJourneys = Seq(DeclarationType.CLEARANCE)
+  private val validJourneys = Seq(DeclarationType.CLEARANCE)
 
-  def displayPage: Action[AnyContent] = (authenticate andThen journeyType(validJourneys)) { implicit request =>
+  val displayPage: Action[AnyContent] = (authenticate andThen journeyType(validJourneys)) { implicit request =>
     val frm = ConsignorDetails.form.withSubmissionErrors
     request.cacheModel.parties.consignorDetails match {
       case Some(data) => Ok(consignorDetailsPage(frm.fill(data)))
@@ -56,18 +58,16 @@ class ConsignorDetailsController @Inject() (
     }
   }
 
-  def saveAddress(): Action[AnyContent] = (authenticate andThen journeyType(validJourneys)).async { implicit request =>
+  val saveAddress: Action[AnyContent] = (authenticate andThen journeyType(validJourneys)).async { implicit request =>
     ConsignorDetails.form
-      .bindFromRequest()
+      .bindFromRequest(formValuesFromRequest(s"$addressId.$countryId"))
       .fold(
-        (formWithErrors: Form[ConsignorDetails]) => Future.successful(BadRequest(consignorDetailsPage(formWithErrors))),
-        form =>
-          updateCache(form)
-            .map(_ => navigator.continueTo(nextPage()))
+        formWithErrors => Future.successful(BadRequest(consignorDetailsPage(formWithErrors))),
+        updateCache(_).map(_ => navigator.continueTo(nextPage))
       )
   }
 
-  private def nextPage()(implicit request: JourneyRequest[_]): Call = request.cacheModel.`type` match {
+  private def nextPage(implicit request: JourneyRequest[_]): Call = request.cacheModel.`type` match {
     case CLEARANCE                                   => ThirdPartyGoodsTransportationController.displayPage
     case _ if request.cacheModel.isDeclarantExporter => CarrierEoriNumberController.displayPage
     case _                                           => RepresentativeAgentController.displayPage

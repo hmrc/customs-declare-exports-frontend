@@ -588,7 +588,6 @@ declaration.address.fullName.empty = Enter a name
 declaration.address.fullName.error = Name must contain only numbers, letters, commas, hyphens and apostrophes
 declaration.address.fullName.length = Name must be 35 characters or fewer
 declaration.address.addressLine = Address
-declaration.address.addressLine35MaxChars = Address (maximum 35 characters allowed)
 declaration.address.addressLine.empty = Enter an address
 declaration.address.addressLine.error = Address must contain only numbers, letters, commas, hyphens, apostrophes and parentheses.
 declaration.address.addressLine.length = Address must be 70 characters or fewer

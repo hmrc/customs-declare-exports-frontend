@@ -17,6 +17,7 @@
 @import config.AppConfig
 @import controllers.declaration.routes._
 @import controllers.navigation.Navigator
+@import forms.common.Address
 @import forms.declaration.exporter.ExporterDetails
 @import models.requests.JourneyRequest
 @import play.twirl.api.HtmlFormat
@@ -48,7 +49,7 @@
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 
 @groupAddress = {
-    @group_address(form,"declaration.address","details.address")
+    @group_address(form,"declaration.address", Address.addressId)
 }
 @govukLayout(
     title = Title("declaration.exporter-address.title", "declaration.section.2", hasErrors = hasErrors),

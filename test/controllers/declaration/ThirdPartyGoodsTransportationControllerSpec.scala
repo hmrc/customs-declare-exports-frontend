@@ -21,7 +21,6 @@ import base.{AuditedControllerSpec, ControllerSpec}
 import controllers.declaration.routes._
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.common.{Eori, YesNoAnswer}
-import models.DeclarationType.STANDARD
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{verify, when}
 import org.mockito.{ArgumentCaptor, Mockito}
@@ -70,7 +69,7 @@ class ThirdPartyGoodsTransportationControllerSpec extends ControllerSpec with Au
     captor.getValue
   }
 
-  private val standardCacheModel = aDeclaration(withType(STANDARD))
+  private val standardCacheModel = aStandardDeclaration
 
   "ThirdPartyGoodsTransportation Controller on GET request" should {
 

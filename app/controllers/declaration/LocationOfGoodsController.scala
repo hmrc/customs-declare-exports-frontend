@@ -31,6 +31,7 @@ import services.audit.AuditService
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.WithUnsafeDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
+import utils.validators.forms.AutoCompleteFieldBinding
 import views.html.declaration.location_of_goods
 
 import javax.inject.{Inject, Singleton}
@@ -46,7 +47,8 @@ class LocationOfGoodsController @Inject() (
   navigator: Navigator,
   taggedAuthCodes: TaggedAuthCodes
 )(implicit ec: ExecutionContext, codeListConnector: CodeListConnector, auditService: AuditService)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithUnsafeDefaultFormBinding {
+    extends FrontendController(mcc) with AutoCompleteFieldBinding with I18nSupport with ModelCacheable with SubmissionErrors
+    with WithUnsafeDefaultFormBinding {
 
   val displayPage: Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     if (taggedAuthCodes.skipLocationOfGoods(request.cacheModel)) Redirect(RootController.displayPage)
@@ -65,7 +67,7 @@ class LocationOfGoodsController @Inject() (
     else if (request.cacheModel.isAmendmentDraft) Future.successful(nextPage)
     else
       LocationOfGoods.form
-        .bindFromRequest()
+        .bindFromRequest(formValuesFromRequest(LocationOfGoods.locationId))
         .fold(
           formWithErrors => Future.successful(BadRequest(locationOfGoods(formWithErrors))),
           locationOfGoods => updateDeclarationFromRequest(updateDeclaration(_, locationOfGoods)).map(_ => nextPage)

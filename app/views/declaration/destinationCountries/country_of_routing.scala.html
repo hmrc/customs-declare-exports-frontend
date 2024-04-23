@@ -67,7 +67,7 @@
         @sectionHeader(messages("declaration.section.3"))
 
         @components.fields.field_accessible_location_autocomplete_with_header(
-            field = form("countryCode"),
+            field = form(fieldId),
             label = Some(messages("declaration.routingCountries.title", countryOfDestination)),
             labelClass = Some(gdsPageLabel),
             hintParagraphs = List(messages("declaration.country.dropdown.hint")),

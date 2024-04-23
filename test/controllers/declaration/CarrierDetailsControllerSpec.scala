@@ -31,6 +31,7 @@ import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
+import play.twirl.api.HtmlFormat.Appendable
 import views.html.declaration.carrier_details
 
 import scala.collection.immutable.ListMap
@@ -69,7 +70,7 @@ class CarrierDetailsControllerSpec extends ControllerSpec with AuditedController
     captor.getValue
   }
 
-  def verifyPageInvocations(numberOfInvocations: Int) =
+  def verifyPageInvocations(numberOfInvocations: Int): Appendable =
     verify(mockCarrierDetailsPage, times(numberOfInvocations)).apply(any())(any(), any())
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
@@ -84,7 +85,6 @@ class CarrierDetailsControllerSpec extends ControllerSpec with AuditedController
       "return 200 (OK)" when {
 
         "display page method is invoked and cache is empty" in {
-
           withNewCaching(request.cacheModel)
 
           val result = controller.displayPage(getRequest())
@@ -93,32 +93,12 @@ class CarrierDetailsControllerSpec extends ControllerSpec with AuditedController
         }
 
         "display page method is invoked and cache contains data" in {
-
-          withNewCaching(
-            aDeclarationAfter(
-              request.cacheModel,
-              withCarrierDetails(None, Some(Address("John Smith", "1 Export Street", "Leeds", "LS1 2PW", "United Kingdom")))
-            )
-          )
+          val address = Address("John Smith", "1 Export Street", "Leeds", "LS1 2PW", "United Kingdom")
+          withNewCaching(aDeclarationAfter(request.cacheModel, withCarrierDetails(None, Some(address))))
 
           val result = controller.displayPage(getRequest())
 
           status(result) must be(OK)
-        }
-      }
-
-      "return 400 (BAD_REQUEST)" when {
-
-        "form is incorrect" in {
-
-          withNewCaching(request.cacheModel)
-
-          val incorrectForm = Json.toJson(CarrierDetails(EntityDetails(None, Some(Address("", "", "Leeds", "LS1 2PW", "United Kingdom")))))
-
-          val result = controller.saveAddress()(postRequest(incorrectForm))
-
-          status(result) must be(BAD_REQUEST)
-          verifyNoAudit()
         }
       }
     }
@@ -127,33 +107,29 @@ class CarrierDetailsControllerSpec extends ControllerSpec with AuditedController
 
       onJourney(CLEARANCE) { request =>
         "form is empty" in {
-
           withNewCaching(request.cacheModel)
 
           val incorrectForm = Json.toJson(CarrierDetails(EntityDetails(None, None)))
 
-          val result = controller.saveAddress()(postRequest(incorrectForm))
+          val result = controller.saveAddress(postRequest(incorrectForm))
 
           status(result) must be(SEE_OTHER)
           verifyAudit()
         }
       }
 
-      onJourney(STANDARD, SIMPLIFIED, OCCASIONAL) { request =>
-        "method is invoked and cache is empty" in {
-          withNoDeclaration()
-          val result = controller.displayPage(getRequest())
+      "method is invoked and cache is empty" in {
+        withNoDeclaration()
+        val result = controller.displayPage(getRequest())
 
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(controllers.routes.RootController.displayPage.url)
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(controllers.routes.RootController.displayPage.url)
 
-          verifyPageInvocations(0)
-        }
+        verifyPageInvocations(0)
       }
 
       onJourney(SUPPLEMENTARY) { request =>
         "with invalid journey type" in {
-
           withNewCaching(request.cacheModel)
 
           val result = controller.displayPage(getRequest())
@@ -169,38 +145,16 @@ class CarrierDetailsControllerSpec extends ControllerSpec with AuditedController
 
   "Carrier Details Controller submit page" should {
 
-    "return 400 (BAD_REQUEST)" when {
-
-      "form is incorrect" in {
-
-        withNewCaching(aDeclaration())
-
-        val incorrectForm = Json.toJson(CarrierDetails(EntityDetails(None, None)))
-
-        val result = controller.saveAddress()(postRequest(incorrectForm))
-
-        status(result) must be(BAD_REQUEST)
-        verifyNoAudit()
-      }
-    }
-
     "return 303 (SEE_OTHER)" when {
 
       onJourney(STANDARD, SIMPLIFIED, OCCASIONAL, CLEARANCE) { request =>
         "with valid journey type" in {
-
           withNewCaching(request.cacheModel)
-          val correctForm =
-            Json.toJson(
-              CarrierDetails(
-                EntityDetails(
-                  None,
-                  Some(Address("John Smith", "1 Export Street", "Leeds", "LS1 2PW", "United Kingdom, Great Britain, Northern Ireland"))
-                )
-              )
-            )
 
-          val result = controller.saveAddress()(postRequest(correctForm))
+          val address = Address("John Smith", "1 Export Street", "Leeds", "LS1 2PW", "United Kingdom, Great Britain, Northern Ireland")
+          val correctForm = Json.toJson(CarrierDetails(EntityDetails(None, Some(address))))
+
+          val result = controller.saveAddress(postRequest(correctForm))
 
           await(result) mustBe aRedirectToTheNextPage
           thePageNavigatedTo mustBe controllers.declaration.routes.ConsigneeDetailsController.displayPage
@@ -210,24 +164,65 @@ class CarrierDetailsControllerSpec extends ControllerSpec with AuditedController
 
       onJourney(SUPPLEMENTARY) { request =>
         "with invalid journey type" in {
-
           withNewCaching(request.cacheModel)
-          val correctForm =
-            Json.toJson(
-              CarrierDetails(
-                EntityDetails(
-                  None,
-                  Some(Address("John Smith", "1 Export Street", "Leeds", "LS1 2PW", "United Kingdom, Great Britain, Northern Ireland"))
-                )
-              )
-            )
 
-          val result = controller.saveAddress()(postRequest(correctForm))
+          val address = Address("John Smith", "1 Export Street", "Leeds", "LS1 2PW", "United Kingdom, Great Britain, Northern Ireland")
+          val correctForm = Json.toJson(CarrierDetails(EntityDetails(None, Some(address))))
+
+          val result = controller.saveAddress(postRequest(correctForm))
 
           status(result) mustBe SEE_OTHER
           redirectLocation(result) mustBe Some(controllers.routes.RootController.displayPage.url)
           verifyNoAudit()
         }
+      }
+    }
+
+    "return 400 (BAD_REQUEST)" when {
+      val prefix = "details.address"
+
+      "no value is entered" in {
+        withNewCaching(aStandardDeclaration)
+
+        val incorrectForm = Json.obj(s"$prefix.fullName" -> "", s"$prefix.addressLine" -> "", s"$prefix.townOrCity" -> "", s"$prefix.postCode" -> "")
+        val result = controller.saveAddress(postRequest(incorrectForm))
+
+        status(result) mustBe BAD_REQUEST
+        verifyNoAudit()
+
+        val errors = theResponseForm.errors
+        errors(0).messages.head mustBe "declaration.address.fullName.empty"
+        errors(1).messages.head mustBe "declaration.address.addressLine.empty"
+        errors(2).messages.head mustBe "declaration.address.townOrCity.empty"
+        errors(3).messages.head mustBe "declaration.address.postCode.empty"
+        errors(4).messages.head mustBe "declaration.address.country.empty"
+      }
+
+      "the entered values are incorrect" in {
+        withNewCaching(aStandardDeclaration)
+
+        val incorrectForm = Json.obj(
+          s"$prefix.fullName" -> "$".repeat(36),
+          s"$prefix.addressLine" -> "$".repeat(71),
+          s"$prefix.townOrCity" -> "$".repeat(36),
+          s"$prefix.postCode" -> "$".repeat(10),
+          s"$prefix.country" -> "TTTT"
+        )
+        val result = controller.saveAddress(postRequest(incorrectForm))
+
+        status(result) mustBe BAD_REQUEST
+        verifyNoAudit()
+
+        val errors = theResponseForm.errors
+        errors(0).messages.head mustBe "declaration.address.fullName.error"
+        errors(1).messages.head mustBe "declaration.address.fullName.length"
+        errors(2).messages.head mustBe "declaration.address.addressLine.error"
+        errors(3).messages.head mustBe "declaration.address.addressLine.length"
+        errors(4).messages.head mustBe "declaration.address.townOrCity.error"
+        errors(5).messages.head mustBe "declaration.address.townOrCity.length"
+        errors(6).messages.head mustBe "declaration.address.postCode.error"
+        errors(7).messages.head mustBe "declaration.address.postCode.length"
+        errors(8).messages.head mustBe "declaration.address.country.error"
       }
     }
   }

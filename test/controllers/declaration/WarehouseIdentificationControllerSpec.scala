@@ -56,7 +56,7 @@ class WarehouseIdentificationControllerSpec extends ControllerSpec with AuditedC
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     authorizedUser()
-    withNewCaching(aDeclaration(withType(STANDARD)))
+    withNewCaching(aStandardDeclaration)
     when(pageYesNo.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
     when(pageIdentification.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
