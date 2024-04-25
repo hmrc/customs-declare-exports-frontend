@@ -25,7 +25,11 @@
     exitAndCompleteLater: exitAndCompleteLater
 )
 
-@(showExitButton: Boolean = true)(implicit request: JourneyRequest[_], messages: Messages)
+@(
+    showReturnToSummaryButton: Boolean = true,
+    showReturnToErrorsButton: Boolean = true,
+    showExitButton: Boolean = true
+)(implicit request: JourneyRequest[_], messages: Messages)
 
 @onErrorStatus = @{ request.cacheModel.declarationMeta.parentDeclarationEnhancedStatus.contains(ERRORS) }
 
@@ -34,11 +38,11 @@
 <div class="govuk-button-group">
     @saveAndContinue()
 
-    @if((onSummaryVisited || onErrorStatus) && inErrorFixMode == false) {
+    @if(showReturnToSummaryButton && (onSummaryVisited || onErrorStatus) && inErrorFixMode == false) {
       @saveAndReturnToSummary()
     }
 
-    @if(inErrorFixMode) {
+    @if(showReturnToErrorsButton && inErrorFixMode) {
       @saveAndReturnToErrors()
     }
 </div>
