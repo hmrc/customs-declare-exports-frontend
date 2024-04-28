@@ -51,7 +51,7 @@ class ProcedureCodesController @Inject() (
   def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     val frm = form.withSubmissionErrors
     val filledForm = request.cacheModel.itemBy(itemId) match {
-      case Some(exportItem) => exportItem.procedureCodes.fold(frm)(cachedData => frm.fill(cachedData.toProcedureCode()))
+      case Some(exportItem) => exportItem.procedureCodes.fold(frm)(cachedData => frm.fill(cachedData.toProcedureCode))
       case None             => frm
     }
 
@@ -72,8 +72,8 @@ class ProcedureCodesController @Inject() (
     implicit request: JourneyRequest[AnyContent]
   ): Future[ExportsDeclaration] = {
 
-    val updateProcedureCode: ExportsDeclaration => ExportsDeclaration = { model =>
-      model.updatedItem(
+    val updateProcedureCode: ExportsDeclaration => ExportsDeclaration = { declaration =>
+      declaration.updatedItem(
         itemId,
         item => {
           val newProcedureCode = Some(procedureCodeEntered.procedureCode)
@@ -84,8 +84,8 @@ class ProcedureCodesController @Inject() (
       )
     }
 
-    val updateAdditionalProcedureCodes: ExportsDeclaration => ExportsDeclaration = { model =>
-      model.updatedItem(
+    val updateAdditionalProcedureCodes: ExportsDeclaration => ExportsDeclaration = { declaration =>
+      declaration.updatedItem(
         itemId,
         item =>
           (for {
@@ -99,27 +99,24 @@ class ProcedureCodesController @Inject() (
       )
     }
 
-    val removeFiscalInformationForCode: ExportsDeclaration => ExportsDeclaration = { model =>
-      if (!ProcedureCodesData.osrProcedureCodes.contains(procedureCodeEntered.procedureCode))
-        model.updatedItem(itemId, item => item.copy(fiscalInformation = None, additionalFiscalReferencesData = None))
-      else model
+    val removeFiscalInformationForCode: ExportsDeclaration => ExportsDeclaration = { declaration =>
+      if (ProcedureCodesData.osrProcedureCodes.contains(procedureCodeEntered.procedureCode)) declaration
+      else declaration.updatedItem(itemId, item => item.copy(fiscalInformation = None, additionalFiscalReferencesData = None))
     }
 
-    val removePackageInformationForCode: ExportsDeclaration => ExportsDeclaration = { model =>
+    val removePackageInformationForCode: ExportsDeclaration => ExportsDeclaration = { declaration =>
       if (request.isType(CLEARANCE) && ProcedureCodesData.eicrProcedureCodes.contains(procedureCodeEntered.procedureCode))
-        model.updatedItem(itemId, item => item.copy(packageInformation = None))
-      else model
+        declaration.updatedItem(itemId, item => item.copy(packageInformation = None))
+      else declaration
     }
 
-    val removeWarehouseIdentificationForCode: ExportsDeclaration => ExportsDeclaration = { model =>
-      if (request.isType(CLEARANCE) || model.requiresWarehouseId)
-        model
-      else
-        model.copy(locations = model.locations.copy(warehouseIdentification = None))
+    val removeWarehouseIdentificationForCode: ExportsDeclaration => ExportsDeclaration = { declaration =>
+      if (request.isType(CLEARANCE) || declaration.requiresWarehouseId) declaration
+      else declaration.copy(locations = declaration.locations.copy(warehouseIdentification = None))
     }
 
-    updateDeclarationFromRequest { model =>
-      model
+    updateDeclarationFromRequest { declaration =>
+      declaration
         .transform(updateAdditionalProcedureCodes)
         .transform(updateProcedureCode)
         .transform(removeFiscalInformationForCode)

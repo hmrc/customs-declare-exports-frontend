@@ -89,8 +89,8 @@ object PointerHelper extends Logging {
     "declaration.items.$.commodityMeasure.grossMass" -> CommodityMeasureController.displayPage,
     "declaration.items.$.commodityMeasure.netMass" -> CommodityMeasureController.displayPage,
     "declaration.items.$.commodityMeasure.supplementaryUnits" -> SupplementaryUnitsController.displayPage,
-    "declaration.items.$.additionalFiscalReferences.$.id" -> AdditionalFiscalReferencesController.displayPage, // ?? AdditionalFiscalReferencesRemoveController.displayOutcomePage
-    "declaration.items.$.additionalFiscalReferences.$.roleCode" -> AdditionalFiscalReferencesController.displayPage, // ?? AdditionalFiscalReferencesRemoveController.displayOutcomePage
+    "declaration.items.$.additionalFiscalReferences.$.id" -> AdditionalFiscalReferencesController.displayPage, // ?? AdditionalFiscalReferenceRemoveController.displayOutcomePage
+    "declaration.items.$.additionalFiscalReferences.$.roleCode" -> AdditionalFiscalReferencesController.displayPage, // ?? AdditionalFiscalReferenceRemoveController.displayOutcomePage
     "declaration.items.$.procedureCodes.procedureCode.current" -> ProcedureCodesController.displayPage,
     "declaration.items.$.procedureCodes.procedureCode.previous" -> ProcedureCodesController.displayPage,
     "declaration.items.$.packageInformation.$.shippingMarks" -> PackageInformationSummaryController.displayPage,

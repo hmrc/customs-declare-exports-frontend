@@ -149,6 +149,13 @@ case class ExportsDeclaration(
 
   def isInvoiceAmountLessThan100000: Boolean = !isInvoiceAmountGreaterThan100000
 
+  def hasOsrProcedureCode(itemId: String): Boolean = itemBy(itemId).exists(_.procedureCodes.exists(_.hasOsrProcedureCode))
+
+  def hasFiscalInformation(itemId: String): Boolean = itemBy(itemId).exists(_.hasFiscalInformation)
+
+  def hasFiscalReferences(itemId: String): Boolean =
+    itemBy(itemId).exists(_.additionalFiscalReferencesData.exists(_.references.nonEmpty))
+
   def isCommodityCodeOfItemPrefixedWith(itemId: String, prefixes: Seq[Int]): Boolean =
     isCodePrefixedWith(commodityCodeOfItem(itemId), prefixes)
 

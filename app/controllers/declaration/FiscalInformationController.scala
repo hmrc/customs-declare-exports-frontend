@@ -17,12 +17,11 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.declaration.routes.{AdditionalFiscalReferencesController, AdditionalProcedureCodesController, CommodityDetailsController}
+import controllers.declaration.routes.{AdditionalFiscalReferenceAddController, AdditionalFiscalReferencesController, CommodityDetailsController}
 import controllers.navigation.Navigator
 import forms.declaration.FiscalInformation
-import forms.declaration.FiscalInformation._
+import forms.declaration.FiscalInformation.{form, AllowedFiscalInformationAnswers}
 import models.ExportsDeclaration
-import models.declaration.ProcedureCodesData
 import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
@@ -46,59 +45,55 @@ class FiscalInformationController @Inject() (
 )(implicit ec: ExecutionContext, auditService: AuditService)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithUnsafeDefaultFormBinding {
 
-  def displayPage(itemId: String, fastForward: Boolean): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    def cacheContainsFiscalReferenceData = request.cacheModel.itemBy(itemId).exists(_.additionalFiscalReferencesData.exists(_.references.nonEmpty))
-    def cacheItemIneligibleForOSR: Boolean =
-      request.cacheModel
-        .itemBy(itemId)
-        .flatMap(_.procedureCodes)
-        .flatMap(_.procedureCode)
-        .exists(code => !ProcedureCodesData.osrProcedureCodes.contains(code))
-
-    def displayFiscalInformationPage(): Result = {
+  def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+    if (request.cacheModel.hasOsrProcedureCode(itemId)) {
       val frm = form.withSubmissionErrors
       request.cacheModel.itemBy(itemId).flatMap(_.fiscalInformation) match {
         case Some(fiscalInformation) => Ok(fiscalInformationPage(itemId, frm.fill(fiscalInformation)))
         case _                       => Ok(fiscalInformationPage(itemId, frm))
       }
-    }
-
-    if (request.cacheModel.declarationMeta.summaryWasVisited.contains(true)) displayFiscalInformationPage()
-    else if (fastForward && cacheContainsFiscalReferenceData) navigator.continueTo(AdditionalFiscalReferencesController.displayPage(itemId))
-    else if (fastForward && cacheItemIneligibleForOSR) navigator.continueTo(AdditionalProcedureCodesController.displayPage(itemId))
-    else if (cacheContainsFiscalReferenceData) navigator.continueTo(AdditionalFiscalReferencesController.displayPage(itemId))
-    else displayFiscalInformationPage()
+    } else navigator.continueTo(CommodityDetailsController.displayPage(itemId))
   }
 
   def saveFiscalInformation(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    form
-      .bindFromRequest()
-      .fold(
-        (formWithErrors: Form[FiscalInformation]) => Future.successful(BadRequest(fiscalInformationPage(itemId, formWithErrors))),
-        formData => updateCache(itemId, formData).map(_ => redirectToNextPage(itemId, formData))
-      )
+    if (request.cacheModel.hasOsrProcedureCode(itemId))
+      form
+        .bindFromRequest()
+        .fold(
+          (formWithErrors: Form[FiscalInformation]) => Future.successful(BadRequest(fiscalInformationPage(itemId, formWithErrors))),
+          formData => updateCache(itemId, formData).map(_ => redirectToNextPage(itemId, formData))
+        )
+    else Future.successful(navigator.continueTo(CommodityDetailsController.displayPage(itemId)))
   }
 
   private def updateCache(itemId: String, updatedFiscalInformation: FiscalInformation)(
     implicit request: JourneyRequest[AnyContent]
   ): Future[ExportsDeclaration] = {
+
+    val fiscalInformation = Some(updatedFiscalInformation)
+
     def updatedModel(model: ExportsDeclaration): ExportsDeclaration =
       updatedFiscalInformation.onwardSupplyRelief match {
         case AllowedFiscalInformationAnswers.yes =>
-          model.updatedItem(itemId, item => item.copy(fiscalInformation = Some(updatedFiscalInformation)))
+          model.updatedItem(itemId, item => item.copy(fiscalInformation = fiscalInformation))
+
         case AllowedFiscalInformationAnswers.no =>
-          model.updatedItem(itemId, item => item.copy(fiscalInformation = Some(updatedFiscalInformation), additionalFiscalReferencesData = None))
+          model.updatedItem(itemId, item => item.copy(fiscalInformation = fiscalInformation, additionalFiscalReferencesData = None))
       }
 
-    updateDeclarationFromRequest(updatedModel(_))
+    updateDeclarationFromRequest(updatedModel)
   }
 
   private def redirectToNextPage(itemId: String, fiscalInformation: FiscalInformation)(implicit request: JourneyRequest[AnyContent]): Result =
     fiscalInformation.onwardSupplyRelief match {
-      case FiscalInformation.AllowedFiscalInformationAnswers.yes =>
-        navigator.continueTo(routes.AdditionalFiscalReferencesAddController.displayPage(itemId))
+      case AllowedFiscalInformationAnswers.yes =>
+        val nextPage =
+          if (request.cacheModel.hasFiscalReferences(itemId)) AdditionalFiscalReferencesController.displayPage(itemId)
+          else AdditionalFiscalReferenceAddController.displayPage(itemId)
 
-      case FiscalInformation.AllowedFiscalInformationAnswers.no =>
+        navigator.continueTo(nextPage)
+
+      case AllowedFiscalInformationAnswers.no =>
         navigator.continueTo(CommodityDetailsController.displayPage(itemId))
     }
 }

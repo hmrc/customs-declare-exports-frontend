@@ -162,7 +162,7 @@ class PointerRecordSpec extends UnitViewSpec with ExportsTestHelper with Injecto
     withItemId("itemId"),
     withSequenceId(1),
     withProcedureCodes(Some(procedureCode), Seq("000", "111")),
-    withFiscalInformation(FiscalInformation("Yes")),
+    withFiscalInformation(),
     withAdditionalFiscalReferenceData(AdditionalFiscalReferencesData(Seq(AdditionalFiscalReference(countryGB.countryCode, roleCode)))),
     withStatisticalValue(statisticalValue),
     withCommodityDetails(CommodityDetails(Some(combinedNomenclatureCode), Some(descriptionOfGoods))),

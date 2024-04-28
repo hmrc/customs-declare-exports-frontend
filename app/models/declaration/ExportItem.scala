@@ -106,7 +106,7 @@ case class ExportItem(
       additionalDocuments.isDefined ||
       isLicenceRequired.isDefined
 
-  def hasFiscalReferences: Boolean =
+  def hasFiscalInformation: Boolean =
     fiscalInformation.exists(_.onwardSupplyRelief == yes)
 
   val isCompleted: PartialFunction[DeclarationType, Boolean] = {
@@ -133,11 +133,11 @@ case class ExportItem(
   private def isProcedureCodesAndFiscalInformationComplete = {
 
     def isFiscalInformationCompleted: Boolean =
-      if (hasFiscalReferences) additionalFiscalReferencesData.isDefined
+      if (hasFiscalInformation) additionalFiscalReferencesData.isDefined
       else fiscalInformation.isDefined
 
     procedureCodes.flatMap(_.procedureCode).isDefined &&
-    (procedureCodes.flatMap(_.procedureCode).exists(!ProcedureCodesData.osrProcedureCodes.contains(_)) || isFiscalInformationCompleted)
+    (!procedureCodes.exists(_.hasOsrProcedureCode) || isFiscalInformationCompleted)
   }
 
   def requiresWarehouseId: Boolean =

@@ -17,7 +17,7 @@
 package views.declaration.fiscalInformation
 
 import base.Injector
-import controllers.declaration.routes.{AdditionalFiscalReferencesRemoveController, AdditionalProcedureCodesController}
+import controllers.declaration.routes.{AdditionalFiscalReferenceRemoveController, FiscalInformationController}
 import forms.common.YesNoAnswer.form
 import forms.declaration.AdditionalFiscalReference
 import models.requests.JourneyRequest
@@ -52,7 +52,7 @@ class AdditionalFiscalReferencesViewSpec extends UnitViewSpec with Injector {
         val backButton = view.getElementById("back-link")
 
         backButton must containMessage(backToPreviousQuestionCaption)
-        backButton must haveHref(AdditionalProcedureCodesController.displayPage(itemId))
+        backButton must haveHref(FiscalInformationController.displayPage(itemId))
       }
 
       checkAllSaveButtonsAreDisplayed(view)
@@ -75,7 +75,7 @@ class AdditionalFiscalReferencesViewSpec extends UnitViewSpec with Injector {
         val removeLink = view.getElementsByTag("tr").select(".govuk-link").get(0)
         removeLink must containMessage("site.remove", ("declaration.additionalInformation.table.remove.hint", "12345"))
 
-        val href = AdditionalFiscalReferencesRemoveController.displayPage(itemId, ListItem.createId(0, additionalReferences))
+        val href = AdditionalFiscalReferenceRemoveController.displayPage(itemId, ListItem.createId(0, additionalReferences))
         removeLink must haveHref(href)
       }
     }

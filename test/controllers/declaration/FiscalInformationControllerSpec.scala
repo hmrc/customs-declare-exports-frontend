@@ -17,9 +17,9 @@
 package controllers.declaration
 
 import base.{AuditedControllerSpec, ControllerSpec}
-import controllers.declaration.routes.{AdditionalFiscalReferencesController, AdditionalProcedureCodesController, CommodityDetailsController}
+import controllers.declaration.routes.{AdditionalFiscalReferencesController, CommodityDetailsController}
+import forms.declaration.FiscalInformation
 import forms.declaration.FiscalInformation.AllowedFiscalInformationAnswers._
-import forms.declaration.{AdditionalFiscalReference, AdditionalFiscalReferencesData, FiscalInformation}
 import models.DeclarationType
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -27,10 +27,12 @@ import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.OptionValues
 import play.api.data.Form
 import play.api.libs.json.Json
-import play.api.mvc.{AnyContentAsEmpty, Request}
+import play.api.mvc.{AnyContentAsEmpty, Request, Result}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import views.html.declaration.fiscalInformation.fiscal_information
+
+import scala.concurrent.Future
 
 class FiscalInformationControllerSpec extends ControllerSpec with AuditedControllerSpec with OptionValues {
 
@@ -54,10 +56,8 @@ class FiscalInformationControllerSpec extends ControllerSpec with AuditedControl
 
   override protected def afterEach(): Unit = {
     super.afterEach()
-    reset(mockFiscalInformationPage)
+    reset(auditService, mockFiscalInformationPage)
   }
-
-  val itemId = "itemId"
 
   def theResponseForm: Form[FiscalInformation] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[FiscalInformation]])
@@ -66,125 +66,123 @@ class FiscalInformationControllerSpec extends ControllerSpec with AuditedControl
   }
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
-    await(controller.displayPage(itemId, fastForward = false)(request))
+    val item = anItem(withProcedureCodes())
+    withNewCaching(aDeclaration(withItem(item)))
+    await(controller.displayPage(item.id)(request))
     theResponseForm
   }
 
-  private def verifyPageAccessed(numberOfTimes: Int): HtmlFormat.Appendable =
-    verify(mockFiscalInformationPage, times(numberOfTimes)).apply(any(), any())(any(), any())
+  private def verifyPageAccessed: HtmlFormat.Appendable =
+    verify(mockFiscalInformationPage, times(1)).apply(any(), any())(any(), any())
 
   "Fiscal Information controller" should {
+
+    "be redirected to /commodity-details" when {
+      val item = anItem(withProcedureCodes(Some("1040")))
+
+      s"on landing on the page, the cached 'Procedure Code' is not for 'Onward Supply Relief'" in {
+        withNewCaching(aDeclaration(withItem(item)))
+
+        val result: Future[Result] = controller.displayPage(item.id)(getRequest())
+
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe CommodityDetailsController.displayPage(item.id)
+        verifyNoAudit()
+      }
+
+      s"on submitting the page, the cached 'Procedure Code' is not for 'Onward Supply Relief'" in {
+        withNewCaching(aDeclaration(withItem(item)))
+
+        val correctForm = Json.toJson(fiscalInformation)
+        val result: Future[Result] = controller.saveFiscalInformation(item.id)(postRequest(correctForm))
+
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe CommodityDetailsController.displayPage(item.id)
+        verifyNoAudit()
+      }
+    }
 
     "return 200 (OK)" when {
 
       "display page method is invoked and cache is empty" in {
-        val result = controller.displayPage(itemId, fastForward = false)(getRequest())
+        val item = anItem(withProcedureCodes())
+        withNewCaching(aDeclaration(withItems(item)))
+
+        val result = controller.displayPage(item.id)(getRequest())
 
         status(result) mustBe OK
-        verify(mockFiscalInformationPage, times(1)).apply(any(), any())(any(), any())
+        verifyPageAccessed
 
         theResponseForm.value mustBe empty
       }
 
       "display page method is invoked and cache contains data" in {
-        val item = anItem(withFiscalInformation(FiscalInformation(yes)))
+        val item = anItem(withProcedureCodes(), withFiscalInformation())
         withNewCaching(aDeclaration(withItems(item)))
 
-        val result = controller.displayPage(item.id, fastForward = false)(getRequest())
+        val result = controller.displayPage(item.id)(getRequest())
 
         status(result) mustBe OK
-        verifyPageAccessed(1)
+        verifyPageAccessed
 
         theResponseForm.value.value.onwardSupplyRelief mustBe yes
-      }
-
-      "the Summary page has been visited" in {
-        val item = anItem(
-          withFiscalInformation(FiscalInformation(yes)),
-          withAdditionalFiscalReferenceData(AdditionalFiscalReferencesData(Seq(AdditionalFiscalReference("GB", "12345"))))
-        )
-        withNewCaching(aDeclaration(withSummaryWasVisited(), withItems(item)))
-
-        val result = controller.displayPage(item.id, fastForward = false)(getRequest())
-
-        status(result) mustBe OK
-        verifyPageAccessed(1)
       }
     }
 
     "return 400 (BAD_REQUEST)" when {
       "form is incorrect" in {
-        val incorrectForm = Json.toJson(FiscalInformation("IncorrectValue"))
+        val item = anItem(withProcedureCodes())
+        withNewCaching(aDeclaration(withItems(item)))
 
-        val result = controller.saveFiscalInformation(itemId)(postRequest(incorrectForm))
+        val incorrectForm = Json.toJson(FiscalInformation("IncorrectValue"))
+        val result = controller.saveFiscalInformation(item.id)(postRequest(incorrectForm))
 
         status(result) mustBe BAD_REQUEST
-        verifyPageAccessed(1)
+        verifyPageAccessed
         verifyNoAudit()
       }
     }
 
     "return 303 (SEE_OTHER)" when {
 
-      "user answer yes" in {
-        val correctForm = Json.toJson(FiscalInformation("Yes"))
+      "user answer yes with no fiscal references in cache yet" in {
+        val item = anItem(withProcedureCodes())
+        withNewCaching(aDeclaration(withItems(item)))
 
-        val result = controller.saveFiscalInformation(itemId)(postRequest(correctForm))
+        val correctForm = Json.toJson(fiscalInformation)
+        val result = controller.saveFiscalInformation(item.id)(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe routes.AdditionalFiscalReferencesAddController.displayPage(itemId)
-        verifyPageAccessed(0)
+        thePageNavigatedTo mustBe routes.AdditionalFiscalReferenceAddController.displayPage(item.id)
         verifyAudit()
+      }
+
+      "user answer yes with fiscal references already in cache" in {
+        val item = anItem(withProcedureCodes(), withFiscalInformation(), withAdditionalFiscalReferenceData())
+        withNewCaching(aDeclaration(withItems(item)))
+
+        val correctForm = Json.toJson(fiscalInformation)
+        val result = controller.saveFiscalInformation(item.id)(postRequest(correctForm))
+
+        await(result) mustBe aRedirectToTheNextPage
+        thePageNavigatedTo mustBe AdditionalFiscalReferencesController.displayPage(item.id)
+        verifyAudit()
+
+        theCacheModelUpdated.itemBy(item.id).flatMap(_.additionalFiscalReferencesData) mustBe Some(fiscalReferences)
       }
 
       "user answer no" in {
+        val item = anItem(withProcedureCodes(), withFiscalInformation(), withAdditionalFiscalReferenceData())
+        withNewCaching(aDeclaration(withItems(item)))
+
         val correctForm = Json.toJson(FiscalInformation("No"))
-
-        val result = controller.saveFiscalInformation(itemId)(postRequest(correctForm))
+        val result = controller.saveFiscalInformation(item.id)(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe CommodityDetailsController.displayPage(itemId)
-        verifyPageAccessed(0)
+        thePageNavigatedTo mustBe CommodityDetailsController.displayPage(item.id)
         verifyAudit()
-      }
 
-      "user comes back from Commodity details and is 'fast-forwarded' to see existing additional fiscal references page" in {
-        val item = anItem(
-          withFiscalInformation(FiscalInformation(yes)),
-          withAdditionalFiscalReferenceData(AdditionalFiscalReferencesData(Seq(AdditionalFiscalReference("GB", "12"))))
-        )
-        withNewCaching(aDeclaration(withItems(item)))
-
-        val result = controller.displayPage(item.id, fastForward = true)(getRequest())
-
-        await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe AdditionalFiscalReferencesController.displayPage(item.id)
-        verifyPageAccessed(0)
-      }
-
-      "user comes back from Commodity details and is 'fast-forwarded' to see Procedure Code page due to ineligible procedure code" in {
-        val item = anItem(withProcedureCodes(Some("1000"), Seq("000")))
-        withNewCaching(aDeclaration(withItems(item)))
-
-        val result = controller.displayPage(item.id, fastForward = true)(getRequest())
-
-        await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe AdditionalProcedureCodesController.displayPage(item.id)
-        verifyPageAccessed(0)
-      }
-
-      "user navigates to Fiscal Information page with additionalFiscalReferencesData in cache and mode is Normal" in {
-        val item = anItem(
-          withFiscalInformation(FiscalInformation(yes)),
-          withAdditionalFiscalReferenceData(AdditionalFiscalReferencesData(Seq(AdditionalFiscalReference("GB", "12345"))))
-        )
-        withNewCaching(aDeclaration(withItems(item)))
-
-        val result = controller.displayPage(item.id, fastForward = false)(getRequest())
-
-        await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe AdditionalFiscalReferencesController.displayPage(item.id)
-        verifyPageAccessed(0)
+        theCacheModelUpdated.itemBy(item.id).flatMap(_.additionalFiscalReferencesData) mustBe None
       }
     }
   }

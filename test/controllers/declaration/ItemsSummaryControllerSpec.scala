@@ -21,8 +21,6 @@ import controllers.declaration.routes.{ItemsSummaryController, ProcedureCodesCon
 import controllers.helpers.SequenceIdHelper.valueOfEso
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
-import forms.declaration.FiscalInformation.AllowedFiscalInformationAnswers
-import forms.declaration.{AdditionalFiscalReference, AdditionalFiscalReferencesData, FiscalInformation}
 import mock.ErrorHandlerMocks
 import models.DeclarationType.CLEARANCE
 import models.declaration.{CommodityMeasure, ExportItem}
@@ -61,8 +59,8 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
     withSequenceId(1),
     withItemId("Some Id"),
     withProcedureCodes(),
-    withFiscalInformation(FiscalInformation(AllowedFiscalInformationAnswers.yes)),
-    withAdditionalFiscalReferenceData(AdditionalFiscalReferencesData(Seq(AdditionalFiscalReference("GB", "12")))),
+    withFiscalInformation(),
+    withAdditionalFiscalReferenceData(),
     withStatisticalValue(),
     withPackageInformation(),
     withAdditionalInformation("code", "description"),

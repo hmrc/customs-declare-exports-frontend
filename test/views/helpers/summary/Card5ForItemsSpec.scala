@@ -34,14 +34,14 @@ import views.declaration.spec.UnitViewSpec
 
 class Card5ForItemsSpec extends UnitViewSpec with ExportsTestHelper with Injector {
 
-  val commodityMeasure = CommodityMeasure(Some("12"), Some(false), Some("666"), Some("555"))
+  private val commodityMeasure = CommodityMeasure(Some("12"), Some(false), Some("666"), Some("555"))
 
   private val itemWithAnswers = anItem(
     withItemId(itemId),
     withSequenceId(sequenceId.toInt),
     withProcedureCodes(Some("1234"), Seq("000", "111")),
-    withFiscalInformation(FiscalInformation("Yes")),
-    withAdditionalFiscalReferenceData(AdditionalFiscalReferencesData(Seq(AdditionalFiscalReference("GB", "1234")))),
+    withFiscalInformation(),
+    withAdditionalFiscalReferenceData(),
     withStatisticalValue("123"),
     withCommodityDetails(CommodityDetails(Some("1234567890"), Some("description"))),
     withUNDangerousGoodsCode(UNDangerousGoodsCode(Some("345"))),
@@ -279,7 +279,9 @@ class Card5ForItemsSpec extends UnitViewSpec with ExportsTestHelper with Injecto
       "show 'VAT details'" in {
         val row = view.getElementsByClass("item-1-vat-details")
         val call = Some(AdditionalFiscalReferencesController.displayPage(itemId))
-        checkSummaryRow(row, "item.VATdetails", "GB1234", call, "item.VATdetails")
+
+        val expected = s"${fiscalReference.country}${fiscalReference.reference}"
+        checkSummaryRow(row, "item.VATdetails", expected, call, "item.VATdetails")
       }
 
       "show 'Commodity code'" in {

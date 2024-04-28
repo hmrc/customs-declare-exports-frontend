@@ -15,7 +15,7 @@
  *@
 
 @import connectors.CodeListConnector
-@import controllers.declaration.routes._
+@import controllers.declaration.routes.{AdditionalFiscalReferencesController, AdditionalFiscalReferenceRemoveController}
 @import forms.common.YesNoAnswer
 @import forms.declaration.AdditionalFiscalReference
 @import models.requests.JourneyRequest
@@ -62,7 +62,7 @@
     title = Title("declaration.additionalFiscalReferences.remove.title", "declaration.section.5", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.backToPreviousQuestion"), AdditionalFiscalReferencesController.displayPage(itemId)))
 ) {
-    @formHelper(action = AdditionalFiscalReferencesRemoveController.submitForm(itemId, referenceId), 'autoComplete -> "off") {
+    @formHelper(action = AdditionalFiscalReferenceRemoveController.submitForm(itemId, referenceId), 'autoComplete -> "off") {
         @errorSummary(yesNoErrors(form.errors))
 
         @sectionHeader(messages("declaration.section.5"))

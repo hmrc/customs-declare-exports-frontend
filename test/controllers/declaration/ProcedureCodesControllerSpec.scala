@@ -23,7 +23,7 @@ import forms.declaration.procedurecodes.ProcedureCode
 import forms.declaration.procedurecodes.ProcedureCode.procedureCodeKey
 import mock.ErrorHandlerMocks
 import models.DeclarationType._
-import models.declaration.ProcedureCodesData.warehouseRequiredProcedureCodes
+import models.declaration.ProcedureCodesData.{osrProcedureCode, warehouseRequiredProcedureCodes}
 import models.declaration.{ExportItem, ProcedureCodesData}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -108,9 +108,6 @@ class ProcedureCodesControllerSpec extends ControllerSpec with AuditedController
   }
 
   "ProcedureCodesController on submitProcedureCodes" when {
-
-    val fiscalInformation = FiscalInformation("Yes")
-    val fiscalReferencesData = AdditionalFiscalReferencesData(Seq(AdditionalFiscalReference("GB", "12")))
     val packageInformation = PackageInformationViewSpec.packageInformation
     val warehouseIdentification = WarehouseIdentification(Some("WarehouseId"))
 
@@ -215,16 +212,16 @@ class ProcedureCodesControllerSpec extends ControllerSpec with AuditedController
           withNewCaching(
             aDeclaration(
               withType(request.declarationType),
-              withItem(anItem(withItemId(itemId), withFiscalInformation(fiscalInformation), withAdditionalFiscalReferenceData(fiscalReferencesData)))
+              withItem(anItem(withItemId(itemId), withFiscalInformation(), withAdditionalFiscalReferenceData()))
             )
           )
-          val correctForm = Seq(("procedureCode", "1042"))
+          val correctForm = Seq(("procedureCode", osrProcedureCode))
 
           controller.submitProcedureCodes(itemId)(postRequestAsFormUrlEncoded(correctForm: _*)).futureValue
 
           val updatedItem = theCacheModelUpdated.itemBy(itemId)
           updatedItem.flatMap(_.fiscalInformation).value mustBe fiscalInformation
-          updatedItem.flatMap(_.additionalFiscalReferencesData).value mustBe fiscalReferencesData
+          updatedItem.flatMap(_.additionalFiscalReferencesData).value mustBe fiscalReferences
           verifyAudit()
         }
       }
@@ -234,7 +231,7 @@ class ProcedureCodesControllerSpec extends ControllerSpec with AuditedController
           withNewCaching(
             aDeclaration(
               withType(request.declarationType),
-              withItem(anItem(withItemId(itemId), withFiscalInformation(fiscalInformation), withAdditionalFiscalReferenceData(fiscalReferencesData)))
+              withItem(anItem(withItemId(itemId), withFiscalInformation(), withAdditionalFiscalReferenceData()))
             )
           )
           val correctForm = Seq(("procedureCode", "1234"))
@@ -253,9 +250,8 @@ class ProcedureCodesControllerSpec extends ControllerSpec with AuditedController
 
       onJourney(STANDARD, SIMPLIFIED, SUPPLEMENTARY, OCCASIONAL) { request =>
         "not make changes to PackageInformation in cache" in {
-          withNewCaching(
-            aDeclaration(withType(request.declarationType), withItem(anItem(withItemId(itemId), withPackageInformation(packageInformation))))
-          )
+          val item = anItem(withItemId(itemId), withPackageInformation(packageInformation))
+          withNewCaching(aDeclaration(withType(request.declarationType), withItem(item)))
           val correctForm = Seq(("procedureCode", "0019"))
 
           controller.submitProcedureCodes(itemId)(postRequestAsFormUrlEncoded(correctForm: _*)).futureValue
@@ -268,9 +264,8 @@ class ProcedureCodesControllerSpec extends ControllerSpec with AuditedController
 
       onClearance { request =>
         "remove PackageInformation from cache" in {
-          withNewCaching(
-            aDeclaration(withType(request.declarationType), withItem(anItem(withItemId(itemId), withPackageInformation(packageInformation))))
-          )
+          val item = anItem(withItemId(itemId), withPackageInformation(packageInformation))
+          withNewCaching(aDeclaration(withType(request.declarationType), withItem(item)))
           val correctForm = Seq(("procedureCode", "0019"))
 
           controller.submitProcedureCodes(itemId)(postRequestAsFormUrlEncoded(correctForm: _*)).futureValue

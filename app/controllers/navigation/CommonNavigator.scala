@@ -57,8 +57,7 @@ trait CommonNavigator extends CacheDependentNavigators {
   val commonItem: PartialFunction[DeclarationPage, String => Call] = {
     case AdditionalProcedureCode           => routes.ProcedureCodesController.displayPage
     case FiscalInformation                 => routes.AdditionalProcedureCodesController.displayPage
-    case AdditionalFiscalReferencesSummary => routes.AdditionalProcedureCodesController.displayPage
-    case CommodityDetails                  => routes.FiscalInformationController.displayPage(_, fastForward = true)
+    case AdditionalFiscalReferencesSummary => routes.FiscalInformationController.displayPage
     case UNDangerousGoodsCode              => routes.CommodityDetailsController.displayPage
     case StatisticalValue                  => routes.NactCodeSummaryController.displayPage
     case SupplementaryUnits                => routes.CommodityMeasureController.displayPage
@@ -79,9 +78,10 @@ trait CommonNavigator extends CacheDependentNavigators {
   }
 
   val commonCacheItemDependent: PartialFunction[DeclarationPage, (ExportsDeclaration, String) => Call] = {
+    case CommodityDetails          => commodityDetailsPreviousPage
+    case AdditionalFiscalReference => additionalFiscalReferencesPreviousPage
     case IsLicenceRequired         => isLicenseRequiredPreviousPage
     case AdditionalInformation     => additionalInformationAddPreviousPage
-    case AdditionalFiscalReference => additionalFiscalReferencesPreviousPage
     case ZeroRatedForVat           => cusCodeOrDangerousGoodsPage
   }
 }

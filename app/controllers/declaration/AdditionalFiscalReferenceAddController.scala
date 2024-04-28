@@ -18,7 +18,8 @@ package controllers.declaration
 
 import connectors.CodeListConnector
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.declaration.AdditionalFiscalReferencesAddController.AdditionalFiscalReferencesFormGroupId
+import controllers.declaration.AdditionalFiscalReferenceAddController.AdditionalFiscalReferencesFormGroupId
+import controllers.declaration.routes.CommodityDetailsController
 import controllers.navigation.Navigator
 import controllers.helpers.MultipleItemsHelper
 import forms.declaration.AdditionalFiscalReference.{countryId, form}
@@ -34,33 +35,37 @@ import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.WithUnsafeDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.validators.forms.AutoCompleteFieldBinding
-import views.html.declaration.fiscalInformation.additional_fiscal_references_add
+import views.html.declaration.fiscalInformation.additional_fiscal_reference_add
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class AdditionalFiscalReferencesAddController @Inject() (
+class AdditionalFiscalReferenceAddController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
   navigator: Navigator,
   mcc: MessagesControllerComponents,
-  additionalFiscalReferencesPage: additional_fiscal_references_add
+  additionalFiscalReferencePage: additional_fiscal_reference_add
 )(implicit ec: ExecutionContext, codeListConnector: CodeListConnector, auditService: AuditService)
     extends FrontendController(mcc) with AutoCompleteFieldBinding with I18nSupport with ModelCacheable with SubmissionErrors
     with WithUnsafeDefaultFormBinding {
 
   def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    val frm = form.withSubmissionErrors
-    Ok(additionalFiscalReferencesPage(itemId, frm))
+    if (request.cacheModel.hasFiscalInformation(itemId)) {
+      val frm = form.withSubmissionErrors
+      Ok(additionalFiscalReferencePage(itemId, frm))
+    } else navigator.continueTo(CommodityDetailsController.displayPage(itemId))
   }
 
   def submitForm(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    val boundForm = form.bindFromRequest(formValuesFromRequest(countryId))
-    boundForm.fold(
-      formWithErrors => Future.successful(BadRequest(additionalFiscalReferencesPage(itemId, formWithErrors))),
-      _ => saveAndContinue(itemId, boundForm, cachedData(itemId))
-    )
+    if (request.cacheModel.hasFiscalInformation(itemId)) {
+      val boundForm = form.bindFromRequest(formValuesFromRequest(countryId))
+      boundForm.fold(
+        formWithErrors => Future.successful(BadRequest(additionalFiscalReferencePage(itemId, formWithErrors))),
+        _ => saveAndContinue(itemId, boundForm, cachedData(itemId))
+      )
+    } else Future.successful(navigator.continueTo(CommodityDetailsController.displayPage(itemId)))
   }
 
   private def cachedData(itemId: String)(implicit request: JourneyRequest[AnyContent]) =
@@ -72,7 +77,7 @@ class AdditionalFiscalReferencesAddController @Inject() (
     MultipleItemsHelper
       .add(form, cachedData.references, limit, AdditionalFiscalReferencesFormGroupId, "declaration.additionalFiscalReferences")
       .fold(
-        formWithErrors => Future.successful(BadRequest(additionalFiscalReferencesPage(itemId, formWithErrors))),
+        formWithErrors => Future.successful(BadRequest(additionalFiscalReferencePage(itemId, formWithErrors))),
         updatedCache =>
           updateExportsCache(itemId, cachedData.copy(references = updatedCache))
             .map(_ => navigator.continueTo(routes.AdditionalFiscalReferencesController.displayPage(itemId)))
@@ -86,6 +91,7 @@ class AdditionalFiscalReferencesAddController @Inject() (
     }
 }
 
-object AdditionalFiscalReferencesAddController {
+object AdditionalFiscalReferenceAddController {
+
   val AdditionalFiscalReferencesFormGroupId: String = "additionalFiscalReferences"
 }

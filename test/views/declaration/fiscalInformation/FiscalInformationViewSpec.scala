@@ -123,7 +123,7 @@ class FiscalInformationViewSpec extends PageWithButtonsSpec with Injector {
   "Dispatch Border Transport View when filled" should {
     onEveryDeclarationJourney() { implicit request =>
       "display selected first radio button - Yes" in {
-        val view = createView(form.fill(FiscalInformation("Yes")))
+        val view = createView(form.fill(fiscalInformation))
 
         view.getElementById("Yes") must beSelected
         view.getElementById("No") must not(beSelected)

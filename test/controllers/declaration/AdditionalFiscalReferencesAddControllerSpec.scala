@@ -18,12 +18,13 @@ package controllers.declaration
 
 import base.{AuditedControllerSpec, ControllerSpec}
 import connectors.CodeListConnector
+import controllers.declaration.routes.{AdditionalFiscalReferencesController, CommodityDetailsController}
 import forms.declaration.AdditionalFiscalReference.countryId
-import forms.declaration.{AdditionalFiscalReference, AdditionalFiscalReferencesData}
+import forms.declaration.FiscalInformation.AllowedFiscalInformationAnswers
+import forms.declaration.{AdditionalFiscalReference, AdditionalFiscalReferencesData, FiscalInformation}
 import mock.{ErrorHandlerMocks, ItemActionMocks}
-import models.DeclarationType
+import models.DeclarationType.SUPPLEMENTARY
 import models.codes.Country
-import models.declaration.ExportItem
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
@@ -32,17 +33,17 @@ import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsEmpty, Request, Result}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
-import views.html.declaration.fiscalInformation.additional_fiscal_references_add
+import views.html.declaration.fiscalInformation.additional_fiscal_reference_add
 
 import scala.collection.immutable.ListMap
 import scala.concurrent.Future
 
 class AdditionalFiscalReferencesAddControllerSpec extends ControllerSpec with AuditedControllerSpec with ItemActionMocks with ErrorHandlerMocks {
 
-  val mockAddPage = mock[additional_fiscal_references_add]
+  val mockAddPage = mock[additional_fiscal_reference_add]
   val mockCodeListConnector = mock[CodeListConnector]
 
-  val controller = new AdditionalFiscalReferencesAddController(
+  val controller = new AdditionalFiscalReferenceAddController(
     mockAuthAction,
     mockJourneyAction,
     mockExportsCacheService,
@@ -50,6 +51,8 @@ class AdditionalFiscalReferencesAddControllerSpec extends ControllerSpec with Au
     stubMessagesControllerComponents(),
     mockAddPage
   )(ec, mockCodeListConnector, auditService)
+
+  private val item = anItem(withFiscalInformation())
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
@@ -63,7 +66,7 @@ class AdditionalFiscalReferencesAddControllerSpec extends ControllerSpec with Au
   override protected def afterEach(): Unit = {
     super.afterEach()
 
-    reset(mockAddPage, mockCodeListConnector)
+    reset(auditService, mockAddPage, mockCodeListConnector)
   }
 
   def theResponseForm: Form[AdditionalFiscalReference] = {
@@ -73,19 +76,44 @@ class AdditionalFiscalReferencesAddControllerSpec extends ControllerSpec with Au
   }
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
-    val item = anItem()
-    withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY), withItem(item)))
+    withNewCaching(aDeclaration(withItem(item)))
     await(controller.displayPage(item.id)(request))
     theResponseForm
   }
 
   "Additional fiscal references controller" should {
-    val item = anItem()
+
+    "be redirected to /commodity-details" when {
+
+      List(None, Some(FiscalInformation(AllowedFiscalInformationAnswers.no))).foreach { fiscalInfo =>
+        val infoToPrint = fiscalInfo.fold("None")(_.onwardSupplyRelief)
+
+        s"on landing on the page, the cached value for /fiscal-information is '$infoToPrint'" in {
+          withNewCaching(aDeclaration(withItem(item.copy(fiscalInformation = fiscalInfo))))
+
+          val result: Future[Result] = controller.displayPage(item.id)(getRequest())
+
+          await(result) mustBe aRedirectToTheNextPage
+          thePageNavigatedTo mustBe CommodityDetailsController.displayPage(item.id)
+          verifyNoAudit()
+        }
+
+        s"on submitting the page, the cached value for /fiscal-information is '$infoToPrint'" in {
+          withNewCaching(aDeclaration(withItem(item.copy(fiscalInformation = fiscalInfo))))
+
+          val correctForm = Json.obj(countryId -> "PL", "reference" -> "12345")
+          val result: Future[Result] = controller.submitForm(item.id)(postRequest(correctForm))
+
+          await(result) mustBe aRedirectToTheNextPage
+          thePageNavigatedTo mustBe CommodityDetailsController.displayPage(item.id)
+          verifyNoAudit()
+        }
+      }
+    }
 
     "return 200 (OK)" when {
       "display page method is invoked" in {
-        val item = anItem()
-        withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY), withItem(item)))
+        withNewCaching(aDeclaration(withItem(item)))
         val result: Future[Result] = controller.displayPage(item.id)(getRequest())
 
         status(result) must be(OK)
@@ -109,7 +137,7 @@ class AdditionalFiscalReferencesAddControllerSpec extends ControllerSpec with Au
       }
 
       "user enter incorrect data" in {
-        withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY), withItem(item)))
+        withNewCaching(aDeclaration(withItem(item)))
 
         val incorrectForm = Json.obj(fieldIdOnError(countryId) -> "!@#$", "reference" -> "!@#$")
 
@@ -124,11 +152,10 @@ class AdditionalFiscalReferencesAddControllerSpec extends ControllerSpec with Au
       }
 
       "user adds duplicated item" in {
-        val additionalFiscalReferencesData = AdditionalFiscalReferencesData(Seq(AdditionalFiscalReference("PL", "12345")))
-        val item = ExportItem("itemId", additionalFiscalReferencesData = Some(additionalFiscalReferencesData))
-        withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY), withItem(item)))
+        val item = anItem(withFiscalInformation(), withAdditionalFiscalReferenceData())
+        withNewCaching(aDeclaration(withItem(item)))
 
-        val duplicatedForm = Json.obj(countryId -> "PL", "reference" -> "12345")
+        val duplicatedForm = Json.obj(countryId -> fiscalReference.country, "reference" -> fiscalReference.reference)
 
         val result = controller.submitForm(item.id)(postRequest(duplicatedForm))
 
@@ -139,9 +166,9 @@ class AdditionalFiscalReferencesAddControllerSpec extends ControllerSpec with Au
       }
 
       "user reaches maximum amount of items" in {
-        val additionalFiscalReferencesData = AdditionalFiscalReferencesData(Seq.fill(99)(AdditionalFiscalReference("PL", "12345")))
-        val item = ExportItem("itemId", additionalFiscalReferencesData = Some(additionalFiscalReferencesData))
-        withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY), withItem(item)))
+        val additionalFiscalReferencesData = AdditionalFiscalReferencesData(Seq.fill(99)(fiscalReference))
+        val item = anItem(withFiscalInformation(), withAdditionalFiscalReferenceData(additionalFiscalReferencesData))
+        withNewCaching(aDeclaration(withType(SUPPLEMENTARY), withItem(item)))
 
         val correctForm = Json.obj(countryId -> "PL", "reference" -> "54321")
 
@@ -156,14 +183,14 @@ class AdditionalFiscalReferencesAddControllerSpec extends ControllerSpec with Au
 
     "return 303 (SEE_OTHER)" when {
       "user correctly adds new item" in {
-        withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY), withItem(item)))
+        withNewCaching(aDeclaration(withItem(item)))
 
         val correctForm = Json.obj(countryId -> "PL", "reference" -> "12345")
 
         val result: Future[Result] = controller.submitForm(item.id)(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe routes.AdditionalFiscalReferencesController.displayPage(item.id)
+        thePageNavigatedTo mustBe AdditionalFiscalReferencesController.displayPage(item.id)
         verifyAudit()
       }
     }

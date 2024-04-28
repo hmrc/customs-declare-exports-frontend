@@ -44,12 +44,12 @@ class ExportItemSpec extends UnitWithMocksSpec with ExportsItemBuilder {
 
       "item doesn't contain fiscal references" in {
         val itemWithoutFiscalReferences = anItem(withItemId("id"))
-        itemWithoutFiscalReferences.hasFiscalReferences mustBe false
+        itemWithoutFiscalReferences.hasFiscalInformation mustBe false
       }
 
       "item contains fiscal references" in {
-        val itemWithFiscalReferences = anItem(withItemId("id"), withFiscalInformation(FiscalInformation("Yes")))
-        itemWithFiscalReferences.hasFiscalReferences mustBe true
+        val itemWithFiscalReferences = anItem(withItemId("id"), withFiscalInformation())
+        itemWithFiscalReferences.hasFiscalInformation mustBe true
       }
     }
 
@@ -65,7 +65,7 @@ class ExportItemSpec extends UnitWithMocksSpec with ExportsItemBuilder {
           val completedItem = anItem(
             withItemId("id"),
             withProcedureCodes(),
-            withFiscalInformation(FiscalInformation(AllowedFiscalInformationAnswers.yes)),
+            withFiscalInformation(),
             withStatisticalValue(),
             withPackageInformation(),
             withCommodityMeasure(CommodityMeasure(None, Some(true), Some("100"), Some("100")))
@@ -103,8 +103,8 @@ class ExportItemSpec extends UnitWithMocksSpec with ExportsItemBuilder {
           val completedItem = anItem(
             withItemId("id"),
             withProcedureCodes(),
-            withFiscalInformation(FiscalInformation(AllowedFiscalInformationAnswers.yes)),
-            withAdditionalFiscalReferenceData(AdditionalFiscalReferencesData(Seq(AdditionalFiscalReference("GB", "12")))),
+            withFiscalInformation(),
+            withAdditionalFiscalReferenceData(),
             withStatisticalValue(),
             withPackageInformation(),
             withCommodityMeasure(CommodityMeasure(None, Some(true), Some("100"), Some("100")))
@@ -124,7 +124,7 @@ class ExportItemSpec extends UnitWithMocksSpec with ExportsItemBuilder {
           val completedItem = anItem(
             withItemId("id"),
             withProcedureCodes(),
-            withFiscalInformation(FiscalInformation(AllowedFiscalInformationAnswers.yes)),
+            withFiscalInformation(),
             withPackageInformation(),
             withAdditionalInformation("code", "description")
           ).copy(additionalFiscalReferencesData = None)
@@ -138,13 +138,8 @@ class ExportItemSpec extends UnitWithMocksSpec with ExportsItemBuilder {
         }
 
         "item is completed" in {
-          val completedItem = anItem(
-            withItemId("id"),
-            withProcedureCodes(),
-            withFiscalInformation(FiscalInformation(AllowedFiscalInformationAnswers.yes)),
-            withAdditionalFiscalReferenceData(AdditionalFiscalReferencesData(Seq(AdditionalFiscalReference("GB", "12")))),
-            withPackageInformation()
-          )
+          val completedItem =
+            anItem(withItemId("id"), withProcedureCodes(), withFiscalInformation(), withAdditionalFiscalReferenceData(), withPackageInformation())
 
           completedItem.isCompleted(DeclarationType.SIMPLIFIED) mustBe true
         }

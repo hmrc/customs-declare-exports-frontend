@@ -20,7 +20,7 @@ import forms.declaration.procedurecodes.ProcedureCode
 import models.AmendmentRow.{forAddedValue, forRemovedValue, pointerToSelector}
 import models.ExportsFieldPointer.ExportsFieldPointer
 import models.declaration.ExportItem.itemsPrefix
-import models.declaration.ProcedureCodesData.{additionalProcedureCodesPointer, keyForAPCs, keyForPC, procedureCodesPointer}
+import models.declaration.ProcedureCodesData.{additionalProcedureCodesPointer, keyForAPCs, keyForPC, osrProcedureCode, procedureCodesPointer}
 import models.{AmendmentOp, FieldMapping}
 import play.api.i18n.Messages
 import play.api.libs.json.{Json, OFormat}
@@ -40,7 +40,9 @@ case class ProcedureCodesData(procedureCode: Option[String], additionalProcedure
       )
     ).flatten
 
-  def toProcedureCode(): ProcedureCode = ProcedureCode(procedureCode.getOrElse(""))
+  lazy val hasOsrProcedureCode: Boolean = procedureCode.fold(false)(_ == osrProcedureCode)
+
+  lazy val toProcedureCode: ProcedureCode = ProcedureCode(procedureCode.getOrElse(""))
 
   def containsAPC(code: String): Boolean = additionalProcedureCodes.contains(code)
 
@@ -70,10 +72,11 @@ object ProcedureCodesData extends FieldMapping {
 
   val formId = "ProcedureCodesData"
 
-  val lowValueDeclaration = "3LV"
+  val lowValueDeclaration = "3LV" // Additional Procedure code
 
   // Onward Supply Relief
-  val osrProcedureCodes = Set("1042")
+  val osrProcedureCode = "1042"
+  val osrProcedureCodes = Set(osrProcedureCode)
 
   // Export Inventory Cleansing Record
   val eicrProcedureCodes = Set("0019")
