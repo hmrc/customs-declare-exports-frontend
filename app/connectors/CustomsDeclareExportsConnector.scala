@@ -17,24 +17,24 @@
 package connectors
 
 import com.codahale.metrics.Timer
-import uk.gov.hmrc.play.bootstrap.metrics.Metrics
 import config.AppConfig
+import config.featureFlags.DeclarationAmendmentsConfig
 import forms.Lrn
+import models.CancellationStatus.CancellationResult
 import models._
+import models.declaration.DeclarationStatus.{AMENDMENT_DRAFT, DRAFT, INITIAL}
 import models.declaration.notifications.Notification
+import models.declaration.submissions.EnhancedStatus.{ERRORS, EnhancedStatus}
 import models.declaration.submissions.{Action, Submission, SubmissionAmendment}
 import models.dis.MrnStatus
 import play.api.Logging
-import play.api.libs.json.{Json, Writes}
-import uk.gov.hmrc.http.HttpReads.Implicits._
-import uk.gov.hmrc.http.{HeaderCarrier, HeaderNames, HttpClient}
-import config.featureFlags.DeclarationAmendmentsConfig
-import models.CancellationStatus.CancellationResult
-import models.declaration.submissions.EnhancedStatus.{ERRORS, EnhancedStatus}
-import models.declaration.DeclarationStatus.{AMENDMENT_DRAFT, DRAFT, INITIAL}
 import play.api.http.Status.CREATED
+import play.api.libs.json._
 import services.AuditCreateDraftDec
 import services.audit.AuditService
+import uk.gov.hmrc.http.HttpReads.Implicits._
+import uk.gov.hmrc.http.{HeaderCarrier, HeaderNames, HttpClient, JsValidationException}
+import uk.gov.hmrc.play.bootstrap.metrics.Metrics
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -67,12 +67,12 @@ class CustomsDeclareExportsConnector @Inject() (
     httpClient
       .POST[ExportsDeclaration, ExportsDeclaration](getUrl(s"${appConfig.declarationsPath}"), declaration)
       .andThen {
-        case Success(responseDeclaration) =>
-          logPayload("Create Declaration Response", responseDeclaration)
+        case Success(newDeclaration) =>
+          logPayload("Create Declaration Response", newDeclaration)
           createStopwatch.stop()
           // this will exclude draft decs created from scratch that have no DUCR defined yet
           if (declaration.ducr.isDefined)
-            audit(eori, responseDeclaration, auditService)
+            audit(eori, newDeclaration, auditService)
 
         case Failure(_) =>
           createStopwatch.stop()
@@ -87,25 +87,40 @@ class CustomsDeclareExportsConnector @Inject() (
   def findDeclaration(id: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[ExportsDeclaration]] = {
     val fetchStopwatch = fetchTimer.time
 
+    val url = getUrl(s"${appConfig.declarationsPath}/$id")
+
     httpClient
-      .GET[Option[ExportsDeclaration]](getUrl(s"${appConfig.declarationsPath}/$id"))
+      .GET[JsValue](url)
+      .map { json =>
+        json.validate[ExportsDeclaration] match {
+          case JsSuccess(declaration, _) => Some(declaration)
+          case JsError(error) =>
+            logger.error(s"Illegal Json body while retrieving Draft Declaration with id($id):\n$json\n")
+            throw new JsValidationException("GET", url, classOf[ExportsDeclaration], error.toString())
+        }
+      }
       .andThen { case _ =>
         fetchStopwatch.stop
       }
   }
 
-  def findDeclarations(page: models.Page)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Paginated[ExportsDeclaration]] = {
-    val pagination = models.Page.bindable.unbind("page", page)
-    httpClient.GET[Paginated[ExportsDeclaration]](getUrl(s"${appConfig.declarationsPath}?$pagination"))
-  }
-
   def findSavedDeclarations(page: models.Page)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Paginated[ExportsDeclaration]] = {
     val pagination = models.Page.bindable.unbind("page", page)
     val sort = DeclarationSort.bindable.unbind("sort", DeclarationSort(SortBy.UPDATED, SortDirection.DES))
-
     val statusParameters = if (amendmentFlag.isEnabled) "?status=DRAFT&status=AMENDMENT_DRAFT&" else "?status=DRAFT&"
 
-    httpClient.GET[Paginated[ExportsDeclaration]](getUrl(s"${appConfig.declarationsPath}$statusParameters$pagination&$sort"))
+    val url = getUrl(s"${appConfig.declarationsPath}$statusParameters$pagination&$sort")
+
+    httpClient
+      .GET[JsValue](url)
+      .map { json =>
+        json.validate[Paginated[ExportsDeclaration]] match {
+          case JsSuccess(results, _) => results
+          case JsError(error) =>
+            logger.error(s"Illegal Json body while retrieving a $page of Draft Declarations:\n$json\n")
+            throw new JsValidationException("GET", url, classOf[ExportsDeclaration], error.toString())
+        }
+      }
   }
 
   def findOrCreateDraftForAmendment(parentId: String, enhancedStatus: EnhancedStatus, eori: String, draftDec: ExportsDeclaration)(
@@ -187,8 +202,8 @@ class CustomsDeclareExportsConnector @Inject() (
     httpClient
       .PUT[ExportsDeclaration, ExportsDeclaration](getUrl(s"${appConfig.declarationsPath}/${dec.id}"), dec)
       .andThen {
-        case Success(request) =>
-          logPayload("Update Declaration Response", request)
+        case Success(declaration) =>
+          logPayload("Update Declaration Response", declaration)
           updateStopwatch.stop()
           if (dec.declarationMeta.status == INITIAL && dec.ducr.isDefined)
             audit(eori, dec.id, dec.additionalDeclarationType, dec.ducr, DRAFT, None, None, auditService)

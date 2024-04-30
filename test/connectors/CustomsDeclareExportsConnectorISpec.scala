@@ -245,26 +245,6 @@ class CustomsDeclareExportsConnectorISpec extends ConnectorISpec with ExportsDec
     }
   }
 
-  "Find Declarations" should {
-    val pagination = models.Page(1, 10)
-
-    "return Ok" in {
-      stubForExports(
-        get("/declarations?page-index=1&page-size=10")
-          .willReturn(
-            aResponse()
-              .withStatus(Status.OK)
-              .withBody(json(Paginated(Seq(existingDeclaration), pagination, 1)))
-          )
-      )
-
-      val response = await(connector.findDeclarations(pagination))
-
-      response mustBe Paginated(Seq(existingDeclaration), pagination, 1)
-      WireMock.verify(getRequestedFor(urlEqualTo("/declarations?page-index=1&page-size=10")))
-    }
-  }
-
   "FindDraftByParent method" should {
     val parentId = existingDeclaration.declarationMeta.parentDeclarationId.getOrElse("")
 
