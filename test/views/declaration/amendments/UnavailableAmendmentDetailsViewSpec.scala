@@ -17,6 +17,7 @@
 package views.declaration.amendments
 
 import base.{Injector, MockAuthAction}
+import config.ExternalServicesConfig
 import controllers.routes.DeclarationDetailsController
 import views.declaration.spec.UnitViewSpec
 import views.helpers.CommonMessages
@@ -28,9 +29,11 @@ class UnavailableAmendmentDetailsViewSpec extends UnitViewSpec with CommonMessag
 
   private val page = instanceOf[unavailable_amendment_details]
 
-  "UnavailableAmendmentDetails page" should {
+  private val ducr = "8GB123456802352-101SHIP1"
+  private val externalServicesConfig = instanceOf[ExternalServicesConfig]
 
-    val view = page(request.cacheModel.id)(buildVerifiedEmailRequest(request, exampleUser), messages)
+  "UnavailableAmendmentDetails page" should {
+    val view = page(request.cacheModel.id, Some(ducr))(buildVerifiedEmailRequest(request, exampleUser), messages)
 
     "display 'Back' button that links to /submissions/:id/information" in {
       val backButton = view.getElementById("back-link")
@@ -39,11 +42,35 @@ class UnavailableAmendmentDetailsViewSpec extends UnitViewSpec with CommonMessag
     }
 
     "display page title" in {
-      view.getElementsByTag("h1").text mustBe messages("amendment.details.unavailable.header")
+      view.getElementsByTag("h1").text mustBe messages("amendment.details.unavailable.title")
     }
 
-    "display the expected body" in {
-      view.getElementsByClass("govuk-body").text mustBe messages("amendment.details.unavailable.paragraph")
+    "display a section header for the DUCR" in {
+      view.getElementById("section-header").text mustBe s"DUCR: $ducr"
+    }
+
+    "display the expected paragraphs" in {
+      val paragraphs = view.getElementsByClass("govuk-body")
+      paragraphs.size mustBe 6
+
+      paragraphs.get(1) must containMessage("amendment.details.unavailable.paragraph1")
+      paragraphs.get(2) must containMessage("amendment.details.unavailable.paragraph2")
+
+      paragraphs.get(3) must containMessage("amendment.details.unavailable.paragraph3")
+      paragraphs.get(4) must containMessage("amendment.details.unavailable.paragraph4", messages("amendment.details.unavailable.paragraph4.link"))
+      paragraphs.get(5) must containMessage("amendment.details.unavailable.timeline.link")
+    }
+
+    "display a link targeting the 'Movements' service" in {
+      val linkToMovements = view.getElementById("movements-url")
+      linkToMovements must containMessage("amendment.details.unavailable.paragraph4.link")
+      linkToMovements must haveHref(externalServicesConfig.customsMovementsFrontendUrl)
+    }
+
+    "display a bottom link targeting the timeline page" in {
+      val linkToTimeline = view.getElementById("timeline-url")
+      linkToTimeline must containMessage("amendment.details.unavailable.timeline.link")
+      linkToTimeline must haveHref(DeclarationDetailsController.displayPage(request.cacheModel.id).url)
     }
   }
 }

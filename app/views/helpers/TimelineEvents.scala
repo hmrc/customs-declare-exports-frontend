@@ -85,7 +85,7 @@ class TimelineEvents @Inject() (
             paragraphBody(
               messages("submission.enhancedStatus.timeline.content.external.amendment"),
               "govuk-body govuk-!-margin-bottom-2"
-            ).toString + viewAmendmentDetails(notificationEvent.actionId).toString
+            ).toString + viewAmendmentDetails(notificationEvent.actionId, true).toString
           )
 
         case IndexToMatchForUploadFilesContent if sfusConfig.isSfusUploadEnabled && IndexToMatchForFixResubmitContent < 0 =>
@@ -98,7 +98,7 @@ class TimelineEvents @Inject() (
 
         case _ =>
           val showAmendDetails = notificationEvent.requestType == AmendmentRequest && notificationEvent.notificationSummary.enhancedStatus == AMENDED
-          if (showAmendDetails) viewAmendmentDetails(notificationEvent.actionId)
+          if (showAmendDetails) viewAmendmentDetails(notificationEvent.actionId, false)
           else HtmlFormat.empty
       }
 
@@ -111,7 +111,7 @@ class TimelineEvents @Inject() (
       )
     }
   }
-// scalastyle:on
+  // scalastyle:on
 
   private def bodyContent(notificationEvent: NotificationEvent, declarationType: AdditionalDeclarationType)(implicit messages: Messages): Html =
     if (declarationType == SUPPLEMENTARY_SIMPLIFIED && notificationEvent.notificationSummary.enhancedStatus == CLEARED) HtmlFormat.empty
@@ -204,8 +204,13 @@ class TimelineEvents @Inject() (
   private def uploadFilesContent(mrn: Option[String], isPrimary: Boolean)(implicit messages: Messages): Html =
     uploadFilesPartialForTimeline(mrn, isPrimary)
 
-  private def viewAmendmentDetails(actionId: String)(implicit messages: Messages): Html =
-    link(messages("declaration.details.view.amendments.button"), AmendmentDetailsController.displayPage(actionId))
+  private def viewAmendmentDetails(actionId: String, isExternalAmendment: Boolean)(implicit messages: Messages): Html = {
+    val key =
+      if (isExternalAmendment) "declaration.details.view.external.amendment.details"
+      else "declaration.details.view.amendment.details"
+
+    link(messages(key), AmendmentDetailsController.displayPage(actionId))
+  }
 
   private def viewQueriesContent(isPrimary: Boolean)(implicit messages: Messages): Html =
     linkButton(
