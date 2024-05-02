@@ -84,7 +84,7 @@ class AmendmentDetailsController @Inject() (
             errorHandler.internalError(s"No Declaration found for Action(${action.id}) on /amendment-details??")
         }
 
-      case _ => Future.successful(Ok(unavailableAmendmentDetails(submission.uuid)))
+      case _ => Future.successful(Ok(unavailableAmendmentDetails(submission.uuid, submission.ducr)))
     }
 
   private def ducr(declaration: ExportsDeclaration): String =

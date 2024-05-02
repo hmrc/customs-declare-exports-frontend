@@ -59,7 +59,7 @@ class AmendmentDetailsControllerSpec extends ControllerWithoutFormSpec with Erro
 
     when(mockDeclarationAmendmentsConfig.isEnabled).thenReturn(true)
     when(amendmentDetails.apply(any(), any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
-    when(unavailableAmendmentDetails.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(unavailableAmendmentDetails.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
@@ -160,7 +160,7 @@ class AmendmentDetailsControllerSpec extends ControllerWithoutFormSpec with Erro
       status(result) mustBe OK
 
       val captor: ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
-      verify(unavailableAmendmentDetails).apply(captor.capture())(any(), any())
+      verify(unavailableAmendmentDetails).apply(captor.capture(), any())(any(), any())
       captor.getValue mustBe submission.uuid
     }
 

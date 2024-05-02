@@ -757,7 +757,7 @@ declaration.details.upload.files.button = Uwchlwytho ffeiliau
 declaration.details.upload.files.title = Os ydych eisoes wedi uwchlwytho ffeiliau
 declaration.details.upload.files.hint = Os ydych eisoes wedi uwchlwytho ac atodi’r dogfennau sy’n ategu’ch datganiad, nid oes rhaid i chi atodi unrhyw ddogfennau pellach, oni bai bod gofyn i chi wneud hynny mewn ymholiad gan awdurdodau tollau.
 declaration.details.uploading.documents = Uwchlwythwch ddogfennau ategol (yn agor tab newydd)
-declaration.details.view.amendments.button = Bwrw golwg dros y manylion
+declaration.details.view.amendment.details = Bwrw golwg dros y manylion
 declaration.details.view.declaration = Bwrw golwg dros neu argraffu’r datganiad
 declaration.details.view.queries.button = Bwrw golwg dros ymholiadau
 
@@ -805,9 +805,6 @@ declaration.details.uploadDocuments.details.paragraph.3 = Gallwch uwchlwytho dog
 
 declaration.details.unavailable.actions.header = Mae’n ddrwg gennym, ond ni allwch fwrw golwg dros, copïo, na diwygio’r datganiad hwn mwyach
 declaration.details.unavailable.actions.paragraph = Mae hyn oherwydd bod diweddariad wedi bod, ac mae hyn yn ein hatal rhag rhoi’r wybodaeth ddiweddaraf i chi.
-
-amendment.details.unavailable.header = Mae’n ddrwg gennym, ond ni allwch fwrw golwg dros fanylion y diwygiad hwn
-amendment.details.unavailable.paragraph = Mae hyn oherwydd nad oes gennym yr wybodaeth ddiweddaraf.
 
 amendment.details.title = Manylion y diwygiad
 amendment.details.title.external = Manylion y datganiad wedi’u diweddaru

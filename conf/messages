@@ -699,7 +699,7 @@ submission.timeline.title.amendment.failed = on hold
 submission.timeline.title.amendment.rejected = on hold
 
 submission.enhancedStatus.timeline.title.amendment.accepted = Amendment accepted
-submission.enhancedStatus.timeline.title.amendment.external = Declaration updated
+submission.enhancedStatus.timeline.title.amendment.external = Declaration external update
 submission.enhancedStatus.timeline.title.amendment.failed = Amendment failed
 submission.enhancedStatus.timeline.title.amendment.rejected = Amendment rejected
 submission.enhancedStatus.timeline.title.amendment.requested = Amendment requested
@@ -757,7 +757,8 @@ declaration.details.upload.files.button = Upload files
 declaration.details.upload.files.title = If you already uploaded files
 declaration.details.upload.files.hint = If you have already uploaded and attached the documents that support your declaration, you do not have to attach any further documents, unless you are asked to do so in a query from customs authorities.
 declaration.details.uploading.documents = Upload supporting documents (opens in new tab)
-declaration.details.view.amendments.button = View details
+declaration.details.view.amendment.details = View details
+declaration.details.view.external.amendment.details = About third party amendments
 declaration.details.view.declaration = View or print declaration
 declaration.details.view.queries.button = View queries
 
@@ -806,8 +807,14 @@ declaration.details.uploadDocuments.details.paragraph.3 = You can upload documen
 declaration.details.unavailable.actions.header = Sorry, you can no longer view, copy or amend this declaration
 declaration.details.unavailable.actions.paragraph = This is because there has been an update and this prevents us from providing you with the most recent information.
 
-amendment.details.unavailable.header = Sorry, you can not view the details for this amendment
-amendment.details.unavailable.paragraph = This is because we do not have the most recent information.
+amendment.details.unavailable.title = About authorised third party amendments
+amendment.details.unavailable.paragraph1 = When an authorised third party makes an amendment to a declaration, the change will not appear in the declaration details.
+amendment.details.unavailable.paragraph2 = Authorised third party could include Loaders, authorised agents or HMRC exports personnel.
+amendment.details.unavailable.heading.section2 = Some options
+amendment.details.unavailable.paragraph3 = You can contact the authorised third-parties you work with.
+amendment.details.unavailable.paragraph4 = The {0} will hold some current information about the movement of goods.
+amendment.details.unavailable.paragraph4.link = Arrive and depart CDS exports service
+amendment.details.unavailable.timeline.link = Return to the declaration status page
 
 amendment.details.title = Amendment details
 amendment.details.title.external = Declaration details updated

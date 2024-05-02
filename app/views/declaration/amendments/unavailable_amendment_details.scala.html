@@ -14,25 +14,55 @@
  * limitations under the License.
  *@
 
+@import config.ExternalServicesConfig
+@import controllers.routes.DeclarationDetailsController
 @import models.requests.VerifiedEmailRequest
+@import play.twirl.api.Html
 @import views.helpers.{BackButton, Title}
-@import views.html.components.gds.{gdsMainTemplate, pageTitle, paragraphBody}
+@import views.html.components.gds.{gdsMainTemplate, heading, link, pageTitle, paragraph, sectionHeader}
 
 @this(
     govukLayout: gdsMainTemplate,
     pageTitle: pageTitle,
-    paragraph: paragraphBody
+    sectionHeader: sectionHeader,
+    paragraph: paragraph,
+    heading: heading,
+    link: link,
+    externalServicesConfig: ExternalServicesConfig
 )
 
-@(submissionId: String)(implicit request: VerifiedEmailRequest[_], messages: Messages)
+@(submissionId: String, maybeDucr: Option[String])(implicit request: VerifiedEmailRequest[_], messages: Messages)
 
 @govukLayout(
-    title = Title("amendment.details.unavailable.header"),
-    backButton = Some(BackButton(messages("site.back"), routes.DeclarationDetailsController.displayPage(submissionId))),
+    title = Title("amendment.details.unavailable.title"),
+    backButton = Some(BackButton(messages("site.back"), DeclarationDetailsController.displayPage(submissionId))),
     useCustomContentWidth = true,
     showDeclarationSummaryLink = false
 ) {
-    @pageTitle(messages("amendment.details.unavailable.header"))
+    @pageTitle(messages("amendment.details.unavailable.title"))
 
-    @paragraph(messages("amendment.details.unavailable.paragraph"))
+    @maybeDucr.map(ducr => paragraph(sectionHeader(messages("amendment.details.ducr.heading", ducr))))
+
+    @paragraph(Html(messages("amendment.details.unavailable.paragraph1")), "govuk-body govuk-!-margin-top-6")
+
+    @paragraph(Html(messages("amendment.details.unavailable.paragraph2")))
+
+    @heading(messages("amendment.details.unavailable.heading.section2"), "govuk-heading-m", "h2")
+
+    @paragraph(Html(messages("amendment.details.unavailable.paragraph3")))
+
+    @paragraph(Html(messages(
+        "amendment.details.unavailable.paragraph4",
+        link(
+            messages("amendment.details.unavailable.paragraph4.link"),
+            Call("GET", externalServicesConfig.customsMovementsFrontendUrl),
+            id = Some("movements-url")
+        )
+    )))
+
+    @paragraph(link(
+        messages("amendment.details.unavailable.timeline.link"),
+        DeclarationDetailsController.displayPage(submissionId),
+        id = Some("timeline-url")
+    ), "govuk-body govuk-!-margin-top-6 govuk-!-margin-bottom-6")
 }
