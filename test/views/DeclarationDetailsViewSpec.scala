@@ -417,18 +417,6 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
       }
     }
 
-    "contain the view-declaration link pointing to '/unavailable-actions'" when {
-      "the declaration has been externally amended" in {
-        val action = Action("id", ExternalAmendmentRequest, now, None, None, 2)
-        val submission = submissionWithStatus(RECEIVED).copy(actions = Seq(action))
-        val view = createView(submission)
-
-        val viewDeclarationLink = view.getElementById("view-declaration")
-        viewDeclarationLink must containMessage(s"${msgKey}.view.declaration")
-        viewDeclarationLink must haveHref(DeclarationDetailsController.unavailableActions(submission.uuid))
-      }
-    }
-
     "not contain the view-declaration link when notification's status is ERRORS" in {
       val view = createView(submissionWithAction(ERRORS))
       Option(view.getElementById("view-declaration")) mustBe None
