@@ -15,7 +15,6 @@
  *@
 
 @import controllers.declaration.routes._
-@import forms.common.Address
 @import forms.declaration.consignor.ConsignorDetails
 @import models.requests.JourneyRequest
 @import controllers.navigation.Navigator
@@ -59,8 +58,8 @@
                 classes = gdsPageLabel,
                 isPageHeading = true
             )),
-            html = group_address(form, "declaration.address", Address.addressId)
-            ))
+            html = group_address(form)
+        ))
 
         @tariffExpander(ConsignorDetails, request.declarationType)(messages, appConfig)
 
