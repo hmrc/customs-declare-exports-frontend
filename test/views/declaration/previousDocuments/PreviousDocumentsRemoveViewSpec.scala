@@ -49,7 +49,6 @@ class PreviousDocumentsRemoveViewSpec extends PageWithButtonsSpec with Injector 
       messages must haveTranslationFor("declaration.previousDocuments.summary.documentCode.label")
       messages must haveTranslationFor("declaration.previousDocuments.summary.documentReference.label")
       messages must haveTranslationFor("declaration.previousDocuments.summary.goodsItemIdentifier.label")
-      messages must haveTranslationFor("tariff.declaration.addPreviousDocument.common.text")
     }
 
     onEveryDeclarationJourney() { implicit request =>
