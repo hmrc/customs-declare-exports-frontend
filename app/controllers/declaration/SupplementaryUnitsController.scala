@@ -20,19 +20,17 @@ import controllers.actions.{AuthAction, JourneyAction}
 import controllers.declaration.routes.AdditionalInformationRequiredController
 import controllers.navigation.Navigator
 import forms.declaration.commodityMeasure.SupplementaryUnits
+import forms.declaration.commodityMeasure.SupplementaryUnits.form
 import models.DeclarationType.{STANDARD, SUPPLEMENTARY}
 import models.declaration.{CommodityMeasure, ExportItem}
 import models.requests.JourneyRequest
-import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
-import services.TariffApiService
-import services.TariffApiService.{CommodityCodeNotFound, SupplementaryUnitsNotRequired}
 import services.audit.AuditService
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.WithUnsafeDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import views.html.declaration.commodityMeasure.{supplementary_units, supplementary_units_yes_no}
+import views.html.declaration.commodityMeasure.supplementary_units_yes_no
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -42,64 +40,34 @@ class SupplementaryUnitsController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
-  tariffApiService: TariffApiService,
   navigator: Navigator,
   mcc: MessagesControllerComponents,
-  supplementaryUnitsPage: supplementary_units,
   supplementaryUnitsYesNoPage: supplementary_units_yes_no
 )(implicit ec: ExecutionContext, auditService: AuditService)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithUnsafeDefaultFormBinding {
 
   private val validTypes = Seq(STANDARD, SUPPLEMENTARY)
 
-  def displayPage(itemId: String): Action[AnyContent] =
-    (authenticate andThen journeyType(validTypes)).async { implicit request =>
-      def formWithDataIfAny(yesNoPage: Boolean): Form[SupplementaryUnits] =
-        request.cacheModel.commodityMeasure(itemId) match {
-          case Some(commodityMeasure) if hasSupplementaryUnits(commodityMeasure) =>
-            form(yesNoPage).fill(SupplementaryUnits(commodityMeasure))
+  def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType(validTypes)).async { implicit request =>
+    val formWithDataIfAny =
+      request.cacheModel.commodityMeasure(itemId) match {
+        case Some(commodityMeasure) if hasSupplementaryUnits(commodityMeasure) =>
+          form.withSubmissionErrors.fill(SupplementaryUnits(commodityMeasure))
 
-          case _ => form(yesNoPage)
-        }
-
-      tariffApiService.retrieveCommodityInfoIfAny(request.cacheModel, itemId).flatMap {
-        case Right(commodityInfo) =>
-          Future.successful(Ok(supplementaryUnitsPage(itemId, formWithDataIfAny(false), commodityInfo)))
-
-        case Left(CommodityCodeNotFound) =>
-          Future.successful(Ok(supplementaryUnitsYesNoPage(itemId, formWithDataIfAny(true))))
-
-        case Left(SupplementaryUnitsNotRequired) =>
-          updateExportsCacheAndContinueToNextPage(itemId, SupplementaryUnits(None))
+        case _ => form.withSubmissionErrors
       }
-    }
 
-  def submitPage(itemId: String): Action[AnyContent] =
-    (authenticate andThen journeyType(validTypes)).async { implicit request =>
-      tariffApiService.retrieveCommodityInfoIfAny(request.cacheModel, itemId).flatMap {
-        case Right(commodityInfo) =>
-          form(false)
-            .bindFromRequest()
-            .fold(
-              formWithErrors => Future.successful(BadRequest(supplementaryUnitsPage(itemId, formWithErrors, commodityInfo))),
-              updateExportsCacheAndContinueToNextPage(itemId, _)
-            )
+    Future.successful(Ok(supplementaryUnitsYesNoPage(itemId, formWithDataIfAny)))
+  }
 
-        case Left(CommodityCodeNotFound) =>
-          form(true)
-            .bindFromRequest()
-            .fold(
-              formWithErrors => Future.successful(BadRequest(supplementaryUnitsYesNoPage(itemId, formWithErrors))),
-              updateExportsCacheAndContinueToNextPage(itemId, _)
-            )
-
-        case Left(SupplementaryUnitsNotRequired) =>
-          updateExportsCacheAndContinueToNextPage(itemId, SupplementaryUnits(None))
-      }
-    }
-
-  private def form(yesNoPage: Boolean)(implicit request: JourneyRequest[_]): Form[SupplementaryUnits] =
-    SupplementaryUnits.form(yesNoPage).withSubmissionErrors
+  def submitPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType(validTypes)).async { implicit request =>
+    form
+      .bindFromRequest()
+      .fold(
+        formWithErrors => Future.successful(BadRequest(supplementaryUnitsYesNoPage(itemId, formWithErrors))),
+        updateExportsCacheAndContinueToNextPage(itemId, _)
+      )
+  }
 
   private def hasSupplementaryUnits(commodityMeasure: CommodityMeasure): Boolean =
     commodityMeasure.supplementaryUnits.isDefined || commodityMeasure.supplementaryUnitsNotRequired.isDefined
