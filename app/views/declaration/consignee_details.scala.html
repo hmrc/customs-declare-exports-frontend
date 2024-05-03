@@ -17,7 +17,6 @@
 @import config.AppConfig
 @import controllers.declaration.routes._
 @import controllers.navigation.Navigator
-@import forms.common.Address
 @import forms.declaration.ConsigneeDetails
 @import models.requests.JourneyRequest
 @import play.twirl.api.HtmlFormat
@@ -68,9 +67,7 @@
                 content = Text(messages("declaration.consignee.title")),
                 classes = "govuk-visually-hidden"
             )),
-            html = HtmlFormat.fill(List(
-                group_address(form, "declaration.address", Address.addressId)
-            ))
+            html = group_address(form)
         ))
 
         @tariffExpander(ConsigneeDetails, request.declarationType)(messages, appConfig)
