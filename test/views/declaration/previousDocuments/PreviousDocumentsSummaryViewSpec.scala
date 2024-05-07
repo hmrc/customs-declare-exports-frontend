@@ -53,7 +53,6 @@ class PreviousDocumentsSummaryViewSpec extends PageWithButtonsSpec with Injector
       messages must haveTranslationFor("declaration.previousDocuments.summary.goodsItemIdentifier.label")
       messages must haveTranslationFor("declaration.previousDocuments.summary.warning.text")
       messages must haveTranslationFor("site.warning")
-      messages must haveTranslationFor("tariff.declaration.addPreviousDocument.common.text")
       messages must haveTranslationFor("tariff.declaration.addPreviousDocument.common.linkText.0")
       messages must haveTranslationFor("tariff.expander.title.common")
     }

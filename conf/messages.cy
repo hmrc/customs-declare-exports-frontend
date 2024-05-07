@@ -247,7 +247,6 @@ tariff.declaration.totalNumbersOfItems.common.linkText.0 = Elfen Ddata 4/11 - Y 
 tariff.declaration.totalNumbersOfItems.common.linkText.1 = Elfen Ddata 4/15 - Cyfradd Cyfnewid yr Anfoneb (yn agor tab newydd)
 tariff.declaration.totalPackageQuantity.common.linkText.0 = Elfen Ddata 6/18 - Cyfanswm y Pecynnau (yn agor tab newydd)
 tariff.declaration.natureOfTransaction.common.linkText.0 = Elfen Ddata 8/5 - Natur y Trafodyn (yn agor tab newydd)
-tariff.declaration.addPreviousDocument.common.text = Mae’r cofnodion ar y dudalen hon yn cwblhau pob un o’r 4 elfen sydd eu hangen ar gyfer {0}.
 tariff.declaration.addPreviousDocument.common.linkText.0 = Elfen Ddata 2/1 - Datganiad Symlach, Dogfennau Blaenorol (yn agor tab newydd)
 tariff.declaration.item.procedureCodes.common.linkText.0 = Elfen Ddata 1/10 - Cod Gweithdrefn (yn agor tab newydd)
 tariff.declaration.item.additionalProcedureCodes.1.common.linkText.0 = Elfen Ddata 1/11 - Codau Gweithdrefn Ychwanegol (yn agor tab newydd)
