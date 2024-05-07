@@ -44,7 +44,7 @@ class SupplementaryUnitsYesNoViewSpec extends UnitViewSpec with Injector {
 
   val page = instanceOf[supplementary_units_yes_no]
 
-  def createView(frm: Form[SupplementaryUnits] = form(true))(implicit request: JourneyRequest[_]): Document =
+  def createView(frm: Form[SupplementaryUnits] = form)(implicit request: JourneyRequest[_]): Document =
     page(itemId, frm)(request, messages)
 
   "SupplementaryUnitsYesNo View" when {
@@ -149,33 +149,33 @@ class SupplementaryUnitsYesNoViewSpec extends UnitViewSpec with Injector {
         checkAllSaveButtonsAreDisplayed(createView())
 
         "not display any error when the value entered in the 'supplementaryUnits' field is valid" in {
-          val view = createView(form(true).fillAndValidate(SupplementaryUnits(Some("100"))))
+          val view = createView(form.fillAndValidate(SupplementaryUnits(Some("100"))))
           view mustNot haveGovukGlobalErrorSummary
         }
 
         "display an error when the value entered in the 'supplementaryUnits' field is invalid" in {
-          val view = createView(form(true).fillAndValidate(SupplementaryUnits(Some("ABC"))))
+          val view = createView(form.fillAndValidate(SupplementaryUnits(Some("ABC"))))
           view must haveGovukGlobalErrorSummary
           view must containErrorElementWithTagAndHref("a", s"#$supplementaryUnits")
           view must containErrorElementWithMessageKey("declaration.supplementaryUnits.quantity.error")
         }
 
         "display an error when the value entered in the 'supplementaryUnits' field consists of zeroes only" in {
-          val view = createView(form(true).fillAndValidate(SupplementaryUnits(Some("0000"))))
+          val view = createView(form.fillAndValidate(SupplementaryUnits(Some("0000"))))
           view must haveGovukGlobalErrorSummary
           view must containErrorElementWithTagAndHref("a", s"#$supplementaryUnits")
           view must containErrorElementWithMessageKey("declaration.supplementaryUnits.quantity.empty")
         }
 
         "display an error when the value entered in the 'supplementaryUnits' field is too long" in {
-          val view = createView(form(true).fillAndValidate(SupplementaryUnits(Some("12345678901234567"))))
+          val view = createView(form.fillAndValidate(SupplementaryUnits(Some("12345678901234567"))))
           view must haveGovukGlobalErrorSummary
           view must containErrorElementWithTagAndHref("a", s"#$supplementaryUnits")
           view must containErrorElementWithMessageKey("declaration.supplementaryUnits.quantity.length")
         }
 
         "display error when the 'supplementaryUnits' field is left empty" in {
-          val view = createView(form(true).fillAndValidate(SupplementaryUnits(Some(""))))
+          val view = createView(form.fillAndValidate(SupplementaryUnits(Some(""))))
           view must haveGovukGlobalErrorSummary
           view must containErrorElementWithTagAndHref("a", s"#$supplementaryUnits")
           view must containErrorElementWithMessageKey("declaration.supplementaryUnits.quantity.empty")

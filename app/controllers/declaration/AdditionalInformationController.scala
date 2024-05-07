@@ -35,7 +35,6 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.additionalInformation.additional_information
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
 
 class AdditionalInformationController @Inject() (
   authenticate: AuthAction,
@@ -44,27 +43,24 @@ class AdditionalInformationController @Inject() (
   navigator: Navigator,
   mcc: MessagesControllerComponents,
   additionalInformationPage: additional_information
-)(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithUnsafeDefaultFormBinding {
+) extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithUnsafeDefaultFormBinding {
 
-  def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     val form = yesNoForm.withSubmissionErrors
     cachedAdditionalInformationData(itemId) match {
 
       case Some(additionalInformationData) if additionalInformationData.items.nonEmpty =>
-        resolveBackLink(itemId) map { backLink =>
-          Ok(additionalInformationPage(itemId, form, additionalInformationData.items, backLink))
-        }
+        Ok(additionalInformationPage(itemId, form, additionalInformationData.items, backLink(itemId)))
 
-      case Some(_) => Future.successful(navigator.continueTo(routes.AdditionalInformationAddController.displayPage(itemId)))
-      case _       => Future.successful(navigator.continueTo(AdditionalInformationRequiredController.displayPage(itemId)))
+      case Some(_) => navigator.continueTo(routes.AdditionalInformationAddController.displayPage(itemId))
+      case _       => navigator.continueTo(AdditionalInformationRequiredController.displayPage(itemId))
     }
   }
 
-  def submitForm(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def submitForm(itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     yesNoForm
       .bindFromRequest()
-      .fold(showFormWithErrors(itemId, _), yesNoAnswer => Future.successful(nextPage(yesNoAnswer, itemId)))
+      .fold(formWithErrors => showFormWithErrors(itemId, formWithErrors), yesNoAnswer => nextPage(yesNoAnswer, itemId))
   }
 
   private def yesNoForm: Form[common.YesNoAnswer] =
@@ -85,15 +81,13 @@ class AdditionalInformationController @Inject() (
 
       case _ => navigator.continueTo(IsLicenceRequiredController.displayPage(itemId))
     }
-
   }
 
-  private def resolveBackLink(itemId: String)(implicit request: JourneyRequest[AnyContent]): Future[Call] =
+  private def backLink(itemId: String)(implicit request: JourneyRequest[AnyContent]): Call =
     navigator.backLinkForAdditionalInformation(AdditionalInformationSummary, itemId)
 
-  private def showFormWithErrors(itemId: String, formWithErrors: Form[YesNoAnswer])(implicit request: JourneyRequest[AnyContent]): Future[Result] =
-    resolveBackLink(itemId) map {
-      val items = cachedAdditionalInformationData(itemId).map(_.items).getOrElse(Seq.empty)
-      backLink => BadRequest(additionalInformationPage(itemId, formWithErrors, items, backLink))
-    }
+  private def showFormWithErrors(itemId: String, formWithErrors: Form[YesNoAnswer])(implicit request: JourneyRequest[AnyContent]): Result = {
+    val items = cachedAdditionalInformationData(itemId).map(_.items).getOrElse(Seq.empty)
+    BadRequest(additionalInformationPage(itemId, formWithErrors, items, backLink(itemId)))
+  }
 }

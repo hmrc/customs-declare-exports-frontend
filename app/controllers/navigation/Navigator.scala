@@ -16,8 +16,7 @@
 
 package controllers.navigation
 
-import controllers.declaration.routes
-import controllers.declaration.routes.SummaryController
+import controllers.declaration.routes.{SummaryController, SupplementaryUnitsController}
 import controllers.helpers.ErrorFixModeHelper.{inErrorFixMode, setErrorFixMode}
 import controllers.helpers._
 import controllers.routes.RejectedNotificationsController
@@ -29,19 +28,16 @@ import models.requests.JourneyRequest
 import models.requests.SessionHelper.{getValue, submissionActionId}
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{AnyContent, Call, Result}
-import services.TariffApiService.SupplementaryUnitsNotRequired
-import services.{TaggedAuthCodes, TariffApiService}
+import services.TaggedAuthCodes
 
 import javax.inject.{Inject, Singleton}
 import scala.annotation.nowarn
-import scala.concurrent.{ExecutionContext, Future}
 
 case class ItemId(id: String)
 
 @Singleton
 class Navigator @Inject() (
   val taggedAuthCodes: TaggedAuthCodes,
-  tariffApiService: TariffApiService,
   val inlandOrBorderHelper: InlandOrBorderHelper,
   val supervisingCustomsOfficeHelper: SupervisingCustomsOfficeHelper
 ) extends CommonNavigator with StandardNavigator with OccasionalNavigator with SimplifiedNavigator with SupplementaryNavigator
@@ -84,25 +80,15 @@ class Navigator @Inject() (
     }
   }
 
-  def backLinkForAdditionalInformation(
-    page: DeclarationPage,
-    itemId: String
-  )(implicit request: JourneyRequest[_], ec: ExecutionContext): Future[Call] = {
-    def pageSelection: Future[Call] =
-      tariffApiService.retrieveCommodityInfoIfAny(request.cacheModel, itemId) map {
-        case Left(SupplementaryUnitsNotRequired) => routes.CommodityMeasureController.displayPage(itemId)
-        case _                                   => routes.SupplementaryUnitsController.displayPage(itemId)
-      }
-
+  def backLinkForAdditionalInformation(page: DeclarationPage, itemId: String)(implicit request: JourneyRequest[_]): Call =
     page match {
       case AdditionalInformationSummary | AdditionalInformationRequired =>
         request.declarationType match {
-          case STANDARD | SUPPLEMENTARY => pageSelection
-          case _                        => Future.successful(backLink(page, ItemId(itemId)))
+          case STANDARD | SUPPLEMENTARY => SupplementaryUnitsController.displayPage(itemId)
+          case _                        => backLink(page, ItemId(itemId))
         }
-      case _ => Future.successful(backLink(page, ItemId(itemId)))
+      case _ => backLink(page, ItemId(itemId))
     }
-  }
 
   def backLink(page: DeclarationPage, itemId: ItemId)(implicit request: JourneyRequest[_]): Call = {
     val specific: PartialFunction[DeclarationPage, Object] = request.declarationType match {

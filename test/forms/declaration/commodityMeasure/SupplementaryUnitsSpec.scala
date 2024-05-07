@@ -18,20 +18,13 @@ package forms.declaration.commodityMeasure
 
 import base.UnitSpec
 import forms.common.DeclarationPageBaseSpec
-import forms.declaration.commodityMeasure.SupplementaryUnits.{hasSupplementaryUnits, supplementaryUnits}
+import forms.declaration.commodityMeasure.SupplementaryUnits.{form, hasSupplementaryUnits, supplementaryUnits}
 import play.api.data.{Form, FormError}
 
 class SupplementaryUnitsSpec extends UnitSpec with DeclarationPageBaseSpec {
 
-  def mandatoryForm(supplementaryUnits: String): Form[SupplementaryUnits] =
-    SupplementaryUnits
-      .form(false)
-      .bind(Map(SupplementaryUnits.supplementaryUnits -> supplementaryUnits))
-
   def yesNoForm(hasSupplementaryUnits: String, supplementaryUnits: String): Form[SupplementaryUnits] =
-    SupplementaryUnits
-      .form(true)
-      .bind(Map(SupplementaryUnits.hasSupplementaryUnits -> hasSupplementaryUnits, SupplementaryUnits.supplementaryUnits -> supplementaryUnits))
+    form.bind(Map(SupplementaryUnits.hasSupplementaryUnits -> hasSupplementaryUnits, SupplementaryUnits.supplementaryUnits -> supplementaryUnits))
 
   "Form for Supplementary Units page with Yes/No radios" should {
 
@@ -73,40 +66,6 @@ class SupplementaryUnitsSpec extends UnitSpec with DeclarationPageBaseSpec {
       "the user selects 'Yes' and does not enter a 'Supplementary Units'" in {
         val expectedErrors = List(FormError(supplementaryUnits, "declaration.supplementaryUnits.quantity.empty"))
         yesNoForm("Yes", "").errors mustBe expectedErrors
-      }
-    }
-  }
-
-  "Form for Supplementary Units page with single input field" should {
-
-    "have no errors" when {
-      "the user enters a valid 'Supplementary Units'" in {
-        mandatoryForm("100").errors must be(empty)
-      }
-    }
-
-    "have errors" when {
-
-      "the user enters a non-numeric 'Supplementary Units'" in {
-        val expectedErrors = List(FormError(supplementaryUnits, "declaration.supplementaryUnits.quantity.error"))
-        mandatoryForm("abcd").errors mustBe expectedErrors
-      }
-
-      "the user enters a 'Supplementary Units' of only zeroes" in {
-        val expectedErrors = List(FormError(supplementaryUnits, "declaration.supplementaryUnits.quantity.empty"))
-        mandatoryForm("0000").errors mustBe expectedErrors
-        mandatoryForm("00.00").errors mustBe expectedErrors
-        mandatoryForm("000,0").errors mustBe expectedErrors
-      }
-
-      "the user enters a too long 'Supplementary Units'" in {
-        val expectedErrors = List(FormError(supplementaryUnits, "declaration.supplementaryUnits.quantity.length"))
-        mandatoryForm("12345678901234567").errors mustBe expectedErrors
-      }
-
-      "the user does not enter no 'Supplementary Units'" in {
-        val expectedErrors = List(FormError(supplementaryUnits, "declaration.supplementaryUnits.quantity.empty"))
-        mandatoryForm("").errors mustBe expectedErrors
       }
     }
   }

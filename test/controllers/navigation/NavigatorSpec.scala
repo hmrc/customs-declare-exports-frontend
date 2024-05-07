@@ -16,28 +16,26 @@
 
 package controllers.navigation
 
-import base.{JourneyTypeTestRunner, MockExportCacheService, MockTaggedCodes, RequestBuilder, UnitWithMocksSpec}
+import base._
 import controllers.declaration.routes._
 import controllers.helpers._
 import controllers.routes.RejectedNotificationsController
-import forms.declaration.AdditionalInformationSummary
+import forms.declaration.{AdditionalInformationRequired, AdditionalInformationSummary}
 import mock.FeatureFlagMocks
-import models.requests.SessionHelper.{declarationUuid, errorFixModeSessionKey, submissionActionId}
+import models.DeclarationType.{STANDARD, SUPPLEMENTARY}
 import models.requests.JourneyRequest
+import models.requests.SessionHelper.{declarationUuid, errorFixModeSessionKey, submissionActionId}
 import models.responses.FlashKeys
 import models.{DeclarationType, ExportsDeclaration, SignedInUser}
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, when}
+import org.mockito.Mockito.reset
 import org.scalatest.concurrent.ScalaFutures
 import play.api.mvc._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import services.TariffApiService
-import services.TariffApiService.{CommodityCodeNotFound, SupplementaryUnitsNotRequired}
 import services.cache.ExportsDeclarationBuilder
 
 import java.time.LocalDate
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
 class NavigatorSpec
     extends UnitWithMocksSpec with ExportsDeclarationBuilder with FeatureFlagMocks with JourneyTypeTestRunner with MockExportCacheService
@@ -45,14 +43,13 @@ class NavigatorSpec
 
   private val url = "url"
   private val call: Call = Call("GET", url)
-  private val tariffApiService = mock[TariffApiService]
   private val inlandOrBorderHelper = mock[InlandOrBorderHelper]
   private val supervisingCustomsOfficeHelper = mock[SupervisingCustomsOfficeHelper]
 
-  private val navigator = new Navigator(taggedAuthCodes, tariffApiService, inlandOrBorderHelper, supervisingCustomsOfficeHelper)
+  private val navigator = new Navigator(taggedAuthCodes, inlandOrBorderHelper, supervisingCustomsOfficeHelper)
 
   override def afterEach(): Unit = {
-    reset(inlandOrBorderHelper, supervisingCustomsOfficeHelper, tariffApiService)
+    reset(inlandOrBorderHelper, supervisingCustomsOfficeHelper)
     super.afterEach()
   }
 
@@ -201,30 +198,18 @@ class NavigatorSpec
   }
 
   "Navigator.backLinkForAdditionalInformation" should {
-
-    implicit val ec: ExecutionContext = ExecutionContext.global
-
     val itemId = "itemId"
 
-    onJourney(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY) { implicit request =>
-      "return a Call instance for CommodityMeasureController" when {
-        "the response from Tariff API does not include supplementary units" in {
-          when(tariffApiService.retrieveCommodityInfoIfAny(any(), any()))
-            .thenReturn(Future.successful(Left(SupplementaryUnitsNotRequired)))
-
-          val url = navigator.backLinkForAdditionalInformation(AdditionalInformationSummary, itemId).futureValue.url
-
-          url mustBe CommodityMeasureController.displayPage(itemId).url
-        }
-      }
-
+    onJourney(STANDARD, SUPPLEMENTARY) { implicit request =>
       "return a Call instance for SupplementaryUnitsController" when {
-        "the response from Tariff API does not include supplementary units" in {
-          when(tariffApiService.retrieveCommodityInfoIfAny(any(), any()))
-            .thenReturn(Future.successful(Left(CommodityCodeNotFound)))
 
-          val url = navigator.backLinkForAdditionalInformation(AdditionalInformationSummary, itemId).futureValue.url
+        "on 'AdditionalInformationRequired' page" in {
+          val url = navigator.backLinkForAdditionalInformation(AdditionalInformationRequired, itemId).url
+          url mustBe SupplementaryUnitsController.displayPage(itemId).url
+        }
 
+        "on 'AdditionalInformationSummary' page" in {
+          val url = navigator.backLinkForAdditionalInformation(AdditionalInformationSummary, itemId).url
           url mustBe SupplementaryUnitsController.displayPage(itemId).url
         }
       }
@@ -232,7 +217,7 @@ class NavigatorSpec
 
     onClearance { implicit request =>
       "return a Call instance for CommodityMeasureController" in {
-        val url = navigator.backLinkForAdditionalInformation(AdditionalInformationSummary, itemId).futureValue.url
+        val url = navigator.backLinkForAdditionalInformation(AdditionalInformationSummary, itemId).url
 
         url mustBe CommodityMeasureController.displayPage(itemId).url
       }
@@ -240,7 +225,7 @@ class NavigatorSpec
 
     onJourney(DeclarationType.SIMPLIFIED, DeclarationType.OCCASIONAL) { implicit request =>
       "return a Call instance for PackageInformationSummaryController" in {
-        val url = navigator.backLinkForAdditionalInformation(AdditionalInformationSummary, itemId).futureValue.url
+        val url = navigator.backLinkForAdditionalInformation(AdditionalInformationSummary, itemId).url
 
         url mustBe PackageInformationSummaryController.displayPage(itemId).url
       }

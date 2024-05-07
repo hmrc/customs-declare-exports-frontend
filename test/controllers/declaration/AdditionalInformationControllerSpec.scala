@@ -32,8 +32,6 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import views.html.declaration.additionalInformation.additional_information
 
-import scala.concurrent.Future
-
 class AdditionalInformationControllerSpec extends ControllerSpec with ErrorHandlerMocks {
 
   private val mockSummaryPage = mock[additional_information]
@@ -55,8 +53,8 @@ class AdditionalInformationControllerSpec extends ControllerSpec with ErrorHandl
     withNewCaching(aDeclaration())
 
     when(mockSummaryPage.apply(any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
-    when(navigator.backLinkForAdditionalInformation(any(), any())(any(), any()))
-      .thenReturn(Future.successful(routes.CommodityMeasureController.displayPage(itemId)))
+    when(navigator.backLinkForAdditionalInformation(any(), any())(any()))
+      .thenReturn(routes.CommodityMeasureController.displayPage(itemId))
   }
 
   override protected def afterEach(): Unit = {

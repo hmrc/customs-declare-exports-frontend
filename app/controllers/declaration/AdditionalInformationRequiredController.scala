@@ -47,22 +47,23 @@ class AdditionalInformationRequiredController @Inject() (
 )(implicit ec: ExecutionContext, auditService: AuditService)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithUnsafeDefaultFormBinding {
 
-  def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.cacheModel.listOfAdditionalInformationOfItem(itemId) match {
       case additionalInformations if additionalInformations.isEmpty =>
-        resolveBackLink(itemId) map { backLink =>
-          val code = request.cacheModel.procedureCodeOfItem(itemId)
-          Ok(additionalInfoReq(itemId, previousAnswer(itemId).withSubmissionErrors, backLink, code))
-        }
+        val code = request.cacheModel.procedureCodeOfItem(itemId)
+        Ok(additionalInfoReq(itemId, previousAnswer(itemId).withSubmissionErrors, backLink(itemId), code))
 
-      case _ => Future.successful(navigator.continueTo(AdditionalInformationController.displayPage(itemId)))
+      case _ => navigator.continueTo(AdditionalInformationController.displayPage(itemId))
     }
   }
 
   def submitForm(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     form
       .bindFromRequest()
-      .fold(showFormWithErrors(itemId, _), yesNo => updateCache(yesNo, itemId).map(_ => navigator.continueTo(nextPage(yesNo, itemId))))
+      .fold(
+        formWithErrors => Future.successful(showFormWithErrors(itemId, formWithErrors)),
+        yesNo => updateCache(yesNo, itemId).map(_ => navigator.continueTo(nextPage(yesNo, itemId)))
+      )
   }
 
   private def form: Form[YesNoAnswer] = YesNoAnswer.form(errorKey = "declaration.additionalInformationRequired.error")
@@ -83,13 +84,11 @@ class AdditionalInformationRequiredController @Inject() (
       case _            => form
     }
 
-  private def resolveBackLink(itemId: String)(implicit request: JourneyRequest[AnyContent]): Future[Call] =
+  private def backLink(itemId: String)(implicit request: JourneyRequest[AnyContent]): Call =
     navigator.backLinkForAdditionalInformation(AdditionalInformationRequired, itemId)
 
-  private def showFormWithErrors(itemId: String, formWithErrors: Form[YesNoAnswer])(implicit request: JourneyRequest[AnyContent]): Future[Result] =
-    resolveBackLink(itemId) map { backLink =>
-      BadRequest(additionalInfoReq(itemId, formWithErrors, backLink, request.cacheModel.procedureCodeOfItem(itemId)))
-    }
+  private def showFormWithErrors(itemId: String, formWithErrors: Form[YesNoAnswer])(implicit request: JourneyRequest[AnyContent]): Result =
+    BadRequest(additionalInfoReq(itemId, formWithErrors, backLink(itemId), request.cacheModel.procedureCodeOfItem(itemId)))
 
   private def updateCache(answer: YesNoAnswer, itemId: String)(implicit request: JourneyRequest[_]): Future[ExportsDeclaration] = {
     val updatedAdditionalInformation = answer.answer match {

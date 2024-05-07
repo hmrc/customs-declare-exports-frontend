@@ -43,9 +43,6 @@ trait WiremockTestServer extends UnitWithMocksSpec with BeforeAndAfterAll with E
   val secureMessagingWirePort = 20004
   val secureMessagingWireMockServer = new WireMockServer(secureMessagingWirePort)
 
-  val tariffCommoditiesWirePort = 20005
-  val tariffCommoditiesWireMockServer = new WireMockServer(tariffCommoditiesWirePort)
-
   protected def stubForAuditing(): StubMapping = {
     val url = "/write/audit"
     auditingWireMockServer.stubFor(post(url).willReturn(aResponse.withStatus(NO_CONTENT)))
@@ -56,9 +53,6 @@ trait WiremockTestServer extends UnitWithMocksSpec with BeforeAndAfterAll with E
 
   protected def stubForSecureMessaging(mappingBuilder: MappingBuilder): StubMapping =
     secureMessagingWireMockServer.stubFor(mappingBuilder)
-
-  protected def stubForTariffCommodities(mappingBuilder: MappingBuilder): StubMapping =
-    tariffCommoditiesWireMockServer.stubFor(mappingBuilder)
 
   protected def verifyForAuditing(count: Int = 1): Unit =
     eventually(timeout(1.seconds), interval(50.millis)) {

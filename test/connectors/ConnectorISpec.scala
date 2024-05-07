@@ -36,9 +36,7 @@ class ConnectorISpec extends UnitSpec with BeforeAndAfterEach with GuiceOneAppPe
     "microservice.services.customs-declare-exports.host" -> wireHost,
     "microservice.services.customs-declare-exports.port" -> exportsWirePort,
     "microservice.services.secure-messaging.host" -> wireHost,
-    "microservice.services.secure-messaging.port" -> secureMessagingWirePort,
-    "microservice.services.tariff-api.host" -> wireHost,
-    "microservice.services.tariff-api.port" -> tariffCommoditiesWirePort
+    "microservice.services.secure-messaging.port" -> secureMessagingWirePort
   )
 
   /**

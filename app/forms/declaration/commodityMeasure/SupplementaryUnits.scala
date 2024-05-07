@@ -22,8 +22,8 @@ import forms.common.YesNoAnswer.YesNoAnswers
 import models.DeclarationType.DeclarationType
 import models.declaration.{CommodityMeasure => CommodityMeasureModel}
 import models.viewmodels.TariffContentKey
-import play.api.data.{Form, Forms, Mapping}
 import play.api.data.Forms.text
+import play.api.data.{Form, Forms, Mapping}
 import uk.gov.voa.play.form.ConditionalMappings.mandatoryIfEqual
 import utils.validators.forms.FieldValidator._
 
@@ -37,20 +37,23 @@ object SupplementaryUnits extends DeclarationPage {
       case _                        => SupplementaryUnits(None)
     }
 
-  def form(yesNoPage: Boolean): Form[SupplementaryUnits] =
-    Form(if (yesNoPage) mappingForYesNoPage else mappingForMandatorySupplementaryUnits)
-
   val hasSupplementaryUnits = "hasSupplementaryUnits"
   val supplementaryUnits = "supplementaryUnits"
 
-  private val mappingForYesNoPage =
+  private val mapping =
     Forms.mapping(
       hasSupplementaryUnits -> requiredRadio("declaration.supplementaryUnits.yesNo.empty"),
       supplementaryUnits -> mandatoryIfEqual(hasSupplementaryUnits, YesNoAnswers.yes, supplementaryUnitsMapping)
     )(form2Model)(model2Form)
 
-  private val mappingForMandatorySupplementaryUnits =
-    Forms.mapping(supplementaryUnits -> supplementaryUnitsMapping)(inputValue => SupplementaryUnits(Some(inputValue)))(_.supplementaryUnits)
+  private val isValidDecimal = (value: String) => validateDecimalGreaterThanZero(99)(6)(value) or containsOnlyZeros(value)
+
+  private def supplementaryUnitsMapping: Mapping[String] =
+    text
+      .verifying("declaration.supplementaryUnits.quantity.empty", nonEmpty)
+      .verifying("declaration.supplementaryUnits.quantity.empty", (value: String) => isEmpty(value) or containsNotOnlyZeros(value))
+      .verifying("declaration.supplementaryUnits.quantity.error", (value: String) => isEmpty(value) or isValidDecimal(value))
+      .verifying("declaration.supplementaryUnits.quantity.length", isEmpty or noLongerThan(16))
 
   private def form2Model: (String, Option[String]) => SupplementaryUnits = { case (hasSupplementaryUnits, value) =>
     hasSupplementaryUnits match {
@@ -65,15 +68,7 @@ object SupplementaryUnits extends DeclarationPage {
       case None        => Some((YesNoAnswers.no, None))
     }
 
-  private def supplementaryUnitsMapping: Mapping[String] =
-    text
-      .verifying("declaration.supplementaryUnits.quantity.empty", nonEmpty)
-      .verifying("declaration.supplementaryUnits.quantity.empty", (value: String) => isEmpty(value) or containsNotOnlyZeros(value))
-      .verifying("declaration.supplementaryUnits.quantity.error", (value: String) => isEmpty(value) or isValidDecimal(value))
-      .verifying("declaration.supplementaryUnits.quantity.length", isEmpty or noLongerThan(16))
-
-  private val isValidDecimal: String => Boolean =
-    value => validateDecimalGreaterThanZero(99)(6)(value) or containsOnlyZeros(value)
+  val form: Form[SupplementaryUnits] = Form(mapping)
 
   override def defineTariffContentKeys(declarationType: DeclarationType): Seq[TariffContentKey] =
     List(TariffContentKey("tariff.declaration.item.supplementaryUnits.common"))

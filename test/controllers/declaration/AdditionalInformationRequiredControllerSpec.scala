@@ -29,8 +29,6 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import views.html.declaration.additionalInformation.additional_information_required
 
-import scala.concurrent.Future
-
 class AdditionalInformationRequiredControllerSpec extends ControllerSpec with AuditedControllerSpec with OptionValues {
 
   private val mockPage = mock[additional_information_required]
@@ -62,8 +60,8 @@ class AdditionalInformationRequiredControllerSpec extends ControllerSpec with Au
     super.beforeEach()
     authorizedUser()
     when(mockPage.apply(any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
-    when(navigator.backLinkForAdditionalInformation(any(), any())(any(), any()))
-      .thenReturn(Future.successful(routes.CommodityMeasureController.displayPage(itemId)))
+    when(navigator.backLinkForAdditionalInformation(any(), any())(any()))
+      .thenReturn(routes.CommodityMeasureController.displayPage(itemId))
   }
 
   override protected def afterEach(): Unit = {
