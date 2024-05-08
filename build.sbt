@@ -21,8 +21,6 @@ lazy val microservice = Project(appName, file("."))
     retrieveManaged := true,
     majorVersion := 0,
   )
-  .configs(IntegrationTest)
-  .settings(inConfig(IntegrationTest)(Defaults.itSettings): _*)
   .settings(
     // prevent removal of unused code which generates warning errors due to use of third-party libs
     uglifyCompressOptions := Seq("unused=false", "dead_code=false"),
