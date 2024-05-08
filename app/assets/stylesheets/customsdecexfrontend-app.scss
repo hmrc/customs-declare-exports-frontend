@@ -19,6 +19,7 @@ $hmrc-assets-path: "/customs-declare-exports/assets/lib/hmrc-frontend/hmrc/asset
 
 @import 'lib/accessible-autocomplete/dist/accessible-autocomplete.min';
 
+$govuk-suppressed-warnings: ie8;
 @import 'lib/govuk-frontend/govuk/all';
 @import "lib/hmrc-frontend/hmrc/all";
 
