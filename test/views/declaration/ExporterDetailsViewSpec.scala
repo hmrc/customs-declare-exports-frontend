@@ -191,12 +191,12 @@ class ExporterDetailsViewSpec extends AddressViewSpec with PageWithButtonsSpec w
   "Exporter Details View when filled" should {
     onEveryDeclarationJourney() { implicit request =>
       "display data in Business address inputs" in {
-        val view = createView(form.fill(ExporterDetails(EntityDetails(None, Some(Address("test", "test1", "test2", "test3", "test4"))))))
+        val view = createView(form.fill(ExporterDetails(EntityDetails(None, Some(Address("test", "test1", "test2", "test3", "United Kingdom"))))))
         view.getElementById("details_address_fullName").attr("value") mustBe "test"
         view.getElementById("details_address_addressLine").attr("value") mustBe "test1"
         view.getElementById("details_address_townOrCity").attr("value") mustBe "test2"
         view.getElementById("details_address_postCode").attr("value") mustBe "test3"
-        view.getElementById("details_address_country").attr("value") mustBe "test4"
+        view.getElementById("details_address_country").attr("value") mustBe "GB"
       }
     }
   }

@@ -165,13 +165,8 @@ object AddressSpec {
   val fieldWithLengthOver70 = TestHelper.createRandomAlphanumericString(71)
   val fieldWithLengthOver9 = TestHelper.createRandomAlphanumericString(10)
 
-  val validAddress = Address(
-    fullName = "Some Name,'-&",
-    addressLine = "(Test Street,'-& . , /)",
-    townOrCity = "Leeds,'-&",
-    postCode = "LS18 BN",
-    country = "United Kingdom, Great Britain, Northern Ireland"
-  )
+  val validAddress =
+    Address(fullName = "Some Name,'-&", addressLine = "(Test Street,'-& . , /)", townOrCity = "Leeds,'-&", postCode = "LS18 BN", country = "GB")
 
   val invalidAddress =
     Address(fullName = illegalField, addressLine = illegalField, townOrCity = illegalField, postCode = illegalField, country = "Barcelona")

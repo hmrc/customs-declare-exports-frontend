@@ -150,7 +150,7 @@ class ConsignorDetailsControllerSpec extends ControllerSpec with AuditedControll
       "form is correct" in {
         withNewCaching(declaration)
 
-        val address = Address("John Smith", "1 Export Street", "Leeds", "LS1 2PW", "United Kingdom, Great Britain, Northern Ireland")
+        val address = Address("John Smith", "1 Export Street", "Leeds", "LS1 2PW", "GB")
         val correctForm = Json.toJson(ConsignorDetails(EntityDetails(None, Some(address))))
 
         val result = controller.saveAddress(postRequest(correctForm))
