@@ -237,7 +237,7 @@
 }
 
 @govukLayout(
-    title = Title("declaration.details.head.title"),
+    title = Title("declaration.details.title", headingArg = EnhancedStatusHelper.asText(submission)),
     backButton = Some(BackButton(messages("site.backToDeclarations"), toDashboard)),
     useCustomContentWidth = true,
     navigationBanner = navBanner,

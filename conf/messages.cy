@@ -737,7 +737,6 @@ dashboard.pagination.plural = datganiadau
 dashboard.empty.tab = Dim datganiadau
 dashboard.start.new.declaration = Dechreuwch ddatganiad newydd
 
-declaration.details.head.title = Manylion y datganiad
 declaration.details.title = Statws datganiad: {0}
 declaration.details.references = Cyfeirnodau’r datganiad
 declaration.details.ducr = DUCR
