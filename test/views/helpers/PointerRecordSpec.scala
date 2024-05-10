@@ -45,8 +45,8 @@ class PointerRecordSpec extends UnitViewSpec with ExportsTestHelper with Injecto
   import PointerRecordSpec._
 
   implicit val countryHelper: CountryHelper = mock[CountryHelper]
-  when(countryHelper.getShortNameForCountryCode(meq(countryGB.countryCode))(any())).thenReturn(countryGB.countryName)
-  when(countryHelper.getShortNameForCountryCode(meq(countryIT.countryCode))(any())).thenReturn(countryIT.countryName)
+  when(countryHelper.getShortNameForCountryCode(meq(countryGB.countryCode))(any())).thenReturn(Some(countryGB.countryName))
+  when(countryHelper.getShortNameForCountryCode(meq(countryIT.countryCode))(any())).thenReturn(Some(countryIT.countryName))
 
   implicit val codeListConnector: CodeListConnector = mock[CodeListConnector]
   when(codeListConnector.getCountryCodes(any())).thenReturn(ListMap(countryGB.countryCode -> countryGB, countryIT.countryCode -> countryIT))

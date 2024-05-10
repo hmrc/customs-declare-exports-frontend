@@ -175,6 +175,7 @@ class AmendmentDetailsViewSpec extends UnitViewSpec with CommonMessages with Inj
         val tbody = card.getElementsByTag("tbody").get(0)
 
         val columns = tbody.getElementsByClass("govuk-table__cell")
+        println(difference)
         columns.size() mustBe 3
 
         columns.get(0).text mustBe messages(difference.expectedKeys.head, difference.expectedKeys.tail: _*)

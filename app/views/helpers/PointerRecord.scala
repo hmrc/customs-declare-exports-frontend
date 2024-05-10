@@ -194,7 +194,7 @@ object PointerRecord {
         dec: ExportsDeclaration,
         args: Int*
       )(implicit msgs: Messages, countryHelper: CountryHelper, codeListConnector: CodeListConnector): Option[String] =
-        fetchRawValue(dec, args: _*).map(countryHelper.getShortNameForCountryCode)
+        fetchRawValue(dec, args: _*).flatMap(countryHelper.getShortNameForCountryCode)
       override val pageLink2Param = Some(AdditionalFiscalReferencesController.displayPage)
     },
     "declaration.items.$.additionalFiscalReferences.$.roleCode" -> new DefaultPointerRecord() {
@@ -293,7 +293,7 @@ object PointerRecord {
         dec: ExportsDeclaration,
         args: Int*
       )(implicit msgs: Messages, countryHelper: CountryHelper, codeListConnector: CodeListConnector): Option[String] =
-        fetchRawValue(dec, args: _*).map(countryHelper.getShortNameForCountryCode)
+        fetchRawValue(dec, args: _*).flatMap(countryHelper.getShortNameForCountryCode)
       override val pageLink1Param = Some(TransportCountryController.displayPage)
     },
     "declaration.borderTransport.modeCode" -> new DefaultPointerRecord() {
@@ -353,7 +353,7 @@ object PointerRecord {
         dec: ExportsDeclaration,
         args: Int*
       )(implicit msgs: Messages, countryHelper: CountryHelper, codeListConnector: CodeListConnector): Option[String] =
-        fetchRawValue(dec, args: _*).map(countryHelper.getShortNameForCountryCode)
+        fetchRawValue(dec, args: _*).flatMap(countryHelper.getShortNameForCountryCode)
     },
     "declaration.locations.destinationCountries.countryOfDestination" -> new DefaultPointerRecord() {
       def fetchRawValue(dec: ExportsDeclaration, args: Int*) = dec.locations.destinationCountry.flatMap(_.code)
@@ -362,7 +362,7 @@ object PointerRecord {
         dec: ExportsDeclaration,
         args: Int*
       )(implicit msgs: Messages, countryHelper: CountryHelper, codeListConnector: CodeListConnector): Option[String] =
-        fetchRawValue(dec, args: _*).map(countryHelper.getShortNameForCountryCode)
+        fetchRawValue(dec, args: _*).flatMap(countryHelper.getShortNameForCountryCode)
     },
     "declaration.totalNumberOfItems.exchangeRate" -> new DefaultPointerRecord() {
       def fetchRawValue(dec: ExportsDeclaration, args: Int*) = dec.totalNumberOfItems.flatMap(_.exchangeRate)
