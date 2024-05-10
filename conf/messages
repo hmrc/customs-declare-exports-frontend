@@ -737,7 +737,6 @@ dashboard.pagination.plural = declarations
 dashboard.empty.tab = No declarations
 dashboard.start.new.declaration = Start a new declaration
 
-declaration.details.head.title = Declaration status
 declaration.details.title = Declaration status: {0}
 declaration.details.references = Declaration references
 declaration.details.ducr = DUCR
