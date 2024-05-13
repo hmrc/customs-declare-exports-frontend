@@ -40,15 +40,15 @@ class CancellationResultViewSpec extends UnitViewSpec with Injector with MockAut
       val view = createView(None)
 
       "display title" in {
-        view.getElementById("title").text() mustBe messages("cancellation.result.unprocessed.title")
+        view.getElementById("title").text mustBe messages("cancellation.result.unprocessed.title")
       }
 
-      "display section header with MRN" in {
-        view.getElementById("section-header").text() mustBe messages("mrn.heading", mrn)
+      "display the 'MRN' hint" in {
+        view.getElementsByClass("submission-mrn").first.text mustBe messages("mrn.heading", mrn)
       }
 
       "display correct paragraph" in {
-        view.getElementsByClass("govuk-body").get(0).text() mustBe messages("cancellation.result.unprocessed.p1")
+        view.getElementsByClass("govuk-body").get(0).text mustBe messages("cancellation.result.unprocessed.p1")
       }
 
       "display 'Back to Choice Page' link" in {
@@ -61,15 +61,15 @@ class CancellationResultViewSpec extends UnitViewSpec with Injector with MockAut
       val view = createView(Some(QUERY_NOTIFICATION_MESSAGE))
 
       "display title" in {
-        view.getElementById("title").text() mustBe messages("cancellation.result.unprocessed.title")
+        view.getElementById("title").text mustBe messages("cancellation.result.unprocessed.title")
       }
 
-      "display section header with MRN" in {
-        view.getElementById("section-header").text() mustBe messages("mrn.heading", mrn)
+      "display the 'MRN' hint" in {
+        view.getElementsByClass("submission-mrn").first.text mustBe messages("mrn.heading", mrn)
       }
 
       "display correct paragraph" in {
-        view.getElementsByClass("govuk-body").get(0).text() mustBe messages("cancellation.result.unprocessed.p1")
+        view.getElementsByClass("govuk-body").get(0).text mustBe messages("cancellation.result.unprocessed.p1")
       }
 
       "display 'Back to Choice Page' link" in {
@@ -82,15 +82,15 @@ class CancellationResultViewSpec extends UnitViewSpec with Injector with MockAut
       val view = createView(Some(CUSTOMS_POSITION_DENIED))
 
       "display title" in {
-        view.getElementById("title").text() mustBe messages("cancellation.result.denied.title")
+        view.getElementById("title").text mustBe messages("cancellation.result.denied.title")
       }
 
-      "display section header with MRN" in {
-        view.getElementById("section-header").text() mustBe messages("mrn.heading", mrn)
+      "display the 'MRN' hint" in {
+        view.getElementsByClass("submission-mrn").first.text mustBe messages("mrn.heading", mrn)
       }
 
       "display correct paragraph" in {
-        view.getElementsByClass("govuk-body").get(0).text() mustBe messages("cancellation.result.denied.p1")
+        view.getElementsByClass("govuk-body").get(0).text mustBe messages("cancellation.result.denied.p1")
       }
 
       "display 'Back to Choice Page' link" in {
@@ -117,8 +117,8 @@ class CancellationResultViewSpec extends UnitViewSpec with Injector with MockAut
       }
 
       "display correct paragraph" in {
-        view.getElementsByClass("govuk-body").get(0).text() mustBe messages("cancellation.result.cancelled.p1")
-        view.getElementsByClass("govuk-body").get(1).text() mustBe messages("cancellation.result.cancelled.p2")
+        view.getElementsByClass("govuk-body").get(0).text mustBe messages("cancellation.result.cancelled.p1")
+        view.getElementsByClass("govuk-body").get(1).text mustBe messages("cancellation.result.cancelled.p2")
       }
 
       "display 'Back to Choice Page' link" in {

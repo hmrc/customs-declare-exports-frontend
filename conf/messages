@@ -741,7 +741,6 @@ declaration.details.title = Declaration status: {0}
 declaration.details.references = Declaration references
 declaration.details.ducr = DUCR
 declaration.details.lrn = LRN
-declaration.details.mrn = MRN:
 
 declaration.details.amend.declaration = Amend declaration
 declaration.details.cancel.amendment = Cancel

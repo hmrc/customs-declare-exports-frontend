@@ -23,7 +23,6 @@
     govukLayout: gdsMainTemplate,
     pageTitle: pageTitle,
     govukPanel : GovukPanel,
-    sectionHeader: sectionHeader,
     paragraph : paragraph,
     link: link
 )
@@ -45,8 +44,9 @@
             content = Text(messages("mrn.heading", mrn))
         ))
     } else {
-        @sectionHeader(messages("mrn.heading", mrn))
-        @pageTitle(messages(titleKey))
+        @pageTitle(messages(titleKey), "govuk-heading-xl govuk-!-margin-bottom-2")
+
+        <div class="submission-mrn govuk-caption-xl govuk-!-margin-bottom-8">@messages("mrn.heading", mrn)</div>
     }
 }
 

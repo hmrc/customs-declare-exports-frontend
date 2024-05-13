@@ -741,7 +741,6 @@ declaration.details.title = Statws datganiad: {0}
 declaration.details.references = Cyfeirnodau’r datganiad
 declaration.details.ducr = DUCR
 declaration.details.lrn = Cyfeirnod Lleol (LRN)
-declaration.details.mrn = MRN:
 
 declaration.details.amend.declaration = Diwygio datganiad
 declaration.details.cancel.amendment = Canslo
