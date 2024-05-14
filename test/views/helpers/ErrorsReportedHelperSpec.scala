@@ -38,8 +38,8 @@ class ErrorsReportedHelperSpec extends UnitViewSpec with Injector with MockitoSu
   private val paragraphBody = instanceOf[paragraphBody]
 
   implicit val countryHelper: CountryHelper = mock[CountryHelper]
-  when(countryHelper.getShortNameForCountryCode(meq("GB"))(any())).thenReturn("United Kingdom")
-  when(countryHelper.getShortNameForCountryCode(meq("ZA"))(any())).thenReturn("South Africa")
+  when(countryHelper.getShortNameForCountryCode(meq("GB"))(any())).thenReturn(Some("United Kingdom"))
+  when(countryHelper.getShortNameForCountryCode(meq("ZA"))(any())).thenReturn(Some("South Africa"))
 
   implicit val codeListConnector: CodeListConnector = mock[CodeListConnector]
 

@@ -31,7 +31,7 @@ class CountryHelper @Inject() (codeLinkConnector: CodeLinkConnector)(implicit co
   def countryNameFromDestinationCountry(implicit messages: Messages, request: JourneyRequest[_]): String =
     request.cacheModel.locations.destinationCountry
       .flatMap(_.code)
-      .map(Countries.findByCode(_))
+      .flatMap(Countries.findByCode(_))
       .map(getShortNameForCountry)
       .getOrElse("")
 
@@ -54,16 +54,18 @@ class CountryHelper @Inject() (codeLinkConnector: CodeLinkConnector)(implicit co
       .flatMap(_.headOption)
       .getOrElse(country.countryName)
 
-  def getShortNameForCountryCode(code: String)(implicit messages: Messages): String = {
+  def getShortNameForCountryCode(code: String)(implicit messages: Messages): Option[String] = {
     val country = Countries.findByCode(code)
-    codeLinkConnector
-      .getShortNamesForCountryCode(country.countryCode)
-      .flatMap(_.headOption)
-      .getOrElse(country.countryName)
+    country.map(country =>
+      codeLinkConnector
+        .getShortNamesForCountryCode(country.countryCode)
+        .flatMap(_.headOption)
+        .getOrElse(country.countryName)
+    )
   }
 
   def listOfRoutingCountries(implicit messages: Messages, request: JourneyRequest[_]): Seq[models.codes.Country] =
     request.cacheModel.locations.routingCountries
       .flatMap(_.country.code)
-      .map(Countries.findByCode(_))
+      .flatMap(Countries.findByCode(_))
 }

@@ -48,7 +48,7 @@
         rows = Seq(
             SummaryListRow(
                 Key(Text(messages("declaration.additionalFiscalReferences.country.header"))),
-                Value(Text(Countries.findByCode(additionalReference.country).asString()))
+                Value(Text(Countries.findByCode(additionalReference.country).map(_.asString()).getOrElse(messages("declaration.summary.unknown"))))
             ),
             SummaryListRow(
                 Key(Text(messages("declaration.additionalFiscalReferences.numbers.header"))),

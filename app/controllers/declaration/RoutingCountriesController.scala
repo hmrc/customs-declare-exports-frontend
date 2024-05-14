@@ -106,7 +106,7 @@ class RoutingCountriesController @Inject() (
         val redirect = navigator.continueTo(RoutingCountriesController.displayRoutingCountry)
 
         values.headOption
-          .map(services.Countries.findByCode)
+          .flatMap(services.Countries.findByCode)
           .fold(Future.successful(redirect)) { country =>
             val countryToRemove = Country(Some(country.countryCode))
             val updatedCountries = cachedRoutingCountries.filterNot(_.country == countryToRemove)

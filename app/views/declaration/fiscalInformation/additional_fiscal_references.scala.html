@@ -63,7 +63,7 @@
             rows = additionalReferences.zipWithIndex.map { case (additionalReference, index) =>
                 Seq(
                     TableRow(
-                        content = Text(Countries.findByCode(additionalReference.country).asString()),
+                        content = Text(Countries.findByCode(additionalReference.country).map(_.asString()).getOrElse(messages("declaration.summary.unknown"))),
                         attributes = Map("id" -> s"additional_fiscal_references-row-$index-country")
                     ),
                     TableRow(

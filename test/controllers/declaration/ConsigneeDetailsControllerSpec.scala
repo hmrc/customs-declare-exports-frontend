@@ -76,7 +76,7 @@ class ConsigneeDetailsControllerSpec extends ControllerSpec with AuditedControll
     theResponseForm
   }
 
-  private val correctAddress = Address("John Smith", "1 Export Street", "Leeds", "LS1 2PW", "United Kingdom, Great Britain, Northern Ireland")
+  private val correctAddress = Address("John Smith", "1 Export Street", "Leeds", "LS1 2PW", "GB")
 
   "Consignee Details controller" should {
 

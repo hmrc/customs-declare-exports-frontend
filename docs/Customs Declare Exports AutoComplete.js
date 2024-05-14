@@ -333,7 +333,7 @@ function exporterDetails() {
         document.getElementById('details_address_townOrCity').value = 'London'
         document.getElementById('details_address_postCode').value = 'WC1 3RD'
 
-        selectFromAutoPredict(document.getElementById('details_address_country-container'), "United Kingdom, Great Britain, Northern Ireland")
+        selectFromAutoPredict(document.getElementById('details_address_country-container'), "GB")
         submit()
     }
 }
@@ -361,7 +361,7 @@ function consignorAddress() {
         document.getElementById('details_address_townOrCity').value = 'New York'
         document.getElementById('details_address_postCode').value = '10001'
 
-        selectFromAutoPredict(document.getElementById('details_address_country-container'), "United States of America (the), Including Puerto Rico")
+        selectFromAutoPredict(document.getElementById('details_address_country-container'), "US")
         submit()
     }
 }
@@ -440,7 +440,7 @@ function carrierDetails() {
         document.getElementById('details_address_addressLine').value = 'School Road'
         document.getElementById('details_address_townOrCity').value = 'London'
         document.getElementById('details_address_postCode').value = 'WS1 2AB'
-        selectFromAutoPredict(document.getElementById('details_address_country-container'), "United Kingdom, Great Britain, Northern Ireland")
+        selectFromAutoPredict(document.getElementById('details_address_country-container'), "GB")
         submit()
     }
 }
@@ -461,7 +461,7 @@ function consigneeDetails() {
 
         selectFromAutoPredict(
             document.getElementById('details_address_country-container'),
-            "United States of America (the), Including Puerto Rico"
+            "US"
         )
         submit()
     }

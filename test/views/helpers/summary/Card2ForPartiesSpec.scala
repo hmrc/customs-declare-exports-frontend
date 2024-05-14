@@ -34,7 +34,7 @@ class Card2ForPartiesSpec extends UnitViewSpec with ExportsTestHelper with Injec
 
   private val eori = "GB123456"
   private val address = Address("fullName", "addressLine", "townOrCity", "postCode", "GB")
-  private val expectedAddress = "fullName addressLine townOrCity postCode GB"
+  private val expectedAddress = "fullName addressLine townOrCity postCode United Kingdom, Great Britain, Northern Ireland"
 
   private val declaration = aDeclaration(
     withDeclarantIsExporter("No"),

@@ -79,13 +79,17 @@ class Card3ForRoutesAndLocations @Inject() (govukSummaryList: GovukSummaryList, 
 
   private def destinationCountry(locations: Locations, actionsEnabled: Boolean)(implicit messages: Messages): Option[SummaryListRow] =
     locations.destinationCountry.map { destinationCountry =>
-      lazy val country = destinationCountry.code.map { code =>
-        countryHelper.getShortNameForCountry(Countries.findByCode(code))
+      lazy val countryName: String = {
+        for {
+          code <- destinationCountry.code
+          country <- Countries.findByCode(code)
+          shortName = countryHelper.getShortNameForCountry(country)
+        } yield shortName
       }.getOrElse("")
 
       SummaryListRow(
         key("countries.countryOfDestination"),
-        value(country),
+        value(countryName),
         classes = "destination-country",
         changeLink(DestinationCountryController.displayPage, "countries.countryOfDestination", actionsEnabled)
       )

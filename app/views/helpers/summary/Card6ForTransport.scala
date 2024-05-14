@@ -155,7 +155,7 @@ class Card6ForTransport @Inject() (govukSummaryList: GovukSummaryList, countryHe
   private def transportCrossingTheBorder(transport: Transport, actionsEnabled: Boolean)(implicit messages: Messages): Option[SummaryListRow] =
     transport.transportCrossingTheBorderNationality.map { transportCrossingTheBorderNationality =>
       lazy val country = transportCrossingTheBorderNationality.countryCode
-        .map(countryHelper.getShortNameForCountryCode)
+        .flatMap(countryHelper.getShortNameForCountryCode)
         .getOrElse(messages("declaration.summary.unknown"))
 
       SummaryListRow(

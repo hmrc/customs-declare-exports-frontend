@@ -52,7 +52,7 @@ class ExporterDetailsControllerSpec extends ControllerSpec with AuditedControlle
     exporter_address
   )(ExecutionContext.global, mockCodeListConnector, auditService)
 
-  val address = Some(Address("CaptainAmerica", "Test Street", "Leeds", "LS18BN", "United Kingdom, Great Britain, Northern Ireland"))
+  val address = Some(Address("CaptainAmerica", "Test Street", "Leeds", "LS18BN", "GB"))
   val eori = Some(Eori("GB213472539481923"))
 
   def theResponseForm: Form[ExporterDetails] = {

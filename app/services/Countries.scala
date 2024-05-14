@@ -22,8 +22,8 @@ import play.api.i18n.Messages
 
 object Countries {
 
-  def findByCode(code: String)(implicit messages: Messages, codeListConnector: CodeListConnector): Country =
-    codeListConnector.getCountryCodes(messages.lang.toLocale)(code)
+  def findByCode(code: String)(implicit messages: Messages, codeListConnector: CodeListConnector): Option[Country] =
+    codeListConnector.getCountryCodes(messages.lang.toLocale).get(code)
 
   def findByCodes(codes: Seq[String])(implicit messages: Messages, codeListConnector: CodeListConnector): Seq[Country] = {
     val codeToCountryMap = codeListConnector
@@ -31,6 +31,20 @@ object Countries {
 
     codes.map(codeToCountryMap(_))
   }
+
+  // TODO Following method can be removed in CEDS-5776
+  def getOrPassCountryCode(nameOrCode: String)(implicit messages: Messages, codeListConnector: CodeListConnector): Option[String] =
+    if (isValidCountryCode(nameOrCode)) Some(nameOrCode)
+    else
+      codeListConnector
+        .getCountryCodes(messages.lang.toLocale)
+        .find(countryCodePair => countryCodePair._2.countryName == nameOrCode)
+        .map(_._2.countryCode)
+
+  // TODO Following method can be modified to just "get" in CEDS-5776
+  def getOrPassCountryName(nameOrCode: String)(implicit messages: Messages, codeListConnector: CodeListConnector): Option[String] =
+    if (isValidCountryName(nameOrCode)) Some(nameOrCode)
+    else findByCode(nameOrCode).map(_.countryName)
 
   def isValidCountryCode(countryCode: String)(implicit messages: Messages, codeListConnector: CodeListConnector): Boolean =
     codeListConnector

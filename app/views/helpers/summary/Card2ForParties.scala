@@ -16,6 +16,7 @@
 
 package views.helpers.summary
 
+import connectors.CodeListConnector
 import controllers.declaration.routes._
 import controllers.navigation.Navigator
 import forms.DeclarationPage
@@ -28,6 +29,7 @@ import models.requests.JourneyRequest
 import play.api.i18n.Messages
 import play.api.mvc.Call
 import play.twirl.api.{Html, HtmlFormat}
+import services.Countries.getOrPassCountryName
 import uk.gov.hmrc.govukfrontend.views.html.components.{GovukSummaryList, SummaryList}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
@@ -39,7 +41,8 @@ class Card2ForParties @Inject() (
   navigator: Navigator,
   additionalActorsHelper: AdditionalActorsHelper,
   authorisationHoldersHelper: AuthorisationHoldersHelper
-) extends SummaryCard {
+)(implicit codeListConnector: CodeListConnector)
+    extends SummaryCard {
 
   def eval(declaration: ExportsDeclaration, actionsEnabled: Boolean = true)(implicit messages: Messages): Html = {
     val parties = declaration.parties
@@ -179,7 +182,8 @@ class Card2ForParties @Inject() (
       )
 
     def addressValue(address: Address): String =
-      List(address.fullName, address.addressLine, address.townOrCity, address.postCode, address.country).mkString("<br>")
+      List(address.fullName, address.addressLine, address.townOrCity, address.postCode, getOrPassCountryName(address.country).getOrElse(""))
+        .mkString("<br>")
 
     if (details.eori.isEmpty && details.address.isEmpty) List(None)
     else List(details.eori.map(eori => row(eori.value, "eori")), details.address.map(address => row(addressValue(address), "address")))

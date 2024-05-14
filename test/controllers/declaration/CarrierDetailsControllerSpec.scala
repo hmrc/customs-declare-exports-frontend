@@ -151,7 +151,7 @@ class CarrierDetailsControllerSpec extends ControllerSpec with AuditedController
         "with valid journey type" in {
           withNewCaching(request.cacheModel)
 
-          val address = Address("John Smith", "1 Export Street", "Leeds", "LS1 2PW", "United Kingdom, Great Britain, Northern Ireland")
+          val address = Address("John Smith", "1 Export Street", "Leeds", "LS1 2PW", "GB")
           val correctForm = Json.toJson(CarrierDetails(EntityDetails(None, Some(address))))
 
           val result = controller.saveAddress(postRequest(correctForm))

@@ -217,14 +217,14 @@ class ConsignorDetailsViewSpec extends AddressViewSpec with Injector with PageWi
       "display data in Business address inputs" in {
 
         val form = ConsignorDetails.form
-          .fill(ConsignorDetails(EntityDetails(None, Some(Address("test", "test1", "test2", "test3", "Ukraine")))))
+          .fill(ConsignorDetails(EntityDetails(None, Some(Address("test", "test1", "test2", "test3", "United Kingdom")))))
         val view = createView(form)
 
         view.getElementById("details_address_fullName").attr("value") mustBe "test"
         view.getElementById("details_address_addressLine").attr("value") mustBe "test1"
         view.getElementById("details_address_townOrCity").attr("value") mustBe "test2"
         view.getElementById("details_address_postCode").attr("value") mustBe "test3"
-        view.getElementById("details_address_country").attr("value") mustBe "Ukraine"
+        view.getElementById("details_address_country").attr("value") mustBe "GB"
       }
     }
   }

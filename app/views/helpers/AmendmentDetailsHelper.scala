@@ -16,6 +16,7 @@
 
 package views.helpers
 
+import connectors.CodeListConnector
 import forms.common.{Address, Eori}
 import forms.declaration.CommodityDetails.{combinedNomenclatureCodePointer, descriptionOfGoodsPointer}
 import forms.declaration.Document.documentTypePointer
@@ -40,6 +41,7 @@ import models.{Amendment, AmendmentOp, ExportsDeclaration}
 import play.api.Logging
 import play.api.i18n.Messages
 import play.twirl.api.Html
+import services.Countries.isValidCountryCode
 import services.DiffTools.ExportsDeclarationDiff
 import services._
 import views.helpers.AmendmentDetailsHelper._
@@ -54,7 +56,8 @@ class AmendmentDetailsHelper @Inject() (
   countryHelper: CountryHelper,
   documentTypeService: DocumentTypeService,
   packageTypesService: PackageTypesService
-) extends Logging {
+)(implicit codeListConnector: CodeListConnector)
+    extends Logging {
 
   def dateOfAmendment(timestamp: ZonedDateTime)(implicit messages: Messages): Html =
     Html(s"""
@@ -79,7 +82,7 @@ class AmendmentDetailsHelper @Inject() (
 
   def amendments(differences: ExportsDeclarationDiff)(implicit messages: Messages): Html =
     new Html(
-      (section(parties, differences) ++
+      (sectionParties(differences) ++
         sectionRoutesAndLocations(differences) ++
         sectionTransaction(differences) ++
         sectionItems(differences) ++
@@ -91,6 +94,11 @@ class AmendmentDetailsHelper @Inject() (
 
   private def section(sectionId: String, differences: ExportsDeclarationDiff): Seq[Section] =
     List(Section(sectionId, differences.filter(_.fieldPointer.startsWith(sectionId))))
+
+  private def sectionParties(differences: ExportsDeclarationDiff)(implicit messages: Messages): Seq[Section] = {
+    val partiesDifferences = differences.map(countryToUserValue)
+    section(parties, partiesDifferences)
+  }
 
   private def sectionItems(differences: ExportsDeclarationDiff)(implicit messages: Messages): Seq[Section] = {
     def reducePointers(alteredFields: Seq[AlteredField]): Seq[AlteredField] =
@@ -216,10 +224,16 @@ class AmendmentDetailsHelper @Inject() (
 
   private def countryToUserValue(af: AlteredField)(implicit messages: Messages): AlteredField = {
     def fetchCountry(countryCode: Option[String]): Option[String] =
-      Some(countryCode.fold("")(countryHelper.getShortNameForCountryCode))
+      countryCode.flatMap(countryHelper.getShortNameForCountryCode)
 
     def updateRoutingCountry(routingCountry: RoutingCountry): Option[RoutingCountry] =
       Some(routingCountry.copy(country = Country(fetchCountry(routingCountry.country.code))))
+
+    def handlePotentialCountryCode(maybeCode: String): String =
+      if (maybeCode.isBlank) maybeCode
+      else if (maybeCode.length == 2 && isValidCountryCode(maybeCode))
+        fetchCountry(Some(maybeCode)).getOrElse(messages("declaration.summary.unknown"))
+      else maybeCode
 
     val values = (af.values.originalVal, af.values.newVal) match {
       case (None, Some(country: Country)) => OriginalAndNewValues(None, Some(Country(fetchCountry(country.code))))
@@ -235,6 +249,11 @@ class AmendmentDetailsHelper @Inject() (
 
       case (None, Some(routingCountry: RoutingCountry)) => OriginalAndNewValues(None, updateRoutingCountry(routingCountry))
       case (Some(routingCountry: RoutingCountry), None) => OriginalAndNewValues(updateRoutingCountry(routingCountry), None)
+
+      case (None, Some(country: String)) => OriginalAndNewValues(None, Some(handlePotentialCountryCode(country)))
+      case (Some(country: String), None) => OriginalAndNewValues(Some(handlePotentialCountryCode(country)), None)
+      case (Some(oldCountry: String), Some(newCountry: String)) =>
+        OriginalAndNewValues(Some(handlePotentialCountryCode(oldCountry)), Some(handlePotentialCountryCode(newCountry)))
 
       case (Some(oldCountry: Country), Some(newCountry: Country)) =>
         OriginalAndNewValues(Some(Country(fetchCountry(oldCountry.code))), Some(Country(fetchCountry(newCountry.code))))

@@ -44,11 +44,11 @@ class CountryHelperSpec extends UnitSpec with Injector {
 
   "CountryHelper getShortNameForCountryCode" should {
     "get the short name for a country when it is available" in {
-      countryHelper.getShortNameForCountryCode("US") mustBe "The United States of America"
+      countryHelper.getShortNameForCountryCode("US").get mustBe "The United States of America"
     }
 
     "get the full name for a country when a short name is not available" in {
-      countryHelper.getShortNameForCountryCode("NC") mustBe "New Caledonia, Including Loyalty Islands (Lifou, Mare and Ouvea)"
+      countryHelper.getShortNameForCountryCode("NC").get mustBe "New Caledonia, Including Loyalty Islands (Lifou, Mare and Ouvea)"
     }
   }
 }
