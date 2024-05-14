@@ -253,7 +253,7 @@
         )
 
         @submission.mrn.map { mrn =>
-            <span class="submission-mrn govuk-caption-l">@messages("declaration.details.mrn") @mrn</span>
+            <div class="submission-mrn govuk-caption-l">@messages("mrn.heading", mrn)</div>
         }
 
         @timeline(timelineEvents(submission, additionalDecType), ViewDates.formatDateAtTime)

@@ -25,8 +25,7 @@
     govukLayout: gdsMainTemplate,
     formHelper: FormWithCSRF,
     pageTitle: pageTitle,
-    paragraph : paragraphBody,
-    sectionHeader: sectionHeader
+    paragraph : paragraphBody
 )
 
 @(urlOnJavaScriptDisabled: String, urlOnJavaScriptEnabled: String, mrn: String)(implicit request: Request[_], messages: Messages)
@@ -42,9 +41,9 @@
     title = Title("cancellation.holding.title"),
     headContentOnJavaScriptDisabled = Some(headContentOnJavaScriptDisabled)
 ) {
-    @sectionHeader(messages("mrn.heading", mrn))
+    @pageTitle(messages("cancellation.holding.title"), "govuk-heading-xl govuk-!-margin-bottom-2")
 
-    @pageTitle(messages("cancellation.holding.title"))
+    <div class="submission-mrn govuk-caption-xl govuk-!-margin-bottom-8">@messages("mrn.heading", mrn)</div>
 
     @paragraph(messages("cancellation.holding.paragraph"), "govuk-body govuk-label--m")
 

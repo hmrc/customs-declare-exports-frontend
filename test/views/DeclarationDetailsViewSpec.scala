@@ -249,7 +249,7 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
     "have correct message keys" in {
       messages must haveTranslationFor("site.backToDeclarations")
       messages must haveTranslationFor(s"$msgKey.title")
-      messages must haveTranslationFor(s"$msgKey.mrn")
+      messages must haveTranslationFor("mrn.heading")
       messages must haveTranslationFor(s"$msgKey.references")
       messages must haveTranslationFor(s"$msgKey.ducr")
       messages must haveTranslationFor(s"$msgKey.lrn")
@@ -359,9 +359,7 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
     }
 
     "display the 'MRN' hint" in {
-      val message = messages(s"$msgKey.mrn")
-      val expectedMrnHint = s"$message ${submission.mrn.get}"
-      view.getElementsByClass("submission-mrn").first.text mustBe expectedMrnHint
+      view.getElementsByClass("submission-mrn").first.text mustBe messages("mrn.heading", submission.mrn.get)
     }
 
     "display the 'Declaration references' table" in {

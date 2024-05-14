@@ -27,7 +27,6 @@
     govukButton: GovukButton,
     govukRadios: GovukRadios,
     errorSummary: errorSummary,
-    sectionHeader: sectionHeader,
     pageTitle: pageTitle,
     heading: heading,
     paragraphBody: paragraphBody,
@@ -45,13 +44,12 @@
     backButton = Some(BackButton(messages("site.back"), DeclarationDetailsController.displayPage(submissionId))),
     showDeclarationSummaryLink = false
 ) {
-
     @formHelper(action = CancelDeclarationController.onSubmit, 'autoComplete -> "off") {
         @errorSummary(radioGroupErrors("changeReason", "noLongerRequired", form.errors))
 
-        @sectionHeader(messages("mrn.heading", {mrn}))
+        @pageTitle(messages("cancellation.title"), "govuk-heading-xl govuk-!-margin-bottom-2")
 
-        @pageTitle(messages("cancellation.title"))
+        <div class="submission-mrn govuk-caption-xl govuk-!-margin-bottom-8">@messages("mrn.heading", mrn)</div>
 
         @paragraphBody(messages("cancellation.ducr", <b>{ducr}</b>))
 

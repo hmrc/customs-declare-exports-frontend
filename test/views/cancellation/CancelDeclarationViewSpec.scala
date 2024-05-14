@@ -42,30 +42,27 @@ class CancelDeclarationViewSpec extends UnitViewSpec with CommonMessages with St
   private val ducr = "34567890"
 
   "Cancel DeclarationView on empty page" should {
-
-    "display mrn in header" in {
-      createView().getElementById("section-header").text() must include(messages("mrn.heading", mrn))
-    }
+    val view = createView()
 
     "display page title" in {
+      view.getElementById("title").text mustBe messages("cancellation.title")
+    }
 
-      createView().getElementById("title").text() mustBe messages("cancellation.title")
+    "display the 'MRN' hint" in {
+      view.getElementsByClass("submission-mrn").first.text mustBe messages("mrn.heading", mrn)
     }
 
     "not have View declaration summary link" in {
-      Option(createView().getElementById("view_declaration_summary")) mustBe None
+      Option(view.getElementById("view_declaration_summary")) mustBe None
     }
 
     "display ducr and lrn" in {
-      createView().getElementsByClass("govuk-body").first.text mustBe messages("cancellation.ducr", ducr)
-      createView().getElementsByClass("govuk-body").last.text mustBe messages("cancellation.lrn", lrn.lrn)
+      view.getElementsByClass("govuk-body").first.text mustBe messages("cancellation.ducr", ducr)
+      view.getElementsByClass("govuk-body").last.text mustBe messages("cancellation.lrn", lrn.lrn)
     }
 
     "display empty input with label for 'statement Description'" in {
-
-      val view = createView()
-
-      view.getElementsByAttributeValue("for", "statementDescription").text() mustBe messages("cancellation.statementDescription")
+      view.getElementsByAttributeValue("for", "statementDescription").text mustBe messages("cancellation.statementDescription")
       view.getElementById("statementDescription").attr("value") mustBe empty
     }
 
@@ -76,27 +73,25 @@ class CancelDeclarationViewSpec extends UnitViewSpec with CommonMessages with St
       val noLongerRequired = view.getElementById("noLongerRequired")
       noLongerRequired.attr("checked") mustBe empty
       val noLongerRequiredLabel = view.getElementsByAttributeValue("for", "noLongerRequired")
-      noLongerRequiredLabel.text() mustBe messages("cancellation.reason.noLongerRequired")
+      noLongerRequiredLabel.text mustBe messages("cancellation.reason.noLongerRequired")
 
       val otherReason = view.getElementById("otherReason")
       otherReason.attr("checked") mustBe empty
       val otherReasonLabel = view.getElementsByAttributeValue("for", "otherReason")
-      otherReasonLabel.text() mustBe messages("cancellation.reason.otherReason")
+      otherReasonLabel.text mustBe messages("cancellation.reason.otherReason")
 
       val duplication = view.getElementById("duplication")
       duplication.attr("checked") mustBe empty
       val duplicationLabel = view.getElementsByAttributeValue("for", "duplication")
-      duplicationLabel.text() mustBe messages("cancellation.reason.duplication")
+      duplicationLabel.text mustBe messages("cancellation.reason.duplication")
     }
 
     "display 'Submit' button on page" in {
-      val view = createView()
-      view.select("#submit").text() mustBe messages("site.submit")
+      view.select("#submit").text mustBe messages("site.submit")
     }
 
     "display 'Back' button that links to 'Choice' page with Cancel declaration selected" in {
-      val backButton = createView().getElementById("back-link")
-
+      val backButton = view.getElementById("back-link")
       backButton must containMessage("site.back")
       backButton must haveHref(routes.DeclarationDetailsController.displayPage(submissionId))
     }
