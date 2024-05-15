@@ -328,6 +328,12 @@ object PointerRecord {
     "declaration.parties.carrierDetails.details.address.country" -> new DefaultPointerRecord() {
       def fetchRawValue(dec: ExportsDeclaration, args: Int*) = dec.parties.carrierDetails.flatMap(_.details.address.map(_.country))
       override val pageLink1Param = Some(CarrierDetailsController.displayPage)
+      // TODO Following needs moodifying in CEDS-5776
+      override def fetchReadableValue(
+        dec: ExportsDeclaration,
+        args: Int*
+      )(implicit msgs: Messages, countryHelper: CountryHelper, codeListConnector: CodeListConnector): Option[String] =
+        fetchRawValue(dec, args: _*).flatMap(nameOrCode => Some(countryHelper.getShortNameForCountryCode(nameOrCode).getOrElse(nameOrCode)))
     },
     "declaration.parties.carrierDetails.details.address.postCode" -> new DefaultPointerRecord() {
       def fetchRawValue(dec: ExportsDeclaration, args: Int*) = dec.parties.carrierDetails.flatMap(_.details.address.map(_.postCode))
@@ -389,6 +395,12 @@ object PointerRecord {
     "declaration.parties.exporterDetails.details.address.country" -> new DefaultPointerRecord() {
       def fetchRawValue(dec: ExportsDeclaration, args: Int*) = dec.parties.exporterDetails.flatMap(_.details.address.map(_.country))
       override val pageLink1Param = Some(ExporterDetailsController.displayPage)
+      // TODO Following needs moodifying in CEDS-5776
+      override def fetchReadableValue(
+        dec: ExportsDeclaration,
+        args: Int*
+      )(implicit msgs: Messages, countryHelper: CountryHelper, codeListConnector: CodeListConnector): Option[String] =
+        fetchRawValue(dec, args: _*).flatMap(nameOrCode => Some(countryHelper.getShortNameForCountryCode(nameOrCode).getOrElse(nameOrCode)))
     },
     "declaration.parties.exporterDetails.details.address.addressLine" -> new DefaultPointerRecord() {
       def fetchRawValue(dec: ExportsDeclaration, args: Int*) = dec.parties.exporterDetails.flatMap(_.details.address.map(_.addressLine))
@@ -422,6 +434,12 @@ object PointerRecord {
     "declaration.parties.consigneeDetails.details.address.country" -> new DefaultPointerRecord() {
       def fetchRawValue(dec: ExportsDeclaration, args: Int*) = dec.parties.consigneeDetails.flatMap(_.details.address.map(_.country))
       override val pageLink1Param = Some(ConsigneeDetailsController.displayPage)
+      // TODO Following needs moodifying in CEDS-5776
+      override def fetchReadableValue(
+        dec: ExportsDeclaration,
+        args: Int*
+      )(implicit msgs: Messages, countryHelper: CountryHelper, codeListConnector: CodeListConnector): Option[String] =
+        fetchRawValue(dec, args: _*).flatMap(nameOrCode => Some(countryHelper.getShortNameForCountryCode(nameOrCode).getOrElse(nameOrCode)))
     },
     "declaration.parties.consigneeDetails.details.address.addressLine" -> new DefaultPointerRecord() {
       def fetchRawValue(dec: ExportsDeclaration, args: Int*) = dec.parties.consigneeDetails.flatMap(_.details.address.map(_.addressLine))
@@ -430,6 +448,32 @@ object PointerRecord {
     "declaration.parties.consigneeDetails.details.address.postCode" -> new DefaultPointerRecord() {
       def fetchRawValue(dec: ExportsDeclaration, args: Int*) = dec.parties.consigneeDetails.flatMap(_.details.address.map(_.postCode))
       override val pageLink1Param = Some(ConsigneeDetailsController.displayPage)
+    },
+    "declaration.parties.consignorDetails.details.address.fullName" -> new DefaultPointerRecord() {
+      def fetchRawValue(dec: ExportsDeclaration, args: Int*) = dec.parties.consignorDetails.flatMap(_.details.address.map(_.fullName))
+      override val pageLink1Param = Some(ConsignorDetailsController.displayPage)
+    },
+    "declaration.parties.consignorDetails.details.address.townOrCity" -> new DefaultPointerRecord() {
+      def fetchRawValue(dec: ExportsDeclaration, args: Int*) = dec.parties.consignorDetails.flatMap(_.details.address.map(_.townOrCity))
+      override val pageLink1Param = Some(ConsignorDetailsController.displayPage)
+    },
+    "declaration.parties.consignorDetails.details.address.country" -> new DefaultPointerRecord() {
+      def fetchRawValue(dec: ExportsDeclaration, args: Int*) = dec.parties.consignorDetails.flatMap(_.details.address.map(_.country))
+      override val pageLink1Param = Some(ConsignorDetailsController.displayPage)
+      // TODO Following needs moodifying in CEDS-5776
+      override def fetchReadableValue(
+        dec: ExportsDeclaration,
+        args: Int*
+      )(implicit msgs: Messages, countryHelper: CountryHelper, codeListConnector: CodeListConnector): Option[String] =
+        fetchRawValue(dec, args: _*).flatMap(nameOrCode => Some(countryHelper.getShortNameForCountryCode(nameOrCode).getOrElse(nameOrCode)))
+    },
+    "declaration.parties.consignorDetails.details.address.addressLine" -> new DefaultPointerRecord() {
+      def fetchRawValue(dec: ExportsDeclaration, args: Int*) = dec.parties.consignorDetails.flatMap(_.details.address.map(_.addressLine))
+      override val pageLink1Param = Some(ConsignorDetailsController.displayPage)
+    },
+    "declaration.parties.consignorDetails.details.address.postCode" -> new DefaultPointerRecord() {
+      def fetchRawValue(dec: ExportsDeclaration, args: Int*) = dec.parties.consignorDetails.flatMap(_.details.address.map(_.postCode))
+      override val pageLink1Param = Some(ConsignorDetailsController.displayPage)
     },
     "declaration.departureTransport.meansOfTransportOnDepartureIDNumber" -> new DefaultPointerRecord() {
       def fetchRawValue(dec: ExportsDeclaration, args: Int*) = dec.transport.meansOfTransportOnDepartureIDNumber
