@@ -47,6 +47,9 @@ class PointerRecordSpec extends UnitViewSpec with ExportsTestHelper with Injecto
   implicit val countryHelper: CountryHelper = mock[CountryHelper]
   when(countryHelper.getShortNameForCountryCode(meq(countryGB.countryCode))(any())).thenReturn(Some(countryGB.countryName))
   when(countryHelper.getShortNameForCountryCode(meq(countryIT.countryCode))(any())).thenReturn(Some(countryIT.countryName))
+  // TODO remove the following two lines in 5776
+  when(countryHelper.getShortNameForCountryCode(meq(countryGB.countryName))(any())).thenReturn(None)
+  when(countryHelper.getShortNameForCountryCode(meq(countryIT.countryName))(any())).thenReturn(None)
 
   implicit val codeListConnector: CodeListConnector = mock[CodeListConnector]
   when(codeListConnector.getCountryCodes(any())).thenReturn(ListMap(countryGB.countryCode -> countryGB, countryIT.countryCode -> countryIT))
@@ -132,6 +135,11 @@ class PointerRecordSpec extends UnitViewSpec with ExportsTestHelper with Injecto
       validatePointerValues("declaration.parties.consigneeDetails.details.address.townOrCity", townOrCity)
       validatePointerValues("declaration.parties.consigneeDetails.details.address.postCode", postCode)
       validatePointerValues("declaration.parties.consigneeDetails.details.address.country", countryGB.countryName)
+      validatePointerValues("declaration.parties.consignorDetails.details.address.fullName", fullName)
+      validatePointerValues("declaration.parties.consignorDetails.details.address.addressLine", addressLine)
+      validatePointerValues("declaration.parties.consignorDetails.details.address.townOrCity", townOrCity)
+      validatePointerValues("declaration.parties.consignorDetails.details.address.postCode", postCode)
+      validatePointerValues("declaration.parties.consignorDetails.details.address.country", countryGB.countryName)
       validatePointerValues("declaration.departureTransport.meansOfTransportOnDepartureIDNumber", meansOfTransportOnDepartureIDNumber)
       validatePointerValues(
         "declaration.departureTransport.borderModeOfTransportCode",
