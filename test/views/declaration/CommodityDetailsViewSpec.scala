@@ -124,7 +124,7 @@ class CommodityDetailsViewSpec extends UnitViewSpec with Injector {
   "Commodity Details View on empty page" when {
     for (decType <- DeclarationType.values)
       s"we are on $decType journey" should {
-        behave like commodityDetailsView(decType, CommodityDetails.form(decType))
+        behave like commodityDetailsView(decType, CommodityDetails.form(journeyRequest(decType)))
       }
   }
 
@@ -133,7 +133,7 @@ class CommodityDetailsViewSpec extends UnitViewSpec with Injector {
 
     for (decType <- DeclarationType.values)
       s"we are on $decType journey" should {
-        behave like commodityDetailsView(decType, CommodityDetails.form(decType), details)
+        behave like commodityDetailsView(decType, CommodityDetails.form(journeyRequest(decType)), details)
       }
   }
 }
