@@ -28,7 +28,7 @@ import models.declaration.submissions.EnhancedStatus.{ERRORS, EnhancedStatus}
 import models.declaration.submissions.{Action, Submission, SubmissionAmendment}
 import models.dis.MrnStatus
 import play.api.Logging
-import play.api.http.Status.CREATED
+import play.api.http.Status.{CREATED, NOT_FOUND}
 import play.api.libs.json._
 import services.AuditCreateDraftDec
 import services.audit.AuditService
@@ -54,6 +54,9 @@ class CustomsDeclareExportsConnector @Inject() (
 
   private def logPayload[T](prefix: String, payload: T)(implicit wts: Writes[T]): Unit =
     logger.debug(s"$prefix: ${Json.toJson(payload)}")
+
+  private def parseTextResponse(body: String): String =
+    body.slice(1, body.length - 1)
 
   private val createTimer: Timer = metrics.defaultRegistry.timer("declaration.create.timer")
 
@@ -84,43 +87,37 @@ class CustomsDeclareExportsConnector @Inject() (
 
   private val fetchTimer: Timer = metrics.defaultRegistry.timer("declaration.fetch.timer")
 
-  def findDeclaration(id: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[ExportsDeclaration]] = {
-    val fetchStopwatch = fetchTimer.time
+  def findDeclaration(id: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[ExportsDeclaration]] =
+    if (id.trim.isEmpty) Future.successful(None)
+    else {
+      val fetchStopwatch = fetchTimer.time
 
-    val url = getUrl(s"${appConfig.declarationsPath}/$id")
+      val url = getUrl(s"${appConfig.declarationsPath}/$id")
 
-    httpClient
-      .GET[JsValue](url)
-      .map { json =>
-        json.validate[ExportsDeclaration] match {
-          case JsSuccess(declaration, _) => Some(declaration)
-          case JsError(error) =>
-            logger.error(s"Illegal Json body while retrieving Draft Declaration with id($id):\n$json\n")
-            throw new JsValidationException("GET", url, classOf[ExportsDeclaration], error.toString())
+      httpClient
+        .doGet(url, hc.headers(HeaderNames.explicitlyIncludedHeaders))
+        .map { httpResponse =>
+          if (httpResponse.status == NOT_FOUND) None
+          else
+            Json.parse(httpResponse.body).validate[ExportsDeclaration] match {
+              case JsSuccess(declaration, _) => Some(declaration)
+              case JsError(error) =>
+                logger.error(s"Illegal Json body while retrieving Draft Declaration with id($id):\n${httpResponse.body}\n")
+                throw new JsValidationException("GET", url, classOf[ExportsDeclaration], error.toString())
+            }
         }
-      }
-      .andThen { case _ =>
-        fetchStopwatch.stop
-      }
-  }
+        .andThen { case _ =>
+          fetchStopwatch.stop
+        }
+    }
 
   def findSavedDeclarations(page: models.Page)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Paginated[ExportsDeclaration]] = {
     val pagination = models.Page.bindable.unbind("page", page)
     val sort = DeclarationSort.bindable.unbind("sort", DeclarationSort(SortBy.UPDATED, SortDirection.DES))
+
     val statusParameters = if (amendmentFlag.isEnabled) "?status=DRAFT&status=AMENDMENT_DRAFT&" else "?status=DRAFT&"
 
-    val url = getUrl(s"${appConfig.declarationsPath}$statusParameters$pagination&$sort")
-
-    httpClient
-      .GET[JsValue](url)
-      .map { json =>
-        json.validate[Paginated[ExportsDeclaration]] match {
-          case JsSuccess(results, _) => results
-          case JsError(error) =>
-            logger.error(s"Illegal Json body while retrieving a $page of Draft Declarations:\n$json\n")
-            throw new JsValidationException("GET", url, classOf[ExportsDeclaration], error.toString())
-        }
-      }
+    httpClient.GET[Paginated[ExportsDeclaration]](getUrl(s"${appConfig.declarationsPath}$statusParameters$pagination&$sort"))
   }
 
   def findOrCreateDraftForAmendment(parentId: String, enhancedStatus: EnhancedStatus, eori: String, draftDec: ExportsDeclaration)(
@@ -133,7 +130,7 @@ class CustomsDeclareExportsConnector @Inject() (
     httpClient
       .doGet(url, hc.headers(HeaderNames.explicitlyIncludedHeaders))
       .map { httpResponse =>
-        val newDecId = parseResponseBody(httpResponse.body)
+        val newDecId = parseTextResponse(httpResponse.body)
         // this will exclude draft decs created from scratch that have no DUCR defined yet
         if (httpResponse.status == CREATED && draftDec.ducr.isDefined)
           audit(
@@ -163,7 +160,7 @@ class CustomsDeclareExportsConnector @Inject() (
     httpClient
       .doGet(url, hc.headers(HeaderNames.explicitlyIncludedHeaders))
       .map { httpResponse =>
-        val newDecId = parseResponseBody(httpResponse.body)
+        val newDecId = parseTextResponse(httpResponse.body)
         if (httpResponse.status == CREATED)
           audit(eori, newDecId, draftDec.additionalDeclarationType, draftDec.ducr, DRAFT, Some(draftDec.id), Some(ERRORS), auditService)
         newDecId
@@ -172,9 +169,6 @@ class CustomsDeclareExportsConnector @Inject() (
         fetchStopwatch.stop
       }
   }
-
-  def parseResponseBody(body: String): String =
-    body.slice(1, body.length - 1)
 
   def findDraftByParent(parentId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[ExportsDeclaration]] = {
     val fetchStopwatch = fetchTimer.time
