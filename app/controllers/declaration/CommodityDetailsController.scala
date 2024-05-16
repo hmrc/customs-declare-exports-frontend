@@ -46,7 +46,7 @@ class CommodityDetailsController @Inject() (
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithUnsafeDefaultFormBinding {
 
   def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    val form = CommodityDetails.form(request.declarationType).withSubmissionErrors
+    val form = CommodityDetails.form.withSubmissionErrors
     request.cacheModel.itemBy(itemId).flatMap(_.commodityDetails) match {
       case Some(commodityDetails) => Ok(commodityDetailsPage(itemId, form.fill(commodityDetails)))
       case _                      => Ok(commodityDetailsPage(itemId, form))
@@ -54,8 +54,7 @@ class CommodityDetailsController @Inject() (
   }
 
   def submitForm(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    CommodityDetails
-      .form(request.declarationType)
+    CommodityDetails.form
       .bindFromRequest()
       .fold(
         formWithErrors => Future.successful(BadRequest(commodityDetailsPage(itemId, formWithErrors))),

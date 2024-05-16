@@ -18,155 +18,187 @@ package forms.declaration
 
 import forms.common.DeclarationPageBaseSpec
 import forms.declaration.CommodityDetails._
-import models.DeclarationType
+import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.SUPPLEMENTARY_EIDR
+import models.DeclarationType._
+import models.requests.JourneyRequest
 import models.viewmodels.TariffContentKey
 import play.api.data.FormError
-import play.api.libs.json.{JsObject, JsString}
+import play.api.libs.json.{JsObject, JsString, Json}
+import services.cache.ExportsTestHelper
 
-class CommodityDetailsSpec extends DeclarationPageBaseSpec {
-  import CommodityDetailsSpec._
+class CommodityDetailsSpec extends DeclarationPageBaseSpec with ExportsTestHelper {
 
-  "CommodityDetails mapping used for declarations where code required" should {
-
-    for (decType <- Set(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY)) {
-
-      s"return form without errors for $decType" when {
-
-        "provided with a commodity code 8 digits long" in {
-          val form = CommodityDetails.form(decType).bind(formData("12345678", "description"), JsonBindMaxChars)
-          form.errors mustBe empty
-        }
-
-        "provided with a commodity code 8 digits long prefixed and suffixed with spaces" in {
-          val form = CommodityDetails.form(decType).bind(formData("  12345678  ", "description"), JsonBindMaxChars)
-          form.errors mustBe empty
-        }
-
-        "provided with a commodity code 10 digits long" in {
-          val form = CommodityDetails.form(decType).bind(formData("1234567890", "description"), JsonBindMaxChars)
-          form.errors mustBe empty
-        }
-
-        "provided with a commodity code 10 digits long prefixed and suffixed with spaces" in {
-          val form = CommodityDetails.form(decType).bind(formData("  1234567890  ", "description"), JsonBindMaxChars)
-          form.errors mustBe empty
-        }
+  "CommodityDetails mapping used for declarations where code is optional" should {
+    for (decType <- List(CLEARANCE, OCCASIONAL, SIMPLIFIED, SUPPLEMENTARY)) {
+      val maybeModifier = decType match {
+        case CLEARANCE     => Some(withEntryIntoDeclarantsRecords())
+        case SUPPLEMENTARY => Some(withAdditionalDeclarationType(SUPPLEMENTARY_EIDR))
+        case _             => None
       }
+      val declaration = aDeclaration(List(Some(withType(decType)), maybeModifier).flatten: _*)
+      implicit val request: JourneyRequest[_] = journeyRequest(declaration)
+      val form = CommodityDetails.form
 
-      s"return form with errors for $decType" when {
-
+      s"return a form with errors for $decType" when {
         "provided with invalid commodity code" in {
-          val form = CommodityDetails.form(decType).bind(formData("A123456789", "description"), JsonBindMaxChars)
-          form.errors mustBe Seq(FormError(combinedNomenclatureCodeKey, "declaration.commodityDetails.combinedNomenclatureCode.error.invalid"))
-        }
-
-        "provided with a commodity code not 8 or 10 digits long" in {
-          val form1 = CommodityDetails.form(decType).bind(formData("12345678901", "description"), JsonBindMaxChars)
-          form1.errors mustBe Seq(FormError(combinedNomenclatureCodeKey, "declaration.commodityDetails.combinedNomenclatureCode.error.length"))
-
-          val form2 = CommodityDetails.form(decType).bind(formData("1234", "description"), JsonBindMaxChars)
-          form2.errors mustBe Seq(FormError(combinedNomenclatureCodeKey, "declaration.commodityDetails.combinedNomenclatureCode.error.length"))
-        }
-
-        "provided with invalid commodity code that is too long" in {
-          val form = CommodityDetails.form(decType).bind(formData("ABCDE123456789", "description"), JsonBindMaxChars)
-
-          form.errors mustBe Seq(
+          val expectedError = List(
             FormError(combinedNomenclatureCodeKey, "declaration.commodityDetails.combinedNomenclatureCode.error.invalid"),
             FormError(combinedNomenclatureCodeKey, "declaration.commodityDetails.combinedNomenclatureCode.error.length")
           )
+          form.bind(formData("#1234", "description"), JsonBindMaxChars).errors mustBe expectedError
         }
 
-        "provided with missing commodity code" in {
-          val form = CommodityDetails.form(decType).bind(formData("", "some text"), JsonBindMaxChars)
+        "provided with commodity code too short" in {
+          val expectedError = List(FormError(combinedNomenclatureCodeKey, "declaration.commodityDetails.combinedNomenclatureCode.error.length"))
+          form.bind(formData("12345", "description"), JsonBindMaxChars).errors mustBe expectedError
+        }
 
-          form.errors mustBe Seq(FormError(combinedNomenclatureCodeKey, "declaration.commodityDetails.combinedNomenclatureCode.error.empty"))
+        "provided with commodity code too long" in {
+          val expectedError = List(FormError(combinedNomenclatureCodeKey, "declaration.commodityDetails.combinedNomenclatureCode.error.length"))
+          form.bind(formData("12345678901", "description"), JsonBindMaxChars).errors mustBe expectedError
         }
 
         "provided with missing description" in {
-          val form = CommodityDetails.form(decType).bind(formData("1234567890", ""), JsonBindMaxChars)
-
-          form.errors mustBe Seq(FormError(descriptionOfGoodsKey, "declaration.commodityDetails.description.error.empty"))
+          val expectedError = List(FormError(descriptionOfGoodsKey, "declaration.commodityDetails.description.error.empty"))
+          form.bind(formData("1234567890", ""), JsonBindMaxChars).errors mustBe expectedError
         }
       }
 
-      s"return form without errors for $decType" when {
+      s"return a form without errors for $decType" when {
         "provided with valid input" in {
-          val form = CommodityDetails.form(decType).bind(formData("1234567809", "description"), JsonBindMaxChars)
+          form.bind(formData("1234567890", "description"), JsonBindMaxChars).hasErrors mustBe false
+        }
 
-          form.hasErrors must be(false)
+        "provided with missing commodity code" in {
+          form.bind(formData("", "description"), JsonBindMaxChars).hasErrors mustBe false
         }
       }
     }
   }
 
-  "CommodityDetails mapping used for declarations where code and declaration is optional" should {
+  "CommodityDetails mapping used for declarations where code required" should {
+    for (decType <- List(STANDARD, SUPPLEMENTARY)) {
+      implicit val request: JourneyRequest[_] = journeyRequest(decType)
 
-    for (decType <- Set(DeclarationType.CLEARANCE)) {
+      s"return a form without errors for $decType" when {
 
-      s"return form with errors for $decType" when {
+        "provided with a commodity code 8 digits long" in {
+          val form = CommodityDetails.form.bind(formData("12345678", "description"), JsonBindMaxChars)
+          form.errors mustBe empty
+        }
+
+        "provided with a commodity code 8 digits long prefixed and suffixed with spaces" in {
+          val form = CommodityDetails.form.bind(formData("  12345678  ", "description"), JsonBindMaxChars)
+          form.errors mustBe empty
+        }
+
+        "provided with a commodity code 10 digits long" in {
+          val form = CommodityDetails.form.bind(formData("1234567890", "description"), JsonBindMaxChars)
+          form.errors mustBe empty
+        }
+
+        "provided with a commodity code 10 digits long prefixed and suffixed with spaces" in {
+          val form = CommodityDetails.form.bind(formData("  1234567890  ", "description"), JsonBindMaxChars)
+          form.errors mustBe empty
+        }
+      }
+
+      s"return a form with errors for $decType" when {
+
         "provided with invalid commodity code" in {
-          val form = CommodityDetails.form(decType).bind(formData("#1234", "description"), JsonBindMaxChars)
+          val form = CommodityDetails.form.bind(formData("A123456789", "description"), JsonBindMaxChars)
+          form.errors mustBe List(FormError(combinedNomenclatureCodeKey, "declaration.commodityDetails.combinedNomenclatureCode.error.invalid"))
+        }
 
-          form.errors mustBe Seq(
+        "provided with a commodity code not 8 or 10 digits long" in {
+          val form1 = CommodityDetails.form.bind(formData("12345678901", "description"), JsonBindMaxChars)
+          form1.errors mustBe List(FormError(combinedNomenclatureCodeKey, "declaration.commodityDetails.combinedNomenclatureCode.error.length"))
+
+          val form2 = CommodityDetails.form.bind(formData("1234", "description"), JsonBindMaxChars)
+          form2.errors mustBe List(FormError(combinedNomenclatureCodeKey, "declaration.commodityDetails.combinedNomenclatureCode.error.length"))
+        }
+
+        "provided with invalid commodity code that is too long" in {
+          val form = CommodityDetails.form.bind(formData("ABCDE123456789", "description"), JsonBindMaxChars)
+
+          form.errors mustBe List(
             FormError(combinedNomenclatureCodeKey, "declaration.commodityDetails.combinedNomenclatureCode.error.invalid"),
             FormError(combinedNomenclatureCodeKey, "declaration.commodityDetails.combinedNomenclatureCode.error.length")
           )
         }
 
-        "provided with commodity code too short" in {
-          val form = CommodityDetails.form(decType).bind(formData("12345", "description"), JsonBindMaxChars)
-
-          form.errors mustBe Seq(FormError(combinedNomenclatureCodeKey, "declaration.commodityDetails.combinedNomenclatureCode.error.length"))
-        }
-
-        "provided with commodity code too long" in {
-          val form = CommodityDetails.form(decType).bind(formData("12345678901", "description"), JsonBindMaxChars)
-
-          form.errors mustBe Seq(FormError(combinedNomenclatureCodeKey, "declaration.commodityDetails.combinedNomenclatureCode.error.length"))
+        "provided with missing commodity code" in {
+          val form = CommodityDetails.form.bind(formData("", "some text"), JsonBindMaxChars)
+          form.errors mustBe List(FormError(combinedNomenclatureCodeKey, "declaration.commodityDetails.combinedNomenclatureCode.error.empty"))
         }
 
         "provided with missing description" in {
-          val form = CommodityDetails.form(decType).bind(formData("1234567890", ""), JsonBindMaxChars)
-
-          form.hasErrors must be(false)
+          val form = CommodityDetails.form.bind(formData("1234567890", ""), JsonBindMaxChars)
+          form.errors mustBe List(FormError(descriptionOfGoodsKey, "declaration.commodityDetails.description.error.empty"))
         }
       }
 
-      s"return form without errors for $decType" when {
+      s"return a form without errors for $decType" when {
         "provided with valid input" in {
-          val form = CommodityDetails.form(decType).bind(formData("1234567890", "description"), JsonBindMaxChars)
-
-          form.hasErrors must be(false)
+          CommodityDetails.form.bind(formData("1234567809", "description"), JsonBindMaxChars).hasErrors mustBe false
         }
+      }
+    }
+  }
 
-        "provided with missing commodity code" in {
-          val form = CommodityDetails.form(decType).bind(formData("", "description"), JsonBindMaxChars)
+  "CommodityDetails mapping used for CLEARANCE declarations where code and declaration is optional" should {
+    implicit val request: JourneyRequest[_] = journeyRequest(CLEARANCE)
+    val form = CommodityDetails.form
 
-          form.hasErrors must be(false)
-        }
+    "return a form with errors" when {
+      "provided with invalid commodity code" in {
+        val expectedError = List(
+          FormError(combinedNomenclatureCodeKey, "declaration.commodityDetails.combinedNomenclatureCode.error.invalid"),
+          FormError(combinedNomenclatureCodeKey, "declaration.commodityDetails.combinedNomenclatureCode.error.length")
+        )
+        form.bind(formData("#1234", "description"), JsonBindMaxChars).errors mustBe expectedError
+      }
 
-        "provided with both missing commodity code and commodity description" in {
-          val form = CommodityDetails.form(decType).bind(formData("", ""), JsonBindMaxChars)
+      "provided with commodity code too short" in {
+        val expectedError = List(FormError(combinedNomenclatureCodeKey, "declaration.commodityDetails.combinedNomenclatureCode.error.length"))
+        form.bind(formData("12345", "description"), JsonBindMaxChars).errors mustBe expectedError
+      }
 
-          form.hasErrors must be(false)
-        }
+      "provided with commodity code too long" in {
+        val expectedError = List(FormError(combinedNomenclatureCodeKey, "declaration.commodityDetails.combinedNomenclatureCode.error.length"))
+        form.bind(formData("12345678901", "description"), JsonBindMaxChars).errors mustBe expectedError
+      }
+
+      "provided with missing description" in {
+        form.bind(formData("1234567890", ""), JsonBindMaxChars).hasErrors mustBe false
+      }
+    }
+
+    "return a form without errors" when {
+      "provided with valid input" in {
+        form.bind(formData("1234567890", "description"), JsonBindMaxChars).hasErrors mustBe false
+      }
+
+      "provided with missing commodity code" in {
+        form.bind(formData("", "description"), JsonBindMaxChars).hasErrors mustBe false
+      }
+
+      "provided with both missing commodity code and commodity description" in {
+        form.bind(formData("", ""), JsonBindMaxChars).hasErrors mustBe false
       }
     }
   }
 
   override def getCommonTariffKeys(messageKey: String): Seq[TariffContentKey] =
-    Seq(TariffContentKey(s"${messageKey}.common"))
+    List(TariffContentKey(s"${messageKey}.common"))
 
   override def getClearanceTariffKeys(messageKey: String): Seq[TariffContentKey] =
-    Seq(TariffContentKey(s"${messageKey}.clearance"))
+    List(TariffContentKey(s"${messageKey}.clearance"))
 
   "CommodityDetails" when {
     testTariffContentKeys(CommodityDetails, "tariff.declaration.item.commodityDetails")
   }
-}
 
-object CommodityDetailsSpec {
-  def formData(code: String, description: String) =
-    JsObject(Map(combinedNomenclatureCodeKey -> JsString(code), descriptionOfGoodsKey -> JsString(description)))
+  def formData(code: String, description: String): JsObject =
+    Json.obj(combinedNomenclatureCodeKey -> JsString(code), descriptionOfGoodsKey -> JsString(description))
 }

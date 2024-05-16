@@ -18,10 +18,12 @@ package forms.declaration
 
 import forms.DeclarationPage
 import forms.declaration.CommodityDetails.{combinedNomenclatureCodePointer, descriptionOfGoodsPointer, keyForCode, keyForDescription}
+import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.SUPPLEMENTARY_EIDR
 import models.AmendmentRow.{forAddedValue, forRemovedValue, pointerToSelector}
 import models.DeclarationType._
 import models.ExportsFieldPointer.ExportsFieldPointer
 import models.declaration.ExportItem.itemsPrefix
+import models.requests.JourneyRequest
 import models.viewmodels.TariffContentKey
 import models.{AmendmentOp, FieldMapping}
 import play.api.data.Forms.{mapping, optional, text}
@@ -119,10 +121,17 @@ object CommodityDetails extends DeclarationPage with FieldMapping {
       CommodityDetails.apply
     )(CommodityDetails.unapply)
 
-  def form(declarationType: DeclarationType): Form[CommodityDetails] = declarationType match {
-    case CLEARANCE               => Form(mappingOptionalCodeAndOptionalDescription)
-    case SIMPLIFIED | OCCASIONAL => Form(mappingOptionalCode)
-    case _                       => Form(mappingRequiredCode)
+  def form(implicit request: JourneyRequest[_]): Form[CommodityDetails] = {
+    val isEidr =
+      request.isAdditionalDeclarationType(SUPPLEMENTARY_EIDR) ||
+        request.isType(CLEARANCE) && request.cacheModel.isEntryIntoDeclarantsRecords
+
+    request.declarationType match {
+      case CLEARANCE | SUPPLEMENTARY if isEidr => Form(mappingOptionalCode)
+      case CLEARANCE                           => Form(mappingOptionalCodeAndOptionalDescription)
+      case SIMPLIFIED | OCCASIONAL             => Form(mappingOptionalCode)
+      case _                                   => Form(mappingRequiredCode)
+    }
   }
 
   override def defineTariffContentKeys(declarationType: DeclarationType): Seq[TariffContentKey] =
