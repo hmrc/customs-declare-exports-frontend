@@ -28,7 +28,7 @@ import play.api.data.{Form, Forms, Mapping}
 import play.api.i18n.Messages
 import play.api.libs.json.{Json, OFormat}
 import services.Countries._
-import services.{Countries, DiffTools}
+import services.DiffTools
 import services.DiffTools.{combinePointers, compareStringDifference, ExportsDeclarationDiff}
 import utils.validators.forms.FieldValidator._
 
@@ -115,8 +115,6 @@ object Address extends FieldMapping {
       countryId -> text()
         .verifying("declaration.address.country.empty", nonEmpty)
         .verifying("declaration.address.country.error", input => input.isEmpty || isValidCountryCode(input))
-        // TODO Following line can be removed in CEDS-5776
-        .transform(identity, (country: String) => Countries.getOrPassCountryCode(country).getOrElse(""))
     )(Address.apply)(Address.unapply)
   }
 

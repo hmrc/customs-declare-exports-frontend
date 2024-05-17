@@ -211,7 +211,7 @@ class ConsigneeDetailsViewSpec extends AddressViewSpec with PageWithButtonsSpec 
   "Consignee Details View when filled" should {
     onEveryDeclarationJourney() { implicit request =>
       "display data in Business address inputs" in {
-        val view = createView(form.fill(ConsigneeDetails(EntityDetails(None, Some(Address("test", "test1", "test2", "test3", "United Kingdom"))))))
+        val view = createView(form.fill(ConsigneeDetails(EntityDetails(None, Some(Address("test", "test1", "test2", "test3", "GB"))))))
 
         view.getElementById("details_address_fullName").attr("value") mustBe "test"
         view.getElementById("details_address_addressLine").attr("value") mustBe "test1"

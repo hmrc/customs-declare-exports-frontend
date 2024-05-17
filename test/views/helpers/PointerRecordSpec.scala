@@ -47,9 +47,6 @@ class PointerRecordSpec extends UnitViewSpec with ExportsTestHelper with Injecto
   implicit val countryHelper: CountryHelper = mock[CountryHelper]
   when(countryHelper.getShortNameForCountryCode(meq(countryGB.countryCode))(any())).thenReturn(Some(countryGB.countryName))
   when(countryHelper.getShortNameForCountryCode(meq(countryIT.countryCode))(any())).thenReturn(Some(countryIT.countryName))
-  // TODO remove the following two lines in 5776
-  when(countryHelper.getShortNameForCountryCode(meq(countryGB.countryName))(any())).thenReturn(None)
-  when(countryHelper.getShortNameForCountryCode(meq(countryIT.countryName))(any())).thenReturn(None)
 
   implicit val codeListConnector: CodeListConnector = mock[CodeListConnector]
   when(codeListConnector.getCountryCodes(any())).thenReturn(ListMap(countryGB.countryCode -> countryGB, countryIT.countryCode -> countryIT))
@@ -113,7 +110,7 @@ class PointerRecordSpec extends UnitViewSpec with ExportsTestHelper with Injecto
       validatePointerValues("declaration.parties.carrierDetails.details.address.addressLine", addressLine)
       validatePointerValues("declaration.parties.carrierDetails.details.address.townOrCity", townOrCity)
       validatePointerValues("declaration.parties.carrierDetails.details.address.postCode", postCode)
-      validatePointerValues("declaration.parties.carrierDetails.details.address.country", countryGB.countryName)
+      validatePointerValues("declaration.parties.carrierDetails.details.address.country", countryGB.countryCode, countryGB.countryName)
       validatePointerValues("declaration.transport.transportPayment.paymentMethod", cash, messages("declaration.summary.transport.payment.A"))
       validatePointerValues("declaration.locations.destinationCountries.countriesOfRouting.$", countryIT.countryCode, countryIT.countryName, 0)
       validatePointerValues("declaration.locations.destinationCountries.countryOfDestination", countryIT.countryCode, countryIT.countryName, 0)
@@ -123,7 +120,7 @@ class PointerRecordSpec extends UnitViewSpec with ExportsTestHelper with Injecto
       validatePointerValues("declaration.parties.exporterDetails.details.address.addressLine", addressLine)
       validatePointerValues("declaration.parties.exporterDetails.details.address.townOrCity", townOrCity)
       validatePointerValues("declaration.parties.exporterDetails.details.address.postCode", postCode)
-      validatePointerValues("declaration.parties.exporterDetails.details.address.country", countryGB.countryName)
+      validatePointerValues("declaration.parties.exporterDetails.details.address.country", countryGB.countryCode, countryGB.countryName)
       validatePointerValues(
         "declaration.natureOfTransaction.natureType",
         BusinessPurchase,
@@ -134,12 +131,12 @@ class PointerRecordSpec extends UnitViewSpec with ExportsTestHelper with Injecto
       validatePointerValues("declaration.parties.consigneeDetails.details.address.addressLine", addressLine)
       validatePointerValues("declaration.parties.consigneeDetails.details.address.townOrCity", townOrCity)
       validatePointerValues("declaration.parties.consigneeDetails.details.address.postCode", postCode)
-      validatePointerValues("declaration.parties.consigneeDetails.details.address.country", countryGB.countryName)
+      validatePointerValues("declaration.parties.consigneeDetails.details.address.country", countryGB.countryCode, countryGB.countryName)
       validatePointerValues("declaration.parties.consignorDetails.details.address.fullName", fullName)
       validatePointerValues("declaration.parties.consignorDetails.details.address.addressLine", addressLine)
       validatePointerValues("declaration.parties.consignorDetails.details.address.townOrCity", townOrCity)
       validatePointerValues("declaration.parties.consignorDetails.details.address.postCode", postCode)
-      validatePointerValues("declaration.parties.consignorDetails.details.address.country", countryGB.countryName)
+      validatePointerValues("declaration.parties.consignorDetails.details.address.country", countryGB.countryCode, countryGB.countryName)
       validatePointerValues("declaration.departureTransport.meansOfTransportOnDepartureIDNumber", meansOfTransportOnDepartureIDNumber)
       validatePointerValues(
         "declaration.departureTransport.borderModeOfTransportCode",
@@ -316,5 +313,5 @@ object PointerRecordSpec {
   val townOrCity = "Leeds"
   val postCode = "LS1 2PW"
 
-  val address = Address(fullName, addressLine, townOrCity, postCode, countryGB.countryName)
+  val address = Address(fullName, addressLine, townOrCity, postCode, countryGB.countryCode)
 }
