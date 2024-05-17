@@ -65,7 +65,6 @@ class ExporterDetailsSpec
 
       "it is EIDR" should {
         "validate is eori and address is non empty" in {
-
           val cachedModel: ExportsDeclaration = aDeclaration(withEntryIntoDeclarantsRecords(YesNoAnswers.yes))
 
           val errors = form(Some(cachedModel)).bind(emptyExporterDetailsJSON, JsonBindMaxChars).errors
@@ -75,7 +74,6 @@ class ExporterDetailsSpec
 
       "it is not EIDR" should {
         "allow an empty eori and empty address" in {
-
           val cachedModel = aDeclaration(withEntryIntoDeclarantsRecords(YesNoAnswers.no))
 
           val result = form(Some(cachedModel)).bind(emptyExporterDetailsJSON, JsonBindMaxChars)

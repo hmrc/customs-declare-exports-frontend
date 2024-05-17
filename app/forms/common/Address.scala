@@ -92,8 +92,8 @@ object Address extends FieldMapping {
   val addressId = "details.address"
   val countryId = "country"
 
-  def mapping(addressMaxLength: Int = 70)(implicit messages: Messages, codeListConnector: CodeListConnector): Mapping[Address] = {
-    val lengthError = if (addressMaxLength == 35) "length35MaxChars" else "length"
+  def mapping(maxAddressLength: Int = 70)(implicit messages: Messages, codeListConnector: CodeListConnector): Mapping[Address] = {
+    val lengthError = if (maxAddressLength == 35) "length35MaxChars" else "length"
 
     Forms.mapping(
       "fullName" -> text()
@@ -103,7 +103,7 @@ object Address extends FieldMapping {
       "addressLine" -> text()
         .verifying("declaration.address.addressLine.empty", nonEmpty)
         .verifying("declaration.address.addressLine.error", isEmpty or isValidAddressField)
-        .verifying(s"declaration.address.addressLine.$lengthError", isEmpty or noLongerThan(addressMaxLength)),
+        .verifying(s"declaration.address.addressLine.$lengthError", isEmpty or noLongerThan(maxAddressLength)),
       "townOrCity" -> text()
         .verifying("declaration.address.townOrCity.empty", nonEmpty)
         .verifying("declaration.address.townOrCity.error", isEmpty or isValidFieldForAddresses)

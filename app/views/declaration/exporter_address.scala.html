@@ -65,7 +65,7 @@
                 classes = "govuk-fieldset__legend--m"
             )),
             html = HtmlFormat.fill(List(
-                group_address(form),
+                group_address(form, ".exporter"),
                 tariffExpander(ExporterDetails, request.declarationType)(messages, appConfig),
                 saveButtons()
             ))

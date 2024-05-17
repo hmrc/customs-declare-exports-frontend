@@ -47,10 +47,10 @@ object ExporterDetails extends DeclarationPage with FieldMapping {
   val pointer: ExportsFieldPointer = "exporterDetails"
 
   def defaultMapping(implicit messages: Messages, codeListConnector: CodeListConnector): Mapping[ExporterDetails] =
-    Forms.mapping("details" -> EntityDetails.addressMapping)(ExporterDetails.apply)(ExporterDetails.unapply)
+    Forms.mapping("details" -> EntityDetails.addressMapping(35))(ExporterDetails.apply)(ExporterDetails.unapply)
 
   def optionalMapping(implicit messages: Messages, codeListConnector: CodeListConnector): Mapping[ExporterDetails] =
-    Forms.mapping("details" -> EntityDetails.optionalAddressMapping)(ExporterDetails.apply)(ExporterDetails.unapply)
+    Forms.mapping("details" -> EntityDetails.optionalAddressMapping(35))(ExporterDetails.apply)(ExporterDetails.unapply)
 
   def form(
     declarationType: DeclarationType,
