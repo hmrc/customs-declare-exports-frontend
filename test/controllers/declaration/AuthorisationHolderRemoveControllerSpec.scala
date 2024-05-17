@@ -106,15 +106,15 @@ class AuthorisationHolderRemoveControllerSpec
         }
       }
 
-      "return 400 (BAD_REQUEST)" when {
+      "redirect to /authorisations-required" when {
         "display page method is invoked with invalid holderId" in {
           withNewCaching(aDeclarationAfter(request.cacheModel, withAuthorisationHolders(authorisationHolder)))
 
           val result = controller.displayPage("invalid")(getRequest())
 
-          result.map(_ => ()).recover { case ex => ex.printStackTrace() }
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result) mustBe Some(AuthorisationHolderSummaryController.displayPage.url)
 
-          status(result) mustBe BAD_REQUEST
           verifyNoInteractions(mockRemovePage)
         }
       }

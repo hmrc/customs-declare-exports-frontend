@@ -50,11 +50,11 @@ class AuthorisationHolderRemoveController @Inject() (
 )(implicit ec: ExecutionContext, auditService: AuditService)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithUnsafeDefaultFormBinding {
 
-  def displayPage(id: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+  def displayPage(id: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     val maybeExistingHolder = authorisationHolders.find(_.id.equals(id))
 
-    maybeExistingHolder.fold(errorHandler.redirectToErrorPage) { holder =>
-      Future.successful(Ok(holderRemovePage(holder, removeYesNoForm.withSubmissionErrors)))
+    maybeExistingHolder.fold(Redirect(AuthorisationHolderSummaryController.displayPage)) { holder =>
+      Ok(holderRemovePage(holder, removeYesNoForm.withSubmissionErrors))
     }
   }
 
