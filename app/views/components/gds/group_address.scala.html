@@ -20,7 +20,7 @@
 
 @this(exportsInputText: exportsInputText)(implicit countryAutoCompleteHelper: CountryHelper)
 
-@(form: Form[_], addressPrefix: String = Address.addressId)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], page: String = "")(implicit request: Request[_], messages: Messages)
 
 @exportsInputText(
     field = form(s"${Address.addressId}.fullName"),
@@ -30,7 +30,7 @@
 
 @exportsInputText(
     field = form(s"${Address.addressId}.addressLine"),
-    labelKey = "declaration.address.addressLine",
+    labelKey = s"declaration.address.addressLine${page}",
     defaultInputClasses = "govuk-input--width-30"
 )
 

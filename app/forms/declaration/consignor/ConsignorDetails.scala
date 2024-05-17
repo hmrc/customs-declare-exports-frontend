@@ -49,7 +49,7 @@ object ConsignorDetails extends DeclarationPage with FieldMapping {
   val id = "ConsignorDetails"
 
   def mapping(implicit messages: Messages, codeListConnector: CodeListConnector): Mapping[ConsignorDetails] =
-    Forms.mapping("details" -> EntityDetails.addressMapping)(ConsignorDetails.apply)(ConsignorDetails.unapply)
+    Forms.mapping("details" -> EntityDetails.addressMapping())(ConsignorDetails.apply)(ConsignorDetails.unapply)
 
   def form(implicit messages: Messages, codeListConnector: CodeListConnector): Form[ConsignorDetails] = Form(mapping)
 

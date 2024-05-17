@@ -168,7 +168,7 @@ class ExporterDetailsControllerSpec extends ControllerSpec with AuditedControlle
         errors(0).messages.head mustBe "declaration.address.fullName.error"
         errors(1).messages.head mustBe "declaration.address.fullName.length"
         errors(2).messages.head mustBe "declaration.address.addressLine.error"
-        errors(3).messages.head mustBe "declaration.address.addressLine.length"
+        errors(3).messages.head mustBe "declaration.address.addressLine.length35MaxChars"
         errors(4).messages.head mustBe "declaration.address.townOrCity.error"
         errors(5).messages.head mustBe "declaration.address.townOrCity.length"
         errors(6).messages.head mustBe "declaration.address.postCode.error"

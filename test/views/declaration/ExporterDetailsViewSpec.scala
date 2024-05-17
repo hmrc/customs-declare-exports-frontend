@@ -79,7 +79,7 @@ class ExporterDetailsViewSpec extends AddressViewSpec with PageWithButtonsSpec w
       }
 
       "display empty input with label for Address" in {
-        view.getElementsByAttributeValue("for", "details_address_addressLine").text() mustBe messages("declaration.address.addressLine")
+        view.getElementsByAttributeValue("for", "details_address_addressLine").text() mustBe messages("declaration.address.addressLine.exporter")
         view.getElementById("details_address_addressLine").attr("value") mustBe empty
       }
 
@@ -135,7 +135,7 @@ class ExporterDetailsViewSpec extends AddressViewSpec with PageWithButtonsSpec w
       }
 
       "display error for addressLine too long" in {
-        assertIncorrectView(validAddress.copy(addressLine = fieldWithLengthOver70), "addressLine", "length")
+        assertIncorrectView(validAddress.copy(addressLine = fieldWithLengthOver35), "addressLine", "length35MaxChars")
       }
 
       "display error for empty townOrCity" in {
@@ -178,8 +178,8 @@ class ExporterDetailsViewSpec extends AddressViewSpec with PageWithButtonsSpec w
         assertIncorrectElements(emptyAddress, List("fullName", "addressLine", "townOrCity", "postCode", "country"), "empty")
       }
 
-      "display errors when everything except country has illegal length" in {
-        assertIncorrectElements(addressWithIllegalLengths, List("fullName", "addressLine", "townOrCity", "postCode"), "length")
+      "display errors when everything except country and addressLine has illegal length" in {
+        assertIncorrectElements(addressWithIllegalLengths, List("fullName", "townOrCity", "postCode"), "length")
       }
 
       "display errors when everything is incorrect" in {
