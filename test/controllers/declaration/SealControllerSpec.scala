@@ -114,11 +114,6 @@ class SealControllerSpec extends ControllerSpec with AuditedControllerSpec with 
         status(result) must be(OK)
       }
 
-      "display remove seal page when cache empty" in {
-        val result = controller.displaySealRemove(containerId, sealId)(getRequest())
-        status(result) must be(OK)
-      }
-
       "display remove seal page when cache contain some data" in {
         withNewCaching(aDeclaration(withContainerData(Container(1, containerId, Seq(Seal(1, sealId))))))
 
@@ -126,6 +121,28 @@ class SealControllerSpec extends ControllerSpec with AuditedControllerSpec with 
         status(result) must be(OK)
       }
 
+    }
+
+    "redirect to /containers/Container1/seals" when {
+
+      "the 'Remove Seal' page is invoked with invalid Seal id" in {
+        withNewCaching(aDeclaration(withContainerData(Container(1, containerId, Seq(Seal(1, sealId))))))
+
+        val result = controller.displaySealRemove(containerId, "unknown")(getRequest())
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(SealController.displaySealSummary(containerId).url)
+      }
+
+      "the 'submitSealRemove' method is invoked with invalid Seal id" in {
+        withNewCaching(aDeclaration(withContainerData(Container(1, containerId, Seq(Seal(1, sealId))))))
+
+        val body = Json.obj("yesNo" -> "Yes")
+        val result = controller.submitSealRemove(containerId, "unknown")(postRequest(body))
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(SealController.displaySealSummary(containerId).url)
+      }
     }
 
     "return 400 (BAD_REQUEST)" when {
