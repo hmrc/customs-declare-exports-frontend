@@ -17,13 +17,13 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
+import controllers.declaration.routes.PackageInformationSummaryController
 import controllers.helpers.PackageInformationHelper.singleCachedPackageInformation
 import controllers.helpers.SequenceIdHelper.handleSequencing
 import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.PackageInformation
-import handlers.ErrorHandler
 import models.ExportsDeclaration
 import models.requests.JourneyRequest
 import play.api.data.Form
@@ -42,7 +42,6 @@ class PackageInformationRemoveController @Inject() (
   authenticate: AuthAction,
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
-  errorHandler: ErrorHandler,
   navigator: Navigator,
   mcc: MessagesControllerComponents,
   packageTypeRemove: package_information_remove
@@ -50,32 +49,30 @@ class PackageInformationRemoveController @Inject() (
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithUnsafeDefaultFormBinding {
 
   def displayPage(itemId: String, id: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    val maybePackageInformation = singleCachedPackageInformation(id, itemId)
-
-    maybePackageInformation.fold(errorHandler.redirectToErrorPage) { packageInfo =>
+    singleCachedPackageInformation(id, itemId).fold(redirectToPackageListPage(itemId)) { packageInfo =>
       Future.successful(Ok(packageTypeRemove(itemId, packageInfo, removeYesNoForm.withSubmissionErrors)))
     }
   }
 
   def submitForm(itemId: String, id: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    val maybePackageInformationToRemove = singleCachedPackageInformation(id, itemId)
-
-    maybePackageInformationToRemove.fold(errorHandler.redirectToErrorPage) { packageInformationToRemove =>
+    singleCachedPackageInformation(id, itemId).fold(redirectToPackageListPage(itemId)) { packageInfo =>
       removeYesNoForm
         .bindFromRequest()
         .fold(
-          (formWithErrors: Form[YesNoAnswer]) => Future.successful(BadRequest(packageTypeRemove(itemId, packageInformationToRemove, formWithErrors))),
-          formData =>
-            formData.answer match {
-              case YesNoAnswers.yes =>
-                updateExportsCache(itemId, packageInformationToRemove)
-                  .map(_ => navigator.continueTo(routes.PackageInformationSummaryController.displayPage(itemId)))
-              case YesNoAnswers.no =>
-                Future.successful(navigator.continueTo(routes.PackageInformationSummaryController.displayPage(itemId)))
-            }
+          formWithErrors => Future.successful(BadRequest(packageTypeRemove(itemId, packageInfo, formWithErrors))),
+          _.answer match {
+            case YesNoAnswers.yes => updateExportsCache(itemId, packageInfo).flatMap(_ => nextPage(itemId))
+            case YesNoAnswers.no  => nextPage(itemId)
+          }
         )
     }
   }
+
+  private def nextPage(itemId: String)(implicit request: JourneyRequest[AnyContent]): Future[Result] =
+    Future.successful(navigator.continueTo(PackageInformationSummaryController.displayPage(itemId)))
+
+  private def redirectToPackageListPage(itemId: String): Future[Result] =
+    Future.successful(Redirect(PackageInformationSummaryController.displayPage(itemId)))
 
   private def removeYesNoForm: Form[YesNoAnswer] = YesNoAnswer.form(errorKey = "declaration.packageInformation.remove.empty")
 

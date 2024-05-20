@@ -17,6 +17,7 @@
 package controllers.declaration
 
 import base.{AuditedControllerSpec, ControllerSpec}
+import controllers.declaration.routes.PackageInformationSummaryController
 import controllers.helpers.SequenceIdHelper.valueOfEso
 import forms.common.YesNoAnswer
 import forms.declaration.PackageInformation
@@ -26,6 +27,7 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import org.scalatest.{GivenWhenThen, OptionValues}
 import play.api.data.Form
+import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
@@ -41,7 +43,6 @@ class PackageInformationRemoveControllerSpec
       mockAuthAction,
       mockJourneyAction,
       mockExportsCacheService,
-      mockErrorHandler,
       navigator,
       stubMessagesControllerComponents(),
       mockRemovePage
@@ -87,7 +88,7 @@ class PackageInformationRemoveControllerSpec
   "PackageInformation Remove Controller" must {
 
     onEveryDeclarationJourney() { request =>
-      "return 200 (OK)" that {
+      "return 200 (OK)" when {
         "display page method is invoked with existing package info id" in {
           withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item)))
 
@@ -98,41 +99,31 @@ class PackageInformationRemoveControllerSpec
 
           thePackageInformation mustBe packageInformation1
         }
-
       }
 
-      "return 400 (BAD_REQUEST)" when {
+      "redirect to /packages-list" when {
 
-        "user submits an invalid answer" in {
+        "display page method is invoked with invalid package id" in {
           withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item)))
 
-          val requestBody = Seq("yesNo" -> "invalid")
-          val result = controller.submitForm(item.id, id1)(postRequestAsFormUrlEncoded(requestBody: _*))
+          val result = controller.displayPage(item.id, "invalid")(getRequest())
 
-          status(result) mustBe BAD_REQUEST
-          verifyRemovePageInvoked()
-          verifyNoAudit()
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result) mustBe Some(PackageInformationSummaryController.displayPage(item.id).url)
+
+          verifyNoInteractions(mockRemovePage)
         }
 
-        "user tries to display page with non-existent package info" in {
-          withNewCaching(aDeclarationAfter(request.cacheModel))
+        "user submits a correct answer but with invalid package id" in {
+          withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item)))
 
-          val result = controller.displayPage(item.id, id1)(getRequest())
+          val requestBody = Json.obj("yesNo" -> "Yes")
+          val result = controller.submitForm(item.id, "non-existent")(postRequest(requestBody))
 
-          status(result) mustBe BAD_REQUEST
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result) mustBe Some(PackageInformationSummaryController.displayPage(item.id).url)
+
           verifyNoInteractions(mockRemovePage)
-          verify(mockErrorHandler).redirectToErrorPage(any())
-          verifyNoAudit()
-        }
-
-        "user tries to remove non-existent package info" in {
-          withNewCaching(aDeclarationAfter(request.cacheModel))
-
-          val result = controller.submitForm(item.id, id1)(getRequest())
-
-          status(result) mustBe BAD_REQUEST
-          verifyNoInteractions(mockRemovePage)
-          verify(mockErrorHandler).redirectToErrorPage(any())
           verifyNoAudit()
         }
       }
@@ -151,7 +142,7 @@ class PackageInformationRemoveControllerSpec
           val result = controller.submitForm(item.id, id1)(postRequestAsFormUrlEncoded(requestBody: _*))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe routes.PackageInformationSummaryController.displayPage(item.id)
+          thePageNavigatedTo mustBe PackageInformationSummaryController.displayPage(item.id)
 
           val declaration = theCacheModelUpdated
           val packageInfos = declaration.itemBy(item.id).flatMap(_.packageInformation).value
@@ -170,7 +161,7 @@ class PackageInformationRemoveControllerSpec
           val result = controller.submitForm(item.id, id1)(postRequestAsFormUrlEncoded(requestBody: _*))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe routes.PackageInformationSummaryController.displayPage(item.id)
+          thePageNavigatedTo mustBe PackageInformationSummaryController.displayPage(item.id)
 
           verifyTheCacheIsUnchanged()
           verifyNoAudit()

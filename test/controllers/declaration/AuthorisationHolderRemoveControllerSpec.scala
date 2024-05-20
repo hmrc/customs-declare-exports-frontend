@@ -48,7 +48,6 @@ class AuthorisationHolderRemoveControllerSpec
     mockJourneyAction,
     mockExportsCacheService,
     navigator,
-    mockErrorHandler,
     stubMessagesControllerComponents(),
     mockRemovePage
   )(ec, auditService)
@@ -124,15 +123,16 @@ class AuthorisationHolderRemoveControllerSpec
   "AuthorisationHolderRemoveController on submitForm" should {
 
     onEveryDeclarationJourney() { request =>
-      "return 400 (BAD_REQUEST)" when {
-
+      "redirect to /authorisations-required" when {
         "provided with invalid holderId" in {
           withNewCaching(aDeclarationAfter(request.cacheModel, withAuthorisationHolders(authorisationHolder)))
 
           val body = Json.obj("yesNo" -> "Yes")
           val result = controller.submitForm("invalid")(postRequest(body))
 
-          status(result) mustBe BAD_REQUEST
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result) mustBe Some(AuthorisationHolderSummaryController.displayPage.url)
+
           verifyNoInteractions(mockRemovePage)
           verifyNoAudit()
         }
