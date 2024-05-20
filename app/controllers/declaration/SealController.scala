@@ -82,13 +82,23 @@ class SealController @Inject() (
     }
   }
 
-  def displaySealRemove(containerId: String, sealId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    Ok(removePage(removeSealYesNoForm, containerId, sealId))
+  def displaySealRemove(containerId: String, sealId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
+    checkIfSealExists(containerId, sealId) {
+      Future.successful(Ok(removePage(removeSealYesNoForm, containerId, sealId)))
+    }
   }
 
   def submitSealRemove(containerId: String, sealId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    removeSealAnswer(containerId, sealId)
+    checkIfSealExists(containerId, sealId) {
+      removeSealAnswer(containerId, sealId)
+    }
   }
+
+  private def checkIfSealExists(containerId: String, sealId: String)(action: => Future[Result])(implicit request: JourneyRequest[_]): Future[Result] =
+    request.cacheModel
+      .containerBy(containerId)
+      .flatMap(_.seals.find(_.id == sealId))
+      .fold(Future.successful(Redirect(SealController.displaySealSummary(containerId))))(_ => action)
 
   private def addSealYesNoForm(containerId: String)(implicit request: JourneyRequest[AnyContent]): Form[YesNoAnswer] = {
     val errorKey = if (seals(containerId).isEmpty) "declaration.seal.add.answer.empty" else "declaration.seal.another.answer.empty"
