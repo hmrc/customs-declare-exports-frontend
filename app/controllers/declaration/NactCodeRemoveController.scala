@@ -17,6 +17,7 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
+import controllers.declaration.routes.NactCodeSummaryController
 import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
@@ -45,33 +46,42 @@ class NactCodeRemoveController @Inject() (
 )(implicit ec: ExecutionContext, auditService: AuditService)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithUnsafeDefaultFormBinding {
 
-  def displayPage(itemId: String, code: String): Action[AnyContent] = (authenticate andThen journeyType(nonClearanceJourneys)) { implicit request =>
-    Ok(nactCodeRemove(itemId, code, removeYesNoForm.withSubmissionErrors))
+  private val validTypes = journeyType(nonClearanceJourneys)
+
+  def displayPage(itemId: String, code: String): Action[AnyContent] = (authenticate andThen validTypes).async { implicit request =>
+    checkIfNactExists(itemId: String, code) {
+      Future.successful(Ok(nactCodeRemove(itemId, code, removeYesNoForm.withSubmissionErrors)))
+    }
   }
 
-  def submitForm(itemId: String, code: String): Action[AnyContent] =
-    (authenticate andThen journeyType(nonClearanceJourneys)).async { implicit request =>
+  def submitForm(itemId: String, code: String): Action[AnyContent] = (authenticate andThen validTypes).async { implicit request =>
+    checkIfNactExists(itemId: String, code) {
       removeYesNoForm
         .bindFromRequest()
         .fold(
-          (formWithErrors: Form[YesNoAnswer]) => Future.successful(BadRequest(nactCodeRemove(itemId, code, formWithErrors))),
-          formData =>
-            formData.answer match {
-              case YesNoAnswers.yes =>
-                updateExportsCache(itemId, code)
-                  .map(_ => navigator.continueTo(routes.NactCodeSummaryController.displayPage(itemId)))
-              case YesNoAnswers.no =>
-                Future.successful(navigator.continueTo(routes.NactCodeSummaryController.displayPage(itemId)))
-            }
+          formWithErrors => Future.successful(BadRequest(nactCodeRemove(itemId, code, formWithErrors))),
+          _.answer match {
+            case YesNoAnswers.yes => updateExportsCache(itemId, code).map(_ => nextPage(itemId))
+            case YesNoAnswers.no  => Future.successful(nextPage(itemId))
+          }
         )
     }
+  }
 
-  private def removeYesNoForm: Form[YesNoAnswer] = YesNoAnswer.form(errorKey = "declaration.nationalAdditionalCode.remove.answer.empty")
+  private def checkIfNactExists(itemId: String, code: String)(action: => Future[Result])(implicit request: JourneyRequest[_]): Future[Result] =
+    request.cacheModel
+      .itemBy(itemId)
+      .flatMap(_.nactCodes.find(_.exists(_.nactCode == code)))
+      .fold(Future.successful(Redirect(NactCodeSummaryController.displayPage(itemId))))(_ => action)
 
-  private def updateExportsCache(itemId: String, nactCodeToRemove: String)(
-    implicit request: JourneyRequest[AnyContent]
-  ): Future[ExportsDeclaration] = {
-    val updatedCodes = request.cacheModel.itemBy(itemId).flatMap(_.nactCodes).getOrElse(Seq.empty).filterNot(_.nactCode == nactCodeToRemove)
-    updateDeclarationFromRequest(model => model.updatedItem(itemId, _.copy(nactCodes = Some(updatedCodes.toList))))
+  private def nextPage(itemId: String)(implicit request: JourneyRequest[AnyContent]): Result =
+    navigator.continueTo(NactCodeSummaryController.displayPage(itemId))
+
+  private def removeYesNoForm: Form[YesNoAnswer] =
+    YesNoAnswer.form(errorKey = "declaration.nationalAdditionalCode.remove.answer.empty")
+
+  private def updateExportsCache(itemId: String, nactCodeToRemove: String)(implicit request: JourneyRequest[_]): Future[ExportsDeclaration] = {
+    val updatedCodes = request.cacheModel.itemBy(itemId).flatMap(_.nactCodes.map(_.filterNot(_.nactCode == nactCodeToRemove)))
+    updateDeclarationFromRequest(model => model.updatedItem(itemId, _.copy(nactCodes = updatedCodes)))
   }
 }
