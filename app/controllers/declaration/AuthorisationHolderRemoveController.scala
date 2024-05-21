@@ -23,10 +23,9 @@ import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.authorisationHolder.AuthorisationHolder
-import handlers.ErrorHandler
+import models.ExportsDeclaration
 import models.declaration.AuthorisationHolders
 import models.requests.JourneyRequest
-import models.ExportsDeclaration
 import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc._
@@ -44,24 +43,23 @@ class AuthorisationHolderRemoveController @Inject() (
   journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
   navigator: Navigator,
-  errorHandler: ErrorHandler,
   mcc: MessagesControllerComponents,
   holderRemovePage: authorisation_holder_remove
 )(implicit ec: ExecutionContext, auditService: AuditService)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithUnsafeDefaultFormBinding {
 
-  def displayPage(id: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def displayPage(id: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     val maybeExistingHolder = authorisationHolders.find(_.id.equals(id))
 
-    maybeExistingHolder.fold(Redirect(AuthorisationHolderSummaryController.displayPage)) { holder =>
-      Ok(holderRemovePage(holder, removeYesNoForm.withSubmissionErrors))
+    maybeExistingHolder.fold(redirectToAuthorisationListPage) { holder =>
+      Future.successful(Ok(holderRemovePage(holder, removeYesNoForm.withSubmissionErrors)))
     }
   }
 
   def submitForm(id: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     val maybeExistingHolder = authorisationHolders.find(_.id.equals(id))
 
-    maybeExistingHolder.fold(errorHandler.redirectToErrorPage) { holderToRemove =>
+    maybeExistingHolder.fold(redirectToAuthorisationListPage) { holderToRemove =>
       removeYesNoForm
         .bindFromRequest()
         .fold(
@@ -82,6 +80,9 @@ class AuthorisationHolderRemoveController @Inject() (
       else if (userCanLandOnIsAuthRequiredPage(declaration)) AuthorisationHolderRequiredController.displayPage
       else AuthorisationHolderAddController.displayPage
     )
+
+  private def redirectToAuthorisationListPage: Future[Result] =
+    Future.successful(Redirect(AuthorisationHolderSummaryController.displayPage))
 
   private val removeYesNoForm: Form[YesNoAnswer] = YesNoAnswer.form(errorKey = "declaration.authorisationHolder.remove.empty")
 
