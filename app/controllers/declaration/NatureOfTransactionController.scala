@@ -45,10 +45,9 @@ class NatureOfTransactionController @Inject() (
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithUnsafeDefaultFormBinding {
 
   def displayPage: Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    val frm = form.withSubmissionErrors
     request.cacheModel.natureOfTransaction match {
-      case Some(data) => Ok(natureOfTransactionPage(frm.fill(data)))
-      case _          => Ok(natureOfTransactionPage(frm))
+      case Some(data) => Ok(natureOfTransactionPage(form.withSubmissionErrors.fill(data)))
+      case _          => Ok(natureOfTransactionPage(form.withSubmissionErrors))
     }
   }
 

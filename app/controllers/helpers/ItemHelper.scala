@@ -16,27 +16,17 @@
 
 package controllers.helpers
 
-import controllers.declaration.routes.{
-  NactCodeSummaryController,
-  PackageInformationSummaryController,
-  StatisticalValueController,
-  ZeroRatedForVatController
-}
+import controllers.declaration.routes.{PackageInformationSummaryController, StatisticalValueController}
 import forms.declaration.NatureOfTransaction
 import forms.declaration.NatureOfTransaction.{BusinessPurchase, Sale}
-import models.DeclarationType.{occasionalAndSimplified, OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
+import models.DeclarationType._
 import models.ExportsDeclaration
 import models.requests.JourneyRequest
-import play.api.mvc.{AnyContent, Call}
+import play.api.mvc.Call
 
 object ItemHelper {
 
-  def cusCodeAndDangerousGoodsNextPage(declaration: ExportsDeclaration, itemId: String): Call = {
-    val toZeroRatedForVatPage = eligibleForZeroVat(declaration) || isLowValueDeclaration(declaration, itemId)
-    if (toZeroRatedForVatPage) ZeroRatedForVatController.displayPage(itemId) else NactCodeSummaryController.displayPage(itemId)
-  }
-
-  def nextPageAfterNactCodePages(itemId: String)(implicit request: JourneyRequest[AnyContent]): Call =
+  def nextPageAfterNactCodePages(itemId: String)(implicit request: JourneyRequest[_]): Call =
     request.declarationType match {
       case SUPPLEMENTARY | STANDARD => StatisticalValueController.displayPage(itemId)
 
@@ -47,10 +37,13 @@ object ItemHelper {
         PackageInformationSummaryController.displayPage(itemId)
     }
 
+  def skipZeroRatedForVatPage(declaration: ExportsDeclaration, itemId: String): Boolean =
+    !eligibleForZeroVat(declaration) && !isLowValueDeclaration(declaration, itemId)
+
   private def eligibleForZeroVat(declaration: ExportsDeclaration): Boolean =
     declaration.natureOfTransaction match {
-      case Some(NatureOfTransaction(`Sale`) | NatureOfTransaction(`BusinessPurchase`)) => declaration.isType(STANDARD)
-      case _                                                                           => false
+      case Some(NatureOfTransaction(BusinessPurchase) | NatureOfTransaction(Sale)) => declaration.isType(STANDARD)
+      case _                                                                       => false
     }
 
   private def isLowValueDeclaration(declaration: ExportsDeclaration, itemId: String): Boolean =

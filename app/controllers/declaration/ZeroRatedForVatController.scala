@@ -20,6 +20,7 @@ import connectors.CodeLinkConnector
 import connectors.Tag.CodesRestrictingZeroVat
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.declaration.routes.NactCodeSummaryController
+import controllers.helpers.ItemHelper.skipZeroRatedForVatPage
 import controllers.navigation.Navigator
 import forms.declaration.{NactCode, ZeroRatedForVat}
 import models.DeclarationType._
@@ -47,42 +48,39 @@ class ZeroRatedForVatController @Inject() (
 )(implicit ec: ExecutionContext, auditService: AuditService)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithUnsafeDefaultFormBinding {
 
-  val validJourneys = occasionalAndSimplified :+ STANDARD
+  private val validJourneys = occasionalAndSimplified :+ STANDARD
 
   def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType(validJourneys)).async { implicit request =>
-    if (isNotLowValueDeclaration(itemId)) updateExportsCache(itemId, None).map(_ => nextPage(itemId))
+    if (skipZeroRatedForVatPage(request.cacheModel, itemId)) updateExportsCache(itemId, None).map(_ => redirectToNextPage(itemId))
     else {
       val form = request.cacheModel.itemBy(itemId).flatMap(_.nactExemptionCode) match {
         case Some(code) => ZeroRatedForVat.form.fill(code).withSubmissionErrors
         case _          => ZeroRatedForVat.form.withSubmissionErrors
       }
 
-      Future.successful(Ok(zero_rated_for_vat(itemId, form, eligibleForZeroVat(itemId))))
+      Future.successful(Ok(zero_rated_for_vat(itemId, form, restrictedForZeroVat(itemId))))
     }
   }
 
   def submitForm(itemId: String): Action[AnyContent] = (authenticate andThen journeyType(validJourneys)).async { implicit request =>
-    if (isNotLowValueDeclaration(itemId)) updateExportsCache(itemId, None).map(_ => nextPage(itemId))
+    if (skipZeroRatedForVatPage(request.cacheModel, itemId)) updateExportsCache(itemId, None).map(_ => redirectToNextPage(itemId))
     else
       ZeroRatedForVat.form
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(zero_rated_for_vat(itemId, formWithErrors, eligibleForZeroVat(itemId)))),
-          nactCode => updateExportsCache(itemId, Some(nactCode)).map(_ => nextPage(itemId))
+          formWithErrors => Future.successful(BadRequest(zero_rated_for_vat(itemId, formWithErrors, restrictedForZeroVat(itemId)))),
+          code => updateExportsCache(itemId, Some(code)).map(_ => navigator.continueTo(NactCodeSummaryController.displayPage(itemId)))
         )
   }
 
   private lazy val procedureCodesRestrictingZeroVat = codeLinkConnector.getValidProcedureCodesForTag(CodesRestrictingZeroVat)
 
-  private def eligibleForZeroVat(itemId: String)(implicit request: JourneyRequest[_]): Boolean =
+  private def redirectToNextPage(itemId: String): Result =
+    Redirect(NactCodeSummaryController.displayPage(itemId))
+
+  private def restrictedForZeroVat(itemId: String)(implicit request: JourneyRequest[_]): Boolean =
     request.cacheModel.procedureCodeOfItem(itemId).flatMap(_.procedureCode).fold(false)(procedureCodesRestrictingZeroVat.contains)
 
-  private def isNotLowValueDeclaration(itemId: String)(implicit request: JourneyRequest[_]): Boolean =
-    isOccasionalOrSimplified(request.cacheModel) && !request.cacheModel.isLowValueDeclaration(itemId)
-
-  private def nextPage(itemId: String)(implicit request: JourneyRequest[AnyContent]): Result =
-    navigator.continueTo(NactCodeSummaryController.displayPage(itemId))
-
-  private def updateExportsCache(itemId: String, nactCode: Option[NactCode])(implicit r: JourneyRequest[_]): Future[ExportsDeclaration] =
-    updateDeclarationFromRequest(_.updatedItem(itemId, _.copy(nactExemptionCode = nactCode)))
+  private def updateExportsCache(itemId: String, maybeCode: Option[NactCode])(implicit r: JourneyRequest[_]): Future[ExportsDeclaration] =
+    updateDeclarationFromRequest(_.updatedItem(itemId, _.copy(nactExemptionCode = maybeCode)))
 }

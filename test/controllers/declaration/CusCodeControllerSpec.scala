@@ -17,7 +17,7 @@
 package controllers.declaration
 
 import base.{AuditedControllerSpec, ControllerSpec}
-import controllers.declaration.routes.{NactCodeSummaryController, ZeroRatedForVatController}
+import controllers.declaration.routes.ZeroRatedForVatController
 import controllers.routes.RootController
 import forms.declaration.CusCode
 import forms.declaration.CusCode._
@@ -123,12 +123,12 @@ class CusCodeControllerSpec extends ControllerSpec with AuditedControllerSpec {
 
     onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL) { request =>
       "return 303 (SEE_OTHER)" when {
-        "accept submission and redirect to the 'Nact Code Summary' page" in {
+        "accept submission and redirect to the 'Zero Rated for VAT' page" in {
           val itemId = itemIdOfCachedDeclaration(request.cacheModel)
 
           val result = controller.submitForm(itemId)(postRequest(correctForm))
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe NactCodeSummaryController.displayPage(itemId)
+          thePageNavigatedTo mustBe ZeroRatedForVatController.displayPage(itemId)
           verifyAudit()
         }
       }

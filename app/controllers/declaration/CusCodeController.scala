@@ -17,7 +17,7 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.helpers.ItemHelper.cusCodeAndDangerousGoodsNextPage
+import controllers.declaration.routes.ZeroRatedForVatController
 import controllers.navigation.Navigator
 import forms.declaration.CusCode
 import forms.declaration.CusCode.form
@@ -58,13 +58,10 @@ class CusCodeController @Inject() (
       .bindFromRequest()
       .fold(
         formWithErrors => Future.successful(BadRequest(cusCodePage(itemId, formWithErrors))),
-        validForm =>
-          updateExportsCache(itemId, validForm).map { declaration =>
-            navigator.continueTo(cusCodeAndDangerousGoodsNextPage(declaration, itemId))
-          }
+        updateExportsCache(itemId, _).map(_ => navigator.continueTo(ZeroRatedForVatController.displayPage(itemId)))
       )
   }
 
-  private def updateExportsCache(itemId: String, updatedItem: CusCode)(implicit request: JourneyRequest[AnyContent]): Future[ExportsDeclaration] =
-    updateDeclarationFromRequest(_.updatedItem(itemId, item => item.copy(cusCode = Some(updatedItem))))
+  private def updateExportsCache(itemId: String, cusCode: CusCode)(implicit request: JourneyRequest[_]): Future[ExportsDeclaration] =
+    updateDeclarationFromRequest(_.updatedItem(itemId, item => item.copy(cusCode = Some(cusCode))))
 }
