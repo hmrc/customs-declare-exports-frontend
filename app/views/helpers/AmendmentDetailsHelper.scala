@@ -226,18 +226,35 @@ class AmendmentDetailsHelper @Inject() (
     def fetchCountry(countryCode: Option[String]): Option[String] =
       countryCode.flatMap(countryHelper.getShortNameForCountryCode)
 
-    def updateRoutingCountry(routingCountry: RoutingCountry): Option[RoutingCountry] =
+    def handleRoutingCountry(routingCountry: RoutingCountry): Option[RoutingCountry] =
       Some(routingCountry.copy(country = Country(fetchCountry(routingCountry.country.code))))
 
-    def handlePotentialCountryCode(maybeCode: String): String =
-      if (maybeCode.isBlank) maybeCode
-      else if (maybeCode.length == 2 && isValidCountryCode(maybeCode))
-        fetchCountry(Some(maybeCode)).getOrElse(messages("declaration.summary.unknown"))
-      else maybeCode
+    def handleString(maybeCode: String): Option[String] = {
+      val trimmedMaybeCode = maybeCode.trim
+      if (trimmedMaybeCode.length == 2 && isValidCountryCode(trimmedMaybeCode))
+        fetchCountry(Some(trimmedMaybeCode)).orElse(Some(messages("declaration.summary.unknown")))
+      else Some(maybeCode)
+    }
+
+    def handleDetails(details: Details): Option[Details] = {
+      val maybeAddress = details.details.address
+      Some(maybeAddress.fold(details) { address =>
+        val countryName = fetchCountry(Some(address.country))
+        countryName.fold(details) { name =>
+          val updatedAddress = address.copy(country = name)
+          details.updateAddress(Some(updatedAddress))
+        }
+      })
+    }
+
+    def handleAddress(address: Address): Option[Address] =
+      fetchCountry(Some(address.country)).map(countryCode => address.copy(country = countryCode))
 
     val values = (af.values.originalVal, af.values.newVal) match {
       case (None, Some(country: Country)) => OriginalAndNewValues(None, Some(Country(fetchCountry(country.code))))
       case (Some(country: Country), None) => OriginalAndNewValues(Some(Country(fetchCountry(country.code))), None)
+      case (Some(oldCountry: Country), Some(newCountry: Country)) =>
+        OriginalAndNewValues(Some(Country(fetchCountry(oldCountry.code))), Some(Country(fetchCountry(newCountry.code))))
 
       case (None, Some(country: TransportCountry)) => OriginalAndNewValues(None, Some(TransportCountry(fetchCountry(country.countryCode))))
       case (Some(country: TransportCountry), None) => OriginalAndNewValues(Some(TransportCountry(fetchCountry(country.countryCode))), None)
@@ -247,16 +264,23 @@ class AmendmentDetailsHelper @Inject() (
           Some(TransportCountry(fetchCountry(newCountry.countryCode)))
         )
 
-      case (None, Some(routingCountry: RoutingCountry)) => OriginalAndNewValues(None, updateRoutingCountry(routingCountry))
-      case (Some(routingCountry: RoutingCountry), None) => OriginalAndNewValues(updateRoutingCountry(routingCountry), None)
+      case (None, Some(routingCountry: RoutingCountry)) => OriginalAndNewValues(None, handleRoutingCountry(routingCountry))
+      case (Some(routingCountry: RoutingCountry), None) => OriginalAndNewValues(handleRoutingCountry(routingCountry), None)
 
-      case (None, Some(country: String)) => OriginalAndNewValues(None, Some(handlePotentialCountryCode(country)))
-      case (Some(country: String), None) => OriginalAndNewValues(Some(handlePotentialCountryCode(country)), None)
+      case (None, Some(country: String)) => OriginalAndNewValues(None, handleString(country))
+      case (Some(country: String), None) => OriginalAndNewValues(handleString(country), None)
       case (Some(oldCountry: String), Some(newCountry: String)) =>
-        OriginalAndNewValues(Some(handlePotentialCountryCode(oldCountry)), Some(handlePotentialCountryCode(newCountry)))
+        OriginalAndNewValues(handleString(oldCountry), handleString(newCountry))
 
-      case (Some(oldCountry: Country), Some(newCountry: Country)) =>
-        OriginalAndNewValues(Some(Country(fetchCountry(oldCountry.code))), Some(Country(fetchCountry(newCountry.code))))
+      case (None, Some(details: Details)) => OriginalAndNewValues(None, handleDetails(details))
+      case (Some(details: Details), None) => OriginalAndNewValues(handleDetails(details), None)
+      case (Some(oldDetails: Details), Some(newDetails: Details)) =>
+        OriginalAndNewValues(handleDetails(oldDetails), handleDetails(newDetails))
+
+      case (None, Some(address: Address)) => OriginalAndNewValues(None, handleAddress(address))
+      case (Some(address: Address), None) => OriginalAndNewValues(handleAddress(address), None)
+      case (Some(oldAddress: Address), Some(newAddress: Address)) =>
+        OriginalAndNewValues(handleAddress(oldAddress), handleAddress(newAddress))
 
       case _ => af.values
     }

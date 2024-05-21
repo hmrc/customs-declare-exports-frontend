@@ -19,7 +19,7 @@ package forms.declaration.carrier
 import connectors.CodeListConnector
 import forms.DeclarationPage
 import forms.common.Eori
-import forms.declaration.EntityDetails
+import forms.declaration.{Details, EntityDetails}
 import models.DeclarationType.{CLEARANCE, DeclarationType}
 import models.viewmodels.TariffContentKey
 import models.ExportsFieldPointer.ExportsFieldPointer
@@ -30,7 +30,7 @@ import play.api.libs.json.{Json, OFormat}
 import services.DiffTools
 import services.DiffTools.{combinePointers, ExportsDeclarationDiff}
 
-case class CarrierDetails(details: EntityDetails) extends DiffTools[CarrierDetails] with AmendmentOp {
+case class CarrierDetails(details: EntityDetails) extends Details with DiffTools[CarrierDetails] with AmendmentOp {
 
   override def createDiff(original: CarrierDetails, pointerString: ExportsFieldPointer, sequenceId: Option[Int] = None): ExportsDeclarationDiff =
     Seq(details.createDiff(original.details, combinePointers(pointerString, sequenceId))).flatten

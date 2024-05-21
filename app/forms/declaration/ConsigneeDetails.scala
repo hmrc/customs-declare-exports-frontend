@@ -28,7 +28,7 @@ import play.api.libs.json.{Json, OFormat}
 import services.DiffTools
 import services.DiffTools.{combinePointers, ExportsDeclarationDiff}
 
-case class ConsigneeDetails(details: EntityDetails) extends DiffTools[ConsigneeDetails] with AmendmentOp {
+case class ConsigneeDetails(details: EntityDetails) extends Details with DiffTools[ConsigneeDetails] with AmendmentOp {
 
   override def createDiff(original: ConsigneeDetails, pointerString: ExportsFieldPointer, sequenceId: Option[Int] = None): ExportsDeclarationDiff =
     Seq(details.createDiff(original.details, combinePointers(pointerString, sequenceId))).flatten

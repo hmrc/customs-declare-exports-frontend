@@ -18,7 +18,7 @@ package forms.declaration.consignor
 
 import connectors.CodeListConnector
 import forms.DeclarationPage
-import forms.declaration.EntityDetails
+import forms.declaration.{Details, EntityDetails}
 import models.viewmodels.TariffContentKey
 import models.DeclarationType.DeclarationType
 import models.ExportsFieldPointer.ExportsFieldPointer
@@ -29,7 +29,7 @@ import play.api.libs.json.{Json, OFormat}
 import services.DiffTools
 import services.DiffTools.{combinePointers, ExportsDeclarationDiff}
 
-case class ConsignorDetails(details: EntityDetails) extends DiffTools[ConsignorDetails] with AmendmentOp {
+case class ConsignorDetails(details: EntityDetails) extends Details with DiffTools[ConsignorDetails] with AmendmentOp {
 
   override def createDiff(original: ConsignorDetails, pointerString: ExportsFieldPointer, sequenceId: Option[Int] = None): ExportsDeclarationDiff =
     Seq(details.createDiff(original.details, combinePointers(pointerString, sequenceId))).flatten
