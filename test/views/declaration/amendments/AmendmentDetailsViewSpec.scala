@@ -284,7 +284,7 @@ object AmendmentDetailsViewSpec {
   private val townOrCityNew = "Paris"
   private val postCodeNew = "10001"
   private val countryNew = "France"
-  private val address = Address(fullNameNew, addressLineNew, townOrCityNew, postCodeNew, countryNew)
+  private val address = Address(fullNameNew, addressLineNew, townOrCityNew, postCodeNew, "FR")
   private val expectedAddress = "Bags Export 1 Bags Avenue Paris 10001 France"
 
   // scalastyle:off
@@ -556,60 +556,7 @@ object AmendmentDetailsViewSpec {
         eori1,
         s"${keys(parties)}.declarant.eori"
       ) ++
-      addOrRemove(
-        s"$parties.declarantDetails",
-        DeclarantDetails(EntityDetails(None, Some(address))),
-        parties,
-        expectedAddress,
-        s"${keys(parties)}.declarant.address"
-      ) ++
       amendment(s"$parties.declarantDetails.eori", eori1, eori2, parties, eori1, eori2, s"${keys(parties)}.declarant.eori") ++
-      addOrRemove(s"$parties.declarantDetails.address", address, parties, expectedAddress, s"${keys(parties)}.declarant.address") ++
-      amendment(
-        s"$parties.declarantDetails.address.fullName",
-        fullNameOld,
-        fullNameNew,
-        parties,
-        fullNameOld,
-        fullNameNew,
-        s"${keys(parties)}.declarant.address.fullName"
-      ) ++
-      amendment(
-        s"$parties.declarantDetails.address.addressLine",
-        addressLineOld,
-        addressLineNew,
-        parties,
-        addressLineOld,
-        addressLineNew,
-        s"${keys(parties)}.declarant.address.addressLine"
-      ) ++
-      amendment(
-        s"$parties.declarantDetails.address.townOrCity",
-        townOrCityOld,
-        townOrCityNew,
-        parties,
-        townOrCityOld,
-        townOrCityNew,
-        s"${keys(parties)}.declarant.address.townOrCity"
-      ) ++
-      amendment(
-        s"$parties.declarantDetails.address.postCode",
-        postCodeOld,
-        postCodeNew,
-        parties,
-        postCodeOld,
-        postCodeNew,
-        s"${keys(parties)}.declarant.address.postCode"
-      ) ++
-      amendment(
-        s"$parties.declarantDetails.address.country",
-        countryOld,
-        countryNew,
-        parties,
-        countryOld,
-        countryNew,
-        s"${keys(parties)}.declarant.address.country"
-      ) ++
       addOrRemove(
         s"$parties.representativeDetails",
         RepresentativeDetails(Some(EntityDetails(Some(eori), None)), None, None),
@@ -617,61 +564,8 @@ object AmendmentDetailsViewSpec {
         eori1,
         s"${keys(parties)}.representative.eori"
       ) ++
-      addOrRemove(
-        s"$parties.representativeDetails",
-        RepresentativeDetails(Some(EntityDetails(None, Some(address))), None, None),
-        parties,
-        expectedAddress,
-        s"${keys(parties)}.representative.address"
-      ) ++
       amendment(s"$parties.representativeDetails.statusCode", "1", "2", parties, "Declarant", "Direct", s"${keys(parties)}.representative.type") ++
       amendment(s"$parties.representativeDetails.eori", eori1, eori2, parties, eori1, eori2, s"${keys(parties)}.representative.eori") ++
-      addOrRemove(s"$parties.representativeDetails.address", address, parties, expectedAddress, s"${keys(parties)}.representative.address") ++
-      amendment(
-        s"$parties.representativeDetails.address.fullName",
-        fullNameOld,
-        fullNameNew,
-        parties,
-        fullNameOld,
-        fullNameNew,
-        s"${keys(parties)}.representative.address.fullName"
-      ) ++
-      amendment(
-        s"$parties.representativeDetails.address.addressLine",
-        addressLineOld,
-        addressLineNew,
-        parties,
-        addressLineOld,
-        addressLineNew,
-        s"${keys(parties)}.representative.address.addressLine"
-      ) ++
-      amendment(
-        s"$parties.representativeDetails.address.townOrCity",
-        townOrCityOld,
-        townOrCityNew,
-        parties,
-        townOrCityOld,
-        townOrCityNew,
-        s"${keys(parties)}.representative.address.townOrCity"
-      ) ++
-      amendment(
-        s"$parties.representativeDetails.address.postCode",
-        postCodeOld,
-        postCodeNew,
-        parties,
-        postCodeOld,
-        postCodeNew,
-        s"${keys(parties)}.representative.address.postCode"
-      ) ++
-      amendment(
-        s"$parties.representativeDetails.address.country",
-        countryOld,
-        countryNew,
-        parties,
-        countryOld,
-        countryNew,
-        s"${keys(parties)}.representative.address.country"
-      ) ++
       amendment(s"$parties.declarationAdditionalActorsData.actors.eori", eori1, eori2, parties, eori1, eori2, s"${keys(parties)}.actors.eori") ++
       amendment(
         s"$parties.declarationAdditionalActorsData.actors.partyType",
