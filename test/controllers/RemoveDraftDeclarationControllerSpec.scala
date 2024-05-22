@@ -23,14 +23,14 @@ import org.mockito.Mockito.when
 import play.api.libs.json.{JsObject, JsString, Json}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
-import views.html.remove_declaration
+import views.html.drafts.remove_declaration
 
-class RemoveSavedDeclarationsControllerSpec extends ControllerWithoutFormSpec {
+class RemoveDraftDeclarationControllerSpec extends ControllerWithoutFormSpec {
 
   trait SetUp {
     val removeDeclarationPage = mock[remove_declaration]
 
-    val controller = new RemoveSavedDeclarationsController(
+    val controller = new RemoveDraftDeclarationController(
       mockAuthAction,
       mockVerifiedEmailAction,
       mockCustomsDeclareExportsConnector,
@@ -63,7 +63,7 @@ class RemoveSavedDeclarationsControllerSpec extends ControllerWithoutFormSpec {
         val result = controller.displayPage("UNKNOWN DECLARATION")(getRequest())
 
         status(result) must be(SEE_OTHER)
-        redirectLocation(result) must be(Some(controllers.routes.SavedDeclarationsController.displayDeclarations().url))
+        redirectLocation(result) must be(Some(controllers.routes.DraftDeclarationController.displayDeclarations().url))
       }
 
       "rejecting to delete a draft declaration" in new SetUp {
@@ -73,7 +73,7 @@ class RemoveSavedDeclarationsControllerSpec extends ControllerWithoutFormSpec {
         val result = controller.removeDeclaration("123")(deleteRequest(body))
 
         status(result) must be(SEE_OTHER)
-        redirectLocation(result) must be(Some(controllers.routes.SavedDeclarationsController.displayDeclarations().url))
+        redirectLocation(result) must be(Some(controllers.routes.DraftDeclarationController.displayDeclarations().url))
       }
 
       "deleting a draft declaration" in new SetUp {
@@ -84,7 +84,7 @@ class RemoveSavedDeclarationsControllerSpec extends ControllerWithoutFormSpec {
         val result = controller.removeDeclaration("123")(deleteRequest(body))
 
         status(result) must be(SEE_OTHER)
-        redirectLocation(result) must be(Some(controllers.routes.SavedDeclarationsController.displayDeclarations().url))
+        redirectLocation(result) must be(Some(controllers.routes.DraftDeclarationController.displayDeclarations().url))
       }
     }
 

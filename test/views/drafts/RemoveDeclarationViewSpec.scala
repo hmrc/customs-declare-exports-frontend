@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package views
+package views.drafts
 
 import base.{ExportsTestData, Injector}
 import forms.RemoveDraftDeclaration.form
@@ -25,17 +25,17 @@ import models.declaration.DeclarationStatus
 import org.jsoup.nodes.{Document, Element}
 import play.api.data.Form
 import views.declaration.spec.UnitViewSpec
-import views.html.remove_declaration
+import views.html.drafts.remove_declaration
 import views.tags.ViewTest
 
 import java.time.{LocalDateTime, ZoneOffset}
 
 @ViewTest
-class RemoveSavedDeclarationsViewSpec extends UnitViewSpec with Injector {
+class RemoveDeclarationViewSpec extends UnitViewSpec with Injector {
 
-  val title: String = "saved.declarations.remove.title"
-  val ducr: String = "saved.declarations.ducr"
-  val dateSaved: String = "saved.declarations.dateSaved"
+  val title: String = "draft.declarations.remove.title"
+  val ducr: String = "draft.declarations.ducr"
+  val dateSaved: String = "draft.declarations.dateSaved"
 
   val page = instanceOf[remove_declaration]
 
@@ -67,7 +67,7 @@ class RemoveSavedDeclarationsViewSpec extends UnitViewSpec with Injector {
 
       numberOfTableRows(view) mustBe 1
 
-      view.getElementById("submit").text() mustBe messages("saved.declarations.remove.submitButton")
+      view.getElementById("submit").text() mustBe messages("draft.declarations.remove.submitButton")
     }
 
     "display errors if no option has been chosen" in {
@@ -77,7 +77,7 @@ class RemoveSavedDeclarationsViewSpec extends UnitViewSpec with Injector {
       view must haveGovukGlobalErrorSummary
       view must containErrorElementWithTagAndHref("a", "#Yes")
 
-      view must containErrorElementWithMessageKey("saved.declarations.remove.option.error.empty")
+      view must containErrorElementWithMessageKey("draft.declarations.remove.option.error.empty")
     }
   }
 

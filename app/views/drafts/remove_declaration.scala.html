@@ -43,7 +43,7 @@
         rows = Seq(
             Seq(
                 TableRow(
-                    content = Text(declaration.ducr.map(_.ducr).getOrElse(messages("saved.declarations.noDucr")))
+                    content = Text(declaration.ducr.map(_.ducr).getOrElse(messages("draft.declarations.noDucr")))
                 ),
                 TableRow(
                     content = Text(ViewDates.formatDateAtTime(declaration.declarationMeta.updatedDateTime))
@@ -52,10 +52,10 @@
         ),
         head = Some(List(
             HeadCell(
-                content = Text(messages("saved.declarations.ducr"))
+                content = Text(messages("draft.declarations.ducr"))
             ),
             HeadCell(
-                content = Text(messages("saved.declarations.dateSaved"))
+                content = Text(messages("draft.declarations.dateSaved"))
             )
         ))
     ))
@@ -89,19 +89,19 @@
 @fieldSetHtml = {
   @declarationTable
   @radios
-  @saveAndContinue("saved.declarations.remove.submitButton")
+  @saveAndContinue("draft.declarations.remove.submitButton")
 }
 
 @govukLayout(
-    title = Title("saved.declarations.remove.title", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.back"), routes.SavedDeclarationsController.displayDeclarations()))) {
+    title = Title("draft.declarations.remove.title", hasErrors = hasErrors),
+    backButton = Some(BackButton(messages("site.back"), routes.DraftDeclarationController.displayDeclarations()))) {
 
-    @formHelper(action = RemoveSavedDeclarationsController.removeDeclaration(declaration.id), 'autoComplete -> "off") {
+    @formHelper(action = RemoveDraftDeclarationController.removeDeclaration(declaration.id), 'autoComplete -> "off") {
         @errorSummary(radioGroupErrors("remove", "Yes", form.errors))
 
         @govukFieldset(Fieldset(
             legend = Some(Legend(
-                content = Text(messages("saved.declarations.remove.title")),
+                content = Text(messages("draft.declarations.remove.title")),
                 classes = gdsPageLegend,
                 isPageHeading = true
             )),

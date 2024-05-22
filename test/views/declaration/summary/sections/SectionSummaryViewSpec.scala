@@ -16,7 +16,7 @@
 
 package views.declaration.summary.sections
 
-import controllers.routes.SavedDeclarationsController
+import controllers.routes.DraftDeclarationController
 import models.requests.{JourneyRequest, SessionHelper}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -47,7 +47,7 @@ class SectionSummaryViewSpec extends SummaryViewSpec {
 
     "render view declaration summary link" in {
       val link = view.getElementById("view_declaration_summary")
-      link must haveHref(SavedDeclarationsController.continueDeclaration(declaration.id).url)
+      link must haveHref(DraftDeclarationController.displayDeclaration(declaration.id).url)
     }
 
     "display page title" in {

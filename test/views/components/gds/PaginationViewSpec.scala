@@ -19,7 +19,7 @@ package views.components.gds
 import base.ExportsTestData
 import models.{ExportsDeclaration, Page, Paginated}
 import views.declaration.spec.UnitViewSpec
-import views.html.declarations.pagination
+import views.html.drafts.pagination
 
 class PaginationViewSpec extends UnitViewSpec {
 
@@ -29,10 +29,10 @@ class PaginationViewSpec extends UnitViewSpec {
     pageSize: Int = 10,
     elementsTotal: Int = 0
   ) = pagination(
-    singularName = messages("saved.declarations.pagination.singular"),
-    pluralName = messages("saved.declarations.pagination.plural"),
+    singularName = messages("draft.declarations.pagination.singular"),
+    pluralName = messages("draft.declarations.pagination.plural"),
     pager = Paginated(declarations, Page(currentPage, pageSize), elementsTotal),
-    onChange = page => controllers.routes.SavedDeclarationsController.displayDeclarations(page),
+    onChange = page => controllers.routes.DraftDeclarationController.displayDeclarations(page),
     neighbourPagesAmount = 1
   )
 
@@ -46,7 +46,7 @@ class PaginationViewSpec extends UnitViewSpec {
         val summary = paginationComponent().getElementsByClass("ceds-pagination__summary")
 
         summary.first() must containMessage("site.pagination.showing.no")
-        summary.first() must containMessage("saved.declarations.pagination.plural")
+        summary.first() must containMessage("draft.declarations.pagination.plural")
       }
 
       "there is single element" in {
@@ -54,7 +54,7 @@ class PaginationViewSpec extends UnitViewSpec {
 
         summary.first() must containMessage("site.pagination.showing")
         summary.first() must containText("1")
-        summary.first() must containMessage("saved.declarations.pagination.singular")
+        summary.first() must containMessage("draft.declarations.pagination.singular")
       }
 
       "there are multiple elements" in {
@@ -64,7 +64,7 @@ class PaginationViewSpec extends UnitViewSpec {
         summary.first() must containText("1 – 10")
         summary.first() must containMessage("site.pagination.of")
         summary.first() must containText("30")
-        summary.first() must containMessage("saved.declarations.pagination.plural")
+        summary.first() must containMessage("draft.declarations.pagination.plural")
       }
     }
 
@@ -82,10 +82,10 @@ class PaginationViewSpec extends UnitViewSpec {
         controls.getElementsByClass("ceds-pagination__item").size() mustBe 3
         controls.getElementById("pagination-page_active") must containText("1")
         controls.getElementById("pagination-page_2") must containText("2")
-        controls.getElementById("pagination-page_2") must haveHref(controllers.routes.SavedDeclarationsController.displayDeclarations(2))
+        controls.getElementById("pagination-page_2") must haveHref(controllers.routes.DraftDeclarationController.displayDeclarations(2))
 
         controls.getElementById("pagination-page_next") must containText("Next")
-        controls.getElementById("pagination-page_next") must haveHref(controllers.routes.SavedDeclarationsController.displayDeclarations(2))
+        controls.getElementById("pagination-page_next") must haveHref(controllers.routes.DraftDeclarationController.displayDeclarations(2))
       }
 
       "there are two pages and the current one is 2" in {
@@ -93,10 +93,10 @@ class PaginationViewSpec extends UnitViewSpec {
 
         controls.getElementsByClass("ceds-pagination__item").size() mustBe 3
         controls.getElementById("pagination-page_previous") must containText("Previous")
-        controls.getElementById("pagination-page_previous") must haveHref(controllers.routes.SavedDeclarationsController.displayDeclarations(1))
+        controls.getElementById("pagination-page_previous") must haveHref(controllers.routes.DraftDeclarationController.displayDeclarations(1))
 
         controls.getElementById("pagination-page_1") must containText("1")
-        controls.getElementById("pagination-page_1") must haveHref(controllers.routes.SavedDeclarationsController.displayDeclarations(1))
+        controls.getElementById("pagination-page_1") must haveHref(controllers.routes.DraftDeclarationController.displayDeclarations(1))
         controls.getElementById("pagination-page_active") must containText("2")
       }
 
@@ -106,18 +106,18 @@ class PaginationViewSpec extends UnitViewSpec {
         controls.getElementsByClass("ceds-pagination__item").size() mustBe 9
 
         controls.getElementById("pagination-page_previous") must containText("Previous")
-        controls.getElementById("pagination-page_previous") must haveHref(controllers.routes.SavedDeclarationsController.displayDeclarations(3))
+        controls.getElementById("pagination-page_previous") must haveHref(controllers.routes.DraftDeclarationController.displayDeclarations(3))
 
         controls.getElementById("pagination-page_3") must containText("3")
-        controls.getElementById("pagination-page_3") must haveHref(controllers.routes.SavedDeclarationsController.displayDeclarations(3))
+        controls.getElementById("pagination-page_3") must haveHref(controllers.routes.DraftDeclarationController.displayDeclarations(3))
 
         controls.getElementById("pagination-page_active") must containText("4")
 
         controls.getElementById("pagination-page_5") must containText("5")
-        controls.getElementById("pagination-page_5") must haveHref(controllers.routes.SavedDeclarationsController.displayDeclarations(5))
+        controls.getElementById("pagination-page_5") must haveHref(controllers.routes.DraftDeclarationController.displayDeclarations(5))
 
         controls.getElementById("pagination-page_next") must containText("Next")
-        controls.getElementById("pagination-page_next") must haveHref(controllers.routes.SavedDeclarationsController.displayDeclarations(5))
+        controls.getElementById("pagination-page_next") must haveHref(controllers.routes.DraftDeclarationController.displayDeclarations(5))
 
         controls.getElementsByClass("ceds-pagination__item ceds-pagination__item--dots").size() mustBe 2
       }

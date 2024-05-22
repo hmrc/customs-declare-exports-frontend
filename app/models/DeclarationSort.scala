@@ -65,5 +65,5 @@ object SortDirection extends Enumeration {
   type SortDirection = Value
   implicit val format: Format[SortDirection.Value] = EnumJson.format(SortDirection)
   val ASC = Value(1, "asc")
-  val DES = Value(-1, "des")
+  val DESC = Value(-1, "desc")
 }

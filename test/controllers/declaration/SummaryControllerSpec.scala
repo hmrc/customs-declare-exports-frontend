@@ -20,7 +20,7 @@ import base.{AuditedControllerSpec, ControllerWithoutFormSpec}
 import config.AppConfig
 import controllers.declaration.SummaryControllerSpec.{expectedHref, fakeSummaryPage}
 import controllers.declaration.routes.SummaryController
-import controllers.routes.SavedDeclarationsController
+import controllers.routes.DraftDeclarationController
 import forms.{Lrn, LrnValidator}
 import handlers.ErrorHandler
 import mock.ErrorHandlerMocks
@@ -51,7 +51,7 @@ class SummaryControllerSpec
   private val mockSummaryPageNoData = mock[summary_page_no_data]
   private val mockLrnValidator = mock[LrnValidator]
 
-  private val normalModeBackLink = SavedDeclarationsController.displayDeclarations()
+  private val normalModeBackLink = DraftDeclarationController.displayDeclarations()
 
   private val mcc = stubMessagesControllerComponents()
 
@@ -270,7 +270,7 @@ class SummaryControllerSpec
 
         status(result) mustBe OK
 
-        val backLink = SavedDeclarationsController.displayDeclarations()
+        val backLink = DraftDeclarationController.displayDeclarations()
         val errors = Seq(noItemsError)
 
         verify(normalSummaryPage, times(1)).apply(eqTo(backLink), eqTo(errors), any())(any(), any(), any())

@@ -19,7 +19,7 @@ package controllers.declaration
 import config.AppConfig
 import connectors.CustomsDeclareExportsConnector
 import controllers.actions.{AuthAction, JourneyAction, VerifiedEmailAction}
-import controllers.routes.SavedDeclarationsController
+import controllers.routes.DraftDeclarationController
 import forms.{Lrn, LrnValidator}
 import handlers.ErrorHandler
 import models.declaration.submissions.EnhancedStatus.ERRORS
@@ -68,7 +68,7 @@ class SummaryController @Inject() (
 
   val displayPageOnNoItems: Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType) { implicit request =>
     if (request.cacheModel.hasItems) Redirect(routes.SummaryController.displayPage)
-    else Ok(normalSummaryPage(SavedDeclarationsController.displayDeclarations(), Seq(noItemsError)))
+    else Ok(normalSummaryPage(DraftDeclarationController.displayDeclarations(), Seq(noItemsError)))
   }
 
   private def displayAmendmentSummaryPage(implicit request: JourneyRequest[_]): Future[Result] = {
@@ -97,7 +97,7 @@ class SummaryController @Inject() (
     val maybeLrn = request.cacheModel.lrn.map(Lrn(_))
     isLrnADuplicate(maybeLrn) map { isDuplicate =>
       val isDeclarationWithErrors = request.cacheModel.declarationMeta.parentDeclarationEnhancedStatus.contains(ERRORS)
-      val backlink = if (isDeclarationWithErrors) toDashboard else SavedDeclarationsController.displayDeclarations()
+      val backlink = if (isDeclarationWithErrors) toDashboard else DraftDeclarationController.displayDeclarations()
 
       val result = if (isDuplicate) normalSummaryPage(backlink, Seq(lrnDuplicateError)) else summaryPageWithPlaceholdersReplaced(backlink)
       Ok(result).removingFromSession(errorFixModeSessionKey)

@@ -16,7 +16,7 @@
 
 package base
 
-import base.ExportsTestData.{aDeclaration, withStatus}
+import base.ExportsTestData.aDeclaration
 import connectors.CustomsDeclareExportsConnector
 import models.CancellationStatus.CancellationResult
 import models._
@@ -30,6 +30,7 @@ import org.mockito.stubbing.{Answer, OngoingStubbing}
 import org.scalatestplus.mockito.MockitoSugar.mock
 import uk.gov.hmrc.http.HeaderCarrier
 
+import java.time.Instant
 import scala.concurrent.{ExecutionContext, Future}
 
 // TODO This mock should extends BeforeAndAfterEach trait and has methods beforeEach and afterEach
@@ -46,14 +47,14 @@ trait MockConnectors {
     when(mockCustomsDeclareExportsConnector.createDeclaration(any(), any[String])(any[HeaderCarrier], any[ExecutionContext]))
       .thenReturn(Future.failed(new IllegalArgumentException("Bad Request")))
 
-  def listOfDraftDeclarations(): OngoingStubbing[Future[Paginated[ExportsDeclaration]]] =
-    when(mockCustomsDeclareExportsConnector.findSavedDeclarations(any[Page])(any(), any()))
-      .thenReturn(Future.successful(Paginated(draftDeclarations, Page(), 1)))
-
-  private def draftDeclarations: Seq[ExportsDeclaration] = Seq(aDeclaration(withStatus(DeclarationStatus.DRAFT)))
-
   def deleteDraftDeclaration(): OngoingStubbing[Future[Unit]] =
     when(mockCustomsDeclareExportsConnector.deleteDraftDeclaration(anyString())(any(), any())).thenReturn(Future.successful((): Unit))
+
+  private lazy val listOfDraftDeclarationData = List(DraftDeclarationData("draftId", Some("ducrId"), DeclarationStatus.DRAFT, Instant.now))
+
+  def pageOfDraftDeclarationData(): OngoingStubbing[Future[Paginated[DraftDeclarationData]]] =
+    when(mockCustomsDeclareExportsConnector.fetchDraftDeclarations(any[Page])(any(), any()))
+      .thenReturn(Future.successful(Paginated(listOfDraftDeclarationData, Page(), 1)))
 
   def fetchAction(action: Action): OngoingStubbing[Future[Option[Action]]] =
     when(mockCustomsDeclareExportsConnector.findAction(refEq(action.id))(any(), any())).thenReturn(Future.successful(Some(action)))

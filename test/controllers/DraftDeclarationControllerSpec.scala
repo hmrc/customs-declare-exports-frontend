@@ -23,27 +23,27 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
-import views.html.declarations.saved_declarations
+import views.html.drafts.draft_declarations
 
-class SavedDeclarationsControllerSpec extends ControllerWithoutFormSpec {
+class DraftDeclarationControllerSpec extends ControllerWithoutFormSpec {
 
-  private val savedDeclarationsPage = mock[saved_declarations]
+  private val draftDeclarationsPage = mock[draft_declarations]
   private val paginationConfig = mock[PaginationConfig]
 
-  private val controller = new SavedDeclarationsController(
+  private val controller = new DraftDeclarationController(
     mockAuthAction,
     mockVerifiedEmailAction,
     mockCustomsDeclareExportsConnector,
     stubMessagesControllerComponents(),
-    savedDeclarationsPage,
+    draftDeclarationsPage,
     paginationConfig
   )(ec)
 
   override def beforeEach(): Unit = {
     super.beforeEach()
 
-    reset(savedDeclarationsPage)
-    when(savedDeclarationsPage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
+    reset(draftDeclarationsPage)
+    when(draftDeclarationsPage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
     authorizedUser()
   }
 
@@ -51,7 +51,7 @@ class SavedDeclarationsControllerSpec extends ControllerWithoutFormSpec {
 
     "return 200 (OK)" when {
       "display declarations method is invoked" in {
-        listOfDraftDeclarations()
+        pageOfDraftDeclarationData()
 
         val result = controller.displayDeclarations()(getRequest())
 
@@ -64,7 +64,7 @@ class SavedDeclarationsControllerSpec extends ControllerWithoutFormSpec {
       "continue declaration found" in {
         fetchDeclaration("123")
 
-        val result = controller.continueDeclaration("123")(getRequest())
+        val result = controller.displayDeclaration("123")(getRequest())
 
         status(result) must be(SEE_OTHER)
         session(result).get(SessionHelper.declarationUuid) must be(Some("123"))
@@ -72,10 +72,10 @@ class SavedDeclarationsControllerSpec extends ControllerWithoutFormSpec {
 
       "continue declaration not found" in {
         declarationNotFound
-        val result = controller.continueDeclaration("123")(getRequest())
+        val result = controller.displayDeclaration("123")(getRequest())
 
         status(result) must be(SEE_OTHER)
-        redirectLocation(result) must be(Some(controllers.routes.SavedDeclarationsController.displayDeclarations().url))
+        redirectLocation(result) must be(Some(controllers.routes.DraftDeclarationController.displayDeclarations().url))
       }
     }
   }

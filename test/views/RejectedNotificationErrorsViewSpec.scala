@@ -19,7 +19,7 @@ package views
 import base.{Injector, OverridableInjector}
 import config.featureFlags.TdrFeatureFlags
 import controllers.declaration.routes.AdditionalDocumentsController
-import controllers.routes.{DeclarationDetailsController, SavedDeclarationsController, SubmissionsController}
+import controllers.routes.{DeclarationDetailsController, DraftDeclarationController, SubmissionsController}
 import models.Pointer
 import models.declaration.notifications.NotificationError
 import org.jsoup.nodes.Document
@@ -188,7 +188,7 @@ class RejectedNotificationErrorsViewSpec extends UnitViewSpec with ExportsTestHe
 
       val links = document.getElementsByClass("govuk-link--no-visited-state")
       links.size mustBe 3
-      links.get(2) must haveHref(SavedDeclarationsController.displayDeclarations())
+      links.get(2) must haveHref(DraftDeclarationController.displayDeclarations())
     }
 
     "contain change error link" when {

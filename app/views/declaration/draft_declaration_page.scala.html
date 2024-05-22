@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import controllers.routes.{ChoiceController, SavedDeclarationsController}
+@import controllers.routes.{ChoiceController, DraftDeclarationController}
 @import models.responses.FlashKeys
 @import play.twirl.api.HtmlFormat
 @import uk.gov.hmrc.govukfrontend.views.html.components.{GovukPanel, HtmlContent, Panel, Text}
@@ -52,7 +52,7 @@
         link(
             id = Some("draft_confirmation-continue_dec_link"),
             text = messages("declaration.draft.nextContinueLink"),
-            call = SavedDeclarationsController.displayDeclarations()
+            call = DraftDeclarationController.displayDeclarations()
         ),
         link(
             id = Some("draft_confirmation-create_dec_link"),

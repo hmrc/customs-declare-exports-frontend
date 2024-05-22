@@ -19,7 +19,7 @@ package views
 import base.OverridableInjector
 import config.ExternalServicesConfig
 import controllers.declaration.routes.StandardOrOtherJourneyController
-import controllers.routes.{FileUploadController, SavedDeclarationsController}
+import controllers.routes.{DraftDeclarationController, FileUploadController}
 import org.mockito.Mockito.when
 import play.api.inject.bind
 import views.dashboard.DashboardHelper.toDashboard
@@ -72,7 +72,7 @@ class ChoiceViewSpec extends UnitViewSpec with CommonMessages {
 
       val continueDraftDeclaration = options.get(1)
       continueDraftDeclaration.text mustBe messages("declaration.choice.link.manage.drafts")
-      continueDraftDeclaration.attr("href") mustBe SavedDeclarationsController.displayDeclarations().url
+      continueDraftDeclaration.attr("href") mustBe DraftDeclarationController.displayDeclarations().url
 
       val dashboard = options.get(2)
       dashboard.text mustBe messages("declaration.choice.link.manage.submitted")
