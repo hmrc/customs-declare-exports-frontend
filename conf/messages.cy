@@ -699,7 +699,7 @@ submission.timeline.title.amendment.failed = Wedi stopio dros dro
 submission.timeline.title.amendment.rejected = Wedi stopio dros dro
 
 submission.enhancedStatus.timeline.title.amendment.accepted = Diwygiad wedi’i dderbyn
-submission.enhancedStatus.timeline.title.amendment.external = Datganiad wedi’i ddiweddaru
+submission.enhancedStatus.timeline.title.amendment.external = Diweddariad allanol i ddatganiad
 submission.enhancedStatus.timeline.title.amendment.failed = Diwygiad wedi methu
 submission.enhancedStatus.timeline.title.amendment.rejected = Diwygiad wedi’i wrthod
 submission.enhancedStatus.timeline.title.amendment.requested = Cais am ddiwygiad wedi’i wneud
@@ -756,6 +756,7 @@ declaration.details.upload.files.title = Os ydych eisoes wedi uwchlwytho ffeilia
 declaration.details.upload.files.hint = Os ydych eisoes wedi uwchlwytho ac atodi’r dogfennau sy’n ategu’ch datganiad, nid oes rhaid i chi atodi unrhyw ddogfennau pellach, oni bai bod gofyn i chi wneud hynny mewn ymholiad gan awdurdodau tollau.
 declaration.details.uploading.documents = Uwchlwythwch ddogfennau ategol (yn agor tab newydd)
 declaration.details.view.amendment.details = Bwrw golwg dros y manylion
+declaration.details.view.external.amendment.details = Ynghylch diwygiadau gan drydydd parti awdurdodedig
 declaration.details.view.declaration = Bwrw golwg dros neu argraffu’r datganiad
 declaration.details.view.queries.button = Bwrw golwg dros ymholiadau
 
@@ -803,6 +804,15 @@ declaration.details.uploadDocuments.details.paragraph.3 = Gallwch uwchlwytho dog
 
 declaration.details.unavailable.actions.header = Mae’n ddrwg gennym, ond ni allwch fwrw golwg dros, copïo, na diwygio’r datganiad hwn mwyach
 declaration.details.unavailable.actions.paragraph = Mae hyn oherwydd bod diweddariad wedi bod, ac mae hyn yn ein hatal rhag rhoi’r wybodaeth ddiweddaraf i chi.
+
+amendment.details.unavailable.title = Ynghylch diwygiadau gan drydydd parti awdurdodedig
+amendment.details.unavailable.paragraph1 = Pan fo trydydd parti awdurdodedig yn gwneud diwygiad i ddatganiad, ni fydd y newid yn ymddangos ym manylion y datganiad.
+amendment.details.unavailable.paragraph2 = Gallai trydydd parti awdurdodedig gynnwys llwythwyr, asiantau awdurdodedig neu bersonél allforion CThEF.
+amendment.details.unavailable.heading.section2 = Ambell opsiwn
+amendment.details.unavailable.paragraph3 = Gallwch gysylltu â’r trydydd partïon awdurdodedig rydych yn gweithio gyda nhw.
+amendment.details.unavailable.paragraph4 = Bydd y {0} yn dal  rhywfaint o wybodaeth bresennol am symudiadau nwyddau.
+amendment.details.unavailable.paragraph4.link = gwasanaeth ar gyfer nodi bod allforion CDS wedi cyrraedd ac ymadael
+amendment.details.unavailable.timeline.link = Dychwelyd i’r dudalen ynghylch statws y datganiad
 
 amendment.details.title = Manylion y diwygiad
 amendment.details.title.external = Manylion y datganiad wedi’u diweddaru
