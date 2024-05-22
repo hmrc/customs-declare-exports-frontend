@@ -49,6 +49,17 @@
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 
+@paragraph = @{
+    if (restrictedForZeroVat) paragraphBody(messages(
+      "declaration.zeroRatedForVat.body.restricted.text",
+      link(messages("declaration.zeroRatedForVat.body.restricted.linkText"), Call("GET", appConfig.previousProcedureCodes), Some("_blank"))
+    ))
+    else paragraphBody(messages(
+      "declaration.zeroRatedForVat.body.text",
+      link(messages("declaration.zeroRatedForVat.body.linkText"), Call("GET", appConfig.guidance.vatOnGoodsExportedFromUK), Some("_blank"))
+    ))
+}
+
 @radios = {
     @formGroupWrapper(field = form("zeroRatedForVat")) {
         @govukRadios(Radios(
@@ -103,16 +114,7 @@
                 isPageHeading = true
             )),
             html = HtmlFormat.fill(List(
-              {
-                if(restrictedForZeroVat){
-                    paragraphBody(messages("declaration.zeroRatedForVat.body.restricted.text", link(text = messages("declaration.zeroRatedForVat.body.restricted.linkText"), target = Some("_blank"), call = Call("GET", appConfig.previousProcedureCodes))))
-                } else {
-                    paragraphBody(messages("declaration.zeroRatedForVat.body.text", link(text = messages("declaration.zeroRatedForVat.body.linkText"), target = Some("_blank"), call = Call("GET", appConfig.guidance.vatOnGoodsExportedFromUK))))
-                }
-              },
-              radios,
-              tariffExpander(ZeroRatedForVat, request.declarationType)(messages, appConfig),
-              saveButtons()
+              paragraph, radios, tariffExpander(ZeroRatedForVat, request.declarationType)(messages, appConfig), saveButtons()
             ))
         ))
     }

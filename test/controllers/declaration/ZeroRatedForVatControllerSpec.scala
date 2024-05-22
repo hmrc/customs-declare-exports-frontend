@@ -21,16 +21,18 @@ import connectors.CodeLinkConnector
 import controllers.declaration.routes.NactCodeSummaryController
 import forms.declaration.NactCode
 import forms.declaration.NactCode.nactCodeKey
+import forms.declaration.NatureOfTransaction.{allowedTypes, BusinessPurchase, Sale}
 import forms.declaration.ZeroRatedForVat._
 import mock.ErrorHandlerMocks
 import models.DeclarationType._
+import models.ExportsDeclaration
 import models.declaration.ProcedureCodesData.lowValueDeclaration
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
 import org.scalatest.{Assertion, OptionValues}
 import play.api.data.Form
-import play.api.libs.json.JsString
+import play.api.libs.json.{JsString, Json}
 import play.api.mvc.{AnyContentAsEmpty, Request, Result}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
@@ -64,7 +66,7 @@ class ZeroRatedForVatControllerSpec extends ControllerSpec with AuditedControlle
   }
 
   override protected def afterEach(): Unit = {
-    reset(zeroRatedForVatPage)
+    reset(auditService, zeroRatedForVatPage)
     super.afterEach()
   }
 
@@ -74,132 +76,193 @@ class ZeroRatedForVatControllerSpec extends ControllerSpec with AuditedControlle
     formCaptor.getValue
   }
 
-  val item = anItem(withItemId("id"), withProcedureCodes(additionalProcedureCodes = Seq(lowValueDeclaration)))
+  private val lowValueItem = anItem(withItemId("id"), withProcedureCodes(additionalProcedureCodes = List(lowValueDeclaration)))
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
-    withNewCaching(aDeclaration(withItem(item)))
-    await(controller.displayPage(item.id)(request))
+    withNewCaching(aDeclaration(withType(OCCASIONAL), withItem(lowValueItem)))
+    await(controller.displayPage(lowValueItem.id)(request))
     theResponseForm
   }
 
-  "ZeroRatedForVatController for 'low value' declarations" should {
+  "ZeroRatedForVatController for 'low-value' declarations" when {
 
-    onJourney(OCCASIONAL, SIMPLIFIED, STANDARD) { request =>
-      val declaration = aDeclarationAfter(request.cacheModel, withItem(item))
+    List(OCCASIONAL, SIMPLIFIED).foreach { declarationType =>
+      s"declaration type is $declarationType" should {
+        val declaration = aDeclaration(withType(declarationType), withItem(lowValueItem))
 
-      "return 200 (OK)" when {
+        "return 200 (OK)" when {
 
-        "display page method is invoked with empty cache" in {
-          withNewCaching(declaration)
+          "displayPage method is invoked with empty cache" in {
+            withNewCaching(declaration)
 
-          val result = controller.displayPage(item.id)(getRequest())
+            val result = controller.displayPage(lowValueItem.id)(getRequest())
+            status(result) must be(OK)
+          }
 
-          status(result) must be(OK)
+          "displayPage method is invoked with data in cache" in {
+            val item = anItem(
+              withItemId("id"),
+              withNactExemptionCode(NactCode(VatZeroRatedYes)),
+              withProcedureCodes(additionalProcedureCodes = List(lowValueDeclaration))
+            )
+            withNewCaching(aDeclaration(withType(declarationType), withItem(item)))
+
+            val result = controller.displayPage(item.id)(getRequest())
+            status(result) must be(OK)
+          }
         }
 
-        "display page method is invoked with data in cache" in {
-          val nactCode = NactCode(VatZeroRatedYes)
-          withNewCaching(aDeclaration(withItem(anItem(withNactCodes(nactCode)))))
+        "return 303 (SEE_OTHER)" when {
+          List(VatZeroRatedYes, VatZeroRatedReduced, VatZeroRatedExempt, VatZeroRatedPaid).foreach { vatZeroRated =>
+            s"the selection is $vatZeroRated" in {
+              withNewCaching(declaration)
 
-          val result = controller.displayPage(item.id)(getRequest())
+              val correctForm = Json.obj(nactCodeKey -> vatZeroRated)
+              val result = controller.submitForm(lowValueItem.id)(postRequest(correctForm))
 
-          status(result) must be(OK)
-        }
-      }
-
-      "return 400 (BAD_REQUEST)" when {
-
-        "user provide wrong action" in {
-          withNewCaching(declaration)
-
-          val wrongForm = Seq(("zeroRatedForVat", VatZeroRatedYes), ("WrongAction", ""))
-          val result = controller.submitForm(item.id)(postRequestAsFormUrlEncoded(wrongForm: _*))
-
-          status(result) must be(BAD_REQUEST)
-          verifyNoAudit()
+              await(result) mustBe aRedirectToTheNextPage
+              thePageNavigatedTo mustBe NactCodeSummaryController.displayPage(lowValueItem.id)
+            }
+          }
         }
 
-        "incorrect data" in {
-          withNewCaching(declaration)
+        "return 400 (BAD_REQUEST)" when {
 
-          val wrongForm = Seq(("zeroRatedForVat", ""), saveAndContinueActionUrlEncoded)
-          val result = controller.submitForm(item.id)(postRequestAsFormUrlEncoded(wrongForm: _*))
+          "no selection is made" in {
+            withNewCaching(declaration)
 
-          status(result) must be(BAD_REQUEST)
-          verifyNoAudit()
-        }
-      }
+            val wrongForm = Json.obj("zeroRatedForVat" -> "")
+            val result = controller.submitForm(lowValueItem.id)(postRequest(wrongForm))
 
-      "return 303 (SEE_OTHER)" when {
+            status(result) must be(BAD_REQUEST)
+            verifyNoAudit()
+          }
 
-        "VatZeroRatedYes" in {
-          withNewCaching(declaration)
+          "incorrect data are submitted" in {
+            withNewCaching(declaration)
 
-          val correctForm = Seq((nactCodeKey, VatZeroRatedYes), saveAndContinueActionUrlEncoded)
-          val result = controller.submitForm(item.id)(postRequestAsFormUrlEncoded(correctForm: _*))
+            val wrongForm = Json.obj("zeroRatedForVat" -> "wrong")
+            val result = controller.submitForm(lowValueItem.id)(postRequest(wrongForm))
 
-          await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe NactCodeSummaryController.displayPage(item.id)
-          verifyAudit()
-        }
-
-        "VatZeroRatedReduced" in {
-          withNewCaching(declaration)
-
-          val correctForm = Seq((nactCodeKey, VatZeroRatedReduced), saveAndContinueActionUrlEncoded)
-          val result = controller.submitForm(item.id)(postRequestAsFormUrlEncoded(correctForm: _*))
-
-          await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe NactCodeSummaryController.displayPage(item.id)
-          verifyAudit()
-        }
-
-        "VatZeroRatedExempt" in {
-          withNewCaching(declaration)
-
-          val correctForm = Seq((nactCodeKey, VatZeroRatedExempt), saveAndContinueActionUrlEncoded)
-          val result = controller.submitForm(item.id)(postRequestAsFormUrlEncoded(correctForm: _*))
-
-          await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe NactCodeSummaryController.displayPage(item.id)
-          verifyAudit()
-        }
-
-        "VatZeroRatedPaid" in {
-          withNewCaching(declaration)
-          val correctForm = Seq((nactCodeKey, VatZeroRatedPaid), saveAndContinueActionUrlEncoded)
-
-          val result = controller.submitForm(item.id)(postRequestAsFormUrlEncoded(correctForm: _*))
-
-          await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe NactCodeSummaryController.displayPage(item.id)
-          verifyAudit()
+            status(result) must be(BAD_REQUEST)
+            verifyNoAudit()
+          }
         }
       }
     }
   }
 
-  "ZeroRatedForVatController for 'NON-low value' declarations" should {
-    val item = anItem(withItemId("id"), withNactExemptionCode(NactCode("Some code")))
+  "ZeroRatedForVatController for 'eligible for Zero VAT' STANDARD declarations" when {
+    List(BusinessPurchase, Sale).foreach { natureOfTransaction =>
+      s"'Nature of transaction' is $natureOfTransaction" should {
+        val item = anItem()
+        val declaration = aDeclaration(withNatureOfTransaction(natureOfTransaction), withItem(item))
 
+        "return 200 (OK)" when {
+
+          "displayPage method is invoked with empty cache" in {
+            withNewCaching(declaration)
+
+            val result = controller.displayPage(item.id)(getRequest())
+            status(result) must be(OK)
+          }
+
+          "displayPage method is invoked with data in cache" in {
+            val item = anItem(withItemId("id"), withNactExemptionCode(NactCode(VatZeroRatedYes)))
+            withNewCaching(aDeclaration(withNatureOfTransaction(natureOfTransaction), withItem(item)))
+
+            val result = controller.displayPage(item.id)(getRequest())
+            status(result) must be(OK)
+          }
+        }
+
+        "return 303 (SEE_OTHER)" when {
+          List(VatZeroRatedYes, VatZeroRatedReduced, VatZeroRatedExempt, VatZeroRatedPaid).foreach { vatZeroRated =>
+            s"the selection is $vatZeroRated" in {
+              withNewCaching(declaration)
+
+              val correctForm = Json.obj(nactCodeKey -> vatZeroRated)
+              val result = controller.submitForm(item.id)(postRequest(correctForm))
+
+              await(result) mustBe aRedirectToTheNextPage
+              thePageNavigatedTo mustBe NactCodeSummaryController.displayPage(item.id)
+              verifyAudit()
+            }
+          }
+        }
+
+        "return 400 (BAD_REQUEST)" when {
+
+          "no selection is made" in {
+            withNewCaching(declaration)
+
+            val wrongForm = Json.obj("zeroRatedForVat" -> "")
+            val result = controller.submitForm(item.id)(postRequest(wrongForm))
+
+            status(result) must be(BAD_REQUEST)
+            verifyNoAudit()
+          }
+
+          "incorrect data are submitted" in {
+            withNewCaching(declaration)
+
+            val wrongForm = Json.obj("zeroRatedForVat" -> "wrong")
+            val result = controller.submitForm(item.id)(postRequest(wrongForm))
+
+            status(result) must be(BAD_REQUEST)
+            verifyNoAudit()
+          }
+        }
+      }
+    }
+  }
+
+  "ZeroRatedForVatController" should {
     "be redirected to /national-additional-codes-list" when {
-      onJourney(OCCASIONAL, SIMPLIFIED) { request =>
-        "the 'displayPage' method is invoked" in {
-          verifyRedirect(controller.displayPage(item.id)(getRequest()))
+      val item = anItem()
+
+      "the declaration is NOT 'low-value' and" when {
+
+        List(OCCASIONAL, SIMPLIFIED).foreach { declarationType =>
+          s"the declaration type is $declarationType and" when {
+            val declaration = aDeclaration(withType(declarationType), withItem(item))
+
+            "the 'displayPage' method is invoked" in {
+              verifyRedirect(declaration, controller.displayPage(item.id)(getRequest()))
+            }
+
+            "the 'submitForm' method is invoked" in {
+              verifyRedirect(declaration, controller.submitForm(item.id)(postRequest(JsString(""))))
+            }
+          }
         }
+      }
 
-        "the 'submitForm' method is invoked" in {
-          verifyRedirect(controller.submitForm(item.id)(postRequest(JsString(""))))
+      "the STANDARD declaration is NOT 'eligible for Zero VAT' and" when {
+        allowedTypes.diff(Set(BusinessPurchase, Sale)).foreach { natureOfTransaction =>
+          s"'Nature of transaction is $natureOfTransaction and" when {
+            val declaration = aDeclaration(withNatureOfTransaction(natureOfTransaction), withItem(item))
+
+            "the 'displayPage' method is invoked" in {
+              verifyRedirect(declaration, controller.displayPage(item.id)(getRequest()))
+            }
+
+            "the 'submitForm' method is invoked" in {
+              verifyRedirect(declaration, controller.submitForm(item.id)(postRequest(JsString(""))))
+            }
+          }
         }
+      }
 
-        def verifyRedirect(fun: => Future[Result]): Assertion = {
-          withNewCaching(aDeclarationAfter(request.cacheModel, withItem(item)))
+      def verifyRedirect(declaration: ExportsDeclaration, fun: => Future[Result]): Assertion = {
+        withNewCaching(declaration)
 
-          await(fun) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe NactCodeSummaryController.displayPage(item.id)
+        val result = fun
 
-          theCacheModelUpdated.items.head.nactExemptionCode mustBe None
-        }
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(NactCodeSummaryController.displayPage(item.id).url)
+
+        theCacheModelUpdated.items.head.nactExemptionCode mustBe None
       }
     }
   }
