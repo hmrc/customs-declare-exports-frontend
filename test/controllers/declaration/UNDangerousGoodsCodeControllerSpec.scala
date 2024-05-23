@@ -17,7 +17,13 @@
 package controllers.declaration
 
 import base.{AuditedControllerSpec, ControllerSpec}
-import controllers.declaration.routes.{CommodityMeasureController, CusCodeController, PackageInformationSummaryController, ZeroRatedForVatController}
+import controllers.declaration.routes.{
+  CommodityMeasureController,
+  CusCodeController,
+  NactCodeSummaryController,
+  PackageInformationSummaryController,
+  ZeroRatedForVatController
+}
 import forms.declaration.CommodityDetails.commodityCodeChemicalPrefixes
 import forms.declaration.NatureOfTransaction.{BusinessPurchase, Sale}
 import forms.declaration.UNDangerousGoodsCode.{dangerousGoodsCodeKey, hasDangerousGoodsCodeKey}
@@ -146,7 +152,7 @@ class UNDangerousGoodsCodeControllerSpec extends ControllerSpec with AuditedCont
         }
 
         "accept submission and redirect for commodity code 2100000000" in {
-          controllerRedirectsToNextPageForCommodityCode("2100000000", ZeroRatedForVatController.displayPage(_))
+          controllerRedirectsToNextPageForCommodityCode("2100000000", NactCodeSummaryController.displayPage(_))
         }
       }
 

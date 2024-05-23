@@ -17,7 +17,8 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.declaration.routes.{CommodityMeasureController, CusCodeController, PackageInformationSummaryController, ZeroRatedForVatController}
+import controllers.declaration.routes.{CommodityMeasureController, CusCodeController, PackageInformationSummaryController}
+import controllers.helpers.ItemHelper.cusCodeAndDangerousGoodsNextPage
 import controllers.navigation.Navigator
 import forms.declaration.UNDangerousGoodsCode.form
 import forms.declaration.{CommodityDetails, UNDangerousGoodsCode}
@@ -69,7 +70,7 @@ class UNDangerousGoodsCodeController @Inject() (
       else PackageInformationSummaryController.displayPage(itemId)
     } else {
       val toCusCodePage = declaration.isCommodityCodeOfItemPrefixedWith(itemId, CommodityDetails.commodityCodeChemicalPrefixes)
-      if (toCusCodePage) CusCodeController.displayPage(itemId) else ZeroRatedForVatController.displayPage(itemId)
+      if (toCusCodePage) CusCodeController.displayPage(itemId) else cusCodeAndDangerousGoodsNextPage(declaration, itemId)
     }
 
   private def updateExportsCache(itemId: String, updatedItem: UNDangerousGoodsCode)(

@@ -16,7 +16,12 @@
 
 package controllers.helpers
 
-import controllers.declaration.routes.{PackageInformationSummaryController, StatisticalValueController}
+import controllers.declaration.routes.{
+  NactCodeSummaryController,
+  PackageInformationSummaryController,
+  StatisticalValueController,
+  ZeroRatedForVatController
+}
 import forms.declaration.NatureOfTransaction
 import forms.declaration.NatureOfTransaction.{BusinessPurchase, Sale}
 import models.DeclarationType._
@@ -25,6 +30,10 @@ import models.requests.JourneyRequest
 import play.api.mvc.Call
 
 object ItemHelper {
+
+  def cusCodeAndDangerousGoodsNextPage(declaration: ExportsDeclaration, itemId: String): Call =
+    if (skipZeroRatedForVatPage(declaration, itemId)) NactCodeSummaryController.displayPage(itemId)
+    else ZeroRatedForVatController.displayPage(itemId)
 
   def nextPageAfterNactCodePages(itemId: String)(implicit request: JourneyRequest[_]): Call =
     request.declarationType match {

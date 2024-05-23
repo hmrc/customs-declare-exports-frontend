@@ -17,7 +17,7 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.declaration.routes.ZeroRatedForVatController
+import controllers.helpers.ItemHelper.cusCodeAndDangerousGoodsNextPage
 import controllers.navigation.Navigator
 import forms.declaration.CusCode
 import forms.declaration.CusCode.form
@@ -58,7 +58,7 @@ class CusCodeController @Inject() (
       .bindFromRequest()
       .fold(
         formWithErrors => Future.successful(BadRequest(cusCodePage(itemId, formWithErrors))),
-        updateExportsCache(itemId, _).map(_ => navigator.continueTo(ZeroRatedForVatController.displayPage(itemId)))
+        updateExportsCache(itemId, _).map(declaration => navigator.continueTo(cusCodeAndDangerousGoodsNextPage(declaration, itemId)))
       )
   }
 
