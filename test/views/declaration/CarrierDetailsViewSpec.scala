@@ -174,7 +174,7 @@ class CarrierDetailsViewSpec extends AddressViewSpec with PageWithButtonsSpec wi
   "Carrier Details View when filled with valid data" should {
     onJourney(STANDARD, SIMPLIFIED, OCCASIONAL, CLEARANCE) { implicit request =>
       "display data in Business address inputs" in {
-        val entityDetails = EntityDetails(None, Some(Address("test", "test1", "test2", "test3", "United Kingdom")))
+        val entityDetails = EntityDetails(None, Some(Address("test", "test1", "test2", "test3", "GB")))
         val view = createView(form.fill(CarrierDetails(entityDetails)))
 
         view.getElementById("details_address_fullName").attr("value") mustBe "test"

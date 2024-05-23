@@ -29,7 +29,7 @@ import models.requests.JourneyRequest
 import play.api.i18n.Messages
 import play.api.mvc.Call
 import play.twirl.api.{Html, HtmlFormat}
-import services.Countries.getOrPassCountryName
+import services.Countries.findByCode
 import uk.gov.hmrc.govukfrontend.views.html.components.{GovukSummaryList, SummaryList}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
@@ -182,7 +182,7 @@ class Card2ForParties @Inject() (
       )
 
     def addressValue(address: Address): String =
-      List(address.fullName, address.addressLine, address.townOrCity, address.postCode, getOrPassCountryName(address.country).getOrElse(""))
+      List(address.fullName, address.addressLine, address.townOrCity, address.postCode, findByCode(address.country).map(_.countryName).getOrElse(""))
         .mkString("<br>")
 
     if (details.eori.isEmpty && details.address.isEmpty) List(None)
