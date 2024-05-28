@@ -22,11 +22,13 @@ import models.declaration.DeclarationStatus.DeclarationStatus
 import models.ExportsDeclaration
 import models.declaration.submissions.EnhancedStatus.EnhancedStatus
 import play.api.libs.json.{JsObject, Json}
-import services.audit.AuditTypes.CreateDraftDeclatation
+import services.audit.AuditTypes.CreateDraftDeclaration
 import services.audit.{AuditService, EventData}
 import uk.gov.hmrc.http.HeaderCarrier
 
 trait AuditCreateDraftDec {
+
+  // scalastyle:off parameter.number
   def audit(
     eori: String,
     newDecId: String,
@@ -56,7 +58,7 @@ trait AuditCreateDraftDec {
 
     val auditPayload = Json.toJson(auditData ++ optionalDataElements).as[JsObject]
 
-    auditService.auditDraftDecCreated(CreateDraftDeclatation, auditPayload)
+    auditService.auditDraftDecCreated(CreateDraftDeclaration, auditPayload)
   }
 
   def audit(eori: String, declaration: ExportsDeclaration, auditService: AuditService)(implicit hc: HeaderCarrier): Unit =

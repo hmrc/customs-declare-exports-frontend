@@ -20,6 +20,7 @@ import base.{ExportsTestData, Injector, TestHelper, UnitWithMocksSpec}
 import config.AppConfig
 import config.featureFlags.SecureMessagingConfig
 import models.AuthKey.enrolment
+import models.ExportsDeclaration
 import models.declaration.ExportDeclarationTestData.{allRecordsXmlMarshallingTest, cancellationDeclarationTest}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -28,6 +29,7 @@ import org.mockito.stubbing.OngoingStubbing
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.{Assertion, BeforeAndAfterEach}
 import play.api.libs.json.{JsObject, JsString, Json}
+import services.audit.AuditTypes.SubmissionPayload
 import services.cache.ExportsDeclarationBuilder
 import uk.gov.hmrc.http.{Authorization, HeaderCarrier}
 import uk.gov.hmrc.play.audit.AuditExtensions
@@ -55,7 +57,7 @@ class AuditServiceSpec extends AuditTestSupport with BeforeAndAfterEach {
 
     "audit full payload" in {
       mockExtendedDataEvent
-      auditService.auditAllPagesUserInput(AuditTypes.SubmissionPayload, allRecordsXmlMarshallingTest)(hc)
+      auditService.auditAllPagesUserInput(SubmissionPayload, allRecordsXmlMarshallingTest)(hc)
       verifyExtendedDataEvent(extendedSubmissionEvent)
     }
 
@@ -81,7 +83,7 @@ class AuditServiceSpec extends AuditTestSupport with BeforeAndAfterEach {
 
     "audit full payload success" in {
       mockExtendedDataEvent
-      val res = auditService.auditAllPagesUserInput(AuditTypes.SubmissionPayload, allRecordsXmlMarshallingTest)(hc).futureValue
+      val res = auditService.auditAllPagesUserInput(SubmissionPayload, allRecordsXmlMarshallingTest)(hc).futureValue
       res mustBe AuditResult.Success
     }
 
@@ -98,6 +100,12 @@ class AuditServiceSpec extends AuditTestSupport with BeforeAndAfterEach {
     "handled audit disabled" in {
       mockDataEvent(Disabled)
       auditService.audit(AuditTypes.Submission, auditData)(hc).futureValue mustBe AuditResult.Disabled
+    }
+
+    "remove empty Json Arrays, and Json Objects, from an ExtendedDataEvent's payload" in {
+      mockExtendedDataEvent
+      auditService.auditAllPagesUserInput(SubmissionPayload, declarationWithEmptyValues)(hc).futureValue
+      sentExtendedDataEvent.detail mustBe Json.parse(declarationWithoutEmptyValues)
     }
   }
 }
@@ -135,12 +143,12 @@ trait AuditTestSupport extends UnitWithMocksSpec with ExportsDeclarationBuilder 
 
   val extendedSubmissionEvent = ExtendedDataEvent(
     auditSource = appConfig.appName,
-    auditType = AuditTypes.SubmissionPayload.toString,
+    auditType = SubmissionPayload.toString,
     tags = AuditExtensions
       .auditHeaderCarrier(hc)
       .toAuditTags(
-        transactionName = s"export-declaration-${AuditTypes.SubmissionPayload.toString.toLowerCase}-payload-request",
-        path = s"customs-declare-exports/${AuditTypes.SubmissionPayload.toString}/full-payload"
+        transactionName = s"export-declaration-${SubmissionPayload.toString.toLowerCase}-payload-request",
+        path = s"customs-declare-exports/${SubmissionPayload.toString}/full-payload"
       ),
     detail = Json
       .toJson(auditCarrierDetails)
@@ -209,6 +217,12 @@ trait AuditTestSupport extends UnitWithMocksSpec with ExportsDeclarationBuilder 
     when(auditConnector.sendExtendedEvent(any[ExtendedDataEvent])(any[HeaderCarrier], any[ExecutionContext]))
       .thenReturn(Future.successful(Success))
 
+  def sentExtendedDataEvent: ExtendedDataEvent = {
+    val captor: ArgumentCaptor[ExtendedDataEvent] = ArgumentCaptor.forClass(classOf[ExtendedDataEvent])
+    verify(auditConnector).sendExtendedEvent(captor.capture())(any(), any())
+    captor.getValue
+  }
+
   def verifyDataEvent(expected: DataEvent): Assertion = {
     val captor = ArgumentCaptor.forClass(classOf[DataEvent])
     verify(auditConnector).sendEvent(captor.capture())(any(), any())
@@ -230,4 +244,428 @@ trait AuditTestSupport extends UnitWithMocksSpec with ExportsDeclarationBuilder 
     actual.tags mustBe expected.tags
     actual.detail mustBe expected.detail
   }
+
+  val declarationWithEmptyValues: ExportsDeclaration =
+    Json
+      .parse("""{
+      |  "id" : "5f059e5d-389a-4f73-85d8-f577300e4a46",
+      |  "declarationMeta" : {
+      |      "status" : "DRAFT",
+      |      "createdDateTime" : "2024-04-30T08:56:51.387Z",
+      |      "updatedDateTime" : "2024-05-02T14:25:34.310Z",
+      |      "summaryWasVisited" : true,
+      |      "readyForSubmission" : true,
+      |      "maxSequenceIds" : {
+      |          "dummy" : -1,
+      |          "ExportItems" : 1,
+      |          "PackageInformation" : 1,
+      |          "Containers" : 1
+      |      }
+      |  },
+      |  "type" : "STANDARD",
+      |  "additionalDeclarationType" : "D",
+      |  "consignmentReferences" : {
+      |      "ducr" : {
+      |          "ducr" : "8GB123456802352-101SHIP1"
+      |      },
+      |      "lrn" : "DSLRN695100"
+      |  },
+      |  "linkDucrToMucr" : {
+      |      "answer" : "Yes"
+      |  },
+      |  "mucr" : {
+      |      "mucr" : "GB/AZ09-B12345"
+      |  },
+      |  "transport" : {
+      |      "expressConsignment" : {
+      |          "answer" : "Yes"
+      |      },
+      |      "transportPayment" : {
+      |          "paymentMethod" : "H"
+      |      },
+      |      "containers" : [
+      |          {
+      |              "sequenceId" : 1,
+      |              "id" : "123456",
+      |              "seals" : []
+      |          }
+      |      ],
+      |      "borderModeOfTransportCode" : {
+      |          "code" : "6"
+      |      },
+      |      "meansOfTransportOnDepartureType" : "10",
+      |      "meansOfTransportOnDepartureIDNumber" : "8888",
+      |      "transportCrossingTheBorderNationality" : {
+      |          "countryCode" : "IT"
+      |      },
+      |      "meansOfTransportCrossingTheBorderType" : "11",
+      |      "meansOfTransportCrossingTheBorderIDNumber" : "EXTERNAL AMEND"
+      |  },
+      |  "parties" : {
+      |      "exporterDetails" : {
+      |          "details" : {
+      |              "address" : {
+      |                  "fullName" : "Agdtry",
+      |                  "addressLine" : "AAAAAAAAAAAAA",
+      |                  "townOrCity" : "ITAAA",
+      |                  "postCode" : "BN11",
+      |                  "country" : "AE"
+      |              }
+      |          }
+      |      },
+      |      "consigneeDetails" : {
+      |          "details" : {
+      |              "address" : {
+      |                  "fullName" : "Bags Export",
+      |                  "addressLine" : "1 Bags Avenue",
+      |                  "townOrCity" : "New York",
+      |                  "postCode" : "10001",
+      |                  "country" : "US"
+      |              }
+      |          }
+      |      },
+      |      "declarantDetails" : {
+      |          "details" : {
+      |              "eori" : "GB7172755067703"
+      |          }
+      |      },
+      |      "declarantIsExporter" : {
+      |          "answer" : "No"
+      |      },
+      |      "declarationAdditionalActorsData" : {
+      |          "actors" : []
+      |      },
+      |      "declarationHoldersData" : {
+      |          "holders" : [
+      |              {
+      |                  "authorisationTypeCode" : "AEOC",
+      |                  "eori" : "GB717572504502801",
+      |                  "eoriSource" : "OtherEori"
+      |              }
+      |          ],
+      |          "isRequired" : {
+      |              "answer" : "Yes"
+      |          }
+      |      },
+      |      "authorisationProcedureCodeChoice" : {
+      |          "code" : "Code1040"
+      |      },
+      |      "carrierDetails" : {
+      |          "details" : {
+      |              "address" : {
+      |                  "fullName" : "XYZ Carrier",
+      |                  "addressLine" : "School Road",
+      |                  "townOrCity" : "London",
+      |                  "postCode" : "WS1 2AB",
+      |                  "country" : "GB"
+      |              }
+      |          }
+      |      }
+      |  },
+      |  "locations" : {
+      |      "originationCountry" : {
+      |          "code" : "GB"
+      |      },
+      |      "destinationCountry" : {
+      |          "code" : "US"
+      |      },
+      |      "hasRoutingCountries" : false,
+      |      "routingCountries" : [],
+      |      "goodsLocation" : {
+      |          "country" : "GB",
+      |          "typeOfLocation" : "A",
+      |          "qualifierOfIdentification" : "U",
+      |          "identificationOfLocation" : "ABDABDABDGVM"
+      |      },
+      |      "officeOfExit" : {
+      |          "officeId" : "GB000434"
+      |      },
+      |      "inlandModeOfTransportCode" : {
+      |          "inlandModeOfTransportCode" : "3"
+      |      }
+      |  },
+      |  "items" : [
+      |      {
+      |          "id" : "75e51382",
+      |          "sequenceId" : 1,
+      |          "procedureCodes" : {
+      |              "procedureCode" : "1040",
+      |              "additionalProcedureCodes" : [
+      |                  "000"
+      |              ]
+      |          },
+      |          "statisticalValue" : {
+      |              "statisticalValue" : "1000"
+      |          },
+      |          "commodityDetails" : {
+      |              "combinedNomenclatureCode" : "4106920000",
+      |              "descriptionOfGoods" : "Straw for bottles"
+      |          },
+      |          "dangerousGoodsCode" : {},
+      |          "nactCodes" : [],
+      |          "nactExemptionCode" : {
+      |              "nactCode" : "VATZ"
+      |          },
+      |          "packageInformation" : [
+      |              {
+      |                  "sequenceId" : 1,
+      |                  "id" : "hufrmqsx",
+      |                  "typesOfPackages" : "XD",
+      |                  "numberOfPackages" : 10,
+      |                  "shippingMarks" : "Shipping description"
+      |              }
+      |          ],
+      |          "commodityMeasure" : {
+      |              "supplementaryUnits" : "10",
+      |              "supplementaryUnitsNotRequired" : false,
+      |              "netMass" : "500",
+      |              "grossMass" : "700"
+      |          },
+      |          "additionalInformation" : {
+      |              "isRequired" : {
+      |                  "answer" : "No"
+      |              },
+      |              "items" : []
+      |          },
+      |          "additionalDocuments" : {
+      |              "isRequired" : {
+      |                  "answer" : "Yes"
+      |              },
+      |              "documents" : [
+      |                  {
+      |                      "documentTypeCode" : "C501",
+      |                      "documentIdentifier" : "GBAEOC717572504502801"
+      |                  }
+      |              ]
+      |          },
+      |          "isLicenceRequired" : true
+      |      }
+      |  ],
+      |  "totalNumberOfItems" : {
+      |      "totalAmountInvoiced" : "567640",
+      |      "totalAmountInvoicedCurrency" : "GBP",
+      |      "agreedExchangeRate" : "Yes",
+      |      "exchangeRate" : "1.49",
+      |      "totalPackage" : "1"
+      |  },
+      |  "previousDocuments" : {
+      |      "documents" : [
+      |          {
+      |              "documentType" : "DCS",
+      |              "documentReference" : "9GB123456782317-BH1433A61"
+      |          }
+      |      ]
+      |  },
+      |  "natureOfTransaction" : {
+      |      "natureType" : "1"
+      |  }
+      |}""".stripMargin)
+      .as[ExportsDeclaration]
+
+  val declarationWithoutEmptyValues: String =
+    """{
+      |  "id" : "5f059e5d-389a-4f73-85d8-f577300e4a46",
+      |  "declarationMeta" : {
+      |      "status" : "DRAFT",
+      |      "createdDateTime" : "2024-04-30T08:56:51.387Z",
+      |      "updatedDateTime" : "2024-05-02T14:25:34.310Z",
+      |      "summaryWasVisited" : true,
+      |      "readyForSubmission" : true,
+      |      "maxSequenceIds" : {
+      |          "dummy" : -1,
+      |          "ExportItems" : 1,
+      |          "PackageInformation" : 1,
+      |          "Containers" : 1
+      |      }
+      |  },
+      |  "type" : "STANDARD",
+      |  "additionalDeclarationType" : "D",
+      |  "consignmentReferences" : {
+      |      "ducr" : {
+      |          "ducr" : "8GB123456802352-101SHIP1"
+      |      },
+      |      "lrn" : "DSLRN695100"
+      |  },
+      |  "linkDucrToMucr" : {
+      |      "answer" : "Yes"
+      |  },
+      |  "mucr" : {
+      |      "mucr" : "GB/AZ09-B12345"
+      |  },
+      |  "transport" : {
+      |      "expressConsignment" : {
+      |          "answer" : "Yes"
+      |      },
+      |      "transportPayment" : {
+      |          "paymentMethod" : "H"
+      |      },
+      |      "containers" : [
+      |          {
+      |              "sequenceId" : 1,
+      |              "id" : "123456"
+      |          }
+      |      ],
+      |      "borderModeOfTransportCode" : {
+      |          "code" : "6"
+      |      },
+      |      "meansOfTransportOnDepartureType" : "10",
+      |      "meansOfTransportOnDepartureIDNumber" : "8888",
+      |      "transportCrossingTheBorderNationality" : {
+      |          "countryCode" : "IT"
+      |      },
+      |      "meansOfTransportCrossingTheBorderType" : "11",
+      |      "meansOfTransportCrossingTheBorderIDNumber" : "EXTERNAL AMEND"
+      |  },
+      |  "parties" : {
+      |      "exporterDetails" : {
+      |          "details" : {
+      |              "address" : {
+      |                  "fullName" : "Agdtry",
+      |                  "addressLine" : "AAAAAAAAAAAAA",
+      |                  "townOrCity" : "ITAAA",
+      |                  "postCode" : "BN11",
+      |                  "country" : "AE"
+      |              }
+      |          }
+      |      },
+      |      "consigneeDetails" : {
+      |          "details" : {
+      |              "address" : {
+      |                  "fullName" : "Bags Export",
+      |                  "addressLine" : "1 Bags Avenue",
+      |                  "townOrCity" : "New York",
+      |                  "postCode" : "10001",
+      |                  "country" : "US"
+      |              }
+      |          }
+      |      },
+      |      "declarantDetails" : {
+      |          "details" : {
+      |              "eori" : "GB7172755067703"
+      |          }
+      |      },
+      |      "declarantIsExporter" : {
+      |          "answer" : "No"
+      |      },
+      |      "declarationHoldersData" : {
+      |          "holders" : [
+      |              {
+      |                  "authorisationTypeCode" : "AEOC",
+      |                  "eori" : "GB717572504502801",
+      |                  "eoriSource" : "OtherEori"
+      |              }
+      |          ],
+      |          "isRequired" : {
+      |              "answer" : "Yes"
+      |          }
+      |      },
+      |      "authorisationProcedureCodeChoice" : {
+      |          "code" : "Code1040"
+      |      },
+      |      "carrierDetails" : {
+      |          "details" : {
+      |              "address" : {
+      |                  "fullName" : "XYZ Carrier",
+      |                  "addressLine" : "School Road",
+      |                  "townOrCity" : "London",
+      |                  "postCode" : "WS1 2AB",
+      |                  "country" : "GB"
+      |              }
+      |          }
+      |      }
+      |  },
+      |  "locations" : {
+      |      "originationCountry" : {
+      |          "code" : "GB"
+      |      },
+      |      "destinationCountry" : {
+      |          "code" : "US"
+      |      },
+      |      "hasRoutingCountries" : false,
+      |      "goodsLocation" : {
+      |          "country" : "GB",
+      |          "typeOfLocation" : "A",
+      |          "qualifierOfIdentification" : "U",
+      |          "identificationOfLocation" : "ABDABDABDGVM"
+      |      },
+      |      "officeOfExit" : {
+      |          "officeId" : "GB000434"
+      |      },
+      |      "inlandModeOfTransportCode" : {
+      |          "inlandModeOfTransportCode" : "3"
+      |      }
+      |  },
+      |  "items" : [
+      |      {
+      |          "id" : "75e51382",
+      |          "sequenceId" : 1,
+      |          "procedureCodes" : {
+      |              "procedureCode" : "1040",
+      |              "additionalProcedureCodes" : [
+      |                  "000"
+      |              ]
+      |          },
+      |          "statisticalValue" : {
+      |              "statisticalValue" : "1000"
+      |          },
+      |          "commodityDetails" : {
+      |              "combinedNomenclatureCode" : "4106920000",
+      |              "descriptionOfGoods" : "Straw for bottles"
+      |          },
+      |          "nactExemptionCode" : {
+      |              "nactCode" : "VATZ"
+      |          },
+      |          "packageInformation" : [
+      |              {
+      |                  "sequenceId" : 1,
+      |                  "id" : "hufrmqsx",
+      |                  "typesOfPackages" : "XD",
+      |                  "numberOfPackages" : 10,
+      |                  "shippingMarks" : "Shipping description"
+      |              }
+      |          ],
+      |          "commodityMeasure" : {
+      |              "supplementaryUnits" : "10",
+      |              "supplementaryUnitsNotRequired" : false,
+      |              "netMass" : "500",
+      |              "grossMass" : "700"
+      |          },
+      |          "additionalInformation" : {
+      |              "isRequired" : {
+      |                  "answer" : "No"
+      |              }
+      |          },
+      |          "additionalDocuments" : {
+      |              "isRequired" : {
+      |                  "answer" : "Yes"
+      |              },
+      |              "documents" : [
+      |                  {
+      |                      "documentTypeCode" : "C501",
+      |                      "documentIdentifier" : "GBAEOC717572504502801"
+      |                  }
+      |              ]
+      |          },
+      |          "isLicenceRequired" : true
+      |      }
+      |  ],
+      |  "totalNumberOfItems" : {
+      |      "totalAmountInvoiced" : "567640",
+      |      "totalAmountInvoicedCurrency" : "GBP",
+      |      "agreedExchangeRate" : "Yes",
+      |      "exchangeRate" : "1.49",
+      |      "totalPackage" : "1"
+      |  },
+      |  "previousDocuments" : {
+      |      "documents" : [
+      |          {
+      |              "documentType" : "DCS",
+      |              "documentReference" : "9GB123456782317-BH1433A61"
+      |          }
+      |      ]
+      |  },
+      |  "natureOfTransaction" : {
+      |      "natureType" : "1"
+      |  }
+      |}""".stripMargin
 }
