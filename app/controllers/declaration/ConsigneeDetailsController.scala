@@ -48,7 +48,7 @@ class ConsigneeDetailsController @Inject() (
     with WithUnsafeDefaultFormBinding {
 
   val displayPage: Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    val frm = ConsigneeDetails.form.withSubmissionErrors
+    val frm = ConsigneeDetails.form(request.declarationType).withSubmissionErrors
     request.cacheModel.parties.consigneeDetails match {
       case Some(data) => Ok(consigneeDetailsPage(frm.fill(data)))
       case _          => Ok(consigneeDetailsPage(frm))
@@ -56,7 +56,8 @@ class ConsigneeDetailsController @Inject() (
   }
 
   val saveAddress: Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    ConsigneeDetails.form
+    ConsigneeDetails
+      .form(request.declarationType)
       .bindFromRequest(formValuesFromRequest(s"$addressId.$countryId"))
       .fold(
         formWithErrors => Future.successful(BadRequest(consigneeDetailsPage(formWithErrors))),
