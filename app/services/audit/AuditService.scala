@@ -30,6 +30,8 @@ import uk.gov.hmrc.play.audit.http.connector.{AuditConnector, AuditResult}
 import uk.gov.hmrc.play.audit.model.{DataEvent, ExtendedDataEvent}
 
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util
+import scala.util.Try
 
 class AuditService @Inject() (connector: AuditConnector, appConfig: AppConfig)(implicit ec: ExecutionContext) extends Logging {
 
@@ -133,11 +135,20 @@ class AuditService @Inject() (connector: AuditConnector, appConfig: AppConfig)(i
     Json.obj("enrolment" -> enrolment, "eoriNumber" -> eori, "tags" -> Json.obj("notificationType" -> notificationType))
 
   private def stripAllEmptyFields(json: JsValue): JsValue =
-    Json.parse(
-      json.toString
-        .replaceAll(""",?"[a-zA-Z]+":\[]""", "") // Remove any (field -> empty JsArray) pair
-        .replaceAll(""",?"[a-zA-Z]+":\{}""", "") // Remove any (field -> empty JsObject) pair
-    )
+    Try(
+      Json.parse(
+        json.toString
+          .replaceAll(""""[a-zA-Z]+":\[],""", "") // Remove any (field -> empty JsArray) pair
+          .replaceAll(""",?"[a-zA-Z]+":\[]""", "")
+          .replaceAll(""""[a-zA-Z]+":\{},""", "") // Remove any (field -> empty JsObject) pair
+          .replaceAll("""",?[a-zA-Z]+":\{}""", "")
+      )
+    ) match {
+      case util.Success(jsonWithoutEmptyField) => jsonWithoutEmptyField
+      case util.Failure(msg) =>
+        logger.warn(s"Cannot strip empty fields from Json:\n\t$msg")
+        json
+    }
 
   private def tagsForMessageInboxPartialRetrieved(path: String)(implicit hc: HeaderCarrier): Map[String, String] =
     AuditExtensions.auditHeaderCarrier(hc).toAuditTags(transactionName = "callExportPartial", path = path)

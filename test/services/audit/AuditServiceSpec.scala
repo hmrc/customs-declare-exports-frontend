@@ -107,6 +107,12 @@ class AuditServiceSpec extends AuditTestSupport with BeforeAndAfterEach {
       auditService.auditAllPagesUserInput(SubmissionPayload, declarationWithEmptyValues)(hc).futureValue
       sentExtendedDataEvent.detail mustBe Json.parse(declarationWithoutEmptyValues)
     }
+
+    "remove empty Json Arrays/Objects, from an ExtendedDataEvent's payload" in {
+      mockExtendedDataEvent
+      auditService.auditAllPagesUserInput(SubmissionPayload, declaration2WithEmptyValues)(hc).futureValue
+      sentExtendedDataEvent.detail mustBe Json.parse(declaration2WithoutEmptyValues)
+    }
   }
 }
 
@@ -668,4 +674,374 @@ trait AuditTestSupport extends UnitWithMocksSpec with ExportsDeclarationBuilder 
       |      "natureType" : "1"
       |  }
       |}""".stripMargin
+
+  val declaration2WithEmptyValues: ExportsDeclaration =
+    Json
+      .parse("""{
+      |  "id" : "ad84503f-2961-443f-9e69-addc20eb9696",
+      |  "declarationMeta" : {
+      |      "status" : "COMPLETE",
+      |      "createdDateTime" : "2024-05-29T07:51:49.630Z",
+      |      "updatedDateTime" : "2024-05-29T07:52:46.621Z",
+      |      "summaryWasVisited" : true,
+      |      "readyForSubmission" : true,
+      |      "maxSequenceIds" : {
+      |          "dummy" : -1,
+      |          "ExportItems" : 1,
+      |          "PackageInformation" : 1
+      |      },
+      |      "associatedSubmissionId" : "ad84503f-2961-443f-9e69-addc20eb9696"
+      |  },
+      |  "type" : "SUPPLEMENTARY",
+      |  "additionalDeclarationType" : "Z",
+      |  "consignmentReferences" : {
+      |      "ducr" : {
+      |          "ducr" : "3VC132993342591-L2I612788"
+      |      },
+      |      "lrn" : "MN8PFU2RCNUTY38XJG",
+      |      "eidrDateStamp" : "20241212"
+      |  },
+      |  "transport" : {
+      |      "containers" : [],
+      |      "borderModeOfTransportCode" : {
+      |          "code" : "8"
+      |      },
+      |      "meansOfTransportOnDepartureType" : "10",
+      |      "meansOfTransportOnDepartureIDNumber" : "TaUIyCw",
+      |      "transportCrossingTheBorderNationality" : {
+      |          "countryCode" : "XK"
+      |      },
+      |      "meansOfTransportCrossingTheBorderType" : "80",
+      |      "meansOfTransportCrossingTheBorderIDNumber" : "sW76J5cSB6u8LMUNUM4DnQJk"
+      |  },
+      |  "parties" : {
+      |      "exporterDetails" : {
+      |          "details" : {
+      |              "eori" : "ZN171696909663500"
+      |          }
+      |      },
+      |      "consigneeDetails" : {
+      |          "details" : {
+      |              "address" : {
+      |                  "fullName" : "Carl & Feest",
+      |                  "addressLine" : "MAvC5Q/npc8ziS",
+      |                  "townOrCity" : "New & Michal",
+      |                  "postCode" : "T0P-7FQ",
+      |                  "country" : "GR"
+      |              }
+      |          }
+      |      },
+      |      "declarantDetails" : {
+      |          "details" : {
+      |              "eori" : "BG171696909663600"
+      |          }
+      |      },
+      |      "declarantIsExporter" : {
+      |          "answer" : "No"
+      |      },
+      |      "representativeDetails" : {
+      |          "statusCode" : "2",
+      |          "representingOtherAgent" : "Yes"
+      |      },
+      |      "declarationAdditionalActorsData" : {
+      |          "actors" : []
+      |      },
+      |      "declarationHoldersData" : {
+      |          "holders" : [
+      |              {
+      |                  "authorisationTypeCode" : "CSDR",
+      |                  "eori" : "EE171696909663700",
+      |                  "eoriSource" : "OtherEori"
+      |              }
+      |          ]
+      |      },
+      |      "authorisationProcedureCodeChoice" : {
+      |          "code" : "CodeOther"
+      |      }
+      |  },
+      |  "locations" : {
+      |      "originationCountry" : {
+      |          "code" : "GB"
+      |      },
+      |      "destinationCountry" : {
+      |          "code" : "HR"
+      |      },
+      |      "routingCountries" : [],
+      |      "goodsLocation" : {
+      |          "country" : "GB",
+      |          "typeOfLocation" : "A",
+      |          "qualifierOfIdentification" : "U",
+      |          "identificationOfLocation" : "ABDABDGPE"
+      |      },
+      |      "officeOfExit" : {
+      |          "officeId" : "GB003290"
+      |      },
+      |      "supervisingCustomsOffice" : {},
+      |      "inlandModeOfTransportCode" : {
+      |          "inlandModeOfTransportCode" : "4"
+      |      }
+      |  },
+      |  "items" : [
+      |      {
+      |          "id" : "a8312eb8",
+      |          "sequenceId" : 1,
+      |          "procedureCodes" : {
+      |              "procedureCode" : "3154",
+      |              "additionalProcedureCodes" : [
+      |                  "000"
+      |              ]
+      |          },
+      |          "statisticalValue" : {
+      |              "statisticalValue" : "1296"
+      |          },
+      |          "commodityDetails" : {
+      |              "combinedNomenclatureCode" : "3864662635",
+      |              "descriptionOfGoods" : "b5"
+      |          },
+      |          "dangerousGoodsCode" : {},
+      |          "cusCode" : {},
+      |          "nactCodes" : [],
+      |          "packageInformation" : [
+      |              {
+      |                  "sequenceId" : 1,
+      |                  "id" : "y6zfsfci",
+      |                  "typesOfPackages" : "DA",
+      |                  "numberOfPackages" : 93494,
+      |                  "shippingMarks" : "IPRQ5xktFnMX"
+      |              }
+      |          ],
+      |          "commodityMeasure" : {
+      |              "supplementaryUnits" : "5668",
+      |              "supplementaryUnitsNotRequired" : false,
+      |              "netMass" : "394.34",
+      |              "grossMass" : "1295.868"
+      |          },
+      |          "additionalInformation" : {
+      |              "isRequired" : {
+      |                  "answer" : "No"
+      |              },
+      |              "items" : []
+      |          },
+      |          "additionalDocuments" : {
+      |              "isRequired" : {
+      |                  "answer" : "Yes"
+      |              },
+      |              "documents" : [
+      |                  {
+      |                      "documentTypeCode" : "3488",
+      |                      "documentIdentifier" : "ZoIG21eCA17vYLBeG8G9sFG",
+      |                      "documentStatus" : "XJ",
+      |                      "documentStatusReason" : "6fl4zXvNVueshXSN5sQZ1FS6",
+      |                      "issuingAuthorityName" : "wIkYbmw7pFz3Za3DvBRo3fh2wL",
+      |                      "dateOfValidity" : {
+      |                          "day" : 18,
+      |                          "month" : 1,
+      |                          "year" : 2096
+      |                      },
+      |                      "documentWriteOff" : {
+      |                          "measurementUnit" : "LBW",
+      |                          "documentQuantity" : 900.815
+      |                      }
+      |                  }
+      |              ]
+      |          },
+      |          "isLicenceRequired" : true
+      |      }
+      |  ],
+      |  "totalNumberOfItems" : {
+      |      "totalPackage" : "9087979"
+      |  },
+      |  "previousDocuments" : {
+      |      "documents" : [
+      |          {
+      |              "documentType" : "DCS",
+      |              "documentReference" : "oenc mk6hR7UoOA1TwRlgf57x1bu2"
+      |          }
+      |      ]
+      |  },
+      |  "natureOfTransaction" : {
+      |      "natureType" : "5"
+      |  }
+      |}
+      |""".stripMargin)
+      .as[ExportsDeclaration]
+
+  val declaration2WithoutEmptyValues: String =
+    """{
+      |  "id" : "ad84503f-2961-443f-9e69-addc20eb9696",
+      |  "declarationMeta" : {
+      |      "status" : "COMPLETE",
+      |      "createdDateTime" : "2024-05-29T07:51:49.630Z",
+      |      "updatedDateTime" : "2024-05-29T07:52:46.621Z",
+      |      "summaryWasVisited" : true,
+      |      "readyForSubmission" : true,
+      |      "maxSequenceIds" : {
+      |          "dummy" : -1,
+      |          "ExportItems" : 1,
+      |          "PackageInformation" : 1
+      |      },
+      |      "associatedSubmissionId" : "ad84503f-2961-443f-9e69-addc20eb9696"
+      |  },
+      |  "type" : "SUPPLEMENTARY",
+      |  "additionalDeclarationType" : "Z",
+      |  "consignmentReferences" : {
+      |      "ducr" : {
+      |          "ducr" : "3VC132993342591-L2I612788"
+      |      },
+      |      "lrn" : "MN8PFU2RCNUTY38XJG",
+      |      "eidrDateStamp" : "20241212"
+      |  },
+      |  "transport" : {
+      |      "borderModeOfTransportCode" : {
+      |          "code" : "8"
+      |      },
+      |      "meansOfTransportOnDepartureType" : "10",
+      |      "meansOfTransportOnDepartureIDNumber" : "TaUIyCw",
+      |      "transportCrossingTheBorderNationality" : {
+      |          "countryCode" : "XK"
+      |      },
+      |      "meansOfTransportCrossingTheBorderType" : "80",
+      |      "meansOfTransportCrossingTheBorderIDNumber" : "sW76J5cSB6u8LMUNUM4DnQJk"
+      |  },
+      |  "parties" : {
+      |      "exporterDetails" : {
+      |          "details" : {
+      |              "eori" : "ZN171696909663500"
+      |          }
+      |      },
+      |      "consigneeDetails" : {
+      |          "details" : {
+      |              "address" : {
+      |                  "fullName" : "Carl & Feest",
+      |                  "addressLine" : "MAvC5Q/npc8ziS",
+      |                  "townOrCity" : "New & Michal",
+      |                  "postCode" : "T0P-7FQ",
+      |                  "country" : "GR"
+      |              }
+      |          }
+      |      },
+      |      "declarantDetails" : {
+      |          "details" : {
+      |              "eori" : "BG171696909663600"
+      |          }
+      |      },
+      |      "declarantIsExporter" : {
+      |          "answer" : "No"
+      |      },
+      |      "representativeDetails" : {
+      |          "statusCode" : "2",
+      |          "representingOtherAgent" : "Yes"
+      |      },
+      |      "declarationHoldersData" : {
+      |          "holders" : [
+      |              {
+      |                  "authorisationTypeCode" : "CSDR",
+      |                  "eori" : "EE171696909663700",
+      |                  "eoriSource" : "OtherEori"
+      |              }
+      |          ]
+      |      },
+      |      "authorisationProcedureCodeChoice" : {
+      |          "code" : "CodeOther"
+      |      }
+      |  },
+      |  "locations" : {
+      |      "originationCountry" : {
+      |          "code" : "GB"
+      |      },
+      |      "destinationCountry" : {
+      |          "code" : "HR"
+      |      },
+      |      "goodsLocation" : {
+      |          "country" : "GB",
+      |          "typeOfLocation" : "A",
+      |          "qualifierOfIdentification" : "U",
+      |          "identificationOfLocation" : "ABDABDGPE"
+      |      },
+      |      "officeOfExit" : {
+      |          "officeId" : "GB003290"
+      |      },
+      |      "inlandModeOfTransportCode" : {
+      |          "inlandModeOfTransportCode" : "4"
+      |      }
+      |  },
+      |  "items" : [
+      |      {
+      |          "id" : "a8312eb8",
+      |          "sequenceId" : 1,
+      |          "procedureCodes" : {
+      |              "procedureCode" : "3154",
+      |              "additionalProcedureCodes" : [
+      |                  "000"
+      |              ]
+      |          },
+      |          "statisticalValue" : {
+      |              "statisticalValue" : "1296"
+      |          },
+      |          "commodityDetails" : {
+      |              "combinedNomenclatureCode" : "3864662635",
+      |              "descriptionOfGoods" : "b5"
+      |          },
+      |          "packageInformation" : [
+      |              {
+      |                  "sequenceId" : 1,
+      |                  "id" : "y6zfsfci",
+      |                  "typesOfPackages" : "DA",
+      |                  "numberOfPackages" : 93494,
+      |                  "shippingMarks" : "IPRQ5xktFnMX"
+      |              }
+      |          ],
+      |          "commodityMeasure" : {
+      |              "supplementaryUnits" : "5668",
+      |              "supplementaryUnitsNotRequired" : false,
+      |              "netMass" : "394.34",
+      |              "grossMass" : "1295.868"
+      |          },
+      |          "additionalInformation" : {
+      |              "isRequired" : {
+      |                  "answer" : "No"
+      |              }
+      |          },
+      |          "additionalDocuments" : {
+      |              "isRequired" : {
+      |                  "answer" : "Yes"
+      |              },
+      |              "documents" : [
+      |                  {
+      |                      "documentTypeCode" : "3488",
+      |                      "documentIdentifier" : "ZoIG21eCA17vYLBeG8G9sFG",
+      |                      "documentStatus" : "XJ",
+      |                      "documentStatusReason" : "6fl4zXvNVueshXSN5sQZ1FS6",
+      |                      "issuingAuthorityName" : "wIkYbmw7pFz3Za3DvBRo3fh2wL",
+      |                      "dateOfValidity" : {
+      |                          "day" : 18,
+      |                          "month" : 1,
+      |                          "year" : 2096
+      |                      },
+      |                      "documentWriteOff" : {
+      |                          "measurementUnit" : "LBW",
+      |                          "documentQuantity" : 900.815
+      |                      }
+      |                  }
+      |              ]
+      |          },
+      |          "isLicenceRequired" : true
+      |      }
+      |  ],
+      |  "totalNumberOfItems" : {
+      |      "totalPackage" : "9087979"
+      |  },
+      |  "previousDocuments" : {
+      |      "documents" : [
+      |          {
+      |              "documentType" : "DCS",
+      |              "documentReference" : "oenc mk6hR7UoOA1TwRlgf57x1bu2"
+      |          }
+      |      ]
+      |  },
+      |  "natureOfTransaction" : {
+      |      "natureType" : "5"
+      |  }
+      |}
+      |""".stripMargin
 }
