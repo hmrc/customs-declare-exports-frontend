@@ -18,15 +18,15 @@ package services.audit
 
 import com.google.inject.Inject
 import config.AppConfig
-import models.{CancelDeclaration, ExportsDeclaration}
 import models.AuthKey.enrolment
+import models.{CancelDeclaration, ExportsDeclaration}
 import play.api.Logging
-import play.api.libs.json.{JsObject, JsValue, Json}
+import play.api.libs.json._
 import services.audit.AuditTypes.Audit
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.AuditExtensions
-import uk.gov.hmrc.play.audit.http.connector.{AuditConnector, AuditResult}
 import uk.gov.hmrc.play.audit.http.connector.AuditResult.{Disabled, Failure, Success}
+import uk.gov.hmrc.play.audit.http.connector.{AuditConnector, AuditResult}
 import uk.gov.hmrc.play.audit.model.{DataEvent, ExtendedDataEvent}
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -38,7 +38,7 @@ class AuditService @Inject() (connector: AuditConnector, appConfig: AppConfig)(i
     connector.sendEvent(event).map(handleResponse(_, audit.toString))
   }
 
-  private def createAuditEvent(audit: Audit, auditData: Map[String, String])(implicit hc: HeaderCarrier) =
+  private def createAuditEvent(audit: Audit, auditData: Map[String, String])(implicit hc: HeaderCarrier): DataEvent =
     DataEvent(
       auditSource = appConfig.appName,
       auditType = audit.toString,
@@ -46,7 +46,7 @@ class AuditService @Inject() (connector: AuditConnector, appConfig: AppConfig)(i
       detail = AuditExtensions.auditHeaderCarrier(hc).toAuditDetails() ++ auditData
     )
 
-  def auditDraftDecCreated(audit: Audit, auditData: JsObject)(implicit hc: HeaderCarrier) = {
+  def auditDraftDecCreated(audit: Audit, auditData: JsObject)(implicit hc: HeaderCarrier): Future[AuditResult] = {
     val hcAuditDetails = Json.toJson(AuditExtensions.auditHeaderCarrier(hc).toAuditDetails()).as[JsObject]
     val collatedDetails = hcAuditDetails.deepMerge(auditData)
 
@@ -54,13 +54,12 @@ class AuditService @Inject() (connector: AuditConnector, appConfig: AppConfig)(i
       auditSource = appConfig.appName,
       auditType = audit.toString,
       tags = getAuditTags(s"${audit.toString}-request", path = s"${audit.toString}"),
-      detail = collatedDetails
+      detail = stripAllEmptyFields(collatedDetails)
     )
-
     connector.sendExtendedEvent(extendedEvent).map(handleResponse(_, audit.toString))
   }
 
-  def auditAmendmentSent(audit: Audit, auditData: JsObject)(implicit hc: HeaderCarrier) = {
+  def auditAmendmentSent(audit: Audit, auditData: JsObject)(implicit hc: HeaderCarrier): Future[AuditResult] = {
     val hcAuditDetails = Json.toJson(AuditExtensions.auditHeaderCarrier(hc).toAuditDetails()).as[JsObject]
     val collatedDetails = hcAuditDetails.deepMerge(auditData)
 
@@ -68,9 +67,8 @@ class AuditService @Inject() (connector: AuditConnector, appConfig: AppConfig)(i
       auditSource = appConfig.appName,
       auditType = audit.toString,
       tags = getAuditTags(s"${audit.toString}-request", path = s"${audit.toString}"),
-      detail = collatedDetails
+      detail = stripAllEmptyFields(collatedDetails)
     )
-
     connector.sendExtendedEvent(extendedEvent).map(handleResponse(_, audit.toString))
   }
 
@@ -79,7 +77,7 @@ class AuditService @Inject() (connector: AuditConnector, appConfig: AppConfig)(i
       auditSource = appConfig.appName,
       auditType = auditType.toString,
       tags = getAuditTags(s"$auditType-payload-request", s"$auditType/full-payload"),
-      detail = getAuditDetails(Json.toJson(declaration).as[JsObject])
+      detail = stripAllEmptyFields(getAuditDetails(Json.toJson(declaration).as[JsObject]))
     )
     connector.sendExtendedEvent(extendedEvent).map(handleResponse(_, auditType.toString))
   }
@@ -134,6 +132,13 @@ class AuditService @Inject() (connector: AuditConnector, appConfig: AppConfig)(i
   private def detailsForMessageInboxPartialRetrieved(eori: String, notificationType: String): JsValue =
     Json.obj("enrolment" -> enrolment, "eoriNumber" -> eori, "tags" -> Json.obj("notificationType" -> notificationType))
 
+  private def stripAllEmptyFields(json: JsValue): JsValue =
+    Json.parse(
+      json.toString
+        .replaceAll(""",?"[a-zA-Z]+":\[]""", "") // Remove any (field -> empty JsArray) pair
+        .replaceAll(""",?"[a-zA-Z]+":\{}""", "") // Remove any (field -> empty JsObject) pair
+    )
+
   private def tagsForMessageInboxPartialRetrieved(path: String)(implicit hc: HeaderCarrier): Map[String, String] =
     AuditExtensions.auditHeaderCarrier(hc).toAuditTags(transactionName = "callExportPartial", path = path)
 }
@@ -141,7 +146,7 @@ class AuditService @Inject() (connector: AuditConnector, appConfig: AppConfig)(i
 object AuditTypes extends Enumeration {
   type Audit = Value
   val SaveDraftValue, Submission, SubmissionPayload, Cancellation, CancellationPayload, NavigateToMessages, Amendment, AmendmentPayload,
-    AmendmentCancellation, AmendmentCancellationPayload, UploadDocumentLink, CreateDraftDeclatation = Value
+    AmendmentCancellation, AmendmentCancellationPayload, UploadDocumentLink, CreateDraftDeclaration = Value
 }
 
 object EventData extends Enumeration {

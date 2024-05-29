@@ -45,7 +45,7 @@ object ExportDeclarationTestData {
 
   val declarationMeta = DeclarationMeta(None, None, DeclarationStatus.DRAFT, Instant.now, Instant.now)
 
-  val correctTransportInformationContainerData = Some(Seq(Container(1, id = "M1l3s", Seq.empty)))
+  val correctTransportInformationContainerData = Some(Seq(Container(1, id = "M1l3s", List(Seal(1, "Seal1")))))
   val emptyTransportInformationContainerData = ContainerAdd(None)
   val correctTransportInformationContainerJSON: JsValue = JsObject(Map(containerId -> JsString("container-M1l3s")))
   val incorrectTransportInformationContainerJSON: JsValue = JsObject(Map(containerId -> JsString("123456789012345678")))
