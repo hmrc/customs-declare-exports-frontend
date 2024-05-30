@@ -430,18 +430,6 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
       }
     }
 
-    "contain the copy-declaration link pointing to '/unavailable-actions'" when {
-      "the declaration has been externally amended" in {
-        val action = Action("id", ExternalAmendmentRequest, now, None, None, 2)
-        val submission = submissionWithStatus(RECEIVED).copy(actions = Seq(action))
-        val view = createView(submission)
-
-        val copyDeclarationLink = view.getElementById("copy-declaration")
-        copyDeclarationLink must containMessage("declaration.details.copy.declaration")
-        copyDeclarationLink must haveHref(DeclarationDetailsController.unavailableActions(submission.uuid))
-      }
-    }
-
     EnhancedStatus.values.intersect(rejectedStatuses) foreach { status =>
       s"not contain the copy-declaration link when notification's status is ${status}" in {
         val view = createView(submissionWithAction(status))

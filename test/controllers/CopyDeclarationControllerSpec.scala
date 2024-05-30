@@ -175,14 +175,6 @@ class CopyDeclarationControllerSpec extends ControllerSpec with ErrorHandlerMock
         status(result) must be(INTERNAL_SERVER_ERROR)
       }
 
-      "the Submission document was found but latestDecId is undefined" in {
-        withNewCaching(withRequestOfType(STANDARD, withId(submission.uuid)).cacheModel)
-        fetchSubmission(submission.uuid, submission.copy(latestDecId = None))
-
-        val result = controller.submitPage(postRequest(correctForm))
-        status(result) must be(INTERNAL_SERVER_ERROR)
-      }
-
       "the ExportsDeclaration document to copy was not found" in {
         withNewCaching(withRequestOfType(STANDARD, withId(submission.uuid)).cacheModel)
         fetchSubmission(submission.uuid, submission)
@@ -219,7 +211,7 @@ class CopyDeclarationControllerSpec extends ControllerSpec with ErrorHandlerMock
 
       val declarationId = subWithEnhancedStatus.latestDecId.value
       val latestDeclaration = aDeclaration(withId(declarationId))
-      fetchDeclaration(declarationId, latestDeclaration)
+      fetchDeclaration(declarationId, Some(latestDeclaration))
 
       val result = controller.submitPage(postRequest(correctForm))
 
@@ -243,6 +235,23 @@ class CopyDeclarationControllerSpec extends ControllerSpec with ErrorHandlerMock
 
       status(result) must be(SEE_OTHER)
       redirectLocation(result) mustBe Some(SummaryController.displayPage.url)
+    }
+
+    "still create a copy" when {
+      "the Submission document was found but latestDecId is undefined" in {
+        val request = withRequestOfType(STANDARD, withId(submission.uuid))
+        withNewCaching(request.cacheModel)
+
+        fetchSubmission(submission.uuid, submission.copy(latestDecId = None))
+        fetchDeclaration(submission.uuid, Some(aDeclaration(withId(submission.uuid))))
+
+        val result = controller.submitPage(postRequest(correctForm))
+        status(result) must be(SEE_OTHER)
+
+        val declaration = theCacheModelCreated
+        declaration.id mustBe submission.uuid
+        declaration.declarationMeta.parentDeclarationId mustBe Some(submission.uuid)
+      }
     }
   }
 }

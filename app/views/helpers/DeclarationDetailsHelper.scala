@@ -17,7 +17,7 @@
 package views.helpers
 
 import controllers.declaration.amendments.AmendDeclarationController
-import controllers.routes.{CopyDeclarationController, DeclarationDetailsController}
+import controllers.routes.DeclarationDetailsController
 import models.declaration.submissions.EnhancedStatus._
 import models.declaration.submissions.Submission
 import play.api.mvc.Call
@@ -27,10 +27,6 @@ object DeclarationDetailsHelper {
   def callForAmendDeclaration(submission: Submission): Call =
     if (submission.hasExternalAmendments) DeclarationDetailsController.unavailableActions(submission.uuid)
     else AmendDeclarationController.initAmendment(submission)
-
-  def callForCopyDeclaration(submission: Submission): Call =
-    if (submission.hasExternalAmendments) DeclarationDetailsController.unavailableActions(submission.uuid)
-    else CopyDeclarationController.redirectToReceiveJourneyRequest(submission.uuid)
 
   def displayViewDeclarationLink(submission: Submission): Boolean = !(submission.latestEnhancedStatus contains ERRORS)
 
