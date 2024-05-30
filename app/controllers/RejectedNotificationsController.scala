@@ -16,7 +16,7 @@
 
 package controllers
 
-import config.featureFlags.{NewErrorReportConfig, TdrFeatureFlags}
+import config.featureFlags.NewErrorReportConfig
 import connectors.CustomsDeclareExportsConnector
 import controllers.actions.{AuthAction, VerifiedEmailAction}
 import handlers.ErrorHandler
@@ -41,8 +41,7 @@ class RejectedNotificationsController @Inject() (
   mcc: MessagesControllerComponents,
   newErrorReportConfig: NewErrorReportConfig,
   errorsReportedController: ErrorsReportedController,
-  errorsPage: rejected_notification_errors,
-  tdrFeatureFlags: TdrFeatureFlags
+  errorsPage: rejected_notification_errors
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with Logging {
 

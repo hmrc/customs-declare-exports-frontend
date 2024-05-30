@@ -101,7 +101,8 @@
             }
 
             @pageTitle(text = messages(title), classes = "govuk-heading-l")
-            @sectionHeader(messages("mrn.heading", mrn))
+
+            <div class="submission-mrn govuk-caption-xl govuk-!-margin-bottom-4">@messages("mrn.heading", mrn)</div>
 
             @govukWarningText(WarningText(
                 iconFallbackText = Some(messages("site.warning")),
@@ -112,7 +113,7 @@
 
             @govukSummaryList(notificationErrorHelper.createSummaryList(declaration, maybeDeclarationId.isDefined, errors))
 
-            @paragraphBody(messages(checkAnswersText), "govuk-body govuk-!-margin-top-6")
+            @paragraphBody(messages(checkAnswersText), "govuk-body govuk-!-margin-top-4")
 
             @govukButton(Button(
                 content = Text(messages("rejected.notification.check.answers.button")),
