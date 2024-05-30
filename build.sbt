@@ -5,7 +5,6 @@ import net.ground5hark.sbt.concat.Import._
 import play.sbt.routes.RoutesKeys.routesImport
 import sbt.Keys.{scalacOptions, _}
 import sbt._
-import uk.gov.hmrc.SbtAutoBuildPlugin
 
 val appName = "customs-declare-exports-frontend"
 
@@ -15,7 +14,7 @@ Test / testOptions += Tests.Argument(TestFrameworks.ScalaTest, "-h", "target/tes
 Test / testOptions += Tests.Argument(TestFrameworks.ScalaTest, "-oD")
 
 lazy val microservice = Project(appName, file("."))
-  .enablePlugins(PlayScala, SbtAutoBuildPlugin, SbtDistributablesPlugin, SbtWeb)
+  .enablePlugins(PlayScala, SbtDistributablesPlugin, SbtWeb)
   .settings(commonSettings: _*)
   .settings(
     retrieveManaged := true,
