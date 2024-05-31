@@ -18,23 +18,22 @@ package views.helpers
 
 import connectors.CodeListConnector
 import controllers.routes.SubmissionsController
-import models.{ExportsDeclaration, Pointer}
+import models.DeclarationType.CLEARANCE
 import models.declaration.errors.{ErrorInstance, FieldInvolved}
 import models.declaration.notifications.Notification
-import models.DeclarationType.CLEARANCE
+import models.{ExportsDeclaration, Pointer}
 import play.api.Logging
 import play.api.i18n.Messages
 import play.api.mvc.Call
 import play.twirl.api.Html
 import uk.gov.hmrc.play.bootstrap.binders.RedirectUrl
 import views.helpers.PointerHelper.clearanceDecDetailsCall
-import views.html.components.gds.{link, paragraphBody}
+import views.html.components.gds.link
 
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class ErrorsReportedHelper @Inject() (link: link, codeListConnector: CodeListConnector, paragraphBody: paragraphBody, countryHelper: CountryHelper)
-    extends Logging {
+class ErrorsReportedHelper @Inject() (link: link, codeListConnector: CodeListConnector, countryHelper: CountryHelper) extends Logging {
 
   def generateErrorRows(
     maybeNotification: Option[Notification],

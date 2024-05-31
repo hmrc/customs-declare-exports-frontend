@@ -2252,13 +2252,7 @@ rejected.amendment.guidance.section.2.paragraph.1 = Os byddwch chi’n dechrau t
 
 rejected.notification.description.heading = Disgrifiad
 rejected.notification.mrn.missing = Dim MRN
-rejected.notification.banner.title = Helpwch ni i’w gwneud hi’n haws i drwsio gwallau
-rejected.notification.v1.banner.text = Rydym wedi creu tudalen newydd a gwell er mwyn trwsio gwallau sy’n ymwneud â datganiadau tollau. Newidiwch i {0} y dudalen hon.
-rejected.notification.v1.banner.linkText.0 = fersiwn newydd
-rejected.notification.v2.banner.text = TDyma dudalen newydd a gwell er mwyn trwsio gwallau sy’n ymwneud â datganiadau tollau. Gallwch newid yn ôl i {0} y dudalen hon.
-rejected.notification.v2.banner.linkText.0 = fersiwn gwreiddiol
-rejected.notification.v1.title = Diwygio gwallau’r datganiad
-rejected.notification.v2.title = Diwygio gwallau sy’n ymwneud â datganiadau tollau (fersiwn wedi’i wella)
+rejected.notification.title = Diwygio gwallau sy’n ymwneud â datganiadau tollau (fersiwn wedi’i wella)
 rejected.notification.table.title = Gwallau’r datganiad
 rejected.notification.warning = Mae’n rhaid i chi ddiwygio’r gwallau hyn ac ailgyflwyno’ch datganiad pan fyddwch wedi gorffen.
 rejected.notification.description.format = Cod gwall {0}.

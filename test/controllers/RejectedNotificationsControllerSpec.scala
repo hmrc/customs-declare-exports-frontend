@@ -17,39 +17,43 @@
 package controllers
 
 import base.ControllerWithoutFormSpec
+import config.AppConfig
+import connectors.CodeListConnector
+import handlers.ErrorHandler
 import mock.FeatureFlagMocks
 import models.declaration.notifications.Notification
 import models.declaration.submissions.Action
 import models.requests.SessionHelper.submissionUuid
-import org.mockito.ArgumentCaptor
+import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
 import org.scalatest.{Assertion, OptionValues}
 import play.api.libs.json.Json
-import play.api.mvc.Results.Ok
-import play.api.mvc.{Action => PlayAction, AnyContent, BodyParser, Request, Result}
+import play.api.mvc.Result
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
-import views.html.rejected_notification_errors
+import views.helpers.ErrorsReportedHelper
+import views.html.{error_template, errors_reported}
 
 import scala.concurrent.ExecutionContext.global
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
 class RejectedNotificationsControllerSpec extends ControllerWithoutFormSpec with OptionValues with FeatureFlagMocks {
 
-  private val mockErrorPage = mock[rejected_notification_errors]
-  private val mockErrorsReportedController = mock[ErrorsReportedController]
+  private val mockErrorsReportedPage = mock[errors_reported]
+  private val mockErrorsReportedHelper = mock[ErrorsReportedHelper]
+  private val codeListConnector = mock[CodeListConnector]
 
   private val controller = new RejectedNotificationsController(
     mockAuthAction,
     mockVerifiedEmailAction,
-    errorHandler,
+    new ErrorHandler(mcc.messagesApi, instanceOf[error_template])(instanceOf[AppConfig]),
     mockCustomsDeclareExportsConnector,
+    codeListConnector,
     mcc,
-    mockNewErrorReportConfig,
-    mockErrorsReportedController,
-    mockErrorPage
+    mockErrorsReportedHelper,
+    mockErrorsReportedPage
   )(global)
 
   private val declarationId = "DeclarationId"
@@ -58,33 +62,32 @@ class RejectedNotificationsControllerSpec extends ControllerWithoutFormSpec with
     super.beforeEach()
 
     authorizedUser()
-
-    when(mockErrorPage.apply(any(), any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
-    when(mockNewErrorReportConfig.isNewErrorReportEnabled).thenReturn(false)
-
-    val fakeAction = new PlayAction[AnyContent] {
-      override def parser: BodyParser[AnyContent] = ???
-      override def apply(request: Request[AnyContent]): Future[Result] = Future.successful(Ok(""))
-      override def executionContext: ExecutionContext = ???
-    }
-    when(mockErrorsReportedController.displayPage(any())).thenReturn(fakeAction)
-    when(mockErrorsReportedController.displayPageOnUnacceptedAmendment(any(), any())).thenReturn(fakeAction)
+    when(mockErrorsReportedPage.apply(any(), any(), any(), any(), any())(any(), any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockCustomsDeclareExportsConnector.findDraftByParent(any())(any(), any())).thenReturn(Future.successful(None))
   }
 
   override protected def afterEach(): Unit = {
-    reset(mockErrorPage, mockNewErrorReportConfig)
+    reset(mockErrorsReportedPage, mockCustomsDeclareExportsConnector, mockErrorsReportedHelper)
     super.afterEach()
   }
 
   "RejectedNotificationsController.displayPage" should {
 
-    "return 200 (OK) and the expected page" when {
+    "return 200 (OK)" when {
 
-      "declaration and notifications are found" in {
+      "declaration, draft declaration and notifications are found" in {
+        fetchDeclaration(declarationId)
+        fetchDraftByParent(declarationId)
+        findNotifications(declarationId)
+
+        verifyResult(controller.displayPage(declarationId)(getRequest()), None, None, false)
+      }
+
+      "declaration and notifications are found but no draft declaration" in {
         fetchDeclaration(declarationId)
         findNotifications(declarationId)
 
-        verifyResult(controller.displayPage(declarationId)(getRequest()), None, None)
+        verifyResult(controller.displayPage(declarationId)(getRequest()), None, None, false)
       }
 
       "the declaration is found but the Submission has no notifications" in {
@@ -93,21 +96,16 @@ class RejectedNotificationsControllerSpec extends ControllerWithoutFormSpec with
         when(mockCustomsDeclareExportsConnector.findNotifications(any())(any(), any()))
           .thenReturn(Future.successful(List.empty))
 
-        verifyResult(controller.displayPage(declarationId)(getRequest()), None, None)
-      }
-
-      "newExportsReport flag is enabled" in {
-        when(mockNewErrorReportConfig.isNewErrorReportEnabled).thenReturn(true)
-        val result = controller.displayPage(declarationId)(getRequest())
-
-        status(result) mustBe OK
-        verify(mockErrorsReportedController).displayPage(any())
+        verifyResult(controller.displayPage(declarationId)(getRequest()), None, None, false)
       }
     }
 
     "return 500 (INTERNAL_SERVER_ERROR)" when {
       "the declaration cannot be found" in {
         declarationNotFound
+
+        when(mockCustomsDeclareExportsConnector.findNotifications(any())(any(), any()))
+          .thenReturn(Future.successful(List.empty))
 
         val result = controller.displayPage(declarationId)(getRequest())
 
@@ -118,18 +116,19 @@ class RejectedNotificationsControllerSpec extends ControllerWithoutFormSpec with
 
   "RejectedNotificationsController.displayPageOnUnacceptedAmendment" should {
 
-    "return 200 (OK) and the expected page" when {
+    "return 200 (OK)" when {
       val submissionId = "submissionId"
       val request = FakeRequest("GET", "").withSession(submissionUuid -> submissionId)
       val draftDeclarationId = "1234"
 
-      "Action, declaration and notification are found" in {
+      "Action, declaration, draft dec and notification are found" in {
         fetchAction(failedAction)
         fetchDeclaration(failedAction.decId.value)
+        fetchDraftByParent(failedAction.decId.value)
         fetchLatestNotification(failedNotification)
 
         val result = controller.displayPageOnUnacceptedAmendment(failedAction.id)(request)
-        verifyResult(result, failedAction.decId, Some(submissionId))
+        verifyResult(result, failedAction.decId, Some(submissionId), true)
       }
 
       "for a draft declaration of an unaccepted amendment" in {
@@ -138,15 +137,7 @@ class RejectedNotificationsControllerSpec extends ControllerWithoutFormSpec with
         fetchLatestNotification(failedNotification)
 
         val result = controller.displayPageOnUnacceptedAmendment(failedAction.id, Some(draftDeclarationId))(request)
-        verifyResult(result, Some(draftDeclarationId), Some(submissionId))
-      }
-
-      "newExportsReport flag is enabled" in {
-        when(mockNewErrorReportConfig.isNewErrorReportEnabled).thenReturn(true)
-        val result = controller.displayPageOnUnacceptedAmendment(failedAction.id, Some(draftDeclarationId))(getRequest())
-
-        status(result) mustBe OK
-        verify(mockErrorsReportedController).displayPageOnUnacceptedAmendment(any(), any())
+        verifyResult(result, Some(draftDeclarationId), Some(submissionId), true)
       }
     }
 
@@ -175,11 +166,12 @@ class RejectedNotificationsControllerSpec extends ControllerWithoutFormSpec with
     }
   }
 
-  private def verifyResult(result: Future[Result], expectedDec: Option[String], expectedSub: Option[String]): Assertion = {
+  private def verifyResult(result: Future[Result], expectedDec: Option[String], expectedSub: Option[String], isAmendment: Boolean): Assertion = {
     status(result) mustBe OK
     val captorDec = ArgumentCaptor.forClass(classOf[Option[String]])
     val captorSub = ArgumentCaptor.forClass(classOf[Option[String]])
-    verify(mockErrorPage).apply(captorSub.capture(), any(), any(), captorDec.capture(), any())(any(), any())
+    verify(mockErrorsReportedPage).apply(captorSub.capture(), any(), any(), captorDec.capture(), any())(any(), any(), any())
+    verify(mockErrorsReportedHelper).generateErrorRows(any(), any(), any(), ArgumentMatchers.eq(isAmendment))(any())
     captorDec.getValue.asInstanceOf[Option[String]] mustBe expectedDec
     captorSub.getValue.asInstanceOf[Option[String]] mustBe expectedSub
   }

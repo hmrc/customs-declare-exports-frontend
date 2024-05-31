@@ -31,12 +31,6 @@ object SessionHelper extends Logging {
   val submissionLrn = "submission.lrn"
   val submissionMrn = "submission.mrn"
 
-  val errorReportView = "errorReportView"
-  object errorReportViewVersion extends Enumeration {
-    val version1 = "version1"
-    val version2 = "version2"
-  }
-
   def getValue(key: String)(implicit request: Request[_]): Option[String] =
     request.session.data.get(key)
 

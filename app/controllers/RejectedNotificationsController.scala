@@ -16,18 +16,16 @@
 
 package controllers
 
-import config.featureFlags.NewErrorReportConfig
-import connectors.CustomsDeclareExportsConnector
+import connectors.{CodeListConnector, CustomsDeclareExportsConnector}
 import controllers.actions.{AuthAction, VerifiedEmailAction}
 import handlers.ErrorHandler
-import models.ExportsDeclaration
-import models.declaration.notifications.{Notification, NotificationError}
-import models.requests.SessionHelper._
+import models.requests.SessionHelper.{getValue, submissionActionId, submissionUuid}
 import play.api.Logging
 import play.api.i18n.I18nSupport
-import play.api.mvc._
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import views.html.rejected_notification_errors
+import views.helpers.ErrorsReportedHelper
+import views.html.errors_reported
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -38,75 +36,73 @@ class RejectedNotificationsController @Inject() (
   verifyEmail: VerifiedEmailAction,
   errorHandler: ErrorHandler,
   customsDeclareExportsConnector: CustomsDeclareExportsConnector,
+  codeListConnector: CodeListConnector,
   mcc: MessagesControllerComponents,
-  newErrorReportConfig: NewErrorReportConfig,
-  errorsReportedController: ErrorsReportedController,
-  errorsPage: rejected_notification_errors
+  errorsReportedHelper: ErrorsReportedHelper,
+  errors_reported: errors_reported
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with Logging {
 
   def displayPage(id: String): Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
-    if (newErrorReportConfig.isNewErrorReportEnabled && getValue(errorReportView).getOrElse("") != errorReportViewVersion.version1)
-      errorsReportedController.displayPage(id).apply(request)
-    else {
-      customsDeclareExportsConnector.findDeclaration(id).flatMap {
-        case Some(declaration) =>
-          customsDeclareExportsConnector.findNotifications(id).map { notifications =>
-            val messages = messagesApi.preferred(request).messages
-            val mrn = notifications.headOption.map(_.mrn).getOrElse(messages("rejected.notification.mrn.missing"))
-            val errors = getRejectedNotificationErrors(notifications)
+    val declarationsAndNotificationsInvolved = for {
+      declaration <- customsDeclareExportsConnector.findDeclaration(id)
+      draftInProgress <- customsDeclareExportsConnector.findDraftByParent(id)
+      notifications <- customsDeclareExportsConnector.findNotifications(id)
+    } yield (declaration, draftInProgress, notifications)
 
-            Ok(errorsPage(None, declaration, mrn, None, errors))
-          }
+    declarationsAndNotificationsInvolved.map {
+      case (Some(declaration), maybeDraftInProgress, notifications) =>
+        val messages = messagesApi.preferred(request).messages
+        val mrn = notifications.headOption.map(_.mrn).getOrElse(messages("rejected.notification.mrn.missing"))
 
-        case _ => errorHandler.internalError(s"Declaration($id) not found for a rejected submission??")
-      }
+        val rejectionNotification = notifications.find(_.isStatusDMSRej).headOption
+        val errors = errorsReportedHelper.generateErrorRows(rejectionNotification, declaration, maybeDraftInProgress, false)
+
+        Ok(errors_reported(None, declaration, mrn, None, errors)(request, messages, codeListConnector))
+
+      case _ => errorHandler.internalServerError(s"Declaration($id) not found for a rejected submission??")
     }
-  }
-
-  def addToSessionThenDisplay(id: String, errorReportVersion: String): Action[AnyContent] = (authenticate andThen verifyEmail).async {
-    implicit request =>
-      Future(Redirect(routes.RejectedNotificationsController.displayPage(id)).addingToSession(errorReportView -> errorReportVersion))
   }
 
   def displayPageOnUnacceptedAmendment(actionId: String, draftDeclarationId: Option[String] = None): Action[AnyContent] =
     (authenticate andThen verifyEmail).async { implicit request =>
-      if (newErrorReportConfig.isNewErrorReportEnabled)
-        errorsReportedController.displayPageOnUnacceptedAmendment(actionId, draftDeclarationId).apply(request)
-      else {
-        customsDeclareExportsConnector.findAction(actionId).flatMap {
-          case Some(action) =>
-            action.decId match {
-              case Some(decId) =>
-                val declarationId = draftDeclarationId.fold(decId)(identity)
-                customsDeclareExportsConnector.findDeclaration(declarationId).flatMap {
-                  case Some(declaration) =>
-                    customsDeclareExportsConnector.findLatestNotification(actionId).map {
-                      case Some(notification) => page(declaration, notification, declarationId).addingToSession(submissionActionId -> actionId)
-                      case _ => errorHandler.internalServerError(s"Failed|rejected amended Notification not found for Action($actionId)??")
-                    }
+      val messages = messagesApi.preferred(request).messages
 
-                  case _ =>
-                    val draft = draftDeclarationId.fold("")(_ => "(draft) ")
-                    val message = s"Failed|rejected amended ${draft}declaration($declarationId) not found for Action($actionId)??"
-                    errorHandler.internalError(message)
-                }
+      customsDeclareExportsConnector.findAction(actionId).flatMap {
+        case Some(action) =>
+          action.decId match {
+            case Some(decId) =>
+              val id = draftDeclarationId.fold(decId)(identity)
 
-              case _ => errorHandler.internalError(s"The Action($actionId) does not have decId for a failed|rejected amendment??")
-            }
+              val declarationsAndNotificationsInvolved = for {
+                declaration <- customsDeclareExportsConnector.findDeclaration(id)
+                draftInProgress <- customsDeclareExportsConnector.findDraftByParent(id)
+                notifications <- customsDeclareExportsConnector.findLatestNotification(actionId)
+              } yield (declaration, draftInProgress, notifications)
 
-          case _ => errorHandler.internalError(s"Action($actionId) not found for a failed|rejected amendment??")
-        }
+              declarationsAndNotificationsInvolved.flatMap {
+                case (Some(declaration), maybeDraftInProgress, Some(notification)) =>
+                  val errors = errorsReportedHelper.generateErrorRows(Some(notification), declaration, maybeDraftInProgress, true)
+
+                  Future.successful(
+                    Ok(
+                      errors_reported(getValue(submissionUuid), declaration, notification.mrn, Some(id), errors)(request, messages, codeListConnector)
+                    )
+                      .addingToSession(submissionActionId -> actionId)
+                  )
+
+                case (Some(_), _, None) =>
+                  errorHandler.internalError(s"Failed|rejected amended Notification not found for Action($actionId)??")
+
+                case _ =>
+                  val draft = draftDeclarationId.fold("")(_ => "(draft) ")
+                  errorHandler.internalError(s"Failed|rejected amended ${draft}declaration($id) not found for Action($actionId)??")
+              }
+
+            case _ => errorHandler.internalError(s"The Action($actionId) does not have decId for a failed|rejected amendment??")
+          }
+
+        case _ => errorHandler.internalError(s"Action($actionId) not found for a failed|rejected amendment??")
       }
     }
-
-  private def page(declaration: ExportsDeclaration, notification: Notification, decId: String)(implicit request: Request[_]): Result = {
-    val subId = getValue(submissionUuid)
-    val errors = notification.errors
-
-    Ok(errorsPage(subId, declaration, notification.mrn, Some(decId), errors))
-  }
-
-  private def getRejectedNotificationErrors(notifications: Seq[Notification]): Seq[NotificationError] =
-    notifications.find(_.isStatusDMSRej).map(_.errors).getOrElse(Seq.empty)
 }
