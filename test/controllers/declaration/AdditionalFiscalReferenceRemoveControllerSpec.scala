@@ -41,7 +41,7 @@ class AdditionalFiscalReferenceRemoveControllerSpec extends ControllerSpec with 
       mockJourneyAction,
       mockExportsCacheService,
       navigator,
-      stubMessagesControllerComponents(),
+      mcc,
       mockRemovePage
     )(ec, auditService)
 

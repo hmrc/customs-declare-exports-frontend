@@ -42,7 +42,7 @@ class LinkDucrToMucrControllerSpec extends ControllerSpec with AuditedController
     mockJourneyAction,
     mockExportsCacheService,
     navigator,
-    stubMessagesControllerComponents(),
+    mcc,
     linkDucrToMucrPage
   )(ec, auditService)
 

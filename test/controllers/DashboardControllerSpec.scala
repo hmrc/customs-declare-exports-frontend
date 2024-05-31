@@ -57,7 +57,7 @@ class DashboardControllerSpec extends ControllerWithoutFormSpec with BeforeAndAf
     mockVerifiedEmailAction,
     mockCustomsDeclareExportsConnector,
     paginationConfig,
-    stubMessagesControllerComponents(),
+    mcc,
     dashboard
   )(ec)
 

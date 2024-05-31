@@ -35,7 +35,6 @@ class VerifiedEmailActionSpec extends ControllerWithoutFormSpec with Injector wi
 
   lazy val conf = instanceOf[Configuration]
   lazy val env = instanceOf[Environment]
-  lazy val mcc = instanceOf[MessagesControllerComponents]
   lazy val backendConnector = mock[CustomsDeclareExportsConnector]
 
   lazy val action = new ActionTestWrapper(backendConnector, mcc)

@@ -41,7 +41,7 @@ class AdditionalActorsSummaryControllerSpec extends ControllerSpec with OptionVa
     mockJourneyAction,
     mockExportsCacheService,
     navigator,
-    stubMessagesControllerComponents(),
+    mcc,
     mockPage
   )
   val additionalActorsData = AdditionalActors(Seq(AdditionalActor(Some(Eori("GB56523343784324")), Some("CS"))))

@@ -29,31 +29,31 @@ import play.api.data.Form
 import play.api.http.Status.BAD_REQUEST
 import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsEmpty, Request}
-import play.api.test.Helpers.{await, status, OK}
+import play.api.test.Helpers.{OK, await, status}
 import play.twirl.api.HtmlFormat
 import views.html.declaration.third_party_goods_transportation
 
 class ThirdPartyGoodsTransportationControllerSpec extends ControllerSpec with AuditedControllerSpec with BeforeAndAfterEach {
 
-  private val thirdPartyGoodsTransportationTemplate = mock[third_party_goods_transportation]
+  private val page = mock[third_party_goods_transportation]
 
   private val controller = new ThirdPartyGoodsTransportationController(
-    authenticate = mockAuthAction,
-    journeyType = mockJourneyAction,
-    navigator = navigator,
-    exportsCacheService = mockExportsCacheService,
-    mcc = stubMessagesControllerComponents(),
-    thirdPartyGoodTransportPage = thirdPartyGoodsTransportationTemplate
+    mcc,
+    mockAuthAction,
+    mockJourneyAction,
+    mockExportsCacheService,
+    navigator,
+    page
   )(ec, auditService)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     authorizedUser()
-    when(thirdPartyGoodsTransportationTemplate.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(page.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
-    Mockito.reset(thirdPartyGoodsTransportationTemplate)
+    Mockito.reset(page)
     super.afterEach()
   }
 
@@ -65,7 +65,7 @@ class ThirdPartyGoodsTransportationControllerSpec extends ControllerSpec with Au
 
   def theResponseForm: Form[YesNoAnswer] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[YesNoAnswer]])
-    verify(thirdPartyGoodsTransportationTemplate).apply(captor.capture())(any(), any())
+    verify(page).apply(captor.capture())(any(), any())
     captor.getValue
   }
 
@@ -80,7 +80,7 @@ class ThirdPartyGoodsTransportationControllerSpec extends ControllerSpec with Au
 
       status(response) must be(OK)
       verify(mockExportsCacheService).get(any())(any())
-      verify(thirdPartyGoodsTransportationTemplate).apply(any())(any(), any())
+      verify(page).apply(any())(any(), any())
     }
   }
 

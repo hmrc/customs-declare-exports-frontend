@@ -45,7 +45,7 @@ class AuthorisationHolderAddControllerSpec
     mockJourneyAction,
     mockExportsCacheService,
     navigator,
-    stubMessagesControllerComponents(),
+    mcc,
     taggedAuthCodes,
     mockAddPage
   )(ec, auditService)

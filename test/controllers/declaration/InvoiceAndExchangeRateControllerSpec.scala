@@ -64,7 +64,7 @@ class InvoiceAndExchangeRateControllerSpec extends ControllerSpec with AuditedCo
     mockAuthAction,
     mockJourneyAction,
     navigator,
-    stubMessagesControllerComponents(),
+    mcc,
     mockInvoiceAndExchangeRatePage,
     mockExportsCacheService
   )(ec, auditService)

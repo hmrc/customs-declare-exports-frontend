@@ -44,7 +44,7 @@ class PackageInformationAddControllerSpec extends ControllerSpec with AuditedCon
       mockJourneyAction,
       mockExportsCacheService,
       navigator,
-      stubMessagesControllerComponents(),
+      mcc,
       mockAddPage
     )(ec, mockPackageTypesService, auditService)
 

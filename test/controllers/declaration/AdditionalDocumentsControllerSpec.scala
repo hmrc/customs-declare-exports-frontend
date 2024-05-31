@@ -20,9 +20,8 @@ import base.{ControllerSpec, MockTaggedCodes}
 import forms.common.YesNoAnswer.Yes
 import forms.common.{Eori, YesNoAnswer}
 import forms.declaration.additionaldocuments.AdditionalDocument
-import forms.declaration.authorisationHolder.AuthorizationTypeCodes.EXRR
 import forms.declaration.authorisationHolder.AuthorisationHolder
-import mock.ErrorHandlerMocks
+import forms.declaration.authorisationHolder.AuthorizationTypeCodes.EXRR
 import models.declaration.EoriSource
 import models.requests.SessionHelper.errorFixModeSessionKey
 import org.mockito.ArgumentCaptor
@@ -35,7 +34,7 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import views.html.declaration.additionalDocuments.additional_documents
 
-class AdditionalDocumentsControllerSpec extends ControllerSpec with ErrorHandlerMocks with MockTaggedCodes {
+class AdditionalDocumentsControllerSpec extends ControllerSpec with MockTaggedCodes {
 
   val additionalDocumentsPage = mock[additional_documents]
 
@@ -44,7 +43,7 @@ class AdditionalDocumentsControllerSpec extends ControllerSpec with ErrorHandler
     mockJourneyAction,
     mockExportsCacheService,
     navigator,
-    stubMessagesControllerComponents(),
+    mcc,
     taggedAuthCodes,
     additionalDocumentsPage
   )

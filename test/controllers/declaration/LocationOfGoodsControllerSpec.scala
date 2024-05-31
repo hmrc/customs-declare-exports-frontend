@@ -48,7 +48,7 @@ class LocationOfGoodsControllerSpec extends ControllerSpec with AuditedControlle
   val controller = new LocationOfGoodsController(
     mockAuthAction,
     mockJourneyAction,
-    stubMessagesControllerComponents(),
+    mcc,
     mockLocationOfGoods,
     mockExportsCacheService,
     navigator,

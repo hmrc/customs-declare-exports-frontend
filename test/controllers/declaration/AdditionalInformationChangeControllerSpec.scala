@@ -21,7 +21,6 @@ import controllers.declaration.routes.AdditionalInformationController
 import forms.common.YesNoAnswer.Yes
 import forms.declaration.AdditionalInformation
 import forms.declaration.AdditionalInformation.codeForGVMS
-import mock.ErrorHandlerMocks
 import models.declaration.AdditionalInformationData
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -34,7 +33,7 @@ import play.twirl.api.HtmlFormat
 import utils.ListItem
 import views.html.declaration.additionalInformation.additional_information_change
 
-class AdditionalInformationChangeControllerSpec extends ControllerSpec with AuditedControllerSpec with ErrorHandlerMocks {
+class AdditionalInformationChangeControllerSpec extends ControllerSpec with AuditedControllerSpec {
 
   val mockChangePage = mock[additional_information_change]
 
@@ -43,7 +42,7 @@ class AdditionalInformationChangeControllerSpec extends ControllerSpec with Audi
     mockJourneyAction,
     mockExportsCacheService,
     navigator,
-    stubMessagesControllerComponents(),
+    mcc,
     mockChangePage
   )(ec, auditService)
 

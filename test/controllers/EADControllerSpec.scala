@@ -29,7 +29,6 @@ import scala.concurrent.Future
 
 class EADControllerSpec extends ControllerWithoutFormSpec with Injector {
 
-  val mcc = stubMessagesControllerComponents()
   val barcodeService = instanceOf[BarcodeService]
   val connector = mock[CustomsDeclareExportsConnector]
   val eADService = new EADService(connector)
@@ -52,7 +51,7 @@ class EADControllerSpec extends ControllerWithoutFormSpec with Injector {
 
       "display page method is invoked" in {
 
-        val mrn = "18GB9JLC3CU1LFGVR2"
+    val mrn = "18GB9JLC3CU1LFGVR2"
         val result = controller.generateDocument(mrn).apply(getRequest())
 
         status(result) must be(OK)

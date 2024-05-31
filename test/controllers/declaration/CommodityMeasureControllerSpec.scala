@@ -42,7 +42,7 @@ class CommodityMeasureControllerSpec extends ControllerSpec with AuditedControll
     mockJourneyAction,
     mockExportsCacheService,
     navigator,
-    stubMessagesControllerComponents(),
+    mcc,
     commodityMeasurePage
   )(ec, auditService)
 

@@ -38,7 +38,7 @@ class OfficeOfExitControllerSpec extends ControllerSpec with AuditedControllerSp
     mockAuthAction,
     mockJourneyAction,
     navigator,
-    stubMessagesControllerComponents(),
+    mcc,
     mockOfficeOfExitPage,
     mockExportsCacheService
   )(ec, auditService)

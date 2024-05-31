@@ -41,7 +41,7 @@ class SectionSummaryControllerSpec extends ControllerWithoutFormSpec with Option
   val controller = new SectionSummaryController(
     mockAuthAction,
     mockJourneyAction,
-    stubMessagesControllerComponents(),
+    mcc,
     mockPage,
     mockCard1ForReferences,
     mockCard2ForParties,

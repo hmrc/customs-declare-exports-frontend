@@ -17,9 +17,7 @@
 package controllers.declaration.amendments
 
 import base.ControllerWithoutFormSpec
-import config.AppConfig
 import controllers.routes.RootController
-import handlers.ErrorHandler
 import models.declaration.submissions.EnhancedStatus._
 import models.declaration.submissions.RequestType.{AmendmentCancellationRequest, AmendmentRequest}
 import models.declaration.submissions.{Action, NotificationSummary, Submission}
@@ -37,7 +35,6 @@ import play.twirl.api.HtmlFormat
 import views.helpers.Confirmation
 import views.html.declaration.amendments._
 import views.html.declaration.confirmation.holding_page
-import views.html.error_template
 
 import java.time.ZonedDateTime
 import java.util.{Locale, UUID}
@@ -45,7 +42,6 @@ import scala.concurrent.Future
 
 class AmendmentOutcomeControllerSpec extends ControllerWithoutFormSpec with GivenWhenThen with ScalaFutures {
 
-  private val mcc = stubMessagesControllerComponents()
   private val messages = mcc.messagesApi.preferred(List(Lang(Locale.ENGLISH)))
 
   val title = "declaration.amendment.holding.title"
@@ -66,7 +62,7 @@ class AmendmentOutcomeControllerSpec extends ControllerWithoutFormSpec with Give
       mockVerifiedEmailAction,
       mockCustomsDeclareExportsConnector,
       mcc,
-      new ErrorHandler(mcc.messagesApi, instanceOf[error_template])(instanceOf[AppConfig]),
+      errorHandler,
       holdingPage,
       amendment_accepted,
       amendment_cancelled,

@@ -17,7 +17,6 @@
 package controllers
 
 import base.ControllerWithoutFormSpec
-import mock.ErrorHandlerMocks
 import models.declaration.submissions.EnhancedStatus._
 import models.declaration.submissions.RequestType.CancellationRequest
 import models.declaration.submissions.{Action, NotificationSummary, Submission}
@@ -29,7 +28,7 @@ import org.scalatest.GivenWhenThen
 import play.api.http.Status.{BAD_REQUEST, NOT_FOUND, SEE_OTHER}
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
-import play.api.test.Helpers.{redirectLocation, session, status, OK}
+import play.api.test.Helpers.{OK, redirectLocation, session, status}
 import play.twirl.api.HtmlFormat
 import testdata.SubmissionsTestData.{eori, lrn, mrn, uuid}
 import views.html.{cancellation_holding, cancellation_result}
@@ -38,7 +37,7 @@ import java.time.ZonedDateTime
 import java.util.UUID
 import scala.concurrent.Future
 
-class CancellationResultControllerSpec extends ControllerWithoutFormSpec with ErrorHandlerMocks with GivenWhenThen {
+class CancellationResultControllerSpec extends ControllerWithoutFormSpec with GivenWhenThen {
 
   val holdingPage = mock[cancellation_holding]
   val resultPage = mock[cancellation_result]
@@ -47,7 +46,7 @@ class CancellationResultControllerSpec extends ControllerWithoutFormSpec with Er
     mockAuthAction,
     mockVerifiedEmailAction,
     mockCustomsDeclareExportsConnector,
-    stubMessagesControllerComponents(),
+    mcc,
     mockErrorHandler,
     holdingPage,
     resultPage

@@ -21,7 +21,6 @@ import controllers.declaration.routes.{ItemsSummaryController, ProcedureCodesCon
 import controllers.helpers.SequenceIdHelper.valueOfEso
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
-import mock.ErrorHandlerMocks
 import models.DeclarationType.CLEARANCE
 import models.declaration.{CommodityMeasure, ExportItem}
 import org.mockito.ArgumentCaptor
@@ -37,7 +36,7 @@ import views.html.declaration.declarationitems.{items_add_item, items_summary}
 
 import scala.concurrent.Future
 
-class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionValues with ScalaFutures with GivenWhenThen with ErrorHandlerMocks {
+class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionValues with ScalaFutures with GivenWhenThen {
 
   private val addItemPage = mock[items_add_item]
   private val itemsSummaryPage = mock[items_summary]
@@ -47,7 +46,7 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
     mockJourneyAction,
     mockExportsCacheService,
     navigator,
-    stubMessagesControllerComponents(),
+    mcc,
     addItemPage,
     itemsSummaryPage
   )(ec)

@@ -45,7 +45,7 @@ class EntryIntoDeclarantsRecordsControllerSpec extends ControllerSpec with Audit
     mockJourneyAction,
     mockExportsCacheService,
     navigator,
-    stubMessagesControllerComponents(),
+    mcc,
     page
   )(ec, auditService)
 

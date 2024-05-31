@@ -43,7 +43,7 @@ class NactCodeRemoveControllerSpec extends ControllerSpec with AuditedController
       mockJourneyAction,
       mockExportsCacheService,
       navigator,
-      stubMessagesControllerComponents(),
+      mcc,
       mockRemovePage
     )(ec, auditService)
 

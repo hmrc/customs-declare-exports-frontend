@@ -21,9 +21,8 @@ import connectors.CodeLinkConnector
 import controllers.declaration.routes.NactCodeSummaryController
 import forms.declaration.NactCode
 import forms.declaration.NactCode.nactCodeKey
-import forms.declaration.NatureOfTransaction.{allowedTypes, BusinessPurchase, Sale}
+import forms.declaration.NatureOfTransaction.{BusinessPurchase, Sale, allowedTypes}
 import forms.declaration.ZeroRatedForVat._
-import mock.ErrorHandlerMocks
 import models.DeclarationType._
 import models.ExportsDeclaration
 import models.declaration.ProcedureCodesData.lowValueDeclaration
@@ -40,7 +39,7 @@ import views.html.declaration.zero_rated_for_vat
 
 import scala.concurrent.Future
 
-class ZeroRatedForVatControllerSpec extends ControllerSpec with AuditedControllerSpec with ErrorHandlerMocks with Injector with OptionValues {
+class ZeroRatedForVatControllerSpec extends ControllerSpec with AuditedControllerSpec with Injector with OptionValues {
 
   val zeroRatedForVatPage = mock[zero_rated_for_vat]
   val codeLinkConnector = mock[CodeLinkConnector]
@@ -51,7 +50,7 @@ class ZeroRatedForVatControllerSpec extends ControllerSpec with AuditedControlle
       mockJourneyAction,
       mockExportsCacheService,
       navigator,
-      stubMessagesControllerComponents(),
+      mcc,
       codeLinkConnector,
       zeroRatedForVatPage
     )(ec, auditService)

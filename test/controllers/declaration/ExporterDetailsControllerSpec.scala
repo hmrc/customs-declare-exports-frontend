@@ -48,7 +48,7 @@ class ExporterDetailsControllerSpec extends ControllerSpec with AuditedControlle
     mockJourneyAction,
     mockExportsCacheService,
     navigator,
-    stubMessagesControllerComponents(),
+    mcc,
     exporter_address
   )(ExecutionContext.global, mockCodeListConnector, auditService)
 

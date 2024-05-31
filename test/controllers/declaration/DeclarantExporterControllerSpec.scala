@@ -45,7 +45,7 @@ class DeclarantExporterControllerSpec extends ControllerSpec with AuditedControl
     mockJourneyAction,
     mockExportsCacheService,
     navigator,
-    stubMessagesControllerComponents(),
+    mcc,
     mockPage
   )(ec, auditService)
 

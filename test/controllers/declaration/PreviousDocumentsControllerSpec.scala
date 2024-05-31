@@ -40,7 +40,7 @@ class PreviousDocumentsControllerSpec extends ControllerWithoutFormSpec with Aud
     mockAuthAction,
     mockJourneyAction,
     navigator,
-    stubMessagesControllerComponents(),
+    mcc,
     mockPreviousDocumentsPage,
     mockExportsCacheService,
     mockDocumentTypeService

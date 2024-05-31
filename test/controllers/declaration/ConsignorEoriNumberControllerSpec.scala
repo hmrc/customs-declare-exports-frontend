@@ -44,7 +44,7 @@ class ConsignorEoriNumberControllerSpec extends ControllerSpec with AuditedContr
     mockAuthAction,
     mockJourneyAction,
     navigator,
-    stubMessagesControllerComponents(),
+    mcc,
     mockConsignorEoriNumberPage,
     mockExportsCacheService
   )(ec, auditService)

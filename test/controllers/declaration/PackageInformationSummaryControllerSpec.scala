@@ -42,7 +42,7 @@ class PackageInformationSummaryControllerSpec extends ControllerSpec with Option
     mockJourneyAction,
     mockExportsCacheService,
     navigator,
-    stubMessagesControllerComponents(),
+    mcc,
     mockPage
   )
 

@@ -40,7 +40,7 @@ class TotalPackageQuantityControllerSpec extends ControllerSpec with AuditedCont
   val controller = new TotalPackageQuantityController(
     mockAuthAction,
     mockJourneyAction,
-    stubMessagesControllerComponents(),
+    mcc,
     navigator,
     mockExportsCacheService,
     totalPackageQuantity

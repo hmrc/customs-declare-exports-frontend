@@ -44,7 +44,7 @@ class TraderReferenceControllerSpec extends ControllerSpec with AuditedControlle
     mockAuthAction,
     mockJourneyAction,
     navigator,
-    stubMessagesControllerComponents(),
+    mcc,
     mockExportsCacheService,
     traderReferencePage
   )(ec, auditService)

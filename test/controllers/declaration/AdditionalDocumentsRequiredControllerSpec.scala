@@ -39,7 +39,7 @@ class AdditionalDocumentsRequiredControllerSpec extends ControllerSpec with Audi
     mockJourneyAction,
     mockExportsCacheService,
     navigator,
-    stubMessagesControllerComponents(),
+    mcc,
     page
   )(ec, auditService)
 

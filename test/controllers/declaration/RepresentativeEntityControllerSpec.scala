@@ -40,7 +40,7 @@ class RepresentativeEntityControllerSpec extends ControllerSpec with AuditedCont
     mockJourneyAction,
     navigator,
     mockExportsCacheService,
-    stubMessagesControllerComponents(),
+    mcc,
     mockPage
   )(ec, auditService)
 

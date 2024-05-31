@@ -17,11 +17,9 @@
 package controllers.declaration
 
 import base.ControllerWithoutFormSpec
-import config.AppConfig
 import controllers.routes.RejectedNotificationsController
 import forms.declaration.LocationOfGoods
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.STANDARD_FRONTIER
-import handlers.ErrorHandler
 import models.declaration.submissions.EnhancedStatus.{ERRORS, RECEIVED}
 import models.declaration.submissions.{Action, Submission}
 import models.requests.{SessionHelper, VerifiedEmailRequest}
@@ -35,14 +33,13 @@ import play.api.test.Helpers._
 import testdata.SubmissionsTestData.{createSubmission, submission}
 import views.helpers.Confirmation
 import views.html.declaration.confirmation._
-import views.html.error_template
 
 import java.time.ZonedDateTime
 import java.util.{Locale, UUID}
 import scala.concurrent.Future
 
 class ConfirmationControllerSpec extends ControllerWithoutFormSpec with GivenWhenThen {
-  private val mcc = stubMessagesControllerComponents()
+
   private val messages = mcc.messagesApi.preferred(List(Lang(Locale.ENGLISH)))
 
   val lrn = "R12345"
@@ -81,7 +78,7 @@ class ConfirmationControllerSpec extends ControllerWithoutFormSpec with GivenWhe
       mockVerifiedEmailAction,
       mockCustomsDeclareExportsConnector,
       mcc,
-      new ErrorHandler(mcc.messagesApi, instanceOf[error_template])(instanceOf[AppConfig]),
+      errorHandler,
       holdingPage,
       confirmationPage
     )

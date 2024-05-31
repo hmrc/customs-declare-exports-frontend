@@ -40,7 +40,7 @@ class CommodityDetailsControllerSpec extends ControllerSpec with AuditedControll
     mockJourneyAction,
     mockExportsCacheService,
     navigator,
-    stubMessagesControllerComponents(),
+    mcc,
     mockCommodityDetailsPage
   )(ec, auditService)
 

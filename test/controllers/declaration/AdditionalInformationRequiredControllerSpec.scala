@@ -38,7 +38,7 @@ class AdditionalInformationRequiredControllerSpec extends ControllerSpec with Au
     mockJourneyAction,
     mockExportsCacheService,
     navigator,
-    stubMessagesControllerComponents(),
+    mcc,
     mockPage
   )(ec, auditService)
 

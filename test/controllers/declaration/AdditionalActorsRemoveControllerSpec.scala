@@ -41,7 +41,7 @@ class AdditionalActorsRemoveControllerSpec extends ControllerSpec with AuditedCo
       mockJourneyAction,
       mockExportsCacheService,
       navigator,
-      stubMessagesControllerComponents(),
+      mcc,
       mockPage
     )(ec, auditService)
 

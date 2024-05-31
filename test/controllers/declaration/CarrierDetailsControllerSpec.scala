@@ -46,7 +46,7 @@ class CarrierDetailsControllerSpec extends ControllerSpec with AuditedController
     mockJourneyAction,
     mockExportsCacheService,
     navigator,
-    stubMessagesControllerComponents(),
+    mcc,
     mockCarrierDetailsPage
   )(ec, mockCodeListConnector, auditService)
 

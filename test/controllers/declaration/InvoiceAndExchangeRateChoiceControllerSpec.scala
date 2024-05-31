@@ -42,7 +42,7 @@ class InvoiceAndExchangeRateChoiceControllerSpec extends ControllerSpec with Aud
     mockAuthAction,
     mockJourneyAction,
     navigator,
-    stubMessagesControllerComponents(),
+    mcc,
     invoiceAndExchangeRateChoicePage,
     mockExportsCacheService
   )(ec, auditService)

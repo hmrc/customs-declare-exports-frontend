@@ -42,7 +42,7 @@ class AdditionalDeclarationTypeControllerSpec extends ControllerSpec with Audite
     mockJourneyAction,
     mockExportsCacheService,
     navigator,
-    stubMessagesControllerComponents(),
+    mcc,
     additionalDeclarationTypePage
   )(ec, auditService)
 

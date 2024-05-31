@@ -45,7 +45,7 @@ class AuthorisationHolderSummaryControllerSpec extends ControllerSpec with Optio
     mockJourneyAction,
     mockExportsCacheService,
     navigator,
-    stubMessagesControllerComponents(),
+    mcc,
     mockPage
   )
 

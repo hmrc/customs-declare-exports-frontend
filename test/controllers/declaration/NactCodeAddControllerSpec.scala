@@ -42,7 +42,7 @@ class NactCodeAddControllerSpec extends ControllerSpec with AuditedControllerSpe
       mockJourneyAction,
       mockExportsCacheService,
       navigator,
-      stubMessagesControllerComponents(),
+      mcc,
       mockAddFirstPage,
       mockAddPage
     )(ec, auditService)

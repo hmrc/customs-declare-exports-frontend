@@ -51,7 +51,7 @@ class UNDangerousGoodsCodeControllerSpec extends ControllerSpec with AuditedCont
     mockJourneyAction,
     mockExportsCacheService,
     navigator,
-    stubMessagesControllerComponents(),
+    mcc,
     mockPage
   )(ec, auditService)
 

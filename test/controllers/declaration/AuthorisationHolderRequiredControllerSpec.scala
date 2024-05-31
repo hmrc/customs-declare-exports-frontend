@@ -45,7 +45,7 @@ class AuthorisationHolderRequiredControllerSpec extends ControllerSpec with Audi
     mockJourneyAction,
     mockExportsCacheService,
     navigator,
-    stubMessagesControllerComponents(),
+    mcc,
     mockPage
   )(ec, auditService)
 

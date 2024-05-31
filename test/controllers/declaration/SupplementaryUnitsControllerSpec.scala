@@ -42,7 +42,7 @@ class SupplementaryUnitsControllerSpec extends ControllerSpec with AuditedContro
     mockJourneyAction,
     mockExportsCacheService,
     navigator,
-    stubMessagesControllerComponents(),
+    mcc,
     supplementaryUnitsYesNoPage
   )(ec, auditService)
 

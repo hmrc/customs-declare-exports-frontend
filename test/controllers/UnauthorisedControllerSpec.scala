@@ -33,7 +33,7 @@ class UnauthorisedControllerSpec extends ControllerWithoutFormSpec {
   val controller =
     new UnauthorisedController(
       mockTdrFeatureFlags,
-      stubMessagesControllerComponents(),
+      mcc,
       unauthorisedPage,
       unauthorisedEoriInTdrPage,
       unauthorisedAgentPage

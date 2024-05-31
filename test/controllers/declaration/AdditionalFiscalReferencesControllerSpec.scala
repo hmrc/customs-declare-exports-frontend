@@ -21,7 +21,7 @@ import controllers.declaration.routes.{CommodityDetailsController, FiscalInforma
 import forms.common.YesNoAnswer
 import forms.declaration.FiscalInformation
 import forms.declaration.FiscalInformation.AllowedFiscalInformationAnswers
-import mock.{ErrorHandlerMocks, ItemActionMocks}
+import mock.ItemActionMocks
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -34,7 +34,7 @@ import views.html.declaration.fiscalInformation.additional_fiscal_references
 
 import scala.concurrent.Future
 
-class AdditionalFiscalReferencesControllerSpec extends ControllerSpec with ItemActionMocks with ErrorHandlerMocks {
+class AdditionalFiscalReferencesControllerSpec extends ControllerSpec with ItemActionMocks {
 
   val additionalFiscalReferencesPage = mock[additional_fiscal_references]
 

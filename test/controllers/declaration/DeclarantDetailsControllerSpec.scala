@@ -43,7 +43,7 @@ class DeclarantDetailsControllerSpec extends ControllerSpec with AuditedControll
     mockJourneyAction,
     mockExportsCacheService,
     navigator,
-    stubMessagesControllerComponents(),
+    mcc,
     declarantDetailsPage
   )(ec, auditService)
 

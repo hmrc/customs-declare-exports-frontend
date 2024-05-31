@@ -41,7 +41,7 @@ class AdditionalInformationRemoveControllerSpec extends ControllerSpec with Audi
       mockJourneyAction,
       mockExportsCacheService,
       navigator,
-      stubMessagesControllerComponents(),
+      mcc,
       mockRemovePage
     )(ec, auditService)
 

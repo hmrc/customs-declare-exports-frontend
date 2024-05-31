@@ -44,7 +44,7 @@ class AuthorisationProcedureCodeChoiceControllerSpec extends ControllerSpec with
     mockJourneyAction,
     mockExportsCacheService,
     navigator,
-    stubMessagesControllerComponents(),
+    mcc,
     authorisationProcedureCodeChoice
   )(ec, auditService)
 

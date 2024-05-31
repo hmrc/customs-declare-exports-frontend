@@ -42,7 +42,7 @@ class AdditionalDocumentRemoveControllerSpec extends ControllerSpec with Audited
       mockJourneyAction,
       mockExportsCacheService,
       navigator,
-      stubMessagesControllerComponents(),
+      mcc,
       additionalDocumentRemovePage
     )(ec, auditService)
 

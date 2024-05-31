@@ -47,7 +47,7 @@ class ConsignorDetailsControllerSpec extends ControllerSpec with AuditedControll
     mockJourneyAction,
     mockExportsCacheService,
     navigator,
-    stubMessagesControllerComponents(),
+    mcc,
     consignorDetailsPage
   )(ec, mockCodeListConnector, auditService)
 

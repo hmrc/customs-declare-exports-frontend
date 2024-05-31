@@ -39,7 +39,7 @@ class PreviousDocumentsSummaryControllerSpec extends ControllerSpec {
     mockJourneyAction,
     navigator,
     mockExportsCacheService,
-    stubMessagesControllerComponents(),
+    mcc,
     page
   )
 

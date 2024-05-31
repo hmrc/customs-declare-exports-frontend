@@ -40,7 +40,7 @@ class TransportPaymentControllerSpec extends ControllerSpec with AuditedControll
     mockJourneyAction,
     navigator,
     mockExportsCacheService,
-    stubMessagesControllerComponents(),
+    mcc,
     transportPaymentPage
   )(ec, auditService)
 

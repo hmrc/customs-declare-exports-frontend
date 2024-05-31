@@ -42,7 +42,7 @@ class DucrChoiceControllerSpec extends ControllerSpec with AuditedControllerSpec
     mockJourneyAction,
     mockExportsCacheService,
     navigator,
-    stubMessagesControllerComponents(),
+    mcc,
     ducrChoicePage
   )(ec, auditService)
 

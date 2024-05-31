@@ -27,7 +27,6 @@ import views.html.{session_timed_out, user_signed_out}
 
 class SignOutControllerSpec extends ControllerWithoutFormSpec with ScalaFutures {
 
-  private val mcc = stubMessagesControllerComponents()
   private val sessionTimedOutPage = mock[session_timed_out]
   private val userSignedOutPage = mock[user_signed_out]
 

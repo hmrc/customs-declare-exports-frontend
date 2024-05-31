@@ -19,7 +19,7 @@ package controllers.actions
 import base.ControllerWithoutFormSpec
 import base.ExportsTestData.{eori, newUser}
 import config.{AppConfig, ExternalServicesConfig}
-import controllers.{routes, ChoiceController}
+import controllers.{ChoiceController, routes}
 import models.UnauthorisedReason.{UrlDirect, UserEoriNotAllowed, UserIsAgent, UserIsNotEnrolled}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
@@ -33,7 +33,6 @@ import scala.concurrent.Future
 
 class AuthActionSpec extends ControllerWithoutFormSpec {
 
-  val mcc = stubMessagesControllerComponents()
   val page = instanceOf[declaration_details]
 
   val choicePage = mock[choice_page]

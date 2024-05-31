@@ -18,9 +18,8 @@ package controllers
 
 import base.ControllerWithoutFormSpec
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.{AdditionalDeclarationType, STANDARD_FRONTIER}
-import mock.ErrorHandlerMocks
-import models.declaration.submissions.{Action, Submission}
 import models.declaration.submissions.RequestType.{ExternalAmendmentRequest, SubmissionRequest}
+import models.declaration.submissions.{Action, Submission}
 import models.requests.SessionHelper
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers._
@@ -34,7 +33,7 @@ import java.time.ZonedDateTime
 import java.util.UUID
 import scala.concurrent.Future
 
-class DeclarationDetailsControllerSpec extends ControllerWithoutFormSpec with BeforeAndAfterEach with ErrorHandlerMocks with OptionValues {
+class DeclarationDetailsControllerSpec extends ControllerWithoutFormSpec with BeforeAndAfterEach with OptionValues {
 
   private val uuid = UUID.randomUUID().toString
   private val action = Action("actionId", SubmissionRequest, ZonedDateTime.now, notifications = None, Some(uuid), 1)
@@ -50,7 +49,7 @@ class DeclarationDetailsControllerSpec extends ControllerWithoutFormSpec with Be
     mockVerifiedEmailAction,
     mockErrorHandler,
     mockCustomsDeclareExportsConnector,
-    stubMessagesControllerComponents(),
+    mcc,
     declarationDetailsPage,
     unavailableTimelineActionsPage
   )(ec)

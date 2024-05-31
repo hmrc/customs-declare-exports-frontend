@@ -21,7 +21,6 @@ import controllers.declaration.routes.{ItemsSummaryController, SectionSummaryCon
 import controllers.helpers.SequenceIdHelper.valueOfEso
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.WarehouseIdentification
-import mock.ErrorHandlerMocks
 import models.DeclarationType._
 import models.declaration.{CommodityMeasure, DeclarationStatus, ExportItem}
 import org.mockito.ArgumentCaptor
@@ -39,7 +38,7 @@ import views.html.declaration.declarationitems.{items_cannot_remove, items_remov
 import scala.concurrent.Future
 
 class RemoveItemsSummaryControllerSpec
-    extends ControllerWithoutFormSpec with OptionValues with ScalaFutures with GivenWhenThen with ErrorHandlerMocks with SubmissionBuilder {
+    extends ControllerWithoutFormSpec with OptionValues with ScalaFutures with GivenWhenThen with SubmissionBuilder {
 
   private val removeItemPage = mock[items_remove_item]
   private val cannotRemoveItemPage = mock[items_cannot_remove]
@@ -50,7 +49,7 @@ class RemoveItemsSummaryControllerSpec
     mockExportsCacheService,
     mockCustomsDeclareExportsConnector,
     mockErrorHandler,
-    stubMessagesControllerComponents(),
+    mcc,
     cannotRemoveItemPage,
     removeItemPage
   )(ec)

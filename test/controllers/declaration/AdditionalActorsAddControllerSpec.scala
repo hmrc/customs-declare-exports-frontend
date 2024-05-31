@@ -19,7 +19,6 @@ package controllers.declaration
 import base.{AuditedControllerSpec, ControllerSpec, Injector, TestHelper}
 import forms.common.Eori
 import forms.declaration.AdditionalActor
-import mock.ErrorHandlerMocks
 import models.DeclarationType
 import models.declaration.AdditionalActors
 import org.mockito.ArgumentCaptor
@@ -31,7 +30,7 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import views.html.declaration.additionalActors.additional_actors_add
 
-class AdditionalActorsAddControllerSpec extends ControllerSpec with AuditedControllerSpec with ErrorHandlerMocks with Injector {
+class AdditionalActorsAddControllerSpec extends ControllerSpec with AuditedControllerSpec with Injector {
 
   val declarationAdditionalActorsPage = mock[additional_actors_add]
 
@@ -40,7 +39,7 @@ class AdditionalActorsAddControllerSpec extends ControllerSpec with AuditedContr
     mockJourneyAction,
     mockExportsCacheService,
     navigator,
-    stubMessagesControllerComponents(),
+    mcc,
     declarationAdditionalActorsPage
   )(ec, auditService)
 

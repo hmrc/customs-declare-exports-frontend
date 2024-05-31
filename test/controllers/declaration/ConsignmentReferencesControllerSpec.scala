@@ -48,7 +48,7 @@ class ConsignmentReferencesControllerSpec extends ControllerSpec with AuditedCon
     mockExportsCacheService,
     lrnValidator,
     navigator,
-    stubMessagesControllerComponents(),
+    mcc,
     consignmentReferencesPage
   )(ec, auditService)
 

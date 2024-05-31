@@ -17,16 +17,14 @@
 package controllers
 
 import base.ControllerWithoutFormSpec
-import config.AppConfig
 import connectors.CodeListConnector
-import handlers.ErrorHandler
 import mock.FeatureFlagMocks
 import models.declaration.notifications.Notification
 import models.declaration.submissions.Action
 import models.requests.SessionHelper.submissionUuid
-import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
+import org.mockito.{ArgumentCaptor, ArgumentMatchers}
 import org.scalatest.{Assertion, OptionValues}
 import play.api.libs.json.Json
 import play.api.mvc.Result
@@ -34,7 +32,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import views.helpers.ErrorsReportedHelper
-import views.html.{error_template, errors_reported}
+import views.html.errors_reported
 
 import scala.concurrent.ExecutionContext.global
 import scala.concurrent.Future
@@ -45,12 +43,10 @@ class ErrorsReportedControllerSpec extends ControllerWithoutFormSpec with Option
   private val mockErrorsReportedHelper = mock[ErrorsReportedHelper]
   private val codeListConnector = mock[CodeListConnector]
 
-  private val mcc = stubMessagesControllerComponents()
-
   private val controller = new ErrorsReportedController(
     mockAuthAction,
     mockVerifiedEmailAction,
-    new ErrorHandler(mcc.messagesApi, instanceOf[error_template])(instanceOf[AppConfig]),
+    errorHandler,
     mockCustomsDeclareExportsConnector,
     codeListConnector,
     mcc,

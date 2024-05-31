@@ -45,7 +45,7 @@ class ExpressConsignmentControllerSpec extends ControllerSpec with AuditedContro
     mockJourneyAction,
     mockExportsCacheService,
     navigator,
-    stubMessagesControllerComponents(),
+    mcc,
     expressConsignmentPage
   )(ec, auditService)
 

@@ -29,8 +29,7 @@ class UnverifiedEmailControllerSpec extends ControllerWithoutFormSpec {
   val unverifiedPage = mock[unverified_email]
   val undeliverablePage = mock[undeliverable_email]
 
-  def controller() =
-    new UnverifiedEmailController(mockAuthAction, stubMessagesControllerComponents(), unverifiedPage, undeliverablePage, mock[AppConfig])
+  def controller() = new UnverifiedEmailController(mockAuthAction, mcc, unverifiedPage, undeliverablePage, mock[AppConfig])
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()

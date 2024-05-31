@@ -43,7 +43,7 @@ class FiscalInformationControllerSpec extends ControllerSpec with AuditedControl
     mockJourneyAction,
     mockExportsCacheService,
     navigator,
-    stubMessagesControllerComponents(),
+    mcc,
     mockFiscalInformationPage
   )(ec, auditService)
 

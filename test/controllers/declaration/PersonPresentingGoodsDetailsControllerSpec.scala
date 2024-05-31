@@ -45,7 +45,7 @@ class PersonPresentingGoodsDetailsControllerSpec extends ControllerSpec with Aud
     mockJourneyAction,
     mockExportsCacheService,
     navigator,
-    stubMessagesControllerComponents(),
+    mcc,
     page
   )(ec, auditService)
 

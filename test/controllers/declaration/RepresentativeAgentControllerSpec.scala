@@ -40,7 +40,7 @@ class RepresentativeAgentControllerSpec extends ControllerSpec with AuditedContr
     mockJourneyAction,
     navigator,
     mockExportsCacheService,
-    stubMessagesControllerComponents(),
+    mcc,
     mockPage
   )(ec, auditService)
 

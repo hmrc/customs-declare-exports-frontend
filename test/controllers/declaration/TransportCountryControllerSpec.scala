@@ -45,12 +45,8 @@ class TransportCountryControllerSpec extends ControllerSpec with AuditedControll
   val page = mock[transport_country]
   val codeListConnector = mock[CodeListConnector]
 
-  val controller =
-    new TransportCountryController(mockAuthAction, mockJourneyAction, navigator, mockExportsCacheService, stubMessagesControllerComponents(), page)(
-      ec,
-      codeListConnector,
-      auditService
-    )
+  val controller = new TransportCountryController(
+    mockAuthAction, mockJourneyAction, navigator, mockExportsCacheService, mcc, page)(ec, codeListConnector, auditService)
 
   val countryCode = "ZA"
   val countryName = "South Africa"

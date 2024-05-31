@@ -39,7 +39,7 @@ class NatureOfTransactionControllerSpec extends ControllerSpec with AuditedContr
     mockAuthAction,
     mockJourneyAction,
     navigator,
-    stubMessagesControllerComponents(),
+    mcc,
     mockNatureOfTransactionPage,
     mockExportsCacheService
   )(ec, auditService)

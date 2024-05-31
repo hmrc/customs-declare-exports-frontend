@@ -42,7 +42,7 @@ class CarrierEoriNumberControllerSpec extends ControllerSpec with AuditedControl
     mockAuthAction,
     mockJourneyAction,
     navigator,
-    stubMessagesControllerComponents(),
+    mcc,
     mockCarrierEoriNumberPage,
     mockExportsCacheService
   )(ec, auditService)

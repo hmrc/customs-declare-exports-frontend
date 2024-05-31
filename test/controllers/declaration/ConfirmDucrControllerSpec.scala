@@ -23,8 +23,7 @@ import forms.Ducr
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.ConsignmentReferences
-import mock.ErrorHandlerMocks
-import models.DeclarationType.{allDeclarationTypesExcluding, SUPPLEMENTARY}
+import models.DeclarationType.{SUPPLEMENTARY, allDeclarationTypesExcluding}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.{reset, verify, when}
@@ -36,7 +35,7 @@ import play.api.test.Helpers.{await, redirectLocation, status}
 import play.twirl.api.HtmlFormat
 import views.html.declaration.confirm_ducr
 
-class ConfirmDucrControllerSpec extends ControllerSpec with AuditedControllerSpec with AmendmentDraftFilterSpec with ErrorHandlerMocks {
+class ConfirmDucrControllerSpec extends ControllerSpec with AuditedControllerSpec with AmendmentDraftFilterSpec {
 
   private val confirmDucrPage = mock[confirm_ducr]
 
@@ -44,7 +43,7 @@ class ConfirmDucrControllerSpec extends ControllerSpec with AuditedControllerSpe
     mockAuthAction,
     mockJourneyAction,
     navigator,
-    stubMessagesControllerComponents(),
+    mcc,
     mockExportsCacheService,
     confirmDucrPage
   )(ec, auditService)

@@ -37,7 +37,7 @@ class PreviousDocumentsRemoveControllerSpec extends ControllerWithoutFormSpec wi
     mockJourneyAction,
     mockExportsCacheService,
     navigator,
-    stubMessagesControllerComponents(),
+    mcc,
     page
   )(ec, auditService)
 

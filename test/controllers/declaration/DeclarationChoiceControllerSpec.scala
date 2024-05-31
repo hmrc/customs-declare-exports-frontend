@@ -40,7 +40,6 @@ class DeclarationChoiceControllerSpec extends ControllerWithoutFormSpec with Opt
   private val newDeclarationId = "newDeclarationId"
 
   private val declarationChoice = mock[declaration_choice]
-  private val mcc = stubMessagesControllerComponents()
 
   val controller = new DeclarationChoiceController(mockAuthAction, mockVerifiedEmailAction, mockExportsCacheService, mcc, declarationChoice)(ec)
 

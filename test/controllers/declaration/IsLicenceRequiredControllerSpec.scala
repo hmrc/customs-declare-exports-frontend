@@ -47,7 +47,7 @@ class IsLicenceRequiredControllerSpec extends ControllerSpec with AuditedControl
     mockJourneyAction,
     mockExportsCacheService,
     navigator,
-    stubMessagesControllerComponents(),
+    mcc,
     taggedAuthCodes,
     mockPage
   )(ec, auditService)

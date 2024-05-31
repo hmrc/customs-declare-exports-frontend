@@ -16,8 +16,10 @@
 
 package base
 
+import config.AppConfig
 import controllers.helpers.{Add, AddField, SaveAndContinue}
-import mock.{FeatureFlagMocks, JourneyActionMocks, VerifiedEmailMocks}
+import handlers.ErrorHandler
+import mock.{ErrorHandlerMocks, FeatureFlagMocks, JourneyActionMocks, VerifiedEmailMocks}
 import models.ExportsDeclaration
 import models.requests.{JourneyRequest, SessionHelper}
 import models.responses.FlashKeys
@@ -30,6 +32,7 @@ import play.api.test.{DefaultAwaitTimeout, FakeRequest}
 import play.twirl.api.Html
 import services.cache.ExportsItemBuilder
 import utils.FakeRequestCSRFSupport._
+import views.html.error_template
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -40,10 +43,17 @@ trait ControllerWithoutFormSpec extends ControllerSpec {
 }
 
 trait ControllerSpec
-    extends UnitSpec with MockAuthAction with MockConnectors with MockExportCacheService with MockNavigator with JourneyTypeTestRunner
-    with ExportsItemBuilder with JourneyActionMocks with FeatureFlagMocks with DefaultAwaitTimeout with VerifiedEmailMocks {
-
+    extends UnitSpec
+       with DefaultAwaitTimeout with ErrorHandlerMocks with ExportsItemBuilder with FeatureFlagMocks
+       with JourneyTypeTestRunner
+       with JourneyActionMocks with MockAuthAction with MockConnectors with MockExportCacheService with MockNavigator
+       with VerifiedEmailMocks
+{
   implicit val ec: ExecutionContext = ExecutionContext.global
+
+  protected val mcc = stubMessagesControllerComponents()
+
+  protected val errorHandler = new ErrorHandler(mcc.messagesApi, instanceOf[error_template])(instanceOf[AppConfig])
 
   protected def addActionUrlEncoded(field: String = ""): (String, String) =
     if (field.isEmpty) (Add.toString, field) else (AddField.toString, field)

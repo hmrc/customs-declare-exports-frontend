@@ -42,7 +42,7 @@ class ExporterEoriNumberControllerSpec extends ControllerSpec with AuditedContro
     mockAuthAction,
     mockJourneyAction,
     navigator,
-    stubMessagesControllerComponents(),
+    mcc,
     mockExporterEoriNumberPage,
     mockExportsCacheService
   )(ec, auditService)

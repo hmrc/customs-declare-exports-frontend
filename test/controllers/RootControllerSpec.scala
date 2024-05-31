@@ -22,7 +22,7 @@ import play.api.test.Helpers._
 
 class RootControllerSpec extends ControllerWithoutFormSpec {
 
-  val controller = new RootController(stubMessagesControllerComponents())
+  val controller = new RootController(mcc)
 
   "Root Controller" should {
     "return 303" when {

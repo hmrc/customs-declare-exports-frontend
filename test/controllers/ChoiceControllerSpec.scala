@@ -27,7 +27,7 @@ class ChoiceControllerSpec extends ControllerWithoutFormSpec {
 
   val choicePage = mock[choice_page]
 
-  val controller = new ChoiceController(mockAuthAction, mockVerifiedEmailAction, stubMessagesControllerComponents(), choicePage)
+  val controller = new ChoiceController(mockAuthAction, mockVerifiedEmailAction, mcc, choicePage)
 
   "ChoiceControllerdisplayPage" should {
 
