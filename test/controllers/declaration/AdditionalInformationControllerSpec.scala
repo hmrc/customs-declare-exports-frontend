@@ -35,14 +35,7 @@ class AdditionalInformationControllerSpec extends ControllerSpec {
 
   private val mockSummaryPage = mock[additional_information]
 
-  val controller = new AdditionalInformationController(
-    mockAuthAction,
-    mockJourneyAction,
-    mockExportsCacheService,
-    navigator,
-    mcc,
-    mockSummaryPage
-  )
+  val controller = new AdditionalInformationController(mockAuthAction, mockJourneyAction, mockExportsCacheService, navigator, mcc, mockSummaryPage)
 
   val itemId = "itemId"
 

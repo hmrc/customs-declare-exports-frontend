@@ -18,7 +18,7 @@ package controllers.declaration
 
 import base.{AuditedControllerSpec, ControllerSpec, MockTransportCodeService}
 import controllers.declaration.routes.{BorderTransportController, ExpressConsignmentController, TransportCountryController}
-import controllers.helpers.TransportSectionHelper.{Guernsey, Jersey, postalOrFTIModeOfTransportCodes}
+import controllers.helpers.TransportSectionHelper.{postalOrFTIModeOfTransportCodes, Guernsey, Jersey}
 import forms.declaration.DepartureTransport
 import forms.declaration.DepartureTransport.radioButtonGroupId
 import forms.declaration.InlandOrBorder.Border

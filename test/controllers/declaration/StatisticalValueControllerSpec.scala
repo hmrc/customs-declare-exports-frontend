@@ -38,14 +38,8 @@ class StatisticalValueControllerSpec extends ControllerSpec with AuditedControll
 
   val mockItemTypePage = mock[statistical_value]
 
-  val controller = new StatisticalValueController(
-    mockAuthAction,
-    mockJourneyAction,
-    mockExportsCacheService,
-    navigator,
-    mcc,
-    mockItemTypePage
-  )(ec, auditService)
+  val controller =
+    new StatisticalValueController(mockAuthAction, mockJourneyAction, mockExportsCacheService, navigator, mcc, mockItemTypePage)(ec, auditService)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()

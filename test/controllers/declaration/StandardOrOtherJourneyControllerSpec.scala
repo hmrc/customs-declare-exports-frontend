@@ -40,8 +40,8 @@ class StandardOrOtherJourneyControllerSpec extends ControllerWithoutFormSpec wit
 
   private val standardOrOtherJourney = mock[standard_or_other_journey]
 
-  val controller = new StandardOrOtherJourneyController(
-    mockAuthAction, mockVerifiedEmailAction, mockExportsCacheService, mcc, standardOrOtherJourney)(ec)
+  val controller =
+    new StandardOrOtherJourneyController(mockAuthAction, mockVerifiedEmailAction, mockExportsCacheService, mcc, standardOrOtherJourney)(ec)
 
   override def beforeEach(): Unit = {
     super.beforeEach()

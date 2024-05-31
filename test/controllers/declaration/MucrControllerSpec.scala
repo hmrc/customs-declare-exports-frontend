@@ -38,8 +38,7 @@ class MucrControllerSpec extends ControllerSpec with AuditedControllerSpec with 
 
   private val mucrPage = mock[mucr_code]
 
-  val controller = new MucrController(
-    mockAuthAction, mockJourneyAction, mockExportsCacheService, navigator, mcc, mucrPage)(ec, auditService)
+  val controller = new MucrController(mockAuthAction, mockJourneyAction, mockExportsCacheService, navigator, mcc, mucrPage)(ec, auditService)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()

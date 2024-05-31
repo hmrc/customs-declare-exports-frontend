@@ -23,7 +23,7 @@ import forms.Ducr
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.ConsignmentReferences
-import models.DeclarationType.{SUPPLEMENTARY, allDeclarationTypesExcluding}
+import models.DeclarationType.{allDeclarationTypesExcluding, SUPPLEMENTARY}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.{reset, verify, when}
@@ -39,14 +39,8 @@ class ConfirmDucrControllerSpec extends ControllerSpec with AuditedControllerSpe
 
   private val confirmDucrPage = mock[confirm_ducr]
 
-  val controller = new ConfirmDucrController(
-    mockAuthAction,
-    mockJourneyAction,
-    navigator,
-    mcc,
-    mockExportsCacheService,
-    confirmDucrPage
-  )(ec, auditService)
+  val controller =
+    new ConfirmDucrController(mockAuthAction, mockJourneyAction, navigator, mcc, mockExportsCacheService, confirmDucrPage)(ec, auditService)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()

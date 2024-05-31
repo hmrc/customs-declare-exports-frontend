@@ -41,14 +41,8 @@ class ProcedureCodesControllerSpec extends ControllerSpec with AuditedController
 
   private val procedureCodesPage = mock[procedure_codes]
 
-  val controller = new ProcedureCodesController(
-    mockAuthAction,
-    mockJourneyAction,
-    navigator,
-    mockExportsCacheService,
-    mcc,
-    procedureCodesPage
-  )(ec, auditService)
+  val controller =
+    new ProcedureCodesController(mockAuthAction, mockJourneyAction, navigator, mockExportsCacheService, mcc, procedureCodesPage)(ec, auditService)
 
   val itemId = "itemId12345"
 

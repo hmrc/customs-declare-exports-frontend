@@ -21,7 +21,7 @@ import connectors.CodeLinkConnector
 import controllers.declaration.routes.NactCodeSummaryController
 import forms.declaration.NactCode
 import forms.declaration.NactCode.nactCodeKey
-import forms.declaration.NatureOfTransaction.{BusinessPurchase, Sale, allowedTypes}
+import forms.declaration.NatureOfTransaction.{allowedTypes, BusinessPurchase, Sale}
 import forms.declaration.ZeroRatedForVat._
 import models.DeclarationType._
 import models.ExportsDeclaration
@@ -45,15 +45,10 @@ class ZeroRatedForVatControllerSpec extends ControllerSpec with AuditedControlle
   val codeLinkConnector = mock[CodeLinkConnector]
 
   val controller =
-    new ZeroRatedForVatController(
-      mockAuthAction,
-      mockJourneyAction,
-      mockExportsCacheService,
-      navigator,
-      mcc,
-      codeLinkConnector,
-      zeroRatedForVatPage
-    )(ec, auditService)
+    new ZeroRatedForVatController(mockAuthAction, mockJourneyAction, mockExportsCacheService, navigator, mcc, codeLinkConnector, zeroRatedForVatPage)(
+      ec,
+      auditService
+    )
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()

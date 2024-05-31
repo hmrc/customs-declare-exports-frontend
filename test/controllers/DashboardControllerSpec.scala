@@ -52,14 +52,8 @@ class DashboardControllerSpec extends ControllerWithoutFormSpec with BeforeAndAf
   private val dashboard = mock[dashboard]
   private val paginationConfig = mock[PaginationConfig]
 
-  val controller = new DashboardController(
-    mockAuthAction,
-    mockVerifiedEmailAction,
-    mockCustomsDeclareExportsConnector,
-    paginationConfig,
-    mcc,
-    dashboard
-  )(ec)
+  val controller =
+    new DashboardController(mockAuthAction, mockVerifiedEmailAction, mockCustomsDeclareExportsConnector, paginationConfig, mcc, dashboard)(ec)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()

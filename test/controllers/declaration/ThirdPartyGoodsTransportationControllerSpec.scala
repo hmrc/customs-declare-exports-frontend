@@ -29,7 +29,7 @@ import play.api.data.Form
 import play.api.http.Status.BAD_REQUEST
 import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsEmpty, Request}
-import play.api.test.Helpers.{OK, await, status}
+import play.api.test.Helpers.{await, status, OK}
 import play.twirl.api.HtmlFormat
 import views.html.declaration.third_party_goods_transportation
 
@@ -37,14 +37,8 @@ class ThirdPartyGoodsTransportationControllerSpec extends ControllerSpec with Au
 
   private val page = mock[third_party_goods_transportation]
 
-  private val controller = new ThirdPartyGoodsTransportationController(
-    mcc,
-    mockAuthAction,
-    mockJourneyAction,
-    mockExportsCacheService,
-    navigator,
-    page
-  )(ec, auditService)
+  private val controller =
+    new ThirdPartyGoodsTransportationController(mcc, mockAuthAction, mockJourneyAction, mockExportsCacheService, navigator, page)(ec, auditService)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()

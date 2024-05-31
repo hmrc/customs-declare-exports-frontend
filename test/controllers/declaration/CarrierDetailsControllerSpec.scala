@@ -41,14 +41,11 @@ class CarrierDetailsControllerSpec extends ControllerSpec with AuditedController
   val mockCarrierDetailsPage = mock[carrier_details]
   val mockCodeListConnector = mock[CodeListConnector]
 
-  val controller = new CarrierDetailsController(
-    mockAuthAction,
-    mockJourneyAction,
-    mockExportsCacheService,
-    navigator,
-    mcc,
-    mockCarrierDetailsPage
-  )(ec, mockCodeListConnector, auditService)
+  val controller = new CarrierDetailsController(mockAuthAction, mockJourneyAction, mockExportsCacheService, navigator, mcc, mockCarrierDetailsPage)(
+    ec,
+    mockCodeListConnector,
+    auditService
+  )
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()

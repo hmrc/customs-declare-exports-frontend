@@ -16,9 +16,8 @@
 
 package views
 
-import base.Injector
+import base.{Injector, MrnStatusTestData}
 import controllers.routes.DeclarationDetailsController
-import models.dis.MrnStatusSpec
 import models.requests.SessionHelper
 import org.jsoup.nodes.Document
 import play.api.test.FakeRequest
@@ -29,125 +28,84 @@ import views.helpers.{CommonMessages, Title, ViewDates}
 import views.tags.ViewTest
 
 @ViewTest
-class EadViewSpec extends UnitViewSpec with CommonMessages with Stubs with Injector {
+class EadViewSpec extends UnitViewSpec with CommonMessages with Stubs with Injector with MrnStatusTestData {
 
   private val page = instanceOf[views.html.ead]
 
   private val view: Document =
-    page(MrnStatusSpec.completeMrnStatus.mrn, MrnStatusSpec.completeMrnStatus, "/img.jpg")(
-      messages,
-      FakeRequest().withSession((SessionHelper.submissionUuid, "submissionUuid"))
-    )
+    page(mrnStatus.mrn, mrnStatus, "/img.jpg")(messages, FakeRequest().withSession((SessionHelper.submissionUuid, "submissionUuid")))
 
   "CopyDeclaration page on empty page" should {
 
     "display 'Back' button that links to /submissions/:id/information" in {
-      val backButton = view.getElementsByClass("govuk-back-link").first()
+      val backButton = view.getElementsByClass("govuk-back-link").first
       backButton must containMessage(backCaption)
       backButton must haveHref(DeclarationDetailsController.displayPage("submissionUuid").url)
     }
+
     "display page title" in {
-      view
-        .getElementsByTag("title")
-        .first()
-        .text mustBe Title("ead.template.title").toString
+      view.getElementsByTag("title").first.text mustBe Title("ead.template.title").toString
     }
+
     "display the expected label, body and hint" when {
+
       "the DUCR field" in {
-        view
-          .getElementsByClass("ead-heading")
-          .get(1)
-          .text mustBe s"${messages("ead.template.ucr")}: ${MrnStatusSpec.completeMrnStatus.ucr.get}"
+        val paragraph = view.getElementsByClass("ead-heading")
+        paragraph.get(1).text mustBe s"${messages("ead.template.ucr")}: ${mrnStatus.ucr.get}"
       }
+
       "the MRN field" in {
-        view
-          .getElementsByClass("ead-heading")
-          .get(2)
-          .text mustBe s"${messages("ead.template.mrn")}: ${MrnStatusSpec.completeMrnStatus.mrn}"
+        val paragraph = view.getElementsByClass("ead-heading")
+        paragraph.get(2).text mustBe s"${messages("ead.template.mrn")}: ${mrnStatus.mrn}"
       }
+
       "the date/time fields" in {
-        view
-          .getElementsByClass("ead-body")
-          .get(6)
-          .text mustBe s"${messages("ead.template.releasedDateTime")}:"
-        view
-          .getElementsByClass("ead-body")
-          .get(7)
-          .text mustBe MrnStatusSpec.completeMrnStatus.releasedDateTime.map(ViewDates.formatDateAtTime).get
-        view
-          .getElementsByClass("ead-body")
-          .get(8)
-          .text mustBe s"${messages("ead.template.acceptanceDateTime")}:"
-        view
-          .getElementsByClass("ead-body")
-          .get(9)
-          .text mustBe MrnStatusSpec.completeMrnStatus.acceptanceDateTime.map(ViewDates.formatDateAtTime).get
-        view
-          .getElementsByClass("ead-body")
-          .get(10)
-          .text mustBe s"${messages("ead.template.receivedDateTime")}:"
-        view
-          .getElementsByClass("ead-body")
-          .get(11)
-          .text mustBe ViewDates.formatDateAtTime(MrnStatusSpec.completeMrnStatus.receivedDateTime)
+        val paragraph = view.getElementsByClass("ead-body")
+        paragraph.get(6).text mustBe s"${messages("ead.template.releasedDateTime")}:"
+        paragraph.get(7).text mustBe mrnStatus.releasedDateTime.map(ViewDates.formatDateAtTime).get
+        paragraph.get(8).text mustBe s"${messages("ead.template.acceptanceDateTime")}:"
+        paragraph.get(9).text mustBe mrnStatus.acceptanceDateTime.map(ViewDates.formatDateAtTime).get
+        paragraph.get(10).text mustBe s"${messages("ead.template.receivedDateTime")}:"
+        paragraph.get(11).text mustBe ViewDates.formatDateAtTime(mrnStatus.receivedDateTime)
       }
+
       "previous docs" in {
-        view
-          .getElementsByClass("ead-body")
-          .get(12)
-          .text mustBe s"${messages("ead.template.previousDocuments")}:"
-        view
-          .getElementsByClass("ead-body")
-          .get(13)
-          .text mustBe s"${MrnStatusSpec.completeMrnStatus.previousDocuments.head.typeCode} - ${MrnStatusSpec.completeMrnStatus.previousDocuments.head.id}"
+        val paragraph = view.getElementsByClass("ead-body")
+        paragraph.get(12).text mustBe s"${messages("ead.template.previousDocuments")}:"
+        paragraph.get(13).text mustBe s"${mrnStatus.previousDocuments.head.typeCode} - ${mrnStatus.previousDocuments.head.id}"
       }
+
       "the quantities field" in {
-        view
-          .getElementsByClass("ead-quantity-font")
-          .get(0)
-          .text mustBe s"${messages("ead.template.totalPackageQuantity")}: ${MrnStatusSpec.completeMrnStatus.totalPackageQuantity}"
-        view
-          .getElementsByClass("ead-quantity-font")
-          .get(1)
-          .text mustBe s"${messages("ead.template.goodsItemQuantity")}: ${MrnStatusSpec.completeMrnStatus.goodsItemQuantity}"
+        val paragraph = view.getElementsByClass("ead-quantity-font")
+        paragraph.get(0).text mustBe s"${messages("ead.template.totalPackageQuantity")}: ${mrnStatus.totalPackageQuantity}"
+        paragraph.get(1).text mustBe s"${messages("ead.template.goodsItemQuantity")}: ${mrnStatus.goodsItemQuantity}"
       }
+
       "the declaration type field" in {
-        view
-          .getElementsByClass("ead-body")
-          .get(2)
-          .text mustBe s"${messages("ead.template.declarationType")}:"
-        view
-          .getElementsByClass("ead-body")
-          .get(3)
-          .text mustBe DeclarationType.translate(MrnStatusSpec.completeMrnStatus.declarationType)
+        val paragraph = view.getElementsByClass("ead-body")
+        paragraph.get(2).text mustBe s"${messages("ead.template.declarationType")}:"
+        paragraph.get(3).text mustBe DeclarationType.translate(mrnStatus.declarationType)
       }
+
       "the EORI field" in {
-        view
-          .getElementsByClass("ead-body")
-          .first()
-          .text mustBe s"${messages("ead.template.eori")}:"
-        view
-          .getElementsByClass("ead-body")
-          .get(1)
-          .text mustBe DeclarationType.translate(MrnStatusSpec.completeMrnStatus.eori)
+        val paragraph = view.getElementsByClass("ead-body")
+        paragraph.first.text mustBe s"${messages("ead.template.eori")}:"
+        paragraph.get(1).text mustBe DeclarationType.translate(mrnStatus.eori)
       }
+
       "the created field" in {
-        view
-          .getElementsByClass("ead-body")
-          .get(view.getElementsByClass("ead-body").size() - 2)
-          .text mustBe s"${messages("ead.template.createdDateTime")}: ${ViewDates.formatDateAtTime(MrnStatusSpec.completeMrnStatus.createdDateTime)}"
+        val expectedText = s"${messages("ead.template.createdDateTime")}: ${ViewDates.formatDateAtTime(mrnStatus.createdDateTime)}"
+        val paragraph = view.getElementsByClass("ead-body")
+        paragraph.get(paragraph.size() - 2).text mustBe expectedText
       }
+
       "the version field" in {
-        view
-          .getElementsByClass("ead-body")
-          .last()
-          .text mustBe s"${messages("ead.template.versionId")}: ${MrnStatusSpec.completeMrnStatus.versionId}"
+        view.getElementsByClass("ead-body").last.text mustBe s"${messages("ead.template.versionId")}: ${mrnStatus.versionId}"
       }
     }
+
     "display a 'Print' button" in {
       view.getElementsByClass("ceds-print-link").size() mustBe 2
     }
-
   }
-
 }

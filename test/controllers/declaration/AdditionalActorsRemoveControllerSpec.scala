@@ -36,14 +36,7 @@ class AdditionalActorsRemoveControllerSpec extends ControllerSpec with AuditedCo
   val mockPage = mock[additional_actors_remove]
 
   val controller =
-    new AdditionalActorsRemoveController(
-      mockAuthAction,
-      mockJourneyAction,
-      mockExportsCacheService,
-      navigator,
-      mcc,
-      mockPage
-    )(ec, auditService)
+    new AdditionalActorsRemoveController(mockAuthAction, mockJourneyAction, mockExportsCacheService, navigator, mcc, mockPage)(ec, auditService)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()

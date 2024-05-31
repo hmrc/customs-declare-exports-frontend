@@ -35,14 +35,11 @@ class CommodityDetailsControllerSpec extends ControllerSpec with AuditedControll
 
   val mockCommodityDetailsPage = mock[commodity_details]
 
-  val controller = new CommodityDetailsController(
-    mockAuthAction,
-    mockJourneyAction,
-    mockExportsCacheService,
-    navigator,
-    mcc,
-    mockCommodityDetailsPage
-  )(ec, auditService)
+  val controller =
+    new CommodityDetailsController(mockAuthAction, mockJourneyAction, mockExportsCacheService, navigator, mcc, mockCommodityDetailsPage)(
+      ec,
+      auditService
+    )
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()

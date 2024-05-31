@@ -46,9 +46,8 @@ class RemoveDraftDeclarationController @Inject() (
   }
 
   def removeDeclaration(id: String): Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
-    val removeAction = form.bindFromRequest()
-
-    removeAction
+    form
+      .bindFromRequest()
       .fold(
         formWithErrors =>
           customsDeclareExportsConnector.findDeclaration(id) flatMap {

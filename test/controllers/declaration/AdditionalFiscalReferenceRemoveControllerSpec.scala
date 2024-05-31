@@ -36,14 +36,10 @@ class AdditionalFiscalReferenceRemoveControllerSpec extends ControllerSpec with 
   val mockRemovePage = mock[additional_fiscal_reference_remove]
 
   val controller =
-    new AdditionalFiscalReferenceRemoveController(
-      mockAuthAction,
-      mockJourneyAction,
-      mockExportsCacheService,
-      navigator,
-      mcc,
-      mockRemovePage
-    )(ec, auditService)
+    new AdditionalFiscalReferenceRemoveController(mockAuthAction, mockJourneyAction, mockExportsCacheService, navigator, mcc, mockRemovePage)(
+      ec,
+      auditService
+    )
 
   private val referenceId = ListItem.createId(0, fiscalReference)
   private val item = anItem()

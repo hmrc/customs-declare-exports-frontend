@@ -43,14 +43,11 @@ class ExporterDetailsControllerSpec extends ControllerSpec with AuditedControlle
   val exporter_address = mock[exporter_address]
   val mockCodeListConnector = mock[CodeListConnector]
 
-  val controller = new ExporterDetailsController(
-    mockAuthAction,
-    mockJourneyAction,
-    mockExportsCacheService,
-    navigator,
-    mcc,
-    exporter_address
-  )(ExecutionContext.global, mockCodeListConnector, auditService)
+  val controller = new ExporterDetailsController(mockAuthAction, mockJourneyAction, mockExportsCacheService, navigator, mcc, exporter_address)(
+    ExecutionContext.global,
+    mockCodeListConnector,
+    auditService
+  )
 
   val address = Some(Address("CaptainAmerica", "Test Street", "Leeds", "LS18BN", "GB"))
   val eori = Some(Eori("GB213472539481923"))

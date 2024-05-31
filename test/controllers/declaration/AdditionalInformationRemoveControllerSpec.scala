@@ -36,14 +36,10 @@ class AdditionalInformationRemoveControllerSpec extends ControllerSpec with Audi
   val mockRemovePage = mock[additional_information_remove]
 
   val controller =
-    new AdditionalInformationRemoveController(
-      mockAuthAction,
-      mockJourneyAction,
-      mockExportsCacheService,
-      navigator,
-      mcc,
-      mockRemovePage
-    )(ec, auditService)
+    new AdditionalInformationRemoveController(mockAuthAction, mockJourneyAction, mockExportsCacheService, navigator, mcc, mockRemovePage)(
+      ec,
+      auditService
+    )
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()

@@ -24,7 +24,7 @@ import forms.declaration.procedurecodes.AdditionalProcedureCode
 import forms.declaration.procedurecodes.AdditionalProcedureCode.additionalProcedureCodeKey
 import models.DeclarationType
 import models.codes.AdditionalProcedureCode.NO_APC_APPLIES_CODE
-import models.codes.{ProcedureCode, AdditionalProcedureCode => AdditionalProcedureCodeModel}
+import models.codes.{AdditionalProcedureCode => AdditionalProcedureCodeModel, ProcedureCode}
 import models.declaration.ProcedureCodesData.limitOfCodes
 import models.declaration.{ExportItem, ProcedureCodesData}
 import models.requests.JourneyRequest
@@ -44,8 +44,7 @@ import views.html.declaration.procedureCodes.additional_procedure_codes
 
 import java.util.{Locale, UUID}
 
-class AdditionalProcedureCodesControllerSpec
-    extends ControllerSpec with AuditedControllerSpec with OptionValues with ScalaFutures {
+class AdditionalProcedureCodesControllerSpec extends ControllerSpec with AuditedControllerSpec with OptionValues with ScalaFutures {
 
   private val additionalProcedureCodesPage = mock[additional_procedure_codes]
   private val procedureCodeService = mock[ProcedureCodeService]

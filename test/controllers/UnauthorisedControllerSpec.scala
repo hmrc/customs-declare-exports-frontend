@@ -31,13 +31,7 @@ class UnauthorisedControllerSpec extends ControllerWithoutFormSpec {
   val unauthorisedAgentPage = mock[unauthorisedAgent]
 
   val controller =
-    new UnauthorisedController(
-      mockTdrFeatureFlags,
-      mcc,
-      unauthorisedPage,
-      unauthorisedEoriInTdrPage,
-      unauthorisedAgentPage
-    )
+    new UnauthorisedController(mockTdrFeatureFlags, mcc, unauthorisedPage, unauthorisedEoriInTdrPage, unauthorisedAgentPage)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()

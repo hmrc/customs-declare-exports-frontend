@@ -19,7 +19,7 @@ package controllers.actions
 import base.ControllerWithoutFormSpec
 import base.ExportsTestData.{eori, newUser}
 import config.{AppConfig, ExternalServicesConfig}
-import controllers.{ChoiceController, routes}
+import controllers.{routes, ChoiceController}
 import models.UnauthorisedReason.{UrlDirect, UserEoriNotAllowed, UserIsAgent, UserIsNotEnrolled}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}

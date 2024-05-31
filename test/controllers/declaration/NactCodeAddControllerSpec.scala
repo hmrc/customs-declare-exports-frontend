@@ -37,15 +37,10 @@ class NactCodeAddControllerSpec extends ControllerSpec with AuditedControllerSpe
   val mockAddFirstPage = mock[nact_code_add_first]
 
   val controller =
-    new NactCodeAddController(
-      mockAuthAction,
-      mockJourneyAction,
-      mockExportsCacheService,
-      navigator,
-      mcc,
-      mockAddFirstPage,
-      mockAddPage
-    )(ec, auditService)
+    new NactCodeAddController(mockAuthAction, mockJourneyAction, mockExportsCacheService, navigator, mcc, mockAddFirstPage, mockAddPage)(
+      ec,
+      auditService
+    )
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()

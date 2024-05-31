@@ -40,14 +40,11 @@ class ExpressConsignmentControllerSpec extends ControllerSpec with AuditedContro
 
   private val expressConsignmentPage = mock[express_consignment]
 
-  val controller = new ExpressConsignmentController(
-    mockAuthAction,
-    mockJourneyAction,
-    mockExportsCacheService,
-    navigator,
-    mcc,
-    expressConsignmentPage
-  )(ec, auditService)
+  val controller =
+    new ExpressConsignmentController(mockAuthAction, mockJourneyAction, mockExportsCacheService, navigator, mcc, expressConsignmentPage)(
+      ec,
+      auditService
+    )
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()

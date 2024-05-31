@@ -60,14 +60,11 @@ class InvoiceAndExchangeRateControllerSpec extends ControllerSpec with AuditedCo
     theResponseForm
   }
 
-  val controller = new InvoiceAndExchangeRateController(
-    mockAuthAction,
-    mockJourneyAction,
-    navigator,
-    mcc,
-    mockInvoiceAndExchangeRatePage,
-    mockExportsCacheService
-  )(ec, auditService)
+  val controller =
+    new InvoiceAndExchangeRateController(mockAuthAction, mockJourneyAction, navigator, mcc, mockInvoiceAndExchangeRatePage, mockExportsCacheService)(
+      ec,
+      auditService
+    )
 
   val withoutExchange = InvoiceAndExchangeRate(
     totalAmountInvoiced = Some("100000"),

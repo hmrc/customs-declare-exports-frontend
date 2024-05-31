@@ -34,14 +34,8 @@ class AdditionalDocumentsRequiredControllerSpec extends ControllerSpec with Audi
 
   private val page = mock[additional_documents_required]
 
-  val controller = new AdditionalDocumentsRequiredController(
-    mockAuthAction,
-    mockJourneyAction,
-    mockExportsCacheService,
-    navigator,
-    mcc,
-    page
-  )(ec, auditService)
+  val controller =
+    new AdditionalDocumentsRequiredController(mockAuthAction, mockJourneyAction, mockExportsCacheService, navigator, mcc, page)(ec, auditService)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()

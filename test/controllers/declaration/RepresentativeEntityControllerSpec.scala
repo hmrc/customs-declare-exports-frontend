@@ -35,14 +35,8 @@ class RepresentativeEntityControllerSpec extends ControllerSpec with AuditedCont
 
   val mockPage = mock[representative_details_entity]
 
-  val controller = new RepresentativeEntityController(
-    mockAuthAction,
-    mockJourneyAction,
-    navigator,
-    mockExportsCacheService,
-    mcc,
-    mockPage
-  )(ec, auditService)
+  val controller =
+    new RepresentativeEntityController(mockAuthAction, mockJourneyAction, navigator, mockExportsCacheService, mcc, mockPage)(ec, auditService)
 
   val eori = "GB12345678912345"
 

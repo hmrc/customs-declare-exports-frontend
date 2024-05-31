@@ -37,9 +37,7 @@ class NactCodeSummaryControllerSpec extends ControllerSpec with OptionValues {
 
   val mockPage = mock[nact_codes]
 
-  val controller = new NactCodeSummaryController(
-    mockAuthAction, mockJourneyAction, mockExportsCacheService, navigator, mcc, mockPage
-  )
+  val controller = new NactCodeSummaryController(mockAuthAction, mockJourneyAction, mockExportsCacheService, navigator, mcc, mockPage)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()

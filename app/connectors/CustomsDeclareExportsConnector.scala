@@ -221,11 +221,11 @@ class CustomsDeclareExportsConnector @Inject() (appConfig: AppConfig, httpClient
   def isLrnAlreadyUsed(lrn: Lrn)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Boolean] =
     httpClient.GET[Boolean](getUrl(s"${appConfig.lrnAlreadyUsedPath}/${lrn.lrn}"))
 
-  def fetchMrnStatus(mrn: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[MrnStatus]] = {
+  def fetchMrnStatus(mrn: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[MrnStatus] = {
     val fetchStopwatch = fetchTimer.time
 
     httpClient
-      .GET[Option[MrnStatus]](getUrl(s"${appConfig.fetchMrnStatusPath}/$mrn"))
+      .GET[MrnStatus](getUrl(s"${appConfig.fetchMrnStatusPath}/$mrn"))
       .andThen { case _ =>
         fetchStopwatch.stop
       }

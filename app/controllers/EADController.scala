@@ -16,10 +16,14 @@
 
 package controllers
 
+import connectors.CustomsDeclareExportsConnector
 import controllers.actions.AuthAction
+import handlers.ErrorHandler
+import play.api.Logging
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.ead.{BarcodeService, EADService}
+import services.ead.BarcodeService
+import uk.gov.hmrc.http.UpstreamErrorResponse
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.ead
 
@@ -29,15 +33,22 @@ import scala.concurrent.ExecutionContext
 class EADController @Inject() (
   authenticate: AuthAction,
   mcc: MessagesControllerComponents,
-  eadService: EADService,
+  connector: CustomsDeclareExportsConnector,
+  errorHandler: ErrorHandler,
   barcodeService: BarcodeService,
   ead_page: ead
 )(implicit ec: ExecutionContext)
-    extends FrontendController(mcc) with I18nSupport {
+    extends FrontendController(mcc) with I18nSupport with Logging {
 
   def generateDocument(mrn: String): Action[AnyContent] = authenticate.async { implicit request =>
-    eadService.generateStatus(mrn) map { status =>
-      Ok(ead_page(mrn, status, barcodeService.base64Image(mrn)))
-    }
+    connector
+      .fetchMrnStatus(mrn)
+      .map { mrnStatus =>
+        Ok(ead_page(mrn, mrnStatus, barcodeService.base64Image(mrn)))
+      }
+      .recoverWith { case UpstreamErrorResponse(_, NOT_FOUND, _, _) =>
+        logger.error(s"No declaration was found whilst trying to retrieve status for the EAD page with MRN($mrn)")
+        errorHandler.redirectToErrorPage
+      }
   }
 }

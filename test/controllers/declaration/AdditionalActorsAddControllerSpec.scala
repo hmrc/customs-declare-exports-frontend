@@ -34,14 +34,11 @@ class AdditionalActorsAddControllerSpec extends ControllerSpec with AuditedContr
 
   val declarationAdditionalActorsPage = mock[additional_actors_add]
 
-  val controller = new AdditionalActorsAddController(
-    mockAuthAction,
-    mockJourneyAction,
-    mockExportsCacheService,
-    navigator,
-    mcc,
-    declarationAdditionalActorsPage
-  )(ec, auditService)
+  val controller =
+    new AdditionalActorsAddController(mockAuthAction, mockJourneyAction, mockExportsCacheService, navigator, mcc, declarationAdditionalActorsPage)(
+      ec,
+      auditService
+    )
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()

@@ -27,123 +27,117 @@
 
 @govukLayout(
   title = Title("ead.template.title"),
-   backButton = getValue(submissionUuid).map { id =>
-     BackButton(messages("site.back"), routes.DeclarationDetailsController.displayPage(id))
-   },
+  backButton = getValue(submissionUuid).map { id =>
+    BackButton(messages("site.back"), routes.DeclarationDetailsController.displayPage(id))
+  },
   useCustomContentWidth = true
 ) {
-<div class="ead-heading">
-    <h1 class="ead-header">@messages("ead.template.title")</h1>
+    <div class="ead-heading">
+        <h1 class="ead-header">@messages("ead.template.title")</h1>
 
-    <div>
-     <p class="govuk-body-l govuk-!-margin-bottom-6 ead-label">@messages("ead.template.printable")</p>
-     @print_page_button()
-    </div>
-</div>
-
-<div class="govuk-grid-row ead-row">
-
-    <div class="govuk-grid-column-one-half">
-        <!-- Declarant details -->
-        <div class="govuk-summary-list__row">
-            <h3 class="govuk-!-margin-top-1 ead-body">@messages("ead.template.eori"):</h3>
-            <p class="lead govuk-!-margin-bottom-3 ead-body">@mrnStatus.eori</p>
-        </div>
-
-        <!-- Declaration type -->
-        <div class="govuk-summary-list__row">
-            <h3 class="govuk-!-margin-top-1 ead-body">@messages("ead.template.declarationType"):</h3>
-            <p class="lead ead-body">@DeclarationType.translate(mrnStatus.declarationType)</p>
+        <div>
+         <p class="govuk-body-l govuk-!-margin-bottom-6 ead-label">@messages("ead.template.printable")</p>
+         @print_page_button()
         </div>
     </div>
 
-    <div class="govuk-grid-column-one-half coleadimage">
-        <!-- Declaration type -->
-        <img src="data:image/png;base64,@base64Image" class="ead-img" alt="@messages("ead.template.barcodeAltText")">
+    <div class="govuk-grid-row ead-row">
+        <div class="govuk-grid-column-one-half">
+            <!-- Declarant details -->
+            <div class="govuk-summary-list__row">
+                <h3 class="govuk-!-margin-top-1 ead-body">@messages("ead.template.eori"):</h3>
+                <p class="lead govuk-!-margin-bottom-3 ead-body">@mrnStatus.eori</p>
+            </div>
+
+            <!-- Declaration type -->
+            <div class="govuk-summary-list__row">
+                <h3 class="govuk-!-margin-top-1 ead-body">@messages("ead.template.declarationType"):</h3>
+                <p class="lead ead-body">@DeclarationType.translate(mrnStatus.declarationType)</p>
+            </div>
+        </div>
+
+        <div class="govuk-grid-column-one-half coleadimage">
+            <!-- Declaration type -->
+            <img src="data:image/png;base64,@base64Image" class="ead-img" alt='@messages("ead.template.barcodeAltText")'>
+        </div>
     </div>
-</div>
 
-<div class="govuk-grid-row ead-row">
+    <div class="govuk-grid-row ead-row">
+        <div class="govuk-grid-column-one-half">
+           <!-- DUCR -->
+           <div class="govuk-summary-list__row">
+               <h2 class="ead-heading">@messages("ead.template.ucr"): @mrnStatus.ucr</h2>
+           </div>
 
-  <div class="govuk-grid-column-one-half">
-   <!-- DUCR -->
-   <div class="govuk-summary-list__row">
-    <h2 class="ead-heading">@messages("ead.template.ucr"): @mrnStatus.ucr</h2>
-   </div>
+           <!-- Total Package Quantity -->
+           <div class="govuk-summary-list__row">
+               <div class="lead ead-quantity-font"><h3 class="ead-body">@messages("ead.template.totalPackageQuantity"):</h3> @mrnStatus.totalPackageQuantity</div>
+           </div>
 
-   <!-- Total Package Quantity -->
-   <div class="govuk-summary-list__row">
-    <div class="lead ead-quantity-font"><h3 class="ead-body">@messages("ead.template.totalPackageQuantity"):</h3> @mrnStatus.totalPackageQuantity</div>
-   </div>
+           <!-- Good Items Quantity -->
+           <div class="govuk-summary-list__row">
+               <div class="lead ead-quantity-font"><h3 class="ead-body">@messages("ead.template.goodsItemQuantity"):</h3> @mrnStatus.goodsItemQuantity</div>
+           </div>
+        </div>
 
-   <!-- Good Items Quantity -->
-   <div class="govuk-summary-list__row">
-    <div class="lead ead-quantity-font"><h3 class="ead-body">@messages("ead.template.goodsItemQuantity"):</h3> @mrnStatus.goodsItemQuantity</div>
-   </div>
+        <div class="govuk-grid-column-one-half">
+            <!-- MRN -->
+            <div class="ead-right-col">
+                <h2 class="ead-heading">@messages("ead.template.mrn"): @mrn</h2>
+            </div>
 
-  </div>
+            <!-- Date and time goods released: -->
+            <div class="ead-right-col margin-bottom-15">
+                <h3 class="govuk-!-margin-top-1 ead-body">@messages("ead.template.releasedDateTime"):</h3>
+                <p class="lead ead-body">@mrnStatus.releasedDateTime.map(ViewDates.formatDateAtTime).getOrElse("")</p>
+            </div>
 
-  <div class="govuk-grid-column-one-half">
-   <!-- MRN -->
-   <div class="ead-right-col">
-    <h2 class="ead-heading">@messages("ead.template.mrn"): @mrn</h2>
-   </div>
+            <!-- Date and time goods accepted: -->
+            <div class="ead-right-col margin-bottom-15">
+                <h3 class="govuk-!-margin-top-1 ead-body">@messages("ead.template.acceptanceDateTime"):</h3>
+                <p class="lead ead-body">@mrnStatus.acceptanceDateTime.map(ViewDates.formatDateAtTime).getOrElse("")</p>
+            </div>
 
-   <!-- Date and time goods released: -->
-   <div class="ead-right-col margin-bottom-15">
-    <h3 class="govuk-!-margin-top-1 ead-body">@messages("ead.template.releasedDateTime"):</h3>
-    <p class="lead ead-body">@mrnStatus.releasedDateTime.map(ViewDates.formatDateAtTime).getOrElse("")</p>
-   </div>
+            <!-- Date and time declaration received: -->
+            <div class="ead-right-col margin-bottom-15">
+                <h3 class="govuk-!-margin-top-1 ead-body">@messages("ead.template.receivedDateTime"):</h3>
+                <p class="lead ead-body">@ViewDates.formatDateAtTime(mrnStatus.receivedDateTime)</p>
+            </div>
+        </div>
+    </div>
 
-   <!-- Date and time goods accepted: -->
-   <div class="ead-right-col margin-bottom-15">
-    <h3 class="govuk-!-margin-top-1 ead-body">@messages("ead.template.acceptanceDateTime"):</h3>
-    <p class="lead ead-body">@mrnStatus.acceptanceDateTime.map(ViewDates.formatDateAtTime).getOrElse("")</p>
-   </div>
+    <div class="govuk-grid-row eadborder-row ead-row">
+        <div class="govuk-grid-column-full govuk-!-margin-bottom-5 ead-border">
+            <!-- Previous Documents: -->
+            <div>
+                <h3 class="margin-bottom-7 margin-top-0 ead-body">@messages("ead.template.previousDocuments"):</h3>
+            </div>
+            <div>
+                @for(document <-  mrnStatus.previousDocuments) {
+                 <p class="lead ead-body">@document.typeCode - @document.id</p>
+                }
+            </div>
+        </div>
+    </div>
 
-   <!-- Date and time declaration received: -->
-   <div class="ead-right-col margin-bottom-15">
-    <h3 class="govuk-!-margin-top-1 ead-body">@messages("ead.template.receivedDateTime"):</h3>
-    <p class="lead ead-body">@ViewDates.formatDateAtTime(mrnStatus.receivedDateTime)</p>
-   </div>
-  </div>
+    <div class="govuk-grid-row ead-row">
+        <div class="govuk-grid-column-two-thirds-ead">
+            <!-- DUCR -->
+            <div class="govuk-summary-list__row">
+                <p class="ead-body"><b>@messages("ead.template.createdDateTime"):</b> @ViewDates.formatDateAtTime(mrnStatus.createdDateTime)</p>
+            </div>
+        </div>
+        <div class="govuk-grid-column-one-third-ead">
+            <!-- DUCR -->
+            <div class="ead-right-col">
+                <p class="ead-body"><b>@messages("ead.template.versionId"):</b> @mrnStatus.versionId</p>
+            </div>
+        </div>
+    </div>
 
- </div>
-
- <div class="govuk-grid-row eadborder-row ead-row">
-  <div class="govuk-grid-column-full govuk-!-margin-bottom-5 ead-border">
-   <!-- Previous Documents: -->
-   <div>
-    <h3 class="margin-bottom-7 margin-top-0 ead-body">@messages("ead.template.previousDocuments"):</h3>
-   </div>
-   <div>
-    @for(document <-  mrnStatus.previousDocuments) {
-     <p class="lead ead-body">@document.typeCode - @document.id</p>
-    }
-   </div>
-  </div>
-
-
- </div>
- <div class="govuk-grid-row ead-row">
-  <div class="govuk-grid-column-two-thirds-ead">
-   <!-- DUCR -->
-   <div class="govuk-summary-list__row">
-    <p class="ead-body"><b>@messages("ead.template.createdDateTime"):</b> @ViewDates.formatDateAtTime(mrnStatus.createdDateTime)</p>
-   </div>
-  </div>
-  <div class="govuk-grid-column-one-third-ead">
-   <!-- DUCR -->
-   <div class="ead-right-col">
-    <p class="ead-body"><b>@messages("ead.template.versionId"):</b> @mrnStatus.versionId</p>
-   </div>
-  </div>
- </div>
-
- <div class="govuk-grid-row ead-row">
-  <div class="govuk-grid-column-full">
-     @print_page_button(marginTop = 2, marginBottom = 2)
-  </div>
- </div>
-
+    <div class="govuk-grid-row ead-row">
+        <div class="govuk-grid-column-full">
+             @print_page_button(marginTop = 2, marginBottom = 2)
+        </div>
+    </div>
 }

@@ -27,7 +27,7 @@ import org.mockito.Mockito.{reset, verify, when}
 import org.scalatest.{Assertion, OptionValues}
 import play.api.libs.json.Json
 import play.api.mvc.Results.Ok
-import play.api.mvc.{AnyContent, BodyParser, Request, Result, Action => PlayAction}
+import play.api.mvc.{Action => PlayAction, AnyContent, BodyParser, Request, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat

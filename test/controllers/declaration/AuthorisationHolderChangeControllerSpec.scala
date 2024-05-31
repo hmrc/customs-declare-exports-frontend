@@ -34,8 +34,7 @@ import play.api.test.Helpers._
 import play.twirl.api.{Html, HtmlFormat}
 import views.html.declaration.authorisationHolder.authorisation_holder_change
 
-class AuthorisationHolderChangeControllerSpec
-    extends ControllerSpec with AuditedControllerSpec with GivenWhenThen with OptionValues {
+class AuthorisationHolderChangeControllerSpec extends ControllerSpec with AuditedControllerSpec with GivenWhenThen with OptionValues {
 
   val mockChangePage = mock[authorisation_holder_change]
 

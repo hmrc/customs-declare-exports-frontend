@@ -35,14 +35,8 @@ class RepresentativeAgentControllerSpec extends ControllerSpec with AuditedContr
 
   val mockPage = mock[representative_details_agent]
 
-  val controller = new RepresentativeAgentController(
-    mockAuthAction,
-    mockJourneyAction,
-    navigator,
-    mockExportsCacheService,
-    mcc,
-    mockPage
-  )(ec, auditService)
+  val controller =
+    new RepresentativeAgentController(mockAuthAction, mockJourneyAction, navigator, mockExportsCacheService, mcc, mockPage)(ec, auditService)
 
   def theResponseForm: Form[RepresentativeAgent] = {
     val formCaptor = ArgumentCaptor.forClass(classOf[Form[RepresentativeAgent]])

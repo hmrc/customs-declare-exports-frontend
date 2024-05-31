@@ -41,14 +41,11 @@ class AuthorisationHolderRemoveControllerSpec extends ControllerSpec with Audite
 
   val mockRemovePage = mock[authorisation_holder_remove]
 
-  val controller = new AuthorisationHolderRemoveController(
-    mockAuthAction,
-    mockJourneyAction,
-    mockExportsCacheService,
-    navigator,
-    mcc,
-    mockRemovePage
-  )(ec, auditService)
+  val controller =
+    new AuthorisationHolderRemoveController(mockAuthAction, mockJourneyAction, mockExportsCacheService, navigator, mcc, mockRemovePage)(
+      ec,
+      auditService
+    )
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()

@@ -32,20 +32,15 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import views.html.declaration.packageInformation.package_information_remove
 
-class PackageInformationRemoveControllerSpec
-    extends ControllerSpec with AuditedControllerSpec with GivenWhenThen with OptionValues {
+class PackageInformationRemoveControllerSpec extends ControllerSpec with AuditedControllerSpec with GivenWhenThen with OptionValues {
 
   val mockRemovePage = mock[package_information_remove]
 
   val controller =
-    new PackageInformationRemoveController(
-      mockAuthAction,
-      mockJourneyAction,
-      mockExportsCacheService,
-      navigator,
-      mcc,
-      mockRemovePage
-    )(ec, auditService)
+    new PackageInformationRemoveController(mockAuthAction, mockJourneyAction, mockExportsCacheService, navigator, mcc, mockRemovePage)(
+      ec,
+      auditService
+    )
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()

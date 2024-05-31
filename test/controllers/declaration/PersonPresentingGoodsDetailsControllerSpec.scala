@@ -40,14 +40,8 @@ class PersonPresentingGoodsDetailsControllerSpec extends ControllerSpec with Aud
 
   private val page = mock[person_presenting_goods_details]
 
-  private val controller = new PersonPresentingGoodsDetailsController(
-    mockAuthAction,
-    mockJourneyAction,
-    mockExportsCacheService,
-    navigator,
-    mcc,
-    page
-  )(ec, auditService)
+  private val controller =
+    new PersonPresentingGoodsDetailsController(mockAuthAction, mockJourneyAction, mockExportsCacheService, navigator, mcc, page)(ec, auditService)
 
   override def beforeEach(): Unit = {
     super.beforeEach()

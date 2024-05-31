@@ -41,15 +41,8 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
   private val addItemPage = mock[items_add_item]
   private val itemsSummaryPage = mock[items_summary]
 
-  private val controller = new ItemsSummaryController(
-    mockAuthAction,
-    mockJourneyAction,
-    mockExportsCacheService,
-    navigator,
-    mcc,
-    addItemPage,
-    itemsSummaryPage
-  )(ec)
+  private val controller =
+    new ItemsSummaryController(mockAuthAction, mockJourneyAction, mockExportsCacheService, navigator, mcc, addItemPage, itemsSummaryPage)(ec)
 
   private val parentDeclarationId = "parentDecId"
   private val parentDeclaration = aDeclaration(withId(parentDeclarationId))

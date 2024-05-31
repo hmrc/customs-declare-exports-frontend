@@ -16,46 +16,50 @@
 
 package controllers
 
-import base.{ControllerWithoutFormSpec, Injector}
+import base.{ControllerWithoutFormSpec, Injector, MrnStatusTestData}
 import connectors.CustomsDeclareExportsConnector
-import models.dis.MrnStatusSpec
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import play.api.test.Helpers._
-import services.ead.{BarcodeService, EADService}
+import services.ead.BarcodeService
+import uk.gov.hmrc.http.UpstreamErrorResponse
 import views.html.ead
 
 import scala.concurrent.Future
 
-class EADControllerSpec extends ControllerWithoutFormSpec with Injector {
+class EADControllerSpec extends ControllerWithoutFormSpec with Injector with MrnStatusTestData {
 
   val barcodeService = instanceOf[BarcodeService]
   val connector = mock[CustomsDeclareExportsConnector]
-  val eADService = new EADService(connector)
   val view = instanceOf[ead]
 
-  val controller = new EADController(mockAuthAction, mcc, eADService, barcodeService, view)
+  val controller = new EADController(mockAuthAction, mcc, connector, errorHandler, barcodeService, view)
 
   override def beforeEach(): Unit = {
-    when(connector.fetchMrnStatus(any())(any(), any())).thenReturn(Future.successful(Some(MrnStatusSpec.completeMrnStatus)))
+    when(connector.fetchMrnStatus(any())(any(), any())).thenReturn(Future.successful(mrnStatus))
     super.beforeEach()
     authorizedUser()
   }
 
-  override protected def afterEach(): Unit =
-    super.afterEach()
-
   "EAD Controller" should {
-
-    "return 200" when {
-
-      "display page method is invoked" in {
-
     val mrn = "18GB9JLC3CU1LFGVR2"
+
+    "return 200 and display the EAD page" when {
+      "the declaration information are found" in {
         val result = controller.generateDocument(mrn).apply(getRequest())
 
         status(result) must be(OK)
+      }
+    }
 
+    "return 400 (BAD_REQUEST)" when {
+      "the declaration information for the provided MRN cannot be found" in {
+        when(connector.fetchMrnStatus(any[String])(any(), any()))
+          .thenReturn(Future.failed(UpstreamErrorResponse("some issue", NOT_FOUND)))
+
+        val result = controller.generateDocument(mrn).apply(getRequest())
+
+        status(result) mustBe BAD_REQUEST
       }
     }
   }

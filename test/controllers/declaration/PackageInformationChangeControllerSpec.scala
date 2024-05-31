@@ -30,8 +30,7 @@ import play.twirl.api.HtmlFormat
 import services.PackageTypesService
 import views.html.declaration.packageInformation.package_information_change
 
-class PackageInformationChangeControllerSpec
-    extends ControllerSpec with AuditedControllerSpec with OptionValues with Injector {
+class PackageInformationChangeControllerSpec extends ControllerSpec with AuditedControllerSpec with OptionValues with Injector {
 
   val mockChangePage = mock[package_information_change]
   val mockPackageTypesService = instanceOf[PackageTypesService]

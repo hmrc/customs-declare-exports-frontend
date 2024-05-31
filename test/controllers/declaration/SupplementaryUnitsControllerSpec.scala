@@ -37,14 +37,11 @@ class SupplementaryUnitsControllerSpec extends ControllerSpec with AuditedContro
 
   private val supplementaryUnitsYesNoPage = mock[supplementary_units_yes_no]
 
-  private val controller = new SupplementaryUnitsController(
-    mockAuthAction,
-    mockJourneyAction,
-    mockExportsCacheService,
-    navigator,
-    mcc,
-    supplementaryUnitsYesNoPage
-  )(ec, auditService)
+  private val controller =
+    new SupplementaryUnitsController(mockAuthAction, mockJourneyAction, mockExportsCacheService, navigator, mcc, supplementaryUnitsYesNoPage)(
+      ec,
+      auditService
+    )
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()

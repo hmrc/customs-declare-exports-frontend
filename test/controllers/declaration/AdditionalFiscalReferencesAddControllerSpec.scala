@@ -43,14 +43,12 @@ class AdditionalFiscalReferencesAddControllerSpec extends ControllerSpec with Au
   val mockAddPage = mock[additional_fiscal_reference_add]
   val mockCodeListConnector = mock[CodeListConnector]
 
-  val controller = new AdditionalFiscalReferenceAddController(
-    mockAuthAction,
-    mockJourneyAction,
-    mockExportsCacheService,
-    navigator,
-    mcc,
-    mockAddPage
-  )(ec, mockCodeListConnector, auditService)
+  val controller =
+    new AdditionalFiscalReferenceAddController(mockAuthAction, mockJourneyAction, mockExportsCacheService, navigator, mcc, mockAddPage)(
+      ec,
+      mockCodeListConnector,
+      auditService
+    )
 
   private val item = anItem(withFiscalInformation())
 

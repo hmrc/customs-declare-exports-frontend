@@ -37,14 +37,8 @@ class AdditionalInformationAddControllerSpec extends ControllerSpec with Audited
 
   val mockAddPage = mock[additional_information_add]
 
-  val controller = new AdditionalInformationAddController(
-    mockAuthAction,
-    mockJourneyAction,
-    mockExportsCacheService,
-    navigator,
-    mcc,
-    mockAddPage
-  )(ec, auditService)
+  val controller =
+    new AdditionalInformationAddController(mockAuthAction, mockJourneyAction, mockExportsCacheService, navigator, mcc, mockAddPage)(ec, auditService)
 
   val itemId = "itemId"
 

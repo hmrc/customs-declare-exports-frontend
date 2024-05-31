@@ -23,7 +23,7 @@ import forms.{CopyDeclaration, Ducr, Lrn, LrnValidator}
 import models.DeclarationType.STANDARD
 import models.declaration.DeclarationStatus.DRAFT
 import models.declaration.submissions.EnhancedStatus
-import models.declaration.submissions.EnhancedStatus.{CLEARED, rejectedStatuses}
+import models.declaration.submissions.EnhancedStatus.{rejectedStatuses, CLEARED}
 import models.requests.SessionHelper
 import models.requests.SessionHelper.{submissionDucr, submissionLrn, submissionMrn, submissionUuid}
 import org.mockito.ArgumentCaptor

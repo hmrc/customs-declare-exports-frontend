@@ -34,14 +34,7 @@ class PreviousDocumentsSummaryControllerSpec extends ControllerSpec {
 
   private val page = mock[previous_documents_summary]
 
-  private val controller = new PreviousDocumentsSummaryController(
-    mockAuthAction,
-    mockJourneyAction,
-    navigator,
-    mockExportsCacheService,
-    mcc,
-    page
-  )
+  private val controller = new PreviousDocumentsSummaryController(mockAuthAction, mockJourneyAction, navigator, mockExportsCacheService, mcc, page)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()

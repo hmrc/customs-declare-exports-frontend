@@ -36,14 +36,7 @@ class AdditionalActorsSummaryControllerSpec extends ControllerSpec with OptionVa
 
   val mockPage = mock[additional_actors_summary]
 
-  val controller = new AdditionalActorsSummaryController(
-    mockAuthAction,
-    mockJourneyAction,
-    mockExportsCacheService,
-    navigator,
-    mcc,
-    mockPage
-  )
+  val controller = new AdditionalActorsSummaryController(mockAuthAction, mockJourneyAction, mockExportsCacheService, navigator, mcc, mockPage)
   val additionalActorsData = AdditionalActors(Seq(AdditionalActor(Some(Eori("GB56523343784324")), Some("CS"))))
   val id = "ACE-GB56523343784324"
 

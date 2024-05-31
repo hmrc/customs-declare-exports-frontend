@@ -37,14 +37,11 @@ class AdditionalInformationChangeControllerSpec extends ControllerSpec with Audi
 
   val mockChangePage = mock[additional_information_change]
 
-  val controller = new AdditionalInformationChangeController(
-    mockAuthAction,
-    mockJourneyAction,
-    mockExportsCacheService,
-    navigator,
-    mcc,
-    mockChangePage
-  )(ec, auditService)
+  val controller =
+    new AdditionalInformationChangeController(mockAuthAction, mockJourneyAction, mockExportsCacheService, navigator, mcc, mockChangePage)(
+      ec,
+      auditService
+    )
 
   val itemId = "itemId"
   private val additionalInformation1 = AdditionalInformation("00400", "Some description")
