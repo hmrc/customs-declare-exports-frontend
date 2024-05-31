@@ -20,14 +20,13 @@ import base.{AuditedControllerSpec, ControllerSpec}
 import controllers.declaration.routes.AuthorisationHolderSummaryController
 import forms.common.Eori
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
-import forms.declaration.authorisationHolder.AuthorizationTypeCodes.{CSE, EXRR}
 import forms.declaration.authorisationHolder.AuthorisationHolder
-import mock.ErrorHandlerMocks
+import forms.declaration.authorisationHolder.AuthorizationTypeCodes.{CSE, EXRR}
 import models.DeclarationType._
 import models.declaration.{AuthorisationHolders, EoriSource}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, times, verify, verifyNoInteractions, when}
+import org.mockito.Mockito._
 import org.scalatest.{GivenWhenThen, OptionValues}
 import play.api.data.Form
 import play.api.mvc.{AnyContentAsEmpty, Request}
@@ -35,8 +34,7 @@ import play.api.test.Helpers._
 import play.twirl.api.{Html, HtmlFormat}
 import views.html.declaration.authorisationHolder.authorisation_holder_change
 
-class AuthorisationHolderChangeControllerSpec
-    extends ControllerSpec with AuditedControllerSpec with ErrorHandlerMocks with GivenWhenThen with OptionValues {
+class AuthorisationHolderChangeControllerSpec extends ControllerSpec with AuditedControllerSpec with GivenWhenThen with OptionValues {
 
   val mockChangePage = mock[authorisation_holder_change]
 
@@ -46,7 +44,7 @@ class AuthorisationHolderChangeControllerSpec
     mockExportsCacheService,
     navigator,
     mockErrorHandler,
-    stubMessagesControllerComponents(),
+    mcc,
     mockChangePage
   )(ec, auditService)
 

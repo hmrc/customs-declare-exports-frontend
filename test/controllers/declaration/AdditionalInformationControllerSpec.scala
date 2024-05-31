@@ -19,7 +19,6 @@ package controllers.declaration
 import base.ControllerSpec
 import forms.common.YesNoAnswer
 import forms.declaration.AdditionalInformation
-import mock.ErrorHandlerMocks
 import models.DeclarationType._
 import models.declaration.AdditionalInformationData
 import org.mockito.ArgumentCaptor
@@ -32,18 +31,11 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import views.html.declaration.additionalInformation.additional_information
 
-class AdditionalInformationControllerSpec extends ControllerSpec with ErrorHandlerMocks {
+class AdditionalInformationControllerSpec extends ControllerSpec {
 
   private val mockSummaryPage = mock[additional_information]
 
-  val controller = new AdditionalInformationController(
-    mockAuthAction,
-    mockJourneyAction,
-    mockExportsCacheService,
-    navigator,
-    stubMessagesControllerComponents(),
-    mockSummaryPage
-  )
+  val controller = new AdditionalInformationController(mockAuthAction, mockJourneyAction, mockExportsCacheService, navigator, mcc, mockSummaryPage)
 
   val itemId = "itemId"
 

@@ -22,7 +22,6 @@ import controllers.helpers.SequenceIdHelper.valueOfEso
 import controllers.helpers.{Remove, SaveAndContinue}
 import forms.common.YesNoAnswer
 import forms.declaration.Seal
-import mock.ErrorHandlerMocks
 import models.DeclarationType
 import models.declaration.Container
 import org.mockito.ArgumentCaptor
@@ -36,7 +35,7 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import views.html.declaration.{seal_add, seal_remove, seal_summary}
 
-class SealControllerSpec extends ControllerSpec with AuditedControllerSpec with ErrorHandlerMocks with GivenWhenThen with OptionValues {
+class SealControllerSpec extends ControllerSpec with AuditedControllerSpec with GivenWhenThen with OptionValues {
 
   val sealAddPage = mock[seal_add]
   val sealRemovePage = mock[seal_remove]
@@ -51,7 +50,7 @@ class SealControllerSpec extends ControllerSpec with AuditedControllerSpec with 
     navigator,
     mockErrorHandler,
     mockExportsCacheService,
-    stubMessagesControllerComponents(),
+    mcc,
     sealAddPage,
     sealRemovePage,
     sealSummaryPage

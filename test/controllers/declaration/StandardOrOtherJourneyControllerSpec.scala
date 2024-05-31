@@ -39,7 +39,6 @@ class StandardOrOtherJourneyControllerSpec extends ControllerWithoutFormSpec wit
   private val newDeclarationId = "newDeclarationId"
 
   private val standardOrOtherJourney = mock[standard_or_other_journey]
-  private val mcc = stubMessagesControllerComponents()
 
   val controller =
     new StandardOrOtherJourneyController(mockAuthAction, mockVerifiedEmailAction, mockExportsCacheService, mcc, standardOrOtherJourney)(ec)

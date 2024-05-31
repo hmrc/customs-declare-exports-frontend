@@ -46,14 +46,8 @@ class UNDangerousGoodsCodeControllerSpec extends ControllerSpec with AuditedCont
 
   val mockPage = mock[un_dangerous_goods_code]
 
-  val controller = new UNDangerousGoodsCodeController(
-    mockAuthAction,
-    mockJourneyAction,
-    mockExportsCacheService,
-    navigator,
-    stubMessagesControllerComponents(),
-    mockPage
-  )(ec, auditService)
+  val controller =
+    new UNDangerousGoodsCodeController(mockAuthAction, mockJourneyAction, mockExportsCacheService, navigator, mcc, mockPage)(ec, auditService)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()

@@ -22,7 +22,6 @@ import controllers.helpers.Remove
 import controllers.helpers.SequenceIdHelper.valueOfEso
 import forms.common.YesNoAnswer
 import forms.declaration.{ContainerAdd, ContainerFirst, Seal}
-import mock.ErrorHandlerMocks
 import models.DeclarationType
 import models.declaration.Container
 import models.declaration.Container.maxNumberOfItems
@@ -37,7 +36,7 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import views.html.declaration._
 
-class TransportContainerControllerSpec extends ControllerSpec with AuditedControllerSpec with ErrorHandlerMocks with Injector with OptionValues {
+class TransportContainerControllerSpec extends ControllerSpec with AuditedControllerSpec with Injector with OptionValues {
 
   val transportContainersAddFirstPage = instanceOf[transport_container_add_first]
   val transportContainersAddPage = instanceOf[transport_container_add]
@@ -49,7 +48,7 @@ class TransportContainerControllerSpec extends ControllerSpec with AuditedContro
     mockJourneyAction,
     navigator,
     mockExportsCacheService,
-    stubMessagesControllerComponents(),
+    mcc,
     transportContainersAddFirstPage,
     transportContainersAddPage,
     transportContainersSummaryPage,

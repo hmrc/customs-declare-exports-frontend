@@ -37,14 +37,10 @@ class AdditionalDocumentRemoveControllerSpec extends ControllerSpec with Audited
   val additionalDocumentRemovePage = mock[additional_document_remove]
 
   val controller =
-    new AdditionalDocumentRemoveController(
-      mockAuthAction,
-      mockJourneyAction,
-      mockExportsCacheService,
-      navigator,
-      stubMessagesControllerComponents(),
-      additionalDocumentRemovePage
-    )(ec, auditService)
+    new AdditionalDocumentRemoveController(mockAuthAction, mockJourneyAction, mockExportsCacheService, navigator, mcc, additionalDocumentRemovePage)(
+      ec,
+      auditService
+    )
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()

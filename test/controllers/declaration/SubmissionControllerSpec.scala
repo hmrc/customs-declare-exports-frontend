@@ -23,7 +23,6 @@ import controllers.routes.{ChoiceController, RootController}
 import forms.declaration.AmendmentSubmission.reasonKey
 import forms.declaration.LegalDeclaration
 import forms.declaration.LegalDeclaration._
-import mock.ErrorHandlerMocks
 import models.ExportsDeclaration
 import models.declaration.DeclarationStatus.{AMENDMENT_DRAFT, COMPLETE}
 import models.declaration.submissions.EnhancedStatus.RECEIVED
@@ -47,7 +46,7 @@ import views.html.declaration.summary.legal_declaration
 import java.util.UUID
 import scala.concurrent.{ExecutionContext, Future}
 
-class SubmissionControllerSpec extends ControllerWithoutFormSpec with ErrorHandlerMocks with ScalaFutures with UnitViewSpec {
+class SubmissionControllerSpec extends ControllerWithoutFormSpec with ScalaFutures with UnitViewSpec {
 
   private val amendmentSubmissionPage = mock[amendment_submission]
   private val legalDeclarationPage = mock[legal_declaration]
@@ -58,7 +57,7 @@ class SubmissionControllerSpec extends ControllerWithoutFormSpec with ErrorHandl
     mockVerifiedEmailAction,
     mockJourneyAction,
     mockErrorHandler,
-    stubMessagesControllerComponents(),
+    mcc,
     mockCustomsDeclareExportsConnector,
     mockExportsCacheService,
     mockSubmissionService,

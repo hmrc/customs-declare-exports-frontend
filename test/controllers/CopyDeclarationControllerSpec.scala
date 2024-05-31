@@ -20,7 +20,6 @@ import base.ControllerSpec
 import controllers.declaration.routes.SummaryController
 import controllers.routes.{CopyDeclarationController, DeclarationDetailsController}
 import forms.{CopyDeclaration, Ducr, Lrn, LrnValidator}
-import mock.ErrorHandlerMocks
 import models.DeclarationType.STANDARD
 import models.declaration.DeclarationStatus.DRAFT
 import models.declaration.submissions.EnhancedStatus
@@ -42,7 +41,7 @@ import views.html.copy_declaration
 
 import scala.concurrent.Future
 
-class CopyDeclarationControllerSpec extends ControllerSpec with ErrorHandlerMocks with GivenWhenThen with OptionValues {
+class CopyDeclarationControllerSpec extends ControllerSpec with GivenWhenThen with OptionValues {
 
   private val lrnValidator = mock[LrnValidator]
   private val copyDeclarationPage = mock[copy_declaration]
@@ -55,7 +54,7 @@ class CopyDeclarationControllerSpec extends ControllerSpec with ErrorHandlerMock
     mockCustomsDeclareExportsConnector,
     mockExportsCacheService,
     lrnValidator,
-    stubMessagesControllerComponents(),
+    mcc,
     copyDeclarationPage
   )(ec)
 

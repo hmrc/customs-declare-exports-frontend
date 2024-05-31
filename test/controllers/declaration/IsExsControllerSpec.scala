@@ -39,10 +39,7 @@ class IsExsControllerSpec extends ControllerSpec with AuditedControllerSpec with
   private val isExsPage = mock[is_exs]
 
   private val controller =
-    new IsExsController(mockAuthAction, mockJourneyAction, mockExportsCacheService, navigator, stubMessagesControllerComponents(), isExsPage)(
-      ec,
-      auditService
-    )
+    new IsExsController(mockAuthAction, mockJourneyAction, mockExportsCacheService, navigator, mcc, isExsPage)(ec, auditService)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()

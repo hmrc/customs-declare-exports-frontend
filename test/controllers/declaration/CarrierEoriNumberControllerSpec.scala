@@ -38,14 +38,11 @@ class CarrierEoriNumberControllerSpec extends ControllerSpec with AuditedControl
 
   val mockCarrierEoriNumberPage = mock[carrier_eori_number]
 
-  val controller = new CarrierEoriNumberController(
-    mockAuthAction,
-    mockJourneyAction,
-    navigator,
-    stubMessagesControllerComponents(),
-    mockCarrierEoriNumberPage,
-    mockExportsCacheService
-  )(ec, auditService)
+  val controller =
+    new CarrierEoriNumberController(mockAuthAction, mockJourneyAction, navigator, mcc, mockCarrierEoriNumberPage, mockExportsCacheService)(
+      ec,
+      auditService
+    )
 
   def checkViewInteractions(noOfInvocations: Int = 1): Unit =
     verify(mockCarrierEoriNumberPage, times(noOfInvocations)).apply(any())(any(), any())

@@ -17,13 +17,10 @@
 package controllers.declaration
 
 import base.{AuditedControllerSpec, ControllerWithoutFormSpec}
-import config.AppConfig
 import controllers.declaration.SummaryControllerSpec.{expectedHref, fakeSummaryPage}
 import controllers.declaration.routes.SummaryController
 import controllers.routes.DraftDeclarationController
 import forms.{Lrn, LrnValidator}
-import handlers.ErrorHandler
-import mock.ErrorHandlerMocks
 import models.declaration.DeclarationStatus.AMENDMENT_DRAFT
 import org.jsoup.Jsoup
 import org.mockito.ArgumentCaptor
@@ -39,12 +36,10 @@ import views.helpers.ActionItemBuilder.lastUrlPlaceholder
 import views.helpers.summary.SummaryHelper.{continuePlaceholder, lrnDuplicateError, noItemsError}
 import views.html.declaration.amendments.amendment_summary
 import views.html.declaration.summary._
-import views.html.error_template
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class SummaryControllerSpec
-    extends ControllerWithoutFormSpec with AuditedControllerSpec with ErrorHandlerMocks with OptionValues with SubmissionBuilder {
+class SummaryControllerSpec extends ControllerWithoutFormSpec with AuditedControllerSpec with OptionValues with SubmissionBuilder {
 
   private val amendmentSummaryPage = mock[amendment_summary]
   private val normalSummaryPage = mock[normal_summary_page]
@@ -53,13 +48,11 @@ class SummaryControllerSpec
 
   private val normalModeBackLink = DraftDeclarationController.displayDeclarations()
 
-  private val mcc = stubMessagesControllerComponents()
-
   private val controller = new SummaryController(
     mockAuthAction,
     mockVerifiedEmailAction,
     mockJourneyAction,
-    new ErrorHandler(mcc.messagesApi, instanceOf[error_template])(instanceOf[AppConfig]),
+    errorHandler,
     mockCustomsDeclareExportsConnector,
     mockExportsCacheService,
     mcc,

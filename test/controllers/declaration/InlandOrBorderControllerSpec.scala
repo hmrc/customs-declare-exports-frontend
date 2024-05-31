@@ -53,7 +53,7 @@ class InlandOrBorderControllerSpec extends ControllerSpec with AuditedController
     mockJourneyAction,
     mockExportsCacheService,
     navigator,
-    stubMessagesControllerComponents(),
+    mcc,
     inlandOrBorderPage,
     inlandOrBorderHelper
   )(ec, auditService)

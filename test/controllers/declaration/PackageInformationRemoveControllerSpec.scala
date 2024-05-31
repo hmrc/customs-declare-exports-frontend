@@ -21,7 +21,6 @@ import controllers.declaration.routes.PackageInformationSummaryController
 import controllers.helpers.SequenceIdHelper.valueOfEso
 import forms.common.YesNoAnswer
 import forms.declaration.PackageInformation
-import mock.ErrorHandlerMocks
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
@@ -33,20 +32,15 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import views.html.declaration.packageInformation.package_information_remove
 
-class PackageInformationRemoveControllerSpec
-    extends ControllerSpec with AuditedControllerSpec with ErrorHandlerMocks with GivenWhenThen with OptionValues {
+class PackageInformationRemoveControllerSpec extends ControllerSpec with AuditedControllerSpec with GivenWhenThen with OptionValues {
 
   val mockRemovePage = mock[package_information_remove]
 
   val controller =
-    new PackageInformationRemoveController(
-      mockAuthAction,
-      mockJourneyAction,
-      mockExportsCacheService,
-      navigator,
-      stubMessagesControllerComponents(),
-      mockRemovePage
-    )(ec, auditService)
+    new PackageInformationRemoveController(mockAuthAction, mockJourneyAction, mockExportsCacheService, navigator, mcc, mockRemovePage)(
+      ec,
+      auditService
+    )
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()

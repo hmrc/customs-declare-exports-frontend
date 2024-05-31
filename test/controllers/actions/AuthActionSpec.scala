@@ -33,7 +33,6 @@ import scala.concurrent.Future
 
 class AuthActionSpec extends ControllerWithoutFormSpec {
 
-  val mcc = stubMessagesControllerComponents()
   val page = instanceOf[declaration_details]
 
   val choicePage = mock[choice_page]

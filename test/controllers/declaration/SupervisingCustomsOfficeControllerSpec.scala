@@ -53,7 +53,7 @@ class SupervisingCustomsOfficeControllerSpec extends ControllerSpec with Audited
     journeyType = mockJourneyAction,
     navigator = navigator,
     exportsCacheService = mockExportsCacheService,
-    mcc = stubMessagesControllerComponents(),
+    mcc,
     supervisingCustomsOfficePage = supervisingCustomsOfficeTemplate,
     inlandOrBorderHelper = inlandOrBorderHelper,
     supervisingCustomsOfficeHelper = supervisingCustomsOfficeHelper

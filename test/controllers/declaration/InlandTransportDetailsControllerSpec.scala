@@ -44,7 +44,7 @@ class InlandTransportDetailsControllerSpec extends ControllerSpec with AuditedCo
     journeyType = mockJourneyAction,
     navigator = navigator,
     exportsCacheService = mockExportsCacheService,
-    mcc = stubMessagesControllerComponents(),
+    mcc = mcc,
     inlandTransportDetailsPage = inlandTransportDetails
   )(ec, auditService)
 

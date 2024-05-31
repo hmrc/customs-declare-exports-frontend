@@ -40,14 +40,8 @@ class TraderReferenceControllerSpec extends ControllerSpec with AuditedControlle
 
   private val traderReferencePage = mock[trader_reference]
 
-  val controller = new TraderReferenceController(
-    mockAuthAction,
-    mockJourneyAction,
-    navigator,
-    stubMessagesControllerComponents(),
-    mockExportsCacheService,
-    traderReferencePage
-  )(ec, auditService)
+  val controller =
+    new TraderReferenceController(mockAuthAction, mockJourneyAction, navigator, mcc, mockExportsCacheService, traderReferencePage)(ec, auditService)
 
   def nextPageOnTypes: Seq[NextPageOnType] =
     allDeclarationTypesExcluding(SUPPLEMENTARY).map(NextPageOnType(_, ConfirmDucrController.displayPage))

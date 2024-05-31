@@ -38,14 +38,11 @@ class FiscalInformationControllerSpec extends ControllerSpec with AuditedControl
 
   private val mockFiscalInformationPage = mock[fiscal_information]
 
-  val controller = new FiscalInformationController(
-    mockAuthAction,
-    mockJourneyAction,
-    mockExportsCacheService,
-    navigator,
-    stubMessagesControllerComponents(),
-    mockFiscalInformationPage
-  )(ec, auditService)
+  val controller =
+    new FiscalInformationController(mockAuthAction, mockJourneyAction, mockExportsCacheService, navigator, mcc, mockFiscalInformationPage)(
+      ec,
+      auditService
+    )
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()

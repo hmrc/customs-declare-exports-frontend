@@ -40,14 +40,8 @@ class DeclarantExporterControllerSpec extends ControllerSpec with AuditedControl
 
   val mockPage = mock[declarant_exporter]
 
-  val controller = new DeclarantExporterController(
-    mockAuthAction,
-    mockJourneyAction,
-    mockExportsCacheService,
-    navigator,
-    stubMessagesControllerComponents(),
-    mockPage
-  )(ec, auditService)
+  val controller =
+    new DeclarantExporterController(mockAuthAction, mockJourneyAction, mockExportsCacheService, navigator, mcc, mockPage)(ec, auditService)
 
   def theResponseForm: Form[DeclarantIsExporter] = {
     val formCaptor = ArgumentCaptor.forClass(classOf[Form[DeclarantIsExporter]])

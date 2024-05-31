@@ -21,7 +21,6 @@ import controllers.declaration.routes.AdditionalInformationController
 import forms.common.YesNoAnswer.{No, Yes}
 import forms.declaration.AdditionalInformation
 import forms.declaration.AdditionalInformation.codeForGVMS
-import mock.ErrorHandlerMocks
 import models.declaration.AdditionalInformationData
 import models.declaration.AdditionalInformationData.maxNumberOfItems
 import org.mockito.ArgumentCaptor
@@ -34,18 +33,12 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import views.html.declaration.additionalInformation.additional_information_add
 
-class AdditionalInformationAddControllerSpec extends ControllerSpec with AuditedControllerSpec with ErrorHandlerMocks {
+class AdditionalInformationAddControllerSpec extends ControllerSpec with AuditedControllerSpec {
 
   val mockAddPage = mock[additional_information_add]
 
-  val controller = new AdditionalInformationAddController(
-    mockAuthAction,
-    mockJourneyAction,
-    mockExportsCacheService,
-    navigator,
-    stubMessagesControllerComponents(),
-    mockAddPage
-  )(ec, auditService)
+  val controller =
+    new AdditionalInformationAddController(mockAuthAction, mockJourneyAction, mockExportsCacheService, navigator, mcc, mockAddPage)(ec, auditService)
 
   val itemId = "itemId"
 

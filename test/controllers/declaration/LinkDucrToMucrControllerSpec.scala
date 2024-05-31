@@ -37,14 +37,8 @@ class LinkDucrToMucrControllerSpec extends ControllerSpec with AuditedController
 
   private val linkDucrToMucrPage = mock[link_ducr_to_mucr]
 
-  val controller = new LinkDucrToMucrController(
-    mockAuthAction,
-    mockJourneyAction,
-    mockExportsCacheService,
-    navigator,
-    stubMessagesControllerComponents(),
-    linkDucrToMucrPage
-  )(ec, auditService)
+  val controller =
+    new LinkDucrToMucrController(mockAuthAction, mockJourneyAction, mockExportsCacheService, navigator, mcc, linkDucrToMucrPage)(ec, auditService)
 
   def nextPageOnTypes: Seq[NextPageOnType] =
     allDeclarationTypes.map(NextPageOnType(_, routes.SectionSummaryController.displayPage(1)))

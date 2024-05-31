@@ -38,14 +38,11 @@ class ExporterEoriNumberControllerSpec extends ControllerSpec with AuditedContro
 
   val mockExporterEoriNumberPage = mock[exporter_eori_number]
 
-  val controller = new ExporterEoriNumberController(
-    mockAuthAction,
-    mockJourneyAction,
-    navigator,
-    stubMessagesControllerComponents(),
-    mockExporterEoriNumberPage,
-    mockExportsCacheService
-  )(ec, auditService)
+  val controller =
+    new ExporterEoriNumberController(mockAuthAction, mockJourneyAction, navigator, mcc, mockExporterEoriNumberPage, mockExportsCacheService)(
+      ec,
+      auditService
+    )
 
   def checkViewInteractions(noOfInvocations: Int = 1): Unit =
     verify(mockExporterEoriNumberPage, times(noOfInvocations)).apply(any())(any(), any())

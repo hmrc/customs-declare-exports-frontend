@@ -14,11 +14,43 @@
  * limitations under the License.
  */
 
-package models.dis
+package base
 
+import models.dis.{MrnStatus, PreviousDocument}
+
+import java.time.{LocalDateTime, ZoneId, ZonedDateTime}
 import scala.xml.Elem
 
-object MrnStatusTestData {
+trait MrnStatusTestData {
+
+  val mrnStatus: MrnStatus = {
+    val zoneUTC = ZoneId.of("UTC")
+
+    MrnStatus(
+      mrn = "18GB9JLC3CU1LFGVR2",
+      versionId = "1",
+      eori = "GB123456789012000",
+      declarationType = "IMZ",
+      ucr = Some("20GBAKZ81EQJ2WXYZ"),
+      receivedDateTime = ZonedDateTime.of(LocalDateTime.of(2019, 7, 2, 11, 7, 57), zoneUTC),
+      releasedDateTime = Some(ZonedDateTime.of(LocalDateTime.of(2019, 7, 2, 11, 7, 57), zoneUTC)),
+      acceptanceDateTime = Some(ZonedDateTime.of(LocalDateTime.of(2019, 7, 2, 11, 7, 57), zoneUTC)),
+      createdDateTime = ZonedDateTime.of(LocalDateTime.of(2020, 3, 10, 1, 13, 57), zoneUTC),
+      roe = "6",
+      ics = "15",
+      irc = Some("000"),
+      totalPackageQuantity = "10",
+      goodsItemQuantity = "100",
+      previousDocuments = Seq(
+        PreviousDocument("18GBAKZ81EQJ2FGVR", "DCR"),
+        PreviousDocument("18GBAKZ81EQJ2FGVA", "MCR"),
+        PreviousDocument("18GBAKZ81EQJ2FGVB", "MCR"),
+        PreviousDocument("18GBAKZ81EQJ2FGVC", "DCR"),
+        PreviousDocument("18GBAKZ81EQJ2FGVD", "MCR"),
+        PreviousDocument("18GBAKZ81EQJ2FGVE", "MCR")
+      )
+    )
+  }
 
   def mrnStatusWithAllData(mrn: String): Elem = <p:DeclarationStatusResponse
   xsi:schemaLocation="http://gov.uk/customs/declarationInformationRetrieval/status/v2"

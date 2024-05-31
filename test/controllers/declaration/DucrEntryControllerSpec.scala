@@ -37,10 +37,7 @@ class DucrEntryControllerSpec extends ControllerSpec with AuditedControllerSpec 
   private val ducrEntryPage = mock[ducr_entry]
 
   val controller =
-    new DucrEntryController(mockAuthAction, mockJourneyAction, mockExportsCacheService, navigator, stubMessagesControllerComponents(), ducrEntryPage)(
-      ec,
-      auditService
-    )
+    new DucrEntryController(mockAuthAction, mockJourneyAction, mockExportsCacheService, navigator, mcc, ducrEntryPage)(ec, auditService)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()

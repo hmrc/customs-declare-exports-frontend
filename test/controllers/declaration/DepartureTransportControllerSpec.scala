@@ -24,7 +24,6 @@ import forms.declaration.DepartureTransport.radioButtonGroupId
 import forms.declaration.InlandOrBorder.Border
 import forms.declaration.ModeOfTransportCode.Maritime
 import forms.declaration.countries.Country
-import mock.ErrorHandlerMocks
 import models.DeclarationType._
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -37,7 +36,7 @@ import play.twirl.api.HtmlFormat
 import views.helpers.DepartureTransportHelper
 import views.html.declaration.departure_transport
 
-class DepartureTransportControllerSpec extends ControllerSpec with AuditedControllerSpec with ErrorHandlerMocks {
+class DepartureTransportControllerSpec extends ControllerSpec with AuditedControllerSpec {
 
   val transportCodeService = MockTransportCodeService.transportCodeService
 
@@ -49,7 +48,7 @@ class DepartureTransportControllerSpec extends ControllerSpec with AuditedContro
     mockJourneyAction,
     mockExportsCacheService,
     navigator,
-    stubMessagesControllerComponents(),
+    mcc,
     transportCodeService,
     departureTransportHelper,
     departureTransportPage

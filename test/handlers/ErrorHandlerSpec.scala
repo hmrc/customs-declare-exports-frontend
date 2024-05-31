@@ -48,10 +48,8 @@ class ErrorHandlerSpec extends UnitWithMocksSpec with Stubs with OptionValues wi
 
   def urlEncode(value: String): String = URLEncoder.encode(value, "UTF-8")
 
-  "ErrorHandlerSpec" should {
-
-    "standardErrorTemplate" in {
-
+  "ErrorHandler.standardErrorTemplate" should {
+    "include title, heading and message" in {
       val result = errorHandler.standardErrorTemplate("title", "heading", "message")(request).body
 
       result must include("title")
@@ -60,10 +58,9 @@ class ErrorHandlerSpec extends UnitWithMocksSpec with Stubs with OptionValues wi
     }
   }
 
-  "resolve error" should {
+  "ErrorHandler" should {
 
     "handle no active session authorisation exception" in {
-
       val error = new NoActiveSession("A user is not logged in") {}
       val result = Future.successful(errorHandler.resolveError(request, error))
       val choice = "http://localhost:6791/customs-declare-exports/choice"
@@ -77,7 +74,6 @@ class ErrorHandlerSpec extends UnitWithMocksSpec with Stubs with OptionValues wi
     }
 
     "handle insufficient enrolments authorisation exception" in {
-
       val error = InsufficientEnrolments(enrolment)
       val result = Future.successful(errorHandler.resolveError(request, error))
 

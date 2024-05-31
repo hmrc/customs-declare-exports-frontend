@@ -18,12 +18,12 @@ package controllers
 
 import base.{ControllerWithoutFormSpec, Injector}
 import com.codahale.metrics.Timer
-import uk.gov.hmrc.play.bootstrap.metrics.Metrics
 import forms.CancelDeclarationDescription
 import forms.cancellation.CancellationChangeReason.NoLongerRequired
 import metrics.{ExportsMetrics, MetricIdentifiers}
-import mock.{ErrorHandlerMocks, ExportsMetricsMocks}
+import mock.ExportsMetricsMocks
 import models.CancellationStatus.CancellationResult
+import models.declaration.ExportDeclarationTestData.declaration
 import models.requests.SessionHelper._
 import models.{CancelDeclaration, CancellationAlreadyRequested}
 import org.mockito.ArgumentMatchers
@@ -33,13 +33,13 @@ import play.api.libs.json.{JsValue, Json}
 import play.api.test.Helpers._
 import services.audit.{AuditService, AuditTypes}
 import testdata.SubmissionsTestData.submission
-import models.declaration.ExportDeclarationTestData.declaration
 import uk.gov.hmrc.play.audit.http.connector.AuditResult.Success
+import uk.gov.hmrc.play.bootstrap.metrics.Metrics
 import views.html.cancel_declaration
 
 import scala.concurrent.Future
 
-class CancelDeclarationControllerSpec extends ControllerWithoutFormSpec with ErrorHandlerMocks with ExportsMetricsMocks with Injector {
+class CancelDeclarationControllerSpec extends ControllerWithoutFormSpec with ExportsMetricsMocks with Injector {
   import CancelDeclarationControllerSpec._
 
   trait SetUp {
@@ -55,7 +55,7 @@ class CancelDeclarationControllerSpec extends ControllerWithoutFormSpec with Err
       mockErrorHandler,
       mockCustomsDeclareExportsConnector,
       mockExportsMetrics,
-      stubMessagesControllerComponents(),
+      mcc,
       mockAuditService,
       cancelDeclarationPage
     )(ec)

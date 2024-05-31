@@ -37,14 +37,7 @@ class PackageInformationSummaryControllerSpec extends ControllerSpec with Option
 
   val mockPage = mock[package_information]
 
-  val controller = new PackageInformationSummaryController(
-    mockAuthAction,
-    mockJourneyAction,
-    mockExportsCacheService,
-    navigator,
-    stubMessagesControllerComponents(),
-    mockPage
-  )
+  val controller = new PackageInformationSummaryController(mockAuthAction, mockJourneyAction, mockExportsCacheService, navigator, mcc, mockPage)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()

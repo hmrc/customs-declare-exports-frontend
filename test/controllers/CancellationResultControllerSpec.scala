@@ -17,7 +17,6 @@
 package controllers
 
 import base.ControllerWithoutFormSpec
-import mock.ErrorHandlerMocks
 import models.declaration.submissions.EnhancedStatus._
 import models.declaration.submissions.RequestType.CancellationRequest
 import models.declaration.submissions.{Action, NotificationSummary, Submission}
@@ -38,7 +37,7 @@ import java.time.ZonedDateTime
 import java.util.UUID
 import scala.concurrent.Future
 
-class CancellationResultControllerSpec extends ControllerWithoutFormSpec with ErrorHandlerMocks with GivenWhenThen {
+class CancellationResultControllerSpec extends ControllerWithoutFormSpec with GivenWhenThen {
 
   val holdingPage = mock[cancellation_holding]
   val resultPage = mock[cancellation_result]
@@ -47,7 +46,7 @@ class CancellationResultControllerSpec extends ControllerWithoutFormSpec with Er
     mockAuthAction,
     mockVerifiedEmailAction,
     mockCustomsDeclareExportsConnector,
-    stubMessagesControllerComponents(),
+    mcc,
     mockErrorHandler,
     holdingPage,
     resultPage

@@ -21,7 +21,6 @@ import controllers.declaration.routes.AdditionalProcedureCodesController
 import forms.declaration._
 import forms.declaration.procedurecodes.ProcedureCode
 import forms.declaration.procedurecodes.ProcedureCode.procedureCodeKey
-import mock.ErrorHandlerMocks
 import models.DeclarationType._
 import models.declaration.ProcedureCodesData.{osrProcedureCode, warehouseRequiredProcedureCodes}
 import models.declaration.{ExportItem, ProcedureCodesData}
@@ -38,18 +37,12 @@ import play.twirl.api.HtmlFormat
 import views.declaration.PackageInformationViewSpec
 import views.html.declaration.procedureCodes.procedure_codes
 
-class ProcedureCodesControllerSpec extends ControllerSpec with AuditedControllerSpec with ErrorHandlerMocks with OptionValues with ScalaFutures {
+class ProcedureCodesControllerSpec extends ControllerSpec with AuditedControllerSpec with OptionValues with ScalaFutures {
 
   private val procedureCodesPage = mock[procedure_codes]
 
-  val controller = new ProcedureCodesController(
-    mockAuthAction,
-    mockJourneyAction,
-    navigator,
-    mockExportsCacheService,
-    stubMessagesControllerComponents(),
-    procedureCodesPage
-  )(ec, auditService)
+  val controller =
+    new ProcedureCodesController(mockAuthAction, mockJourneyAction, navigator, mockExportsCacheService, mcc, procedureCodesPage)(ec, auditService)
 
   val itemId = "itemId12345"
 

@@ -36,14 +36,8 @@ class RepresentativeStatusControllerSpec extends ControllerSpec with AuditedCont
 
   val mockPage = mock[representative_details_status]
 
-  val controller = new RepresentativeStatusController(
-    mockAuthAction,
-    mockJourneyAction,
-    navigator,
-    mockExportsCacheService,
-    stubMessagesControllerComponents(),
-    mockPage
-  )(ec, auditService)
+  val controller =
+    new RepresentativeStatusController(mockAuthAction, mockJourneyAction, navigator, mockExportsCacheService, mcc, mockPage)(ec, auditService)
 
   val statusCode = "2"
 

@@ -22,7 +22,7 @@ import controllers.declaration.routes.{AdditionalFiscalReferencesController, Com
 import forms.declaration.AdditionalFiscalReference.countryId
 import forms.declaration.FiscalInformation.AllowedFiscalInformationAnswers
 import forms.declaration.{AdditionalFiscalReference, AdditionalFiscalReferencesData, FiscalInformation}
-import mock.{ErrorHandlerMocks, ItemActionMocks}
+import mock.ItemActionMocks
 import models.DeclarationType.SUPPLEMENTARY
 import models.codes.Country
 import org.mockito.ArgumentCaptor
@@ -38,19 +38,17 @@ import views.html.declaration.fiscalInformation.additional_fiscal_reference_add
 import scala.collection.immutable.ListMap
 import scala.concurrent.Future
 
-class AdditionalFiscalReferencesAddControllerSpec extends ControllerSpec with AuditedControllerSpec with ItemActionMocks with ErrorHandlerMocks {
+class AdditionalFiscalReferencesAddControllerSpec extends ControllerSpec with AuditedControllerSpec with ItemActionMocks {
 
   val mockAddPage = mock[additional_fiscal_reference_add]
   val mockCodeListConnector = mock[CodeListConnector]
 
-  val controller = new AdditionalFiscalReferenceAddController(
-    mockAuthAction,
-    mockJourneyAction,
-    mockExportsCacheService,
-    navigator,
-    stubMessagesControllerComponents(),
-    mockAddPage
-  )(ec, mockCodeListConnector, auditService)
+  val controller =
+    new AdditionalFiscalReferenceAddController(mockAuthAction, mockJourneyAction, mockExportsCacheService, navigator, mcc, mockAddPage)(
+      ec,
+      mockCodeListConnector,
+      auditService
+    )
 
   private val item = anItem(withFiscalInformation())
 

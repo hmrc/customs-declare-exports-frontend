@@ -37,14 +37,11 @@ class TotalPackageQuantityControllerSpec extends ControllerSpec with AuditedCont
 
   private val totalPackageQuantity = mock[total_package_quantity]
 
-  val controller = new TotalPackageQuantityController(
-    mockAuthAction,
-    mockJourneyAction,
-    stubMessagesControllerComponents(),
-    navigator,
-    mockExportsCacheService,
-    totalPackageQuantity
-  )(ec, auditService)
+  val controller =
+    new TotalPackageQuantityController(mockAuthAction, mockJourneyAction, mcc, navigator, mockExportsCacheService, totalPackageQuantity)(
+      ec,
+      auditService
+    )
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()

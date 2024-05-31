@@ -20,7 +20,6 @@ import base.{AuditedControllerSpec, ControllerSpec, MockTaggedCodes}
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.Yes
 import forms.declaration.additionaldocuments.AdditionalDocument
-import mock.ErrorHandlerMocks
 import models.declaration.AdditionalDocuments
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -32,7 +31,7 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import views.html.declaration.additionalDocuments.additional_document_add
 
-class AdditionalDocumentAddControllerSpec extends ControllerSpec with AuditedControllerSpec with ErrorHandlerMocks with MockTaggedCodes {
+class AdditionalDocumentAddControllerSpec extends ControllerSpec with AuditedControllerSpec with MockTaggedCodes {
 
   val additionalDocumentAddPage = mock[additional_document_add]
 
@@ -41,7 +40,7 @@ class AdditionalDocumentAddControllerSpec extends ControllerSpec with AuditedCon
     mockJourneyAction,
     mockExportsCacheService,
     navigator,
-    stubMessagesControllerComponents(),
+    mcc,
     taggedAuthCodes,
     taggedAdditionalDocumentCodes,
     additionalDocumentAddPage

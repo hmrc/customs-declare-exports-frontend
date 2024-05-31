@@ -19,9 +19,9 @@ package controllers.declaration.amendments
 import base.{ControllerWithoutFormSpec, MockExportCacheService}
 import controllers.declaration.routes.SummaryController
 import controllers.routes.RootController
+import models.ExportsDeclaration
 import models.declaration.submissions.EnhancedStatus.{EnhancedStatus, PENDING}
 import models.requests.SessionHelper
-import models.ExportsDeclaration
 import org.mockito.ArgumentMatchers.{any, anyString}
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.OptionValues
@@ -36,7 +36,7 @@ class AmendDeclarationControllerSpec extends ControllerWithoutFormSpec with Mock
   val controller = new AmendDeclarationController(
     mockAuthAction,
     mockVerifiedEmailAction,
-    stubMessagesControllerComponents(),
+    mcc,
     mockCustomsDeclareExportsConnector,
     mockExportsCacheService,
     mockDeclarationAmendmentsConfig

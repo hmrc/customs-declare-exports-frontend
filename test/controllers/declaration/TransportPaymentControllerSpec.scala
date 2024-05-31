@@ -35,14 +35,8 @@ class TransportPaymentControllerSpec extends ControllerSpec with AuditedControll
 
   val transportPaymentPage = mock[transport_payment]
 
-  val controller = new TransportPaymentController(
-    mockAuthAction,
-    mockJourneyAction,
-    navigator,
-    mockExportsCacheService,
-    stubMessagesControllerComponents(),
-    transportPaymentPage
-  )(ec, auditService)
+  val controller =
+    new TransportPaymentController(mockAuthAction, mockJourneyAction, navigator, mockExportsCacheService, mcc, transportPaymentPage)(ec, auditService)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()

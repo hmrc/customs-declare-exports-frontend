@@ -23,12 +23,11 @@ import forms.common.{Eori, YesNoAnswer}
 import forms.declaration.AuthorisationProcedureCodeChoice.{Choice1040, ChoiceOthers}
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.STANDARD_PRE_LODGED
 import forms.declaration.authorisationHolder.AuthorisationHolder
-import mock.ErrorHandlerMocks
 import models.DeclarationType._
 import models.declaration.{AuthorisationHolders, EoriSource}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, times, verify, verifyNoInteractions, when}
+import org.mockito.Mockito._
 import org.scalatest.{GivenWhenThen, OptionValues}
 import play.api.data.Form
 import play.api.libs.json.Json
@@ -38,19 +37,15 @@ import play.twirl.api.HtmlFormat
 import play.twirl.api.HtmlFormat.Appendable
 import views.html.declaration.authorisationHolder.authorisation_holder_remove
 
-class AuthorisationHolderRemoveControllerSpec
-    extends ControllerSpec with AuditedControllerSpec with ErrorHandlerMocks with GivenWhenThen with OptionValues {
+class AuthorisationHolderRemoveControllerSpec extends ControllerSpec with AuditedControllerSpec with GivenWhenThen with OptionValues {
 
   val mockRemovePage = mock[authorisation_holder_remove]
 
-  val controller = new AuthorisationHolderRemoveController(
-    mockAuthAction,
-    mockJourneyAction,
-    mockExportsCacheService,
-    navigator,
-    stubMessagesControllerComponents(),
-    mockRemovePage
-  )(ec, auditService)
+  val controller =
+    new AuthorisationHolderRemoveController(mockAuthAction, mockJourneyAction, mockExportsCacheService, navigator, mcc, mockRemovePage)(
+      ec,
+      auditService
+    )
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()

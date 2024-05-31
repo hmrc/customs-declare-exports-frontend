@@ -21,7 +21,6 @@ import controllers.declaration.routes.PackageInformationSummaryController
 import controllers.helpers.MultipleItemsHelper
 import controllers.routes.RootController
 import forms.declaration.StatisticalValue
-import mock.ErrorHandlerMocks
 import models.DeclarationType._
 import models.declaration.ProcedureCodesData.lowValueDeclaration
 import org.mockito.ArgumentCaptor
@@ -35,18 +34,12 @@ import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import views.html.declaration.statistical_value
 
-class StatisticalValueControllerSpec extends ControllerSpec with AuditedControllerSpec with ErrorHandlerMocks with OptionValues {
+class StatisticalValueControllerSpec extends ControllerSpec with AuditedControllerSpec with OptionValues {
 
   val mockItemTypePage = mock[statistical_value]
 
-  val controller = new StatisticalValueController(
-    mockAuthAction,
-    mockJourneyAction,
-    mockExportsCacheService,
-    navigator,
-    stubMessagesControllerComponents(),
-    mockItemTypePage
-  )(ec, auditService)
+  val controller =
+    new StatisticalValueController(mockAuthAction, mockJourneyAction, mockExportsCacheService, navigator, mcc, mockItemTypePage)(ec, auditService)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()

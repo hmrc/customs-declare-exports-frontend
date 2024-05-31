@@ -37,14 +37,8 @@ class DucrChoiceControllerSpec extends ControllerSpec with AuditedControllerSpec
 
   private val ducrChoicePage = mock[ducr_choice]
 
-  val controller = new DucrChoiceController(
-    mockAuthAction,
-    mockJourneyAction,
-    mockExportsCacheService,
-    navigator,
-    stubMessagesControllerComponents(),
-    ducrChoicePage
-  )(ec, auditService)
+  val controller =
+    new DucrChoiceController(mockAuthAction, mockJourneyAction, mockExportsCacheService, navigator, mcc, ducrChoicePage)(ec, auditService)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()

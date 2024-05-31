@@ -42,15 +42,11 @@ class IsLicenceRequiredControllerSpec extends ControllerSpec with AuditedControl
 
   private val mockPage = mock[is_licence_required]
 
-  private val controller = new IsLicenceRequiredController(
-    mockAuthAction,
-    mockJourneyAction,
-    mockExportsCacheService,
-    navigator,
-    stubMessagesControllerComponents(),
-    taggedAuthCodes,
-    mockPage
-  )(ec, auditService)
+  private val controller =
+    new IsLicenceRequiredController(mockAuthAction, mockJourneyAction, mockExportsCacheService, navigator, mcc, taggedAuthCodes, mockPage)(
+      ec,
+      auditService
+    )
 
   override def getFormForDisplayRequest(request: Request[AnyContentAsEmpty.type]): Form[_] = {
     withNewCaching(declaration)

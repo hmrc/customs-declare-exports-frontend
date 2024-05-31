@@ -18,7 +18,6 @@ package controllers.declaration.amendments
 
 import base.ControllerWithoutFormSpec
 import controllers.routes.RootController
-import mock.ErrorHandlerMocks
 import models.DeclarationMeta
 import models.declaration.DeclarationStatus.COMPLETE
 import models.declaration.submissions.Action
@@ -35,7 +34,7 @@ import views.html.declaration.amendments.{amendment_details, unavailable_amendme
 import java.time.Instant
 import scala.concurrent.Future
 
-class AmendmentDetailsControllerSpec extends ControllerWithoutFormSpec with ErrorHandlerMocks with OptionValues {
+class AmendmentDetailsControllerSpec extends ControllerWithoutFormSpec with OptionValues {
 
   private val amendmentDetails = mock[amendment_details]
   private val unavailableAmendmentDetails = mock[unavailable_amendment_details]
@@ -43,7 +42,7 @@ class AmendmentDetailsControllerSpec extends ControllerWithoutFormSpec with Erro
   val controller = new AmendmentDetailsController(
     mockAuthAction,
     mockVerifiedEmailAction,
-    stubMessagesControllerComponents(),
+    mcc,
     mockErrorHandler,
     mockCustomsDeclareExportsConnector,
     amendmentDetails,

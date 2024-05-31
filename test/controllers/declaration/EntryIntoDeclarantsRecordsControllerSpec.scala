@@ -40,14 +40,8 @@ class EntryIntoDeclarantsRecordsControllerSpec extends ControllerSpec with Audit
 
   private val page = mock[entry_into_declarants_records]
 
-  private val controller = new EntryIntoDeclarantsRecordsController(
-    mockAuthAction,
-    mockJourneyAction,
-    mockExportsCacheService,
-    navigator,
-    stubMessagesControllerComponents(),
-    page
-  )(ec, auditService)
+  private val controller =
+    new EntryIntoDeclarantsRecordsController(mockAuthAction, mockJourneyAction, mockExportsCacheService, navigator, mcc, page)(ec, auditService)
 
   override def beforeEach(): Unit = {
     super.beforeEach()

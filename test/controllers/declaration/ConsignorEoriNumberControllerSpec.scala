@@ -40,14 +40,11 @@ class ConsignorEoriNumberControllerSpec extends ControllerSpec with AuditedContr
 
   val mockConsignorEoriNumberPage = mock[consignor_eori_number]
 
-  val controller = new ConsignorEoriNumberController(
-    mockAuthAction,
-    mockJourneyAction,
-    navigator,
-    stubMessagesControllerComponents(),
-    mockConsignorEoriNumberPage,
-    mockExportsCacheService
-  )(ec, auditService)
+  val controller =
+    new ConsignorEoriNumberController(mockAuthAction, mockJourneyAction, navigator, mcc, mockConsignorEoriNumberPage, mockExportsCacheService)(
+      ec,
+      auditService
+    )
 
   def checkViewInteractions(noOfInvocations: Int = 1): Unit =
     verify(mockConsignorEoriNumberPage, times(noOfInvocations)).apply(any())(any(), any())

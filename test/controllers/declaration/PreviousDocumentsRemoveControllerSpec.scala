@@ -32,14 +32,8 @@ class PreviousDocumentsRemoveControllerSpec extends ControllerWithoutFormSpec wi
 
   private val page = mock[previous_documents_remove]
 
-  private val controller = new PreviousDocumentsRemoveController(
-    mockAuthAction,
-    mockJourneyAction,
-    mockExportsCacheService,
-    navigator,
-    stubMessagesControllerComponents(),
-    page
-  )(ec, auditService)
+  private val controller =
+    new PreviousDocumentsRemoveController(mockAuthAction, mockJourneyAction, mockExportsCacheService, navigator, mcc, page)(ec, auditService)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()

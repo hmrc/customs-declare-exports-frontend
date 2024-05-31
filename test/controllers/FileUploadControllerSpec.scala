@@ -28,7 +28,7 @@ class FileUploadControllerSpec extends ControllerWithoutFormSpec {
   val dummySfusLink = "dummySfusLink"
   val mrn = "mrn"
 
-  val controller = new FileUploadController(mockSfusConfig, mockAuthAction, stubMessagesControllerComponents(), mockAuditService)
+  val controller = new FileUploadController(mockSfusConfig, mockAuthAction, mcc, mockAuditService)
 
   override def beforeEach(): Unit = {
     super.beforeEach()

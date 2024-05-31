@@ -35,14 +35,11 @@ class NatureOfTransactionControllerSpec extends ControllerSpec with AuditedContr
 
   val mockNatureOfTransactionPage = mock[nature_of_transaction]
 
-  val controller = new NatureOfTransactionController(
-    mockAuthAction,
-    mockJourneyAction,
-    navigator,
-    stubMessagesControllerComponents(),
-    mockNatureOfTransactionPage,
-    mockExportsCacheService
-  )(ec, auditService)
+  val controller =
+    new NatureOfTransactionController(mockAuthAction, mockJourneyAction, navigator, mcc, mockNatureOfTransactionPage, mockExportsCacheService)(
+      ec,
+      auditService
+    )
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()

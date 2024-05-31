@@ -40,14 +40,7 @@ class AuthorisationHolderSummaryControllerSpec extends ControllerSpec with Optio
 
   val mockPage = mock[authorisation_holder_summary]
 
-  val controller = new AuthorisationHolderSummaryController(
-    mockAuthAction,
-    mockJourneyAction,
-    mockExportsCacheService,
-    navigator,
-    stubMessagesControllerComponents(),
-    mockPage
-  )
+  val controller = new AuthorisationHolderSummaryController(mockAuthAction, mockJourneyAction, mockExportsCacheService, navigator, mcc, mockPage)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()

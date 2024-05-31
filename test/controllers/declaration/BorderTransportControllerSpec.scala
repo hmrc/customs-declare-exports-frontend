@@ -46,7 +46,7 @@ class BorderTransportControllerSpec extends ControllerSpec with AuditedControlle
     mockJourneyAction,
     navigator,
     mockExportsCacheService,
-    stubMessagesControllerComponents(),
+    mcc,
     transportCodeService,
     borderTransportPage
   )(ec, auditService)

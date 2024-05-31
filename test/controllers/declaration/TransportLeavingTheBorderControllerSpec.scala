@@ -56,7 +56,7 @@ class TransportLeavingTheBorderControllerSpec extends ControllerSpec with Audite
     mockJourneyAction,
     mockExportsCacheService,
     navigator,
-    stubMessagesControllerComponents(),
+    mcc,
     transportLeavingTheBorder,
     inlandOrBorderHelper = inlandOrBorderHelper,
     supervisingCustomsOfficeHelper

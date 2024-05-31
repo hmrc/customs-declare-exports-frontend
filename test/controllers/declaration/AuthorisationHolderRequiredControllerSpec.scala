@@ -40,14 +40,8 @@ class AuthorisationHolderRequiredControllerSpec extends ControllerSpec with Audi
 
   val mockPage = mock[authorisation_holder_required]
 
-  val controller = new AuthorisationHolderRequiredController(
-    mockAuthAction,
-    mockJourneyAction,
-    mockExportsCacheService,
-    navigator,
-    stubMessagesControllerComponents(),
-    mockPage
-  )(ec, auditService)
+  val controller =
+    new AuthorisationHolderRequiredController(mockAuthAction, mockJourneyAction, mockExportsCacheService, navigator, mcc, mockPage)(ec, auditService)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()

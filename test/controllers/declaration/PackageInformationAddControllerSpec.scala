@@ -39,14 +39,11 @@ class PackageInformationAddControllerSpec extends ControllerSpec with AuditedCon
   val mockPackageTypesService = instanceOf[PackageTypesService]
 
   val controller =
-    new PackageInformationAddController(
-      mockAuthAction,
-      mockJourneyAction,
-      mockExportsCacheService,
-      navigator,
-      stubMessagesControllerComponents(),
-      mockAddPage
-    )(ec, mockPackageTypesService, auditService)
+    new PackageInformationAddController(mockAuthAction, mockJourneyAction, mockExportsCacheService, navigator, mcc, mockAddPage)(
+      ec,
+      mockPackageTypesService,
+      auditService
+    )
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()

@@ -49,7 +49,7 @@ class SecureMessagingControllerSpec extends ControllerWithoutFormSpec {
       mockVerifiedEmailAction,
       secureMessagingAction,
       secureMessagingFrontendConnector,
-      stubMessagesControllerComponents(),
+      mcc,
       inboxWrapperPage,
       partialWrapperPage,
       new HeaderCarrierForPartialsConverterImpl

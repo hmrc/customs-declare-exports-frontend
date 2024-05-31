@@ -16,16 +16,15 @@
 
 package controllers
 
-import org.apache.pekko.util.Timeout
 import base.{ControllerWithoutFormSpec, MockExportCacheService}
 import config.PaginationConfig
 import controllers.declaration.routes._
-import mock.ErrorHandlerMocks
 import models._
 import models.declaration.submissions.EnhancedStatus.GOODS_ARRIVED
 import models.declaration.submissions.RequestType.SubmissionRequest
 import models.declaration.submissions.{Action, Submission}
 import models.requests.SessionHelper.declarationUuid
+import org.apache.pekko.util.Timeout
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito.{reset, verify, when}
@@ -41,7 +40,7 @@ import java.time.{Instant, ZoneOffset, ZonedDateTime}
 import java.util.UUID
 import scala.concurrent.Future
 
-class SubmissionsControllerSpec extends ControllerWithoutFormSpec with MockExportCacheService with BeforeAndAfterEach with ErrorHandlerMocks {
+class SubmissionsControllerSpec extends ControllerWithoutFormSpec with MockExportCacheService with BeforeAndAfterEach {
 
   val dateTime = ZonedDateTime.now(ZoneOffset.UTC)
 
@@ -78,7 +77,7 @@ class SubmissionsControllerSpec extends ControllerWithoutFormSpec with MockExpor
     mockExportsCacheService,
     mockCustomsDeclareExportsConnector,
     mockErrorHandler,
-    stubMessagesControllerComponents(),
+    mcc,
     submittedDeclarationPage
   )(ec)
 

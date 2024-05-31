@@ -19,7 +19,6 @@ package controllers.declaration
 import base.{AuditedControllerSpec, ControllerSpec, Injector}
 import controllers.helpers.SequenceIdHelper.valueOfEso
 import forms.declaration.PackageInformation
-import mock.ErrorHandlerMocks
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
@@ -31,8 +30,7 @@ import play.twirl.api.HtmlFormat
 import services.PackageTypesService
 import views.html.declaration.packageInformation.package_information_change
 
-class PackageInformationChangeControllerSpec
-    extends ControllerSpec with AuditedControllerSpec with OptionValues with ErrorHandlerMocks with Injector {
+class PackageInformationChangeControllerSpec extends ControllerSpec with AuditedControllerSpec with OptionValues with Injector {
 
   val mockChangePage = mock[package_information_change]
   val mockPackageTypesService = instanceOf[PackageTypesService]
@@ -44,7 +42,7 @@ class PackageInformationChangeControllerSpec
       navigator,
       mockExportsCacheService,
       mockErrorHandler,
-      stubMessagesControllerComponents(),
+      mcc,
       mockChangePage
     )(ec, mockPackageTypesService, auditService)
 

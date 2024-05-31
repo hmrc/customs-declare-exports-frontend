@@ -40,15 +40,11 @@ class AuthorisationHolderAddControllerSpec
 
   val mockAddPage = mock[authorisation_holder_add]
 
-  val controller = new AuthorisationHolderAddController(
-    mockAuthAction,
-    mockJourneyAction,
-    mockExportsCacheService,
-    navigator,
-    stubMessagesControllerComponents(),
-    taggedAuthCodes,
-    mockAddPage
-  )(ec, auditService)
+  val controller =
+    new AuthorisationHolderAddController(mockAuthAction, mockJourneyAction, mockExportsCacheService, navigator, mcc, taggedAuthCodes, mockAddPage)(
+      ec,
+      auditService
+    )
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()

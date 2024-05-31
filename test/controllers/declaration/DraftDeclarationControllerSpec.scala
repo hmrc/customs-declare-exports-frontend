@@ -29,8 +29,7 @@ class DraftDeclarationControllerSpec extends ControllerWithoutFormSpec with Inje
   trait SetUp {
     val draftDeclarationPage = instanceOf[draft_declaration_page]
 
-    val controller =
-      new DraftDeclarationController(mockAuthAction, appConfig, stubMessagesControllerComponents(), draftDeclarationPage, mockJourneyAction)
+    val controller = new DraftDeclarationController(mockAuthAction, appConfig, mcc, draftDeclarationPage, mockJourneyAction)
 
     authorizedUser()
   }

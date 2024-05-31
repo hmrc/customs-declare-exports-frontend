@@ -23,7 +23,6 @@ import forms.Ducr
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.ConsignmentReferences
-import mock.ErrorHandlerMocks
 import models.DeclarationType.{allDeclarationTypesExcluding, SUPPLEMENTARY}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.{any, eq => meq}
@@ -36,18 +35,12 @@ import play.api.test.Helpers.{await, redirectLocation, status}
 import play.twirl.api.HtmlFormat
 import views.html.declaration.confirm_ducr
 
-class ConfirmDucrControllerSpec extends ControllerSpec with AuditedControllerSpec with AmendmentDraftFilterSpec with ErrorHandlerMocks {
+class ConfirmDucrControllerSpec extends ControllerSpec with AuditedControllerSpec with AmendmentDraftFilterSpec {
 
   private val confirmDucrPage = mock[confirm_ducr]
 
-  val controller = new ConfirmDucrController(
-    mockAuthAction,
-    mockJourneyAction,
-    navigator,
-    stubMessagesControllerComponents(),
-    mockExportsCacheService,
-    confirmDucrPage
-  )(ec, auditService)
+  val controller =
+    new ConfirmDucrController(mockAuthAction, mockJourneyAction, navigator, mcc, mockExportsCacheService, confirmDucrPage)(ec, auditService)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()

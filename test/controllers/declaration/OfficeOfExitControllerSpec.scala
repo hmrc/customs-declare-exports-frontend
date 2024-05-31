@@ -34,14 +34,8 @@ class OfficeOfExitControllerSpec extends ControllerSpec with AuditedControllerSp
 
   val mockOfficeOfExitPage = mock[office_of_exit]
 
-  val controller = new OfficeOfExitController(
-    mockAuthAction,
-    mockJourneyAction,
-    navigator,
-    stubMessagesControllerComponents(),
-    mockOfficeOfExitPage,
-    mockExportsCacheService
-  )(ec, auditService)
+  val controller =
+    new OfficeOfExitController(mockAuthAction, mockJourneyAction, navigator, mcc, mockOfficeOfExitPage, mockExportsCacheService)(ec, auditService)
 
   def checkViewInteractions(noOfInvocations: Int = 1): Unit =
     verify(mockOfficeOfExitPage, times(noOfInvocations)).apply(any())(any(), any())

@@ -33,14 +33,10 @@ class AdditionalInformationRequiredControllerSpec extends ControllerSpec with Au
 
   private val mockPage = mock[additional_information_required]
 
-  val controller = new AdditionalInformationRequiredController(
-    mockAuthAction,
-    mockJourneyAction,
-    mockExportsCacheService,
-    navigator,
-    stubMessagesControllerComponents(),
-    mockPage
-  )(ec, auditService)
+  val controller = new AdditionalInformationRequiredController(mockAuthAction, mockJourneyAction, mockExportsCacheService, navigator, mcc, mockPage)(
+    ec,
+    auditService
+  )
 
   val itemId = "itemId"
 

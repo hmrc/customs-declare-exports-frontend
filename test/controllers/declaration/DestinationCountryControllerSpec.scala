@@ -50,7 +50,7 @@ class DestinationCountryControllerSpec extends ControllerSpec with AuditedContro
     mockJourneyAction,
     mockExportsCacheService,
     navigator,
-    stubMessagesControllerComponents(),
+    mcc,
     taggedAuthCodes,
     destinationCountryPage
   )(global, mockCodeListConnector, auditService)

@@ -38,14 +38,8 @@ class DeclarantDetailsControllerSpec extends ControllerSpec with AuditedControll
 
   private val declarantDetailsPage = mock[declarant_details]
 
-  val controller = new DeclarantDetailsController(
-    mockAuthAction,
-    mockJourneyAction,
-    mockExportsCacheService,
-    navigator,
-    stubMessagesControllerComponents(),
-    declarantDetailsPage
-  )(ec, auditService)
+  val controller =
+    new DeclarantDetailsController(mockAuthAction, mockJourneyAction, mockExportsCacheService, navigator, mcc, declarantDetailsPage)(ec, auditService)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()

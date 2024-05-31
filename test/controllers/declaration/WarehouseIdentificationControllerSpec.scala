@@ -47,7 +47,7 @@ class WarehouseIdentificationControllerSpec extends ControllerSpec with AuditedC
     mockJourneyAction,
     navigator,
     mockExportsCacheService,
-    stubMessagesControllerComponents(),
+    mcc,
     pageYesNo,
     pageIdentification,
     supervisingCustomsOfficeHelper

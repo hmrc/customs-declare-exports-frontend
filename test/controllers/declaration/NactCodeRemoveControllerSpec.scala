@@ -38,14 +38,7 @@ class NactCodeRemoveControllerSpec extends ControllerSpec with AuditedController
   val mockRemovePage = mock[nact_code_remove]
 
   val controller =
-    new NactCodeRemoveController(
-      mockAuthAction,
-      mockJourneyAction,
-      mockExportsCacheService,
-      navigator,
-      stubMessagesControllerComponents(),
-      mockRemovePage
-    )(ec, auditService)
+    new NactCodeRemoveController(mockAuthAction, mockJourneyAction, mockExportsCacheService, navigator, mcc, mockRemovePage)(ec, auditService)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
