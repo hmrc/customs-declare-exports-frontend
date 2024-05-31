@@ -181,6 +181,7 @@ object AddressSpec {
     )
 
   val emptyAddress = Address("", "", "", "", "")
+  val partialEmptyAddress = Address("foo", "", "", "", "")
 
   val correctAddressJSON: JsValue = Json.toJson(validAddress)
   val wrongLengthAddressJSON: JsValue = Json.toJson(addressWithIllegalLengths)

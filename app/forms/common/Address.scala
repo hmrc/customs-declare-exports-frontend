@@ -118,5 +118,26 @@ object Address extends FieldMapping {
     )(Address.apply)(Address.unapply)
   }
 
+  def partialAndOptionalMapping(maxAddressLength: Int = 70)(implicit messages: Messages, codeListConnector: CodeListConnector): Mapping[Address] = {
+    val lengthError = if (maxAddressLength == 35) "length35MaxChars" else "length"
+
+    Forms.mapping(
+      "fullName" -> text()
+        .verifying("declaration.address.fullName.error", isEmpty or isValidFieldForAddresses)
+        .verifying("declaration.address.fullName.length", isEmpty or noLongerThan(35)),
+      "addressLine" -> text()
+        .verifying("declaration.address.addressLine.error", isEmpty or isValidAddressField)
+        .verifying(s"declaration.address.addressLine.$lengthError", isEmpty or noLongerThan(maxAddressLength)),
+      "townOrCity" -> text()
+        .verifying("declaration.address.townOrCity.error", isEmpty or isValidFieldForAddresses)
+        .verifying("declaration.address.townOrCity.length", isEmpty or noLongerThan(35)),
+      "postCode" -> text()
+        .verifying("declaration.address.postCode.error", isEmpty or isAlphanumericWithSpaceAndHyphen)
+        .verifying("declaration.address.postCode.length", isEmpty or noLongerThan(9)),
+      countryId -> text()
+        .verifying("declaration.address.country.error", input => input.isEmpty or isValidCountryCode(input))
+    )(Address.apply)(Address.unapply)
+  }
+
   def form(implicit messages: Messages, codeListConnector: CodeListConnector): Form[Address] = Form(mapping())
 }

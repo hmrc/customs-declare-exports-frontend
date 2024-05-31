@@ -18,7 +18,7 @@ package forms.declaration
 
 import connectors.CodeListConnector
 import forms.DeclarationPage
-import models.DeclarationType.DeclarationType
+import models.DeclarationType.{CLEARANCE, DeclarationType}
 import models.viewmodels.TariffContentKey
 import models.ExportsFieldPointer.ExportsFieldPointer
 import models.{AmendmentOp, FieldMapping}
@@ -48,10 +48,16 @@ object ConsigneeDetails extends DeclarationPage with FieldMapping {
 
   val id = "ConsigneeDetails"
 
-  def mapping(implicit messages: Messages, codeListConnector: CodeListConnector): Mapping[ConsigneeDetails] =
-    Forms.mapping("details" -> EntityDetails.addressMapping(35))(ConsigneeDetails.apply)(ConsigneeDetails.unapply)
+  private def mapping(
+    declarationType: DeclarationType
+  )(implicit messages: Messages, codeListConnector: CodeListConnector): Mapping[ConsigneeDetails] =
+    if (declarationType == CLEARANCE)
+      Forms.mapping("details" -> EntityDetails.partialAndOptionalAddressMapping(35))(ConsigneeDetails.apply)(ConsigneeDetails.unapply)
+    else Forms.mapping("details" -> EntityDetails.addressMapping(35))(ConsigneeDetails.apply)(ConsigneeDetails.unapply)
 
-  def form(implicit messages: Messages, codeListConnector: CodeListConnector): Form[ConsigneeDetails] = Form(mapping)
+  def form(declarationType: DeclarationType)(implicit messages: Messages, codeListConnector: CodeListConnector): Form[ConsigneeDetails] = Form(
+    mapping(declarationType)
+  )
 
   override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
     Seq(TariffContentKey(s"tariff.declaration.consigneeDetails.${DeclarationPage.getJourneyTypeSpecialisation(decType)}"))

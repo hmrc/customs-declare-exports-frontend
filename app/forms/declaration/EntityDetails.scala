@@ -77,4 +77,12 @@ object EntityDetails extends FieldMapping {
       .mapping("address" -> optional(Address.mapping(maxAddressLength)))(maybeAddress => EntityDetails(None, maybeAddress))(entityDetails =>
         Some(entityDetails.address)
       )
+
+  def partialAndOptionalAddressMapping(
+    maxAddressLength: Int = 70
+  )(implicit messages: Messages, codeListConnector: CodeListConnector): Mapping[EntityDetails] =
+    Forms
+      .mapping("address" -> optional(Address.partialAndOptionalMapping(maxAddressLength)))(maybeAddress => EntityDetails(None, maybeAddress))(
+        entityDetails => Some(entityDetails.address)
+      )
 }

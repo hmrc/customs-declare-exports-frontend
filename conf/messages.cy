@@ -541,6 +541,7 @@ declaration.thirdPartyGoodsTransportation.expander.paragraph.1 = Dim ond un cari
 declaration.thirdPartyGoodsTransportation.expander.paragraph.2 = Er enghraifft, ar gyfer fferi Gyrru-ymlaen-ac-i-ffwrdd, enwch gwnni cludo’r gyrrwr. Ar gyfer y Cefnfor a’r Awyr, cofnodwch y Cwmni Llongau neu’r Cwmni Hedfan.
 
 declaration.consignee.title = Ble bydd y nwyddau’n cael eu danfon?
+declaration.consignee.warning = Mae’r wybodaeth hon yn ddewisol ar gyfer derbynwyr C21e EIDR
 declaration.consignee.paragraph1 = Nodwch enw’r busnes, y sefydliad neu’r unigolyn sy’n cael y nwyddau, a’r cyfeiriad lle bydd y nwyddau’n cael eu danfon.
 declaration.consignee.paragraph2 = Dylai fod yn enw’r mewnforiwr neu’r cynrychiolydd a awdurdodwyd i gael y nwyddau.
 

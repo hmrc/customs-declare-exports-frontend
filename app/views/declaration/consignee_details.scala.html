@@ -19,6 +19,7 @@
 @import controllers.navigation.Navigator
 @import forms.declaration.ConsigneeDetails
 @import models.requests.JourneyRequest
+@import models.DeclarationType.CLEARANCE
 @import play.twirl.api.HtmlFormat
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{HtmlContent, Text}
@@ -31,6 +32,7 @@
 @this(
     govukLayout: gdsMainTemplate,
     govukFieldset: GovukFieldset,
+    govukWarningText: GovukWarningText,
     formHelper: FormWithCSRF,
     errorSummary: errorSummary,
     sectionHeader: sectionHeader,
@@ -61,6 +63,13 @@
         @body(messages("declaration.consignee.paragraph1"))
 
         @body(messages("declaration.consignee.paragraph2"))
+
+        @if(request.isType(CLEARANCE)) {
+          @govukWarningText(WarningText(
+            iconFallbackText = Some(messages("site.warning")),
+            content = Text(messages("declaration.consignee.warning"))
+          ))
+        }
 
         @govukFieldset(Fieldset(
             legend = Some(Legend(

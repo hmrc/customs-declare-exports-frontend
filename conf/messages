@@ -541,6 +541,7 @@ declaration.thirdPartyGoodsTransportation.expander.paragraph.1 = Only one named 
 declaration.thirdPartyGoodsTransportation.expander.paragraph.2 = For example, for Roll On Roll Off ferries, name the haulage company of the driver. For Deep Sea and Air, record the Shipping Line or Airline company.
 
 declaration.consignee.title = Where will the goods be delivered?
+declaration.consignee.warning = This information is optional for C21e EIDR consignees
 declaration.consignee.paragraph1 = Enter the name of the business, organisation or individual taking delivery of the goods, and the address where the goods will be delivered.
 declaration.consignee.paragraph2 = It should be the name of the importer or a representative authorised to receive the goods.
 

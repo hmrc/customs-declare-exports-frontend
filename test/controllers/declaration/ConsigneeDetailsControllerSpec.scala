@@ -77,6 +77,8 @@ class ConsigneeDetailsControllerSpec extends ControllerSpec with AuditedControll
   }
 
   private val correctAddress = Address("John Smith", "1 Export Street", "Leeds", "LS1 2PW", "GB")
+  private val someFieldsFilledAddress = Address("John Smith", "", "Leeds", "", "GB")
+  private val noFieldsFilledAddress = Address("", "", "", "", "")
 
   "Consignee Details controller" should {
 
@@ -103,7 +105,7 @@ class ConsigneeDetailsControllerSpec extends ControllerSpec with AuditedControll
       "return 303 (SEE_OTHER) and redirect to other parties summary page" when {
         "form is correct" in {
           withNewCaching(request.cacheModel)
-          testFormSubmitRedirectsTo(AdditionalActorsSummaryController.displayPage)
+          testFormSubmitRedirectsTo(correctAddress, AdditionalActorsSummaryController.displayPage)
         }
       }
     }
@@ -159,21 +161,31 @@ class ConsigneeDetailsControllerSpec extends ControllerSpec with AuditedControll
     onJourney(CLEARANCE) { request =>
       "return 303 (SEE_OTHER) and redirect to appropriate page" when {
 
+        "form has some fields filled" in {
+          withNewCaching(aDeclarationAfter(request.cacheModel, identity))
+          testFormSubmitRedirectsTo(someFieldsFilledAddress, AuthorisationProcedureCodeChoiceController.displayPage)
+        }
+
+        "form has no fields filled" in {
+          withNewCaching(aDeclarationAfter(request.cacheModel, identity))
+          testFormSubmitRedirectsTo(noFieldsFilledAddress, AuthorisationProcedureCodeChoiceController.displayPage)
+        }
+
         "form is correct and EIDR is false" in {
           withNewCaching(aDeclarationAfter(request.cacheModel, withEntryIntoDeclarantsRecords(YesNoAnswers.no)))
-          testFormSubmitRedirectsTo(AuthorisationProcedureCodeChoiceController.displayPage)
+          testFormSubmitRedirectsTo(correctAddress, AuthorisationProcedureCodeChoiceController.displayPage)
         }
 
         "form is correct and EIDR is true" in {
           withNewCaching(aDeclarationAfter(request.cacheModel, withEntryIntoDeclarantsRecords(YesNoAnswers.yes)))
-          testFormSubmitRedirectsTo(AuthorisationProcedureCodeChoiceController.displayPage)
+          testFormSubmitRedirectsTo(correctAddress, AuthorisationProcedureCodeChoiceController.displayPage)
         }
       }
     }
   }
 
-  private def testFormSubmitRedirectsTo(expectedRedirectionLocation: Call): Unit = {
-    val correctForm = Json.toJson(ConsigneeDetails(EntityDetails(None, Some(correctAddress))))
+  private def testFormSubmitRedirectsTo(address: Address, expectedRedirectionLocation: Call): Unit = {
+    val correctForm = Json.toJson(ConsigneeDetails(EntityDetails(None, Some(address))))
 
     val result = controller.saveAddress(postRequest(correctForm))
 
