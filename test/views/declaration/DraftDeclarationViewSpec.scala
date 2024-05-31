@@ -17,7 +17,7 @@
 package views.declaration
 
 import base.Injector
-import controllers.routes.{ChoiceController, SavedDeclarationsController}
+import controllers.routes.{ChoiceController, DraftDeclarationController}
 import play.twirl.api.Html
 import tools.Stubs
 import views.declaration.spec.UnitViewSpec
@@ -50,12 +50,12 @@ class DraftDeclarationViewSpec extends UnitViewSpec with CommonMessages with Stu
 
     "render view declaration summary link" in {
       val link = createView().getElementById("view_declaration_summary")
-      link must haveHref(SavedDeclarationsController.continueDeclaration(declarationId.get).url)
+      link must haveHref(DraftDeclarationController.displayDeclaration(declarationId.get).url)
     }
 
     "render continue link" in {
       val link = createView().getElementById("draft_confirmation-continue_dec_link")
-      link must haveHref(SavedDeclarationsController.displayDeclarations().url)
+      link must haveHref(DraftDeclarationController.displayDeclarations().url)
     }
 
     "render start new link" in {

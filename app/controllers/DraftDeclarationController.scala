@@ -22,35 +22,35 @@ import config.PaginationConfig
 import connectors.CustomsDeclareExportsConnector
 import controllers.actions.{AuthAction, VerifiedEmailAction}
 import controllers.declaration.routes.SummaryController
-import controllers.routes.SavedDeclarationsController
+import controllers.routes.DraftDeclarationController
 import javax.inject.Inject
 import models.requests.SessionHelper
 import models.Page
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import views.html.declarations.saved_declarations
+import views.html.drafts.draft_declarations
 
-class SavedDeclarationsController @Inject() (
+class DraftDeclarationController @Inject() (
   authenticate: AuthAction,
   verifyEmail: VerifiedEmailAction,
   customsDeclareExportsConnector: CustomsDeclareExportsConnector,
   mcc: MessagesControllerComponents,
-  savedDeclarationsPage: saved_declarations,
+  draftDeclarationsPage: draft_declarations,
   paginationConfig: PaginationConfig
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
   def displayDeclarations(pageNumber: Int = 1): Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
-    customsDeclareExportsConnector.findSavedDeclarations(Page(pageNumber, paginationConfig.itemsPerPage)).map { page =>
-      Ok(savedDeclarationsPage(page))
+    customsDeclareExportsConnector.fetchDraftDeclarations(Page(pageNumber, paginationConfig.itemsPerPage)).map { page =>
+      Ok(draftDeclarationsPage(page))
     }
   }
 
-  def continueDeclaration(id: String): Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
+  def displayDeclaration(id: String): Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
     customsDeclareExportsConnector.findDeclaration(id) flatMap {
       case Some(_) => Future.successful(Redirect(SummaryController.displayPage).addingToSession(SessionHelper.declarationUuid -> id))
-      case None    => Future.successful(Redirect(SavedDeclarationsController.displayDeclarations()))
+      case None    => Future.successful(Redirect(DraftDeclarationController.displayDeclarations()))
     }
   }
 }

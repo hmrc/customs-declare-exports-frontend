@@ -16,7 +16,7 @@
 
 @import config.AppConfig
 @import controllers.declaration.routes.SubmissionController
-@import controllers.routes.{DeclarationDetailsController, SavedDeclarationsController}
+@import controllers.routes.{DeclarationDetailsController, DraftDeclarationController}
 @import models.declaration.submissions.EnhancedStatus.ERRORS
 @import models.requests.JourneyRequest
 @import views.helpers.{BackButton, Title}
@@ -43,7 +43,7 @@
 @(submissionId: String)(implicit request: JourneyRequest[_], messages: Messages, appConfig: AppConfig)
 
 @referer = @{
-  if (request.headers.get(HeaderNames.REFERER).exists(_.endsWith("/saved-declarations"))) SavedDeclarationsController.displayDeclarations()
+  if (request.headers.get(HeaderNames.REFERER).exists(_.endsWith("/saved-declarations"))) DraftDeclarationController.displayDeclarations()
   else DeclarationDetailsController.displayPage(submissionId)
 }
 

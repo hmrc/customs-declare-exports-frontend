@@ -27,7 +27,7 @@ object RemoveDraftDeclaration {
 
   val formMapping = Forms.mapping(
     "remove" -> optional(boolean)
-      .verifying("saved.declarations.remove.option.error.empty", _.isDefined)
+      .verifying("draft.declarations.remove.option.error.empty", _.isDefined)
       .transform(_.get, (b: Boolean) => Some(b))
   )(RemoveDraftDeclaration.apply)(RemoveDraftDeclaration.unapply)
 

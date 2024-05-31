@@ -18,18 +18,18 @@ package controllers
 
 import connectors.CustomsDeclareExportsConnector
 import controllers.actions.{AuthAction, VerifiedEmailAction}
-import controllers.routes.SavedDeclarationsController
+import controllers.routes.DraftDeclarationController
 import forms.RemoveDraftDeclaration.form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.controller.WithUnsafeDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import views.html.remove_declaration
+import views.html.drafts.remove_declaration
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class RemoveSavedDeclarationsController @Inject() (
+class RemoveDraftDeclarationController @Inject() (
   authenticate: AuthAction,
   verifyEmail: VerifiedEmailAction,
   customsDeclareExportsConnector: CustomsDeclareExportsConnector,
@@ -41,7 +41,7 @@ class RemoveSavedDeclarationsController @Inject() (
   def displayPage(id: String): Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
     customsDeclareExportsConnector.findDeclaration(id) flatMap {
       case Some(declaration) => Future.successful(Ok(removeDeclarationPage(declaration, form)))
-      case _                 => Future.successful(Redirect(SavedDeclarationsController.displayDeclarations()))
+      case _                 => Future.successful(Redirect(DraftDeclarationController.displayDeclarations()))
     }
   }
 
@@ -53,14 +53,14 @@ class RemoveSavedDeclarationsController @Inject() (
         formWithErrors =>
           customsDeclareExportsConnector.findDeclaration(id) flatMap {
             case Some(declaration) => Future.successful(BadRequest(removeDeclarationPage(declaration, formWithErrors)))
-            case _                 => Future.successful(Redirect(SavedDeclarationsController.displayDeclarations()))
+            case _                 => Future.successful(Redirect(DraftDeclarationController.displayDeclarations()))
           },
         validAction =>
           if (validAction.remove)
             customsDeclareExportsConnector
               .deleteDraftDeclaration(id)
-              .map(_ => Redirect(SavedDeclarationsController.displayDeclarations()))
-          else Future.successful(Redirect(SavedDeclarationsController.displayDeclarations()))
+              .map(_ => Redirect(DraftDeclarationController.displayDeclarations()))
+          else Future.successful(Redirect(DraftDeclarationController.displayDeclarations()))
       )
   }
 }

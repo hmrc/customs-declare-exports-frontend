@@ -64,14 +64,14 @@ POST        /copy-declaration                              controllers.CopyDecla
 GET         /cancellation-holding                          controllers.CancellationResultController.displayHoldingPage
 GET         /cancellation-result                           controllers.CancellationResultController.displayResultPage
 
-# Saved declaration
+# Draft declarations
 
-GET         /saved-declarations                            controllers.SavedDeclarationsController.displayDeclarations(page: Int ?= 1)
+GET         /saved-declarations                            controllers.DraftDeclarationController.displayDeclarations(page: Int ?= 1)
 
-GET         /saved-declarations/:id                        controllers.SavedDeclarationsController.continueDeclaration(id: String)
+GET         /saved-declarations/:id                        controllers.DraftDeclarationController.displayDeclaration(id: String)
 
-GET         /saved-declarations/:id/remove                 controllers.RemoveSavedDeclarationsController.displayPage(id: String)
-POST        /saved-declarations/:id/remove                 controllers.RemoveSavedDeclarationsController.removeDeclaration(id: String)
+GET         /saved-declarations/:id/remove                 controllers.RemoveDraftDeclarationController.displayPage(id: String)
+POST        /saved-declarations/:id/remove                 controllers.RemoveDraftDeclarationController.removeDeclaration(id: String)
 
 # Root Url
 

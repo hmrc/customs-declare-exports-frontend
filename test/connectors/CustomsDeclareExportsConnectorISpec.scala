@@ -24,15 +24,16 @@ import config.featureFlags.DeclarationAmendmentsConfig
 import forms.Lrn
 import mock.FeatureFlagMocks
 import models.CancellationStatus.CancellationResult
+import models.declaration.DeclarationStatus.DRAFT
 import models.declaration.notifications.Notification
+import models.declaration.submissions.EnhancedStatus.GOODS_ARRIVED
 import models.declaration.submissions.RequestType.SubmissionRequest
 import models.declaration.submissions.StatusGroup.ActionRequiredStatuses
 import models.declaration.submissions.{Action, Submission, SubmissionStatus}
-import models.{CancelDeclaration, CancellationRequestSent, PageOfSubmissions, Paginated}
-import models.declaration.submissions.EnhancedStatus.GOODS_ARRIVED
+import models._
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito
-import org.mockito.Mockito.{verify, verifyNoInteractions, when}
+import org.mockito.Mockito.{verify, verifyNoInteractions}
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.time.{Millis, Seconds, Span}
 import play.api.http.Status
@@ -44,17 +45,17 @@ import services.audit.AuditService
 import services.cache.ExportsDeclarationBuilder
 import views.dashboard.DashboardHelper.{Groups, Page}
 
-import java.time.{ZoneOffset, ZonedDateTime}
+import java.time.{Instant, ZoneOffset, ZonedDateTime}
 import java.util.UUID
 
 class CustomsDeclareExportsConnectorISpec extends ConnectorISpec with ExportsDeclarationBuilder with ScalaFutures with FeatureFlagMocks {
 
   private val id = "id"
   private val eori = "eori"
-  private val existingDeclaration = aDeclaration(withId(id), withParentDeclarationId("123456789"))
+  private val declaration = aDeclaration(withId(id), withParentDeclarationId("123456789"))
 
   private val action = Action(id = UUID.randomUUID().toString, requestType = SubmissionRequest, notifications = None, decId = Some(id), versionNo = 1)
-  private val submission = Submission(id, eori, "lrn", Some("mrn"), None, None, None, Seq(action), latestDecId = Some(id))
+  private val submission = Submission(id, eori, "lrn", Some("mrn"), None, None, None, List(action), latestDecId = Some(id))
   private val notification = Notification("action-id", "mrn", ZonedDateTime.now(ZoneOffset.UTC), SubmissionStatus.UNKNOWN, Seq.empty)
 
   private val mockAuditService = mock[AuditService]
@@ -95,14 +96,14 @@ class CustomsDeclareExportsConnectorISpec extends ConnectorISpec with ExportsDec
           .willReturn(
             aResponse()
               .withStatus(Status.ACCEPTED)
-              .withBody(json(existingDeclaration))
+              .withBody(json(declaration))
           )
       )
 
       val newDeclaration = aDeclaration(withConsignmentReferences("DUCR", "LRN")).copy(id = "")
       val response = await(connector.createDeclaration(newDeclaration, eori))
 
-      response mustBe existingDeclaration
+      response mustBe declaration
       WireMock.verify(
         postRequestedFor(urlEqualTo("/declarations"))
           .withRequestBody(containing(json(newDeclaration)))
@@ -115,14 +116,14 @@ class CustomsDeclareExportsConnectorISpec extends ConnectorISpec with ExportsDec
           .willReturn(
             aResponse()
               .withStatus(Status.ACCEPTED)
-              .withBody(json(existingDeclaration))
+              .withBody(json(declaration))
           )
       )
 
       val newDeclaration = aDeclaration(withConsignmentReferences("DUCR", "LRN")).copy(id = "")
       val response = await(connector.createDeclaration(newDeclaration, eori))
 
-      response mustBe existingDeclaration
+      response mustBe declaration
 
       verify(mockAuditService).auditDraftDecCreated(any(), any())(any())
     }
@@ -133,14 +134,14 @@ class CustomsDeclareExportsConnectorISpec extends ConnectorISpec with ExportsDec
           .willReturn(
             aResponse()
               .withStatus(Status.ACCEPTED)
-              .withBody(json(existingDeclaration))
+              .withBody(json(declaration))
           )
       )
 
       val newDeclaration = aDeclaration().copy(id = "")
       val response = await(connector.createDeclaration(newDeclaration, eori))
 
-      response mustBe existingDeclaration
+      response mustBe declaration
 
       verifyNoInteractions(mockAuditService)
     }
@@ -153,16 +154,16 @@ class CustomsDeclareExportsConnectorISpec extends ConnectorISpec with ExportsDec
           .willReturn(
             aResponse()
               .withStatus(Status.ACCEPTED)
-              .withBody(json(existingDeclaration))
+              .withBody(json(declaration))
           )
       )
 
-      val response = await(connector.updateDeclaration(existingDeclaration, eori))
+      val response = await(connector.updateDeclaration(declaration, eori))
 
-      response mustBe existingDeclaration
+      response mustBe declaration
       WireMock.verify(
         putRequestedFor(urlEqualTo(s"/declarations/id"))
-          .withRequestBody(containing(json(existingDeclaration)))
+          .withRequestBody(containing(json(declaration)))
       )
     }
   }
@@ -217,9 +218,7 @@ class CustomsDeclareExportsConnectorISpec extends ConnectorISpec with ExportsDec
           )
       )
 
-      val response = await(connector.deleteDraftDeclaration(id))
-
-      response mustBe ((): Unit)
+      await(connector.deleteDraftDeclaration(id)) mustBe ((): Unit)
       WireMock.verify(deleteRequestedFor(urlEqualTo(s"/declarations/id")))
     }
   }
@@ -246,7 +245,7 @@ class CustomsDeclareExportsConnectorISpec extends ConnectorISpec with ExportsDec
   }
 
   "FindDraftByParent method" should {
-    val parentId = existingDeclaration.declarationMeta.parentDeclarationId.getOrElse("")
+    val parentId = declaration.declarationMeta.parentDeclarationId.getOrElse("")
 
     "return Ok" in {
       stubForExports(
@@ -254,64 +253,30 @@ class CustomsDeclareExportsConnectorISpec extends ConnectorISpec with ExportsDec
           .willReturn(
             aResponse()
               .withStatus(Status.OK)
-              .withBody(json(existingDeclaration))
+              .withBody(json(declaration))
           )
       )
 
       val response = await(connector.findDraftByParent(parentId))
 
-      response mustBe Some(existingDeclaration)
+      response mustBe Some(declaration)
       WireMock.verify(getRequestedFor(urlEqualTo(s"/draft-declarations-by-parent/${parentId}")))
     }
   }
 
-  "Find Saved Draft Declarations when Amendment Flag is enabled" should {
-    val pagination = models.Page(1, 10)
+  "Fetch Draft Declarations" should {
+    "return a page of draft declarations" in {
+      val page = models.Page(1, 10)
+      val draftDeclarationData = DraftDeclarationData("id", Some("ducrId"), DRAFT, Instant.now)
+      val pageOfDraftDeclarationData = Paginated(List(draftDeclarationData), page, 1)
 
-    "return Ok" in {
-      when(mockDeclarationAmendmentsConfig.isEnabled).thenReturn(true)
-      stubForExports(
-        get("/declarations?status=DRAFT&status=AMENDMENT_DRAFT&page-index=1&page-size=10&sort-by=declarationMeta.updatedDateTime&sort-direction=des")
-          .willReturn(
-            aResponse()
-              .withStatus(Status.OK)
-              .withBody(json(Paginated(Seq(existingDeclaration), pagination, 1)))
-          )
-      )
+      val query = "page-index=1&page-size=10&sort-by=declarationMeta.updatedDateTime&sort-direction=desc"
 
-      val response = await(connector.findSavedDeclarations(pagination))
+      val response = aResponse().withStatus(Status.OK).withBody(json(pageOfDraftDeclarationData))
+      stubForExports(get(s"/draft-declarations?$query").willReturn(response))
 
-      response mustBe Paginated(Seq(existingDeclaration), pagination, 1)
-      WireMock.verify(
-        getRequestedFor(
-          urlEqualTo(
-            "/declarations?status=DRAFT&status=AMENDMENT_DRAFT&page-index=1&page-size=10&sort-by=declarationMeta.updatedDateTime&sort-direction=des"
-          )
-        )
-      )
-    }
-  }
-
-  "Find Saved Draft Declarations when Amendment Flag is disabled" should {
-    val pagination = models.Page(1, 10)
-
-    "return Ok" in {
-      when(mockDeclarationAmendmentsConfig.isEnabled).thenReturn(false)
-      stubForExports(
-        get("/declarations?status=DRAFT&page-index=1&page-size=10&sort-by=declarationMeta.updatedDateTime&sort-direction=des")
-          .willReturn(
-            aResponse()
-              .withStatus(Status.OK)
-              .withBody(json(Paginated(Seq(existingDeclaration), pagination, 1)))
-          )
-      )
-
-      val response = await(connector.findSavedDeclarations(pagination))
-
-      response mustBe Paginated(Seq(existingDeclaration), pagination, 1)
-      WireMock.verify(
-        getRequestedFor(urlEqualTo("/declarations?status=DRAFT&page-index=1&page-size=10&sort-by=declarationMeta.updatedDateTime&sort-direction=des"))
-      )
+      await(connector.fetchDraftDeclarations(page)) mustBe pageOfDraftDeclarationData
+      WireMock.verify(getRequestedFor(urlEqualTo(s"/draft-declarations?$query")))
     }
   }
 
@@ -330,7 +295,7 @@ class CustomsDeclareExportsConnectorISpec extends ConnectorISpec with ExportsDec
           )
       )
 
-      val response = await(connector.findOrCreateDraftForAmendment(parentId, enhancedStatus, "eori", existingDeclaration))
+      val response = await(connector.findOrCreateDraftForAmendment(parentId, enhancedStatus, "eori", declaration))
 
       response mustBe draftId
       WireMock.verify(getRequestedFor(urlEqualTo(s"/amendment-draft/$parentId/${enhancedStatus.toString}")))
@@ -370,7 +335,7 @@ class CustomsDeclareExportsConnectorISpec extends ConnectorISpec with ExportsDec
           )
       )
 
-      val response = await(connector.findOrCreateDraftForRejection(parentId, "eori", existingDeclaration))
+      val response = await(connector.findOrCreateDraftForRejection(parentId, "eori", declaration))
 
       response mustBe draftId
       WireMock.verify(getRequestedFor(urlEqualTo(s"/rejected-submission-draft/$parentId")))
@@ -402,13 +367,13 @@ class CustomsDeclareExportsConnectorISpec extends ConnectorISpec with ExportsDec
           .willReturn(
             aResponse()
               .withStatus(Status.OK)
-              .withBody(json(existingDeclaration))
+              .withBody(json(declaration))
           )
       )
 
       val response = await(connector.findDeclaration(id))
 
-      response mustBe Some(existingDeclaration)
+      response mustBe Some(declaration)
       WireMock.verify(getRequestedFor(urlEqualTo(s"/declarations/$id")))
     }
   }
@@ -457,13 +422,13 @@ class CustomsDeclareExportsConnectorISpec extends ConnectorISpec with ExportsDec
           .willReturn(
             aResponse()
               .withStatus(Status.OK)
-              .withBody(json(Seq(notification)))
+              .withBody(json(List(notification)))
           )
       )
 
       val response = await(connector.findNotifications(id))
 
-      response mustBe Seq(notification)
+      response mustBe List(notification)
       WireMock.verify(getRequestedFor(urlEqualTo(s"/submission/notifications/$id")))
     }
   }

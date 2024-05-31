@@ -18,7 +18,6 @@ package connectors
 
 import com.codahale.metrics.Timer
 import config.AppConfig
-import config.featureFlags.DeclarationAmendmentsConfig
 import forms.Lrn
 import models.CancellationStatus.CancellationResult
 import models._
@@ -41,13 +40,8 @@ import scala.concurrent.{ExecutionContext, Future}
 import scala.util.{Failure, Success}
 
 @Singleton
-class CustomsDeclareExportsConnector @Inject() (
-  appConfig: AppConfig,
-  httpClient: HttpClient,
-  metrics: Metrics,
-  amendmentFlag: DeclarationAmendmentsConfig,
-  auditService: AuditService
-) extends AuditCreateDraftDec with Logging {
+class CustomsDeclareExportsConnector @Inject() (appConfig: AppConfig, httpClient: HttpClient, metrics: Metrics, auditService: AuditService)
+    extends AuditCreateDraftDec with Logging {
 
   private def getUrl(path: String): String =
     s"${appConfig.customsDeclareExportsBaseUrl}$path"
@@ -111,13 +105,11 @@ class CustomsDeclareExportsConnector @Inject() (
         }
     }
 
-  def findSavedDeclarations(page: models.Page)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Paginated[ExportsDeclaration]] = {
+  def fetchDraftDeclarations(page: models.Page)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Paginated[DraftDeclarationData]] = {
     val pagination = models.Page.bindable.unbind("page", page)
-    val sort = DeclarationSort.bindable.unbind("sort", DeclarationSort(SortBy.UPDATED, SortDirection.DES))
+    val sort = DeclarationSort.bindable.unbind("sort", DeclarationSort(SortBy.UPDATED, SortDirection.DESC))
 
-    val statusParameters = if (amendmentFlag.isEnabled) "?status=DRAFT&status=AMENDMENT_DRAFT&" else "?status=DRAFT&"
-
-    httpClient.GET[Paginated[ExportsDeclaration]](getUrl(s"${appConfig.declarationsPath}$statusParameters$pagination&$sort"))
+    httpClient.GET[Paginated[DraftDeclarationData]](getUrl(s"${appConfig.draftDeclarationsPath}?$pagination&$sort"))
   }
 
   def findOrCreateDraftForAmendment(parentId: String, enhancedStatus: EnhancedStatus, eori: String, draftDec: ExportsDeclaration)(

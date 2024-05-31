@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,20 +12,18 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@import routes.DraftDeclarationController
-@import views.html.components.gds._
+package models
 
-@this(
-    link: link,
-    paragraph: paragraph
-)
+import models.declaration.DeclarationStatus.DeclarationStatus
+import play.api.libs.json.{Json, OFormat}
 
-@(declarationId: String)(implicit messages: Messages)
+import java.time.Instant
 
-@link(
-    id = Some("view_declaration_summary"),
-    text = messages("declaration.draft.viewSummary"),
-    call = DraftDeclarationController.displayDeclaration(declarationId)
-)
+case class DraftDeclarationData(id: String, ducr: Option[String], status: DeclarationStatus, updatedDateTime: Instant)
+
+object DraftDeclarationData {
+
+  implicit val format: OFormat[DraftDeclarationData] = Json.format[DraftDeclarationData]
+}

@@ -17,7 +17,7 @@
 package views.declaration.summary
 
 import base.ExportsTestData.{eori, newUser}
-import controllers.routes.{DeclarationDetailsController, SavedDeclarationsController}
+import controllers.routes.{DeclarationDetailsController, DraftDeclarationController}
 import models.ExportsDeclaration
 import models.declaration.DeclarationStatus.AMENDMENT_DRAFT
 import models.requests.JourneyRequest
@@ -58,7 +58,7 @@ class AmendmentSummaryViewSpec extends SummaryViewSpec {
         val backButton = viewWithHeaders.getElementById("back-link")
 
         backButton.text() mustBe messages("site.back")
-        backButton must haveHref(SavedDeclarationsController.displayDeclarations().url)
+        backButton must haveHref(DraftDeclarationController.displayDeclarations().url)
       }
 
       "referer is otherwise i.e. /information page or does not exist" in {
