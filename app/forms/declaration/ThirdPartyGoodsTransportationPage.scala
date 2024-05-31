@@ -17,10 +17,13 @@
 package forms.declaration
 
 import forms.DeclarationPage
-import models.DeclarationType.DeclarationType
+import models.DeclarationType.{CLEARANCE, DeclarationType}
 import models.viewmodels.TariffContentKey
 
 object ThirdPartyGoodsTransportationPage extends DeclarationPage {
   override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
-    Seq(TariffContentKey(s"tariff.declaration.thirdPartyGoodsTransportation.common"))
+    decType match {
+      case CLEARANCE => Seq(TariffContentKey(s"tariff.declaration.thirdPartyGoodsTransportation.clearance"))
+      case _         => Seq(TariffContentKey(s"tariff.declaration.thirdPartyGoodsTransportation.common"))
+    }
 }
