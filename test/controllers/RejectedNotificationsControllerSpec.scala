@@ -49,8 +49,7 @@ class RejectedNotificationsControllerSpec extends ControllerWithoutFormSpec with
     mcc,
     mockNewErrorReportConfig,
     mockErrorsReportedController,
-    mockErrorPage,
-    mockTdrFeatureFlags
+    mockErrorPage
   )(global)
 
   private val declarationId = "DeclarationId"
@@ -62,7 +61,6 @@ class RejectedNotificationsControllerSpec extends ControllerWithoutFormSpec with
 
     when(mockErrorPage.apply(any(), any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
     when(mockNewErrorReportConfig.isNewErrorReportEnabled).thenReturn(false)
-    when(mockTdrFeatureFlags.showErrorPageVersionForTdr).thenReturn(false)
 
     val fakeAction = new PlayAction[AnyContent] {
       override def parser: BodyParser[AnyContent] = ???
@@ -104,14 +102,6 @@ class RejectedNotificationsControllerSpec extends ControllerWithoutFormSpec with
 
         status(result) mustBe OK
         verify(mockErrorsReportedController).displayPage(any())
-      }
-
-      "the showErrorPageVersionForTdr is enabled" in {
-        when(mockTdrFeatureFlags.showErrorPageVersionForTdr).thenReturn(true)
-
-        fetchDeclaration(declarationId)
-        findNotifications(declarationId)
-
       }
     }
 
@@ -157,15 +147,6 @@ class RejectedNotificationsControllerSpec extends ControllerWithoutFormSpec with
 
         status(result) mustBe OK
         verify(mockErrorsReportedController).displayPageOnUnacceptedAmendment(any(), any())
-      }
-
-      "the showErrorPageVersionForTdr is enabled" in {
-        when(mockTdrFeatureFlags.showErrorPageVersionForTdr).thenReturn(true)
-
-        fetchAction(failedAction)
-        fetchDeclaration(failedAction.decId.value)
-        fetchLatestNotification(failedNotification)
-
       }
     }
 

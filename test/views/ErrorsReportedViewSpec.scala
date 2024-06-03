@@ -89,8 +89,8 @@ class ErrorsReportedViewSpec extends UnitViewSpec with ExportsTestHelper with In
       amendmentView.getElementsByClass("govuk-warning-text").first() must containText(messages("rejected.amendment.warning"))
     }
 
-    "have correct section header" in {
-      defaultView.getElementById("section-header").text mustBe messages("mrn.heading", MRN.value)
+    "have the expected MRN hint" in {
+      defaultView.getElementsByClass("submission-mrn").text mustBe messages("mrn.heading", MRN.value)
     }
 
     "have correct back link" in {
