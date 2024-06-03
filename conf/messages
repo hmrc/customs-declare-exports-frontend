@@ -2,7 +2,7 @@ date.day = Day
 date.month = Month
 date.year = Year
 
-service.name = Make an export declaration online
+service.name = TDR - Make an export declaration online
 
 feedback = This is a new service - your {0} will help us to improve it.
 feedback.link = feedback

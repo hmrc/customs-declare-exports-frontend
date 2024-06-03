@@ -1,7 +1,7 @@
-# customs-declare-exports-frontend
+# tdr-customs-declare-exports-frontend
 
 ## Summary
-This public-facing microservice is part of Customs Exports Declaration Service (CEDS). It is designed to work in tandem with [customs-declare-exports](https://github.com/hmrc/customs-declare-exports) service.
+This public-facing microservice is part of Customs Exports Declaration Service (CEDS). It is designed to work in tandem with [tdr-customs-declare-exports](https://github.com/hmrc/customs-declare-exports) service.
 
 It provides functionality to submit and manage exports declarations.
 
