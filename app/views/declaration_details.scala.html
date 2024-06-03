@@ -17,6 +17,7 @@
 @import config.ExternalServicesConfig
 @import config.featureFlags.{DeclarationAmendmentsConfig, SecureMessagingConfig}
 @import controllers.declaration.amendments.AmendDeclarationController
+@import controllers.routes.{CopyDeclarationController, EADController, FileUploadController, SubmissionsController}
 @import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.AdditionalDeclarationType
 @import models.declaration.notifications.Notification
 @import models.declaration.submissions.Submission
@@ -64,7 +65,7 @@
             @externalLink(
                 id = Some("uploading-documents-link"),
                 text = messages("declaration.details.uploading.documents"),
-                url = controllers.routes.FileUploadController.startFileUpload(mrn).url
+                url = FileUploadController.startFileUpload(mrn).url
             )
         </p>
     }
@@ -76,7 +77,7 @@
             @link(
                 id = Some("generate-ead"),
                 text = messages("declaration.details.generateEAD"),
-                call = controllers.routes.EADController.generateDocument(mrn)
+                call = EADController.generateDocument(mrn)
             )
         </p>
     }
@@ -88,23 +89,21 @@
         @link(
             id = Some("view-declaration"),
             text = messages("declaration.details.view.declaration"),
-            call = controllers.routes.SubmissionsController.viewDeclaration(submission.latestDecId.getOrElse(submission.uuid))
+            call = SubmissionsController.viewDeclaration(submission.latestDecId.getOrElse(submission.uuid))
         )
     </div>
   }
 }
 
 @copyDeclarationLink = {
-  @submission.latestDecId.map { _ =>
-    @if(!isDeclarationRejected(submission)){
-      <p>
-        @link(
-          id = Some("copy-declaration"),
-          text = messages("declaration.details.copy.declaration"),
-          call = callForCopyDeclaration(submission)
-        )
-      </p>
-    }
+  @if(!isDeclarationRejected(submission)){
+    <p>
+      @link(
+        id = Some("copy-declaration"),
+        text = messages("declaration.details.copy.declaration"),
+        call = CopyDeclarationController.redirectToReceiveJourneyRequest(submission.uuid)
+      )
+    </p>
   }
 }
 
