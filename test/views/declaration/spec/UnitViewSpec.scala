@@ -51,8 +51,10 @@ trait UnitViewSpec
   def checkMessages(keys: String*): Unit =
     "check messages present including Welsh" in {
       keys.map { key =>
+        val messageInWelsh = messagesCy.messages(key)
         messages must haveTranslationFor(key)
-        messagesCy must haveTranslationFor(key)
+        messageInWelsh mustNot be(messages(key)) // If the same, this indicates a missing key in the Welsh file
+        assert(!messageInWelsh.isBlank)
       }
     }
 

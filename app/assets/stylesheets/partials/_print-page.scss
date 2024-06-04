@@ -1,11 +1,11 @@
 .ceds-print-link {
-  background: transparent no-repeat 0 50%;
+  background: transparent no-repeat 10px 50%;
   background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAASAgMAAAAvVbb5AAAACVBMVEX///////8KDAwmYEUdAAAAAXRSTlMAQObYZgAAADBJREFUCFtjYOBa1cDAoBkKJFYCCSYwEYpCrAICZCI0FEhkrURmQRRnrYRpW7WqAQAlGR86Ip1rwwAAAABJRU5ErkJggg==");
-  padding: 0.5em 0 0.5em 28px;
+  padding: 10px 10px 10px 36px;
   cursor: pointer;
   color: #1d70b8;
-  display: none;
-  border: none;
+  border: 1px solid #b1b4b6;
+  text-decoration: none;
 }
 
 .js-enabled .ceds-print-link {
