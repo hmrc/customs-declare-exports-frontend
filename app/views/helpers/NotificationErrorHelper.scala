@@ -43,9 +43,12 @@ class NotificationErrorHelper @Inject() (codeListConnector: CodeListConnector, p
     val groupedErrorRows = groupRowsByErrorCode(errorRows)
     val redactedErrorRows = removeRepeatFieldNameAndDescriptions(groupedErrorRows).flatten
 
-    SummaryList(redactedErrorRows.zipWithIndex.map { case (errorRow, index) =>
-      createSummaryListRow(errorRow, index)
-    })
+    SummaryList(
+      redactedErrorRows.zipWithIndex.map { case (errorRow, index) =>
+        createSummaryListRow(errorRow, index)
+      },
+      classes = "govuk-!-margin-bottom-4"
+    )
   }
 
   def formattedErrorDescription(notificationError: NotificationError)(implicit messages: Messages): List[Html] = {

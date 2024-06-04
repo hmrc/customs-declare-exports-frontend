@@ -67,7 +67,7 @@ class RejectedNotificationErrorsViewSpec extends UnitViewSpec with ExportsTestHe
     }
 
     "have correct title" in {
-      defaultView.getElementById("title").text mustBe messages("rejected.notification.v1.title")
+      defaultView.getElementById("title").text mustBe messages("rejected.notification.title")
       amendmentView.getElementById("title").text mustBe messages("rejected.amendment.title")
     }
 
@@ -95,38 +95,62 @@ class RejectedNotificationErrorsViewSpec extends UnitViewSpec with ExportsTestHe
     }
 
     "have the expected headings" in {
-      val headingm = defaultView.getElementsByClass("govuk-heading-m").get(0).text()
-      headingm mustBe messages("rejected.notification.table.title")
+      defaultView.getElementsByClass("govuk-heading-m").get(0).text mustBe messages("rejected.notification.table.title")
 
       val headings = defaultView.getElementsByClass("govuk-heading-s")
-      headings.get(0).text() mustBe messages("rejected.notification.banner.title")
-      headings.get(1).text() mustBe messages("rejected.notification.guidance.section.1.header")
+      headings.size mustBe 4
+
+      headings.get(0).text mustBe messages("rejected.notification.banner.title")
+      headings.get(1).text mustBe messages("rejected.notification.guidance.section.1.header")
+      headings.get(2).text mustBe messages("rejected.notification.guidance.section.2.header")
+      headings.get(3).text mustBe messages("rejected.notification.guidance.section.3.header")
     }
 
     "have the expected body content" in {
       val body = defaultView.getElementsByClass("govuk-body")
-      body.get(0).text() mustBe messages("rejected.notification.check.answers.paragraph")
+      body.size mustBe 9
 
-      body.get(1).text() mustBe messages("rejected.notification.guidance.section.1.paragraph.1")
-      body.get(2).text() mustBe messages(
-        "rejected.notification.guidance.section.2.paragraph.1",
-        messages("rejected.notification.guidance.section.2.paragraph.1.link")
+      // Section 1
+      body.get(0).text mustBe messages(
+        "rejected.notification.guidance.section.1.paragraph.1",
+        messages("rejected.notification.guidance.section.1.paragraph.1.link")
       )
+      val draftDeclarationLink = body.get(0).getElementsByClass("govuk-link").get(0)
+      draftDeclarationLink.getElementsByAttributeValue("href", DraftDeclarationController.displayDeclarations().url)
 
-      body.get(3).text() mustBe messages("rejected.notification.guidance.section.3.paragraph.1")
-      body.get(4).text() mustBe messages("rejected.notification.guidance.section.3.paragraph.2")
-      body.get(5).text() mustBe messages("rejected.notification.guidance.section.3.paragraph.3")
+      // Section 2
+      body.get(1).text mustBe messages("rejected.notification.guidance.section.2.paragraph.1")
+      body.get(2).text mustBe messages("rejected.notification.guidance.section.2.paragraph.2")
+
+      val reportProblemsByUsingCDS = body.get(3).getElementsByClass("govuk-link").get(0)
+      reportProblemsByUsingCDS.text mustBe messages("rejected.notification.guidance.section.2.link.1")
+      reportProblemsByUsingCDS.getElementsByAttributeValue("href", minimalAppConfig.reportProblemsByUsingCDS)
+
+      // Section 3
+      val errorWorkaroundsForCDS = body.get(4).getElementsByClass("govuk-link").get(0)
+      errorWorkaroundsForCDS.text mustBe messages("rejected.notification.guidance.section.3.link.1")
+      errorWorkaroundsForCDS.getElementsByAttributeValue("href", minimalAppConfig.errorWorkaroundsForCDS)
+
+      val errorCodesForCDS = body.get(5).getElementsByClass("govuk-link").get(0)
+      errorCodesForCDS.text mustBe messages("rejected.notification.guidance.section.3.link.2")
+      errorCodesForCDS.getElementsByAttributeValue("href", minimalAppConfig.errorCodesForCDS)
+
+      body.get(6).text mustBe messages("rejected.notification.guidance.section.3.paragraph.1")
+      body.get(7).text mustBe messages("rejected.notification.guidance.section.3.paragraph.2")
+      body.get(8).text mustBe messages("rejected.notification.guidance.section.3.paragraph.3")
     }
 
     "have the expected body content in TDR" in {
       when(mockTdrFeatureFlags.showErrorPageVersionForTdr).thenReturn(true)
-      val tdrPage = view()
-      val body = tdrPage.getElementsByClass("govuk-body")
+
+      val body = view().getElementsByClass("govuk-body")
+
+      body.get(4).text mustBe messages("rejected.notification.tdr.guidance.section.3.paragraph.1")
 
       val email = messages("rejected.notification.tdr.guidance.section.3.paragraph.2.email")
-      body.get(4).text() mustBe messages("rejected.notification.tdr.guidance.section.3.paragraph.2", email)
-      val emailElement = body.get(4).getElementsByClass("govuk-link").get(0)
-      emailElement.getElementsByAttributeValue("href", s"mailto:$email")
+      body.get(5).text mustBe messages("rejected.notification.tdr.guidance.section.3.paragraph.2", email)
+      val emailLink = body.get(5).getElementsByClass("govuk-link").get(0)
+      emailLink.getElementsByAttributeValue("href", s"mailto:$email")
     }
 
     "contain notifications" when {
@@ -156,10 +180,7 @@ class RejectedNotificationErrorsViewSpec extends UnitViewSpec with ExportsTestHe
       }
     }
 
-    "contain the 'check-your-answers' paragraph" in {
-      val checkYourAnswers = defaultView.getElementsByClass("govuk-body").get(0)
-      checkYourAnswers.text mustBe messages("rejected.notification.check.answers.paragraph")
-
+    "contain, on amendment errors, the 'check-your-answers' paragraph" in {
       val checkYourAmendment = amendmentView.getElementsByClass("govuk-body").get(0)
       checkYourAmendment.text mustBe messages("rejected.amendment.check.answers.paragraph")
     }
@@ -178,17 +199,6 @@ class RejectedNotificationErrorsViewSpec extends UnitViewSpec with ExportsTestHe
 
       val href = checkYourAnswers.getElementsByAttributeValue("href", SubmissionsController.amend(declaration.id, true).url)
       href.text mustBe messages("rejected.notification.check.answers.button")
-    }
-
-    "display all other expected content links" in {
-      when(mockTdrFeatureFlags.showErrorPageVersionForTdr).thenReturn(false)
-      val reason = NotificationError(defaultRejectionCode, Some(Pointer("declaration.consignmentReferences.lrn")))
-
-      val document = view(Seq(reason))
-
-      val links = document.getElementsByClass("govuk-link--no-visited-state")
-      links.size mustBe 3
-      links.get(2) must haveHref(DraftDeclarationController.displayDeclarations())
     }
 
     "contain change error link" when {

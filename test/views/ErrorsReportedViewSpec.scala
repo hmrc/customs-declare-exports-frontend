@@ -18,17 +18,17 @@ package views
 
 import base.{Injector, OverridableInjector}
 import config.featureFlags.TdrFeatureFlags
-import controllers.routes.{DeclarationDetailsController, SubmissionsController}
 import connectors.CodeListConnector
+import controllers.routes.{DeclarationDetailsController, DraftDeclarationController, SubmissionsController}
 import models.declaration.errors.ErrorInstance
 import org.jsoup.nodes.Document
+import org.mockito.Mockito.when
 import play.api.i18n.Messages
+import play.api.inject.bind
 import services.cache.ExportsTestHelper
 import tools.Stubs
 import views.declaration.spec.UnitViewSpec
 import views.html.errors_reported
-import org.mockito.Mockito.when
-import play.api.inject.bind
 
 class ErrorsReportedViewSpec extends UnitViewSpec with ExportsTestHelper with Injector with Stubs {
 
@@ -57,30 +57,35 @@ class ErrorsReportedViewSpec extends UnitViewSpec with ExportsTestHelper with In
 
     "have proper messages for labels" in {
       messages must haveTranslationFor("rejected.notification.mrn.missing")
-      messages must haveTranslationFor("rejected.notification.v2.title")
+      messages must haveTranslationFor("rejected.notification.title")
       messages must haveTranslationFor("rejected.amendment.title")
       messages must haveTranslationFor("rejected.notification.table.title")
       messages must haveTranslationFor("rejected.notification.warning")
       messages must haveTranslationFor("rejected.amendment.warning")
       messages must haveTranslationFor("rejected.notification.description.heading")
-      messages must haveTranslationFor("rejected.notification.check.answers.paragraph")
       messages must haveTranslationFor("rejected.notification.check.answers.button")
 
       messages must haveTranslationFor("rejected.notification.guidance.section.1.header")
       messages must haveTranslationFor("rejected.notification.guidance.section.1.paragraph.1")
+      messages must haveTranslationFor("rejected.notification.guidance.section.1.paragraph.1.link")
 
       messages must haveTranslationFor("rejected.notification.guidance.section.2.header")
       messages must haveTranslationFor("rejected.notification.guidance.section.2.paragraph.1")
-      messages must haveTranslationFor("rejected.notification.guidance.section.2.paragraph.1.link")
+      messages must haveTranslationFor("rejected.notification.guidance.section.2.paragraph.2")
+      messages must haveTranslationFor("rejected.notification.guidance.section.2.link.1")
+
       messages must haveTranslationFor("rejected.amendment.guidance.section.2.paragraph.1")
 
       messages must haveTranslationFor("rejected.notification.guidance.section.3.header")
+      messages must haveTranslationFor("rejected.notification.guidance.section.3.link.1")
+      messages must haveTranslationFor("rejected.notification.guidance.section.3.link.2")
       messages must haveTranslationFor("rejected.notification.guidance.section.3.paragraph.1")
       messages must haveTranslationFor("rejected.notification.guidance.section.3.paragraph.2")
+      messages must haveTranslationFor("rejected.notification.guidance.section.3.paragraph.3")
     }
 
     "have correct title" in {
-      defaultView.getElementById("title").text mustBe messages("rejected.notification.v2.title")
+      defaultView.getElementById("title").text mustBe messages("rejected.notification.title")
       amendmentView.getElementById("title").text mustBe messages("rejected.amendment.title")
     }
 
@@ -108,44 +113,63 @@ class ErrorsReportedViewSpec extends UnitViewSpec with ExportsTestHelper with In
     }
 
     "have the expected headings" in {
-      val headingm = defaultView.getElementsByClass("govuk-heading-m").get(0).text()
+      val headingm = defaultView.getElementsByClass("govuk-heading-m").get(0).text
       headingm mustBe messages("rejected.notification.table.title")
 
       val headings = defaultView.getElementsByClass("govuk-heading-s")
-      headings.get(1).text() mustBe messages("rejected.notification.guidance.section.1.header")
-      headings.get(2).text() mustBe messages("rejected.notification.guidance.section.2.header")
-      headings.get(3).text() mustBe messages("rejected.notification.guidance.section.3.header")
+      headings.get(1).text mustBe messages("rejected.notification.guidance.section.1.header")
+      headings.get(2).text mustBe messages("rejected.notification.guidance.section.2.header")
+      headings.get(3).text mustBe messages("rejected.notification.guidance.section.3.header")
     }
 
     "have the expected body content" in {
       val body = defaultView.getElementsByClass("govuk-body")
-      body.get(0).text() mustBe messages("rejected.notification.check.answers.paragraph")
-      body.get(1).text() mustBe messages("rejected.notification.guidance.section.1.paragraph.1")
-      body.get(2).text() mustBe messages(
-        "rejected.notification.guidance.section.2.paragraph.1",
-        messages("rejected.notification.guidance.section.2.paragraph.1.link")
-      )
+      body.size mustBe 9
 
-      body.get(3).text() mustBe messages("rejected.notification.guidance.section.3.paragraph.1")
-      body.get(4).text() mustBe messages("rejected.notification.guidance.section.3.paragraph.2")
-      body.get(5).text() mustBe messages("rejected.notification.guidance.section.3.paragraph.3")
+      // Section 1
+      body.get(0).text mustBe messages(
+        "rejected.notification.guidance.section.1.paragraph.1",
+        messages("rejected.notification.guidance.section.1.paragraph.1.link")
+      )
+      val draftDeclarationLink = body.get(0).getElementsByClass("govuk-link").get(0)
+      draftDeclarationLink.getElementsByAttributeValue("href", DraftDeclarationController.displayDeclarations().url)
+
+      // Section 2
+      body.get(1).text mustBe messages("rejected.notification.guidance.section.2.paragraph.1")
+      body.get(2).text mustBe messages("rejected.notification.guidance.section.2.paragraph.2")
+
+      val reportProblemsByUsingCDS = body.get(3).getElementsByClass("govuk-link").get(0)
+      reportProblemsByUsingCDS.text mustBe messages("rejected.notification.guidance.section.2.link.1")
+      reportProblemsByUsingCDS.getElementsByAttributeValue("href", minimalAppConfig.reportProblemsByUsingCDS)
+
+      // Section 3
+      val errorWorkaroundsForCDS = body.get(4).getElementsByClass("govuk-link").get(0)
+      errorWorkaroundsForCDS.text mustBe messages("rejected.notification.guidance.section.3.link.1")
+      errorWorkaroundsForCDS.getElementsByAttributeValue("href", minimalAppConfig.errorWorkaroundsForCDS)
+
+      val errorCodesForCDS = body.get(5).getElementsByClass("govuk-link").get(0)
+      errorCodesForCDS.text mustBe messages("rejected.notification.guidance.section.3.link.2")
+      errorCodesForCDS.getElementsByAttributeValue("href", minimalAppConfig.errorCodesForCDS)
+
+      body.get(6).text mustBe messages("rejected.notification.guidance.section.3.paragraph.1")
+      body.get(7).text mustBe messages("rejected.notification.guidance.section.3.paragraph.2")
+      body.get(8).text mustBe messages("rejected.notification.guidance.section.3.paragraph.3")
     }
 
     "have the expected body content in TDR" in {
       when(mockTdrFeatureFlags.showErrorPageVersionForTdr).thenReturn(true)
-      val tdrPage = view()
-      val body = tdrPage.getElementsByClass("govuk-body")
+
+      val body = view().getElementsByClass("govuk-body")
+
+      body.get(4).text mustBe messages("rejected.notification.tdr.guidance.section.3.paragraph.1")
 
       val email = messages("rejected.notification.tdr.guidance.section.3.paragraph.2.email")
-      body.get(4).text() mustBe messages("rejected.notification.tdr.guidance.section.3.paragraph.2", email)
-      val emailElement = body.get(4).getElementsByClass("govuk-link").get(0)
-      emailElement.getElementsByAttributeValue("href", s"mailto:$email")
+      body.get(5).text mustBe messages("rejected.notification.tdr.guidance.section.3.paragraph.2", email)
+      val emailLink = body.get(5).getElementsByClass("govuk-link").get(0)
+      emailLink.getElementsByAttributeValue("href", s"mailto:$email")
     }
 
-    "contain the 'check-your-answers' paragraph" in {
-      val checkYourAnswers = defaultView.getElementsByClass("govuk-body").get(0)
-      checkYourAnswers.text mustBe messages("rejected.notification.check.answers.paragraph")
-
+    "contain, on amendment errors, the 'check-your-answers' paragraph" in {
       val checkYourAmendment = amendmentView.getElementsByClass("govuk-body").get(0)
       checkYourAmendment.text mustBe messages("rejected.amendment.check.answers.paragraph")
     }

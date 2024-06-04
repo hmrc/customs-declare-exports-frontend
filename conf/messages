@@ -2263,32 +2263,36 @@ rejected.notification.v1.banner.text = We’ve created a new, improved page for 
 rejected.notification.v1.banner.linkText.0 = new version
 rejected.notification.v2.banner.text = This is a new, improved page for fixing declaration errors. You can switch to the {0} of this page.
 rejected.notification.v2.banner.linkText.0 = original version
-rejected.notification.v1.title = Fix declaration errors
-rejected.notification.v2.title = Fix declaration errors (enhanced version)
+rejected.notification.title = Fix declaration errors
 rejected.notification.table.title = Declaration errors
-rejected.notification.warning = You need to fix these errors and resubmit your declaration when you have finished.
+rejected.notification.warning = You need to fix these errors and resubmit your declaration. Use the ‘Change’ links under the ‘Action’ heading (below) to view and fix each error. When the errors are fixed, go to the ‘Check your answers’ page and resubmit your declaration.
 rejected.notification.description.format = Error code {0}.
-rejected.notification.check.answers.paragraph = When you have fixed each error using the change links, check your answers and then resubmit your declaration.
 rejected.notification.check.answers.paragraph.tdr = Use the change links on the check your answers page and fix each error. Then resubmit your declaration.
 rejected.notification.check.answers.button = Check your answers
 
-rejected.notification.guidance.section.1.header = About fixing errors
-rejected.notification.guidance.section.1.paragraph.1 = A single error in your declaration may cause related errors to appear in other parts of the declaration. If this happens you may see repeated error codes.
+rejected.notification.guidance.section.1.header = Any progress will be saved
+rejected.notification.guidance.section.1.paragraph.1 = If you start but don’t finish fixing errors, any progress will be saved. You can return to the {0} and continue fixing errors.
+rejected.notification.guidance.section.1.paragraph.1.link = saved declarations page
 
-rejected.notification.guidance.section.2.header = Save your progress
-rejected.notification.guidance.section.2.paragraph.1 = If you start but don’t finish fixing errors, your progress will be saved. You can return to the {0} and continue fixing errors.
-rejected.notification.guidance.section.2.paragraph.1.link = saved declarations page
+rejected.notification.guidance.section.2.header = Help with fixing errors
+rejected.notification.guidance.section.2.paragraph.1 = A single error in your declaration may cause related errors to appear in other parts of the declaration. If this happens you may see repeated error codes.
+rejected.notification.guidance.section.2.paragraph.2 = If errors persist, use the ‘Report a problem using the Customs Declaration Service’ to report an issue.
+rejected.notification.guidance.section.2.link.1 = Report a problem using the Customs Declaration Service
 
-rejected.notification.guidance.section.3.header = Get help fixing errors
-rejected.notification.guidance.section.3.paragraph.1 = If you need help with missing documents or errors related to specific tariff requirements, contact the help desk.
+rejected.notification.guidance.section.3.header = Other useful resources
+rejected.notification.guidance.section.3.link.1 = Known error workarounds for the Customs Declaration Service
+rejected.notification.guidance.section.3.link.2 = Guidance on Customs Declaration Service error codes
+rejected.notification.guidance.section.3.paragraph.1 = If you need help with missing documents or errors related to specific Tariff requirements, contact the helpline.
 rejected.notification.guidance.section.3.paragraph.2 = Telephone: 0300 322 9434
 rejected.notification.guidance.section.3.paragraph.3 = Monday to Friday, 9am to 5pm (except public holidays)
+
 rejected.notification.tdr.guidance.section.3.paragraph.1 = If you need help with missing documents or errors related to specific tariff requirements, you can contact HMRC by email.
 rejected.notification.tdr.guidance.section.3.paragraph.2 = Email: {0}
 rejected.notification.tdr.guidance.section.3.paragraph.2.email = tdrcommunications@hmrc.gov.uk
 
-rejected.notification.fieldTable.column.2.title=Your initial response
-rejected.notification.fieldTable.column.3.title=Your updated response
+rejected.notification.fieldTable.column.2.title = Your initial response
+rejected.notification.fieldTable.column.3.title = Your updated response
+rejected.notification.fieldTable.column.4.title = Action
 
 amendment.cancellation.heading = Cancel amendment request
 amendment.resubmission.heading = Resubmit amendment request

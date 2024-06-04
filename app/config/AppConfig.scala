@@ -53,7 +53,6 @@ class AppConfig @Inject() (
   val commodityCodeTariffPageUrl = loadConfig("urls.commodityCodeTariffPage")
   val suppUnitsCommodityCodeTariffPageUrl = loadConfig("urls.suppUnitsCommodityCodeTariffPage")
   val commodityCodesUrl = loadConfig("urls.commodityCodes")
-  val nactCodesUrl = loadConfig("urls.nactCodes")
   val relevantLicensesUrl = loadConfig("urls.relevantLicenses")
   val serviceAvailabilityUrl = loadConfig("urls.serviceAvailability")
   val customsMovementsFrontendUrl = loadConfig("urls.customsMovementsFrontend")
@@ -124,6 +123,10 @@ class AppConfig @Inject() (
   val additionalDeclarationType = loadConfig("urls.additionalDeclarationType")
   val standardDeclarationType = loadConfig("urls.standardDeclarationType")
   val declareGoodsExported = loadConfig("urls.declareGoodsExported")
+
+  val errorCodesForCDS = loadConfig("urls.errorCodesForCDS")
+  val errorWorkaroundsForCDS = loadConfig("urls.errorWorkaroundsForCDS")
+  val reportProblemsByUsingCDS = loadConfig("urls.reportProblemsByUsingCDS")
 
   val combinedPackaging = loadConfig("urls.combinedPackaging")
 
