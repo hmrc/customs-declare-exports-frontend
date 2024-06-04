@@ -28,14 +28,13 @@ import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import services.cache.{ExportsDeclarationBuilder, ExportsItemBuilder}
 import views.declaration.spec.UnitViewSpec
-import views.html.components.gds.{link, paragraphBody}
+import views.html.components.gds.link
 
 import java.time.ZonedDateTime
 
 class ErrorsReportedHelperSpec extends UnitViewSpec with Injector with MockitoSugar with ExportsDeclarationBuilder with ExportsItemBuilder {
 
   private val linkComp = instanceOf[link]
-  private val paragraphBody = instanceOf[paragraphBody]
 
   implicit val countryHelper: CountryHelper = mock[CountryHelper]
   when(countryHelper.getShortNameForCountryCode(meq("GB"))(any())).thenReturn(Some("United Kingdom"))
@@ -43,7 +42,7 @@ class ErrorsReportedHelperSpec extends UnitViewSpec with Injector with MockitoSu
 
   implicit val codeListConnector: CodeListConnector = mock[CodeListConnector]
 
-  val errorRepHelper = new ErrorsReportedHelper(linkComp, codeListConnector, paragraphBody, countryHelper)
+  val errorRepHelper = new ErrorsReportedHelper(linkComp, codeListConnector, countryHelper)
   val validationCode = "CDS12056"
 
   "ErrorsReportedHelper" should {

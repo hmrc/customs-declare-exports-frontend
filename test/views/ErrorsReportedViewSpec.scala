@@ -55,32 +55,29 @@ class ErrorsReportedViewSpec extends UnitViewSpec with ExportsTestHelper with In
 
   "Errors Reported page" should {
 
-    "have proper messages for labels" in {
-      messages must haveTranslationFor("rejected.notification.mrn.missing")
-      messages must haveTranslationFor("rejected.notification.v2.title")
-      messages must haveTranslationFor("rejected.amendment.title")
-      messages must haveTranslationFor("rejected.notification.table.title")
-      messages must haveTranslationFor("rejected.notification.warning")
-      messages must haveTranslationFor("rejected.amendment.warning")
-      messages must haveTranslationFor("rejected.notification.description.heading")
-      messages must haveTranslationFor("rejected.notification.check.answers.paragraph")
-      messages must haveTranslationFor("rejected.notification.check.answers.button")
-
-      messages must haveTranslationFor("rejected.notification.guidance.section.1.header")
-      messages must haveTranslationFor("rejected.notification.guidance.section.1.paragraph.1")
-
-      messages must haveTranslationFor("rejected.notification.guidance.section.2.header")
-      messages must haveTranslationFor("rejected.notification.guidance.section.2.paragraph.1")
-      messages must haveTranslationFor("rejected.notification.guidance.section.2.paragraph.1.link")
-      messages must haveTranslationFor("rejected.amendment.guidance.section.2.paragraph.1")
-
-      messages must haveTranslationFor("rejected.notification.guidance.section.3.header")
-      messages must haveTranslationFor("rejected.notification.guidance.section.3.paragraph.1")
-      messages must haveTranslationFor("rejected.notification.guidance.section.3.paragraph.2")
-    }
+    checkMessages(
+      "rejected.notification.mrn.missing",
+      "rejected.notification.title",
+      "rejected.amendment.title",
+      "rejected.notification.table.title",
+      "rejected.notification.warning",
+      "rejected.amendment.warning",
+      "rejected.notification.description.heading",
+      "rejected.notification.check.answers.paragraph",
+      "rejected.notification.check.answers.button",
+      "rejected.notification.guidance.section.1.header",
+      "rejected.notification.guidance.section.1.paragraph.1",
+      "rejected.notification.guidance.section.2.header",
+      "rejected.notification.guidance.section.2.paragraph.1",
+      "rejected.notification.guidance.section.2.paragraph.1.link",
+      "rejected.amendment.guidance.section.2.paragraph.1",
+      "rejected.notification.guidance.section.3.header",
+      "rejected.notification.guidance.section.3.paragraph.1",
+      "rejected.notification.guidance.section.3.paragraph.2"
+    )
 
     "have correct title" in {
-      defaultView.getElementById("title").text mustBe messages("rejected.notification.v2.title")
+      defaultView.getElementById("title").text mustBe messages("rejected.notification.title")
       amendmentView.getElementById("title").text mustBe messages("rejected.amendment.title")
     }
 
@@ -112,9 +109,9 @@ class ErrorsReportedViewSpec extends UnitViewSpec with ExportsTestHelper with In
       headingm mustBe messages("rejected.notification.table.title")
 
       val headings = defaultView.getElementsByClass("govuk-heading-s")
-      headings.get(1).text() mustBe messages("rejected.notification.guidance.section.1.header")
-      headings.get(2).text() mustBe messages("rejected.notification.guidance.section.2.header")
-      headings.get(3).text() mustBe messages("rejected.notification.guidance.section.3.header")
+      headings.get(0).text() mustBe messages("rejected.notification.guidance.section.1.header")
+      headings.get(1).text() mustBe messages("rejected.notification.guidance.section.2.header")
+      headings.get(2).text() mustBe messages("rejected.notification.guidance.section.3.header")
     }
 
     "have the expected body content" in {
