@@ -38,6 +38,7 @@ object TraderReference extends DeclarationPage {
     Form(
       mapping(
         traderReferenceKey -> text()
+          .transform(_.toUpperCase, (s: String) => s)
           .verifying("declaration.traderReference.error.empty", nonEmpty)
           .verifying("declaration.traderReference.error.invalid", isEmpty or isValidTraderReference)
       )(form2data)(TraderReference.unapply)
