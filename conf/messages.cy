@@ -1340,7 +1340,8 @@ declaration.inlandOrBorder.inset.bullet.3.text = Warysau tollau
 declaration.inlandOrBorder.inset.bullet.4.text = Warysau ecséis
 
 declaration.transportInformation.expressConsignment.title = A yw hwn yn llwyth brys?
-declaration.transportInformation.expressConsignment.paragraph = Dyma pryd mae Gwasanaeth Cludo Brys yn cael ei ddefnyddio i allforio’r nwyddau.
+declaration.transportInformation.expressConsignment.paragraph.1 = ‘Llwyth cyflym’ yw llwyth sy’n cael ei gludo gan gwmni sy’n dosbarthu parseli ar frys, o fewn amserlen benodol, fel arfer gyda gwasanaeth casglu a dosbarthu o ddrws i ddrws.
+declaration.transportInformation.expressConsignment.paragraph.2 = Mae’r mathau o gwmnïau’n cynnwys gweithredwyr cyflym, gweithredwyr parseli cyflym a blaenwyr cludo nwyddau.
 declaration.transportInformation.expressConsignment.empty = Dewiswch ‘Iawn’ os yw hwn yn llwyth brys
 
 declaration.transportInformation.transportPayment.paymentMethod = Faint y gwnaethoch ei dalu am y llwyth brys?

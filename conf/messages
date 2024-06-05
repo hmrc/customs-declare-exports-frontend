@@ -1341,7 +1341,8 @@ declaration.inlandOrBorder.inset.bullet.3.text = Customs warehouses
 declaration.inlandOrBorder.inset.bullet.4.text = Excise warehouses
 
 declaration.transportInformation.expressConsignment.title = Is this an express consignment?
-declaration.transportInformation.expressConsignment.paragraph = This is when an Express Courier Service is being used to export the goods.
+declaration.transportInformation.expressConsignment.paragraph.1 = An 'express consignment' is a consignment transported by a company that delivers parcels at speed, within a set timeframe, usually with a door to door collection and delivery service.
+declaration.transportInformation.expressConsignment.paragraph.2 = Company types include express operators, fast parcel operators and freight forwarders.
 declaration.transportInformation.expressConsignment.empty = Select yes if this is an express consignment
 
 declaration.transportInformation.transportPayment.paymentMethod = How did you pay for the express transport?
