@@ -53,7 +53,6 @@
     title: Title,
     backButton: Option[BackButton] = None,
     useCustomContentWidth: Boolean = false,
-    navigationBanner: Html = HtmlFormat.empty,
     headContentOnJavaScriptDisabled: Option[Html] = None,
     displaySignOut: Boolean = false,
     showDeclarationSummaryLink: Boolean = true,
@@ -107,8 +106,6 @@
     @if(showLanguageSwitch && appConfig.languages.contains("cy")) {
         @hmrcLanguageSelectHelper()
     }
-
-    @navigationBanner
 
     <div class="govuk-back-link-div">
         @backButton.map(back =>

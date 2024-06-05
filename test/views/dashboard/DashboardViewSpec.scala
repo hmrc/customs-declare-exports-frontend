@@ -18,8 +18,7 @@ package views.dashboard
 
 import base.OverridableInjector
 import config.PaginationConfig
-import config.featureFlags.{DeclarationAmendmentsConfig, SecureMessagingConfig}
-import controllers.routes
+import config.featureFlags.DeclarationAmendmentsConfig
 import controllers.routes.{ChoiceController, DashboardController, DeclarationDetailsController}
 import models.PageOfSubmissions
 import models.declaration.submissions.EnhancedStatus._
@@ -52,7 +51,6 @@ class DashboardViewSpec extends UnitViewSpec with ExportsTestHelper {
 
   private val injector = new OverridableInjector(
     bind[PaginationConfig].toInstance(mockPaginationConfig),
-    bind[SecureMessagingConfig].toInstance(mockSecureMessagingConfig),
     bind[DeclarationAmendmentsConfig].toInstance(mockDeclarationAmendmentsConfig)
   )
 
@@ -61,7 +59,6 @@ class DashboardViewSpec extends UnitViewSpec with ExportsTestHelper {
   override def beforeEach(): Unit = {
     super.beforeEach()
     when(mockPaginationConfig.itemsPerPage).thenReturn(itemsPerPage)
-    when(mockSecureMessagingConfig.isSecureMessagingEnabled).thenReturn(false)
     when(mockDeclarationAmendmentsConfig.isEnabled).thenReturn(false)
   }
 
@@ -117,29 +114,6 @@ class DashboardViewSpec extends UnitViewSpec with ExportsTestHelper {
         val messages = stubMessagesApi(langs = stubLangs(List(lang))).preferred(List(lang))
         val view = page(pageOfSubmissions)(request(statusGroup, 1), messages)
         view.getElementsByTag("html").get(0).attr("lang").take(2) mustBe lang.code
-      }
-    }
-
-    "contain the navigation banner" when {
-      "the Secure Messaging flag is set to 'true'" in {
-        when(mockSecureMessagingConfig.isSecureMessagingEnabled).thenReturn(true)
-        val view = createView()
-
-        val navigationBanner = view.getElementById("navigation-banner")
-        assert(Option(navigationBanner).isDefined && navigationBanner.childrenSize == 2)
-
-        val elements = navigationBanner.children
-
-        assert(elements.first.tagName.toLowerCase == "span")
-
-        assert(elements.last.tagName.toLowerCase == "a")
-        elements.last must haveHref(routes.SecureMessagingController.displayInbox)
-      }
-    }
-
-    "not contain the navigation banner" when {
-      "the Secure Messaging flag is set to 'false'" in {
-        Option(view.getElementById("navigation-banner")) mustBe None
       }
     }
 

@@ -16,7 +16,7 @@
 
 package views.helpers
 
-import config.featureFlags.{DeclarationAmendmentsConfig, SecureMessagingInboxConfig, SfusConfig}
+import config.featureFlags.{DeclarationAmendmentsConfig, SfusConfig}
 import controllers.declaration.amendments.routes.AmendmentDetailsController
 import controllers.declaration.routes.SubmissionController
 import controllers.routes.RejectedNotificationsController
@@ -54,7 +54,6 @@ class TimelineEvents @Inject() (
   linkButton: linkButton,
   paragraphBody: paragraphBody,
   sfusConfig: SfusConfig,
-  secureMessagingInboxConfig: SecureMessagingInboxConfig,
   declarationAmendmentsConfig: DeclarationAmendmentsConfig,
   uploadFilesPartialForTimeline: upload_files_partial_for_timeline
 ) {
@@ -215,7 +214,7 @@ class TimelineEvents @Inject() (
   private def viewQueriesContent(isPrimary: Boolean)(implicit messages: Messages): Html =
     linkButton(
       "declaration.details.view.queries.button",
-      Call("GET", secureMessagingInboxConfig.sfusInboxLink),
+      Call("GET", sfusConfig.sfusInboxLink),
       if (isPrimary) "govuk-button" else "govuk-button govuk-button--secondary"
     )
 }

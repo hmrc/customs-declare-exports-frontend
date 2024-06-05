@@ -16,10 +16,8 @@
 
 package services.audit
 
-import base.{ExportsTestData, Injector, TestHelper, UnitWithMocksSpec}
+import base.{Injector, TestHelper, UnitWithMocksSpec}
 import config.AppConfig
-import config.featureFlags.SecureMessagingConfig
-import models.AuthKey.enrolment
 import models.ExportsDeclaration
 import models.declaration.ExportDeclarationTestData.{allRecordsXmlMarshallingTest, cancellationDeclarationTest}
 import org.mockito.ArgumentCaptor
@@ -73,14 +71,6 @@ class AuditServiceSpec extends AuditTestSupport with BeforeAndAfterEach {
       verifyExtendedDataEvent(extendedCancellationEvent)
     }
 
-    "audit the successful retrieval of the message inbox partial" in {
-      mockExtendedDataEvent
-      auditService.auditMessageInboxPartialRetrieved(ExportsTestData.eori, secureMessagingConfig.notificationType, secureMessagingConfig.fetchInbox)(
-        hc
-      )
-      verifyExtendedDataEvent(eventForMessageInboxPartialRetrieved)
-    }
-
     "audit full payload success" in {
       mockExtendedDataEvent
       val res = auditService.auditAllPagesUserInput(SubmissionPayload, allRecordsXmlMarshallingTest)(hc).futureValue
@@ -128,7 +118,6 @@ trait AuditTestSupport extends UnitWithMocksSpec with ExportsDeclarationBuilder 
   )
 
   val appConfig = instanceOf[AppConfig]
-  val secureMessagingConfig = instanceOf[SecureMessagingConfig]
   val hc: HeaderCarrier = HeaderCarrier(authorization = Some(Authorization(TestHelper.createRandomString(255))))
 
   private val auditCarrierDetails: Map[String, String] = AuditExtensions.auditHeaderCarrier(hc).toAuditDetails()
@@ -177,19 +166,6 @@ trait AuditTestSupport extends UnitWithMocksSpec with ExportsDeclarationBuilder 
       .toJson(auditCarrierDetails)
       .as[JsObject]
       .deepMerge(cancelDeclarationAsJson)
-  )
-
-  val eventForMessageInboxPartialRetrieved = ExtendedDataEvent(
-    auditSource = appConfig.appName,
-    auditType = AuditTypes.NavigateToMessages.toString,
-    tags = AuditExtensions
-      .auditHeaderCarrier(hc)
-      .toAuditTags(transactionName = "callExportPartial", path = secureMessagingConfig.fetchInbox),
-    detail = Json.obj(
-      "enrolment" -> enrolment,
-      "eoriNumber" -> ExportsTestData.eori,
-      "tags" -> Json.obj("notificationType" -> secureMessagingConfig.notificationType)
-    )
   )
 
   val amendmentJson = new JsObject(

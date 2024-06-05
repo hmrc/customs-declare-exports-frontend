@@ -45,21 +45,13 @@ class TimelineEventsSpec extends UnitViewSpec with BeforeAndAfterEach with Injec
   override def beforeEach(): Unit = {
     super.beforeEach()
     when(mockSfusConfig.isSfusUploadEnabled).thenReturn(true)
-    when(mockSecureMessagingInboxConfig.sfusInboxLink).thenReturn("dummyInboxLink")
+    when(mockSfusConfig.sfusInboxLink).thenReturn("dummyInboxLink")
   }
 
   private def issued(days: Long): ZonedDateTime = ZonedDateTime.now.plusDays(days)
 
   private val timelineEvents =
-    new TimelineEvents(
-      new link,
-      new linkButton,
-      new paragraphBody,
-      mockSfusConfig,
-      mockSecureMessagingInboxConfig,
-      mockDeclarationAmendmentsConfig,
-      uploadFilesPartialForTimeline
-    )
+    new TimelineEvents(new link, new linkButton, new paragraphBody, mockSfusConfig, mockDeclarationAmendmentsConfig, uploadFilesPartialForTimeline)
 
   private def genTimelineEvents(
     notificationSummaries: Seq[NotificationSummary],

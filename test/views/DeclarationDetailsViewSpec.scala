@@ -22,7 +22,6 @@ import config.ExternalServicesConfig
 import config.featureFlags._
 import controllers.declaration.amendments.routes.AmendDeclarationController
 import controllers.declaration.routes.SubmissionController
-import controllers.routes
 import controllers.routes._
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
 import models.declaration.submissions.EnhancedStatus._
@@ -43,7 +42,6 @@ import views.html.declaration_details
 
 import java.time.ZonedDateTime
 import java.util.UUID
-import scala.jdk.CollectionConverters.IteratorHasAsScala
 
 class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with Injector {
 
@@ -127,33 +125,7 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
 
   "Declaration details page" should {
 
-    implicit val injector = new OverridableInjector(
-      bind[DeclarationAmendmentsConfig].toInstance(mockDeclarationAmendmentsConfig),
-      bind[SecureMessagingConfig].toInstance(mockSecureMessagingConfig)
-    )
-
-    "contain the navigation banner" when {
-      "the Secure Messaging feature flag is enabled" in {
-        when(mockSecureMessagingConfig.isSecureMessagingEnabled).thenReturn(true)
-        val view = createView(submission)
-
-        val banner = view.getElementById("navigation-banner")
-        assert(Option(banner).isDefined && banner.childrenSize == 2)
-
-        val elements = banner.children.iterator.asScala.toList
-        assert(elements.forall(_.tagName.toLowerCase == "a"))
-        elements.head must haveHref(toDashboard)
-        elements.last must haveHref(routes.SecureMessagingController.displayInbox)
-      }
-    }
-
-    "not contain the navigation banner" when {
-      "the Secure Messaging feature flag is disabled" in {
-        when(mockSecureMessagingConfig.isSecureMessagingEnabled).thenReturn(false)
-        val view = createView(submissionWithStatus())
-        Option(view.getElementById("amend-declaration")) mustBe None
-      }
-    }
+    implicit val injector = new OverridableInjector(bind[DeclarationAmendmentsConfig].toInstance(mockDeclarationAmendmentsConfig))
 
     "contain the 'Amend declaration' link" when {
       "the 'declarationAmendments' feature flag is enabled and" when {
@@ -323,19 +295,13 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
     }
 
     val dummyInboxLink = "dummyInboxLink"
-
-    when(mockSecureMessagingInboxConfig.sfusInboxLink).thenReturn(dummyInboxLink)
-
-    val dummySfusLink = "dummyInboxLink"
+    val dummyUploadLink = "dummyUploadLink"
 
     when(mockSfusConfig.isSfusUploadEnabled).thenReturn(true)
-    when(mockSfusConfig.sfusUploadLink).thenReturn(dummySfusLink)
+    when(mockSfusConfig.sfusInboxLink).thenReturn(dummyInboxLink)
+    when(mockSfusConfig.sfusUploadLink).thenReturn(dummyUploadLink)
 
-    implicit val injector =
-      new OverridableInjector(
-        bind[SecureMessagingInboxConfig].toInstance(mockSecureMessagingInboxConfig),
-        bind[SfusConfig].toInstance(mockSfusConfig)
-      )
+    implicit val injector: OverridableInjector = new OverridableInjector(bind[SfusConfig].toInstance(mockSfusConfig))
 
     val view = createView(submissionWithNotifications(notificationSummaries))
 

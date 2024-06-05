@@ -18,13 +18,6 @@ GET         /undeliverable-email                           controllers.Unverifie
 
 GET         /file-upload                                   controllers.FileUploadController.startFileUpload(mrn: String)
 
-# Secure Messaging
-GET         /messages                                      controllers.SecureMessagingController.displayInbox
-GET         /conversation/:client/:conversationId          controllers.SecureMessagingController.displayConversation(client, conversationId)
-+ nocsrf
-POST        /conversation/:client/:conversationId          controllers.SecureMessagingController.submitReply(client, conversationId)
-GET         /conversation/:client/:conversationId/result   controllers.SecureMessagingController.displayReplyResult(client, conversationId)
-
 # Notifications
 
 GET         /submissions/:id/rejected-notifications        controllers.RejectedNotificationsController.displayPage(id: String)
