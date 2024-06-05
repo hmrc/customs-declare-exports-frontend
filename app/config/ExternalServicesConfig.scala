@@ -26,7 +26,6 @@ class ExternalServicesConfig @Inject() (val configuration: Configuration) {
     configuration.getOptional[String](s"urls.$key").getOrElse(throw new IllegalStateException(s"Missing configuration key: urls.$key"))
 
   val commodityCodesUrl: String = loadUrl("commodityCodes")
-  val nactCodesUrl: String = loadUrl("nactCodes")
   val relevantLicensesUrl: String = loadUrl("relevantLicenses")
   val serviceAvailabilityUrl: String = loadUrl("serviceAvailability")
   val customsMovementsFrontendUrl: String = loadUrl("customsMovementsFrontend")
@@ -38,7 +37,6 @@ class ExternalServicesConfig @Inject() (val configuration: Configuration) {
   val eoriService: String = loadUrl("eoriService")
   val cdsRegister: String = loadUrl("cdsRegister")
   val problemsSigningIn: String = loadUrl("problemsSigningIn")
-  val organisationsUrl: String = loadUrl("organisationsLink")
   val importExports: String = loadUrl("importExports")
 
   val useYourBusinessAccount: String = loadUrl("useYourBusinessAccount")

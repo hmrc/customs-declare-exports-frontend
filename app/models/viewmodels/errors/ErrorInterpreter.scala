@@ -29,6 +29,7 @@ import uk.gov.hmrc.play.bootstrap.binders.RedirectUrl
 import views.html.components.gds.link
 
 trait ErrorInterpreter {
+
   def generateHtmlFor(error: ErrorInstance)(implicit messages: Messages, codeListConnector: CodeListConnector, link: link): Option[Html]
 
   def formattedErrorDescription(validationCode: String)(implicit messages: Messages, codeListConnector: CodeListConnector): List[Html] = {
@@ -66,7 +67,9 @@ trait ErrorInterpreter {
       |      <th scope="col" class="govuk-table__header" data-gtm-vis-has-fired-8267218_2200="1">${messages(
     "rejected.notification.fieldTable.column.3.title"
   )}</th>
-      |      <th scope="col" class="govuk-table__header" data-gtm-vis-has-fired-8267218_2200="1"></th>
+      |      <th scope="col" class="govuk-table__header" data-gtm-vis-has-fired-8267218_2200="1">${messages(
+    "rejected.notification.fieldTable.column.4.title"
+  )}</th>
       |    </tr>
       |  </thead>
       |  <tbody class="govuk-table__body">
@@ -90,7 +93,7 @@ trait ErrorInterpreter {
   val fieldsTableFooter = Html("""</tbody>
                             |</table>""".stripMargin)
 
-  val errorHeader = Html("""<div class="govuk-summary-card">""")
+  val errorHeader = Html("""<div class="govuk-summary-card govuk-!-margin-bottom-4">""")
   val contentHeader = Html("""<div class="govuk-summary-card__content"> <dl class="govuk-summary-list govuk-!-margin-bottom-3">""")
   val errorFooter = Html("</dl></div></div>")
 
@@ -100,10 +103,17 @@ trait ErrorInterpreter {
       Html(generateFieldTableRow(field.pointer, fieldName, field.originalValue, field.draftValue, field.changeLink))
     }
 
-  def errorTitle(error: ErrorInstance)(implicit messages: Messages) = Html(s"""<div class="govuk-summary-card__title-wrapper">
-       |<h3 class="govuk-summary-card__title">Error ${error.seqNbr} - ${messages(
-    s"dmsError.${error.errorCode}.title"
-  )} (${error.errorCode}) </h3></div>""".stripMargin)
+  private val errorKey = "rejected.notification.fieldTable.error"
+
+  def errorTitle(error: ErrorInstance)(implicit messages: Messages): Html = {
+    val title = s"${messages(errorKey)} ${error.seqNbr} - ${messages(s"dmsError.${error.errorCode}.title")} (${error.errorCode})"
+    Html(s"""<div class="govuk-summary-card__title-wrapper">
+       |  <h3 class="govuk-summary-card__title">
+       |    $title
+       |  </h3>
+       |</div>
+       |""".stripMargin)
+  }
 
   def errorChangeAction(call: Call, validationCode: String, pointer: Option[Pointer], decId: String, isAmendment: Boolean)(
     implicit messages: Messages,
@@ -118,6 +128,7 @@ trait ErrorInterpreter {
 }
 
 object DefaultInterpreter extends ErrorInterpreter {
+
   def generateHtmlFor(error: ErrorInstance)(implicit messages: Messages, codeListConnector: CodeListConnector, link: link): Option[Html] = {
 
     val specificErrorContent = error.errorCode match {
