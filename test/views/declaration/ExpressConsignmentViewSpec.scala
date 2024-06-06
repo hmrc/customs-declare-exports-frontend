@@ -58,6 +58,11 @@ class ExpressConsignmentViewSpec extends UnitViewSpec with CommonMessages with I
         view.getElementsByTag("h1").first() must containMessage(s"$msgKey.title")
       }
 
+      "display guidance text" in {
+        view.getElementsByClass("govuk-body").get(0) must containMessage("declaration.transportInformation.expressConsignment.paragraph.1")
+        view.getElementsByClass("govuk-body").get(1) must containMessage("declaration.transportInformation.expressConsignment.paragraph.2")
+      }
+
       "display two Yes/No radio buttons" in {
         val radios = view.getElementsByClass("govuk-radios").first.children
         radios.size mustBe 2
