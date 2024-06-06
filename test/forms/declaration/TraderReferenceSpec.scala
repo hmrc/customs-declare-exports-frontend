@@ -44,18 +44,18 @@ class TraderReferenceSpec extends UnitSpec {
 
         form.errors mustBe Seq(FormError(traderReferenceKey, "declaration.traderReference.error.invalid"))
       }
-
-      "string contains lowercase letters" in {
-        val form = TraderReference.form.bind(JsObject(Map(traderReferenceKey -> JsString("badstring"))), JsonBindMaxChars)
-
-        form.errors mustBe Seq(FormError(traderReferenceKey, "declaration.traderReference.error.invalid"))
-      }
     }
 
     "return form without errors" when {
 
       "submitted with valid input" in {
         val form = TraderReference.form.bind(JsObject(Map(traderReferenceKey -> JsString("INVOICE123/4"))), JsonBindMaxChars)
+
+        form.hasErrors mustBe false
+      }
+
+      "string contains lowercase letters" in {
+        val form = TraderReference.form.bind(JsObject(Map(traderReferenceKey -> JsString("invoice123/4"))), JsonBindMaxChars)
 
         form.hasErrors mustBe false
       }
