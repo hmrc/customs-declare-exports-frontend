@@ -135,7 +135,7 @@ class AuditService @Inject() (connector: AuditConnector, appConfig: AppConfig)(i
     Json.obj("enrolment" -> enrolment, "eoriNumber" -> eori, "tags" -> Json.obj("notificationType" -> notificationType))
 
   private def stripAllEmptyFields(json: JsValue): JsValue =
-    Try(
+    Try[JsValue](
       Json.parse(
         json.toString
           .replaceAll(""""[a-zA-Z]+":\[],""", "") // Remove any (field -> empty JsArray) pair
@@ -146,7 +146,7 @@ class AuditService @Inject() (connector: AuditConnector, appConfig: AppConfig)(i
     ) match {
       case util.Success(jsonWithoutEmptyField) => jsonWithoutEmptyField
       case util.Failure(msg) =>
-        logger.warn(s"Cannot strip empty fields from Json:\n\t$msg")
+        logger.info(s"Cannot strip empty fields from Json:\n\t$msg")
         json
     }
 
