@@ -24,4 +24,4 @@
     textHidden: Option[String] = None
 )
 
-@link(id = id, text = text, call = Call("GET", url), target = Some("_blank"), textHidden = textHidden)
+@link(text, Call("GET", url), target = Some("_blank"), id, classes, textHidden)

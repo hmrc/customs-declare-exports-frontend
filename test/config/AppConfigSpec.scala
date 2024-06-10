@@ -385,7 +385,6 @@ object AppConfigSpec {
       |urls.previousProcedureCodes = "https://www.gov.uk/government/publications/appendix-1-de-110-requested-and-previous-procedure-codes"
       |urls.tradeTariffVol3ForCds2 = "https://www.gov.uk/government/collections/uk-trade-tariff-volume-3-for-cds--2"
       |urls.commodityCodeHelp = "https://www.gov.uk/guidance/using-the-trade-tariff-tool-to-find-a-commodity-code"
-      |urls.nactCodes = "https://www.gov.uk/guidance/national-additional-codes-for-data-element-617-of-cds"
       |urls.commodityCodes="https://www.gov.uk/guidance/finding-commodity-codes-for-imports-or-exports"
       |urls.relevantLicenses="https://www.gov.uk/starting-to-export/licences"
       |urls.serviceAvailability="https://www.gov.uk/guidance/customs-declaration-service-service-availability-and-issues"
@@ -400,7 +399,6 @@ object AppConfigSpec {
       |urls.sfusInbox = "http://localhost:6793/cds-file-upload-service/exports-message-choice"
       |urls.eoriService = "https://www.gov.uk/eori"
       |urls.cdsRegister = "https://www.gov.uk/guidance/get-access-to-the-customs-declaration-service"
-      |urls.organisationsLink = "https://www.gov.uk/government/organisations/hm-revenue-customs"
       |urls.importExports = "https://www.gov.uk/topic/business-tax/import-export"
       |urls.exitSurveyUrl = "http://localhost:9514/feedback/customs-declare-exports-frontend"
       |urls.emailFrontendUrl = "http://localhost:9898/manage-email-cds/service/customs-declare-exports"
@@ -435,6 +433,10 @@ object AppConfigSpec {
       |urls.combinedPackaging="https://www.gov.uk/government/publications/uk-trade-tariff-cds-volume-3-export-declaration-completion-guide/group-6-goods-identification#combined-packaging"
       |urls.getGoodsMovementReference="https://www.gov.uk/guidance/get-a-goods-movement-reference"
       |urls.additionalInformationAppendix4="https://www.gov.uk/guidance/additional-information-ai-statement-codes-for-data-element-22-of-the-customs-declaration-service-cds"
+      |
+      |urls.errorCodesForCDS="https://www.gov.uk/government/publications/customs-declaration-service-error-codes"
+      |urls.errorWorkaroundsForCDS="https://www.gov.uk/government/publications/known-error-workarounds-for-the-customs-declaration-service-cds"
+      |urls.reportProblemsByUsingCDS="https://www.gov.uk/guidance/report-a-problem-using-the-customs-declaration-service"
       |
       |urls.procedureCodes.removalOfGoodsFromExciseWarehouse = "https://www.gov.uk/guidance/receive-goods-into-and-remove-goods-from-an-excise-warehouse-excise-notice-197"
       |urls.procedureCodes.onwardSupplyRelief = "https://www.gov.uk/guidance/check-if-you-can-claim-vat-relief-on-goods-imported-into-northern-ireland-for-onward-supply-to-the-eu#onward-supply-relief-osr"

@@ -26,27 +26,24 @@
 @import models.viewmodels.errors.DefaultInterpreter
 
 @this(
-        govukLayout: gdsMainTemplate,
-        govukButton: GovukButton,
-        govukSummaryList : GovukSummaryList,
-        govukTable: GovukTable,
-        govukWarningText: GovukWarningText,
-        sectionHeader: sectionHeader,
-        pageTitle: pageTitle,
-        heading: heading,
-        paragraphBody: paragraphBody,
-        externalLink: externalLink,
-        link: link,
-        appConfig: AppConfig,
-        notificationErrorHelper: ErrorsReportedHelper,
-        tdrFeatureFlags: TdrFeatureFlags,
+    govukLayout: gdsMainTemplate,
+    govukButton: GovukButton,
+    govukWarningText: GovukWarningText,
+    pageTitle: pageTitle,
+    heading: heading,
+    paragraph: paragraph,
+    paragraphBody: paragraphBody,
+    externalLink: externalLink,
+    link: link,
+    appConfig: AppConfig,
+    tdrFeatureFlags: TdrFeatureFlags
 )
 
 @(submissionId: Option[String],
-        declaration: ExportsDeclaration,
-        mrn: String,
-        maybeDeclarationId: Option[String],
-        errors: Seq[ErrorInstance]
+  declaration: ExportsDeclaration,
+  mrn: String,
+  maybeDeclarationId: Option[String],
+  errors: Seq[ErrorInstance]
 )(implicit request: Request[_], messages: Messages, codeListConnector: CodeListConnector)
 
 @backUrl = @{
@@ -54,18 +51,13 @@
 }
 
 @title = @{
-    if(maybeDeclarationId.isDefined) "rejected.amendment.title"
+    if (maybeDeclarationId.isDefined) "rejected.amendment.title"
     else "rejected.notification.title"
 }
 
 @warningText = @{
-    if(maybeDeclarationId.isDefined) "rejected.amendment.warning"
+    if (maybeDeclarationId.isDefined) "rejected.amendment.warning"
     else "rejected.notification.warning"
-}
-
-@checkAnswersText = @{
-    if(maybeDeclarationId.isDefined) "rejected.amendment.check.answers.paragraph"
-    else "rejected.notification.check.answers.paragraph"
 }
 
 @checkAnswersUrl = @{
@@ -74,7 +66,7 @@
 
 @guidancePara2Text = @{
     if(maybeDeclarationId.isDefined) "rejected.amendment.guidance.section.2.paragraph.1"
-    else "rejected.notification.guidance.section.2.paragraph.1"
+    else "rejected.notification.guidance.section.1.paragraph.1"
 }
 
 @govukLayout(
@@ -82,10 +74,8 @@
     backButton = Some(BackButton(messages("site.back"), backUrl)),
     useCustomContentWidth = true
 ) {
-
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-full">
-
             @pageTitle(text = messages(title), classes = "govuk-heading-l")
 
             <div class="submission-mrn govuk-caption-xl govuk-!-margin-bottom-4">@messages("mrn.heading", mrn)</div>
@@ -101,7 +91,9 @@
                 @DefaultInterpreter.generateHtmlFor(error)(messages, codeListConnector, link)
             }
 
-            @paragraphBody(messages(checkAnswersText), "govuk-body govuk-!-margin-top-2")
+            @if(maybeDeclarationId.isDefined) {
+                @paragraphBody(messages("rejected.amendment.check.answers.paragraph"))
+            }
 
             @govukButton(Button(
                 content = Text(messages("rejected.notification.check.answers.button")),
@@ -113,17 +105,26 @@
 
             @heading(messages("rejected.notification.guidance.section.1.header"), "govuk-heading-s", "h2")
 
-            @paragraphBody(messages("rejected.notification.guidance.section.1.paragraph.1"))
+            @paragraphBody(messages(guidancePara2Text,
+                link(
+                    text = messages("rejected.notification.guidance.section.1.paragraph.1.link"),
+                    call = routes.DraftDeclarationController.displayDeclarations()
+                )))
 
             @* Section 2 *@
 
             @heading(messages("rejected.notification.guidance.section.2.header"), "govuk-heading-s", "h2")
 
-            @paragraphBody(messages(guidancePara2Text,
-                link(
-                    text = messages("rejected.notification.guidance.section.2.paragraph.1.link"),
-                    call = routes.DraftDeclarationController.displayDeclarations()
-                )))
+            @paragraphBody(messages("rejected.notification.guidance.section.2.paragraph.1"))
+
+            @paragraphBody(messages("rejected.notification.guidance.section.2.paragraph.2"))
+
+            @paragraph(
+                externalLink(
+                    text = messages("rejected.notification.guidance.section.2.link.1"),
+                    url = appConfig.reportProblemsByUsingCDS
+                )
+            )
 
             @* Section 3 *@
             @heading(messages("rejected.notification.guidance.section.3.header"), "govuk-heading-s", "h2")
@@ -138,12 +139,24 @@
                     )
                 ))
             } else {
+                @paragraph(
+                    externalLink(
+                        text = messages("rejected.notification.guidance.section.3.link.1"),
+                        url = appConfig.errorWorkaroundsForCDS
+                    )
+                )
+
+                @paragraph(
+                    externalLink(
+                        text = messages("rejected.notification.guidance.section.3.link.2"),
+                        url = appConfig.errorCodesForCDS
+                    )
+                )
+
                 @paragraphBody(messages("rejected.notification.guidance.section.3.paragraph.1"))
                 @paragraphBody(messages("rejected.notification.guidance.section.3.paragraph.2"))
                 @paragraphBody(messages("rejected.notification.guidance.section.3.paragraph.3"))
             }
-
         </div>
     </div>
-
 }

@@ -2253,26 +2253,35 @@ rejected.amendment.guidance.section.2.paragraph.1 = Os byddwch chi’n dechrau t
 
 rejected.notification.description.heading = Disgrifiad
 rejected.notification.mrn.missing = Dim MRN
-rejected.notification.title = Diwygio gwallau sy’n ymwneud â datganiadau tollau (fersiwn wedi’i wella)
+rejected.notification.title = Cywiro gwallau datganiad
 rejected.notification.table.title = Gwallau’r datganiad
-rejected.notification.warning = Mae’n rhaid i chi ddiwygio’r gwallau hyn ac ailgyflwyno’ch datganiad pan fyddwch wedi gorffen.
+rejected.notification.warning = Mae angen i chi cywiro’r gwallau hyn ac ailgyflwyno’ch datganiad. Defnyddiwch y cysylltiadau ar gyfer newid o dan y pennawd gweithredu (isod) i fwrw golwg a chywiro bob gwall. Pan fydd y gwallau wedi’u cywiro, ewch i’r dudalen ar gyfer gwirio’ch atebion, ac ailgyflwyno’ch datganiad.
 rejected.notification.description.format = Cod gwall {0}.
-rejected.notification.check.answers.paragraph = Pan fyddwch wedi diwygio pob gwall drwy ddefnyddio’r cysylltiadau newid, gwiriwch eich atebion ac yna ailgyflwynwch eich datganiad.
 rejected.notification.check.answers.paragraph.tdr = Defnyddiwch y cysylltiadau newid ar y dudalen Gwirio’ch atebion i drwsio pob gwall. Yna, ewch ati i ailgyflwyno’ch datganiad.
 rejected.notification.check.answers.button = Gwiriwch eich atebion
 
-rejected.notification.guidance.section.1.header = Trwsio gwallau
-rejected.notification.guidance.section.1.paragraph.1 = Gall un gwall yn eich datganiad achosi i wallau cysylltiedig ymddangos mewn rhannau eraill o’r datganiad. Os bydd hyn yn digwydd, mae’n bosibl y gwelwch godau gwall yn cael eu hailadrodd.
+rejected.notification.fieldTable.error = Gwall
+rejected.notification.fieldTable.column.2.title = Eich ymateb cyntaf
+rejected.notification.fieldTable.column.3.title = Eich ymateb wedi’i ddiweddaru
+rejected.notification.fieldTable.column.4.title = Camau
 
-rejected.notification.guidance.section.2.header = Cadw’ch cynnydd
-rejected.notification.guidance.section.2.paragraph.1 = Os byddwch chi’n dechrau trwsio’r gwallau, bydd eich cynnydd yn cael ei gadw. Gallwch fynd yn ôl i’r {0} i drwsio rhagor o wallau.
-rejected.notification.guidance.section.2.paragraph.1.link = dudalen datganiadau sydd wedi’i chadw
+rejected.notification.guidance.section.1.header = Bydd unrhyw gynnydd yn cael ei gadw
+rejected.notification.guidance.section.1.paragraph.1 = Os byddwch chi’n dechrau trwsio’r gwallau, bydd eich cynnydd yn cael ei gadw. Gallwch fynd yn ôl i’r {0} i drwsio rhagor o wallau.
+rejected.notification.guidance.section.1.paragraph.1.link = dudalen datganiadau sydd wedi’i chadw
 
-rejected.notification.guidance.section.3.header = Help i drwsio gwallau
+rejected.notification.guidance.section.2.header = Help gyda chywiro gwallau
+rejected.notification.guidance.section.2.paragraph.1 = Gall un gwall yn eich datganiad achosi i wallau cysylltiedig ymddangos mewn rhannau eraill o’r datganiad. Os bydd hyn yn digwydd, mae’n bosibl y gwelwch godau gwall yn cael eu hailadrodd.
+rejected.notification.guidance.section.2.paragraph.2 = Er mwyn rhoi gwybod am broblem, defnyddiwch y botwm penodol ar gyfer rhoi gwybod am broblem drwy ddefnyddio’r Gwasanaeth Datganiadau Tollau.
+rejected.notification.guidance.section.2.link.1 = Rhowch wybod am broblem drwy ddefnyddio’r Gwasanaeth Datganiadau Tollau
+
+rejected.notification.guidance.section.3.header = Adnoddau defnyddiol eraill
+rejected.notification.guidance.section.3.link.1 = Datrysiadau ar gyfer gwallau hysbys yn y Gwasanaeth Datganiadau Tollau
+rejected.notification.guidance.section.3.link.2 = Arweiniad ar godau gwall Gwasanaeth Datganiadau Tollau
 rejected.notification.guidance.section.3.paragraph.1 = Os oes angen help arnoch gyda gwallau sy’n gysylltiedig â gofynion Tariff penodol (megis dogfennau coll), ffoniwch y ddesg gymorth.
 rejected.notification.guidance.section.3.paragraph.2 = Ffôn: 0300 200 3705
 rejected.notification.guidance.section.3.paragraph.3 = Dydd Llun i Ddydd Gwener, 08:30 i 17:00 (heblaw am benwythnosau a gwyliau’r banc)
-rejected.notification.tdr.guidance.section.3.paragraph.1 = Os oes angen help arnoch gyda dogfennau sydd ar goll neu wallau’n ymwneud â gofynion tariff penodol, gallwch gysylltu â CThEF drwy e-bost.
+
+rejected.notification.tdr.guidance.section.3.paragraph.1 = Os oes angen help arnoch gyda dogfennau sydd ar goll neu wallau’n ymwneud â gofynion tariff penodol, gallwch gysylltu â’r ddesg gymorth.
 rejected.notification.tdr.guidance.section.3.paragraph.2 = E-bostiwch: {0}
 rejected.notification.tdr.guidance.section.3.paragraph.2.email = tdrcommunications@hmrc.gov.uk
 
