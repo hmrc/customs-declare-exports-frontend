@@ -24,8 +24,8 @@ import models.PageOfSubmissions
 import models.declaration.submissions.EnhancedStatus._
 import models.declaration.submissions.RequestType.SubmissionRequest
 import models.declaration.submissions.StatusGroup._
-import models.declaration.submissions.{Action, EnhancedStatus, StatusGroup, Submission}
-import org.jsoup.nodes.{Document, Element}
+import models.declaration.submissions.{Action, EnhancedStatus, Submission}
+import org.jsoup.nodes.Element
 import org.jsoup.select.Elements
 import org.mockito.Mockito.when
 import org.scalatest.Assertion
@@ -136,55 +136,44 @@ class DashboardViewSpec extends UnitViewSpec with ExportsTestHelper {
       view.getElementsByTag("h1").text mustBe messages("dashboard.title")
     }
 
-    "display the expected tab titles as links" in {
-      statusGroups.foreach { statusGroup =>
-        val href = view.getElementsByAttributeValue("href", s"#${statusGroup}-submissions")
-        href.text == messages(s"dashboard.${statusGroup}.tab.title")
+    "display the expected 'Save for 180 days' hint" in {
+      view.getElementsByClass("govuk-body").get(0).text mustBe messages("dashboard.notification.180.days")
+    }
+
+    "display the refine-the-status hint" in {
+      view.getElementsByClass("govuk-body").get(1).text mustBe messages("dashboard.check.status.hint")
+    }
+
+    "display the expected group of buttons for status filtering" in {
+      val buttonGroup = view.getElementsByClass("govuk-button-group").get(0)
+
+      val links = buttonGroup.getElementsByTag("a")
+      links.size mustBe 4
+
+      statusGroups.zipWithIndex.foreach { case (statusGroup, index) =>
+        val link = links.get(index)
+        assert(link.hasClass("govuk-button"))
+        link.text mustBe messages(s"dashboard.$statusGroup.button.text")
+        link.attr("href") mustBe s"/customs-declare-exports/dashboard?groups=$statusGroup&page=1"
+
+        link.hasClass("selected-status-group") mustBe (statusGroup == SubmittedStatuses)
+        link.attr("aria-pressed") mustBe (statusGroup == SubmittedStatuses).toString
       }
     }
 
     "contain a 'Start a new declaration' link" in {
-      val startButton = view.getElementsByClass("govuk-button").first()
+      val startButton = view.getElementsByClass("govuk-button").last
       startButton must containMessage("dashboard.start.new.declaration")
       startButton.attr("href") mustBe ChoiceController.displayPage.url
-    }
-
-    "have NO table for a tab when not the current one" in {
-      statuses.foreach { currentStatus =>
-        val currentStatusGroup = toStatusGroup(currentStatus)
-        val view = createView(currentStatus, totalSubmissionsInPage = 1, totalSubmissionsInGroup = 1)
-
-        statuses.filterNot(toStatusGroup(_) == currentStatusGroup).foreach { otherStatus =>
-          val statusGroup = toStatusGroup(otherStatus)
-          val table = view.getElementById(s"${statusGroup}-submissions")
-          table.childrenSize mustBe 0
-        }
-      }
-    }
-
-    "display the submissions in the expected tab" in {
-      statuses.foreach { status =>
-        val currentStatusGroup = toStatusGroup(status)
-        val view: Document = createView(status, totalSubmissionsInPage = 1, totalSubmissionsInGroup = 1)
-
-        statusGroups.foreach { statusGroup =>
-          val childrenSize = view.getElementById(s"${statusGroup}-submissions").childrenSize
-          if (childrenSize > 0) statusGroup mustBe currentStatusGroup else statusGroup must not be currentStatusGroup
-        }
-      }
     }
   }
 
   "Dashboard View" when {
 
-    "there are NO submissions for the selected tab" should {
-
-      "display the check-the-status hint" in {
-        createView().getElementsByClass("govuk-body").first.text mustBe messages("dashboard.check.status.hint")
-      }
+    "there are NO submissions for the selected status group" should {
 
       "display a 'No declarations' message" in {
-        val expectedMessage = messages("dashboard.empty.tab")
+        val expectedMessage = messages("dashboard.status.group.empty")
 
         statuses.foreach { status =>
           val statusGroup = toStatusGroup(status)
@@ -194,14 +183,22 @@ class DashboardViewSpec extends UnitViewSpec with ExportsTestHelper {
       }
     }
 
-    "there are submissions for the selected tab" should {
+    "there are submissions for the selected status group" should {
 
-      "display the expected tab hints" in {
+      "display header and hint for the selected status group" in {
         statuses.foreach { status =>
-          val view = createView(status, totalSubmissionsInPage = 2, totalSubmissionsInGroup = 2)
-          val statusGroup = toStatusGroup(status)
-          val expectedMessage = messages(s"dashboard.${statusGroup}.content.hint").replace("{0}", "")
-          view.getElementsByClass(s"${statusGroup}-content-hint").text mustBe expectedMessage
+          val currentStatusGroup = toStatusGroup(status)
+          val view = createView(status, totalSubmissionsInPage = 1, totalSubmissionsInGroup = 1)
+
+          statusGroups.foreach { statusGroup =>
+            Option(view.getElementById(s"$statusGroup-submissions")).fold {
+              statusGroup must not be currentStatusGroup
+            } { container =>
+              statusGroup mustBe currentStatusGroup
+              container.getElementsByClass(s"$statusGroup-heading").text mustBe messages(s"dashboard.$statusGroup.heading")
+              container.getElementsByClass(s"$statusGroup-content-hint").text mustBe messages(s"dashboard.$statusGroup.content.hint")
+            }
+          }
         }
       }
 
@@ -404,17 +401,6 @@ class DashboardViewSpec extends UnitViewSpec with ExportsTestHelper {
           tableCell(view, 1, 3).text mustBe ViewDates.formatDateAtTime(lastStatusUpdate)
           tableCell(view, 1, 4).text mustBe messages("submission.enhancedStatus.PENDING")
         }
-      }
-    }
-
-    "amendments are enabled" should {
-      "display correct panel text for submitted" in {
-        when(mockDeclarationAmendmentsConfig.isEnabled).thenReturn(true)
-
-        val view = createView()
-
-        val expectedMessage = messages(s"dashboard.${StatusGroup.SubmittedStatuses}.amendment.content.hint").replace("{0}", "")
-        view.getElementsByClass(s"${StatusGroup.SubmittedStatuses}-content-hint").text mustBe expectedMessage
       }
     }
   }

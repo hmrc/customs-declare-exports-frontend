@@ -32,6 +32,7 @@
   baseHref: String
 )(implicit request: Request[_], messages: Messages)
 
+@dashboardHelper.heading(statusGroup)
 @dashboardHelper.hint(statusGroup)
 @dashboardHelper.table(pageOfSubmissions, statusGroup)
 
@@ -40,7 +41,7 @@
         @dashboardHelper.paginationComponent(pageOfSubmissions, baseHref)
     } else {
         <div class="ceds-pagination__summary">
-            <p class="govuk-body">@{messages("dashboard.empty.tab")}</p>
+            <p class="govuk-body">@{messages("dashboard.status.group.empty")}</p>
         </div>
     }
 </div>

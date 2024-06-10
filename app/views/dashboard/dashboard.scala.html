@@ -16,11 +16,20 @@
 
 @import controllers.routes.ChoiceController
 @import models.PageOfSubmissions
-@import views.dashboard.DashboardHelper.{panels, tabs}
+@import uk.gov.hmrc.govukfrontend.views.html.components.GovukButton
+@import views.components.gds.Styles.gdsPageHeading
+@import views.dashboard.DashboardHelper.{buttonGroup, panels}
 @import views.helpers.{BackButton, Title}
 @import views.html.components.gds.{gdsMainTemplate, linkButton, pageTitle, paragraphBody}
 
-@this(govukLayout: gdsMainTemplate, linkButton: linkButton, pageTitle: pageTitle, paragraph: paragraphBody, table: table)
+@this(
+    govukLayout: gdsMainTemplate,
+    govukButton: GovukButton,
+    linkButton: linkButton,
+    pageTitle: pageTitle,
+    paragraph: paragraphBody,
+    table: table
+)
 
 @(pageOfSubmissions: PageOfSubmissions)(implicit request: Request[_], messages: Messages)
 
@@ -33,17 +42,17 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-full">
 
-            @pageTitle(messages("dashboard.title"))
+            @pageTitle(messages("dashboard.title"), s"$gdsPageHeading govuk-!-margin-bottom-3")
 
-            @paragraph(message = messages("dashboard.check.status.hint"), classes = "govuk-body govuk-!-margin-bottom-6")
+            @paragraph(messages("dashboard.notification.180.days"), classes = "govuk-body govuk-!-margin-bottom-9")
 
-            <div class="cds-exports-tabs">
-                <h2 class="cds-exports-tabs__title">Contents</h2>
-                @tabs(pageOfSubmissions.statusGroup)
-                @panels(pageOfSubmissions, table)
-            </div>
+            @paragraph(messages("dashboard.check.status.hint"), classes = "govuk-body govuk-!-margin-bottom-6")
 
-            @linkButton("dashboard.start.new.declaration", ChoiceController.displayPage)
+            @buttonGroup(pageOfSubmissions.statusGroup, govukButton)
+
+            @panels(pageOfSubmissions, table)
+
+            @linkButton("dashboard.start.new.declaration", ChoiceController.displayPage, "govuk-button govuk-!-margin-top-6")
         </div>
     </div>
 }
