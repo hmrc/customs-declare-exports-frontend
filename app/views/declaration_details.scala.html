@@ -15,7 +15,7 @@
  *@
 
 @import config.ExternalServicesConfig
-@import config.featureFlags.{DeclarationAmendmentsConfig, SecureMessagingConfig}
+@import config.featureFlags.DeclarationAmendmentsConfig
 @import controllers.declaration.amendments.AmendDeclarationController
 @import controllers.routes.{CopyDeclarationController, EADController, FileUploadController, SubmissionsController}
 @import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.AdditionalDeclarationType
@@ -33,7 +33,6 @@
 @this(
   govukLayout: gdsMainTemplate,
   govukSummaryList: GovukSummaryList,
-  navigationBanner: navigationBanner,
   headingContent: headingContent,
   timeline: timeline,
   timelineEvents: TimelineEvents,
@@ -43,17 +42,10 @@
   bulletList: bulletList,
   govukDetails : GovukDetails,
   declarationAmendmentsConfig: DeclarationAmendmentsConfig,
-  secureMessagingConfig: SecureMessagingConfig,
   externalServicesConfig: ExternalServicesConfig
 )
 
 @(submission: Submission, additionalDecType: AdditionalDeclarationType)(implicit request: VerifiedEmailRequest[_], messages: Messages)
-
-@navBanner = {
-    @if(secureMessagingConfig.isSecureMessagingEnabled) {
-        @navigationBanner()
-    }
-}
 
 @sectionHeading(text: String) = {
   <h2 class="declaration-details-refs govuk-heading-s">@text</h2>
@@ -239,7 +231,6 @@
     title = Title("declaration.details.title", headingArg = EnhancedStatusHelper.asText(submission)),
     backButton = Some(BackButton(messages("site.backToDeclarations"), toDashboard)),
     useCustomContentWidth = true,
-    navigationBanner = navBanner,
     showDeclarationSummaryLink = false
 ) {
   <div class="govuk-grid-row">

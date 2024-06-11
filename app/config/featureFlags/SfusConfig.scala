@@ -24,6 +24,11 @@ import javax.inject.{Inject, Singleton}
 @Singleton
 class SfusConfig @Inject() (featureSwitchConfig: FeatureSwitchConfig, config: Configuration) {
 
+  val sfusInboxLink: String =
+    config
+      .getOptional[String]("urls.sfusInbox")
+      .getOrElse(throw new IllegalStateException("Missing configuration for CDS File Upload frontend inbox page url"))
+
   val sfusUploadLink: String =
     config
       .getOptional[String]("urls.sfusUpload")

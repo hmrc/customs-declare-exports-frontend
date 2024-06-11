@@ -40,8 +40,6 @@ The list of feature flags and what they are responsible for:
 
 `sfus = [enabled/disabled]` - When enabled, page under url */submissions/[ID]/information* may contain link to Secure File Upload Service.
 
-`secureMessagingInbox = [disabled / sfus / exports]` - Controls which Secure Messaging Inbox is used - none, the one embedded into exports service, or redirects to inbox in Secure File Upload Service.
-
 `use-improved-error-messages = [true/false]` - When enabled, DMS errors have descriptions made by Exports team designers. Otherwise, they have default CDS descriptions.
 
 ### Scalastyle

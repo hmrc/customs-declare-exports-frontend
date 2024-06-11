@@ -14,36 +14,20 @@
  * limitations under the License.
  *@
 
-@import config.featureFlags.SecureMessagingConfig
 @import controllers.routes.ChoiceController
 @import models.PageOfSubmissions
 @import views.dashboard.DashboardHelper.{panels, tabs}
 @import views.helpers.{BackButton, Title}
-@import views.html.components.gds.{gdsMainTemplate, linkButton, navigationBanner, pageTitle, paragraphBody}
+@import views.html.components.gds.{gdsMainTemplate, linkButton, pageTitle, paragraphBody}
 
-@this(
-    govukLayout: gdsMainTemplate,
-    linkButton: linkButton,
-    navigationBanner: navigationBanner,
-    pageTitle: pageTitle,
-    paragraph: paragraphBody,
-    table: table,
-    secureMessagingConfig: SecureMessagingConfig
-)
+@this(govukLayout: gdsMainTemplate, linkButton: linkButton, pageTitle: pageTitle, paragraph: paragraphBody, table: table)
 
 @(pageOfSubmissions: PageOfSubmissions)(implicit request: Request[_], messages: Messages)
-
-@navBanner = {
-    @if(secureMessagingConfig.isSecureMessagingEnabled) {
-        @navigationBanner(withLinkToSubmissions = false)
-    }
-}
 
 @govukLayout(
     title = Title("dashboard.title"),
     backButton = Some(BackButton(messages("site.backToSelectionPage"), ChoiceController.displayPage)),
     useCustomContentWidth = true,
-    navigationBanner = navBanner,
     showDeclarationSummaryLink = false
 ) {
     <div class="govuk-grid-row">

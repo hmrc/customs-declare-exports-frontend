@@ -23,19 +23,25 @@ import play.api.Configuration
 
 class SfusConfigSpec extends UnitWithMocksSpec {
 
-  private def buildSfusConfig(sfusEnabled: Boolean = false, sfusKey: String = Feature.sfus.toString, sfusUploadKey: String = "sfusUpload") = {
+  private def buildSfusConfig(
+    sfusEnabled: Boolean = false,
+    sfusKey: String = Feature.sfus.toString,
+    sfusInboxLink: String = "sfusInbox",
+    sfusUploadKey: String = "sfusUpload"
+  ) = {
     val config = Configuration(ConfigFactory.parseString(s"""
         |microservice.services.features.default=disabled
         |microservice.services.features.$sfusKey=${asConfigVal(sfusEnabled)}
-        |urls.$sfusUploadKey=sfusLink
-      """.stripMargin))
+        |urls.$sfusInboxLink=sfusInbox
+        |urls.$sfusUploadKey=sfusUpload
+        |      """.stripMargin))
 
     new SfusConfig(new FeatureSwitchConfig(config), config)
   }
 
   private def asConfigVal(bool: Boolean): String = if (bool) "enabled" else "disabled"
 
-  "SfusConfig on isSfusUploadEnabled" should {
+  "SfusConfig.isSfusUploadEnabled" should {
 
     "return true" when {
       "sfus feature is enabled" in {
@@ -54,10 +60,23 @@ class SfusConfigSpec extends UnitWithMocksSpec {
     }
   }
 
-  "SfusConfig on isSfusUploadEnabled" should {
+  "SfusConfig.sfusInboxLink" should {
 
     "return the correct sfusUpload url if present" in {
-      buildSfusConfig().sfusUploadLink mustBe "sfusLink"
+      buildSfusConfig().sfusInboxLink mustBe "sfusInbox"
+    }
+
+    "throw an exception if url is missing" in {
+      intercept[IllegalStateException] {
+        buildSfusConfig(sfusInboxLink = "WRONG")
+      }
+    }
+  }
+
+  "SfusConfig.sfusUploadLink" should {
+
+    "return the correct sfusUpload url if present" in {
+      buildSfusConfig().sfusUploadLink mustBe "sfusUpload"
     }
 
     "throw an exception if url is missing" in {
@@ -66,5 +85,4 @@ class SfusConfigSpec extends UnitWithMocksSpec {
       }
     }
   }
-
 }

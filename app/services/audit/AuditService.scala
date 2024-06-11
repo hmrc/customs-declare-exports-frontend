@@ -18,7 +18,6 @@ package services.audit
 
 import com.google.inject.Inject
 import config.AppConfig
-import models.AuthKey.enrolment
 import models.{CancelDeclaration, ExportsDeclaration}
 import play.api.Logging
 import play.api.libs.json._
@@ -95,18 +94,6 @@ class AuditService @Inject() (connector: AuditConnector, appConfig: AppConfig)(i
     connector.sendExtendedEvent(extendedEvent).map(handleResponse(_, auditType))
   }
 
-  def auditMessageInboxPartialRetrieved(eori: String, notificationType: String, path: String)(implicit hc: HeaderCarrier): Future[AuditResult] = {
-    val auditType = AuditTypes.NavigateToMessages.toString
-    val extendedEvent = ExtendedDataEvent(
-      auditSource = appConfig.appName,
-      auditType = auditType,
-      detail = detailsForMessageInboxPartialRetrieved(eori, notificationType),
-      tags = tagsForMessageInboxPartialRetrieved(path)
-    )
-
-    connector.sendExtendedEvent(extendedEvent).map(handleResponse(_, auditType))
-  }
-
   private def getAuditTags(transactionName: String, path: String)(implicit hc: HeaderCarrier): Map[String, String] =
     AuditExtensions
       .auditHeaderCarrier(hc)
@@ -131,9 +118,6 @@ class AuditService @Inject() (connector: AuditConnector, appConfig: AppConfig)(i
     hcAuditDetails.deepMerge(userInput)
   }
 
-  private def detailsForMessageInboxPartialRetrieved(eori: String, notificationType: String): JsValue =
-    Json.obj("enrolment" -> enrolment, "eoriNumber" -> eori, "tags" -> Json.obj("notificationType" -> notificationType))
-
   private def stripAllEmptyFields(json: JsValue): JsValue =
     Try[JsValue](
       Json.parse(
@@ -149,15 +133,12 @@ class AuditService @Inject() (connector: AuditConnector, appConfig: AppConfig)(i
         logger.info(s"Cannot strip empty fields from Json:\n\t$msg")
         json
     }
-
-  private def tagsForMessageInboxPartialRetrieved(path: String)(implicit hc: HeaderCarrier): Map[String, String] =
-    AuditExtensions.auditHeaderCarrier(hc).toAuditTags(transactionName = "callExportPartial", path = path)
 }
 
 object AuditTypes extends Enumeration {
   type Audit = Value
-  val SaveDraftValue, Submission, SubmissionPayload, Cancellation, CancellationPayload, NavigateToMessages, Amendment, AmendmentPayload,
-    AmendmentCancellation, AmendmentCancellationPayload, UploadDocumentLink, CreateDraftDeclaration = Value
+  val SaveDraftValue, Submission, SubmissionPayload, Cancellation, CancellationPayload, Amendment, AmendmentPayload, AmendmentCancellation,
+    AmendmentCancellationPayload, UploadDocumentLink, CreateDraftDeclaration = Value
 }
 
 object EventData extends Enumeration {
