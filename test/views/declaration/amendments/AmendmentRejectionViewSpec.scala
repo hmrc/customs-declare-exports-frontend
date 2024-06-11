@@ -60,7 +60,7 @@ class AmendmentRejectionViewSpec extends UnitViewSpec with GivenWhenThen with In
       displayExpectedTableWithDucrLrnAndMrn(view)
 
       "display the expected 'What happens next' section" in {
-        view.getElementsByTag("h2").get(0).text mustBe messages("declaration.confirmation.what.happens.next")
+        view.getElementsByTag("h2").get(0).text mustBe messages("declaration.confirmation.whatHappensNext")
 
         val paragraph1 = view.getElementsByClass("govuk-body").get(0)
         val paragraph2 = view.getElementsByClass("govuk-body").get(1)

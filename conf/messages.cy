@@ -2170,19 +2170,24 @@ declaration.confirmation.pending.amendment.title = Mae’ch cais am ddiwygiad yn
 declaration.confirmation.pending.amendment.paragraph = Ewch yn ôl i’r dudalen {0} er mwyn gwirio hynt eich cais am ddiwygiad. Dylai fod ar gael ymhen ychydig o funudau.
 declaration.confirmation.pending.amendment.paragraph.link = Manylion y datganiad
 
-declaration.confirmation.accepted.title = Datganiad wedi’i dderbyn
-declaration.confirmation.accepted.next.1 = Mae’n bosibl y bydd gwiriadau tollau pellach yn cael eu cynnal. Byddwch yn cael gwybod am unrhyw gamau i’w cymryd drwy {0}, sef eich cyfeiriad e-bost CDS cofrestredig, ac drwy {1}.
-declaration.confirmation.accepted.next.2 = Os nad yw statws eich datganiad wedi newid cyn pen 2 awr i amser y derbyniad hwn, {0}, dylech {1}.
+declaration.confirmation.actionRequired.title = Mae’ch datganiad wedi’i gyflwyno - mae angen cymryd camau
+declaration.confirmation.actionRequired.warning = Camau i’w cymryd: Uwchlwytho’r dogfennau sydd ar goll.
+declaration.confirmation.actionRequired.paragraph1 = Mae’ch datganiad wedi’i gyflwyno ond mae angen atodi un neu fwy o ddogfennau o hyd.
+declaration.confirmation.actionRequired.paragraph2 = Dewch o hyd i’r cyfarwyddiadau ar gyfer uwchlwytho ar y dudalen sy’n dangos manylion y datganiad.
 
-declaration.confirmation.cleared.title = Datganiad wedi’i dderbyn, mae gan y nwyddau ganiatâd i symud ymlaen
-declaration.confirmation.cleared.body.1 = Gallwch wirio statws eich datganiad ac argraffu’r ddogfen ategol ar gyfer allforio (EAD) ar {0}.
-declaration.confirmation.cleared.body.2 = Os yw’ch cludwr yn defnyddio’r Gwasanaeth Symud Cerbydau Nwyddau (GVMS), gwnewch yn siŵr bod ganddynt y Datganiad o Gyfeirnod Unigryw y Llwyth (DUCR) er mwyn iddynt greu cyfeirnod symud nwyddau (GMR). Os oeddech eisoes wedi rhoi’r DUCR iddynt, gallant gwblhau’r GMR nawr.
+declaration.confirmation.submitted.title = Mae’ch datganiad wedi’i gyflwyno
+declaration.confirmation.submitted.whatHappensNext.paragraph = Mae’r cais o ran datganiad bellach yn aros hyd nes bod gwiriad wedi’i gynnal. Bydd hyn yn cymryd ychydig o funudau.
 
-declaration.confirmation.needsDocument.title = Mae angen atodi dogfennau at eich datganiad
-declaration.confirmation.needsDocument.warning = Mae’n rhaid i chi uwchlwytho dogfennau sy’n barod i’w gwirio wrth y tollau.
-declaration.confirmation.needsDocument.body.2 = Gwiriwch y gofynion ac uwchlwytho dogfennau o {0}.
+declaration.confirmation.checkDetails.title = Nawr gwiriwch dudalen statws y datganiad
+declaration.confirmation.checkDetails.link = Gwiriwch y dudalen sy’n dangos manylion y datganiad
 
-declaration.confirmation.other.title = Mae’ch datganiad yn dal i gael ei wirio
+declaration.confirmation.submitted.checkDetails.paragraph = Mae’n bosibl y bydd yn dal i fod angen i chi gywiro unrhyw wallau neu uwchlwytho dogfen sydd ar goll.
+declaration.confirmation.submitted.checkDetails.link = Gwiriwch y dudalen sy’n dangos manylion y datganiad
+
+declaration.confirmation.pendingNotification.title = Mae’ch datganiad sydd wedi ei gyflwyno yn dal i gael ei wirio
+declaration.confirmation.pendingNotification.paragraph1 = Mae’n cymryd mwy o amser nag arfer i wirio’ch datganiad. Caniatewch ychydig o funudau i’r gwiriad gael ei gwblhau.
+declaration.confirmation.pendingNotification.paragraph2 = Ar ôl iddo gwblhau rhoddir Cyfeirnod Symud (MRN) i’ch datganiad. Dangosir hyn ar y dudalen sy’n dangos manylion y datganiad.
+
 declaration.confirmation.other.body.1 = Bydd eich datganiad{0}{1} yn cael cyfeirnod symud yn fuan. Ewch i {2} i ddarganfod statws y datganiad hwn a gweld a oes angen i chi weithredu o gwbl.
 declaration.confirmation.other.body.1.link = Eich datganiadau
 declaration.confirmation.other.body.2 = Dylai’r canlyniad fod ar gael yn syth neu o fewn ychydig funudau.
@@ -2201,7 +2206,7 @@ declaration.confirmation.body.1.lrn = (eich cyfeirnod {0})
 declaration.confirmation.body.2 = Gallwch wirio statws eich datganiad ac argraffu’r ddogfen ategol ar gyfer allforio (EAD) ar {0}.
 declaration.confirmation.declaration.details.link = Manylion y datganiad
 declaration.confirmation.next.2.link = cysylltwch â’r Ganolfan Clirio Genedlaethol
-declaration.confirmation.what.happens.next = Yr hyn sy’n digwydd nesaf
+declaration.confirmation.whatHappensNext = Yr hyn sy’n digwydd nesaf
 
 declaration.confirmation.whatYouCanDoNow.heading = Yr hyn y gallwch ei wneud nawr
 declaration.confirmation.whatYouCanDoNow.nonGvms.paragraph = Gallwch hefyd {0} drwy ei gysylltu, ynghyd â llwythi eraill, â phrif lwyth. Byddwch hefyd yn gallu trefnu i’r datganiad hwn {1} os ydych yn llwythwr cofrestredig.
