@@ -20,7 +20,6 @@ import controllers.actions.{AuthAction, JourneyAction}
 import controllers.declaration.routes._
 import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
-import forms.declaration.carrier.CarrierDetails
 import models.DeclarationType._
 import models.requests.JourneyRequest
 import play.api.data.Form
@@ -33,7 +32,7 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.third_party_goods_transportation
 
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class ThirdPartyGoodsTransportationController @Inject() (
   mcc: MessagesControllerComponents,
@@ -53,10 +52,13 @@ class ThirdPartyGoodsTransportationController @Inject() (
     Ok(thirdPartyGoodTransportPage(populateForm(formWithErrorKey.withSubmissionErrors)))
   }
 
-  val submitPage: Action[AnyContent] = (authenticate andThen journeyType(allowedJourneys)) { implicit request =>
+  val submitPage: Action[AnyContent] = (authenticate andThen journeyType(allowedJourneys)).async { implicit request =>
     formWithErrorKey
       .bindFromRequest()
-      .fold(formWithErrors => BadRequest(thirdPartyGoodTransportPage(formWithErrors)), answer => navigator.continueTo(saveAndRedirect(answer)))
+      .fold(
+        formWithErrors => Future.successful(BadRequest(thirdPartyGoodTransportPage(formWithErrors))),
+        yesNoAnswer => saveAndRedirect(yesNoAnswer).map(navigator.continueTo)
+      )
   }
 
   private def populateForm(form: Form[YesNoAnswer])(implicit request: JourneyRequest[_]): Form[YesNoAnswer] =
@@ -66,13 +68,12 @@ class ThirdPartyGoodsTransportationController @Inject() (
       case _           => form
     }
 
-  private def saveAndRedirect(answer: YesNoAnswer)(implicit request: JourneyRequest[_]): Call = Some(answer) match {
-    case YesNoAnswer.Yes =>
-      if (request.cacheModel.parties.carrierDetails.flatMap(_.details.eori).exists(_.value == request.eori))
+  private def saveAndRedirect(answer: YesNoAnswer)(implicit request: JourneyRequest[_]): Future[Call] =
+    Some(answer) match {
+      case YesNoAnswer.Yes => Future.successful(CarrierEoriNumberController.displayPage)
+
+      case _ =>
         updateDeclarationFromRequest(model => model.copy(parties = model.parties.copy(carrierDetails = None)))
-      CarrierEoriNumberController.displayPage
-    case _ =>
-      updateDeclarationFromRequest(model => model.copy(parties = model.parties.copy(carrierDetails = Some(CarrierDetails.from(request.eori)))))
-      ConsigneeDetailsController.displayPage
-  }
+          .map(_ => ConsigneeDetailsController.displayPage)
+    }
 }

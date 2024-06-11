@@ -17,12 +17,12 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
+import controllers.declaration.routes.{ExporterDetailsController, IsExsController, RepresentativeAgentController}
 import controllers.navigation.Navigator
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.exporter.{ExporterDetails, ExporterEoriNumber}
 import models.requests.JourneyRequest
 import models.{DeclarationType, ExportsDeclaration}
-import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import services.audit.AuditService
@@ -56,31 +56,25 @@ class ExporterEoriNumberController @Inject() (
     ExporterEoriNumber.form
       .bindFromRequest()
       .fold(
-        (formWithErrors: Form[ExporterEoriNumber]) => {
-          val formWithAdjustedErrors = formWithErrors
-
-          Future.successful(BadRequest(exporterEoriDetailsPage(formWithAdjustedErrors)))
-        },
-        form =>
-          updateCache(form, request.cacheModel.parties.exporterDetails)
-            .map(_ => navigator.continueTo(nextPage(form.hasEori)))
+        formWithErrors => Future.successful(BadRequest(exporterEoriDetailsPage(formWithErrors))),
+        exporterEoriNumber =>
+          updateCache(exporterEoriNumber, request.cacheModel.parties.exporterDetails)
+            .map(_ => navigator.continueTo(nextPage(exporterEoriNumber.hasEori)))
       )
   }
 
   private def nextPage(hasEori: String)(implicit request: JourneyRequest[_]): Call =
-    if (hasEori == YesNoAnswers.no) {
-      controllers.declaration.routes.ExporterDetailsController.displayPage
-    } else {
+    if (hasEori == YesNoAnswers.no) ExporterDetailsController.displayPage
+    else
       request.declarationType match {
-        case DeclarationType.CLEARANCE => controllers.declaration.routes.IsExsController.displayPage
-        case _                         => controllers.declaration.routes.RepresentativeAgentController.displayPage
+        case DeclarationType.CLEARANCE => IsExsController.displayPage
+        case _                         => RepresentativeAgentController.displayPage
       }
-    }
 
-  private def updateCache(formData: ExporterEoriNumber, savedExporterDetails: Option[ExporterDetails])(
+  private def updateCache(exporterEoriNumber: ExporterEoriNumber, savedExporterDetails: Option[ExporterDetails])(
     implicit r: JourneyRequest[AnyContent]
   ): Future[ExportsDeclaration] =
     updateDeclarationFromRequest(model =>
-      model.copy(parties = model.parties.copy(exporterDetails = Some(ExporterDetails.from(formData, savedExporterDetails))))
+      model.copy(parties = model.parties.copy(exporterDetails = Some(ExporterDetails.from(exporterEoriNumber, savedExporterDetails))))
     )
 }

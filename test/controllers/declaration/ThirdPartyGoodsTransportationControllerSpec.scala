@@ -18,22 +18,21 @@ package controllers.declaration
 
 import base.ExportsTestData.eori
 import base.{AuditedControllerSpec, ControllerSpec}
-import controllers.declaration.routes._
+import controllers.declaration.routes.{CarrierEoriNumberController, ConsigneeDetailsController}
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.common.{Eori, YesNoAnswer}
+import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{verify, when}
-import org.mockito.{ArgumentCaptor, Mockito}
-import org.scalatest.BeforeAndAfterEach
+import org.mockito.Mockito.{reset, verify, when}
 import play.api.data.Form
-import play.api.http.Status.BAD_REQUEST
+import play.api.http.Status.{BAD_REQUEST, SEE_OTHER}
 import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers.{await, status, OK}
 import play.twirl.api.HtmlFormat
 import views.html.declaration.third_party_goods_transportation
 
-class ThirdPartyGoodsTransportationControllerSpec extends ControllerSpec with AuditedControllerSpec with BeforeAndAfterEach {
+class ThirdPartyGoodsTransportationControllerSpec extends ControllerSpec with AuditedControllerSpec {
 
   private val page = mock[third_party_goods_transportation]
 
@@ -47,7 +46,7 @@ class ThirdPartyGoodsTransportationControllerSpec extends ControllerSpec with Au
   }
 
   override protected def afterEach(): Unit = {
-    Mockito.reset(page)
+    reset(auditService, page)
     super.afterEach()
   }
 
@@ -63,72 +62,57 @@ class ThirdPartyGoodsTransportationControllerSpec extends ControllerSpec with Au
     captor.getValue
   }
 
-  private val standardCacheModel = aStandardDeclaration
+  private val declaration = aDeclaration(withCarrierDetails(Some(Eori(eori))))
 
   "ThirdPartyGoodsTransportation Controller on GET request" should {
 
-    "return 200 OK and check the cache for Carrier details" in {
-      withNewCaching(standardCacheModel)
+    "return 200 OK" in {
+      withNewCaching(declaration)
 
       val response = controller.displayPage.apply(getRequest())
 
-      status(response) must be(OK)
+      status(response) mustBe OK
       verify(mockExportsCacheService).get(any())(any())
       verify(page).apply(any())(any(), any())
     }
   }
 
-  "ThirdPartyGoodsTransportation Controller on POST" when {
+  "ThirdPartyGoodsTransportation Controller on POST" should {
 
-    val yesAnswer = Json.obj(YesNoAnswer.formId -> YesNoAnswers.yes)
-    val noAnswer = Json.obj(YesNoAnswer.formId -> YesNoAnswers.no)
+    "do not change the cache when the user answers yes" in {
+      withNewCaching(declaration)
 
-    "we are on standard declaration journey" should {
+      val yesAnswer = Json.obj(YesNoAnswer.formId -> YesNoAnswers.yes)
+      val result = controller.submitPage(postRequest(yesAnswer))
 
-      "redirect when user answers yes" in {
-        withNewCaching(standardCacheModel)
+      status(result) mustBe SEE_OTHER
 
-        val result = await(controller.submitPage(postRequest(yesAnswer)))
+      thePageNavigatedTo mustBe CarrierEoriNumberController.displayPage
+      verifyTheCacheIsUnchanged()
+      verifyNoAudit()
+    }
 
-        result mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe CarrierEoriNumberController.displayPage
-        verifyTheCacheIsUnchanged()
-        verifyNoAudit()
-      }
+    "do change the cache when the user answers no" in {
+      withNewCaching(declaration)
 
-      "redirect when user answers yes having previously answered no" in {
-        withNewCaching(aDeclaration(withCarrierDetails(eori = Some(Eori(eori)))))
+      val noAnswer = Json.obj(YesNoAnswer.formId -> YesNoAnswers.no)
+      val result = controller.submitPage(postRequest(noAnswer))
 
-        val result = await(controller.submitPage(postRequest(yesAnswer)))
+      status(result) mustBe SEE_OTHER
 
-        result mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe CarrierEoriNumberController.displayPage
-        theCacheModelUpdated.parties.carrierDetails mustBe empty
-        verifyAudit()
-      }
+      thePageNavigatedTo mustBe ConsigneeDetailsController.displayPage
+      theCacheModelUpdated.parties.carrierDetails mustBe empty
+      verifyAudit()
+    }
 
-      "update cache and redirect when user answers no" in {
-        withNewCaching(standardCacheModel)
+    "return Bad Request if payload is not compatible with model" in {
+      withNewCaching(declaration)
 
-        val result = await(controller.submitPage(postRequest(noAnswer)))
+      val wrongAnswer = Json.obj(YesNoAnswer.formId -> "A")
+      val result = controller.submitPage(postRequest(wrongAnswer))
 
-        result mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe ConsigneeDetailsController.displayPage
-
-        val carrierEoriNumber = theCacheModelUpdated.parties.carrierDetails.get.details.eori.get.value
-        carrierEoriNumber mustBe eori
-        verifyAudit()
-      }
-
-      "return Bad Request if payload is not compatible with model" in {
-        withNewCaching(standardCacheModel)
-
-        val body = Json.obj(YesNoAnswer.formId -> "A")
-        val result = controller.submitPage()(postRequest(body))
-
-        status(result) mustBe BAD_REQUEST
-        verifyNoAudit()
-      }
+      status(result) mustBe BAD_REQUEST
+      verifyNoAudit()
     }
   }
 }
