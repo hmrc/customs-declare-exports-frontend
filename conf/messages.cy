@@ -2169,10 +2169,24 @@ declaration.confirmation.pending.amendment.title = Mae’ch cais am ddiwygiad yn
 declaration.confirmation.pending.amendment.paragraph = Ewch yn ôl i’r dudalen {0} er mwyn gwirio hynt eich cais am ddiwygiad. Dylai fod ar gael ymhen ychydig o funudau.
 declaration.confirmation.pending.amendment.paragraph.link = Manylion y datganiad
 
-declaration.confirmation.actionRequired.title = Mae angen atodi dogfennau at eich datganiad
-declaration.confirmation.actionRequired.warning = Mae’n rhaid i chi uwchlwytho dogfennau sy’n barod i’w gwirio wrth y tollau.
+declaration.confirmation.actionRequired.title = Mae’ch datganiad wedi’i gyflwyno - mae angen cymryd camau
+declaration.confirmation.actionRequired.warning = Camau i’w cymryd: Uwchlwytho’r dogfennau sydd ar goll.
+declaration.confirmation.actionRequired.paragraph1 = Mae’ch datganiad wedi’i gyflwyno ond mae angen atodi un neu fwy o ddogfennau o hyd.
+declaration.confirmation.actionRequired.paragraph2 = Dewch o hyd i’r cyfarwyddiadau ar gyfer uwchlwytho ar y dudalen sy’n dangos manylion y datganiad.
 
-declaration.confirmation.pendingNotification.title = Mae’ch datganiad yn dal i gael ei wirio
+declaration.confirmation.submitted.title = Mae’ch datganiad wedi’i gyflwyno
+declaration.confirmation.submitted.whatHappensNext.paragraph = Mae’r cais o ran datganiad bellach yn aros hyd nes bod gwiriad wedi’i gynnal. Bydd hyn yn cymryd ychydig o funudau.
+
+declaration.confirmation.checkDetails.title = Nawr gwiriwch dudalen statws y datganiad
+declaration.confirmation.checkDetails.link = Gwiriwch y dudalen sy’n dangos manylion y datganiad
+
+declaration.confirmation.submitted.checkDetails.paragraph = Mae’n bosibl y bydd yn dal i fod angen i chi gywiro unrhyw wallau neu uwchlwytho dogfen sydd ar goll.
+declaration.confirmation.submitted.checkDetails.link = Gwiriwch y dudalen sy’n dangos manylion y datganiad
+
+declaration.confirmation.pendingNotification.title = Mae’ch datganiad sydd wedi ei gyflwyno yn dal i gael ei wirio
+declaration.confirmation.pendingNotification.paragraph1 = Mae’n cymryd mwy o amser nag arfer i wirio’ch datganiad. Caniatewch ychydig o funudau i’r gwiriad gael ei gwblhau.
+declaration.confirmation.pendingNotification.paragraph2 = Ar ôl iddo gwblhau rhoddir Cyfeirnod Symud (MRN) i’ch datganiad. Dangosir hyn ar y dudalen sy’n dangos manylion y datganiad.
+
 declaration.confirmation.other.body.1 = Bydd eich datganiad{0}{1} yn cael cyfeirnod symud yn fuan. Ewch i {2} i ddarganfod statws y datganiad hwn a gweld a oes angen i chi weithredu o gwbl.
 declaration.confirmation.other.body.1.link = Eich datganiadau
 declaration.confirmation.other.body.2 = Dylai’r canlyniad fod ar gael yn syth neu o fewn ychydig funudau.

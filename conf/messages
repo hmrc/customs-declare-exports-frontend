@@ -2180,7 +2180,7 @@ declaration.confirmation.submitted.whatHappensNext.paragraph = The declaration r
 declaration.confirmation.submitted.checkDetails.paragraph = You may still need to correct errors or upload a missing document.
 declaration.confirmation.submitted.checkDetails.link = Check the updated declaration details page
 
-declaration.confirmation.checkDetails.title = Now check the declaration details page
+declaration.confirmation.checkDetails.title = Now check the declaration status page
 declaration.confirmation.checkDetails.link = Check the declaration details page
 
 declaration.confirmation.actionRequired.title = Your declaration has been submitted - action is required
