@@ -829,6 +829,7 @@ amendment.details.amended.value = Gwerth diwygiedig
 
 draft.declarations.title = Eich datganiadau sydd wedi’u cadw
 draft.declarations.title.amendments = Eich datganiadau a diwygiadau sydd wedi’u cadw
+draft.declarations.paragraph = Dewiswch DUCR i fwrw golwg dros a chwblhau datganiad drafft. Mae datganiadau drafft yn cael eu cadw am 30 diwrnod.
 draft.declarations.ducr = DUCR
 draft.declarations.noDucr = Dim DUCR wedi’i ychwanegu
 draft.declarations.dateSaved = Dyddiad ac amser wedi’u cadw
@@ -2222,13 +2223,16 @@ declaration.exitSurvey.link = Anfonwch eich adborth atom
 
 declaration.country.dropdown.hint = Teipiwch o leiaf 2 lythyren i chwilio am wlad
 
-declaration.draft.title = Mae’ch datganiad wedi’i gadw
-declaration.draft.info = Caiff eich gwybodaeth ei dal tan {0}
+declaration.draft.title = Bydd eich datganiad drafft yn cael ei gadw am 30 diwrnod
+declaration.draft.info = Bydd y datganiad drafft yn cael ei gadw tan {0}
 declaration.draft.saved = Mae’ch datganiad wedi’i gadw hyd at y pwynt pan wnaethoch adael.
 declaration.draft.nextHeading = Yr hyn y gallwch ei wneud nesaf
 declaration.draft.nextText = Gallwch {0} neu gallwch {1}.
-declaration.draft.nextContinueLink = fynd yn eich blaen â datganiad sydd wedi’i gadw
-declaration.draft.nextStartFreshLink = dechreuwch un newydd
+declaration.draft.nextContinueLink = fynd yn eich blaen â datganiad drafft wedi’i arbed
+declaration.draft.nextStartFreshLink = ddechrau un newydd
+declaration.draft.nextViewSummary = Gallwch hefyd {0}
+declaration.draft.nextViewSummary.link = bwrw golwg dros grynodeb o’ch datganiad
+
 declaration.draft.viewSummary = Bwrw golwg dros grynodeb o’r datganiad
 
 legal.declaration.heading = Nawr, cyflwynwch eich datganiad

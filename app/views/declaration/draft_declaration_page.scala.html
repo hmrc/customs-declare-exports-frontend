@@ -19,7 +19,7 @@
 @import play.twirl.api.HtmlFormat
 @import uk.gov.hmrc.govukfrontend.views.html.components.{GovukPanel, HtmlContent, Panel, Text}
 @import views.helpers.{Title, ViewDates}
-@import views.html.components.gds.{gdsMainTemplate, govUkLink, heading, link, paragraph}
+@import views.html.components.gds.{gdsMainTemplate, govUkLink, heading, link, paragraph, paragraphBody}
 @import views.html.components.viewDeclarationSummaryLink
 
 @import java.time.Instant
@@ -31,7 +31,8 @@
     viewDeclarationSummaryLink: viewDeclarationSummaryLink,
     govUkLink: govUkLink,
     heading: heading,
-    paragraph: paragraph
+    paragraph: paragraph,
+    paragraphBody: paragraphBody
 )
 
 @(declarationId: Option[String], expiry: String)(implicit request: Request[_], messages: Messages)
@@ -60,6 +61,14 @@
             call = ChoiceController.displayPage
         )
     )))
+
+    @declarationId.map { id =>
+      @paragraphBody(messages("declaration.draft.nextViewSummary", link(
+        id = Some("view_declaration_summary"),
+        text = messages("declaration.draft.nextViewSummary.link"),
+        call = DraftDeclarationController.displayDeclaration(id)
+      )))
+    }
 }
 
 @govukLayout(title = Title("declaration.draft.title"), showDeclarationSummaryLink = false) {
@@ -67,10 +76,6 @@
     @heading(messages("declaration.draft.title"))
 
     @expiresMessage
-
-    @declarationId.map { id =>
-        @paragraph(viewDeclarationSummaryLink(id))
-    }
 
     @whatNext
 

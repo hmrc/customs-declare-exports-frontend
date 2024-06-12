@@ -64,6 +64,8 @@ class DraftDeclarationsViewSpec extends UnitViewSpec with Injector {
 
       view.title() must include(view.getElementsByTag("h1").text())
 
+      view.getElementsByClass("govuk-body").get(0) must containMessage("draft.declarations.paragraph")
+
       tableHead(view)(0).text() mustBe messages(dateSaved)
       tableHead(view)(1).text() mustBe messages(ducr)
       tableHead(view)(2).text() mustBe messages("draft.declarations.status")
@@ -78,6 +80,7 @@ class DraftDeclarationsViewSpec extends UnitViewSpec with Injector {
       val view = createView(declarations = List(draftWithoutDucr), total = 1)
 
       view.getElementsByClass("govuk-heading-xl").get(0) must containMessage("draft.declarations.title")
+      view.getElementsByClass("govuk-body").get(0) must containMessage("draft.declarations.paragraph")
 
       numberOfTableRows(view) mustBe 1
 
@@ -98,6 +101,7 @@ class DraftDeclarationsViewSpec extends UnitViewSpec with Injector {
       val view = createView(declarations = List(draftWithoutDucrAfterBST), total = 1)
 
       view.getElementsByClass("govuk-heading-xl").get(0) must containMessage("draft.declarations.title")
+      view.getElementsByClass("govuk-body").get(0) must containMessage("draft.declarations.paragraph")
 
       numberOfTableRows(view) mustBe 1
 
@@ -118,6 +122,7 @@ class DraftDeclarationsViewSpec extends UnitViewSpec with Injector {
       numberOfTableRows(view) mustBe 1
 
       view.getElementsByClass("govuk-heading-xl").get(0) must containMessage("draft.declarations.title.amendments")
+      view.getElementsByClass("govuk-body").get(0) must containMessage("draft.declarations.paragraph")
 
       tableCell(view)(1, 0).text() mustBe s"1 January $year at 9:45am"
       tableCell(view)(1, 1) must containMessage("draft.declarations.noDucr")

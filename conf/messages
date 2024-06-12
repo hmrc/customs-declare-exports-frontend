@@ -830,6 +830,7 @@ amendment.details.amended.value = Amended value
 
 draft.declarations.title = Your saved declarations
 draft.declarations.title.amendments = Your saved declarations and amendments
+draft.declarations.paragraph = Select a DUCR to view and complete a draft declaration. Draft declarations are saved for 30 days.
 draft.declarations.ducr = DUCR
 draft.declarations.noDucr = No DUCR added
 draft.declarations.dateSaved = Date and time saved
@@ -2219,13 +2220,16 @@ declaration.exitSurvey.link = Send us your feedback
 
 declaration.country.dropdown.hint = Type in at least 2 letters to search for a country
 
-declaration.draft.title = Your declaration has been saved
-declaration.draft.info = Your information is held until {0}
+declaration.draft.title = Your draft declaration will be saved for 30 days
+declaration.draft.info = The draft declaration will be held until {0}
 declaration.draft.saved = Your declaration has been saved up to the point at which you exited.
 declaration.draft.nextHeading = What you can do next
 declaration.draft.nextText = You can {0} or you can {1}.
-declaration.draft.nextContinueLink = continue a saved declaration
+declaration.draft.nextContinueLink = continue a saved draft declaration
 declaration.draft.nextStartFreshLink = start a new one
+declaration.draft.nextViewSummary = You can also {0}.
+declaration.draft.nextViewSummary.link = view your declaration summary
+
 declaration.draft.viewSummary = View declaration summary
 
 legal.declaration.heading = Now submit your declaration
