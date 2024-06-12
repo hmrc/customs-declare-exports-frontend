@@ -186,7 +186,7 @@ class CustomsDeclareExportsConnector @Inject() (appConfig: AppConfig, httpClient
     val updateStopwatch = updateTimer.time()
 
     httpClient
-      .PUT[ExportsDeclaration, ExportsDeclaration](getUrl(s"${appConfig.declarationsPath}/${dec.id}"), dec)
+      .PUT[ExportsDeclaration, ExportsDeclaration](getUrl(s"${appConfig.declarationsPath}"), dec)
       .andThen {
         case Success(declaration) =>
           logPayload("Update Declaration Response", declaration)

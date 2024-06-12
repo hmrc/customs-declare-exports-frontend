@@ -16,6 +16,7 @@
 
 package models.declaration
 
+import base.ExportsTestData.eori
 import forms.Lrn
 import forms.common.YesNoAnswer.Yes
 import forms.common.{Date, Eori}
@@ -171,7 +172,8 @@ object ExportDeclarationTestData {
   val correctPackingJSON: JsValue = JsObject(
     Map("sequenceNumeric" -> JsString("0"), "marksNumbersId" -> JsString("wefdsf"), "typeCode" -> JsString("22"))
   )
-  val declaration = ExportsDeclaration(UUID.randomUUID.toString, declarationMeta, DeclarationType.SUPPLEMENTARY)
+  val declaration =
+    ExportsDeclaration(id = UUID.randomUUID.toString, declarationMeta = declarationMeta, eori = eori, `type` = DeclarationType.SUPPLEMENTARY)
 
   def createGovernmentAgencyGoodsItem(): GovernmentAgencyGoodsItem =
     GovernmentAgencyGoodsItem(

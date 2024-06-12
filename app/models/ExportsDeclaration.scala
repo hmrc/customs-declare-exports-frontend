@@ -40,6 +40,7 @@ import services.DiffTools.{combinePointers, compareDifference, compareIntDiffere
 case class ExportsDeclaration(
   id: String,
   declarationMeta: DeclarationMeta,
+  eori: String, // Included for parity with BE model only
   `type`: DeclarationType,
   additionalDeclarationType: Option[AdditionalDeclarationType] = None,
   consignmentReferences: Option[ConsignmentReferences] = None,

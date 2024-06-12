@@ -98,7 +98,7 @@ class DeclarationChoiceController @Inject() (
 
   private def create(declarationType: DeclarationType, eori: String)(implicit hc: HeaderCarrier): Future[ExportsDeclaration] = {
     val declarationMeta = DeclarationMeta(status = INITIAL, createdDateTime = Instant.now, updatedDateTime = Instant.now)
-    exportsCacheService.create(ExportsDeclaration(id = "", declarationMeta, declarationType), eori)
+    exportsCacheService.create(ExportsDeclaration(id = "", declarationMeta = declarationMeta, eori = eori, `type` = declarationType), eori)
   }
 
   private def nextPage(declarationId: String)(implicit request: RequestHeader): Result =
