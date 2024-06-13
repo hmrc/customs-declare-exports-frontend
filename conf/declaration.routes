@@ -549,7 +549,7 @@ GET         /resubmit-your-amendment             controllers.declaration.Submiss
 
 POST        /submit-your-amendment               controllers.declaration.SubmissionController.submitAmendment(amendmentAction: String)
 
-GET         /cancel-amendment                    controllers.declaration.SubmissionController.cancelAmendment
+GET         /cancel-amendment                    controllers.declaration.SubmissionController.cancelAmendment(id)
 
 GET         /cancel-your-amendment               controllers.declaration.SubmissionController.displayCancelAmendmentPage
 

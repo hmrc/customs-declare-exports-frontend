@@ -27,7 +27,7 @@ import controllers.routes.{ChoiceController, RootController}
 import forms.declaration.{AmendmentSubmission, LegalDeclaration}
 import handlers.ErrorHandler
 import models.declaration.submissions.Submission
-import models.requests.JourneyRequest
+import models.requests.{JourneyRequest, VerifiedEmailRequest}
 import models.requests.SessionHelper._
 import play.api.Logging
 import play.api.data.Form
@@ -48,7 +48,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class SubmissionController @Inject() (
   authenticate: AuthAction,
   verifyEmail: VerifiedEmailAction,
-  journeyType: JourneyAction,
+  journeyAction: JourneyAction,
   errorHandler: ErrorHandler,
   mcc: MessagesControllerComponents,
   customsDeclareExportsConnector: CustomsDeclareExportsConnector,
@@ -60,13 +60,13 @@ class SubmissionController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with Logging with ModelCacheable with WithUnsafeDefaultFormBinding {
 
-  val cancelAmendment: Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType).async { implicit request =>
+  def cancelAmendment(declarationId: String): Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
     if (declarationAmendmentsConfig.isDisabled) Future.successful(Redirect(RootController.displayPage))
     else
       getValue(submissionUuid) match {
         case Some(submissionId) =>
           customsDeclareExportsConnector.findSubmission(submissionId) flatMap {
-            case Some(submission) => cancelAmendment(submission)
+            case Some(submission) => cancelAmendment(submission, declarationId)
             case _                => errorHandler.internalError(s"No Submission with id($submissionId) on amendment cancellation")
           }
 
@@ -74,13 +74,22 @@ class SubmissionController @Inject() (
       }
   }
 
-  private def cancelAmendment(submission: Submission)(implicit hc: HeaderCarrier, request: JourneyRequest[_]): Future[Result] =
+  private def cancelAmendment(
+    submission: Submission,
+    declarationId: String
+  )(implicit hc: HeaderCarrier, request: VerifiedEmailRequest[_]): Future[Result] =
     (submission.latestDecId, submission.latestEnhancedStatus) match {
       case (Some(latestDecId), Some(latestEnhancedStatus)) =>
-        customsDeclareExportsConnector.findOrCreateDraftForAmendment(latestDecId, latestEnhancedStatus, request.eori, request.cacheModel) flatMap {
-          declarationId =>
-            val call = routes.SubmissionController.displayCancelAmendmentPage
-            Future.successful(Redirect(call).addingToSession((declarationUuid, declarationId)))
+        customsDeclareExportsConnector.findDeclaration(declarationId).flatMap {
+          case Some(declaration) =>
+            customsDeclareExportsConnector.findOrCreateDraftForAmendment(latestDecId, latestEnhancedStatus, request.eori, declaration) map {
+              declarationId =>
+                val call = routes.SubmissionController.displayCancelAmendmentPage
+                Redirect(call).addingToSession((declarationUuid, declarationId))
+            }
+
+          case _ =>
+            errorHandler.internalError(s"Undefined declarationId($declarationId) for Submission(${submission.uuid}) on amendment cancellation")
         }
 
       case _ =>
@@ -88,7 +97,7 @@ class SubmissionController @Inject() (
         errorHandler.internalError(s"Undefined $id for Submission(${submission.uuid}) on amendment cancellation")
     }
 
-  private val actions = authenticate andThen verifyEmail andThen journeyType
+  private val actions = authenticate andThen verifyEmail andThen journeyAction
 
   val displaySubmitDeclarationPage: Action[AnyContent] = actions { implicit request =>
     if (inErrorFixMode) errorHandler.internalServerError("Invalid mode while redirected to the 'Legal declaration' page")

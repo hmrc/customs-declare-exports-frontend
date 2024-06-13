@@ -77,7 +77,7 @@ class SubmissionControllerSpec extends ControllerWithoutFormSpec with ScalaFutur
   }
 
   override protected def afterEach(): Unit = {
-    reset(amendmentSubmissionPage, legalDeclarationPage, mockDeclarationAmendmentsConfig, mockSubmissionService)
+    reset(amendmentSubmissionPage, legalDeclarationPage, mockCustomsDeclareExportsConnector, mockDeclarationAmendmentsConfig, mockSubmissionService)
     super.afterEach()
   }
 
@@ -193,13 +193,13 @@ class SubmissionControllerSpec extends ControllerWithoutFormSpec with ScalaFutur
   }
 
   "SubmissionController.cancelAmendment" when {
+    val declaration = aDeclaration()
 
     "feature flag is off" should {
       "Redirect to root controller" in {
         when(mockDeclarationAmendmentsConfig.isDisabled).thenReturn(true)
-        withNewCaching(aDeclaration())
 
-        val result = controller.displaySubmitAmendmentPage.apply(getJourneyRequest())
+        val result = controller.cancelAmendment(declaration.id)(getJourneyRequest())
         status(result) mustBe SEE_OTHER
 
         redirectLocation(result) mustBe Some(RootController.displayPage.url)
@@ -211,15 +211,16 @@ class SubmissionControllerSpec extends ControllerWithoutFormSpec with ScalaFutur
 
       "Redirect to the Cancel Amendment page" when {
         "Backend returns a Submission with a defined latestDecId and findOrCreateDraftForAmendment is successful" in {
-          withNewCaching(aDeclaration())
-
           when(mockCustomsDeclareExportsConnector.findSubmission(any())(any(), any()))
             .thenReturn(Future.successful(Some(expectedSubmission)))
 
-          when(mockCustomsDeclareExportsConnector.findOrCreateDraftForAmendment(any(), any(), any(), any())(any(), any()))
-            .thenReturn(Future.successful("String"))
+          when(mockCustomsDeclareExportsConnector.findDeclaration(eqTo(declaration.id))(any(), any()))
+            .thenReturn(Future.successful(Some(declaration)))
 
-          val result = controller.cancelAmendment(getRequestWithSession((submissionUuid, "Id")))
+          when(mockCustomsDeclareExportsConnector.findOrCreateDraftForAmendment(any(), any(), any(), eqTo(declaration))(any(), any()))
+            .thenReturn(Future.successful("declarationId"))
+
+          val result = controller.cancelAmendment(declaration.id)(getRequestWithSession((submissionUuid, "Id")))
           status(result) must be(SEE_OTHER)
 
           val url = routes.SubmissionController.displayCancelAmendmentPage.url
@@ -230,17 +231,26 @@ class SubmissionControllerSpec extends ControllerWithoutFormSpec with ScalaFutur
       "return 500 (INTERNAL_SERVER_ERROR)" when {
 
         "no submissionUuid is found in session" in {
-          withNewCaching(aDeclaration())
-          val result = controller.cancelAmendment(getJourneyRequest())
+          val result = controller.cancelAmendment(declaration.id)(getJourneyRequest())
           status(result) mustBe INTERNAL_SERVER_ERROR
         }
 
         "Backend fails to find/return a matching submission" in {
-          withNewCaching(aDeclaration())
           when(mockCustomsDeclareExportsConnector.findSubmission(any())(any(), any()))
             .thenReturn(Future.successful(None))
 
-          val result = controller.cancelAmendment(getRequestWithSession((submissionUuid, "Id")))
+          val result = controller.cancelAmendment(declaration.id)(getRequestWithSession((submissionUuid, "Id")))
+          status(result) mustBe INTERNAL_SERVER_ERROR
+        }
+
+        "no declaration is found for the provided declarationId" in {
+          when(mockCustomsDeclareExportsConnector.findSubmission(any())(any(), any()))
+            .thenReturn(Future.successful(Some(expectedSubmission)))
+
+          when(mockCustomsDeclareExportsConnector.findDeclaration(eqTo(declaration.id))(any(), any()))
+            .thenReturn(Future.successful(None))
+
+          val result = controller.cancelAmendment(declaration.id)(getRequestWithSession((submissionUuid, "Id")))
           status(result) mustBe INTERNAL_SERVER_ERROR
         }
 
@@ -248,12 +258,13 @@ class SubmissionControllerSpec extends ControllerWithoutFormSpec with ScalaFutur
           val uuid = UUID.randomUUID().toString
           val expectedSubmission = Submission(uuid, eori = "GB123456", lrn = "123LRN", ducr = Some("ducr"), actions = List.empty, latestDecId = None)
 
-          withNewCaching(aDeclaration())
-
           when(mockCustomsDeclareExportsConnector.findSubmission(any())(any(), any()))
             .thenReturn(Future.successful(Some(expectedSubmission)))
 
-          val result = controller.cancelAmendment(getRequestWithSession((submissionUuid, "Id")))
+          when(mockCustomsDeclareExportsConnector.findDeclaration(eqTo(declaration.id))(any(), any()))
+            .thenReturn(Future.successful(Some(declaration)))
+
+          val result = controller.cancelAmendment(declaration.id)(getRequestWithSession((submissionUuid, "Id")))
           status(result) mustBe INTERNAL_SERVER_ERROR
         }
       }

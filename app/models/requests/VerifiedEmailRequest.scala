@@ -16,4 +16,7 @@
 
 package models.requests
 
-case class VerifiedEmailRequest[+A](request: AuthenticatedRequest[A], email: String) extends AuthenticatedRequest[A](request, request.user) {}
+case class VerifiedEmailRequest[+A](request: AuthenticatedRequest[A], email: String) extends AuthenticatedRequest[A](request, request.user) {
+
+  def eori: String = request.user.eori
+}
