@@ -30,7 +30,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.helpers.Confirmation
 import views.helpers.ConfirmationHelper._
-import views.html.declaration.confirmation.{confirmation_page, holding_page}
+import views.html.declaration.confirmation.{confirmation_page, confirmation_results_page, holding_page}
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -42,7 +42,8 @@ class ConfirmationController @Inject() (
   mcc: MessagesControllerComponents,
   errorHandler: ErrorHandler,
   holdingPage: holding_page,
-  confirmationPage: confirmation_page
+  confirmationPage: confirmation_page,
+  confirmationResultsPage: confirmation_results_page
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with Logging {
 
@@ -73,6 +74,26 @@ class ConfirmationController @Inject() (
       case Some(_) =>
         logger.warn("Unknown value for query parameter 'js'. Can only be 'disabled' or 'enabled'.")
         errorHandler.redirectToErrorPage
+    }
+  }
+
+  val displayConfirmationResultsPage: Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
+    getValue(submissionUuid).fold {
+      errorHandler.internalError("Session on /confirmation does not include the submission's uuid!?")
+    } { submissionId =>
+      customsDeclareExportsConnector.findSubmission(submissionId).flatMap {
+        case Some(submission) if submission.latestEnhancedStatus contains EnhancedStatus.ERRORS =>
+          Future.successful(Redirect(RejectedNotificationsController.displayPage(submissionId)))
+
+        case Some(submission) =>
+          retrieveLocationCode(submission).flatMap {
+            case Right(confirmation) => Future.successful(Ok(confirmationResultsPage(confirmation)))
+            case Left(message)       => errorHandler.internalError(message)
+          }
+
+        case _ =>
+          errorHandler.internalError(s"Submission($submissionId) not found after the holding page??")
+      }
     }
   }
 

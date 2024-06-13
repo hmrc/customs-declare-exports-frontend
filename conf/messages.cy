@@ -2171,6 +2171,21 @@ declaration.confirmation.pending.amendment.title = Mae’ch cais am ddiwygiad yn
 declaration.confirmation.pending.amendment.paragraph = Ewch yn ôl i’r dudalen {0} er mwyn gwirio hynt eich cais am ddiwygiad. Dylai fod ar gael ymhen ychydig o funudau.
 declaration.confirmation.pending.amendment.paragraph.link = Manylion y datganiad
 
+declaration.confirmation.accepted.title = Datganiad wedi’i dderbyn
+declaration.confirmation.accepted.next.1 = Mae’n bosibl y bydd gwiriadau tollau pellach yn cael eu cynnal. Byddwch yn cael gwybod am unrhyw gamau i’w cymryd drwy {0}, sef eich cyfeiriad e-bost CDS cofrestredig, ac drwy {1}.
+declaration.confirmation.accepted.next.2 = Os nad yw statws eich datganiad wedi newid cyn pen 2 awr i amser y derbyniad hwn, {0}, dylech {1}.
+
+declaration.confirmation.cleared.title = Datganiad wedi’i dderbyn, mae gan y nwyddau ganiatâd i symud ymlaen
+declaration.confirmation.cleared.body.1 = Gallwch wirio statws eich datganiad ac argraffu’r ddogfen ategol ar gyfer allforio (EAD) ar {0}.
+declaration.confirmation.cleared.body.2 = Os yw’ch cludwr yn defnyddio’r Gwasanaeth Symud Cerbydau Nwyddau (GVMS), gwnewch yn siŵr bod ganddynt y Datganiad o Gyfeirnod Unigryw y Llwyth (DUCR) er mwyn iddynt greu cyfeirnod symud nwyddau (GMR). Os oeddech eisoes wedi rhoi’r DUCR iddynt, gallant gwblhau’r GMR nawr.
+
+declaration.confirmation.needsDocument.title = Mae angen atodi dogfennau at eich datganiad
+declaration.confirmation.needsDocument.warning = Mae’n rhaid i chi uwchlwytho dogfennau sy’n barod i’w gwirio wrth y tollau.
+declaration.confirmation.needsDocument.body.2 = Gwiriwch y gofynion ac uwchlwytho dogfennau o {0}.
+
+declaration.confirmation.other.title = Mae’ch datganiad yn dal i gael ei wirio
+declaration.confirmation.what.happens.next = Yr hyn sy’n digwydd nesaf
+
 declaration.confirmation.actionRequired.title = Mae’ch datganiad wedi’i gyflwyno - mae angen cymryd camau
 declaration.confirmation.actionRequired.warning = Camau i’w cymryd: Uwchlwytho’r dogfennau sydd ar goll.
 declaration.confirmation.actionRequired.paragraph1 = Mae’ch datganiad wedi’i gyflwyno ond mae angen atodi un neu fwy o ddogfennau o hyd.

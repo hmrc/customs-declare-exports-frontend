@@ -16,15 +16,11 @@
 
 package views.helpers
 
-import controllers.routes.DeclarationDetailsController
+import config.{AppConfig, ExternalServicesConfig}
+import controllers.routes.{DeclarationDetailsController, FileUploadController}
+import forms.declaration.LocationOfGoods.suffixForGVMS
 import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
-import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.{
-  arrivedTypes,
-  from,
-  preLodgedTypes,
-  SUPPLEMENTARY_EIDR,
-  SUPPLEMENTARY_SIMPLIFIED
-}
+import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.from
 import models.declaration.submissions.EnhancedStatus._
 import models.declaration.submissions.Submission
 import play.api.i18n.Messages
@@ -36,7 +32,9 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.panel.Panel
 import uk.gov.hmrc.govukfrontend.views.viewmodels.table.Table
 import uk.gov.hmrc.govukfrontend.views.viewmodels.warningtext.WarningText
-import views.helpers.ConfirmationHelper.getConfirmationPageMessageKey
+import views.components.gds.Styles.gdsPageHeading
+import views.dashboard.DashboardHelper.toDashboard
+import views.helpers.ViewDates.formatTimeDate
 import views.html.components.buttons.print_page_button
 import views.html.components.exit_survey
 import views.html.components.gds._
@@ -47,94 +45,80 @@ case class Confirmation(email: String, declarationType: String, submission: Subm
 
 @Singleton
 class ConfirmationHelper @Inject() (
+  appConfig: AppConfig,
+  externalServicesConfig: ExternalServicesConfig,
   exitSurvey: exit_survey,
   govukPanel: GovukPanel,
   govukTable: GovukTable,
   govukWarningText: GovukWarningText,
   heading: heading,
   link: link,
+  externalLink: externalLink,
+  pageTitle: pageTitle,
   paragraph: paragraphBody
 ) {
 
   def content(confirmation: Confirmation)(implicit request: Request[_], messages: Messages): Html =
     confirmation.submission.latestEnhancedStatus match {
-      case Some(RECEIVED) | Some(GOODS_ARRIVED) | Some(GOODS_ARRIVED_MESSAGE)    => submitted(request, confirmation, messages)
-      case Some(CLEARED) if isArrived(confirmation)                              => submitted(request, confirmation, messages)
-      case Some(ADDITIONAL_DOCUMENTS_REQUIRED) | Some(UNDERGOING_PHYSICAL_CHECK) => actionRequired(request, confirmation, messages)
-      case _                                                                     => pendingNotification(request, confirmation, messages)
+      case Some(RECEIVED)                                                        => received(request, confirmation, messages)
+      case Some(GOODS_ARRIVED) | Some(GOODS_ARRIVED_MESSAGE)                     => accepted(request, confirmation, messages)
+      case Some(CLEARED) if isArrived(confirmation)                              => cleared(request, confirmation, messages)
+      case Some(ADDITIONAL_DOCUMENTS_REQUIRED) | Some(UNDERGOING_PHYSICAL_CHECK) => needsDocuments(confirmation, messages)
+      case _                                                                     => other(confirmation, messages)
     }
 
   def title(confirmation: Confirmation): String =
     confirmation.submission.latestEnhancedStatus match {
-      case Some(RECEIVED) | Some(GOODS_ARRIVED) | Some(GOODS_ARRIVED_MESSAGE)    => "declaration.confirmation.submitted.title"
-      case Some(CLEARED) if isArrived(confirmation)                              => "declaration.confirmation.submitted.title"
-      case Some(ADDITIONAL_DOCUMENTS_REQUIRED) | Some(UNDERGOING_PHYSICAL_CHECK) => "declaration.confirmation.actionRequired.title"
-      case _                                                                     => "declaration.confirmation.pendingNotification.title"
+      case Some(RECEIVED)                                                        => "declaration.confirmation.received.title"
+      case Some(GOODS_ARRIVED) | Some(GOODS_ARRIVED_MESSAGE)                     => "declaration.confirmation.accepted.title"
+      case Some(CLEARED) if isArrived(confirmation)                              => "declaration.confirmation.cleared.title"
+      case Some(ADDITIONAL_DOCUMENTS_REQUIRED) | Some(UNDERGOING_PHYSICAL_CHECK) => "declaration.confirmation.needsDocument.title"
+      case _                                                                     => "declaration.confirmation.other.title"
     }
 
-  private def submitted(implicit request: Request[_], confirmation: Confirmation, messages: Messages): Html = {
-    def whatHappensNext(implicit messages: Messages): List[Html] = {
-      val title = heading(messages("declaration.confirmation.whatHappensNext"), "govuk-heading-m", "h2")
-      val body = paragraph(messages("declaration.confirmation.submitted.whatHappensNext.paragraph"))
+  private def received(implicit request: Request[_], confirmation: Confirmation, messages: Messages): Html =
+    new Html(List(topSection, whatHappensNext, whatYouCanDoNow, bottomSection).flatten)
 
-      List(Some(title), Some(body)).flatten
-    }
+  private def accepted(implicit request: Request[_], confirmation: Confirmation, messages: Messages): Html =
+    new Html(List(topSection, List(body2), whatHappensNext, whatYouCanDoNow, bottomSection).flatten)
 
-    def checkDetails(implicit confirmation: Confirmation, messages: Messages): List[Html] = {
-      val title = heading(messages("declaration.confirmation.checkDetails.title"), "govuk-heading-m", "h2")
-      val paragraph0 = paragraph(messages("declaration.confirmation.submitted.checkDetails.paragraph"))
-      val link1 = link(
-        text = messages("declaration.confirmation.submitted.checkDetails.link"),
-        call = declarationDetailsRoute,
-        classes = Some("govuk-link govuk-body")
-      )
-
-      List(Some(title), Some(paragraph0), Some(link1)).flatten
-    }
-
-    new Html(List(topSection, whatHappensNext, checkDetails, bottomSection).flatten)
-  }
+  private def cleared(implicit request: Request[_], confirmation: Confirmation, messages: Messages): Html =
+    new Html(List(topSection, whatYouCanDoNow, bottomSection).flatten)
 
   private def isArrived(confirmation: Confirmation): Boolean =
     AdditionalDeclarationType.isArrived(from(confirmation.declarationType))
 
-  private def actionRequired(implicit request: Request[_], confirmation: Confirmation, messages: Messages): Html = {
+  private def needsDocuments(implicit confirmation: Confirmation, messages: Messages): Html = {
+    val title = pageTitle(messages("declaration.confirmation.needsDocument.title"), s"$gdsPageHeading $classForACs")
     val warning = govukWarningText(
-      WarningText(iconFallbackText = Some(messages("site.warning")), content = Text(messages("declaration.confirmation.actionRequired.warning")))
+      WarningText(iconFallbackText = Some(messages("site.warning")), content = Text(messages("declaration.confirmation.needsDocument.warning")))
     )
 
-    val title = heading(messages("declaration.confirmation.whatHappensNext"), "govuk-heading-m", "h2")
-    val body1 = paragraph(messages("declaration.confirmation.actionRequired.paragraph1"))
-    val body2 = paragraph(messages("declaration.confirmation.actionRequired.paragraph2"))
-    val link1 =
-      link(text = messages("declaration.confirmation.checkDetails.link"), call = declarationDetailsRoute, classes = Some("govuk-link govuk-body"))
-
-    new Html(topSection ::: List(title, warning, body1, body2, link1) ::: bottomSection)
+    new Html(List(title, warning, body1, body2))
   }
 
-  private def pendingNotification(implicit request: Request[_], confirmation: Confirmation, messages: Messages): Html = {
-    val title = heading(messages("declaration.confirmation.whatHappensNext"), "govuk-heading-m", "h2")
-    val body1 = paragraph(messages("declaration.confirmation.pendingNotification.paragraph1"))
-    val body2 = paragraph(messages("declaration.confirmation.pendingNotification.paragraph2"))
-    val link1 =
-      link(text = messages("declaration.confirmation.checkDetails.link"), call = declarationDetailsRoute, classes = Some("govuk-link govuk-body"))
+  private def other(implicit confirmation: Confirmation, messages: Messages): Html = {
+    val title = pageTitle(messages("declaration.confirmation.other.title"), s"$gdsPageHeading $classForACs")
+    val body1 = paragraph(
+      messages(
+        s"declaration.confirmation.other.body.1",
+        confirmation.submission.ducr.fold("")(ducr => s" ${messages("declaration.confirmation.body.1.ducr", toBold(ducr))}"),
+        s" ${messages("declaration.confirmation.body.1.lrn", toBold(confirmation.submission.lrn))}",
+        link(messages("declaration.confirmation.other.body.1.link"), toDashboard)
+      )
+    )
+    val body2 = paragraph(messages("declaration.confirmation.other.body.2"))
 
-    new Html(topSection ::: List(title, body1, body2, link1) ::: bottomSection)
+    new Html(List(title, body1, body2))
   }
 
-  private def topSection(implicit confirmation: Confirmation, messages: Messages): List[Html] = List(panel(title(confirmation)), table)
-  private def bottomSection(implicit request: Request[_], messages: Messages): List[Html] = List(print_page_button(8, 4), sectionBreak, exitSurvey())
+  private def topSection(implicit confirmation: Confirmation, messages: Messages): List[Html] = List(panel, table)
+  private def bottomSection(implicit request: Request[_], messages: Messages): Seq[Html] = List(print_page_button(8, 4), sectionBreak, exitSurvey())
 
   private def table(implicit confirmation: Confirmation, messages: Messages): Html =
     govukTable(
       Table(rows =
         Seq(
-          Some(
-            Seq(
-              TableRow(content = Text(messages(s"declaration.confirmation.additionalType")), classes = "govuk-!-font-weight-bold"),
-              TableRow(content = Text(messages(getConfirmationPageMessageKey(confirmation.declarationType))))
-            )
-          ),
           confirmation.submission.ducr.map(ducr =>
             Seq(
               TableRow(content = Text(messages(s"declaration.confirmation.ducr")), classes = "govuk-!-font-weight-bold"),
@@ -157,14 +141,120 @@ class ConfirmationHelper @Inject() (
       )
     )
 
-  private def panel(title: String)(implicit messages: Messages): Html =
-    if (title == "declaration.confirmation.submitted.title")
-      govukPanel(Panel(classes = classForACs, title = Text(messages(title))))
-    else
-      govukPanel(Panel(classes = classForACs, title = Text(messages(title)), attributes = Map("style" -> "background: #f3f2f1; color: #0b0c0c;")))
+  private def body1(implicit confirmation: Confirmation, messages: Messages): Html =
+    paragraph(
+      messages(
+        "declaration.confirmation.body.1",
+        confirmation.submission.ducr.fold("")(ducr => s" ${messages("declaration.confirmation.body.1.ducr", toBold(ducr))}"),
+        s" ${messages("declaration.confirmation.body.1.lrn", toBold(confirmation.submission.lrn))}",
+        confirmation.submission.mrn.getOrElse("")
+      )
+    )
+
+  private def body2(implicit confirmation: Confirmation, messages: Messages): Html =
+    paragraph(
+      messages(
+        s"declaration.confirmation${docOrCtl}.body.2",
+        link(messages("declaration.confirmation.declaration.details.link"), declarationDetailsRoute)
+      )
+    )
+
+  private def panel(implicit confirmation: Confirmation, messages: Messages): Html =
+    govukPanel(Panel(classes = classForACs, title = Text(messages(s"declaration.confirmation.$status.title"))))
+
+  private def whatHappensNext(implicit confirmation: Confirmation, messages: Messages): List[Html] = {
+    val next1 = paragraph(
+      messages(
+        s"""declaration.confirmation.$accOrRcv.next.1""",
+        s"""<span class="govuk-!-font-weight-bold">${confirmation.email}</span>""",
+        link(messages("declaration.confirmation.declaration.details.link"), declarationDetailsRoute)
+      )
+    )
+
+    val acceptanceTime =
+      if (confirmation.submission.latestEnhancedStatus.contains(RECEIVED)) None
+      else confirmation.submission.enhancedStatusLastUpdated.map(formatTimeDate(_))
+
+    val next2Args =
+      List(acceptanceTime, Some(link(messages("declaration.confirmation.next.2.link"), Call("GET", appConfig.nationalClearanceHub)))).flatten
+
+    val next2 = paragraph(messages(s"declaration.confirmation.$accOrRcv.next.2", next2Args: _*))
+
+    List(heading(messages("declaration.confirmation.what.happens.next"), "govuk-heading-m", "h2"), next1, next2)
+  }
+
+  private def whatYouCanDoNow(implicit confirmation: Confirmation, messages: Messages): List[Html] = {
+    val title = heading(messages("declaration.confirmation.whatYouCanDoNow.heading"), "govuk-heading-m", "h2")
+    val nonGvmsParagraph = confirmation.locationCode
+      .filterNot(_.endsWith(suffixForGVMS))
+      .map(_ =>
+        paragraph(
+          message = messages(
+            "declaration.confirmation.whatYouCanDoNow.nonGvms.paragraph",
+            link(
+              messages("declaration.confirmation.whatYouCanDoNow.nonGvms.paragraph.link.1"),
+              Call("GET", externalServicesConfig.customsMovementsFrontendUrl)
+            ),
+            link(
+              messages("declaration.confirmation.whatYouCanDoNow.nonGvms.paragraph.link.2"),
+              Call("GET", externalServicesConfig.customsMovementsFrontendUrl)
+            )
+          ),
+          id = Some("non-gvms-paragraph")
+        )
+      )
+
+    confirmation.submission.latestEnhancedStatus match {
+      case Some(RECEIVED) =>
+        val mrn = confirmation.submission.mrn.getOrElse("")
+        val paragraph1 = body2
+        val paragraph2 = paragraph(
+          messages(
+            "declaration.confirmation.whatYouCanDoNow.paragraph.2",
+            externalLink(messages("declaration.confirmation.whatYouCanDoNow.paragraph.2.link"), FileUploadController.startFileUpload(mrn).url)
+          )
+        )
+        List(Some(title), nonGvmsParagraph, Some(paragraph1), Some(paragraph2)).flatten
+
+      case Some(GOODS_ARRIVED) | Some(GOODS_ARRIVED_MESSAGE) if nonGvmsParagraph.isDefined => List(Some(title), nonGvmsParagraph).flatten
+      case Some(GOODS_ARRIVED) | Some(GOODS_ARRIVED_MESSAGE)                               => List.empty
+      case Some(CLEARED) if isArrived(confirmation) =>
+        val body1 = paragraph(
+          messages(
+            "declaration.confirmation.cleared.body.1",
+            link(messages("declaration.confirmation.declaration.details.link"), declarationDetailsRoute)
+          )
+        )
+        val body2 = paragraph(messages(s"declaration.confirmation.cleared.body.2"))
+
+        List(Some(title), nonGvmsParagraph, Some(body1), Some(body2)).flatten
+    }
+  }
+
+  private def accOrRcv(implicit confirmation: Confirmation): String =
+    confirmation.submission.latestEnhancedStatus match {
+      case Some(RECEIVED) => "received"
+      case _              => "accepted"
+    }
+
+  private def docOrCtl(implicit confirmation: Confirmation): String =
+    confirmation.submission.latestEnhancedStatus match {
+      case Some(ADDITIONAL_DOCUMENTS_REQUIRED) | Some(UNDERGOING_PHYSICAL_CHECK) => ".needsDocument"
+      case _                                                                     => ""
+    }
 
   private def declarationDetailsRoute(implicit confirmation: Confirmation): Call =
     DeclarationDetailsController.displayPage(confirmation.submission.uuid)
+
+  private def status(implicit confirmation: Confirmation): String =
+    confirmation.submission.latestEnhancedStatus match {
+      case Some(RECEIVED) => "received"
+      case Some(CLEARED)  => "cleared"
+      case _              => "accepted"
+    }
+
+  private def toBold(value: String): String =
+    s"""<span class="govuk-!-font-weight-bold">${value}</span>"""
 
   private val sectionBreak = Html(s"""<hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">""")
 
@@ -178,14 +268,4 @@ object ConfirmationHelper {
   val js = "js"
   val Disabled = "disabled"
   val Enabled = "enabled"
-
-  def getConfirmationPageMessageKey(declarationType: String): String = {
-    val decType = from(declarationType) match {
-      case Some(declarationType) if preLodgedTypes.contains(declarationType) => "prelodged"
-      case Some(declarationType) if arrivedTypes.contains(declarationType)   => "arrived"
-      case Some(SUPPLEMENTARY_EIDR)                                          => "eidr"
-      case Some(SUPPLEMENTARY_SIMPLIFIED)                                    => "simplified"
-    }
-    s"declaration.confirmation.$decType"
-  }
 }

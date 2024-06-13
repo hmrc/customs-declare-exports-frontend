@@ -565,7 +565,9 @@ GET         /amendment-details/:actionId         controllers.declaration.amendme
 
 GET         /holding                             controllers.declaration.ConfirmationController.displayHoldingPage
 
-GET         /confirmation-results                controllers.declaration.ConfirmationController.displayConfirmationPage
+GET         /confirmation                        controllers.declaration.ConfirmationController.displayConfirmationPage
+
+GET         /confirmation-results                controllers.declaration.ConfirmationController.displayConfirmationResultsPage
 
 GET         /amendment-holding                   controllers.declaration.amendments.AmendmentOutcomeController.displayHoldingPage(isCancellation: Boolean)
 

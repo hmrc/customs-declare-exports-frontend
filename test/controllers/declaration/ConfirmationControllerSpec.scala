@@ -72,6 +72,7 @@ class ConfirmationControllerSpec extends ControllerWithoutFormSpec with GivenWhe
   trait SetUp {
     val holdingPage = instanceOf[holding_page]
     val confirmationPage = instanceOf[confirmation_page]
+    val confirmationResultsPage = instanceOf[confirmation_results_page]
 
     val controller = new ConfirmationController(
       mockAuthAction,
@@ -80,7 +81,8 @@ class ConfirmationControllerSpec extends ControllerWithoutFormSpec with GivenWhe
       mcc,
       errorHandler,
       holdingPage,
-      confirmationPage
+      confirmationPage,
+      confirmationResultsPage
     )
 
     authorizedUser()
@@ -298,4 +300,115 @@ class ConfirmationControllerSpec extends ControllerWithoutFormSpec with GivenWhe
       }
     }
   }
+
+  "ConfirmationController on displayConfirmationResultsPage" should {
+
+    "return 303(SEE_OTHER) status code" when {
+      "at least one notification has been received" in new SetUp {
+        And("the declaration has been rejected")
+        when(mockCustomsDeclareExportsConnector.findSubmission(any())(any(), any()))
+          .thenReturn(Future.successful(Some(submissionWithErrors)))
+
+        val request = buildRequest()
+        val result = controller.displayConfirmationResultsPage(request)
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(RejectedNotificationsController.displayPage(submissionId).url)
+      }
+    }
+
+    "return 500(INTERNAL_SERVER_ERROR) status code" when {
+
+      "the request's session does not include the submissionUuid" in new SetUp {
+        val request = buildVerifiedEmailRequest(FakeRequest("GET", ""), exampleUser)
+        val result = controller.displayConfirmationResultsPage(request)
+
+        status(result) mustBe INTERNAL_SERVER_ERROR
+      }
+
+      "a submission is NOT found" in new SetUp {
+        when(mockCustomsDeclareExportsConnector.findSubmission(any())(any(), any())).thenReturn(Future.successful(None))
+
+        val request = buildRequest()
+        val result = controller.displayConfirmationResultsPage(request)
+
+        status(result) mustBe INTERNAL_SERVER_ERROR
+      }
+
+      "a submission is found but the declaration lookup fails" in new SetUp {
+        when(mockCustomsDeclareExportsConnector.findSubmission(any())(any(), any()))
+          .thenReturn(Future.successful(Some(submissionReceived)))
+
+        when(mockCustomsDeclareExportsConnector.findDeclaration(any())(any(), any())).thenReturn(Future.successful(None))
+
+        val request = buildRequest()
+        val result = controller.displayConfirmationResultsPage(request)
+
+        status(result) mustBe INTERNAL_SERVER_ERROR
+      }
+    }
+
+    "return the expected page" when {
+
+      "no notifications have been received yet" in new SetUp {
+        val submission = Submission(submissionId, "eori", lrn, None, Some(ducr), None, None, Seq.empty[Action], latestDecId = Some(submissionId))
+        when(mockCustomsDeclareExportsConnector.findSubmission(any())(any(), any()))
+          .thenReturn(Future.successful(Some(submission)))
+
+        when(mockCustomsDeclareExportsConnector.findDeclaration(any())(any(), any()))
+          .thenReturn(Future.successful(Some(aDeclaration(withAdditionalDeclarationType()))))
+
+        val request = buildRequest()
+        val result = controller.displayConfirmationResultsPage(request)
+
+        status(result) mustBe OK
+
+        val confirmation = Confirmation(request.email, STANDARD_FRONTIER.toString, submission, None)
+        val expectedView = confirmationResultsPage(confirmation)(request, messages)
+
+        val actualView = viewOf(result)
+        actualView mustBe expectedView
+      }
+
+      "at least one notification has been received" in new SetUp {
+        when(mockCustomsDeclareExportsConnector.findSubmission(any())(any(), any()))
+          .thenReturn(Future.successful(Some(submissionReceived)))
+
+        when(mockCustomsDeclareExportsConnector.findDeclaration(any())(any(), any()))
+          .thenReturn(Future.successful(Some(aDeclaration(withAdditionalDeclarationType()))))
+
+        val request = buildRequest()
+        val result = controller.displayConfirmationResultsPage(request)
+
+        status(result) mustBe OK
+
+        val confirmation = Confirmation(request.email, STANDARD_FRONTIER.toString, submissionReceived, None)
+        val expectedView = confirmationResultsPage(confirmation)(request, messages)
+
+        val actualView = viewOf(result)
+        actualView mustBe expectedView
+      }
+
+      "a submission and declaration are found" in new SetUp {
+        when(mockCustomsDeclareExportsConnector.findSubmission(any())(any(), any()))
+          .thenReturn(Future.successful(Some(submissionReceived)))
+
+        val declaration = aDeclaration(withAdditionalDeclarationType(), withGoodsLocation(LocationOfGoods("")))
+        when(mockCustomsDeclareExportsConnector.findDeclaration(any())(any(), any()))
+          .thenReturn(Future.successful(Some(declaration)))
+
+        val request = buildRequest()
+        val result = controller.displayConfirmationResultsPage(request)
+
+        status(result) mustBe OK
+
+        val confirmation = Confirmation(request.email, STANDARD_FRONTIER.toString, submissionReceived, Some(""))
+        val expectedView = confirmationResultsPage(confirmation)(request, messages)
+
+        val actualView = viewOf(result)
+        actualView mustBe expectedView
+      }
+    }
+  }
+
 }
