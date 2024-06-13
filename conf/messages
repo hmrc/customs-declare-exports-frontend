@@ -2177,6 +2177,34 @@ declaration.confirmation.pending.amendment.title = Your amendment request is sti
 declaration.confirmation.pending.amendment.paragraph = Go back to the {0} page to check the progress of your amendment request. It should be available within a few minutes.
 declaration.confirmation.pending.amendment.paragraph.link = Declaration status
 
+declaration.confirmation.accepted.title = Declaration accepted
+declaration.confirmation.accepted.next.1 = Further customs checks may be carried out. You will be notified about any action required on {0}, which is your registered CDS email address, and on {1}.
+declaration.confirmation.accepted.next.2 = If the status of your declaration has not changed within 2 hours from the time of this acceptance, {0}, you should {1}.
+
+declaration.confirmation.cleared.title = Declaration accepted, goods have permission to progress
+declaration.confirmation.cleared.body.1 = You can check the status of your declaration and print out the export accompanying document (EAD) on {0}.
+declaration.confirmation.cleared.body.2 = If your haulier is using the Goods Vehicle Movement Service (GVMS), ensure they have the Declaration Unique Consignment Reference (DUCR) so they can create a goods movement reference (GMR). If you already gave them the DUCR, the GMR can now be completed.
+
+declaration.confirmation.needsDocument.title = Your declaration needs documents attached
+declaration.confirmation.needsDocument.warning = You need to upload documents ready for checking at customs.
+declaration.confirmation.needsDocument.body.2 = Check the requirements and upload documents from {0}.
+
+declaration.confirmation.other.title = Your declaration is still being checked
+declaration.confirmation.other.body.1 = Your declaration{0}{1} will be given a movement reference number shortly. Go to {2} to find out the status of this declaration and see if you need to take any action.
+declaration.confirmation.other.body.1.link = Your declarations
+declaration.confirmation.other.body.2 = The result should be available immediately or within a few minutes.
+
+declaration.confirmation.received.title = Your declaration has been pre-lodged with HMRC
+declaration.confirmation.received.next.1 = Further customs checks will be carried out when the goods are arrived. You will be notified about any action required on {0}, which is your registered CDS email address, and on {1}.
+declaration.confirmation.received.next.2 = If the status of your declaration has not changed within 2 hours from when the goods are arrived, you should {0}.
+
+declaration.confirmation.what.happens.next = What happens next
+declaration.confirmation.whatYouCanDoNow.nonGvms.paragraph = You are also able to {0} by associating it, and other consignments, to a master consignment. You will also be able to {1} this declaration if you are a registered loader.
+declaration.confirmation.whatYouCanDoNow.nonGvms.paragraph.link.1 = consolidate this declaration
+declaration.confirmation.whatYouCanDoNow.nonGvms.paragraph.link.2 = arrive or depart
+declaration.confirmation.whatYouCanDoNow.paragraph.2 = If you wish, you can {0}, but you do not have to do this unless you get the notification of ‘Documents required’ when your goods are arrived.
+declaration.confirmation.whatYouCanDoNow.paragraph.2.link = upload the documents you named on your declaration (opens in new tab)
+
 declaration.confirmation.submitted.title = Your declaration has been submitted
 declaration.confirmation.submitted.whatHappensNext.paragraph = The declaration request is now pending until a check has been carried out. This will take a few minutes.
 declaration.confirmation.submitted.checkDetails.paragraph = You may still need to correct errors or upload a missing document.

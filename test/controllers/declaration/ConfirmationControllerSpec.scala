@@ -72,6 +72,7 @@ class ConfirmationControllerSpec extends ControllerWithoutFormSpec with GivenWhe
   trait SetUp {
     val holdingPage = instanceOf[holding_page]
     val confirmationPage = instanceOf[confirmation_page]
+    val confirmationResultsPage = instanceOf[confirmation_results_page]
 
     val controller = new ConfirmationController(
       mockAuthAction,
@@ -80,7 +81,8 @@ class ConfirmationControllerSpec extends ControllerWithoutFormSpec with GivenWhe
       mcc,
       errorHandler,
       holdingPage,
-      confirmationPage
+      confirmationPage,
+      confirmationResultsPage
     )
 
     authorizedUser()
