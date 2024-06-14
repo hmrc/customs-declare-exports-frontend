@@ -17,44 +17,40 @@
 package views.dashboard
 
 import config.PaginationConfig
-import config.featureFlags.DeclarationAmendmentsConfig
-import controllers.routes.DeclarationDetailsController
-import controllers.routes.DashboardController
+import controllers.routes.{DashboardController, DeclarationDetailsController}
 import models.PageOfSubmissions
-import models.declaration.submissions.StatusGroup.{statusGroups, StatusGroup, SubmittedStatuses}
+import models.declaration.submissions.StatusGroup.{statusGroups, StatusGroup}
 import models.declaration.submissions.Submission
 import play.api.i18n.Messages
 import play.api.mvc.{Call, Request}
 import play.twirl.api.Html
 import play.twirl.api.HtmlFormat.Appendable
-import uk.gov.hmrc.govukfrontend.views.html.components.GovukTable
+import uk.gov.hmrc.govukfrontend.views.html.components.{GovukButton, GovukTable}
+import uk.gov.hmrc.govukfrontend.views.viewmodels.button.Button
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{HtmlContent, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.table.{HeadCell, Table, TableRow}
-import views.html.dashboard.pagination
 import views.dashboard.DashboardHelper.{Groups, Page, Reverse}
 import views.helpers.{EnhancedStatusHelper, ViewDates}
 import views.html.components.gds.link
-import views.html.dashboard.table
+import views.html.dashboard.{pagination, table}
 
 import java.time.{ZoneId, ZonedDateTime}
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class DashboardHelper @Inject() (
-  govukTable: GovukTable,
-  link: link,
-  pagination: pagination,
-  paginationConfig: PaginationConfig,
-  amendmentsConfig: DeclarationAmendmentsConfig
-) {
+class DashboardHelper @Inject() (govukTable: GovukTable, link: link, pagination: pagination, paginationConfig: PaginationConfig) {
 
-  def hint(statusGroup: StatusGroup)(implicit messages: Messages): Html = {
-    val key = if (amendmentsConfig.isEnabled && statusGroup == SubmittedStatuses) ".amendment" else ""
-    Html(s"""<p class="govuk-body $statusGroup-content-hint">
-         |  ${messages(s"dashboard.$statusGroup$key.content.hint", "<br/>")}
-         |</p>
-         |""".stripMargin)
-  }
+  def heading(statusGroup: StatusGroup)(implicit messages: Messages): Html =
+    Html(s"""<h2 class="govuk-heading-m $statusGroup-heading">
+        |  ${messages(s"dashboard.$statusGroup.heading")}
+        |</h2>
+        |""".stripMargin)
+
+  def hint(statusGroup: StatusGroup)(implicit messages: Messages): Html =
+    Html(s"""<p class="govuk-body $statusGroup-content-hint govuk-!-margin-bottom-6">
+        |  ${messages(s"dashboard.$statusGroup.content.hint")}
+        |</p>
+        |""".stripMargin)
 
   def paginationComponent(pageOfSubmissions: PageOfSubmissions, baseHref: String)(implicit request: Request[_], messages: Messages): Appendable = {
     val totalPagesInGroup = Math.ceil(pageOfSubmissions.totalSubmissionsInGroup.toDouble / paginationConfig.itemsPerPage).toInt
@@ -170,34 +166,29 @@ object DashboardHelper {
 
   def toUTC(datetime: ZonedDateTime) = datetime.withZoneSameInstant(ZoneId.of("UTC")).toInstant
 
-  def panels(pageOfSubmissions: PageOfSubmissions, table: table)(implicit request: Request[_], messages: Messages): Html =
-    Html(statusGroups.map { statusGroup =>
-      if (statusGroup != pageOfSubmissions.statusGroup)
-        s"""<div id="$statusGroup-submissions" class="cds-exports-tabs__panel cds-exports-tabs__panel--hidden"></div>"""
-      else s"""
-          |<div id="$statusGroup-submissions" class="cds-exports-tabs__panel">
+  def buttonGroup(selectedStatusGroup: StatusGroup, govukButton: GovukButton)(implicit messages: Messages): Html = {
+    val groupOfButtons = statusGroups.map { statusGroup =>
+      govukButton(
+        Button(
+          content = Text(messages(s"dashboard.$statusGroup.button.text")),
+          href = Some(s"/customs-declare-exports/dashboard?groups=$statusGroup&page=1"),
+          attributes = Map("id" -> s"$statusGroup-submissions-button", "aria-pressed" -> (statusGroup == selectedStatusGroup).toString),
+          classes =
+            if (statusGroup != selectedStatusGroup) "govuk-button--secondary"
+            else "govuk-button--secondary selected-status-group"
+        )
+      ).toString()
+    }.mkString
+
+    Html(s"""<div class="govuk-button-group">$groupOfButtons</div>""")
+  }
+
+  def panels(pageOfSubmissions: PageOfSubmissions, table: table)(implicit request: Request[_], messages: Messages): Html = {
+    val statusGroup = pageOfSubmissions.statusGroup
+    Html(s"""
+          |<div id="$statusGroup-submissions">
           |  ${table(statusGroup, pageOfSubmissions, s"${DashboardController.displayPage}?$Groups=$statusGroup").toString}
           |</div>
-          |""".stripMargin
-    }.mkString)
-
-  def tabs(selectedStatusGroup: StatusGroup)(implicit messages: Messages): Html =
-    Html(
-      """<ul class="cds-exports-tabs__list">""" +
-        statusGroups.map { statusGroup =>
-          val (current, tabIndex) =
-            if (statusGroup != selectedStatusGroup) ("", "-1")
-            else (" cds-exports-tabs__list-item--selected", "0")
-
-          s"""
-             |<li class="cds-exports-tabs__list-item$current">
-             |  <a id="tab_$statusGroup-submissions" class="cds-exports-tabs__tab"
-             |     href="/customs-declare-exports/dashboard?groups=$statusGroup&amp;page=1">
-             |    ${messages(s"dashboard.$statusGroup.tab.title")}
-             |  </a>
-             |</li>
-             |""".stripMargin
-        }.mkString +
-        "</ul>"
-    )
+          |""".stripMargin)
+  }
 }

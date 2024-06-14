@@ -49,7 +49,7 @@
         @if(currentPage > 1) {
           <li class="ceds-pagination__item ceds-pagination__item--prev">
             <a class="ceds-pagination__link" aria-label="Go to Previous Page"
-               href="@hrefForPreviousPage(currentPage - 1, pageOfSubmissions, baseHref)">Previous</a>
+               href="@hrefForPreviousPage(currentPage - 1, pageOfSubmissions, baseHref)">@messages("dashboard.pagination.previous")</a>
           </li>
         }
 
@@ -74,7 +74,7 @@
         @if(currentPage < totalPagesInGroup) {
           <li class="ceds-pagination__item ceds-pagination__item--next">
             <a class="ceds-pagination__link" aria-label="Go to Next Page"
-               href="@hrefForGoToNextPage(currentPage + 1)">Next</a>
+               href="@hrefForGoToNextPage(currentPage + 1)">@messages("dashboard.pagination.next")</a>
           </li>
         }
       </ul>
