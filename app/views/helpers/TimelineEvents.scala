@@ -24,6 +24,7 @@ import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.{Ad
 import models.declaration.submissions.EnhancedStatus._
 import models.declaration.submissions.RequestType._
 import models.declaration.submissions.{Action, NotificationSummary, RequestType, Submission}
+import play.api.Logging
 import play.api.i18n.Messages
 import play.api.mvc.Call
 import play.twirl.api.{Html, HtmlFormat}
@@ -56,7 +57,7 @@ class TimelineEvents @Inject() (
   sfusConfig: SfusConfig,
   declarationAmendmentsConfig: DeclarationAmendmentsConfig,
   uploadFilesPartialForTimeline: upload_files_partial_for_timeline
-) {
+) extends Logging {
   def apply(submission: Submission, declarationType: AdditionalDeclarationType)(implicit messages: Messages): Seq[TimelineEvent] = {
     val notificationEvents = createNotificationEvents(submission)
 
@@ -176,10 +177,10 @@ class TimelineEvents @Inject() (
           }
       }
 
-  private def fixAndResubmitContent(submission: Submission, amendmentEventIfLatest: Option[AmendmentEventIfLatest])(
+  private def fixAndResubmitContent(submission: Submission, maybeAmendmentEventIfLatest: Option[AmendmentEventIfLatest])(
     implicit messages: Messages
   ): Html =
-    amendmentEventIfLatest.fold {
+    maybeAmendmentEventIfLatest.fold {
       linkButton("declaration.details.fix.resubmit.button", RejectedNotificationsController.displayPage(submission.uuid))
     } { amendmentEventAsLatest =>
       val button = amendmentEventAsLatest match {
@@ -193,8 +194,15 @@ class TimelineEvents @Inject() (
           )
       }
 
-      val cancelUrl = SubmissionController.cancelAmendment
-      val cancelLink = link(messages("declaration.details.cancel.amendment"), cancelUrl, id = Some("cancel-amendment"))
+      val cancelLink =
+        amendmentEventAsLatest.action.decId.fold {
+          logger.warn(s"Failed/rejected amendment for submission(${submission.uuid}) cannot be cancelled due to missing action.decId")
+          HtmlFormat.empty
+        } { declarationId =>
+          val cancelUrl = SubmissionController.cancelAmendment(declarationId)
+          link(messages("declaration.details.cancel.amendment"), cancelUrl, id = Some("cancel-amendment"))
+        }
+
       Html(s"""<div class="govuk-button-group">${button.toString()}${cancelLink.toString()}</div>""")
     }
 
