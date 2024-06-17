@@ -244,6 +244,7 @@ trait AuditTestSupport extends UnitWithMocksSpec with ExportsDeclarationBuilder 
       |          "Containers" : 1
       |      }
       |  },
+      |  "eori" : "",
       |  "type" : "STANDARD",
       |  "additionalDeclarationType" : "D",
       |  "consignmentReferences" : {
@@ -460,6 +461,7 @@ trait AuditTestSupport extends UnitWithMocksSpec with ExportsDeclarationBuilder 
       |          "Containers" : 1
       |      }
       |  },
+      |  "eori" : "",
       |  "type" : "STANDARD",
       |  "additionalDeclarationType" : "D",
       |  "consignmentReferences" : {
@@ -668,6 +670,7 @@ trait AuditTestSupport extends UnitWithMocksSpec with ExportsDeclarationBuilder 
       |      },
       |      "associatedSubmissionId" : "ad84503f-2961-443f-9e69-addc20eb9696"
       |  },
+      |  "eori" : "",
       |  "type" : "SUPPLEMENTARY",
       |  "additionalDeclarationType" : "Z",
       |  "consignmentReferences" : {
@@ -858,6 +861,7 @@ trait AuditTestSupport extends UnitWithMocksSpec with ExportsDeclarationBuilder 
       |      },
       |      "associatedSubmissionId" : "ad84503f-2961-443f-9e69-addc20eb9696"
       |  },
+      |  "eori" : "",
       |  "type" : "SUPPLEMENTARY",
       |  "additionalDeclarationType" : "Z",
       |  "consignmentReferences" : {

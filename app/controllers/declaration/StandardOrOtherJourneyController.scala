@@ -97,7 +97,7 @@ class StandardOrOtherJourneyController @Inject() (
   private def createAndNextPage(eori: String)(implicit request: RequestHeader): Future[Result] = {
     val declarationMeta = DeclarationMeta(status = INITIAL, createdDateTime = Instant.now, updatedDateTime = Instant.now)
     exportsCacheService
-      .create(ExportsDeclaration(id = "", declarationMeta, STANDARD), eori)
+      .create(ExportsDeclaration(id = "", declarationMeta = declarationMeta, eori = eori, `type` = STANDARD), eori)
       .map(declaration => nextPage(Some(declaration.id), StandardDeclarationType))
   }
 

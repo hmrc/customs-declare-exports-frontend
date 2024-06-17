@@ -150,7 +150,7 @@ class CustomsDeclareExportsConnectorISpec extends ConnectorISpec with ExportsDec
   "Update Declaration" should {
     "return payload" in {
       stubForExports(
-        put(s"/declarations/$id")
+        put(s"/declarations")
           .willReturn(
             aResponse()
               .withStatus(Status.ACCEPTED)
@@ -162,7 +162,7 @@ class CustomsDeclareExportsConnectorISpec extends ConnectorISpec with ExportsDec
 
       response mustBe declaration
       WireMock.verify(
-        putRequestedFor(urlEqualTo(s"/declarations/id"))
+        putRequestedFor(urlEqualTo(s"/declarations"))
           .withRequestBody(containing(json(declaration)))
       )
     }
