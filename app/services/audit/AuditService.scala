@@ -29,8 +29,6 @@ import uk.gov.hmrc.play.audit.http.connector.{AuditConnector, AuditResult}
 import uk.gov.hmrc.play.audit.model.{DataEvent, ExtendedDataEvent}
 
 import scala.concurrent.{ExecutionContext, Future}
-import scala.util
-import scala.util.Try
 
 class AuditService @Inject() (connector: AuditConnector, appConfig: AppConfig)(implicit ec: ExecutionContext) extends Logging {
 
@@ -118,20 +116,25 @@ class AuditService @Inject() (connector: AuditConnector, appConfig: AppConfig)(i
     hcAuditDetails.deepMerge(userInput)
   }
 
-  private def stripAllEmptyFields(json: JsValue): JsValue =
-    Try[JsValue](
-      Json.parse(
-        json.toString
-          .replaceAll(""""[a-zA-Z]+":\[],""", "") // Remove any (field -> empty JsArray) pair
-          .replaceAll(""",?"[a-zA-Z]+":\[]""", "")
-          .replaceAll(""""[a-zA-Z]+":\{},""", "") // Remove any (field -> empty JsObject) pair
-          .replaceAll("""",?[a-zA-Z]+":\{}""", "")
-      )
-    ) match {
-      case util.Success(jsonWithoutEmptyField) => jsonWithoutEmptyField
-      case util.Failure(msg) =>
-        logger.info(s"Cannot strip empty fields from Json:\n\t$msg")
-        json
+  private def stripAllEmptyFields(jsValue: JsValue): JsValue =
+    jsValue match {
+      case JsObject(mapOfFields) if mapOfFields.nonEmpty =>
+        val newMapOfFields = mapOfFields.flatMap { case (key, jsValue) =>
+          val result = stripAllEmptyFields(jsValue)
+          if (result == JsNull) None else Some(key -> result)
+        }
+        if (newMapOfFields.nonEmpty) JsObject(newMapOfFields) else JsNull
+
+      case JsArray(seqOfJsValues) if seqOfJsValues.nonEmpty =>
+        val newSeqOfJsValues = seqOfJsValues.flatMap { jsValue =>
+          val result = stripAllEmptyFields(jsValue)
+          if (result == JsNull) None else Some(result)
+        }
+        if (newSeqOfJsValues.nonEmpty) JsArray(newSeqOfJsValues) else JsNull
+
+      case _: JsObject | _: JsArray => JsNull
+
+      case json => json
     }
 }
 
