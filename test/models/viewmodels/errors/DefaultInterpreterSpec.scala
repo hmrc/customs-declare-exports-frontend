@@ -54,7 +54,8 @@ class DefaultInterpreterSpec extends UnitSpec with UnitViewSpec with ExportsDecl
   val dummyLink = """<a href="">Change</a>"""
   val fieldPointer = "declaration.items.#1.additionalDocument.#2.documentStatus"
 
-  "DefaultInterpreter's generateHtmlFor method is called" that {
+  "DefaultInterpreter.generateHtmlFor" should {
+
     "displays no errors" when {
       "is passed an ErrorInstance with no fields" in {
         val errorCode = "CDS12056"
@@ -94,19 +95,6 @@ class DefaultInterpreterSpec extends UnitSpec with UnitViewSpec with ExportsDecl
     }
 
     "picks a specialised interpreter" when {
-      "error is for error code CDS12062" in {
-        val errorCode = "CDS12062"
-        val error = ErrorInstance(declaration, 2, errorCode, Seq.empty[FieldInvolved])
-
-        val html = DefaultInterpreter.generateHtmlFor(error).toString
-
-        val errorDescription = messages(s"dmsError.$errorCode.title")
-
-        html must include("Error 2")
-        html must include(errorDescription)
-        html must not include govTable
-      }
-
       "error is for error code CDS12119" in {
         val errorCode = "CDS12119"
         val error = ErrorInstance(declaration, 1, errorCode, Seq.empty[FieldInvolved])

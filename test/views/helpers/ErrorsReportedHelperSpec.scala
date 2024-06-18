@@ -23,6 +23,7 @@ import forms.declaration.AdditionalActor
 import models.Pointer
 import models.declaration.notifications.{Notification, NotificationError}
 import models.declaration.submissions.SubmissionStatus
+import org.jsoup.Jsoup
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
@@ -30,6 +31,8 @@ import services.cache.{ExportsDeclarationBuilder, ExportsItemBuilder}
 import views.declaration.spec.UnitViewSpec
 import views.html.components.gds.link
 
+import java.net.URLDecoder
+import java.nio.charset.StandardCharsets.UTF_8
 import java.time.ZonedDateTime
 
 class ErrorsReportedHelperSpec extends UnitViewSpec with Injector with MockitoSugar with ExportsDeclarationBuilder with ExportsItemBuilder {
@@ -46,23 +49,23 @@ class ErrorsReportedHelperSpec extends UnitViewSpec with Injector with MockitoSu
   val validationCode = "CDS12056"
 
   "ErrorsReportedHelper" should {
+
     "return 0 ErrorInstances" when {
+
       "no Notification provided" in {
         val errors = errorRepHelper.generateErrorRows(None, aDeclaration(), None, false)
-
         errors.size mustBe 0
       }
 
       "a Notification is provided but with no NotificationErrors" in {
         val notification = Notification("actionId", "mrn", ZonedDateTime.now(), SubmissionStatus.ACCEPTED, Seq.empty[NotificationError])
         val errors = errorRepHelper.generateErrorRows(Some(notification), aDeclaration(), None, false)
-
         errors.size mustBe 0
       }
     }
 
     "return ErrorInstances grouped together by error code" in {
-      val notificationErrors = Seq(
+      val notificationErrors = List(
         NotificationError(validationCode, None, None),
         NotificationError(validationCode, None, None),
         NotificationError(validationCode.reverse, None, None)
@@ -75,10 +78,10 @@ class ErrorsReportedHelperSpec extends UnitViewSpec with Injector with MockitoSu
       errors.drop(1).head.errorCode mustBe validationCode.reverse
     }
 
-    "Return only the original value" when {
+    "return only the original value" when {
       "No draft value is defined" in {
         val fieldPointer = Pointer("declaration.consignmentReferences.lrn")
-        val notificationErrors = Seq(NotificationError(validationCode, Some(fieldPointer), None))
+        val notificationErrors = List(NotificationError(validationCode, Some(fieldPointer), None))
         val notification = Notification("actionId", "mrn", ZonedDateTime.now(), SubmissionStatus.ACCEPTED, notificationErrors)
         val originalDec = aDeclaration(withConsignmentReferences("DUCR", "LRN"))
         val updatedDec = None
@@ -92,7 +95,7 @@ class ErrorsReportedHelperSpec extends UnitViewSpec with Injector with MockitoSu
 
       "draft value is defined but is same as original value" in {
         val fieldPointer = Pointer("declaration.consignmentReferences.lrn")
-        val notificationErrors = Seq(NotificationError(validationCode, Some(fieldPointer), None))
+        val notificationErrors = List(NotificationError(validationCode, Some(fieldPointer), None))
         val notification = Notification("actionId", "mrn", ZonedDateTime.now(), SubmissionStatus.ACCEPTED, notificationErrors)
         val originalDec = aDeclaration(withConsignmentReferences("DUCR", "LRN"))
         val updatedDec = Some(aDeclaration(withConsignmentReferences("DUCR2", "LRN")))
@@ -105,10 +108,10 @@ class ErrorsReportedHelperSpec extends UnitViewSpec with Injector with MockitoSu
       }
     }
 
-    "Return both original and draft value" when {
+    "return both original and draft value" when {
       "a draft value is defined" in {
         val fieldPointer = Pointer("declaration.consignmentReferences.lrn")
-        val notificationErrors = Seq(NotificationError(validationCode, Some(fieldPointer), None))
+        val notificationErrors = List(NotificationError(validationCode, Some(fieldPointer), None))
         val notification = Notification("actionId", "mrn", ZonedDateTime.now(), SubmissionStatus.ACCEPTED, notificationErrors)
         val originalDec = aDeclaration(withConsignmentReferences("DUCR", "LRN"))
         val updatedDec = Some(aDeclaration(withConsignmentReferences("DUCR2", "LRN2")))
@@ -121,10 +124,10 @@ class ErrorsReportedHelperSpec extends UnitViewSpec with Injector with MockitoSu
       }
     }
 
-    "Return a count of the number of Additional Parties as the values" when {
+    "return a count of the number of Additional Parties as the values" when {
       "Additional Parties is the field in error" in {
         val fieldPointer = Pointer("declaration.parties.additionalActors")
-        val notificationErrors = Seq(NotificationError(validationCode, Some(fieldPointer), None))
+        val notificationErrors = List(NotificationError(validationCode, Some(fieldPointer), None))
         val notification = Notification("actionId", "mrn", ZonedDateTime.now(), SubmissionStatus.ACCEPTED, notificationErrors)
         val originalDec = aDeclaration(withAdditionalActors(AdditionalActor(Some(Eori("eori")), Some("partyType"))))
         val updatedDec = Some(
@@ -141,11 +144,10 @@ class ErrorsReportedHelperSpec extends UnitViewSpec with Injector with MockitoSu
       }
     }
 
-    "Return short country names for the values" when {
-
+    "return short country names for the values" when {
       "a field that has a cached country code is in error" in {
         val fieldPointer = Pointer("declaration.transport.transportCrossingTheBorderNationality.countryCode")
-        val notificationErrors = Seq(NotificationError(validationCode, Some(fieldPointer), None))
+        val notificationErrors = List(NotificationError(validationCode, Some(fieldPointer), None))
         val notification = Notification("actionId", "mrn", ZonedDateTime.now(), SubmissionStatus.ACCEPTED, notificationErrors)
         val originalDec = aDeclaration(withTransportCountry(Some("ZA")))
         val updatedDec = Some(aDeclaration(withTransportCountry(Some("GB"))))
@@ -156,6 +158,27 @@ class ErrorsReportedHelperSpec extends UnitViewSpec with Injector with MockitoSu
         errors.head.fieldsInvolved.head.originalValue mustBe Some("South Africa")
         errors.head.fieldsInvolved.head.draftValue mustBe Some("United Kingdom")
       }
+    }
+
+    "return the expected ErrorInstance on error code CDS12062" in {
+      val errorCode = "CDS12062"
+      val notificationErrors = List(NotificationError(errorCode, None, None))
+      val notification = Notification("actionId", "mrn", ZonedDateTime.now(), SubmissionStatus.ACCEPTED, notificationErrors)
+      val errors = errorRepHelper.generateErrorRows(Some(notification), aDeclaration(withConsignmentReferences()), None, false)
+
+      errors.size mustBe 1
+      errors.head.errorCode mustBe errorCode
+
+      errors.head.fieldsInvolved.size mustBe 1
+
+      val fieldInvolved = errors.head.fieldsInvolved.head
+      fieldInvolved.pointer.sections.head.value mustBe PointerRecord.pointerToDucr
+      fieldInvolved.originalValue.value mustBe DUCR
+
+      val document = Jsoup.parse(fieldInvolved.changeLink.value.toString)
+      val link = document.body.getElementById("item-header-action")
+      val href = URLDecoder.decode(link.attr("href"), UTF_8)
+      assert(href.endsWith("/ducr-entry"))
     }
   }
 }
