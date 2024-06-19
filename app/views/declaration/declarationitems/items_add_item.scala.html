@@ -34,7 +34,8 @@
     addButton: addButton,
     navigator: Navigator,
     formHelper: FormWithCSRF,
-    exitAndCompleteLater: exitAndCompleteLater
+    exitAndCompleteLater: exitAndCompleteLater,
+    insetText: exportsInsetText
 )
 
 @()(implicit request: JourneyRequest[_], messages: Messages)
@@ -74,6 +75,13 @@
       @pageTitle(messages("declaration.itemsAdd.title"))
 
       @paragraphBody(messages("declaration.itemsAdd.paragraph.1"))
+
+      @insetText(HtmlContent(HtmlFormat.fill(List(
+        paragraphBody(messages("declaration.itemsAdd.inset.paragraph.1")),
+        paragraphBody(messages("declaration.itemsAdd.inset.paragraph.2")),
+        paragraphBody(messages("declaration.itemsAdd.inset.paragraph.3"))
+      ))))
+
       @paragraphBody(messages("declaration.itemsAdd.paragraph.2"))
       @paragraphBody(messages("declaration.itemsAdd.paragraph.3"))
 
