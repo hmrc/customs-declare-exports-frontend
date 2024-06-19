@@ -489,6 +489,8 @@ declaration.confirmDucr.expander.content.p2 = Er enghraifft, 9GB000000000000-123
 declaration.confirmDucr.error.empty = Dewiswch ‘Iawn’ i gadarnhau’ch DUCR
 
 declaration.entryIntoDeclarantRecords.title = Ai cofnod i gofnodion y datganydd (EIDR) yw hwn?
+declaration.entryIntoDeclarantRecords.notification.title = Pwysig: Beth yw Cofnod yng Nghofnodion y Datganydd
+declaration.entryIntoDeclarantRecords.notification.body = Mae Cofnod yng Nghofnodion y Datganydd yn weithdrefn awdurdodedig a ddefnyddir gan fewnforwyr ac allforwyr awdurdodedig. Mae’n caniatáu iddynt ddatgan eu mewnforion a’u hallforion o’u safle awdurdodedig neu leoliad(au) cymeradwy, ac mae’n ei gwneud yn ofynnol iddynt gofnodi data y cytunwyd arnynt i’w systemau cyfrifiadurol eu hunain, y mae angen i CThEF eu harchwilio.
 declaration.entryIntoDeclarantRecords.answer.yes = Iawn
 declaration.entryIntoDeclarantRecords.answer.no = Na
 declaration.entryIntoDeclarantRecords.error = Dewiswch ‘Iawn’ os mai cofnod i gofnodion y datganydd yw hwn

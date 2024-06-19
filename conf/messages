@@ -489,6 +489,8 @@ declaration.confirmDucr.expander.content.p2 = For example, 9GB000000000000-12345
 declaration.confirmDucr.error.empty = Select yes to confirm your DUCR
 
 declaration.entryIntoDeclarantRecords.title = Is this an entry into declarant’s records (EIDR)?
+declaration.entryIntoDeclarantRecords.notification.title = Important: What is Entry Into Declarant’s Records
+declaration.entryIntoDeclarantRecords.notification.body = ‘Entry in the Declarant’s Records’ is an authorised procedure used by authorised importers and exporters. It allows them to declare their imports and exports from their authorised premises or approved location(s), and requires them to enter agreed data into their own computer systems, which need to be auditable by HMRC.
 declaration.entryIntoDeclarantRecords.answer.yes = Yes
 declaration.entryIntoDeclarantRecords.answer.no = No
 declaration.entryIntoDeclarantRecords.error = Select yes if this is an entry into the declarant’s records
