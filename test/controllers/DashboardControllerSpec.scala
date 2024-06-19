@@ -46,7 +46,7 @@ class DashboardControllerSpec extends ControllerWithoutFormSpec with BeforeAndAf
   private val pageOfSubmissions = {
     val uuid = UUID.randomUUID.toString
     val submission = Submission(uuid, "eori", "lrn", None, None, Some(GOODS_ARRIVED), Some(dateTime), Seq(action), Some(uuid))
-    PageOfSubmissions(SubmittedStatuses, 1, Seq(submission), true)
+    PageOfSubmissions(SubmittedStatuses, 1, Seq(submission))
   }
 
   private val dashboard = mock[dashboard]

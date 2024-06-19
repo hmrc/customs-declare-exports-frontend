@@ -29,7 +29,7 @@ import uk.gov.hmrc.govukfrontend.views.html.components.{GovukButton, GovukTable}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.button.Button
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{HtmlContent, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.table.{HeadCell, Table, TableRow}
-import views.dashboard.DashboardHelper.{Groups, Page, Reverse}
+import views.dashboard.DashboardHelper.Page
 import views.helpers.{EnhancedStatusHelper, ViewDates}
 import views.html.components.gds.link
 import views.html.dashboard.{pagination, table}
@@ -68,7 +68,7 @@ class DashboardHelper @Inject() (govukTable: GovukTable, link: link, pagination:
         HeadCell(Text(messages("dashboard.header.mrn"))),
         HeadCell(Text(messages("dashboard.header.ducr"))),
         HeadCell(Text(messages("dashboard.header.lrn"))),
-        updatedOnHeader(pageOfSubmissions, statusGroup),
+        HeadCell(Text(messages("dashboard.header.updated.on"))),
         HeadCell(Text(messages("dashboard.header.status")))
       )
     )
@@ -100,22 +100,6 @@ class DashboardHelper @Inject() (govukTable: GovukTable, link: link, pagination:
 
   private def updatedOn(submission: Submission)(implicit messages: Messages): String =
     submission.enhancedStatusLastUpdated.map(ViewDates.formatDateAtTime).getOrElse("")
-
-  private def updatedOnHeader(pageOfSubmissions: PageOfSubmissions, statusGroup: StatusGroup)(implicit messages: Messages): HeadCell = {
-    val descending = !pageOfSubmissions.reverse
-    if (pageOfSubmissions.submissions.isEmpty) HeadCell(Text(messages("dashboard.header.updated.on")))
-    else HeadCell(updatedOnLink(statusGroup, descending), attributes = Map("aria-sort" -> (if (descending) "descending" else "ascending")))
-  }
-
-  private def updatedOnLink(statusGroup: StatusGroup, descending: Boolean)(implicit messages: Messages): HtmlContent = {
-    val reverse = if (descending) Reverse else ""
-    HtmlContent(s"""<a class="govuk-link govuk-link--no-visited-state update-on-order"
-         |   href="${DashboardController.displayPage}?$Groups=$statusGroup&page=1$reverse">
-         |  ${messages("dashboard.header.updated.on")}
-         |  <span aria-hidden="true"></span>
-         |</a>
-         |""".stripMargin)
-  }
 }
 
 object DashboardHelper {
@@ -130,30 +114,24 @@ object DashboardHelper {
   val Reverse = "&reverse"
 
   def hrefForLastPage(itemsPerPage: Int, totalPagesInGroup: Int, pageOfSubmissions: PageOfSubmissions, baseHref: String): String = {
-    val reverse = if (pageOfSubmissions.reverse) Reverse else ""
     val limit = pageOfSubmissions.totalSubmissionsInGroup - (totalPagesInGroup - 1) * itemsPerPage
-    s"${baseHref}&$Limit=$limit$reverse"
+    s"${baseHref}&$Limit=$limit"
   }
 
   def hrefForLoosePage(goToPage: Int, currentPage: Int, pageOfSubmissions: PageOfSubmissions, baseHref: String): String =
     if (goToPage - currentPage == 1) hrefForNextPage(goToPage, pageOfSubmissions, baseHref)
     else if (currentPage - goToPage == 1) hrefForPreviousPage(goToPage, pageOfSubmissions, baseHref)
-    else {
-      val reverse = if (pageOfSubmissions.reverse) Reverse else ""
-      s"$baseHref&$Page=$goToPage$reverse"
-    }
+    else s"$baseHref&$Page=$goToPage"
 
   def hrefForNextPage(nextPage: Int, pageOfSubmissions: PageOfSubmissions, baseHref: String): String = {
-    val reverse = if (pageOfSubmissions.reverse) Reverse else ""
-    val hrefWithPage = s"$baseHref&$Page=$nextPage$reverse"
+    val hrefWithPage = s"$baseHref&$Page=$nextPage"
     pageOfSubmissions.submissions.lastOption.fold(hrefWithPage) { submission =>
       addDatetime(hrefWithPage, DatetimeForNextPage, submission.enhancedStatusLastUpdated)
     }
   }
 
   def hrefForPreviousPage(previousPage: Int, pageOfSubmissions: PageOfSubmissions, baseHref: String): String = {
-    val reverse = if (pageOfSubmissions.reverse) Reverse else ""
-    val hrefWithPage = s"$baseHref&$Page=$previousPage$reverse"
+    val hrefWithPage = s"$baseHref&$Page=$previousPage"
     if (previousPage == 1) hrefWithPage
     else
       pageOfSubmissions.submissions.headOption.fold(hrefWithPage) { submission =>
