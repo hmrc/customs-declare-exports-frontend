@@ -92,13 +92,13 @@ class DashboardViewSpec extends UnitViewSpec with ExportsTestHelper {
 
   private def createView(status: EnhancedStatus = RECEIVED, totalSubmissionsInPage: Int = 0, totalSubmissionsInGroup: Int = 0): Html = {
     val statusGroup = toStatusGroup(status)
-    val pageOfSubmissions = PageOfSubmissions(statusGroup, totalSubmissionsInGroup, listOfSubmissions(status, totalSubmissionsInPage), false)
+    val pageOfSubmissions = PageOfSubmissions(statusGroup, totalSubmissionsInGroup, listOfSubmissions(status, totalSubmissionsInPage))
     page(pageOfSubmissions)(request(statusGroup, 1), messages)
   }
 
   private def createView(submissionsInPage: Seq[Submission], totalSubmissionsInGroup: Int, currentPage: Int): Html = {
     val statusGroup = toStatusGroup(submissionsInPage.head)
-    page(PageOfSubmissions(statusGroup, totalSubmissionsInGroup, submissionsInPage, false))(request(statusGroup, currentPage), messages)
+    page(PageOfSubmissions(statusGroup, totalSubmissionsInGroup, submissionsInPage))(request(statusGroup, currentPage), messages)
   }
 
   private val statuses = EnhancedStatus.values.toList
@@ -110,7 +110,7 @@ class DashboardViewSpec extends UnitViewSpec with ExportsTestHelper {
     List(Lang("en"), Lang("cy")).foreach { lang =>
       s"have the 'lang' attribute of the '<html' tag set to ${lang.code}" in {
         val statusGroup = toStatusGroup(RECEIVED)
-        val pageOfSubmissions = PageOfSubmissions(statusGroup, 0, listOfSubmissions(), false)
+        val pageOfSubmissions = PageOfSubmissions(statusGroup, 0, listOfSubmissions())
         val messages = stubMessagesApi(langs = stubLangs(List(lang))).preferred(List(lang))
         val view = page(pageOfSubmissions)(request(statusGroup, 1), messages)
         view.getElementsByTag("html").get(0).attr("lang").take(2) mustBe lang.code
@@ -335,36 +335,8 @@ class DashboardViewSpec extends UnitViewSpec with ExportsTestHelper {
         headers.get(0).text mustBe messages("dashboard.header.mrn")
         headers.get(1).text mustBe messages("dashboard.header.ducr")
         headers.get(2).text mustBe messages("dashboard.header.lrn")
+        headers.get(3).text mustBe messages("dashboard.header.updated.on")
         headers.get(4).text mustBe messages("dashboard.header.status")
-
-        val updateOn = headers.get(3)
-        updateOn.attr("aria-sort") mustBe "descending"
-
-        val updateOnLink = updateOn.getElementsByClass("update-on-order").first
-        updateOnLink.tagName mustBe "a"
-        updateOnLink.text mustBe messages("dashboard.header.updated.on")
-
-        updateOnLink.attr("href").split("\\?").toList match {
-          case path :: queryString =>
-            path mustBe DashboardController.displayPage.url
-            queryString.head.contains(s"$Groups=$SubmittedStatuses") mustBe true
-            queryString.head.contains(s"$Page=1") mustBe true
-            queryString.head.contains(Reverse) mustBe true
-        }
-      }
-
-      "not include the 'reverse' parameter in the query string of the 'Update on' link" when {
-        "the user clicks the link when the current ordering is 'ascending'" in {
-          val statusGroup = toStatusGroup(RECEIVED)
-          val pageOfSubmissions = PageOfSubmissions(statusGroup, 1, listOfSubmissions(RECEIVED, 1), true)
-          val view = page(pageOfSubmissions)(request(statusGroup, 1), messages)
-
-          val updateOn = view.getElementsByClass("govuk-table__header").get(3)
-          updateOn.attr("aria-sort") mustBe "ascending"
-
-          val updateOnLink = updateOn.getElementsByClass("update-on-order").first
-          updateOnLink.attr("href").contains(Reverse) mustBe false
-        }
       }
 
       "display the submissions in rows and columns" when {
