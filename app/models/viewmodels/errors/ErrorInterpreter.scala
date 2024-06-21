@@ -132,7 +132,6 @@ object DefaultInterpreter extends ErrorInterpreter {
   def generateHtmlFor(error: ErrorInstance)(implicit messages: Messages, codeListConnector: CodeListConnector, link: link): Option[Html] = {
 
     val specificErrorContent = error.errorCode match {
-      case "CDS12062" => CDS12062Interpreter.generateHtmlFor(error)
       case "CDS12119" => CDS12119Interpreter.generateHtmlFor(error)
       case _          => defaultContent(error)
     }

@@ -16,11 +16,14 @@
 
 package models.declaration.notifications
 
-import models.Pointer
+import models.{Pointer, PointerSection, PointerSectionType}
 import play.api.libs.json.{Json, OFormat}
+import views.helpers.PointerRecord
 
 case class NotificationError(validationCode: String, pointer: Option[Pointer], description: Option[String] = None)
 
 object NotificationError {
   implicit val format: OFormat[NotificationError] = Json.format[NotificationError]
+
+  val CDS12062 = NotificationError("CDS12062", Some(Pointer(List(PointerSection(PointerRecord.pointerToDucr, PointerSectionType.FIELD)))))
 }

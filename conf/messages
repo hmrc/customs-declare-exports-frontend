@@ -2454,7 +2454,7 @@ field.declaration.previousDocuments.$.goodsItemIdentifier = Item document relate
 field.declaration.locations.warehouseIdentification.identificationNumber = Warehouse ID
 field.declaration.locations.warehouseIdentification.identificationType = Warehouse type
 field.declaration.locations.warehouseIdentification.supervisingCustomsOffice = Customs supervising office
-field.declaration.consignmentReferences.ucr = Unique Consignment Reference (UCR)
+field.declaration.consignmentReferences.ucr = DUCR Reference
 
 dmsError.CDS10001.title = Required details are missing
 dmsError.CDS10002.title = Invalid entry on the declaration
