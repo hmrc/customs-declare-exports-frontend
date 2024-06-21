@@ -1768,7 +1768,7 @@ declaration.commodityMeasure.expander.title = Pan mae nodi Pwysau Net neu Bwysau
 declaration.commodityMeasure.expander.paragraph.1 = Lle nad yw’n ofynnol i nodi’r pwysau, gellir gadael y maes yn wag.
 declaration.commodityMeasure.expander.paragraph.2 = Ar gyfer allforion i Guernsey a Jersey, mae nodi Pwysau Gros yn ddewisol.
 declaration.commodityMeasure.expander.paragraph.3 = Nid yw’n ofynnol i nodi Pwysau Gros ar geisiadau i glirio’r tollau.
-declaration.commodityMeasure.expander.paragraph.4 = Ar gyfer ceisiadau i glirio’r tollau EIDR sy’n defnyddio cod gweithdrefn 00 19, nid yw’n ofynnol i nodi Pwysau Net, ond mae’n rhaid nodi Pwysau Gros.
+declaration.commodityMeasure.expander.paragraph.4 = Ar gyfer ceisiadau i glirio’r tollau C21e sy’n defnyddio cod gweithdrefn 0019, nid yw’n ofynnol i nodi Pwysau Net, ond mae’n rhaid nodi Pwysau Gros.
 
 declaration.supplementaryUnits.title = Beth yw nifer y {0}?
 declaration.supplementaryUnits.body = Dull o fesur a bennir gan y cod nwyddau yw uned atodol. Yn achos cod nwyddau {0} mae angen i chi roi’r swm neu nifer y {1} ({2}).
