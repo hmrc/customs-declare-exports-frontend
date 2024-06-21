@@ -37,6 +37,7 @@ import services.DocumentType
 import services.cache.ExportsTestHelper
 import services.model.PackageType
 import views.declaration.spec.UnitViewSpec
+import views.helpers.PointerPatterns.pointerToAdditionalProcedureCodes
 
 import scala.collection.immutable.ListMap
 
@@ -80,7 +81,7 @@ class PointerRecordSpec extends UnitViewSpec with ExportsTestHelper with Injecto
       validatePointerValues("declaration.items.$.additionalFiscalReferences.$.roleCode", roleCode, 0, 0)
       validatePointerValues("declaration.items.$.procedureCodes.procedureCode.current", procedureCode, 0)
       validatePointerValues("declaration.items.$.procedureCodes.procedureCode.previous", procedureCode, 0)
-      // Missing "declaration.items.$.procedureCodes.procedureCode.additionalProcedureCodes" ??
+      validatePointerValues(pointerToAdditionalProcedureCodes, additionalProcedureCode, 0, 0)
       validatePointerValues("declaration.items.$.packageInformation.$.shippingMarks", shippingMarks, 0, 0)
       validatePointerValues("declaration.items.$.packageInformation.$.numberOfPackages", numberOfPackages.toString, 0, 0)
       validatePointerValues("declaration.items.$.packageInformation.$.typesOfPackages", typeOfPackage.code, typeOfPackage.asText, 0, 0)
@@ -281,6 +282,7 @@ object PointerRecordSpec {
   val supplementaryUnits = "lbs"
   val roleCode = "2222"
   val procedureCode = "3333"
+  val additionalProcedureCode = "000"
   val shippingMarks = "marks"
   val numberOfPackages = 10
   val typeOfPackage = PackageType("PB", "Pallet, box Combined open-ended box and pallet")

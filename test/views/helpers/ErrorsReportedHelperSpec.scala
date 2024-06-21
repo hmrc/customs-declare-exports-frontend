@@ -29,6 +29,7 @@ import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import services.cache.{ExportsDeclarationBuilder, ExportsItemBuilder}
 import views.declaration.spec.UnitViewSpec
+import views.helpers.PointerPatterns.pointerToDucr
 import views.html.components.gds.link
 
 import java.net.URLDecoder
@@ -172,7 +173,7 @@ class ErrorsReportedHelperSpec extends UnitViewSpec with Injector with MockitoSu
       errors.head.fieldsInvolved.size mustBe 1
 
       val fieldInvolved = errors.head.fieldsInvolved.head
-      fieldInvolved.pointer.sections.head.value mustBe PointerRecord.pointerToDucr
+      fieldInvolved.pointer.sections.head.value mustBe pointerToDucr
       fieldInvolved.originalValue.value mustBe DUCR
 
       val document = Jsoup.parse(fieldInvolved.changeLink.value.toString)

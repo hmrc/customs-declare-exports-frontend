@@ -2455,6 +2455,7 @@ field.declaration.items.$.additionalFiscalReferences.$.id = Item {0} - Onward Su
 field.declaration.items.$.additionalFiscalReferences.$.roleCode = Item {0} - Onward Supply Relief {1} - VAT Number
 field.declaration.items.$.procedureCodes.procedureCode.current = Requested procedure code of Item {0}
 field.declaration.items.$.procedureCodes.procedureCode.previous = Previous procedure code of Item {0}
+field.declaration.items.$.procedureCodes.additionalProcedureCodes.$ = Item {0} - Additional Procedure Code
 field.declaration.items.$.packageInformation.$.shippingMarks = Item {0} - Package markings of Package Information {1}
 field.declaration.items.$.packageInformation.$.numberOfPackages = Item {0} - Number of package type of Package Information {1}
 field.declaration.items.$.packageInformation.$.typesOfPackages = Item {0} - Package type of Package Information {1}
