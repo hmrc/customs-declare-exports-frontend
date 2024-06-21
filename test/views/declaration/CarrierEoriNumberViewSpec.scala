@@ -60,10 +60,6 @@ class CarrierEoriNumberViewSpec extends UnitViewSpec with CommonMessages with Ex
         view.getElementById("section-header") must containMessage("declaration.section.2")
       }
 
-      "display the expected page title" in {
-        view.getElementsByTag("h1") must containMessageForElements("declaration.carrierEori.title")
-      }
-
       "display the expected notification banner" in {
         val banner = view.getElementsByClass("govuk-notification-banner").get(0)
 
@@ -72,6 +68,10 @@ class CarrierEoriNumberViewSpec extends UnitViewSpec with CommonMessages with Ex
 
         val content = banner.getElementsByClass("govuk-notification-banner__content").get(0)
         content.text mustBe messages("declaration.carrierEori.notification.body")
+      }
+
+      "display the expected page title" in {
+        view.getElementsByTag("h1") must containMessageForElements("declaration.carrierEori.title")
       }
 
       "display inset text" in {

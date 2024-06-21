@@ -39,18 +39,27 @@ class EntryIntoDeclarantsRecordsViewSpec extends UnitViewSpec with Injector with
   "Entry Into Declarant Records view" when {
 
     "on empty page" should {
-
-      "display page title" in {
-        createView().getElementsByTag("h1").first() must containMessage("declaration.entryIntoDeclarantRecords.title")
-      }
+      val view = createView()
 
       "display section header" in {
-        createView().getElementById("section-header") must containMessage("declaration.section.2")
+        view.getElementById("section-header") must containMessage("declaration.section.2")
+      }
+
+      "display the expected notification banner" in {
+        val banner = view.getElementsByClass("govuk-notification-banner").get(0)
+
+        val title = banner.getElementsByClass("govuk-notification-banner__title").text
+        title mustBe messages("declaration.entryIntoDeclarantRecords.notification.title")
+
+        val content = banner.getElementsByClass("govuk-notification-banner__content").get(0)
+        content.text mustBe messages("declaration.entryIntoDeclarantRecords.notification.body")
+      }
+
+      "display page title" in {
+        view.getElementsByTag("h1").first must containMessage("declaration.entryIntoDeclarantRecords.title")
       }
 
       "display radio button with yes and no options" in {
-        val view = createView()
-
         view.getElementById("answer_yes").attr("value") mustBe YesNoAnswers.yes
         view.getElementsByAttributeValue("for", "answer_yes").first() must containMessage("declaration.entryIntoDeclarantRecords.answer.yes")
         view.getElementById("answer_no").attr("value") mustBe YesNoAnswers.no
@@ -58,7 +67,7 @@ class EntryIntoDeclarantsRecordsViewSpec extends UnitViewSpec with Injector with
       }
 
       "display the 'Back' button linking to the /summary-section/1 page" in {
-        val backButton = createView().getElementById("back-link")
+        val backButton = view.getElementById("back-link")
 
         backButton must containMessage(backCaption)
         backButton must haveHref(routes.SectionSummaryController.displayPage(1).url)

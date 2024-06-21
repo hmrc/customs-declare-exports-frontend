@@ -15,22 +15,24 @@
  *@
 
 @import controllers.navigation.Navigator
-@import models.requests.JourneyRequest
-@import uk.gov.hmrc.govukfrontend.views.html.components._
-@import views.helpers.{BackButton, Title}
-@import views.components.gds.Styles._
-@import views.html.components.gds._
 @import forms.common.YesNoAnswer
 @import forms.common.YesNoAnswer.YesNoAnswers
 @import forms.declaration.EntryIntoDeclarantsRecords
 @import forms.declaration.EntryIntoDeclarantsRecords.fieldName
+@import models.requests.JourneyRequest
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.components.gds.Styles.gdsPageLegend
+@import views.helpers.{BackButton, Title}
 @import views.helpers.ErrorMapper.radioGroupErrors
+@import views.html.components.gds._
 
 @this(
     govukLayout: gdsMainTemplate,
+    govukRadios: GovukRadios,
     errorSummary: errorSummary,
     sectionHeader: sectionHeader,
-    govukRadios: GovukRadios,
+    notificationBanner: notificationBanner,
+    paragraph: paragraphBody,
     saveButtons: saveButtons,
     navigator: Navigator,
     formHelper: FormWithCSRF
@@ -50,6 +52,11 @@
       @errorSummary(radioGroupErrors(fieldName, "answer_yes", form.errors))
 
       @sectionHeader(messages("declaration.section.2"))
+
+      @notificationBanner(
+        title = messages("declaration.entryIntoDeclarantRecords.notification.title"),
+        content = paragraph(messages("declaration.entryIntoDeclarantRecords.notification.body"))
+      )
 
       @govukRadios(Radios(
         name = fieldName,
