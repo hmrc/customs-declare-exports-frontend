@@ -18,15 +18,14 @@ package controllers.navigation
 
 import controllers.declaration.routes
 import forms.DeclarationPage
-import forms.declaration._
 import forms.declaration.RoutingCountryQuestionYesNo.{ChangeCountryPage, RemoveCountryPage, RoutingCountryQuestionPage}
+import forms.declaration._
 import forms.declaration.additionaldocuments.{AdditionalDocument, AdditionalDocumentsRequired, AdditionalDocumentsSummary}
 import forms.declaration.carrier.CarrierEoriNumber
 import forms.declaration.commodityMeasure.CommodityMeasure
 import forms.declaration.consignor.{ConsignorDetails, ConsignorEoriNumber}
 import forms.declaration.exporter.{ExporterDetails, ExporterEoriNumber}
 import models.ExportsDeclaration
-import models.requests.JourneyRequest
 import play.api.mvc.Call
 
 trait ClearanceNavigator extends CacheDependentNavigators {
@@ -57,7 +56,7 @@ trait ClearanceNavigator extends CacheDependentNavigators {
     case page                          => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on clearance")
   }
 
-  def clearanceCacheDependent(implicit request: JourneyRequest[_]): PartialFunction[DeclarationPage, ExportsDeclaration => Call] = {
+  def clearanceCacheDependent: PartialFunction[DeclarationPage, ExportsDeclaration => Call] = {
     case DeclarantIsExporter => declarantIsExporterPreviousPage
     case ExporterEoriNumber  => exporterEoriNumberClearancePreviousPage
     case ConsigneeDetails    => consigneeDetailsClearancePreviousPage

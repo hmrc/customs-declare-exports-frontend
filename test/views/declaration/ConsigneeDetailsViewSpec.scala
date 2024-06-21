@@ -18,13 +18,7 @@ package views.declaration
 
 import base.Injector
 import connectors.CodeListConnector
-import controllers.declaration.routes.{
-  CarrierDetailsController,
-  DeclarantExporterController,
-  IsExsController,
-  RepresentativeStatusController,
-  ThirdPartyGoodsTransportationController
-}
+import controllers.declaration.routes._
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.common.{Address, AddressSpec, Eori}
 import forms.declaration.ConsigneeDetails.form
@@ -268,9 +262,8 @@ class ConsigneeDetailsViewSpec extends AddressViewSpec with PageWithButtonsSpec 
   "Consignee Details View when filled" should {
     onEveryDeclarationJourney() { implicit request =>
       "display data in Business address inputs" in {
-        val view = createView(
-          form(request.declarationType).fill(ConsigneeDetails(EntityDetails(None, Some(Address("test", "test1", "test2", "test3", "GB")))))
-        )
+        val details = ConsigneeDetails(EntityDetails(None, Some(Address("test", "test1", "test2", "test3", "GB"))))
+        val view = createView(form(request.declarationType).fill(details))
 
         view.getElementById("details_address_fullName").attr("value") mustBe "test"
         view.getElementById("details_address_addressLine").attr("value") mustBe "test1"
@@ -282,12 +275,43 @@ class ConsigneeDetailsViewSpec extends AddressViewSpec with PageWithButtonsSpec 
   }
 
   "Consignee Details View back links" should {
-    onJourney(STANDARD, SIMPLIFIED, OCCASIONAL) { implicit request =>
-      "display 'Back' button that links to 'Carrier Details' page" in {
-        val backButton = createView().getElementById("back-link")
+    val address = Address("John Smith", "1 Export Street", "Leeds", "LS1 2PW", "United Kingdom")
+    val carrierDetailsWithAddress = Some(CarrierDetails(details = EntityDetails(None, Some(address))))
 
-        backButton.text() mustBe messages(backToPreviousQuestionCaption)
-        backButton.attr("href") mustBe CarrierDetailsController.displayPage.url
+    val carrierDetailsWithEori = Some(CarrierDetails(details = EntityDetails(Some(Eori("eori")), None)))
+
+    onJourney(STANDARD, SIMPLIFIED, OCCASIONAL) { implicit request =>
+      "display 'Back' button that links to /third-party-goods-transportation" when {
+        "the user is using own transport (no carrier details)" in {
+          val backButton = createView().getElementById("back-link")
+
+          backButton.text() mustBe messages(backToPreviousQuestionCaption)
+          backButton.attr("href") mustBe ThirdPartyGoodsTransportationController.displayPage.url
+        }
+      }
+
+      "display 'Back' button that links to /carrier-eori-number" when {
+        "the user is NOT using own transport (has EORI in carrier details)" in {
+          val parties = Parties(carrierDetails = carrierDetailsWithEori)
+          val requestWithParties = journeyRequest(request.cacheModel.copy(parties = parties))
+
+          val backButton = createView()(requestWithParties).getElementById("back-link")
+
+          backButton.text() mustBe messages(backToPreviousQuestionCaption)
+          backButton.attr("href") mustBe CarrierEoriNumberController.displayPage.url
+        }
+      }
+
+      "display 'Back' button that links to /carrier-address" when {
+        "the user is NOT using own transport (has address in carrier details)" in {
+          val parties = Parties(carrierDetails = carrierDetailsWithAddress)
+          val requestWithParties = journeyRequest(request.cacheModel.copy(parties = parties))
+
+          val backButton = createView()(requestWithParties).getElementById("back-link")
+
+          backButton.text() mustBe messages(backToPreviousQuestionCaption)
+          backButton.attr("href") mustBe CarrierDetailsController.displayPage.url
+        }
       }
     }
 
@@ -299,66 +323,95 @@ class ConsigneeDetailsViewSpec extends AddressViewSpec with PageWithButtonsSpec 
         warning.get must containMessage("declaration.consignee.warning")
       }
 
-      "display 'Back' button that links to 'Carrier Details' page" in {
-        val cachedParties = Parties(isExs = Some(IsExs(YesNoAnswers.yes)))
-        val requestWithCachedParties = journeyRequest(request.cacheModel.copy(parties = cachedParties))
+      "display 'Back' button that links to /carrier-eori-number" when {
+        "has 'safe and security information' and" when {
+          "the user is NOT using own transport (has EORI in carrier details)" in {
+            val parties = Parties(isExs = Some(IsExs(YesNoAnswers.yes)), carrierDetails = carrierDetailsWithEori)
+            val requestWithParties = journeyRequest(request.cacheModel.copy(parties = parties))
 
-        val backButton = createView()(requestWithCachedParties).getElementById("back-link")
+            val backButton = createView()(requestWithParties).getElementById("back-link")
 
-        backButton.text() mustBe messages(backToPreviousQuestionCaption)
-        backButton.attr("href") mustBe CarrierDetailsController.displayPage.url
+            backButton.text() mustBe messages(backToPreviousQuestionCaption)
+            backButton.attr("href") mustBe CarrierEoriNumberController.displayPage.url
+          }
+        }
       }
 
-      "display 'Back' button that links to third party goods transport page" in {
-        val cachedParties = Parties(carrierDetails = Some(CarrierDetails(EntityDetails(Some(Eori(request.eori)), None))))
-        val requestWithCachedParties = journeyRequest(request.cacheModel.copy(parties = cachedParties))
+      "display 'Back' button that links to /carrier-address" when {
+        "has 'safe and security information' and" when {
+          "the user is NOT using own transport (has address in carrier details)" in {
+            val parties = Parties(isExs = Some(IsExs(YesNoAnswers.yes)), carrierDetails = carrierDetailsWithAddress)
+            val requestWithParties = journeyRequest(request.cacheModel.copy(parties = parties))
 
-        val backButton = createView()(requestWithCachedParties).getElementById("back-link")
+            val backButton = createView()(requestWithParties).getElementById("back-link")
 
-        backButton.text() mustBe messages(backToPreviousQuestionCaption)
-        backButton.attr("href") mustBe ThirdPartyGoodsTransportationController.displayPage.url
+            backButton.text() mustBe messages(backToPreviousQuestionCaption)
+            backButton.attr("href") mustBe CarrierDetailsController.displayPage.url
+          }
+        }
       }
 
-      "display 'Back' button that links to 'Representative Status' page" in {
-        val cachedParties = Parties(isExs = Some(IsExs(YesNoAnswers.no)), declarantIsExporter = Some(DeclarantIsExporter(YesNoAnswers.no)))
-        val requestWithCachedParties = journeyRequest(request.cacheModel.copy(parties = cachedParties))
+      "display 'Back' button that links to /third-party-goods-transportation" when {
+        "the user is using own transport (no carrier details)" in {
+          val backButton = createView().getElementById("back-link")
 
-        val backButton = createView()(requestWithCachedParties).getElementById("back-link")
-
-        backButton.text() mustBe messages(backToPreviousQuestionCaption)
-        backButton.attr("href") mustBe RepresentativeStatusController.displayPage.url
+          backButton.text() mustBe messages(backToPreviousQuestionCaption)
+          backButton.attr("href") mustBe ThirdPartyGoodsTransportationController.displayPage.url
+        }
       }
 
-      "display 'Back' button that links to /is-this-exs page" in {
-        val cachedParties = Parties(isExs = Some(IsExs(YesNoAnswers.no)), declarantIsExporter = Some(DeclarantIsExporter(YesNoAnswers.yes)))
-        val requestWithCachedParties = journeyRequest(request.cacheModel.copy(parties = cachedParties))
+      "display 'Back' button that links to /is-this-exs" when {
+        "declarant is Exporter" in {
+          val isExs = Some(IsExs(YesNoAnswers.no))
+          val declarantIsExporter = Some(DeclarantIsExporter(YesNoAnswers.yes))
+          val parties = Parties(isExs = isExs, declarantIsExporter = declarantIsExporter, carrierDetails = carrierDetailsWithEori)
+          val requestWithParties = journeyRequest(request.cacheModel.copy(parties = parties))
 
-        val backButton = createView()(requestWithCachedParties).getElementById("back-link")
+          val backButton = createView()(requestWithParties).getElementById("back-link")
 
-        backButton.text() mustBe messages(backToPreviousQuestionCaption)
-        backButton.attr("href") mustBe IsExsController.displayPage.url
+          backButton.text() mustBe messages(backToPreviousQuestionCaption)
+          backButton.attr("href") mustBe IsExsController.displayPage.url
+        }
+      }
+
+      "display 'Back' button that links to /representation-type-agreed" when {
+        "declarant is NOT Exporter" in {
+          val isExs = Some(IsExs(YesNoAnswers.no))
+          val declarantIsExporter = Some(DeclarantIsExporter(YesNoAnswers.no))
+          val parties = Parties(isExs = isExs, declarantIsExporter = declarantIsExporter, carrierDetails = carrierDetailsWithEori)
+          val requestWithParties = journeyRequest(request.cacheModel.copy(parties = parties))
+
+          val backButton = createView()(requestWithParties).getElementById("back-link")
+
+          backButton.text() mustBe messages(backToPreviousQuestionCaption)
+          backButton.attr("href") mustBe RepresentativeStatusController.displayPage.url
+        }
       }
     }
 
     onSupplementary { implicit request =>
-      "display 'Back' button that links to 'Representative Status' page" in {
-        val cachedParties = Parties(declarantIsExporter = Some(DeclarantIsExporter(YesNoAnswers.no)))
-        val requestWithCachedParties = journeyRequest(request.cacheModel.copy(parties = cachedParties))
+      "display 'Back' button that links to /are-you-the-exporter" when {
+        "declarant is Exporter" in {
+          val parties = Parties(declarantIsExporter = Some(DeclarantIsExporter(YesNoAnswers.yes)))
+          val requestWithParties = journeyRequest(request.cacheModel.copy(parties = parties))
 
-        val backButton = createView()(requestWithCachedParties).getElementById("back-link")
+          val backButton = createView()(requestWithParties).getElementById("back-link")
 
-        backButton.text() mustBe messages(backToPreviousQuestionCaption)
-        backButton.attr("href") mustBe RepresentativeStatusController.displayPage.url
+          backButton.text() mustBe messages(backToPreviousQuestionCaption)
+          backButton.attr("href") mustBe DeclarantExporterController.displayPage.url
+        }
       }
 
-      "display 'Back' button that links to 'Declarant is exporter?' page" in {
-        val cachedParties = Parties(declarantIsExporter = Some(DeclarantIsExporter(YesNoAnswers.yes)))
-        val requestWithCachedParties = journeyRequest(request.cacheModel.copy(parties = cachedParties))
+      "display 'Back' button that links to /representation-type-agreed" when {
+        "declarant is NOT Exporter" in {
+          val parties = Parties(declarantIsExporter = Some(DeclarantIsExporter(YesNoAnswers.no)))
+          val requestWithParties = journeyRequest(request.cacheModel.copy(parties = parties))
 
-        val backButton = createView()(requestWithCachedParties).getElementById("back-link")
+          val backButton = createView()(requestWithParties).getElementById("back-link")
 
-        backButton.text() mustBe messages(backToPreviousQuestionCaption)
-        backButton.attr("href") mustBe DeclarantExporterController.displayPage.url
+          backButton.text() mustBe messages(backToPreviousQuestionCaption)
+          backButton.attr("href") mustBe RepresentativeStatusController.displayPage.url
+        }
       }
     }
   }

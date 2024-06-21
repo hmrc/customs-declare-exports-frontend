@@ -25,7 +25,6 @@ import forms.declaration.carrier.CarrierEoriNumber
 import forms.declaration.commodityMeasure.CommodityMeasure
 import forms.declaration.exporter._
 import models.ExportsDeclaration
-import models.requests.JourneyRequest
 import play.api.mvc.Call
 
 trait StandardNavigator extends CacheDependentNavigators {
@@ -59,7 +58,7 @@ trait StandardNavigator extends CacheDependentNavigators {
     case page                        => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on standard")
   }
 
-  def standardCacheDependent(implicit request: JourneyRequest[_]): PartialFunction[DeclarationPage, ExportsDeclaration => Call] = {
+  def standardCacheDependent: PartialFunction[DeclarationPage, ExportsDeclaration => Call] = {
     case ConsigneeDetails          => consigneeDetailsPreviousPage
     case DeclarantIsExporter       => declarantIsExporterPreviousPage
     case RepresentativeAgent       => representativeAgentPreviousPage

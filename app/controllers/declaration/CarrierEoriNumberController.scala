@@ -46,7 +46,7 @@ class CarrierEoriNumberController @Inject() (
 )(implicit ec: ExecutionContext, auditService: AuditService)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithUnsafeDefaultFormBinding {
 
-  val validJourneys = Seq(STANDARD, SIMPLIFIED, OCCASIONAL, CLEARANCE)
+  private val validJourneys = List(STANDARD, SIMPLIFIED, OCCASIONAL, CLEARANCE)
 
   def displayPage: Action[AnyContent] = (authenticate andThen journeyType(validJourneys)) { implicit request =>
     carrierDetails match {
@@ -60,7 +60,7 @@ class CarrierEoriNumberController @Inject() (
       .bindFromRequest()
       .fold(
         formWithErrors => Future.successful(BadRequest(carrierEoriDetailsPage(formWithErrors))),
-        formData => updateCache(formData, carrierDetails).map(_ => navigator.continueTo(nextPage(formData.hasEori)))
+        carrierEoriNumber => updateCache(carrierEoriNumber, carrierDetails).map(_ => navigator.continueTo(nextPage(carrierEoriNumber.hasEori)))
       )
   }
 
@@ -73,10 +73,10 @@ class CarrierEoriNumberController @Inject() (
   private def nextPage(hasEori: String): Call =
     if (hasEori == YesNoAnswers.yes) ConsigneeDetailsController.displayPage else CarrierDetailsController.displayPage
 
-  private def updateCache(formData: CarrierEoriNumber, savedCarrierDetails: Option[CarrierDetails])(
+  private def updateCache(carrierEoriNumber: CarrierEoriNumber, savedCarrierDetails: Option[CarrierDetails])(
     implicit r: JourneyRequest[AnyContent]
   ): Future[ExportsDeclaration] =
     updateDeclarationFromRequest(model =>
-      model.copy(parties = model.parties.copy(carrierDetails = Some(CarrierDetails.from(formData, savedCarrierDetails))))
+      model.copy(parties = model.parties.copy(carrierDetails = Some(CarrierDetails.from(carrierEoriNumber, savedCarrierDetails))))
     )
 }

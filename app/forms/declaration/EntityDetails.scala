@@ -48,6 +48,9 @@ case class EntityDetails(
   def valueRemoved(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
     eori.fold("")(eori => forRemovedValue(pointer, messages(EntityDetails.mappingsForAmendment(pointer)), eori.value)) +
       address.fold("")(_.valueRemoved(pointer))
+
+  lazy val isEmpty: Boolean = eori.isEmpty && address.isEmpty
+  lazy val nonEmpty: Boolean = !isEmpty
 }
 
 object EntityDetails extends FieldMapping {
