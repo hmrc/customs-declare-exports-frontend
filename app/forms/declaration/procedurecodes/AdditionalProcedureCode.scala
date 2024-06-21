@@ -44,8 +44,8 @@ object AdditionalProcedureCode extends DeclarationPage {
 
   def form: Form[AdditionalProcedureCode] = Form(mapping)
 
-  override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
-    decType match {
+  override def defineTariffContentKeys(declarationType: DeclarationType): Seq[TariffContentKey] =
+    declarationType match {
       case CLEARANCE =>
         List(
           TariffContentKey("tariff.declaration.item.additionalProcedureCodes.1.clearance"),

@@ -55,18 +55,18 @@ class CommodityDetailsSpec extends DeclarationPageBaseSpec with ExportsTestHelpe
 
         "provided with commodity code too long" in {
           val expectedError = List(FormError(combinedNomenclatureCodeKey, "declaration.commodityDetails.combinedNomenclatureCode.error.length"))
-          form.bind(formData("12345678901", "description"), JsonBindMaxChars).errors mustBe expectedError
+          form.bind(formData("123456789", "description"), JsonBindMaxChars).errors mustBe expectedError
         }
 
         "provided with missing description" in {
           val expectedError = List(FormError(descriptionOfGoodsKey, "declaration.commodityDetails.description.error.empty"))
-          form.bind(formData("1234567890", ""), JsonBindMaxChars).errors mustBe expectedError
+          form.bind(formData("12345678", ""), JsonBindMaxChars).errors mustBe expectedError
         }
       }
 
       s"return a form without errors for $decType" when {
         "provided with valid input" in {
-          form.bind(formData("1234567890", "description"), JsonBindMaxChars).hasErrors mustBe false
+          form.bind(formData("12345678", "description"), JsonBindMaxChars).hasErrors mustBe false
         }
 
         "provided with missing commodity code" in {
@@ -91,27 +91,17 @@ class CommodityDetailsSpec extends DeclarationPageBaseSpec with ExportsTestHelpe
           val form = CommodityDetails.form.bind(formData("  12345678  ", "description"), JsonBindMaxChars)
           form.errors mustBe empty
         }
-
-        "provided with a commodity code 10 digits long" in {
-          val form = CommodityDetails.form.bind(formData("1234567890", "description"), JsonBindMaxChars)
-          form.errors mustBe empty
-        }
-
-        "provided with a commodity code 10 digits long prefixed and suffixed with spaces" in {
-          val form = CommodityDetails.form.bind(formData("  1234567890  ", "description"), JsonBindMaxChars)
-          form.errors mustBe empty
-        }
       }
 
       s"return a form with errors for $decType" when {
 
         "provided with invalid commodity code" in {
-          val form = CommodityDetails.form.bind(formData("A123456789", "description"), JsonBindMaxChars)
+          val form = CommodityDetails.form.bind(formData("A1234567", "description"), JsonBindMaxChars)
           form.errors mustBe List(FormError(combinedNomenclatureCodeKey, "declaration.commodityDetails.combinedNomenclatureCode.error.invalid"))
         }
 
-        "provided with a commodity code not 8 or 10 digits long" in {
-          val form1 = CommodityDetails.form.bind(formData("12345678901", "description"), JsonBindMaxChars)
+        "provided with a commodity code not 8 digits long" in {
+          val form1 = CommodityDetails.form.bind(formData("123456789", "description"), JsonBindMaxChars)
           form1.errors mustBe List(FormError(combinedNomenclatureCodeKey, "declaration.commodityDetails.combinedNomenclatureCode.error.length"))
 
           val form2 = CommodityDetails.form.bind(formData("1234", "description"), JsonBindMaxChars)
@@ -119,7 +109,16 @@ class CommodityDetailsSpec extends DeclarationPageBaseSpec with ExportsTestHelpe
         }
 
         "provided with invalid commodity code that is too long" in {
-          val form = CommodityDetails.form.bind(formData("ABCDE123456789", "description"), JsonBindMaxChars)
+          val form = CommodityDetails.form.bind(formData("ABCDE1234", "description"), JsonBindMaxChars)
+
+          form.errors mustBe List(
+            FormError(combinedNomenclatureCodeKey, "declaration.commodityDetails.combinedNomenclatureCode.error.invalid"),
+            FormError(combinedNomenclatureCodeKey, "declaration.commodityDetails.combinedNomenclatureCode.error.length")
+          )
+        }
+
+        "provided with spaces in the commodity code" in {
+          val form = CommodityDetails.form.bind(formData("1234 5678", "description"), JsonBindMaxChars)
 
           form.errors mustBe List(
             FormError(combinedNomenclatureCodeKey, "declaration.commodityDetails.combinedNomenclatureCode.error.invalid"),
@@ -133,14 +132,14 @@ class CommodityDetailsSpec extends DeclarationPageBaseSpec with ExportsTestHelpe
         }
 
         "provided with missing description" in {
-          val form = CommodityDetails.form.bind(formData("1234567890", ""), JsonBindMaxChars)
+          val form = CommodityDetails.form.bind(formData("12345678", ""), JsonBindMaxChars)
           form.errors mustBe List(FormError(descriptionOfGoodsKey, "declaration.commodityDetails.description.error.empty"))
         }
       }
 
       s"return a form without errors for $decType" when {
         "provided with valid input" in {
-          CommodityDetails.form.bind(formData("1234567809", "description"), JsonBindMaxChars).hasErrors mustBe false
+          CommodityDetails.form.bind(formData("12345678", "description"), JsonBindMaxChars).hasErrors mustBe false
         }
       }
     }
@@ -166,17 +165,17 @@ class CommodityDetailsSpec extends DeclarationPageBaseSpec with ExportsTestHelpe
 
       "provided with commodity code too long" in {
         val expectedError = List(FormError(combinedNomenclatureCodeKey, "declaration.commodityDetails.combinedNomenclatureCode.error.length"))
-        form.bind(formData("12345678901", "description"), JsonBindMaxChars).errors mustBe expectedError
+        form.bind(formData("123456789", "description"), JsonBindMaxChars).errors mustBe expectedError
       }
 
       "provided with missing description" in {
-        form.bind(formData("1234567890", ""), JsonBindMaxChars).hasErrors mustBe false
+        form.bind(formData("12345678", ""), JsonBindMaxChars).hasErrors mustBe false
       }
     }
 
     "return a form without errors" when {
       "provided with valid input" in {
-        form.bind(formData("1234567890", "description"), JsonBindMaxChars).hasErrors mustBe false
+        form.bind(formData("12345678", "description"), JsonBindMaxChars).hasErrors mustBe false
       }
 
       "provided with missing commodity code" in {
@@ -190,7 +189,7 @@ class CommodityDetailsSpec extends DeclarationPageBaseSpec with ExportsTestHelpe
   }
 
   override def getCommonTariffKeys(messageKey: String): Seq[TariffContentKey] =
-    List(TariffContentKey(s"${messageKey}.common"))
+    List(TariffContentKey(s"${messageKey}.1.common"), TariffContentKey(s"${messageKey}.2.common"), TariffContentKey(s"${messageKey}.3.common"))
 
   override def getClearanceTariffKeys(messageKey: String): Seq[TariffContentKey] =
     List(TariffContentKey(s"${messageKey}.clearance"))

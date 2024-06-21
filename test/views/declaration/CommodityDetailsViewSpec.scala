@@ -44,25 +44,38 @@ class CommodityDetailsViewSpec extends UnitViewSpec with Injector {
   ): Unit = {
     val view = createView(commodityDetails.fold(form)(form.fill))(journeyRequest(declarationType))
 
+    "display the expected notification banner" in {
+      val banner = view.getElementsByClass("govuk-notification-banner").get(0)
+
+      val title = banner.getElementsByClass("govuk-notification-banner__title").text
+      title mustBe messages("declaration.commodityDetails.notification.title")
+
+      val content = banner.getElementsByClass("govuk-notification-banner__content").get(0)
+      content.child(0).text mustBe messages("declaration.commodityDetails.notification.body.1")
+      content.child(1).text mustBe messages("declaration.commodityDetails.notification.body.2")
+    }
+
+    "display the section header" in {
+      view.getElementById("section-header") must containMessage("declaration.section.5")
+    }
+
     "display page title" in {
       view.getElementById("title").text mustBe messages("declaration.commodityDetails.title")
     }
 
     "display body texts for the commodity code input field" in {
-      val body1 = view.getElementsByClass("govuk-body").get(0)
-      removeBlanksIfAnyBeforeDot(body1.text) mustBe messages(
-        "declaration.commodityDetails.combinedNomenclatureCode.body.1",
-        messages("declaration.commodityDetails.combinedNomenclatureCode.body.1.link")
-      )
-      body1.child(0) must haveHref("https://www.gov.uk/guidance/using-the-trade-tariff-tool-to-find-a-commodity-code")
+      val label = view.getElementsByClass("govuk-heading-m").get(0).child(0)
+      label.tagName() mustBe "label"
+      label.attr("for") mustBe "combinedNomenclatureCode"
+      label.text mustBe messages("declaration.commodityDetails.combinedNomenclatureCode.label")
 
-      val body2 = view.getElementsByClass("govuk-body").get(1).text
+      val commodityCodeLookupLink = view.getElementsByClass("govuk-body").get(2).child(0)
+      commodityCodeLookupLink.tagName() mustBe "a"
+      commodityCodeLookupLink must haveHref("https://www.gov.uk/guidance/using-the-trade-tariff-tool-to-find-a-commodity-code")
+      commodityCodeLookupLink.text mustBe messages("declaration.commodityDetails.combinedNomenclatureCode.body.1.link")
+
+      val body2 = view.getElementsByClass("govuk-body").get(3).text
       body2 mustBe messages("declaration.commodityDetails.combinedNomenclatureCode.body.2")
-    }
-
-    "display a hint text for the commodity code input field" in {
-      val element = view.getElementsByClass("govuk-hint").get(0)
-      element.text mustBe messages("declaration.commodityDetails.combinedNomenclatureCode.hint")
     }
 
     "display the commodity code input field" in {
@@ -70,14 +83,16 @@ class CommodityDetailsViewSpec extends UnitViewSpec with Injector {
       view.getElementById(CommodityDetails.combinedNomenclatureCodeKey).attr("value") mustBe expectedCode
     }
 
-    "display a body text for the description textarea field" in {
-      val element = view.getElementsByClass("govuk-body").get(2)
-      element.text mustBe messages("declaration.commodityDetails.description.body")
+    "display a label texts for the description textarea field" in {
+      val label = view.getElementsByClass("govuk-heading-m").get(1).child(0)
+      label.tagName() mustBe "label"
+      label.attr("for") mustBe "descriptionOfGoods"
+      label.text mustBe messages("declaration.commodityDetails.description.label")
     }
 
     "display a hint text for the description textarea field" in {
-      val element = view.getElementsByClass("govuk-hint").get(1)
-      element.text mustBe messages("declaration.commodityDetails.description.hint")
+      val hint = view.getElementsByClass("govuk-hint").get(0)
+      hint.text mustBe messages("declaration.commodityDetails.description.hint")
     }
 
     "display the description textarea field" in {
@@ -129,7 +144,7 @@ class CommodityDetailsViewSpec extends UnitViewSpec with Injector {
   }
 
   "Commodity Details View on populated page" when {
-    val details = Some(CommodityDetails(Some("1234567890"), Some("Description")))
+    val details = Some(CommodityDetails(Some("12345678"), Some("Description")))
 
     for (decType <- DeclarationType.values)
       s"we are on $decType journey" should {

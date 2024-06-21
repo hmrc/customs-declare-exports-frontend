@@ -38,7 +38,7 @@ case class CommodityDetails(combinedNomenclatureCode: Option[String], descriptio
     extends DiffTools[CommodityDetails] with AmendmentOp {
 
   def createDiff(original: CommodityDetails, pointerString: ExportsFieldPointer, sequenceId: Option[Int] = None): ExportsDeclarationDiff =
-    Seq(
+    List(
       compareStringDifference(
         original.combinedNomenclatureCode,
         combinedNomenclatureCode,
@@ -74,8 +74,6 @@ object CommodityDetails extends DeclarationPage with FieldMapping {
   val descriptionOfGoodsMaxLength = 280
   val commodityCodeChemicalPrefixes = List(28, 29, 38)
 
-  private val combinedNomenclatureCodeAcceptedLengths = List(8, 10)
-
   private def mappingCombinedNomenclatureCodeRequired: Mapping[Option[String]] =
     mappingCombinedNomenclatureCodeOptional
       .verifying("declaration.commodityDetails.combinedNomenclatureCode.error.empty", isSome)
@@ -86,10 +84,7 @@ object CommodityDetails extends DeclarationPage with FieldMapping {
         .transform(_.trim, identity[String])
         .verifying("declaration.commodityDetails.combinedNomenclatureCode.error.empty", nonEmpty)
         .verifying("declaration.commodityDetails.combinedNomenclatureCode.error.invalid", isEmpty or isNumeric)
-        .verifying(
-          "declaration.commodityDetails.combinedNomenclatureCode.error.length",
-          isEmpty or hasSpecificLengths(combinedNomenclatureCodeAcceptedLengths)
-        )
+        .verifying("declaration.commodityDetails.combinedNomenclatureCode.error.length", isEmpty or hasSpecificLength(8))
     )
 
   private val mappingDescriptionOfGoodsRequired =
@@ -137,8 +132,12 @@ object CommodityDetails extends DeclarationPage with FieldMapping {
   override def defineTariffContentKeys(declarationType: DeclarationType): Seq[TariffContentKey] =
     declarationType match {
       case CLEARANCE =>
-        Seq(TariffContentKey("tariff.declaration.item.commodityDetails.clearance"))
+        List(TariffContentKey("tariff.declaration.item.commodityDetails.clearance"))
       case _ =>
-        Seq(TariffContentKey("tariff.declaration.item.commodityDetails.common"))
+        List(
+          TariffContentKey("tariff.declaration.item.commodityDetails.1.common"),
+          TariffContentKey("tariff.declaration.item.commodityDetails.2.common"),
+          TariffContentKey("tariff.declaration.item.commodityDetails.3.common")
+        )
     }
 }
