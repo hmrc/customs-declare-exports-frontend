@@ -18,4 +18,10 @@ package models.declaration.errors
 
 import models.ExportsDeclaration
 
-case class ErrorInstance(sourceDec: ExportsDeclaration, seqNbr: Int, errorCode: String, fieldsInvolved: Seq[FieldInvolved])
+case class ErrorInstance(
+  sourceDec: ExportsDeclaration,
+  seqNbr: Int,
+  errorCode: String,
+  fieldsInvolved: Seq[FieldInvolved],
+  isAmendmentError: Boolean = false
+)
