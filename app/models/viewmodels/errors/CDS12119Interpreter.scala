@@ -38,13 +38,12 @@ object CDS12119Interpreter extends ErrorInterpreter {
     val itemIdx = error.fieldsInvolved.headOption.flatMap(_.pointer.sequenceIndexes.headOption).getOrElse(0)
     val pointer = Pointer(s"declaration.items.$itemIdx.procedureCodes.procedureCode.current")
 
-    // TODO: populate isAmendment flag properly
     val changeLink = errorChangeAction(
       ProcedureCodesController.displayPage(error.sourceDec.items(itemIdx).id),
       error.errorCode,
       Some(pointer),
       error.sourceDec.id,
-      false
+      error.isAmendmentError
     )
 
     Some(

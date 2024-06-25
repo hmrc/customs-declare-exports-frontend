@@ -51,7 +51,7 @@ class ErrorsReportedHelper @Inject() (link: link, codeListConnector: CodeListCon
             getFieldInvolved(error, declaration, draftDecInProgress, isAmendment)
           }
 
-          ErrorInstance(declaration, idx + 1, errorCode, errorFieldsInvolved.distinct)
+          ErrorInstance(declaration, idx + 1, errorCode, errorFieldsInvolved.distinct, isAmendment)
         }
         .toList
     }

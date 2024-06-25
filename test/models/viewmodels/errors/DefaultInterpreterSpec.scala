@@ -95,17 +95,34 @@ class DefaultInterpreterSpec extends UnitSpec with UnitViewSpec with ExportsDecl
     }
 
     "picks a specialised interpreter" when {
-      "error is for error code CDS12119" in {
-        val errorCode = "CDS12119"
-        val error = ErrorInstance(declaration, 1, errorCode, Seq.empty[FieldInvolved])
+      "error is for error code CDS12119" when {
+        "Error is an amendment error" in {
+          val errorCode = "CDS12119"
+          val error = ErrorInstance(declaration, 1, errorCode, Seq.empty[FieldInvolved], true)
 
-        val html = DefaultInterpreter.generateHtmlFor(error).toString
+          val html = DefaultInterpreter.generateHtmlFor(error).toString
 
-        val errorDescription = messages(s"dmsError.$errorCode.title")
+          val errorDescription = messages(s"dmsError.$errorCode.title")
 
-        html must include("Error 1")
-        html must include(errorDescription)
-        html must include(govTable)
+          html must include("Error 1")
+          html must include(errorDescription)
+          html must include(govTable)
+          html must include("isAmendment=true")
+        }
+
+        "Error is not an amendment error" in {
+          val errorCode = "CDS12119"
+          val error = ErrorInstance(declaration, 1, errorCode, Seq.empty[FieldInvolved], false)
+
+          val html = DefaultInterpreter.generateHtmlFor(error).toString
+
+          val errorDescription = messages(s"dmsError.$errorCode.title")
+
+          html must include("Error 1")
+          html must include(errorDescription)
+          html must include(govTable)
+          html must include("isAmendment=false")
+        }
       }
     }
   }
