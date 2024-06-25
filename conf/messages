@@ -1780,6 +1780,8 @@ declaration.commodityMeasure.expander.paragraph.2 = For exports to Guernsey or J
 declaration.commodityMeasure.expander.paragraph.3 = For customs clearance requests, Gross weight is not required.
 declaration.commodityMeasure.expander.paragraph.4 = For C21e customs clearance requests using procedure code 0019, Net weight is not required, but Gross weight is mandatory.
 
+declaration.supplementaryUnits.notification.title = Important: about supplementary units
+declaration.supplementaryUnits.notification.body = Supplementary units are used when an additional measurement unit is needed on customs declarations. For example, a case of bottled products may need an individual volume in millilitres.
 declaration.supplementaryUnits.title = What is the quantity of {0}?
 declaration.supplementaryUnits.body = A supplementary unit is a form of measurement specified by the commodity code. In the case of commodity code {0} you need to give the amount or quantity of {1} ({2}).
 declaration.supplementaryUnits.hint = Enter the quantity of the unit specified in numbers only, for example if it is 11.1 cubic metres, enter 11.1

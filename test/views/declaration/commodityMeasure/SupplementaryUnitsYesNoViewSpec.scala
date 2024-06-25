@@ -34,23 +34,24 @@ import views.tags.ViewTest
 @ViewTest
 class SupplementaryUnitsYesNoViewSpec extends UnitViewSpec with Injector {
 
-  val appConfig = instanceOf[AppConfig]
+  private val appConfig = instanceOf[AppConfig]
 
-  def makeRequest(declarationType: DeclarationType, maybeCommodityCode: Option[String]): JourneyRequest[_] =
+  private def makeRequest(declarationType: DeclarationType, maybeCommodityCode: Option[String]): JourneyRequest[_] =
     maybeCommodityCode.fold(journeyRequest()) { commodityCode =>
       val item = anItem(withItemId(itemId), withCommodityDetails(CommodityDetails(Some(commodityCode), None)))
       withRequestOfType(declarationType, withItem(item))
     }
 
-  val page = instanceOf[supplementary_units_yes_no]
+  private val page = instanceOf[supplementary_units_yes_no]
 
-  def createView(frm: Form[SupplementaryUnits] = form)(implicit request: JourneyRequest[_]): Document =
+  private def createView(frm: Form[SupplementaryUnits] = form)(implicit request: JourneyRequest[_]): Document =
     page(itemId, frm)(request, messages)
 
   "SupplementaryUnitsYesNo View" when {
 
     onJourney(STANDARD, SUPPLEMENTARY) { implicit request =>
       val view = createView()
+
       s"the declarationType is ${request.declarationType}" should {
 
         "display 'Back' button that links to 'Commodity Details' page" in {
@@ -59,19 +60,29 @@ class SupplementaryUnitsYesNoViewSpec extends UnitViewSpec with Injector {
           backButton must haveHref(CommodityMeasureController.displayPage(itemId))
         }
 
-        "display page title" in {
-          view.getElementsByTag("h1").text mustBe messages("declaration.supplementaryUnits.yesNo.title")
-        }
-
         "display section header" in {
           view.getElementById("section-header") must containMessage("declaration.section.5")
+        }
+
+        "display the expected notification banner" in {
+          val banner = view.getElementsByClass("govuk-notification-banner").get(0)
+
+          val title = banner.getElementsByClass("govuk-notification-banner__title").text
+          title mustBe messages("declaration.supplementaryUnits.notification.title")
+
+          val content = banner.getElementsByClass("govuk-notification-banner__content").get(0)
+          content.text mustBe messages("declaration.supplementaryUnits.notification.body")
+        }
+
+        "display page title" in {
+          view.getElementsByTag("h1").text mustBe messages("declaration.supplementaryUnits.yesNo.title")
         }
 
         "display the expected body text when a commodity code of 10-digits has been entered" in {
           val commodityCode = "4602191000"
           val view = createView()(makeRequest(request.declarationType, Some(commodityCode)))
 
-          val body = view.getElementsByClass("govuk-body").get(0)
+          val body = view.getElementsByClass("govuk-body").get(1)
 
           val expectedLinkText = messages("declaration.supplementaryUnits.yesNo.body.link.1", commodityCode)
           val expectedHref = appConfig.suppUnitsCommodityCodeTariffPageUrl.replace(CommodityDetails.placeholder, commodityCode)
@@ -84,7 +95,7 @@ class SupplementaryUnitsYesNoViewSpec extends UnitViewSpec with Injector {
           val commodityCode = "46021910"
           val view = createView()(makeRequest(request.declarationType, Some(commodityCode)))
 
-          val body = view.getElementsByClass("govuk-body").get(0)
+          val body = view.getElementsByClass("govuk-body").get(1)
 
           val expectedLinkText = messages("declaration.supplementaryUnits.yesNo.body.link.1", commodityCode)
           val expectedHref = appConfig.suppUnitsCommodityCodeTariffPageUrl.replace(CommodityDetails.placeholder, s"${commodityCode}00")
@@ -94,7 +105,7 @@ class SupplementaryUnitsYesNoViewSpec extends UnitViewSpec with Injector {
         }
 
         "display the expected body text when no commodity code has been entered" in {
-          val body = view.getElementsByClass("govuk-body").get(0)
+          val body = view.getElementsByClass("govuk-body").get(1)
 
           val expectedLinkText = messages("declaration.supplementaryUnits.yesNo.body.link.2")
 

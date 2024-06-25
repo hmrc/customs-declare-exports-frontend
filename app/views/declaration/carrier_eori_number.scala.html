@@ -33,7 +33,7 @@
     errorSummary: errorSummary,
     sectionHeader: sectionHeader,
     heading: heading,
-    body: paragraphBody,
+    paragraph: paragraphBody,
     notificationBanner: notificationBanner,
     insetText: exportsInsetText,
     tariffExpander: tariffExpander,
@@ -66,7 +66,7 @@
 
         @notificationBanner(
             title = messages("declaration.carrierEori.notification.title"),
-            content = body(messages("declaration.carrierEori.notification.body"))
+            content = paragraph(messages("declaration.carrierEori.notification.body"))
         )
 
         <fieldset class="govuk-fieldset" @if(form.hasErrors) { aria-describedby="hasEori-error" }>
@@ -74,11 +74,11 @@
                 @heading(messages("declaration.carrierEori.title"))
             </legend>
 
-        @body(messages("declaration.carrierEori.body.1"))
-        @body(messages("declaration.carrierEori.body.2"))
-        @body(messages("declaration.carrierEori.body.3"))
+        @paragraph(messages("declaration.carrierEori.body.1"))
+        @paragraph(messages("declaration.carrierEori.body.2"))
+        @paragraph(messages("declaration.carrierEori.body.3"))
 
-        @insetText(HtmlContent(body(messages("declaration.carrierEori.inset.1"))))
+        @insetText(HtmlContent(paragraph(messages("declaration.carrierEori.inset.1"))))
 
         @govukRadios(Radios(
             name = "hasEori",
