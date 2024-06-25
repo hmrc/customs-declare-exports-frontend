@@ -1772,6 +1772,8 @@ declaration.commodityMeasure.expander.paragraph.2 = Ar gyfer allforion i Guernse
 declaration.commodityMeasure.expander.paragraph.3 = Nid yw’n ofynnol i nodi Pwysau Gros ar geisiadau i glirio’r tollau.
 declaration.commodityMeasure.expander.paragraph.4 = Ar gyfer ceisiadau i glirio’r tollau C21e sy’n defnyddio cod gweithdrefn 0019, nid yw’n ofynnol i nodi Pwysau Net, ond mae’n rhaid nodi Pwysau Gros.
 
+declaration.supplementaryUnits.notification.title = Pwysig: ynghylch unedau atodol
+declaration.supplementaryUnits.notification.body = Defnyddir unedau atodol pan fydd angen uned fesur ychwanegol ar ddatganiadau tollau. Er enghraifft, mae’n bosibl y byddai angen cyfaint unigol mewn mililitrau ar gyfer cist o gynhyrchion wedi’u potelu.
 declaration.supplementaryUnits.title = Beth yw nifer y {0}?
 declaration.supplementaryUnits.body = Dull o fesur a bennir gan y cod nwyddau yw uned atodol. Yn achos cod nwyddau {0} mae angen i chi roi’r swm neu nifer y {1} ({2}).
 declaration.supplementaryUnits.hint = Nodwch nifer yr uned a bennir mewn rhifau’n unig, er enghraifft os yw’n 11.1 metr ciwbig, nodwch 11.1

@@ -37,7 +37,8 @@
     errorSummary: errorSummary,
     sectionHeader: sectionHeader,
     heading: heading,
-    body: paragraphBody,
+    notificationBanner: notificationBanner,
+    paragraph: paragraphBody,
     externalLink: externalLink,
     exportsInputText: exportsInputText,
     tariffExpander: tariffExpander,
@@ -82,9 +83,14 @@
 
         @sectionHeader(messages("declaration.section.5"))
 
+        @notificationBanner(
+            title = messages("declaration.supplementaryUnits.notification.title"),
+            content = paragraph(messages("declaration.supplementaryUnits.notification.body"))
+        )
+
         @heading(messages("declaration.supplementaryUnits.yesNo.title"))
 
-        @body(messages("declaration.supplementaryUnits.yesNo.body", linkForCommodityCode))
+        @paragraph(messages("declaration.supplementaryUnits.yesNo.body", linkForCommodityCode))
 
         @govukRadios(Radios(
             name = hasSupplementaryUnits,
