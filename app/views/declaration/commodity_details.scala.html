@@ -27,15 +27,16 @@
     govukLayout: gdsMainTemplate,
     govukHint: GovukHint,
     sectionHeader: sectionHeader,
+    notificationBanner: notificationBanner,
     pageTitle: pageTitle,
-    paragraphBody: paragraphBody,
+    paragraph: paragraphBody,
     inputText: exportsInputText,
     label: label,
     characterCount: exportsInputCharacterCount,
     errorSummary: errorSummary,
     saveButtons: saveButtons,
     tariffExpander: tariffExpander,
-    tariffLink: tariffLink,
+    externalLink: externalLink,
     appConfig: AppConfig,
     navigator: Navigator,
     formHelper: FormWithCSRF
@@ -46,11 +47,11 @@
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 
 @commodityCodeBody = {
-    @paragraphBody(messages(
+    @paragraph(messages(
         "declaration.commodityDetails.combinedNomenclatureCode.body.1",
-        tariffLink(messages("declaration.commodityDetails.combinedNomenclatureCode.body.1.link"), appConfig.commodityCodeHelpUrl)
+        externalLink(messages("declaration.commodityDetails.combinedNomenclatureCode.body.1.link"), appConfig.commodityCodeHelpUrl)
     ))
-    @paragraphBody(messages("declaration.commodityDetails.combinedNomenclatureCode.body.2"))
+    @paragraph(messages("declaration.commodityDetails.combinedNomenclatureCode.body.2"))
 }
 
 @govukLayout(
@@ -59,6 +60,14 @@
 
     @formHelper(action = routes.CommodityDetailsController.submitForm(itemId), 'autoComplete -> "off") {
         @errorSummary(form.errors)
+
+        @notificationBanner(
+            title = messages("declaration.commodityDetails.notification.title"),
+            content = new Html(List(
+              paragraph(messages("declaration.commodityDetails.notification.body.1")),
+              paragraph(messages("declaration.commodityDetails.notification.body.2"))
+            ))
+        )
 
         @sectionHeader(messages("declaration.section.5"))
 
@@ -69,20 +78,22 @@
             labelKey = "declaration.commodityDetails.combinedNomenclatureCode.label",
             isSubHeading = true,
             bodyHtml = Some(commodityCodeBody),
-            hintKey = Some("declaration.commodityDetails.combinedNomenclatureCode.hint"),
             inputClasses = Some("govuk-input--width-10")
         )
 
-        @label("declaration.commodityDetails.description.label", form(CommodityDetails.descriptionOfGoodsKey).id, isSubHeading = true, subHeadingClasses = "govuk-heading govuk-heading-m")
-
-        @paragraphBody(messages("declaration.commodityDetails.description.body"))
+        @label(
+          "declaration.commodityDetails.description.label",
+          form(CommodityDetails.descriptionOfGoodsKey).id,
+          isSubHeading = true,
+          subHeadingClasses = "govuk-heading govuk-heading-m"
+        )
 
         @govukHint(Hint(content = Text(messages("declaration.commodityDetails.description.hint"))))
 
         @characterCount(
             field = form(CommodityDetails.descriptionOfGoodsKey),
-            maxLength = Some(CommodityDetails.descriptionOfGoodsMaxLength),
-            labelClasses = "govuk-label--m"
+            labelClasses = "govuk-label--m",
+            maxLength = Some(CommodityDetails.descriptionOfGoodsMaxLength)
         )
 
         @tariffExpander(CommodityDetails, request.declarationType)(messages, appConfig)

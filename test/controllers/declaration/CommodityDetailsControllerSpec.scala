@@ -33,7 +33,7 @@ import views.html.declaration.commodity_details
 
 class CommodityDetailsControllerSpec extends ControllerSpec with AuditedControllerSpec with OptionValues {
 
-  val mockCommodityDetailsPage = mock[commodity_details]
+  private val mockCommodityDetailsPage = mock[commodity_details]
 
   val controller =
     new CommodityDetailsController(mockAuthAction, mockJourneyAction, mockExportsCacheService, navigator, mcc, mockCommodityDetailsPage)(
@@ -84,7 +84,7 @@ class CommodityDetailsControllerSpec extends ControllerSpec with AuditedControll
       }
 
       "display page method is invoked and cache contains data" in {
-        val details = CommodityDetails(Some("1234567809"), Some("Description"))
+        val details = CommodityDetails(Some("12345678"), Some("Description"))
         val item = anItem(withCommodityDetails(details))
         withNewCaching(aDeclaration(withItems(item)))
 
@@ -114,7 +114,7 @@ class CommodityDetailsControllerSpec extends ControllerSpec with AuditedControll
     onJourney(STANDARD, SUPPLEMENTARY, OCCASIONAL) { request =>
       "return 303 (SEE_OTHER) and redirect to UN Dangerous Goods Code page" in {
         withNewCaching(request.cacheModel)
-        val correctForm = Json.toJson(CommodityDetails(Some("1234567809"), Some("Description")))
+        val correctForm = Json.toJson(CommodityDetails(Some("12345678"), Some("Description")))
 
         val result = controller.submitForm(itemId)(postRequest(correctForm))
 
@@ -146,7 +146,7 @@ class CommodityDetailsControllerSpec extends ControllerSpec with AuditedControll
             withItem(anItem(withItemId(itemId), withProcedureCodes(Some(procedureCode))))
           )
         )
-        val correctForm = Json.toJson(CommodityDetails(Some("1234567809"), Some("Description")))
+        val correctForm = Json.toJson(CommodityDetails(Some("12345678"), Some("Description")))
 
         val result = controller.submitForm(itemId)(postRequest(correctForm))
 
@@ -171,7 +171,7 @@ class CommodityDetailsControllerSpec extends ControllerSpec with AuditedControll
     "trim potential spaces entered by the user in the commodity code" in {
       withNewCaching(aDeclaration(withItem(anItem(withItemId(itemId)))))
 
-      val commodityCode = "1234567809"
+      val commodityCode = "12345678"
       val correctForm = Json.toJson(CommodityDetails(Some(s"  ${commodityCode}  "), Some("Description")))
       val result = controller.submitForm(itemId)(postRequest(correctForm))
 
@@ -185,7 +185,7 @@ class CommodityDetailsControllerSpec extends ControllerSpec with AuditedControll
       val cusCode = CusCode(Some("11111111"))
       withNewCaching(aDeclaration(withItem(anItem(withItemId(itemId), withCUSCode(cusCode)))))
 
-      val correctForm = Json.toJson(CommodityDetails(Some("1234567809"), Some("Description")))
+      val correctForm = Json.toJson(CommodityDetails(Some("12345678"), Some("Description")))
       val result = controller.submitForm(itemId)(postRequest(correctForm))
 
       await(result) mustBe aRedirectToTheNextPage
@@ -198,7 +198,7 @@ class CommodityDetailsControllerSpec extends ControllerSpec with AuditedControll
       val cusCode = CusCode(Some("11111111"))
       withNewCaching(aDeclaration(withItem(anItem(withItemId(itemId), withCUSCode(cusCode)))))
 
-      val correctForm = Json.toJson(CommodityDetails(Some("2800000000"), Some("Description")))
+      val correctForm = Json.toJson(CommodityDetails(Some("28000000"), Some("Description")))
       val result = controller.submitForm(itemId)(postRequest(correctForm))
 
       await(result) mustBe aRedirectToTheNextPage
