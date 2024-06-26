@@ -18,7 +18,8 @@ package forms.declaration.additionaldeclarationtype
 
 import base.FormSpec
 import forms.common.DeclarationPageBaseSpec
-import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypePage.{form, radioButtonGroupId}
+import forms.section1.additionaldeclarationtype.{AdditionalDeclarationType, AdditionalDeclarationTypePage}
+import forms.section1.additionaldeclarationtype.AdditionalDeclarationTypePage.{form, radioButtonGroupId}
 
 class AdditionalDeclarationTypePageSpec extends FormSpec with DeclarationPageBaseSpec {
 

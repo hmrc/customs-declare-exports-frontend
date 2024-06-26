@@ -21,7 +21,7 @@ import connectors.CustomsDeclareExportsConnector
 import forms.declaration.{AmendmentSubmission, LegalDeclaration}
 import metrics.ExportsMetrics
 import metrics.MetricIdentifiers.{submissionAmendmentMetric, submissionMetric}
-import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.AdditionalDeclarationType
+import forms.section1.additionaldeclarationtype.AdditionalDeclarationType.AdditionalDeclarationType
 import models.ExportsDeclaration
 import models.declaration.DeclarationStatus.DeclarationStatus
 import models.declaration.submissions.{Submission, SubmissionAmendment}

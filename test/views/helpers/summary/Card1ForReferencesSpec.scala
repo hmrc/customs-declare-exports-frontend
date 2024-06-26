@@ -18,12 +18,12 @@ package views.helpers.summary
 
 import base.ExportsTestData.mucr
 import base.Injector
-import controllers.declaration.routes.{DeclarantExporterController, EntryIntoDeclarantsRecordsController}
 import controllers.section1.routes._
+import controllers.section2.routes.{DeclarantExporterController, EntryIntoDeclarantsRecordsController}
 import forms.common.Eori
 import forms.common.YesNoAnswer.YesNoAnswers.yes
-import forms.declaration.ConsignmentReferences
-import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.STANDARD_PRE_LODGED
+import forms.section1.additionaldeclarationtype.AdditionalDeclarationType.STANDARD_PRE_LODGED
+import forms.section1.ConsignmentReferences
 import forms.{Ducr, Lrn, Mrn}
 import models.DeclarationType._
 import models.ExportsDeclaration

@@ -18,7 +18,8 @@ package forms.declaration
 
 import base.JourneyTypeTestRunner
 import forms.common.DeclarationPageBaseSpec
-import forms.declaration.AuthorisationProcedureCodeChoice.formFieldName
+import forms.section2.AuthorisationProcedureCodeChoice.formFieldName
+import forms.section2.AuthorisationProcedureCodeChoice
 import models.declaration.AuthorisationProcedureCode.Code1040
 
 class AuthorisationProcedureCodeChoiceSpec extends DeclarationPageBaseSpec with JourneyTypeTestRunner {

@@ -18,11 +18,11 @@ package controllers.section1
 
 import base.{AuditedControllerSpec, ControllerSpec}
 import controllers.actions.AmendmentDraftFilterSpec
-import controllers.declaration.routes.DeclarantExporterController
 import controllers.section1.routes.{ConsignmentReferencesController, DucrChoiceController, NotEligibleController}
+import controllers.section2.routes.DeclarantExporterController
 import forms.common.YesNoAnswer.YesNoAnswers
-import forms.declaration.DeclarantEoriConfirmation
-import forms.declaration.DeclarantEoriConfirmation.isEoriKey
+import forms.section1.DeclarantEoriConfirmation.isEoriKey
+import forms.section1.DeclarantEoriConfirmation
 import models.DeclarationType._
 import models.requests.SessionHelper
 import org.mockito.ArgumentCaptor

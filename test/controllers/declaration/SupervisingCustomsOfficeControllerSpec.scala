@@ -29,7 +29,7 @@ import controllers.helpers.TransportSectionHelper.additionalDeclTypesAllowedOnIn
 import forms.declaration.InlandOrBorder.{Border, Inland}
 import forms.declaration.ModeOfTransportCode.{FixedTransportInstallations, PostalConsignment}
 import forms.declaration.SupervisingCustomsOffice
-import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
+import forms.section1.additionaldeclarationtype.AdditionalDeclarationType._
 import models.DeclarationType._
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{verify, when}

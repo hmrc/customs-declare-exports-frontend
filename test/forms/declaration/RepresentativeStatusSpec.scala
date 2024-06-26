@@ -17,7 +17,8 @@
 package forms.declaration
 
 import forms.common.DeclarationPageBaseSpec
-import forms.declaration.RepresentativeStatus.StatusCodes.DirectRepresentative
+import forms.section2.RepresentativeStatus.StatusCodes.DirectRepresentative
+import forms.section2.RepresentativeStatus
 import play.api.libs.json.{JsObject, JsString, JsValue}
 
 class RepresentativeStatusSpec extends DeclarationPageBaseSpec {

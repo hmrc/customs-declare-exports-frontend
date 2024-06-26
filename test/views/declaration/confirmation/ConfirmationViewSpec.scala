@@ -19,7 +19,7 @@ package views.declaration.confirmation
 import base.{Injector, MockAuthAction}
 import config.ExternalServicesConfig
 import controllers.routes.{DeclarationDetailsController, FileUploadController}
-import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
+import forms.section1.additionaldeclarationtype.AdditionalDeclarationType._
 import models.declaration.submissions.EnhancedStatus._
 import models.declaration.submissions.Submission
 import org.jsoup.nodes.Document

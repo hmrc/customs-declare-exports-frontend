@@ -16,7 +16,7 @@
 
 package services
 
-import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.AdditionalDeclarationType
+import forms.section1.additionaldeclarationtype.AdditionalDeclarationType.AdditionalDeclarationType
 import forms.Ducr
 import models.declaration.DeclarationStatus.DeclarationStatus
 import models.ExportsDeclaration

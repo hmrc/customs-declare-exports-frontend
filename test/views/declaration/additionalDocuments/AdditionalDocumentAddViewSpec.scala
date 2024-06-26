@@ -26,7 +26,7 @@ import controllers.declaration.routes.{
 import forms.common.{Eori, YesNoAnswer}
 import forms.declaration.additionaldocuments.AdditionalDocument
 import forms.declaration.additionaldocuments.AdditionalDocument.form
-import forms.declaration.authorisationHolder.AuthorisationHolder
+import forms.section2.authorisationHolder.AuthorisationHolder
 import models.DeclarationType._
 import models.ExportsDeclaration
 import models.declaration.EoriSource

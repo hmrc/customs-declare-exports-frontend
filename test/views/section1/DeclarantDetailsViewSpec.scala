@@ -17,11 +17,11 @@
 package views.section1
 
 import base.Injector
-import controllers.declaration.routes.EntryIntoDeclarantsRecordsController
 import controllers.section1.routes.AdditionalDeclarationTypeController
+import controllers.section2.routes.EntryIntoDeclarantsRecordsController
 import forms.common.YesNoAnswer.YesNoAnswers
-import forms.declaration.DeclarantEoriConfirmation
-import forms.declaration.DeclarantEoriConfirmation.form
+import forms.section1.DeclarantEoriConfirmation.form
+import forms.section1.DeclarantEoriConfirmation
 import models.DeclarationType.{OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document

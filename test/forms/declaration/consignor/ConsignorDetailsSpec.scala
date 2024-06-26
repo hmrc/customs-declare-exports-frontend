@@ -17,6 +17,7 @@
 package forms.declaration.consignor
 
 import forms.common.DeclarationPageBaseSpec
+import forms.section2.consignor.ConsignorDetails
 
 class ConsignorDetailsSpec extends DeclarationPageBaseSpec {
 

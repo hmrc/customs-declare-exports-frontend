@@ -18,6 +18,7 @@ package forms.declaration
 
 import forms.common.DeclarationPageBaseSpec
 import forms.declaration.EntityDetailsSpec._
+import forms.section2.RepresentativeEntity
 import play.api.libs.json.{JsObject, JsValue}
 
 class RepresentativeEntitySpec extends DeclarationPageBaseSpec {

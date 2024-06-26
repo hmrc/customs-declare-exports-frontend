@@ -19,13 +19,15 @@ package controllers.navigation
 import controllers.declaration.routes._
 import controllers.section1.routes._
 import controllers.section2.routes._
-import forms.declaration.RoutingCountryQuestionYesNo.{ChangeCountryPage, RemoveCountryPage, RoutingCountryQuestionPage}
 import forms.DeclarationPage
+import forms.declaration.RoutingCountryQuestionYesNo.{ChangeCountryPage, RemoveCountryPage, RoutingCountryQuestionPage}
 import forms.declaration._
 import forms.declaration.additionaldocuments._
-import forms.declaration.carrier.CarrierEoriNumber
 import forms.declaration.commodityMeasure.CommodityMeasure
-import forms.declaration.exporter._
+import forms.section1.{ConsignmentReferences, DeclarantDetails, DucrChoice, LinkDucrToMucr}
+import forms.section2.carrier.CarrierEoriNumber
+import forms.section2.exporter.{ExporterDetails, ExporterEoriNumber}
+import forms.section2._
 import models.ExportsDeclaration
 import play.api.mvc.Call
 

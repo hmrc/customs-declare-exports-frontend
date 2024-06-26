@@ -23,7 +23,7 @@ import config.featureFlags._
 import controllers.declaration.amendments.routes.AmendDeclarationController
 import controllers.declaration.routes.SubmissionController
 import controllers.routes._
-import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
+import forms.section1.additionaldeclarationtype.AdditionalDeclarationType._
 import models.declaration.submissions.EnhancedStatus._
 import models.declaration.submissions.RequestType.{AmendmentRequest, ExternalAmendmentRequest, SubmissionRequest}
 import models.declaration.submissions.{EnhancedStatus, _}

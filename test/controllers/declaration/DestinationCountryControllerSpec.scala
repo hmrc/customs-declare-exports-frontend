@@ -22,7 +22,7 @@ import controllers.declaration.routes.{LocationOfGoodsController, OfficeOfExitCo
 import controllers.helpers.TransportSectionHelper.{Guernsey, Jersey}
 import forms.declaration.BorderTransport
 import forms.declaration.ModeOfTransportCode.Maritime
-import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.SUPPLEMENTARY_EIDR
+import forms.section1.additionaldeclarationtype.AdditionalDeclarationType.SUPPLEMENTARY_EIDR
 import forms.declaration.countries.Countries.fieldId
 import forms.declaration.countries.Country
 import models.DeclarationType._

@@ -20,7 +20,7 @@ import base.Injector
 import controllers.declaration.routes.SectionSummaryController
 import controllers.routes.GuidanceController
 import forms.declaration.TransportLeavingTheBorder.form
-import forms.declaration.authorisationHolder.AuthorizationTypeCodes.EXRR
+import forms.section2.authorisationHolder.AuthorizationTypeCodes.EXRR
 import models.DeclarationType._
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document

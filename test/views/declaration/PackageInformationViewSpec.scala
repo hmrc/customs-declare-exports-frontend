@@ -25,7 +25,8 @@ import controllers.declaration.routes.{
 }
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.form
-import forms.declaration.{IsExs, PackageInformation}
+import forms.declaration.PackageInformation
+import forms.section2.IsExs
 import models.DeclarationType._
 import models.declaration.ProcedureCodesData.lowValueDeclaration
 import models.requests.JourneyRequest

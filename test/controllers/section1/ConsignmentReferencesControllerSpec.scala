@@ -21,8 +21,8 @@ import base.{AuditedControllerSpec, ControllerSpec}
 import controllers.actions.AmendmentDraftFilterSpec
 import controllers.declaration.routes.SectionSummaryController
 import controllers.section1.routes.LinkDucrToMucrController
-import forms.declaration.ConsignmentReferences
-import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.{SUPPLEMENTARY_EIDR, SUPPLEMENTARY_SIMPLIFIED}
+import forms.section1.additionaldeclarationtype.AdditionalDeclarationType.{SUPPLEMENTARY_EIDR, SUPPLEMENTARY_SIMPLIFIED}
+import forms.section1.ConsignmentReferences
 import forms.{Ducr, Lrn, LrnValidator}
 import models.DeclarationType._
 import org.mockito.ArgumentCaptor

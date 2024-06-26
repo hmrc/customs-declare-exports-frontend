@@ -22,8 +22,8 @@ import controllers.section1.routes.DucrEntryController
 import forms.Ducr
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
-import forms.declaration.ConsignmentReferences
-import models.DeclarationType.{SUPPLEMENTARY, allDeclarationTypesExcluding}
+import forms.section1.ConsignmentReferences
+import models.DeclarationType.{allDeclarationTypesExcluding, SUPPLEMENTARY}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.{reset, verify, when}

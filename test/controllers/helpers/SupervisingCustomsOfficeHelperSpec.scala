@@ -25,7 +25,7 @@ import controllers.declaration.routes.{
   InlandTransportDetailsController
 }
 import controllers.helpers.TransportSectionHelper._
-import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.SUPPLEMENTARY_EIDR
+import forms.section1.additionaldeclarationtype.AdditionalDeclarationType.SUPPLEMENTARY_EIDR
 import models.DeclarationType.CLEARANCE
 import services.cache.{ExportsDeclarationBuilder, ExportsItemBuilder}
 

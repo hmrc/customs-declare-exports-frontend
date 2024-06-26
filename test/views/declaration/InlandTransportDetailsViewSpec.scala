@@ -22,7 +22,7 @@ import controllers.declaration.routes.{InlandOrBorderController, SupervisingCust
 import controllers.helpers.TransportSectionHelper.additionalDeclTypesAllowedOnInlandOrBorder
 import forms.declaration.InlandModeOfTransportCode
 import forms.declaration.InlandModeOfTransportCode.form
-import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
+import forms.section1.additionaldeclarationtype.AdditionalDeclarationType._
 import models.DeclarationType._
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document

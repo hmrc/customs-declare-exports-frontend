@@ -1,0 +1,74 @@
+@*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import config.AppConfig
+@import controllers.section2.routes._
+@import controllers.navigation.Navigator
+@import forms.section2.exporter.ExporterDetails
+@import models.requests.JourneyRequest
+@import play.twirl.api.HtmlFormat
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.helpers.{BackButton, Title}
+@import views.helpers.ErrorMapper.eoriOrAddressErrors
+@import views.html.components.gds._
+
+@this(
+    govukLayout: gdsMainTemplate,
+    govukButton: GovukButton,
+    govukRadios: GovukRadios,
+    govukDetails : GovukDetails,
+    govukFieldset: GovukFieldset,
+    errorSummary: errorSummary,
+    sectionHeader: sectionHeader,
+    saveButtons: saveButtons,
+    group_address: group_address,
+    exportsInputText: exportsInputText,
+    pageTitle: pageTitle,
+    formHelper: FormWithCSRF,
+    tariffExpander: tariffExpander,
+    navigator: Navigator,
+    appConfig: AppConfig
+)
+
+@(form: Form[ExporterDetails])(implicit request: JourneyRequest[_], messages: Messages)
+
+@hasErrors = @{form.hasErrors || form.hasGlobalErrors}
+
+@govukLayout(
+    title = Title("declaration.exporter-address.title", "declaration.section.2", hasErrors = hasErrors),
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(ExporterDetails)))
+) {
+    @formHelper(action = ExporterDetailsController.saveAddress, 'autoComplete -> "off") {
+        @errorSummary(eoriOrAddressErrors("details", form.errors))
+
+        @sectionHeader(messages("declaration.section.2"))
+
+        @pageTitle(messages("declaration.exporter-address.title"))
+
+        @govukFieldset(Fieldset(
+            attributes = Map("id" -> "details"),
+            legend = Some(Legend(
+                content = Text(messages("declaration.exporter-address.addressHeading")),
+                classes = "govuk-fieldset__legend--m"
+            )),
+            html = HtmlFormat.fill(List(
+                group_address(form, ".exporter"),
+                tariffExpander(ExporterDetails, request.declarationType)(messages, appConfig),
+                saveButtons()
+            ))
+        ))
+    }
+}

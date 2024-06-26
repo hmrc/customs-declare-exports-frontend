@@ -18,7 +18,7 @@ package controllers.declaration
 
 import base.ControllerWithoutFormSpec
 import controllers.section1.routes.AdditionalDeclarationTypeController
-import forms.declaration.AuthorisationProcedureCodeChoice.Choice1040
+import forms.section2.AuthorisationProcedureCodeChoice.Choice1040
 import forms.declaration.DeclarationChoice.{form, nonStandardJourneys}
 import models.DeclarationType._
 import models.ExportsDeclaration

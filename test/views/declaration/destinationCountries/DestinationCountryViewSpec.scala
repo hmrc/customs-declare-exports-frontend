@@ -20,12 +20,12 @@ import base.{ExportsTestData, Injector}
 import connectors.CodeListConnector
 import controllers.declaration.routes.SectionSummaryController
 import forms.common.Eori
-import forms.declaration.AuthorisationProcedureCodeChoice.{Choice1040, ChoiceOthers}
-import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.{STANDARD_FRONTIER, STANDARD_PRE_LODGED}
-import forms.declaration.authorisationHolder.AuthorisationHolder
-import forms.declaration.authorisationHolder.AuthorizationTypeCodes.CSE
+import forms.section2.AuthorisationProcedureCodeChoice.{Choice1040, ChoiceOthers}
+import forms.section1.additionaldeclarationtype.AdditionalDeclarationType.{STANDARD_FRONTIER, STANDARD_PRE_LODGED}
+import forms.section2.authorisationHolder.AuthorizationTypeCodes.CSE
 import forms.declaration.countries.Countries.DestinationCountryPage
 import forms.declaration.countries.{Countries, Country}
+import forms.section2.authorisationHolder.AuthorisationHolder
 import models.DeclarationType._
 import models.codes.{Country => ModelCountry}
 import models.declaration.EoriSource

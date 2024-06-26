@@ -16,9 +16,9 @@
 
 package controllers.helpers
 
-import forms.declaration.AuthorisationProcedureCodeChoice.{Choice1040, ChoiceOthers}
-import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
-import forms.declaration.authorisationHolder.AuthorisationHolder
+import forms.section2.AuthorisationProcedureCodeChoice.{Choice1040, ChoiceOthers}
+import forms.section1.additionaldeclarationtype.AdditionalDeclarationType._
+import forms.section2.authorisationHolder.AuthorisationHolder
 import models.DeclarationType.{CLEARANCE, OCCASIONAL}
 import models.ExportsDeclaration
 import models.requests.JourneyRequest

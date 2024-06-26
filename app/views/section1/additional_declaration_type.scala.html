@@ -14,17 +14,17 @@
  * limitations under the License.
  *@
 
+@import config.AppConfig
 @import controllers.declaration.routes.{DeclarationChoiceController, StandardOrOtherJourneyController}
 @import controllers.navigation.Navigator
 @import controllers.section1.routes.AdditionalDeclarationTypeController
-@import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypePage
-@import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.AdditionalDeclarationType
+@import forms.section1.additionaldeclarationtype.AdditionalDeclarationTypePage
+@import forms.section1.additionaldeclarationtype.AdditionalDeclarationType.AdditionalDeclarationType
 @import models.DeclarationType.{STANDARD, SUPPLEMENTARY}
 @import models.requests.JourneyRequest
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.helpers.{AdditionalDeclarationTypeHelper, BackButton, Title}
 @import views.html.components.gds._
-@import config.AppConfig
 
 @this(
     declarationTypeHelper: AdditionalDeclarationTypeHelper,

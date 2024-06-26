@@ -23,12 +23,14 @@ import forms.declaration.Document.documentTypePointer
 import forms.declaration.PackageInformation._
 import forms.declaration._
 import forms.declaration.additionaldocuments.{AdditionalDocument, DocumentWriteOff}
-import forms.declaration.authorisationHolder.AuthorisationHolder
-import forms.declaration.carrier.CarrierDetails
-import forms.declaration.consignor.ConsignorDetails
 import forms.declaration.countries.Country
-import forms.declaration.exporter.ExporterDetails
 import forms.declaration.officeOfExit.OfficeOfExit
+import forms.section1.DeclarantDetails
+import forms.section2.authorisationHolder.AuthorisationHolder
+import forms.section2.carrier.CarrierDetails
+import forms.section2.{AdditionalActor, ConsigneeDetails, PersonPresentingGoodsDetails}
+import forms.section2.consignor.ConsignorDetails
+import forms.section2.exporter.ExporterDetails
 import models.AmendmentRow._
 import models.ExportsFieldPointer.ExportsFieldPointer
 import models.declaration.CommodityMeasure._

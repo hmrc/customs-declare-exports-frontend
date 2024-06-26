@@ -17,7 +17,8 @@
 package forms.declaration
 
 import forms.common.{DeclarationPageBaseSpec, Eori}
-import forms.declaration.AdditionalActor.PartyType.{Consolidator, FreightForwarder}
+import forms.section2.AdditionalActor.PartyType.{Consolidator, FreightForwarder}
+import forms.section2.AdditionalActor
 import play.api.libs.json.{JsObject, JsString, JsValue}
 
 class AdditionalActorsSpec extends DeclarationPageBaseSpec {

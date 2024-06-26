@@ -17,7 +17,7 @@
 package models.declaration
 
 import forms.common.YesNoAnswer
-import forms.declaration.authorisationHolder.AuthorisationHolder
+import forms.section2.authorisationHolder.AuthorisationHolder
 import models.ExportsFieldPointer.ExportsFieldPointer
 import models.{ExportsDeclaration, FieldMapping}
 import play.api.libs.json.{Json, OFormat}

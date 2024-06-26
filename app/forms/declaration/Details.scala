@@ -17,9 +17,10 @@
 package forms.declaration
 
 import forms.common.Address
-import forms.declaration.carrier.CarrierDetails
-import forms.declaration.consignor.ConsignorDetails
-import forms.declaration.exporter.ExporterDetails
+import forms.section2.ConsigneeDetails
+import forms.section2.carrier.CarrierDetails
+import forms.section2.consignor.ConsignorDetails
+import forms.section2.exporter.ExporterDetails
 
 abstract class Details {
   val details: EntityDetails

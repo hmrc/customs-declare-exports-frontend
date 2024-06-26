@@ -19,6 +19,7 @@ package forms.declaration
 import base.ExportsTestData
 import base.TestHelper.createRandomAlphanumericString
 import forms.common.DeclarationPageBaseSpec
+import forms.section1.Mucr
 import org.scalatest.Assertion
 import play.api.data.{Form, FormError}
 

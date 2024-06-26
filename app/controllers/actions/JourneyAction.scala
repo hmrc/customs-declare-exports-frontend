@@ -19,7 +19,7 @@ package controllers.actions
 import scala.concurrent.{ExecutionContext, Future}
 import com.google.inject.Inject
 import controllers.routes.RootController
-import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.AdditionalDeclarationType
+import forms.section1.additionaldeclarationtype.AdditionalDeclarationType.AdditionalDeclarationType
 import models.DeclarationType.DeclarationType
 import models.ExportsDeclaration
 import models.requests.{AuthenticatedRequest, JourneyRequest}

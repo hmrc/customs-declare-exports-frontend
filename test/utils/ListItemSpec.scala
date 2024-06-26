@@ -17,7 +17,7 @@
 package utils
 
 import base.UnitSpec
-import forms.declaration.authorisationHolder.AuthorisationHolder
+import forms.section2.authorisationHolder.AuthorisationHolder
 
 class ListItemSpec extends UnitSpec {
 

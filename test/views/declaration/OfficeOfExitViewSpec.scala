@@ -18,7 +18,7 @@ package views.declaration
 
 import base.{Injector, MockTaggedCodes}
 import controllers.declaration.routes.{DestinationCountryController, LocationOfGoodsController, RoutingCountriesController}
-import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.SUPPLEMENTARY_EIDR
+import forms.section1.additionaldeclarationtype.AdditionalDeclarationType.SUPPLEMENTARY_EIDR
 import forms.declaration.officeOfExit.OfficeOfExit
 import models.DeclarationType._
 import models.declaration.DeclarationStatus.AMENDMENT_DRAFT

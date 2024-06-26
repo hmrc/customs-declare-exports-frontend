@@ -18,7 +18,7 @@ package views.helpers.summary
 
 import config.AppConfig
 import controllers.section1.routes._
-import controllers.declaration.routes.{DeclarantExporterController, EntryIntoDeclarantsRecordsController}
+import controllers.section2.routes.{DeclarantExporterController, EntryIntoDeclarantsRecordsController}
 import models.DeclarationType.{CLEARANCE, SUPPLEMENTARY}
 import models.ExportsDeclaration
 import models.declaration.DeclarationStatus.{COMPLETE, DRAFT}

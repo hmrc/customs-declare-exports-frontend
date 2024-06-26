@@ -19,8 +19,9 @@ package forms.declaration.authorisationHolder
 import base.ExportsTestData._
 import base.{JourneyTypeTestRunner, MockTaggedCodes}
 import forms.common.{DeclarationPageBaseSpec, Eori}
-import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.{preLodgedTypes, STANDARD_PRE_LODGED}
-import forms.declaration.authorisationHolder.AuthorizationTypeCodes.EXRR
+import forms.section1.additionaldeclarationtype.AdditionalDeclarationType.{preLodgedTypes, STANDARD_PRE_LODGED}
+import forms.section2.authorisationHolder.{AuthorisationHolder, AuthorisationHolderRequired}
+import forms.section2.authorisationHolder.AuthorizationTypeCodes.EXRR
 import models.declaration.EoriSource
 import models.declaration.ExportDeclarationTestData.correctAuthorisationHolder
 import models.viewmodels.TariffContentKey

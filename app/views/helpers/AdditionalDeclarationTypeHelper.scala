@@ -16,7 +16,7 @@
 
 package views.helpers
 
-import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
+import forms.section1.additionaldeclarationtype.AdditionalDeclarationType._
 import models.DeclarationType._
 import models.requests.JourneyRequest
 import play.api.data.{Form, FormError}

@@ -16,8 +16,9 @@
 
 package views.helpers
 
-import controllers.section1.routes._
 import controllers.declaration.routes._
+import controllers.section1.routes._
+import controllers.section2.routes._
 import models.DeclarationType.CLEARANCE
 import models.{ExportsDeclaration, Pointer}
 import play.api.Logging

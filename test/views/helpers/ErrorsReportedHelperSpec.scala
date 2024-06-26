@@ -19,7 +19,7 @@ package views.helpers
 import base.Injector
 import connectors.CodeListConnector
 import forms.common.Eori
-import forms.declaration.AdditionalActor
+import forms.section2.AdditionalActor
 import models.Pointer
 import models.declaration.notifications.{Notification, NotificationError}
 import models.declaration.submissions.SubmissionStatus

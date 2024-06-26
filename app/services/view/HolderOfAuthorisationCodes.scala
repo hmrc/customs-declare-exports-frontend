@@ -18,8 +18,8 @@ package services.view
 
 import config.featureFlags.MerchandiseInBagConfig
 import connectors.CodeListConnector
-import forms.declaration.authorisationHolder.AuthorizationTypeCodes.codesFilteredFromView
-import forms.declaration.authorisationHolder.AuthorisationHolder
+import forms.section2.authorisationHolder.AuthorisationHolder
+import forms.section2.authorisationHolder.AuthorizationTypeCodes.codesFilteredFromView
 import models.codes.HolderOfAuthorisationCode
 
 import java.util.Locale

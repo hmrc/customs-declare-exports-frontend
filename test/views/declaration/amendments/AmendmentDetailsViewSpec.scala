@@ -23,28 +23,20 @@ import forms.common.{Address, Date, Eori, YesNoAnswer}
 import forms.declaration.additionaldocuments.{AdditionalDocument, DocumentWriteOff}
 import forms.declaration.ModeOfTransportCode.{InlandWaterway, Maritime, RoRo, Road}
 import forms.declaration.TransportPayment.{cash, cheque}
-import forms.declaration.carrier.CarrierDetails
-import forms.declaration.consignor.ConsignorDetails
 import forms.declaration.countries.Country
-import forms.declaration.authorisationHolder.AuthorisationHolder
-import forms.declaration.exporter.ExporterDetails
 import forms.declaration.officeOfExit.OfficeOfExit
 import forms.declaration.{
-  AdditionalActor,
   AdditionalFiscalReference,
   AdditionalFiscalReferencesData,
   AdditionalInformation,
   CommodityDetails,
-  ConsigneeDetails,
   CusCode,
-  DeclarantDetails,
   Document,
   EntityDetails,
   InlandModeOfTransportCode,
   NactCode,
   NatureOfTransaction,
   PackageInformation,
-  PersonPresentingGoodsDetails,
   Seal,
   StatisticalValue,
   SupervisingCustomsOffice,
@@ -54,6 +46,12 @@ import forms.declaration.{
   UNDangerousGoodsCode,
   WarehouseIdentification
 }
+import forms.section1.DeclarantDetails
+import forms.section2.authorisationHolder.AuthorisationHolder
+import forms.section2.carrier.CarrierDetails
+import forms.section2.{AdditionalActor, ConsigneeDetails, PersonPresentingGoodsDetails}
+import forms.section2.consignor.ConsignorDetails
+import forms.section2.exporter.ExporterDetails
 import models.declaration.{
   AdditionalDocuments,
   AdditionalInformationData,
