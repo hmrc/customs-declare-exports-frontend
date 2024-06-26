@@ -70,6 +70,6 @@ class CarrierDetailsController @Inject() (
       )
   }
 
-  private def updateCache(formData: CarrierDetails)(implicit req: JourneyRequest[AnyContent]): Future[ExportsDeclaration] =
-    updateDeclarationFromRequest(model => model.copy(parties = model.parties.copy(carrierDetails = Some(formData))))
+  private def updateCache(carrierDetails: CarrierDetails)(implicit req: JourneyRequest[AnyContent]): Future[ExportsDeclaration] =
+    updateDeclarationFromRequest(model => model.copy(parties = model.parties.copy(carrierDetails = Some(carrierDetails))))
 }

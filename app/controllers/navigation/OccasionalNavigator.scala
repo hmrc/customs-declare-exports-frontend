@@ -17,15 +17,14 @@
 package controllers.navigation
 
 import controllers.declaration.routes
-import forms.declaration.RoutingCountryQuestionYesNo.{ChangeCountryPage, RemoveCountryPage, RoutingCountryQuestionPage}
 import forms.DeclarationPage
+import forms.declaration.RoutingCountryQuestionYesNo.{ChangeCountryPage, RemoveCountryPage, RoutingCountryQuestionPage}
 import forms.declaration._
 import forms.declaration.additionaldocuments._
 import forms.declaration.carrier.CarrierEoriNumber
 import forms.declaration.commodityMeasure.CommodityMeasure
 import forms.declaration.exporter._
 import models.ExportsDeclaration
-import models.requests.JourneyRequest
 import play.api.mvc.Call
 
 trait OccasionalNavigator extends CacheDependentNavigators {
@@ -60,7 +59,7 @@ trait OccasionalNavigator extends CacheDependentNavigators {
     case page                          => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on occasional")
   }
 
-  def occasionalCacheDependent(implicit request: JourneyRequest[_]): PartialFunction[DeclarationPage, ExportsDeclaration => Call] = {
+  def occasionalCacheDependent: PartialFunction[DeclarationPage, ExportsDeclaration => Call] = {
     case ConsigneeDetails          => consigneeDetailsPreviousPage
     case DeclarantIsExporter       => declarantIsExporterPreviousPage
     case RepresentativeAgent       => representativeAgentPreviousPage

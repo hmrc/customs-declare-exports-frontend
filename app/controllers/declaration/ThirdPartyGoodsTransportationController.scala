@@ -62,10 +62,10 @@ class ThirdPartyGoodsTransportationController @Inject() (
   }
 
   private def populateForm(form: Form[YesNoAnswer])(implicit request: JourneyRequest[_]): Form[YesNoAnswer] =
-    request.cacheModel.isUsingOwnTransport match {
-      case Some(true)  => form.fill(YesNoAnswer.No.get)
-      case Some(false) => form.fill(YesNoAnswer.Yes.get)
-      case _           => form
+    request.cacheModel.parties.carrierDetails match {
+      case Some(carrier) if carrier.details.nonEmpty                                   => form.fill(YesNoAnswer.Yes.get)
+      case _ if request.cacheModel.parties.consigneeDetails.exists(_.details.nonEmpty) => form.fill(YesNoAnswer.No.get)
+      case _                                                                           => form
     }
 
   private def saveAndRedirect(answer: YesNoAnswer)(implicit request: JourneyRequest[_]): Future[Call] =
