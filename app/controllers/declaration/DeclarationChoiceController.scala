@@ -17,7 +17,7 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, VerifiedEmailAction}
-import controllers.declaration.routes.AdditionalDeclarationTypeController
+import controllers.section1.routes.AdditionalDeclarationTypeController
 import forms.declaration.DeclarationChoice._
 import models.DeclarationType.{CLEARANCE, DeclarationType, SIMPLIFIED, STANDARD}
 import models.declaration.DeclarationStatus.INITIAL

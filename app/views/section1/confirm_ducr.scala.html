@@ -1,0 +1,99 @@
+@*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import forms.common.YesNoAnswer
+@import models.requests.JourneyRequest
+@import forms.Ducr
+@import forms.declaration.ConfirmDucr
+@import views.helpers.{BackButton, Title}
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.html.components.gds._
+@import config.AppConfig
+@import controllers.navigation.Navigator
+@import controllers.section1.routes.ConfirmDucrController
+
+
+@this(
+    errorSummary: errorSummary,
+    govukLayout: gdsMainTemplate,
+    heading: heading,
+    paragraphBody: paragraphBody,
+    govukDetails: GovukDetails,
+    govukTable: GovukTable,
+    bulletList: bulletList,
+    tariffExpander: tariffExpander,
+    saveButtons: saveButtons,
+    yesNoRadios: yesNoRadios,
+    sectionHeader: sectionHeader,
+    formHelper: FormWithCSRF,
+    navigator: Navigator,
+    appConfig: AppConfig
+)
+
+@(form: Form[YesNoAnswer], generatedDucr: Ducr)(implicit request: JourneyRequest[_], messages: Messages)
+
+@hasErrors = @{form.hasErrors || form.hasGlobalErrors}
+
+@expanderContent = {
+    @paragraphBody(messages("declaration.confirmDucr.expander.content.p1"))
+    @bulletList(Seq(
+        Html(messages("declaration.confirmDucr.expander.content.list.1")),
+        Html(messages("declaration.confirmDucr.expander.content.list.2")),
+        Html(messages("declaration.confirmDucr.expander.content.list.3")),
+        Html(messages("declaration.confirmDucr.expander.content.list.4")),
+        Html(messages("declaration.confirmDucr.expander.content.list.5"))
+    ))
+    @paragraphBody(messages("declaration.confirmDucr.expander.content.p2"))
+}
+
+@govukLayout(
+    title = Title("declaration.confirmDucr.title", "declaration.section.1", hasErrors = hasErrors),
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(ConfirmDucr))),
+    showDeclarationSummaryLink = false
+) {
+    @formHelper(action = ConfirmDucrController.submitForm, 'autoComplete -> "off") {
+        @errorSummary(form.errors)
+
+        @sectionHeader(messages("declaration.section.1"))
+        @heading(messages("declaration.confirmDucr.title"))
+
+        @govukTable(Table(
+            rows = Seq(Seq(
+                TableRow(
+                    content = Text(messages("declaration.confirmDucr.row.ducr")), classes = "govuk-!-font-weight-bold"
+                ),
+                TableRow(
+                    content = Text(generatedDucr.ducr)
+                ),
+            ))
+        ))
+
+        @paragraphBody(messages("declaration.confirmDucr.body.p1"))
+        @paragraphBody(messages("declaration.confirmDucr.body.p2"))
+
+        @yesNoRadios(form)
+
+        @govukDetails(Details(
+            attributes = Map("id" -> "expander-ducr"),
+            summary = Text(messages("declaration.confirmDucr.expander.title")),
+            content = HtmlContent(expanderContent)
+        ))
+
+        @tariffExpander(ConfirmDucr, request.declarationType)(messages, appConfig)
+
+        @saveButtons()
+    }
+}

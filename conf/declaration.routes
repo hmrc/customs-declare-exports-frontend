@@ -11,69 +11,71 @@ GET         /declaration-choice                 controllers.declaration.Declarat
 
 POST        /declaration-choice                 controllers.declaration.DeclarationChoiceController.submitChoice
 
+## SECTION 1 -----------------------------------------------------------------------------------------------------------
+
 # Declaration type
 
-GET         /type                                controllers.declaration.AdditionalDeclarationTypeController.displayPage
+GET         /type                                controllers.section1.AdditionalDeclarationTypeController.displayPage
 
-POST        /type                                controllers.declaration.AdditionalDeclarationTypeController.submitForm
+POST        /type                                controllers.section1.AdditionalDeclarationTypeController.submitForm
 
 # Declarant EORI
 
-GET         /declarant-details                   controllers.declaration.DeclarantDetailsController.displayPage
+GET         /declarant-details                   controllers.section1.DeclarantDetailsController.displayPage
 
-POST        /declarant-details                   controllers.declaration.DeclarantDetailsController.submitForm
+POST        /declarant-details                   controllers.section1.DeclarantDetailsController.submitForm
 
 # Not Eligible
 
-GET         /not-eligible                       controllers.declaration.NotEligibleController.displayNotEligible
+GET         /not-eligible                       controllers.section1.NotEligibleController.displayNotEligible
 
-GET         /not-declarant                      controllers.declaration.NotEligibleController.displayNotDeclarant
+GET         /not-declarant                      controllers.section1.NotEligibleController.displayNotDeclarant
 
 # DUCR Choice
 
-GET         /do-you-have-ducr                    controllers.declaration.DucrChoiceController.displayPage
+GET         /do-you-have-ducr                    controllers.section1.DucrChoiceController.displayPage
 
-POST        /do-you-have-ducr                    controllers.declaration.DucrChoiceController.submitForm
+POST        /do-you-have-ducr                    controllers.section1.DucrChoiceController.submitForm
 
 # DUCR
 
-GET         /ducr-entry                          controllers.declaration.DucrEntryController.displayPage
+GET         /ducr-entry                          controllers.section1.DucrEntryController.displayPage
 
-POST        /ducr-entry                          controllers.declaration.DucrEntryController.submitForm
+POST        /ducr-entry                          controllers.section1.DucrEntryController.submitForm
 
 # LRN
 
-GET         /local-reference-number              controllers.declaration.LocalReferenceNumberController.displayPage
+GET         /local-reference-number              controllers.section1.LocalReferenceNumberController.displayPage
 
-POST        /local-reference-number              controllers.declaration.LocalReferenceNumberController.submitForm
+POST        /local-reference-number              controllers.section1.LocalReferenceNumberController.submitForm
 
 # Trader reference
 
-GET         /trader-reference                   controllers.declaration.TraderReferenceController.displayPage
+GET         /trader-reference                   controllers.section1.TraderReferenceController.displayPage
 
-POST        /trader-reference                   controllers.declaration.TraderReferenceController.submitForm
+POST        /trader-reference                   controllers.section1.TraderReferenceController.submitForm
 
 # Confirm DUCR
 
-GET         /confirm-ducr                       controllers.declaration.ConfirmDucrController.displayPage
+GET         /confirm-ducr                       controllers.section1.ConfirmDucrController.displayPage
 
-POST        /confirm-ducr                       controllers.declaration.ConfirmDucrController.submitForm
+POST        /confirm-ducr                       controllers.section1.ConfirmDucrController.submitForm
 
 # Consignment references
 
-GET         /consignment-references              controllers.declaration.ConsignmentReferencesController.displayPage
+GET         /consignment-references              controllers.section1.ConsignmentReferencesController.displayPage
 
-POST        /consignment-references              controllers.declaration.ConsignmentReferencesController.submitForm
+POST        /consignment-references              controllers.section1.ConsignmentReferencesController.submitForm
 
 # MUCR
 
-GET         /link-to-mucr                        controllers.declaration.LinkDucrToMucrController.displayPage
+GET         /link-to-mucr                        controllers.section1.LinkDucrToMucrController.displayPage
 
-POST        /link-to-mucr                        controllers.declaration.LinkDucrToMucrController.submitForm
+POST        /link-to-mucr                        controllers.section1.LinkDucrToMucrController.submitForm
 
-GET         /enter-a-mucr                        controllers.declaration.MucrController.displayPage
+GET         /enter-a-mucr                        controllers.section1.MucrController.displayPage
 
-POST        /enter-a-mucr                        controllers.declaration.MucrController.submitForm
+POST        /enter-a-mucr                        controllers.section1.MucrController.submitForm
 
 # Entry into Declarant records (Clearance journey)
 

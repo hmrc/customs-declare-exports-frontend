@@ -17,6 +17,7 @@
 package views.helpers
 
 import connectors.CodeListConnector
+import controllers.section1.routes._
 import controllers.declaration.routes._
 import forms.declaration.ModeOfTransportCode
 import models.ExportsDeclaration

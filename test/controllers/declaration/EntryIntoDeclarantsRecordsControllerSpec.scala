@@ -17,8 +17,9 @@
 package controllers.declaration
 
 import base.{AuditedControllerSpec, ControllerSpec}
-import controllers.declaration.routes.{DeclarantDetailsController, PersonPresentingGoodsDetailsController}
+import controllers.declaration.routes.PersonPresentingGoodsDetailsController
 import controllers.routes.RootController
+import controllers.section1.routes.DeclarantDetailsController
 import forms.common.YesNoAnswer.{No, Yes, YesNoAnswers}
 import forms.common.{Eori, YesNoAnswer}
 import forms.declaration.AuthorisationProcedureCodeChoice.Choice1040
