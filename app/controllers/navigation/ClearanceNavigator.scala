@@ -16,7 +16,8 @@
 
 package controllers.navigation
 
-import controllers.declaration.routes
+import controllers.section1.routes._
+import controllers.declaration.routes._
 import forms.DeclarationPage
 import forms.declaration.RoutingCountryQuestionYesNo.{ChangeCountryPage, RemoveCountryPage, RoutingCountryQuestionPage}
 import forms.declaration._
@@ -31,28 +32,28 @@ import play.api.mvc.Call
 trait ClearanceNavigator extends CacheDependentNavigators {
 
   val clearance: PartialFunction[DeclarationPage, Call] = {
-    case EntryIntoDeclarantsRecords   => routes.SectionSummaryController.displayPage(1)
-    case DucrChoice                   => routes.AdditionalDeclarationTypeController.displayPage
-    case ConsignmentReferences        => routes.AdditionalDeclarationTypeController.displayPage
-    case LinkDucrToMucr               => routes.LocalReferenceNumberController.displayPage
-    case ExporterDetails              => routes.ExporterEoriNumberController.displayPage
-    case DeclarantDetails             => routes.EntryIntoDeclarantsRecordsController.displayPage
-    case PersonPresentingGoodsDetails => routes.EntryIntoDeclarantsRecordsController.displayPage
-    case ContainerAdd                 => routes.TransportContainerController.displayContainerSummary
-    case RoutingCountryQuestionPage   => routes.DestinationCountryController.displayPage
-    case RemoveCountryPage            => routes.RoutingCountriesController.displayRoutingCountry
-    case ChangeCountryPage            => routes.RoutingCountriesController.displayRoutingCountry
-    case LocationOfGoods              => routes.DestinationCountryController.displayPage
-    case ConsignorEoriNumber          => routes.IsExsController.displayPage
-    case ConsignorDetails             => routes.ConsignorEoriNumberController.displayPage
-    case DocumentSummary              => routes.SectionSummaryController.displayPage(3)
-    case CarrierEoriNumber            => routes.ThirdPartyGoodsTransportationController.displayPage
+    case EntryIntoDeclarantsRecords   => SectionSummaryController.displayPage(1)
+    case DucrChoice                   => AdditionalDeclarationTypeController.displayPage
+    case ConsignmentReferences        => AdditionalDeclarationTypeController.displayPage
+    case LinkDucrToMucr               => LocalReferenceNumberController.displayPage
+    case ExporterDetails              => ExporterEoriNumberController.displayPage
+    case DeclarantDetails             => EntryIntoDeclarantsRecordsController.displayPage
+    case PersonPresentingGoodsDetails => EntryIntoDeclarantsRecordsController.displayPage
+    case ContainerAdd                 => TransportContainerController.displayContainerSummary
+    case RoutingCountryQuestionPage   => DestinationCountryController.displayPage
+    case RemoveCountryPage            => RoutingCountriesController.displayRoutingCountry
+    case ChangeCountryPage            => RoutingCountriesController.displayRoutingCountry
+    case LocationOfGoods              => DestinationCountryController.displayPage
+    case ConsignorEoriNumber          => IsExsController.displayPage
+    case ConsignorDetails             => ConsignorEoriNumberController.displayPage
+    case DocumentSummary              => SectionSummaryController.displayPage(3)
+    case CarrierEoriNumber            => ThirdPartyGoodsTransportationController.displayPage
     case page                         => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on clearance")
   }
 
   val clearanceItemPage: PartialFunction[DeclarationPage, String => Call] = {
-    case AdditionalInformationRequired => routes.CommodityMeasureController.displayPage
-    case AdditionalInformationSummary  => routes.CommodityMeasureController.displayPage
+    case AdditionalInformationRequired => CommodityMeasureController.displayPage
+    case AdditionalInformationSummary  => CommodityMeasureController.displayPage
     case page                          => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on clearance")
   }
 

@@ -17,7 +17,8 @@
 package views.declaration
 
 import base.Injector
-import controllers.declaration.routes._
+import controllers.declaration.routes.{EntryIntoDeclarantsRecordsController, SectionSummaryController}
+import controllers.section1.routes.DeclarantDetailsController
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.DeclarantIsExporter
 import forms.declaration.DeclarantIsExporter.form

@@ -16,6 +16,7 @@
 
 package views.helpers
 
+import controllers.section1.routes._
 import controllers.declaration.routes._
 import models.DeclarationType.CLEARANCE
 import models.{ExportsDeclaration, Pointer}

@@ -16,7 +16,8 @@
 
 package controllers.navigation
 
-import controllers.declaration.routes
+import controllers.section1.routes._
+import controllers.declaration.routes._
 import forms.DeclarationPage
 import forms.declaration.RoutingCountryQuestionYesNo.{ChangeCountryPage, RemoveCountryPage, RoutingCountryQuestionPage}
 import forms.declaration._
@@ -30,32 +31,32 @@ import play.api.mvc.Call
 trait SimplifiedNavigator extends CacheDependentNavigators {
 
   val simplified: PartialFunction[DeclarationPage, Call] = {
-    case DeclarantDetails           => routes.AdditionalDeclarationTypeController.displayPage
-    case DucrChoice                 => routes.DeclarantDetailsController.displayPage
-    case ConsignmentReferences      => routes.DeclarantDetailsController.displayPage
-    case LinkDucrToMucr             => routes.LocalReferenceNumberController.displayPage
-    case ExporterEoriNumber         => routes.DeclarantExporterController.displayPage
-    case ExporterDetails            => routes.ExporterEoriNumberController.displayPage
-    case AdditionalActor            => routes.ConsigneeDetailsController.displayPage
-    case ContainerAdd               => routes.TransportContainerController.displayContainerSummary
-    case RoutingCountryQuestionPage => routes.DestinationCountryController.displayPage
-    case RemoveCountryPage          => routes.RoutingCountriesController.displayRoutingCountry
-    case ChangeCountryPage          => routes.RoutingCountriesController.displayRoutingCountry
-    case LocationOfGoods            => routes.RoutingCountriesController.displayRoutingCountry
-    case AdditionalActorsSummary    => routes.ConsigneeDetailsController.displayPage
-    case DocumentSummary            => routes.SectionSummaryController.displayPage(3)
-    case CarrierEoriNumber          => routes.ThirdPartyGoodsTransportationController.displayPage
+    case DeclarantDetails           => AdditionalDeclarationTypeController.displayPage
+    case DucrChoice                 => DeclarantDetailsController.displayPage
+    case ConsignmentReferences      => DeclarantDetailsController.displayPage
+    case LinkDucrToMucr             => LocalReferenceNumberController.displayPage
+    case ExporterEoriNumber         => DeclarantExporterController.displayPage
+    case ExporterDetails            => ExporterEoriNumberController.displayPage
+    case AdditionalActor            => ConsigneeDetailsController.displayPage
+    case ContainerAdd               => TransportContainerController.displayContainerSummary
+    case RoutingCountryQuestionPage => DestinationCountryController.displayPage
+    case RemoveCountryPage          => RoutingCountriesController.displayRoutingCountry
+    case ChangeCountryPage          => RoutingCountriesController.displayRoutingCountry
+    case LocationOfGoods            => RoutingCountriesController.displayRoutingCountry
+    case AdditionalActorsSummary    => ConsigneeDetailsController.displayPage
+    case DocumentSummary            => SectionSummaryController.displayPage(3)
+    case CarrierEoriNumber          => ThirdPartyGoodsTransportationController.displayPage
     case page                       => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on simplified")
   }
 
   val simplifiedItemPage: PartialFunction[DeclarationPage, String => Call] = {
-    case AdditionalInformationRequired => routes.PackageInformationSummaryController.displayPage
-    case AdditionalInformationSummary  => routes.PackageInformationSummaryController.displayPage
-    case AdditionalDocumentsRequired   => routes.IsLicenceRequiredController.displayPage
-    case AdditionalDocumentsSummary    => routes.IsLicenceRequiredController.displayPage
-    case CusCode                       => routes.UNDangerousGoodsCodeController.displayPage
-    case NactCode                      => routes.NactCodeSummaryController.displayPage
-    case CommodityMeasure              => routes.PackageInformationSummaryController.displayPage
+    case AdditionalInformationRequired => PackageInformationSummaryController.displayPage
+    case AdditionalInformationSummary  => PackageInformationSummaryController.displayPage
+    case AdditionalDocumentsRequired   => IsLicenceRequiredController.displayPage
+    case AdditionalDocumentsSummary    => IsLicenceRequiredController.displayPage
+    case CusCode                       => UNDangerousGoodsCodeController.displayPage
+    case NactCode                      => NactCodeSummaryController.displayPage
+    case CommodityMeasure              => PackageInformationSummaryController.displayPage
     case page                          => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on simplified")
   }
 

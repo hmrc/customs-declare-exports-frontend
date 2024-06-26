@@ -16,7 +16,8 @@
 
 package controllers.navigation
 
-import controllers.declaration.routes
+import controllers.section1.routes._
+import controllers.declaration.routes._
 import controllers.routes.ChoiceController
 import forms.declaration._
 import forms.declaration.authorisationHolder.{AuthorisationHolder, AuthorisationHolderRequired, AuthorisationHolderSummary}
@@ -36,31 +37,31 @@ trait CommonNavigator extends CacheDependentNavigators {
 
   val common: PartialFunction[DeclarationPage, Call] = {
     case DeclarationChoice            => ChoiceController.displayPage
-    case Mucr                         => routes.LinkDucrToMucrController.displayPage
-    case RepresentativeEntity         => routes.RepresentativeAgentController.displayPage
-    case RepresentativeStatus         => routes.RepresentativeEntityController.displayPage
-    case ProcedureCode                => routes.ItemsSummaryController.displayItemsSummaryPage
-    case ExportItem                   => routes.SectionSummaryController.displayPage(4)
-    case DocumentChangeOrRemove       => routes.PreviousDocumentsSummaryController.displayPage
-    case TransportLeavingTheBorder    => routes.SectionSummaryController.displayPage(5)
-    case WarehouseIdentification      => routes.TransportLeavingTheBorderController.displayPage
-    case TransportPayment             => routes.ExpressConsignmentController.displayPage
-    case CarrierDetails               => routes.CarrierEoriNumberController.displayPage
-    case InvoiceAndExchangeRateChoice => routes.SectionSummaryController.displayPage(3)
-    case InvoiceAndExchangeRate       => routes.InvoiceAndExchangeRateChoiceController.displayPage
-    case TraderReference              => routes.DucrChoiceController.displayPage
-    case ConfirmDucr                  => routes.TraderReferenceController.displayPage
-    case RoutingCountryPage           => routes.RoutingCountriesController.displayRoutingQuestion
-    case DestinationCountryPage       => routes.SectionSummaryController.displayPage(2)
+    case Mucr                         => LinkDucrToMucrController.displayPage
+    case RepresentativeEntity         => RepresentativeAgentController.displayPage
+    case RepresentativeStatus         => RepresentativeEntityController.displayPage
+    case ProcedureCode                => ItemsSummaryController.displayItemsSummaryPage
+    case ExportItem                   => SectionSummaryController.displayPage(4)
+    case DocumentChangeOrRemove       => PreviousDocumentsSummaryController.displayPage
+    case TransportLeavingTheBorder    => SectionSummaryController.displayPage(5)
+    case WarehouseIdentification      => TransportLeavingTheBorderController.displayPage
+    case TransportPayment             => ExpressConsignmentController.displayPage
+    case CarrierDetails               => CarrierEoriNumberController.displayPage
+    case InvoiceAndExchangeRateChoice => SectionSummaryController.displayPage(3)
+    case InvoiceAndExchangeRate       => InvoiceAndExchangeRateChoiceController.displayPage
+    case TraderReference              => DucrChoiceController.displayPage
+    case ConfirmDucr                  => TraderReferenceController.displayPage
+    case RoutingCountryPage           => RoutingCountriesController.displayRoutingQuestion
+    case DestinationCountryPage       => SectionSummaryController.displayPage(2)
   }
 
   val commonItem: PartialFunction[DeclarationPage, String => Call] = {
-    case AdditionalProcedureCode           => routes.ProcedureCodesController.displayPage
-    case FiscalInformation                 => routes.AdditionalProcedureCodesController.displayPage
-    case AdditionalFiscalReferencesSummary => routes.FiscalInformationController.displayPage
-    case UNDangerousGoodsCode              => routes.CommodityDetailsController.displayPage
-    case StatisticalValue                  => routes.NactCodeSummaryController.displayPage
-    case SupplementaryUnits                => routes.CommodityMeasureController.displayPage
+    case AdditionalProcedureCode           => ProcedureCodesController.displayPage
+    case FiscalInformation                 => AdditionalProcedureCodesController.displayPage
+    case AdditionalFiscalReferencesSummary => FiscalInformationController.displayPage
+    case UNDangerousGoodsCode              => CommodityDetailsController.displayPage
+    case StatisticalValue                  => NactCodeSummaryController.displayPage
+    case SupplementaryUnits                => CommodityMeasureController.displayPage
   }
 
   def commonCacheDependent(implicit request: JourneyRequest[_]): PartialFunction[DeclarationPage, ExportsDeclaration => Call] = {

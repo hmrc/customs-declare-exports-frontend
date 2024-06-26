@@ -18,7 +18,8 @@ package views.helpers.summary
 
 import base.ExportsTestData.mucr
 import base.Injector
-import controllers.declaration.routes._
+import controllers.declaration.routes.{DeclarantExporterController, EntryIntoDeclarantsRecordsController}
+import controllers.section1.routes._
 import forms.common.Eori
 import forms.common.YesNoAnswer.YesNoAnswers.yes
 import forms.declaration.ConsignmentReferences

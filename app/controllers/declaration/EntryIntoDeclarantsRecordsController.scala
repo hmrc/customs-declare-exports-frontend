@@ -17,8 +17,9 @@
 package controllers.declaration
 
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.declaration.routes.{DeclarantDetailsController, PersonPresentingGoodsDetailsController}
+import controllers.declaration.routes.PersonPresentingGoodsDetailsController
 import controllers.navigation.Navigator
+import controllers.section1.routes.DeclarantDetailsController
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.EntryIntoDeclarantsRecords.form

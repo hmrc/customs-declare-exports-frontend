@@ -1,0 +1,63 @@
+@*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import config.AppConfig
+@import models.requests.JourneyRequest
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.html.components.gds._
+@import views.helpers.{BackButton, Title}
+@import views.html.components.gds._
+
+@this(
+    govukLayout: gdsMainTemplate,
+    pageTitle: pageTitle,
+    formHelper: FormWithCSRF,
+    link: link,
+    externalLink: externalLink,
+    appConfig: AppConfig
+)
+
+@()(implicit request: Request[_], messages: Messages)
+
+@supportPhone = {<b>0300 200 3700</b>}
+
+@govukLayout(
+    title = Title("notDeclarent.title"),
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), controllers.routes.RootController.displayPage))
+) {
+    @pageTitle(messages("notDeclarent.title"))
+
+    <p class="govuk-body">
+      @Html(messages("notDeclarent.paragraph1", link(text = messages("notDeclarent.paragraph1Link"), call = Call("GET", controllers.routes.RootController.displayPage.url))))
+    </p>
+
+    <p class="govuk-body">
+      @Html(messages("notDeclarent.paragraph2", link(text = messages("notDeclarent.paragraph2Link"), call = Call("GET", appConfig.notDeclarantEoriContactTeamUrl))))
+    </p>
+
+    <h2 class="govuk-heading-m">@messages("notDeclarent.referenceTitle")</h2>
+    <p class="govuk-body">
+        @Html(messages("notDeclarent.reference.support", supportPhone))
+        @Html(messages("notDeclarent.reference.openingHours"))
+    </p>
+
+    <p class="govuk-body">
+        @externalLink(
+            text = messages("general.inquiries.help.link"),
+            url = appConfig.generalEnquiriesHelpUrl
+        )
+    </p>
+}

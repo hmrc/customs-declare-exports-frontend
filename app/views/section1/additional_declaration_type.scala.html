@@ -1,0 +1,110 @@
+@*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import controllers.declaration.routes.{DeclarationChoiceController, StandardOrOtherJourneyController}
+@import controllers.navigation.Navigator
+@import controllers.section1.routes.AdditionalDeclarationTypeController
+@import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypePage
+@import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.AdditionalDeclarationType
+@import models.DeclarationType.{STANDARD, SUPPLEMENTARY}
+@import models.requests.JourneyRequest
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.helpers.{AdditionalDeclarationTypeHelper, BackButton, Title}
+@import views.html.components.gds._
+@import config.AppConfig
+
+@this(
+    declarationTypeHelper: AdditionalDeclarationTypeHelper,
+    govukLayout: gdsMainTemplate,
+    govukDetails: GovukDetails,
+    govukRadios: GovukRadios,
+    errorSummary: errorSummary,
+    sectionHeader: sectionHeader,
+    heading: heading,
+    saveAndContinue: saveAndContinue,
+    notificationBanner: notificationBanner,
+    paragraphBody: paragraphBody,
+    externalLink: externalLink,
+    tariffExpander: tariffExpander,
+    formHelper: FormWithCSRF,
+    appConfig: AppConfig
+)
+
+@(form: Form[AdditionalDeclarationType])(implicit request: JourneyRequest[_], messages: Messages)
+
+@expanderContent = {
+    @paragraphBody(messages("declaration.declarationType.expander.paragraph.1"))
+    @paragraphBody(messages("declaration.declarationType.expander.paragraph.2"))
+    @paragraphBody(messages("declaration.declarationType.expander.paragraph.3"))
+}
+
+@classes = @{
+    if (!request.isType(SUPPLEMENTARY)) "govuk-radios--inline" else ""
+}
+
+@previousPage = @{
+    if (request.isType(STANDARD)) StandardOrOtherJourneyController.displayPage
+    else DeclarationChoiceController.displayPage
+}
+
+@govukLayout(
+    title = Title(s"declaration.declarationType.header.${request.declarationType}", "declaration.section.1", hasErrors = form.hasErrors || form.hasGlobalErrors),
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), previousPage)),
+    showDeclarationSummaryLink = false
+) {
+    @formHelper(action = AdditionalDeclarationTypeController.submitForm, 'autoComplete -> "off") {
+        @errorSummary(declarationTypeHelper.radioGroupErrors(form))
+
+        @if(!request.isType(SUPPLEMENTARY)) {
+            @notificationBanner(
+                title = messages("declaration.declarationType.notification.title"),
+                content = paragraphBody(messages("declaration.declarationType.notification.content", externalLink(
+                    text = messages("declaration.declarationType.notification.content.link"),
+                    url = appConfig.guidance.january2022locations
+                )))
+            )
+        }
+
+        @sectionHeader(messages("declaration.section.1"))
+        <fieldset class="govuk-fieldset" @if(form.hasErrors) { aria-describedby="additionalDeclarationType-error" }>
+            <legend class="govuk-fieldset__legend govuk-!-margin-bottom-0">
+                @heading(messages(s"declaration.declarationType.header.${request.declarationType}"))
+            </legend>
+
+            @govukRadios(Radios(
+                name = "additionalDeclarationType",
+                classes = classes,
+                items = declarationTypeHelper.radioItems(form),
+                errorMessage = form("additionalDeclarationType").error.map {
+                    err => ErrorMessage(content = Text(messages(err.message, err.args:_*)))
+                }
+            ))
+        </fieldset>
+
+        @if(!request.isType(SUPPLEMENTARY)) {
+            @govukDetails(Details(
+                id = Some("submission-time-info"),
+                summary = Text(messages("declaration.declarationType.expander.title")),
+                content = HtmlContent(expanderContent)
+            ))
+        }
+
+        @tariffExpander(AdditionalDeclarationTypePage, request.declarationType)(messages, appConfig)
+
+        @saveAndContinue("site.continue")
+    }
+}
+
