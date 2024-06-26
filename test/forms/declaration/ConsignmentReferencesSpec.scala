@@ -19,7 +19,8 @@ package forms.declaration
 import base.ExportsTestData._
 import base.{JourneyTypeTestRunner, TestHelper}
 import forms.common.DeclarationPageBaseSpec
-import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.{AdditionalDeclarationType, SUPPLEMENTARY_EIDR, SUPPLEMENTARY_SIMPLIFIED}
+import forms.section1.additionaldeclarationtype.AdditionalDeclarationType.{AdditionalDeclarationType, SUPPLEMENTARY_EIDR, SUPPLEMENTARY_SIMPLIFIED}
+import forms.section1.ConsignmentReferences
 import forms.{Ducr, Lrn, LrnValidator}
 import models.DeclarationType.{CLEARANCE, OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
 import models.requests.JourneyRequest
@@ -271,7 +272,7 @@ class ConsignmentReferencesSpec extends DeclarationPageBaseSpec with JourneyType
 
   "ConsignmentReferencesForm on verifyLrnValidity" should {
 
-    import forms.declaration.ConsignmentReferences.ConsignmentReferencesFormEnhanced
+    import ConsignmentReferences.ConsignmentReferencesFormEnhanced
 
     implicit val hc: HeaderCarrier = HeaderCarrier()
 

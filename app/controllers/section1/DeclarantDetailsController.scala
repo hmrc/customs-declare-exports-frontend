@@ -17,14 +17,15 @@
 package controllers.section1
 
 import controllers.actions.{AmendmentDraftFilter, AuthAction, JourneyAction}
-import controllers.section1.routes.{ConsignmentReferencesController, DucrChoiceController, NotEligibleController}
-import controllers.declaration.routes.DeclarantExporterController
 import controllers.declaration.{ModelCacheable, SubmissionErrors}
 import controllers.navigation.Navigator
+import controllers.section1.routes.{ConsignmentReferencesController, DucrChoiceController, NotEligibleController}
+import controllers.section2.routes.DeclarantExporterController
 import forms.common.Eori
 import forms.common.YesNoAnswer.YesNoAnswers
-import forms.declaration.DeclarantEoriConfirmation.form
-import forms.declaration.{DeclarantDetails, DeclarantEoriConfirmation, EntityDetails}
+import forms.section1.DeclarantEoriConfirmation.form
+import forms.declaration.EntityDetails
+import forms.section1.{DeclarantDetails, DeclarantEoriConfirmation}
 import models.requests.JourneyRequest
 import models.requests.SessionHelper._
 import models.{DeclarationType, ExportsDeclaration}

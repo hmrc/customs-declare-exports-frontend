@@ -20,7 +20,7 @@ import base.Injector
 import config.AppConfig
 import controllers.declaration.routes._
 import forms.common.YesNoAnswer.YesNoAnswers
-import forms.declaration.AuthorisationProcedureCodeChoice.{Choice1007, Choice1040, ChoiceOthers}
+import forms.section2.AuthorisationProcedureCodeChoice.{Choice1007, Choice1040, ChoiceOthers}
 import forms.declaration.Document.form
 import forms.declaration.{Document, PreviousDocumentsData}
 import models.DeclarationType._

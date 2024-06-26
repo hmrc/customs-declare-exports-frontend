@@ -18,10 +18,10 @@ package controllers.section1
 
 import controllers.actions.{AmendmentDraftFilter, AuthAction, JourneyAction}
 import controllers.section1.routes.MucrController
-import controllers.declaration.{ModelCacheable, SubmissionErrors, routes}
+import controllers.declaration.{routes, ModelCacheable, SubmissionErrors}
 import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
-import forms.common.YesNoAnswer.{YesNoAnswers, form}
+import forms.common.YesNoAnswer.{form, YesNoAnswers}
 import models.ExportsDeclaration
 import models.requests.JourneyRequest
 import play.api.i18n.I18nSupport

@@ -29,7 +29,7 @@ import controllers.helpers.{InlandOrBorderHelper, SupervisingCustomsOfficeHelper
 import forms.declaration.InlandOrBorder.{Border, Inland}
 import forms.declaration.LocationOfGoods.suffixForGVMS
 import forms.declaration.ModeOfTransportCode.{meaningfulModeOfTransportCodes, Maritime, RoRo}
-import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
+import forms.section1.additionaldeclarationtype.AdditionalDeclarationType._
 import forms.declaration.{BorderTransport, LocationOfGoods, ModeOfTransportCode, TransportLeavingTheBorder}
 import models.DeclarationType._
 import models.declaration.ProcedureCodesData.warehouseRequiredProcedureCodes

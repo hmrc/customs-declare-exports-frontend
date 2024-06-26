@@ -22,9 +22,9 @@ import controllers.actions.AmendmentDraftFilterSpec
 import controllers.routes.RootController
 import controllers.section1.routes.ConfirmDucrController
 import forms.Ducr
-import forms.declaration.TraderReference.traderReferenceKey
-import forms.declaration.{ConsignmentReferences, TraderReference}
-import models.DeclarationType.{SUPPLEMENTARY, allDeclarationTypesExcluding}
+import forms.section1.TraderReference.traderReferenceKey
+import forms.section1.{ConsignmentReferences, TraderReference}
+import models.DeclarationType.{allDeclarationTypesExcluding, SUPPLEMENTARY}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{verify, when}
 import org.mockito.{ArgumentCaptor, Mockito}

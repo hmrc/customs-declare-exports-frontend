@@ -18,8 +18,8 @@ package views.section1
 
 import base.{Injector, MockAuthAction}
 import controllers.section1.routes.DucrChoiceController
-import forms.declaration.TraderReference
-import forms.declaration.TraderReference.form
+import forms.section1.TraderReference.form
+import forms.section1.TraderReference
 import models.DeclarationType.{CLEARANCE, STANDARD}
 import views.declaration.spec.PageWithButtonsSpec
 import views.html.section1.trader_reference

@@ -19,7 +19,8 @@ package forms.declaration.exporter
 import base.FormSpec
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.common.{DeclarationPageBaseSpec, Eori}
-import forms.declaration.exporter.ExporterEoriNumber.form
+import forms.section2.exporter.ExporterEoriNumber.form
+import forms.section2.exporter.ExporterEoriNumber
 import play.api.data.FormError
 
 class ExporterEoriNumberSpec extends FormSpec with DeclarationPageBaseSpec {

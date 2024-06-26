@@ -18,7 +18,7 @@ package forms.declaration
 
 import forms.common.DeclarationPageBaseSpec
 import forms.declaration.CommodityDetails._
-import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.SUPPLEMENTARY_EIDR
+import forms.section1.additionaldeclarationtype.AdditionalDeclarationType.SUPPLEMENTARY_EIDR
 import models.DeclarationType._
 import models.requests.JourneyRequest
 import models.viewmodels.TariffContentKey

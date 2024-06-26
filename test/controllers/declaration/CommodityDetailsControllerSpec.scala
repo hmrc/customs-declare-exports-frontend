@@ -18,7 +18,8 @@ package controllers.declaration
 
 import base.{AuditedControllerSpec, ControllerSpec}
 import controllers.declaration.routes.{CommodityMeasureController, PackageInformationSummaryController, UNDangerousGoodsCodeController}
-import forms.declaration.{CommodityDetails, CusCode, IsExs}
+import forms.declaration.{CommodityDetails, CusCode}
+import forms.section2.IsExs
 import models.DeclarationType._
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any

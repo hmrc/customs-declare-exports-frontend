@@ -21,8 +21,8 @@ import controllers.section1.routes.LinkDucrToMucrController
 import controllers.declaration.routes.SectionSummaryController
 import controllers.declaration.{ModelCacheable, SubmissionErrors}
 import controllers.navigation.Navigator
-import forms.declaration.ConsignmentReferences
-import forms.declaration.ConsignmentReferences.form
+import forms.section1.ConsignmentReferences.form
+import forms.section1.ConsignmentReferences
 import forms.{Ducr, LrnValidator}
 import models.DeclarationType.SUPPLEMENTARY
 import models.requests.JourneyRequest

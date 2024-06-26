@@ -17,6 +17,7 @@
 package forms.declaration
 
 import base.UnitWithMocksSpec
+import forms.section2.IsExs
 import play.api.data.FormError
 
 class IsExsSpec extends UnitWithMocksSpec {

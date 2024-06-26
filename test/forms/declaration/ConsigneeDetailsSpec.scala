@@ -17,6 +17,7 @@
 package forms.declaration
 
 import forms.common.DeclarationPageBaseSpec
+import forms.section2.ConsigneeDetails
 
 class ConsigneeDetailsSpec extends DeclarationPageBaseSpec {
 

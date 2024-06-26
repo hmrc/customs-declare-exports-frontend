@@ -20,8 +20,8 @@ import base.{ControllerSpec, MockTaggedCodes}
 import forms.common.YesNoAnswer.Yes
 import forms.common.{Eori, YesNoAnswer}
 import forms.declaration.additionaldocuments.AdditionalDocument
-import forms.declaration.authorisationHolder.AuthorisationHolder
-import forms.declaration.authorisationHolder.AuthorizationTypeCodes.EXRR
+import forms.section2.authorisationHolder.AuthorisationHolder
+import forms.section2.authorisationHolder.AuthorizationTypeCodes.EXRR
 import models.declaration.EoriSource
 import models.requests.SessionHelper.errorFixModeSessionKey
 import org.mockito.ArgumentCaptor

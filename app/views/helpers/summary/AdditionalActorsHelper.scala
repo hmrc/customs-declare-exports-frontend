@@ -16,8 +16,8 @@
 
 package views.helpers.summary
 
-import controllers.declaration.routes.{AdditionalActorsAddController, AdditionalActorsSummaryController}
-import forms.declaration.AdditionalActor
+import controllers.section2.routes.{AdditionalActorsAddController, AdditionalActorsSummaryController}
+import forms.section2.AdditionalActor
 import models.declaration.Parties
 import play.api.i18n.Messages
 import play.api.mvc.Call

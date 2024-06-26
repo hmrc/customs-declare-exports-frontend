@@ -23,7 +23,7 @@ import controllers.helpers.TransportSectionHelper._
 import forms.declaration.DepartureTransport.form
 import forms.declaration.InlandOrBorder.{Border, Inland}
 import forms.declaration.ModeOfTransportCode.{RoRo, Road}
-import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
+import forms.section1.additionaldeclarationtype.AdditionalDeclarationType._
 import forms.declaration.{ModeOfTransportCode, TransportCodes}
 import models.DeclarationType.{DeclarationType, STANDARD}
 import models.requests.JourneyRequest

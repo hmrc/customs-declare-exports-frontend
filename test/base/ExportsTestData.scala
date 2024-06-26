@@ -18,7 +18,7 @@ package base
 
 import forms.declaration.LocationOfGoods
 import forms.declaration.ModeOfTransportCode.RoRo
-import forms.declaration.authorisationHolder.AuthorizationTypeCodes.{CSE, EXRR}
+import forms.section2.authorisationHolder.AuthorizationTypeCodes.{CSE, EXRR}
 import models.AuthKey.{enrolment, hashIdentifierKey, identifierKey}
 import models.codes.AdditionalProcedureCode.NO_APC_APPLIES_CODE
 import models.declaration.ProcedureCodesData.warehouseRequiredProcedureCodes

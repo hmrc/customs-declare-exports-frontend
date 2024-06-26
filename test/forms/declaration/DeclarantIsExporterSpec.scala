@@ -18,6 +18,7 @@ package forms.declaration
 
 import forms.common.DeclarationPageBaseSpec
 import forms.common.YesNoAnswer.YesNoAnswers
+import forms.section2.DeclarantIsExporter
 import play.api.libs.json.{JsObject, JsString, JsValue}
 
 class DeclarantIsExporterSpec extends DeclarationPageBaseSpec {

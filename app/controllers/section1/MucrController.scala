@@ -17,10 +17,10 @@
 package controllers.section1
 
 import controllers.actions.{AmendmentDraftFilter, AuthAction, JourneyAction}
-import controllers.declaration.{ModelCacheable, SubmissionErrors, routes}
+import controllers.declaration.{routes, ModelCacheable, SubmissionErrors}
 import controllers.navigation.Navigator
-import forms.declaration.Mucr
-import forms.declaration.Mucr._
+import forms.section1.Mucr._
+import forms.section1.Mucr
 import models.ExportsDeclaration
 import models.requests.JourneyRequest
 import play.api.data.Form

@@ -21,9 +21,9 @@ import controllers.section1.routes.LinkDucrToMucrController
 import controllers.declaration.{ModelCacheable, SubmissionErrors}
 import controllers.navigation.Navigator
 import forms.Lrn.form
-import forms.declaration.ConsignmentReferences
+import forms.section1.ConsignmentReferences
 import forms.{Lrn, LrnValidator}
-import models.DeclarationType.{SUPPLEMENTARY, allDeclarationTypesExcluding}
+import models.DeclarationType.{allDeclarationTypesExcluding, SUPPLEMENTARY}
 import models.requests.JourneyRequest
 import play.api.i18n.I18nSupport
 import play.api.mvc._

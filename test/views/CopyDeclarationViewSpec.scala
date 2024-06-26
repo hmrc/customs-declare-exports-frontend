@@ -20,7 +20,7 @@ import base.ExportsTestData._
 import base.{Injector, TestHelper}
 import controllers.routes.DeclarationDetailsController
 import forms.CopyDeclaration.form
-import forms.declaration.ConsignmentReferences.ducrId
+import forms.section1.ConsignmentReferences.ducrId
 import forms.{CopyDeclaration, Ducr, Lrn}
 import models.DeclarationType.SUPPLEMENTARY
 import models.requests.{JourneyRequest, SessionHelper}

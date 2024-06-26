@@ -26,6 +26,7 @@ import models.ExportsDeclaration
 import models.requests.JourneyRequest
 import base.UnitSpec
 import connectors.CodeListConnector
+import forms.section2.exporter.ExporterDetails
 import models.codes.Country
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}

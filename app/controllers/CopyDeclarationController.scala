@@ -22,7 +22,7 @@ import controllers.declaration.routes.SummaryController
 import controllers.declaration.{ModelCacheable, SubmissionErrors}
 import controllers.routes.{CopyDeclarationController, DeclarationDetailsController}
 import forms.CopyDeclaration.form
-import forms.declaration.ConsignmentReferences
+import forms.section1.ConsignmentReferences
 import forms.{CopyDeclaration, Ducr, LrnValidator}
 import handlers.ErrorHandler
 import models.declaration.DeclarationStatus.DRAFT

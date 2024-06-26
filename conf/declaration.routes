@@ -77,135 +77,139 @@ GET         /enter-a-mucr                        controllers.section1.MucrContro
 
 POST        /enter-a-mucr                        controllers.section1.MucrController.submitForm
 
+## SECTION 2 -----------------------------------------------------------------------------------------------------------
+
 # Entry into Declarant records (Clearance journey)
 
-GET         /entry-into-declarants-records       controllers.declaration.EntryIntoDeclarantsRecordsController.displayPage
+GET         /entry-into-declarants-records       controllers.section2.EntryIntoDeclarantsRecordsController.displayPage
 
-POST        /entry-into-declarants-records       controllers.declaration.EntryIntoDeclarantsRecordsController.submitForm
+POST        /entry-into-declarants-records       controllers.section2.EntryIntoDeclarantsRecordsController.submitForm
 
 # Person presenting goods (Clearance journey)
 
-GET         /person-presenting-goods             controllers.declaration.PersonPresentingGoodsDetailsController.displayPage
+GET         /person-presenting-goods             controllers.section2.PersonPresentingGoodsDetailsController.displayPage
 
-POST        /person-presenting-goods             controllers.declaration.PersonPresentingGoodsDetailsController.submitForm
+POST        /person-presenting-goods             controllers.section2.PersonPresentingGoodsDetailsController.submitForm
 
 # Declarant is exporter
 
-GET         /are-you-the-exporter                controllers.declaration.DeclarantExporterController.displayPage
+GET         /are-you-the-exporter                controllers.section2.DeclarantExporterController.displayPage
 
-POST        /are-you-the-exporter                controllers.declaration.DeclarantExporterController.submitForm
+POST        /are-you-the-exporter                controllers.section2.DeclarantExporterController.submitForm
 
 # Declarant is not the exporter - Exporter EORI (if known)
 
-GET         /exporter-eori-number                controllers.declaration.ExporterEoriNumberController.displayPage
+GET         /exporter-eori-number                controllers.section2.ExporterEoriNumberController.displayPage
 
-POST        /exporter-eori-number                controllers.declaration.ExporterEoriNumberController.submit
+POST        /exporter-eori-number                controllers.section2.ExporterEoriNumberController.submit
 
 # Declarant is not the exporter - Exporter address (EORI is not known)
 
-GET         /exporter-address                    controllers.declaration.ExporterDetailsController.displayPage
+GET         /exporter-address                    controllers.section2.ExporterDetailsController.displayPage
 
-POST        /exporter-address                    controllers.declaration.ExporterDetailsController.saveAddress
+POST        /exporter-address                    controllers.section2.ExporterDetailsController.saveAddress
 
 # EXS Declaration (Clearance journey)
 
-GET         /is-this-exs                         controllers.declaration.IsExsController.displayPage
+GET         /is-this-exs                         controllers.section2.IsExsController.displayPage
 
-POST        /is-this-exs                         controllers.declaration.IsExsController.submit
+POST        /is-this-exs                         controllers.section2.IsExsController.submit
 
 # Consignor Eori Number (Clearance journey)
 
-GET         /consignor-eori-number               controllers.declaration.ConsignorEoriNumberController.displayPage
+GET         /consignor-eori-number               controllers.section2.ConsignorEoriNumberController.displayPage
 
-POST        /consignor-eori-number               controllers.declaration.ConsignorEoriNumberController.submit
+POST        /consignor-eori-number               controllers.section2.ConsignorEoriNumberController.submit
 
 # Consignor address (Clearance journey)
 
-GET         /consignor-address                   controllers.declaration.ConsignorDetailsController.displayPage
+GET         /consignor-address                   controllers.section2.ConsignorDetailsController.displayPage
 
-POST        /consignor-address                   controllers.declaration.ConsignorDetailsController.saveAddress
+POST        /consignor-address                   controllers.section2.ConsignorDetailsController.saveAddress
 
 # Declarant is not the exporter - Representative details
 
-GET         /are-you-completing-this-declaration-on-behalf-of-another-agent  controllers.declaration.RepresentativeAgentController.displayPage
+GET         /are-you-completing-this-declaration-on-behalf-of-another-agent  controllers.section2.RepresentativeAgentController.displayPage
 
-POST        /are-you-completing-this-declaration-on-behalf-of-another-agent  controllers.declaration.RepresentativeAgentController.submitForm
+POST        /are-you-completing-this-declaration-on-behalf-of-another-agent  controllers.section2.RepresentativeAgentController.submitForm
 
 # Declarant is not the exporter - Representative EORI (if known)
 
-GET         /representatives-eori-number         controllers.declaration.RepresentativeEntityController.displayPage
+GET         /representatives-eori-number         controllers.section2.RepresentativeEntityController.displayPage
 
-POST        /representatives-eori-number         controllers.declaration.RepresentativeEntityController.submitForm
+POST        /representatives-eori-number         controllers.section2.RepresentativeEntityController.submitForm
 
 # Declarant is not the exporter - Representative type (EORI not known)
 
-GET         /representation-type-agreed          controllers.declaration.RepresentativeStatusController.displayPage
+GET         /representation-type-agreed          controllers.section2.RepresentativeStatusController.displayPage
 
-POST        /representation-type-agreed          controllers.declaration.RepresentativeStatusController.submitForm
+POST        /representation-type-agreed          controllers.section2.RepresentativeStatusController.submitForm
 
 # Third Party Goods Transportation
 
-GET         /third-party-goods-transportation    controllers.declaration.ThirdPartyGoodsTransportationController.displayPage
+GET         /third-party-goods-transportation    controllers.section2.ThirdPartyGoodsTransportationController.displayPage
 
-POST        /third-party-goods-transportation    controllers.declaration.ThirdPartyGoodsTransportationController.submitPage
+POST        /third-party-goods-transportation    controllers.section2.ThirdPartyGoodsTransportationController.submitPage
 
 # Carrier Eori Number (if known)
 
-GET         /carrier-eori-number                 controllers.declaration.CarrierEoriNumberController.displayPage
+GET         /carrier-eori-number                 controllers.section2.CarrierEoriNumberController.displayPage
 
-POST        /carrier-eori-number                 controllers.declaration.CarrierEoriNumberController.submit
+POST        /carrier-eori-number                 controllers.section2.CarrierEoriNumberController.submit
 
 # Carrier details (Carrier's EORI not known)
 
-GET         /carrier-address                     controllers.declaration.CarrierDetailsController.displayPage
+GET         /carrier-address                     controllers.section2.CarrierDetailsController.displayPage
 
-POST        /carrier-address                     controllers.declaration.CarrierDetailsController.saveAddress
+POST        /carrier-address                     controllers.section2.CarrierDetailsController.saveAddress
 
 # Consignee details
 
-GET         /consignee-details                   controllers.declaration.ConsigneeDetailsController.displayPage
+GET         /consignee-details                   controllers.section2.ConsigneeDetailsController.displayPage
 
-POST        /consignee-details                   controllers.declaration.ConsigneeDetailsController.saveAddress
+POST        /consignee-details                   controllers.section2.ConsigneeDetailsController.saveAddress
 
 # Declaration other parties
 
-GET         /other-parties-involved              controllers.declaration.AdditionalActorsAddController.displayPage
+GET         /other-parties-involved              controllers.section2.AdditionalActorsAddController.displayPage
 
-POST        /other-parties-involved              controllers.declaration.AdditionalActorsAddController.saveForm
+POST        /other-parties-involved              controllers.section2.AdditionalActorsAddController.saveForm
 
-GET         /other-parties-list                  controllers.declaration.AdditionalActorsSummaryController.displayPage
+GET         /other-parties-list                  controllers.section2.AdditionalActorsSummaryController.displayPage
 
-POST        /other-parties-list                  controllers.declaration.AdditionalActorsSummaryController.submitForm
+POST        /other-parties-list                  controllers.section2.AdditionalActorsSummaryController.submitForm
 
-GET         /other-party/:id/remove              controllers.declaration.AdditionalActorsRemoveController.displayPage(id: String)
+GET         /other-party/:id/remove              controllers.section2.AdditionalActorsRemoveController.displayPage(id: String)
 
-POST        /other-party/:id/remove              controllers.declaration.AdditionalActorsRemoveController.submitForm(id: String)
+POST        /other-party/:id/remove              controllers.section2.AdditionalActorsRemoveController.submitForm(id: String)
 
 # Declaration holder of authorisation
 
-GET         /authorisation-choice                controllers.declaration.AuthorisationProcedureCodeChoiceController.displayPage
+GET         /authorisation-choice                controllers.section2.AuthorisationProcedureCodeChoiceController.displayPage
 
-POST        /authorisation-choice                controllers.declaration.AuthorisationProcedureCodeChoiceController.submitForm
+POST        /authorisation-choice                controllers.section2.AuthorisationProcedureCodeChoiceController.submitForm
 
-GET         /is-authorisation-required           controllers.declaration.AuthorisationHolderRequiredController.displayPage
+GET         /is-authorisation-required           controllers.section2.AuthorisationHolderRequiredController.displayPage
 
-POST        /is-authorisation-required           controllers.declaration.AuthorisationHolderRequiredController.submitForm
+POST        /is-authorisation-required           controllers.section2.AuthorisationHolderRequiredController.submitForm
 
-GET         /add-authorisation-required          controllers.declaration.AuthorisationHolderAddController.displayPage
+GET         /add-authorisation-required          controllers.section2.AuthorisationHolderAddController.displayPage
 
-POST        /add-authorisation-required          controllers.declaration.AuthorisationHolderAddController.submitForm
+POST        /add-authorisation-required          controllers.section2.AuthorisationHolderAddController.submitForm
 
-GET         /authorisations-required             controllers.declaration.AuthorisationHolderSummaryController.displayPage
+GET         /authorisations-required             controllers.section2.AuthorisationHolderSummaryController.displayPage
 
-POST        /authorisations-required             controllers.declaration.AuthorisationHolderSummaryController.submitForm
+POST        /authorisations-required             controllers.section2.AuthorisationHolderSummaryController.submitForm
 
-GET         /authorisations-required/:id/change  controllers.declaration.AuthorisationHolderChangeController.displayPage(id: String)
+GET         /authorisations-required/:id/change  controllers.section2.AuthorisationHolderChangeController.displayPage(id: String)
 
-POST        /authorisations-required/:id/change  controllers.declaration.AuthorisationHolderChangeController.submitForm(id: String)
+POST        /authorisations-required/:id/change  controllers.section2.AuthorisationHolderChangeController.submitForm(id: String)
 
-GET         /authorisations-required/:id/remove  controllers.declaration.AuthorisationHolderRemoveController.displayPage(id: String)
+GET         /authorisations-required/:id/remove  controllers.section2.AuthorisationHolderRemoveController.displayPage(id: String)
 
-POST        /authorisations-required/:id/remove  controllers.declaration.AuthorisationHolderRemoveController.submitForm(id: String)
+POST        /authorisations-required/:id/remove  controllers.section2.AuthorisationHolderRemoveController.submitForm(id: String)
+
+## SECTION 3 -----------------------------------------------------------------------------------------------------------
 
 # Destination country
 
@@ -235,6 +239,8 @@ GET         /office-of-exit                      controllers.declaration.OfficeO
 
 POST        /office-of-exit                      controllers.declaration.OfficeOfExitController.saveOffice
 
+## SECTION 4 -----------------------------------------------------------------------------------------------------------
+
 # Invoices & Exchange Rate
 
 GET         /invoices-and-exchange-rate-choice   controllers.declaration.InvoiceAndExchangeRateChoiceController.displayPage
@@ -250,7 +256,6 @@ POST        /invoices-and-exchange-rate          controllers.declaration.Invoice
 GET         /total-package-quantity              controllers.declaration.TotalPackageQuantityController.displayPage
 
 POST        /total-package-quantity              controllers.declaration.TotalPackageQuantityController.saveTotalPackageQuantity
-
 
 # Previous documents
 
@@ -276,8 +281,7 @@ GET         /nature-of-transaction               controllers.declaration.NatureO
 
 POST        /nature-of-transaction               controllers.declaration.NatureOfTransactionController.saveTransactionType
 
-
-# **** ITEMS PAGES *****
+## SECTION 5 -----------------------------------------------------------------------------------------------------------
 
 # Items Summary
 
@@ -447,7 +451,7 @@ GET         /items/:itemId/additional-documentation-list        controllers.decl
 
 POST        /items/:itemId/additional-documentation-list        controllers.declaration.AdditionalDocumentsController.submitForm(itemId)
 
-# **** END OF ITEM PAGES ****
+## SECTION 6 -----------------------------------------------------------------------------------------------------------
 
 # Transport leaving the border
 
@@ -530,6 +534,8 @@ POST        /containers/:containerId/add-seal    controllers.declaration.SealCon
 GET         /containers/:containerId/seals/:sealId/remove    controllers.declaration.SealController.displaySealRemove(containerId, sealId)
 
 POST        /containers/:containerId/seals/:sealId/remove    controllers.declaration.SealController.submitSealRemove(containerId, sealId)
+
+## END OF SECTIONS -----------------------------------------------------------------------------------------------------
 
 # Summary
 

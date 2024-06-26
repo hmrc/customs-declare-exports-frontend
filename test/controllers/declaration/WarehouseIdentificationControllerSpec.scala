@@ -23,7 +23,7 @@ import controllers.helpers.SupervisingCustomsOfficeHelper
 import controllers.helpers.TransportSectionHelper.additionalDeclTypesAllowedOnInlandOrBorder
 import forms.declaration.InlandOrBorder.{Border, Inland}
 import forms.declaration.WarehouseIdentification
-import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
+import forms.section1.additionaldeclarationtype.AdditionalDeclarationType._
 import models.DeclarationType._
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any

@@ -19,9 +19,8 @@ package controllers.section1
 import base.TestHelper._
 import base.{AuditedControllerSpec, ControllerSpec}
 import controllers.actions.AmendmentDraftFilterSpec
-import controllers.declaration.routes
 import controllers.declaration.routes.SectionSummaryController
-import forms.declaration.Mucr
+import forms.section1.Mucr
 import models.DeclarationType._
 import models.requests.JourneyRequest
 import org.mockito.ArgumentCaptor
@@ -92,7 +91,7 @@ class MucrControllerSpec extends ControllerSpec with AuditedControllerSpec with 
     "return 303 (SEE_OTHER) and redirect to the 'Section Summary' page" when {
       onEveryDeclarationJourney() { implicit request =>
         "a valid MUCR is entered" in {
-          verifyRedirect(routes.SectionSummaryController.displayPage(1))
+          verifyRedirect(SectionSummaryController.displayPage(1))
         }
       }
     }

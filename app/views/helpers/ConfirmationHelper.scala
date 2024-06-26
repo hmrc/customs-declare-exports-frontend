@@ -19,8 +19,8 @@ package views.helpers
 import config.{AppConfig, ExternalServicesConfig}
 import controllers.routes.{DeclarationDetailsController, FileUploadController}
 import forms.declaration.LocationOfGoods.suffixForGVMS
-import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
-import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.from
+import forms.section1.additionaldeclarationtype.AdditionalDeclarationType.from
+import forms.section1.additionaldeclarationtype.AdditionalDeclarationType
 import models.declaration.submissions.EnhancedStatus._
 import models.declaration.submissions.Submission
 import play.api.i18n.Messages

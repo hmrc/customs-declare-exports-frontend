@@ -17,8 +17,9 @@
 package views.helpers.summary
 
 import connectors.CodeListConnector
-import controllers.declaration.routes._
+import controllers.declaration.routes.DestinationCountryController
 import controllers.navigation.Navigator
+import controllers.section2.routes._
 import forms.DeclarationPage
 import forms.common.Address
 import forms.common.YesNoAnswer.YesNoAnswers.yes

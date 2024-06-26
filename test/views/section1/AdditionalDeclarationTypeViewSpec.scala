@@ -19,8 +19,8 @@ package views.section1
 import base.Injector
 import config.AppConfig
 import controllers.declaration.routes.{DeclarationChoiceController, StandardOrOtherJourneyController}
-import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
-import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypePage.{form, radioButtonGroupId}
+import forms.section1.additionaldeclarationtype.AdditionalDeclarationType._
+import forms.section1.additionaldeclarationtype.AdditionalDeclarationTypePage.{form, radioButtonGroupId}
 import models.DeclarationType._
 import play.twirl.api.Html
 import views.declaration.spec.UnitViewSpec

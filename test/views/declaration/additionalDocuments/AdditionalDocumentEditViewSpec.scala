@@ -23,12 +23,12 @@ import forms.common.Date.{dayKey, monthKey, yearKey}
 import forms.common.Eori
 import forms.declaration.AdditionalDocumentSpec._
 import forms.declaration.CommodityDetails
-import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
+import forms.section1.additionaldeclarationtype.AdditionalDeclarationType._
 import forms.declaration.additionaldocuments.AdditionalDocument
 import forms.declaration.additionaldocuments.AdditionalDocument._
 import forms.declaration.additionaldocuments.DocumentWriteOff.{documentQuantityKey, documentWriteOffKey, measurementUnitKey, qualifierKey}
 import forms.declaration.additionaldocuments.DocumentWriteOffSpec.incorrectDocumentWriteOff
-import forms.declaration.authorisationHolder.AuthorisationHolder
+import forms.section2.authorisationHolder.AuthorisationHolder
 import models.ExportsDeclaration
 import models.declaration.ExportDeclarationTestData.{allRecords, declaration}
 import models.declaration.{EoriSource, ExportItem}

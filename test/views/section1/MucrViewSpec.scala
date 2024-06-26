@@ -20,7 +20,7 @@ import base.Injector
 import base.TestHelper.createRandomAlphanumericString
 import config.AppConfig
 import controllers.section1.routes.LinkDucrToMucrController
-import forms.declaration.Mucr
+import forms.section1.Mucr
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import org.scalatest.Assertion

@@ -15,9 +15,9 @@
  *@
 
 @import config.AppConfig
-@import controllers.section1.routes
+@import controllers.section1.routes.MucrController
 @import controllers.navigation.Navigator
-@import forms.declaration.Mucr
+@import forms.section1.Mucr
 @import models.requests.JourneyRequest
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.components.gds.Styles._
@@ -47,7 +47,7 @@
     title = Title("declaration.mucr.title", "declaration.section.1", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(Mucr)))) {
 
-    @formHelper(action = routes.MucrController.submitForm, 'autoComplete -> "off") {
+    @formHelper(action = MucrController.submitForm, 'autoComplete -> "off") {
         @errorSummary(form.errors)
 
         @sectionHeader(messages("declaration.section.1"))

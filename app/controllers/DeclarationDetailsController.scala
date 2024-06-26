@@ -18,7 +18,7 @@ package controllers
 
 import connectors.CustomsDeclareExportsConnector
 import controllers.actions.{AuthAction, VerifiedEmailAction}
-import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.AdditionalDeclarationType
+import forms.section1.additionaldeclarationtype.AdditionalDeclarationType.AdditionalDeclarationType
 import handlers.ErrorHandler
 import models.declaration.submissions.Submission
 import models.requests.SessionHelper._

@@ -22,8 +22,8 @@ import controllers.declaration.{ModelCacheable, SubmissionErrors}
 import controllers.navigation.Navigator
 import forms.Ducr
 import forms.Ducr.generateDucrPrefix
-import forms.declaration.{ConsignmentReferences, TraderReference}
-import models.DeclarationType.{SUPPLEMENTARY, allDeclarationTypesExcluding}
+import forms.section1.{ConsignmentReferences, TraderReference}
+import models.DeclarationType.{allDeclarationTypesExcluding, SUPPLEMENTARY}
 import models.ExportsDeclaration
 import models.requests.JourneyRequest
 import play.api.i18n.I18nSupport

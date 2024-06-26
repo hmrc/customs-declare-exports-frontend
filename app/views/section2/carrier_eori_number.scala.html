@@ -1,0 +1,109 @@
+@*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import config.AppConfig
+@import controllers.section2.routes.CarrierEoriNumberController
+@import controllers.navigation.Navigator
+@import forms.common.YesNoAnswer.YesNoAnswers.{no, yes}
+@import forms.section2.carrier.CarrierEoriNumber
+@import models.requests.JourneyRequest
+@import play.twirl.api.HtmlFormat
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.helpers.{BackButton, Title}
+@import views.helpers.ErrorMapper.radioGroupErrors
+@import views.html.components.gds._
+
+@this(
+    govukLayout: gdsMainTemplate,
+    govukRadios: GovukRadios,
+    exportsInputText: exportsInputText,
+    errorSummary: errorSummary,
+    sectionHeader: sectionHeader,
+    heading: heading,
+    paragraph: paragraphBody,
+    notificationBanner: notificationBanner,
+    insetText: exportsInsetText,
+    tariffExpander: tariffExpander,
+    saveButtons: saveButtons,
+    formHelper: FormWithCSRF,
+    navigator: Navigator,
+    appConfig: AppConfig
+)
+
+@(form: Form[CarrierEoriNumber])(implicit request: JourneyRequest[_], messages: Messages)
+
+@hasErrors = @{form.hasErrors || form.hasGlobalErrors}
+
+@eoriInput = {
+    @exportsInputText(
+        field = form("eori"),
+        labelKey = "declaration.carrierEori.eori.label",
+        hintKey = Some("declaration.carrierEori.eori.hint")
+    )
+}
+
+@govukLayout(
+    title = Title("declaration.carrierEori.title", "declaration.section.2", hasErrors = hasErrors),
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(CarrierEoriNumber)))){
+
+    @formHelper(action = CarrierEoriNumberController.submit, 'autoComplete -> "off") {
+        @errorSummary(radioGroupErrors("hasEori", "Yes", form.errors))
+
+        @sectionHeader(messages("declaration.section.2"))
+
+        @notificationBanner(
+            title = messages("declaration.carrierEori.notification.title"),
+            content = paragraph(messages("declaration.carrierEori.notification.body"))
+        )
+
+        <fieldset class="govuk-fieldset" @if(form.hasErrors) { aria-describedby="hasEori-error" }>
+            <legend class="govuk-fieldset__legend govuk-!-margin-bottom-0">
+                @heading(messages("declaration.carrierEori.title"))
+            </legend>
+
+        @paragraph(messages("declaration.carrierEori.body.1"))
+        @paragraph(messages("declaration.carrierEori.body.2"))
+        @paragraph(messages("declaration.carrierEori.body.3"))
+
+        @insetText(HtmlContent(paragraph(messages("declaration.carrierEori.inset.1"))))
+
+        @govukRadios(Radios(
+            name = "hasEori",
+            items = Seq(
+                RadioItem(
+                    id = Some("Yes"),
+                    value = Some(yes),
+                    content = Text(messages("site.yes")),
+                    conditionalHtml = Some(eoriInput),
+                    checked = form("hasEori").value.contains("Yes")
+                ),
+                RadioItem(
+                    id = Some("No"),
+                    value = Some(no),
+                    content = Text(messages("site.no")),
+                    checked = form("hasEori").value.contains("No")
+                )
+            ),
+            attributes = Map("id" -> "hasEori"),
+            errorMessage = form("hasEori").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
+        ))
+        </fieldset>
+
+        @tariffExpander(CarrierEoriNumber, request.declarationType)(messages, appConfig)
+
+        @saveButtons()
+    }
+}

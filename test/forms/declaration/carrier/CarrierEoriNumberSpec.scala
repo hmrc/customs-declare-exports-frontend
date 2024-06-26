@@ -17,6 +17,7 @@
 package forms.declaration.carrier
 
 import forms.common.DeclarationPageBaseSpec
+import forms.section2.carrier.CarrierEoriNumber
 
 class CarrierEoriNumberSpec extends DeclarationPageBaseSpec {
 

@@ -19,7 +19,8 @@ package forms.declaration.consignor
 import base.FormSpec
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.common.{DeclarationPageBaseSpec, Eori}
-import forms.declaration.consignor.ConsignorEoriNumber.form
+import forms.section2.consignor.ConsignorEoriNumber.form
+import forms.section2.consignor.ConsignorEoriNumber
 import play.api.data.FormError
 
 class ConsignorEoriNumberSpec extends FormSpec with DeclarationPageBaseSpec {

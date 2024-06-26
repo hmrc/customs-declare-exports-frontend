@@ -20,11 +20,11 @@ import base.{Injector, TestHelper}
 import config.AppConfig
 import connectors.CodeListConnector
 import controllers.declaration.routes.{DestinationCountryController, RoutingCountriesController}
-import forms.declaration.AuthorisationProcedureCodeChoice.{Choice1007, ChoiceOthers}
+import forms.section2.AuthorisationProcedureCodeChoice.{Choice1007, ChoiceOthers}
 import forms.declaration.LocationOfGoods
 import forms.declaration.LocationOfGoods.form
-import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
-import forms.declaration.authorisationHolder.AuthorizationTypeCodes.{CSE, EXRR, MIB}
+import forms.section1.additionaldeclarationtype.AdditionalDeclarationType._
+import forms.section2.authorisationHolder.AuthorizationTypeCodes.{CSE, EXRR, MIB}
 import models.DeclarationType._
 import models.codes.{Country, GoodsLocationCode}
 import models.requests.JourneyRequest

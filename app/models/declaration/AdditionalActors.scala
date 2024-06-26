@@ -16,7 +16,7 @@
 
 package models.declaration
 
-import forms.declaration.AdditionalActor
+import forms.section2.AdditionalActor
 import models.ExportsFieldPointer.ExportsFieldPointer
 import models.{ExportsDeclaration, FieldMapping}
 import play.api.libs.json.{Json, OFormat}

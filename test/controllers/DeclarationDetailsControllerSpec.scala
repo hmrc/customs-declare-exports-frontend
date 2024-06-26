@@ -17,7 +17,7 @@
 package controllers
 
 import base.ControllerWithoutFormSpec
-import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.{AdditionalDeclarationType, STANDARD_FRONTIER}
+import forms.section1.additionaldeclarationtype.AdditionalDeclarationType.{AdditionalDeclarationType, STANDARD_FRONTIER}
 import models.declaration.submissions.RequestType.{ExternalAmendmentRequest, SubmissionRequest}
 import models.declaration.submissions.{Action, Submission}
 import models.requests.SessionHelper

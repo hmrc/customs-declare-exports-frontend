@@ -22,7 +22,7 @@ import controllers.declaration.routes.OfficeOfExitController
 import controllers.routes.RootController
 import forms.declaration.LocationOfGoods
 import forms.declaration.LocationOfGoods.locationId
-import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.SUPPLEMENTARY_EIDR
+import forms.section1.additionaldeclarationtype.AdditionalDeclarationType.SUPPLEMENTARY_EIDR
 import models.DeclarationType
 import models.codes.{Country, GoodsLocationCode}
 import models.declaration.DeclarationStatus.AMENDMENT_DRAFT

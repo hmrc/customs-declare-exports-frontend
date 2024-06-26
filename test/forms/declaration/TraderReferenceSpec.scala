@@ -17,7 +17,8 @@
 package forms.declaration
 
 import base.UnitSpec
-import forms.declaration.TraderReference.traderReferenceKey
+import forms.section1.TraderReference
+import forms.section1.TraderReference.traderReferenceKey
 import play.api.data.FormError
 import play.api.libs.json.{JsObject, JsString}
 

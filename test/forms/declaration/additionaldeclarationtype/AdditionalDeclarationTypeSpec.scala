@@ -16,8 +16,9 @@
 
 package forms.declaration.additionaldeclarationtype
 
-import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.AdditionalDeclarationType
+import forms.section1.additionaldeclarationtype.AdditionalDeclarationType.AdditionalDeclarationType
 import base.UnitSpec
+import forms.section1.additionaldeclarationtype.AdditionalDeclarationType
 import play.api.libs.json.{JsError, JsString, JsSuccess, Json}
 
 class AdditionalDeclarationTypeSpec extends UnitSpec {

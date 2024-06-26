@@ -18,7 +18,8 @@ package forms.declaration
 
 import forms.common.DeclarationPageBaseSpec
 import forms.common.YesNoAnswer.YesNoAnswers
-import forms.declaration.DeclarantEoriConfirmation.isEoriKey
+import forms.section1.DeclarantEoriConfirmation
+import forms.section1.DeclarantEoriConfirmation.isEoriKey
 import play.api.libs.json.{JsObject, JsString, JsValue}
 
 class DeclarantEoriConfirmationSpec extends DeclarationPageBaseSpec {

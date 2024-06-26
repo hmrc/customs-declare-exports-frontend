@@ -19,9 +19,9 @@ package controllers.section1
 import base.{AuditedControllerSpec, ControllerSpec}
 import controllers.actions.AmendmentDraftFilterSpec
 import controllers.section1.routes.{DeclarantDetailsController, DucrChoiceController}
-import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType
-import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
-import forms.declaration.additionaldeclarationtype.AdditionalDeclarationTypePage.radioButtonGroupId
+import forms.section1.additionaldeclarationtype.AdditionalDeclarationType._
+import forms.section1.additionaldeclarationtype.AdditionalDeclarationType
+import forms.section1.additionaldeclarationtype.AdditionalDeclarationTypePage.radioButtonGroupId
 import models.DeclarationType._
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any

@@ -18,6 +18,7 @@ package forms.declaration
 
 import forms.common.DeclarationPageBaseSpec
 import forms.common.YesNoAnswer.YesNoAnswers.yes
+import forms.section2.RepresentativeAgent
 import play.api.libs.json.{JsObject, JsString, JsValue}
 
 class RepresentativeAgentSpec extends DeclarationPageBaseSpec {
