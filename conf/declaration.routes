@@ -213,31 +213,31 @@ POST        /authorisations-required/:id/remove  controllers.section2.Authorisat
 
 # Destination country
 
-GET         /destination-country                 controllers.declaration.DestinationCountryController.displayPage
+GET         /destination-country                 controllers.section3.DestinationCountryController.displayPage
 
-POST        /destination-country                 controllers.declaration.DestinationCountryController.submit
+POST        /destination-country                 controllers.section3.DestinationCountryController.submit
 
 # Routing countries
 
-GET         /country-of-routing                  controllers.declaration.RoutingCountriesController.displayRoutingQuestion
+GET         /country-of-routing                  controllers.section3.RoutingCountriesController.displayRoutingQuestion
 
-POST        /country-of-routing                  controllers.declaration.RoutingCountriesController.submitRoutingAnswer
+POST        /country-of-routing                  controllers.section3.RoutingCountriesController.submitRoutingAnswer
 
-GET         /countries-of-routing                controllers.declaration.RoutingCountriesController.displayRoutingCountry
+GET         /countries-of-routing                controllers.section3.RoutingCountriesController.displayRoutingCountry
 
-POST        /countries-of-routing                controllers.declaration.RoutingCountriesController.submitRoutingCountry
+POST        /countries-of-routing                controllers.section3.RoutingCountriesController.submitRoutingCountry
 
 # Location of goods
 
-GET         /location-of-goods                   controllers.declaration.LocationOfGoodsController.displayPage
+GET         /location-of-goods                   controllers.section3.LocationOfGoodsController.displayPage
 
-POST        /location-of-goods                   controllers.declaration.LocationOfGoodsController.saveLocation
+POST        /location-of-goods                   controllers.section3.LocationOfGoodsController.saveLocation
 
 # Office of exit
 
-GET         /office-of-exit                      controllers.declaration.OfficeOfExitController.displayPage
+GET         /office-of-exit                      controllers.section3.OfficeOfExitController.displayPage
 
-POST        /office-of-exit                      controllers.declaration.OfficeOfExitController.saveOffice
+POST        /office-of-exit                      controllers.section3.OfficeOfExitController.saveOffice
 
 ## SECTION 4 -----------------------------------------------------------------------------------------------------------
 

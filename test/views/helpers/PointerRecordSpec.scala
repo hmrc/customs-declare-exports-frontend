@@ -29,6 +29,7 @@ import forms.section2.authorisationHolder.AuthorizationTypeCodes.CSE
 import forms.declaration.countries.Country
 import forms.declaration._
 import forms.section2.AdditionalActor
+import forms.section3.LocationOfGoods
 import models.codes.{Country => ModelCountry}
 import models.declaration.{AdditionalDocuments, CommodityMeasure, Container}
 import org.mockito.ArgumentMatchers.{any, eq => meq}

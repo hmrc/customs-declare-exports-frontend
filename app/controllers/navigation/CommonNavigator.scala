@@ -19,16 +19,18 @@ package controllers.navigation
 import controllers.declaration.routes._
 import controllers.section1.routes._
 import controllers.section2.routes._
+import controllers.section3.routes.RoutingCountriesController
 import controllers.routes.ChoiceController
 import forms.declaration._
 import forms.declaration.commodityMeasure.SupplementaryUnits
 import forms.declaration.countries.Countries.{DestinationCountryPage, RoutingCountryPage}
-import forms.declaration.officeOfExit.OfficeOfExit
 import forms.declaration.procedurecodes.{AdditionalProcedureCode, ProcedureCode}
 import forms.section1.{ConfirmDucr, Mucr, TraderReference}
 import forms.section2.authorisationHolder.{AuthorisationHolder, AuthorisationHolderRequired, AuthorisationHolderSummary}
 import forms.section2.carrier.CarrierDetails
-import forms.section2.{AuthorisationProcedureCodeChoice, RepresentativeEntity, RepresentativeStatus, ThirdPartyGoodsTransportationPage}
+import forms.section2.representative.{RepresentativeEntity, RepresentativeStatus}
+import forms.section2.{AuthorisationProcedureCodeChoice, ThirdPartyGoodsTransportationPage}
+import forms.section3.OfficeOfExit
 import forms.{DeclarationPage, Ducr, Lrn}
 import models.ExportsDeclaration
 import models.declaration.ExportItem

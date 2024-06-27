@@ -18,14 +18,14 @@ package views.section2
 
 import base.Injector
 import controllers.section2.routes.RepresentativeEntityController
-import forms.section2.RepresentativeStatus.{form, StatusCodes}
-import forms.section2.RepresentativeStatus
+import forms.section2.representative.RepresentativeStatus
+import forms.section2.representative.RepresentativeStatus.{form, StatusCodes}
 import models.DeclarationType.STANDARD
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import views.components.gds.Styles
 import views.declaration.spec.PageWithButtonsSpec
-import views.html.section2.representative_details_status
+import views.html.section2.representative.representative_details_status
 import views.tags.ViewTest
 
 @ViewTest

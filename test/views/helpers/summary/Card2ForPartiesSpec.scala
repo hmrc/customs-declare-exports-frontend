@@ -17,8 +17,8 @@
 package views.helpers.summary
 
 import base.Injector
-import controllers.declaration.routes.DestinationCountryController
 import controllers.section2.routes._
+import controllers.section3.routes.DestinationCountryController
 import forms.common.{Address, Eori}
 import forms.section2.AuthorisationProcedureCodeChoice.{Choice1040, ChoiceOthers}
 import forms.section1.additionaldeclarationtype.AdditionalDeclarationType.{STANDARD_FRONTIER, STANDARD_PRE_LODGED}

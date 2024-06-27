@@ -27,10 +27,11 @@ import controllers.declaration.routes.{
 import controllers.helpers.TransportSectionHelper._
 import controllers.helpers.{InlandOrBorderHelper, SupervisingCustomsOfficeHelper}
 import forms.declaration.InlandOrBorder.{Border, Inland}
-import forms.declaration.LocationOfGoods.suffixForGVMS
+import forms.section3.LocationOfGoods.suffixForGVMS
 import forms.declaration.ModeOfTransportCode.{meaningfulModeOfTransportCodes, Maritime, RoRo}
 import forms.section1.additionaldeclarationtype.AdditionalDeclarationType._
-import forms.declaration.{BorderTransport, LocationOfGoods, ModeOfTransportCode, TransportLeavingTheBorder}
+import forms.declaration.{BorderTransport, ModeOfTransportCode, TransportLeavingTheBorder}
+import forms.section3.LocationOfGoods
 import models.DeclarationType._
 import models.declaration.ProcedureCodesData.warehouseRequiredProcedureCodes
 import org.mockito.ArgumentCaptor

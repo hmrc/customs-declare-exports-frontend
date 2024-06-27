@@ -19,7 +19,8 @@ package controllers.section2
 import base.{AuditedControllerSpec, ControllerSpec}
 import controllers.section2.routes.{ConsigneeDetailsController, ThirdPartyGoodsTransportationController}
 import forms.common.YesNoAnswer.YesNoAnswers
-import forms.section2.{IsExs, RepresentativeStatus}
+import forms.section2.IsExs
+import forms.section2.representative.RepresentativeStatus
 import models.DeclarationType._
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
@@ -30,7 +31,7 @@ import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
-import views.html.section2.representative_details_status
+import views.html.section2.representative.representative_details_status
 
 class RepresentativeStatusControllerSpec extends ControllerSpec with AuditedControllerSpec with OptionValues {
 

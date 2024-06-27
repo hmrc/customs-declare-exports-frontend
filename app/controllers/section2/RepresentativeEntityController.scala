@@ -20,8 +20,8 @@ import controllers.actions.{AuthAction, JourneyAction}
 import controllers.declaration.{ModelCacheable, SubmissionErrors}
 import controllers.navigation.Navigator
 import controllers.section2.routes.RepresentativeStatusController
-import forms.section2.RepresentativeEntity.form
-import forms.section2.RepresentativeEntity
+import forms.section2.representative.RepresentativeEntity.form
+import forms.section2.representative.RepresentativeEntity
 import models.ExportsDeclaration
 import models.declaration.RepresentativeDetails
 import models.requests.JourneyRequest
@@ -32,7 +32,7 @@ import services.audit.AuditService
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.WithUnsafeDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import views.html.section2.representative_details_entity
+import views.html.section2.representative.representative_details_entity
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}

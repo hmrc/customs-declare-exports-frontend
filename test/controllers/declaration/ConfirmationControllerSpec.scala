@@ -18,8 +18,8 @@ package controllers.declaration
 
 import base.ControllerWithoutFormSpec
 import controllers.routes.RejectedNotificationsController
-import forms.declaration.LocationOfGoods
 import forms.section1.additionaldeclarationtype.AdditionalDeclarationType.STANDARD_FRONTIER
+import forms.section3.LocationOfGoods
 import models.declaration.submissions.EnhancedStatus.{ERRORS, RECEIVED}
 import models.declaration.submissions.{Action, Submission}
 import models.requests.{SessionHelper, VerifiedEmailRequest}

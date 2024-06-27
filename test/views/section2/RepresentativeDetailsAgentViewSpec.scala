@@ -20,10 +20,11 @@ import base.Injector
 import controllers.section2.routes._
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.common.{Address, Eori}
-import forms.section2.RepresentativeAgent.form
 import forms.declaration.EntityDetails
-import forms.section2.{IsExs, RepresentativeAgent}
+import forms.section2.IsExs
 import forms.section2.consignor.ConsignorDetails
+import forms.section2.representative.RepresentativeAgent
+import forms.section2.representative.RepresentativeAgent.form
 import models.DeclarationType._
 import models.declaration.Parties
 import models.requests.JourneyRequest
@@ -32,7 +33,7 @@ import play.api.data.Form
 import services.cache.ExportsTestHelper
 import tools.Stubs
 import views.declaration.spec.PageWithButtonsSpec
-import views.html.section2.representative_details_agent
+import views.html.section2.representative.representative_details_agent
 import views.tags.ViewTest
 
 @ViewTest

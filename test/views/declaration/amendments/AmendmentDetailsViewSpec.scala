@@ -24,7 +24,6 @@ import forms.declaration.additionaldocuments.{AdditionalDocument, DocumentWriteO
 import forms.declaration.ModeOfTransportCode.{InlandWaterway, Maritime, RoRo, Road}
 import forms.declaration.TransportPayment.{cash, cheque}
 import forms.declaration.countries.Country
-import forms.declaration.officeOfExit.OfficeOfExit
 import forms.declaration.{
   AdditionalFiscalReference,
   AdditionalFiscalReferencesData,
@@ -52,6 +51,7 @@ import forms.section2.carrier.CarrierDetails
 import forms.section2.{AdditionalActor, ConsigneeDetails, PersonPresentingGoodsDetails}
 import forms.section2.consignor.ConsignorDetails
 import forms.section2.exporter.ExporterDetails
+import forms.section3.OfficeOfExit
 import models.declaration.{
   AdditionalDocuments,
   AdditionalInformationData,

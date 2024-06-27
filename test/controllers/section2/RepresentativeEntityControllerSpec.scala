@@ -20,7 +20,7 @@ import base.{AuditedControllerSpec, ControllerSpec}
 import controllers.section2.routes.RepresentativeStatusController
 import forms.common.Eori
 import forms.declaration.EntityDetails
-import forms.section2.RepresentativeEntity
+import forms.section2.representative.RepresentativeEntity
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
@@ -30,7 +30,7 @@ import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
-import views.html.section2.representative_details_entity
+import views.html.section2.representative.representative_details_entity
 
 class RepresentativeEntityControllerSpec extends ControllerSpec with AuditedControllerSpec with OptionValues {
 
