@@ -21,7 +21,7 @@ import controllers.declaration.routes.InvoiceAndExchangeRateChoiceController
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.declaration.InvoiceAndExchangeRate
 import forms.declaration.InvoiceAndExchangeRate.form
-import forms.declaration.officeOfExit.OfficeOfExit
+import forms.section3.OfficeOfExit
 import models.DeclarationType.STANDARD
 import models.declaration.Locations
 import models.requests.JourneyRequest

@@ -20,6 +20,7 @@ import connectors.CodeListConnector
 import controllers.declaration.routes._
 import controllers.section1.routes._
 import controllers.section2.routes._
+import controllers.section3.routes._
 import forms.declaration.ModeOfTransportCode
 import models.ExportsDeclaration
 import models.declaration.{Container, ExportItem}

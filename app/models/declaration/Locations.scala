@@ -17,8 +17,8 @@
 package models.declaration
 
 import forms.declaration.countries.Country
-import forms.declaration.officeOfExit.OfficeOfExit
 import forms.declaration.{InlandModeOfTransportCode, InlandOrBorder, SupervisingCustomsOffice, WarehouseIdentification}
+import forms.section3.OfficeOfExit
 import models.DeclarationMeta.sequenceIdPlaceholder
 import models.ExportsFieldPointer.ExportsFieldPointer
 import models.{AmendmentOp, ExportsDeclaration, FieldMapping}

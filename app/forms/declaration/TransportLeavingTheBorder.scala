@@ -17,9 +17,9 @@
 package forms.declaration
 
 import forms.DeclarationPage
-import forms.declaration.LocationOfGoods.suffixForGVMS
 import forms.declaration.ModeOfTransportCode.RoRo
 import forms.declaration.TransportLeavingTheBorder.keyForAmend
+import forms.section3.LocationOfGoods
 import models.AmendmentRow.{forAddedValue, forAmendedValue, forRemovedValue, safeMessage}
 import models.DeclarationType.{CLEARANCE, DeclarationType}
 import models.ExportsFieldPointer.ExportsFieldPointer
@@ -82,8 +82,8 @@ object TransportLeavingTheBorder extends DeclarationPage with FieldMapping {
       }
 
       maybeLocationOfGoods.fold(validateWhenNotGVM) { locationOfGoods =>
-        if (!locationOfGoods.code.endsWith(suffixForGVMS)) validateWhenNotGVM
-        else if (code.exists(_ == RoRo)) Valid
+        if (!locationOfGoods.code.endsWith(LocationOfGoods.suffixForGVMS)) validateWhenNotGVM
+        else if (code.contains(RoRo)) Valid
         else Invalid(ValidationError(s"$errorKey.roro.required", locationOfGoods.code))
       }
     }

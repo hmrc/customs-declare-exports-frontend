@@ -20,20 +20,20 @@ import base.ExportsTestData.eori
 import forms.Lrn
 import forms.common.YesNoAnswer.Yes
 import forms.common.{Date, Eori}
-import forms.declaration.ConsignmentReferencesSpec._
+import forms.section1.ConsignmentReferencesSpec._
 import forms.declaration.NatureOfTransactionSpec._
 import forms.declaration.TransportPayment.cash
 import forms.declaration._
-import forms.declaration.AdditionalActorsSpec._
+import forms.section2.AdditionalActorsSpec._
 import forms.section1.additionaldeclarationtype.AdditionalDeclarationType.SUPPLEMENTARY_SIMPLIFIED
 import forms.declaration.additionaldocuments.{AdditionalDocument, DocumentWriteOff}
 import forms.declaration.countries.Country
-import forms.declaration.officeOfExit.OfficeOfExit
 import forms.section1.DeclarantDetails
 import forms.section2.ConsigneeDetails
 import forms.section2.authorisationHolder.AuthorisationHolder
 import forms.section2.carrier.CarrierDetails
 import forms.section2.exporter.ExporterDetails
+import forms.section3.{LocationOfGoods, OfficeOfExit}
 import models.declaration.governmentagencygoodsitem.Formats._
 import models.declaration.governmentagencygoodsitem.{Amount, GovernmentAgencyGoodsItem}
 import models.{CancelDeclaration, DeclarationMeta, DeclarationType, ExportsDeclaration}

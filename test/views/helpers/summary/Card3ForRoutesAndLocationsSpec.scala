@@ -17,10 +17,11 @@
 package views.helpers.summary
 
 import base.Injector
-import controllers.declaration.routes._
-import models.DeclarationType._
-import forms.declaration.LocationOfGoods
+import controllers.declaration.routes.{InvoiceAndExchangeRateChoiceController, PreviousDocumentsSummaryController}
+import controllers.section3.routes._
 import forms.declaration.countries.Country
+import forms.section3.LocationOfGoods
+import models.DeclarationType._
 import models.declaration.DeclarationStatus.AMENDMENT_DRAFT
 import services.cache.ExportsTestHelper
 import views.declaration.spec.UnitViewSpec

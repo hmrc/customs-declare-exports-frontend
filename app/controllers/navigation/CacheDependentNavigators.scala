@@ -22,6 +22,7 @@ import controllers.helpers.TransportSectionHelper._
 import controllers.helpers.{InlandOrBorderHelper, SupervisingCustomsOfficeHelper, TransportSectionHelper}
 import controllers.section1.routes._
 import controllers.section2.routes._
+import controllers.section3.routes._
 import forms.Ducr.generateDucrPrefix
 import forms.declaration.InlandOrBorder.Border
 import forms.declaration.NatureOfTransaction.{BusinessPurchase, Sale}
