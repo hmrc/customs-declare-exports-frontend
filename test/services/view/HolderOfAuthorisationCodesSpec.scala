@@ -19,8 +19,8 @@ package services.view
 import base.UnitWithMocksSpec
 import config.AppConfig
 import connectors.{FileBasedCodeListConnector, GoodsLocationCodesConnector}
-import forms.declaration.authorisationHolder.AuthorizationTypeCodes.{EXRR, MIB}
-import forms.declaration.authorisationHolder.AuthorisationHolder
+import forms.section2.authorisationHolder.AuthorisationHolder
+import forms.section2.authorisationHolder.AuthorizationTypeCodes.{EXRR, MIB}
 import mock.FeatureFlagMocks
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach

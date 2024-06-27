@@ -30,7 +30,7 @@ import controllers.routes.RootController
 import forms.declaration.{BorderTransport, InlandOrBorder}
 import forms.declaration.InlandOrBorder.{fieldId, Border, Inland}
 import forms.declaration.ModeOfTransportCode.Maritime
-import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
+import forms.section1.additionaldeclarationtype.AdditionalDeclarationType._
 import models.DeclarationType.{CLEARANCE, OCCASIONAL, SIMPLIFIED}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any

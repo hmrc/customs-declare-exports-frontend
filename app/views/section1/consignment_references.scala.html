@@ -1,0 +1,177 @@
+@*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import config.AppConfig
+@import controllers.navigation.Navigator
+@import controllers.section1.routes._
+@import forms.section1.ConsignmentReferences
+@import forms.section1.additionaldeclarationtype.AdditionalDeclarationType._
+@import models.requests.JourneyRequest
+@import play.twirl.api.HtmlFormat
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.helpers.{BackButton, Title}
+@import views.html.components.gds._
+
+@this(
+    govukLayout: gdsMainTemplate,
+    govukFieldset: GovukFieldset,
+    pageTitle: pageTitle,
+    exportsInputText: exportsInputText,
+    errorSummary: errorSummary,
+    sectionHeader: sectionHeader,
+    saveButtons: saveButtons,
+    tariffExpander: tariffExpander,
+    insetText: exportsInsetText,
+    bulletList: bulletList,
+    paragraphBody: paragraphBody,
+    formHelper: FormWithCSRF,
+    navigator: Navigator,
+    appConfig: AppConfig
+)
+
+
+@(form: Form[ConsignmentReferences])(implicit request: JourneyRequest[_], messages: Messages)
+
+@hasErrors = @{form.hasErrors || form.hasGlobalErrors}
+
+@isSupplementaryPlusSimplified = @{
+    request.declarationType == DeclarationType.SUPPLEMENTARY && request.cacheModel.additionalDeclarationType.contains(SUPPLEMENTARY_SIMPLIFIED)
+}
+
+@ducrBodyText = {
+    @paragraphBody(messages("declaration.consignmentReferences.ducr.paragraph"))
+
+    @bulletList(
+        items = Seq(
+            Html(messages("declaration.consignmentReferences.ducr.paragraph.bullet1")),
+            Html(messages("declaration.consignmentReferences.ducr.paragraph.bullet2")),
+            Html(messages("declaration.consignmentReferences.ducr.paragraph.bullet3")),
+            Html(messages("declaration.consignmentReferences.ducr.paragraph.bullet4")),
+            Html(messages("declaration.consignmentReferences.ducr.paragraph.bullet5"))
+        )
+    )
+
+    @optionalDucrInsetText
+}
+
+@optionalDucrInsetText = @{
+    if (request.declarationType == DeclarationType.SUPPLEMENTARY)
+        HtmlFormat.empty
+    else
+        insetText(content = HtmlContent(HtmlFormat.fill(List(
+            paragraphBody(messages("declaration.consignmentReferences.ducr.inset.1")),
+            paragraphBody(messages("declaration.consignmentReferences.ducr.inset.2"))
+        ))))
+}
+
+@ducrHintSection = @{
+    if (request.declarationType == DeclarationType.SUPPLEMENTARY)
+        ducrHintSectionSupplementary
+    else
+        ducrHintSectionOthers
+}
+
+@ducrHintSectionSupplementary = {
+    @paragraphBody(messages("declaration.consignmentReferences.supplementary.ducr.hint1"))
+    @paragraphBody(messages("declaration.consignmentReferences.ducr.hint"), "govuk-hint")
+}
+
+@ducrHintSectionOthers = {
+    @paragraphBody(messages("declaration.consignmentReferences.ducr.hint"), "govuk-hint")
+}
+
+@lrnLabelText = @{
+    if (request.declarationType == DeclarationType.SUPPLEMENTARY)
+        "declaration.consignmentReferences.supplementary.lrn.info"
+    else
+        "declaration.consignmentReferences.lrn.info"
+}
+
+@optionalLrnInsetText = @{
+    if (request.declarationType == DeclarationType.SUPPLEMENTARY)
+        HtmlFormat.empty
+    else
+        insetText(content = HtmlContent(messages("declaration.consignmentReferences.lrn.inset")))
+}
+
+@lrnHintSection = @{
+    if (request.declarationType == DeclarationType.SUPPLEMENTARY)
+        paragraphBody(messages("declaration.consignmentReferences.supplementary.lrn.hint"))
+    else
+        paragraphBody(messages("declaration.consignmentReferences.lrn.hint"), "govuk-hint")
+}
+
+@optionalSupplementarySection = @{
+    (request.declarationType, request.cacheModel.additionalDeclarationType) match {
+        case (DeclarationType.SUPPLEMENTARY, Some(SUPPLEMENTARY_SIMPLIFIED)) =>
+            exportsInputText(
+                field = form("mrn"),
+                inputClasses = Some("govuk-input"),
+                hintHtml = Some(mrnHintSection),
+                labelKey = "declaration.consignmentReferences.supplementary.mrn.info"
+            )
+
+        case (DeclarationType.SUPPLEMENTARY, Some(SUPPLEMENTARY_EIDR)) =>
+            exportsInputText(
+                field = form("eidrDateStamp"),
+                inputClasses = Some("govuk-input"),
+                hintKey = Some("declaration.consignmentReferences.supplementary.eidr.hint1"),
+                labelKey = "declaration.consignmentReferences.supplementary.eidr.info"
+            )
+
+        case _ => HtmlFormat.empty
+    }
+}
+
+@mrnHintSection = {
+    @paragraphBody(messages("declaration.consignmentReferences.supplementary.mrn.hint1"))
+    @paragraphBody(messages("declaration.consignmentReferences.supplementary.mrn.hint2"), "govuk-hint")
+}
+
+
+@govukLayout(
+    title = Title("declaration.consignmentReferences.header", "declaration.section.1", hasErrors = hasErrors),
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(ConsignmentReferences)))) {
+
+    @formHelper(action = ConsignmentReferencesController.submitForm, 'autoComplete -> "off") {
+        @errorSummary(form.errors)
+
+        @sectionHeader(messages("declaration.section.1"))
+        @pageTitle(messages("declaration.consignmentReferences.header"))
+
+        @exportsInputText(
+            field = form(ConsignmentReferences.ducrId),
+            inputClasses = Some("govuk-input"),
+            bodyHtml = Some(ducrBodyText),
+            hintHtml = Some(ducrHintSection),
+            labelKey = "declaration.consignmentReferences.ducr.info"
+        )
+
+        @optionalSupplementarySection
+
+        @exportsInputText(
+            field = form("lrn"),
+            inputClasses = Some("govuk-input"),
+            bodyHtml = Some(optionalLrnInsetText),
+            hintHtml = Some(lrnHintSection),
+            labelKey = lrnLabelText
+        )
+
+        @tariffExpander(ConsignmentReferences, request.declarationType)(messages, appConfig)
+
+        @saveButtons(showExitButton = false)
+    }
+}

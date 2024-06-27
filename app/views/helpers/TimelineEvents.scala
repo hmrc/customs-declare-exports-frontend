@@ -20,7 +20,7 @@ import config.featureFlags.{DeclarationAmendmentsConfig, SfusConfig}
 import controllers.declaration.amendments.routes.AmendmentDetailsController
 import controllers.declaration.routes.SubmissionController
 import controllers.routes.RejectedNotificationsController
-import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.{AdditionalDeclarationType, SUPPLEMENTARY_SIMPLIFIED}
+import forms.section1.additionaldeclarationtype.AdditionalDeclarationType.{AdditionalDeclarationType, SUPPLEMENTARY_SIMPLIFIED}
 import models.declaration.submissions.EnhancedStatus._
 import models.declaration.submissions.RequestType._
 import models.declaration.submissions.{Action, NotificationSummary, RequestType, Submission}

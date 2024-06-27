@@ -18,9 +18,10 @@ package forms.declaration
 
 import base.JourneyTypeTestRunner
 import forms.common.DeclarationPageBaseSpec
-import forms.declaration.LocationOfGoods.suffixForGVMS
+import forms.section3.LocationOfGoods.suffixForGVMS
 import forms.declaration.ModeOfTransportCode.{meaningfulModeOfTransportCodes, Empty, RoRo}
 import forms.declaration.TransportLeavingTheBorder.errorKey
+import forms.section3.LocationOfGoods
 import org.scalatest.EitherValues
 
 class TransportLeavingTheBorderSpec extends DeclarationPageBaseSpec with JourneyTypeTestRunner with EitherValues {

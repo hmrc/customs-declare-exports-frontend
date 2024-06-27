@@ -1,0 +1,72 @@
+@*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import config.AppConfig
+@import controllers.navigation.Navigator
+@import controllers.section3.routes.DestinationCountryController
+@import forms.declaration.countries.Countries.{DestinationCountryPage, fieldId}
+@import forms.declaration.countries.Country
+@import models.codes.{Country => CountryModel}
+@import models.requests.JourneyRequest
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.components.gds.Styles._
+@import views.helpers.{BackButton, Title}
+@import views.helpers.CountryHelper
+@import views.html.components.gds._
+
+@this(
+    govukLayout: gdsMainTemplate,
+    govukButton: GovukButton,
+    govukRadios: GovukRadios,
+    govukDetails : GovukDetails,
+    govukFieldset: GovukFieldset,
+    errorSummary: errorSummary,
+    sectionHeader: sectionHeader,
+    body: paragraphBody,
+    saveButtons: saveButtons,
+    tariffExpander: tariffExpander,
+    formHelper: FormWithCSRF,
+    navigator: Navigator,
+    appConfig: AppConfig
+)(implicit countryAutoCompleteHelper: CountryHelper)
+
+@(form: Form[Country])(implicit request: JourneyRequest[_], messages: Messages)
+
+@hasErrors = @{form.hasErrors || form.hasGlobalErrors}
+
+@govukLayout(
+    title = Title("declaration.destinationCountry.title", "declaration.section.3", hasErrors = hasErrors),
+    backButton = Some(BackButton(messages("site.back"), navigator.backLink(DestinationCountryPage)))){
+
+    @formHelper(action = DestinationCountryController.submit, 'autoComplete -> "off") {
+        @errorSummary(form.errors)
+
+        @sectionHeader(messages("declaration.section.3"))
+
+        @components.fields.field_accessible_location_autocomplete_with_header(
+            field = form(fieldId),
+            label = Some(messages("declaration.destinationCountry.title")),
+            labelClass = Some(gdsPageLabel),
+            hintParagraphs = List(messages("declaration.country.dropdown.hint")),
+            bodyHtml = Some(body(messages("declaration.destinationCountry.body"))),
+            countryKey = (c: CountryModel) => c.countryCode,
+            isPageHeading = true
+        )
+
+        @tariffExpander(DestinationCountryPage, request.declarationType)(messages, appConfig)
+        @saveButtons()
+    }
+}

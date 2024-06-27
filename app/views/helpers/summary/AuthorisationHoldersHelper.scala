@@ -16,8 +16,8 @@
 
 package views.helpers.summary
 
-import controllers.declaration.routes.AuthorisationProcedureCodeChoiceController
-import forms.declaration.authorisationHolder.AuthorisationHolder
+import controllers.section2.routes.AuthorisationProcedureCodeChoiceController
+import forms.section2.authorisationHolder.AuthorisationHolder
 import models.declaration.Parties
 import play.api.i18n.Messages
 import services.view.HolderOfAuthorisationCodes

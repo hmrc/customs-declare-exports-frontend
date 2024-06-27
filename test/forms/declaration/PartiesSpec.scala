@@ -18,10 +18,12 @@ package forms.declaration
 
 import base.UnitSpec
 import forms.common.{Address, Eori, YesNoAnswer}
-import forms.declaration.carrier.CarrierDetails
-import forms.declaration.consignor.ConsignorDetails
-import forms.declaration.authorisationHolder.AuthorisationHolder
-import forms.declaration.exporter.ExporterDetails
+import forms.section1.DeclarantDetails
+import forms.section2.authorisationHolder.AuthorisationHolder
+import forms.section2.carrier.CarrierDetails
+import forms.section2.{AdditionalActor, ConsigneeDetails, PersonPresentingGoodsDetails}
+import forms.section2.consignor.ConsignorDetails
+import forms.section2.exporter.ExporterDetails
 import models.declaration.{AdditionalActors, AuthorisationHolders, Container, EoriSource, Parties, RepresentativeDetails}
 import models.declaration.EoriSource.UserEori
 import services.AlteredField

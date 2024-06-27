@@ -18,9 +18,9 @@ package services
 
 import connectors.CodeLinkConnector
 import connectors.Tag._
-import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.SUPPLEMENTARY_EIDR
-import forms.declaration.authorisationHolder.AuthorizationTypeCodes.isAuthCode
-import forms.declaration.authorisationHolder.AuthorisationHolder
+import forms.section1.additionaldeclarationtype.AdditionalDeclarationType.SUPPLEMENTARY_EIDR
+import forms.section2.authorisationHolder.AuthorisationHolder
+import forms.section2.authorisationHolder.AuthorizationTypeCodes.isAuthCode
 import models.ExportsDeclaration
 
 import javax.inject.{Inject, Singleton}

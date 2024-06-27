@@ -18,9 +18,9 @@ package views.declaration.commodityMeasure
 
 import base.{Injector, MockAuthAction}
 import controllers.declaration.routes.{CommodityDetailsController, PackageInformationSummaryController, UNDangerousGoodsCodeController}
-import forms.declaration.IsExs
 import forms.declaration.commodityMeasure.CommodityMeasure
 import forms.declaration.commodityMeasure.CommodityMeasure.form
+import forms.section2.IsExs
 import models.DeclarationType._
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document

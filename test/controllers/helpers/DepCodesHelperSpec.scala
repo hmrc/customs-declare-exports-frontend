@@ -19,7 +19,7 @@ package controllers.helpers
 import base.{MockExportCacheService, UnitWithMocksSpec}
 import config.AppConfig
 import connectors.{FileBasedCodeListConnector, GoodsLocationCodesConnector}
-import forms.declaration.LocationOfGoods
+import forms.section3.LocationOfGoods
 import org.mockito.Mockito.{reset, when}
 import play.api.{Environment, Mode}
 import utils.JsonFile

@@ -16,7 +16,7 @@
 
 package models.declaration.dectype
 
-import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.AdditionalDeclarationType
+import forms.section1.additionaldeclarationtype.AdditionalDeclarationType.AdditionalDeclarationType
 import models.ExportsDeclaration
 
 case class DeclarationTypeSupplementary(additionalDeclarationType: Option[AdditionalDeclarationType])

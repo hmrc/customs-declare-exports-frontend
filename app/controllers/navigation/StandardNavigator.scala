@@ -16,45 +16,52 @@
 
 package controllers.navigation
 
-import controllers.declaration.routes
+import controllers.declaration.routes._
+import controllers.section1.routes._
+import controllers.section2.routes._
+import controllers.section3.routes.{DestinationCountryController, RoutingCountriesController}
 import forms._
-import forms.declaration.RoutingCountryQuestionYesNo.{ChangeCountryPage, RemoveCountryPage, RoutingCountryQuestionPage}
+import forms.section3.RoutingCountryQuestionYesNo.{ChangeCountryPage, RemoveCountryPage, RoutingCountryQuestionPage}
 import forms.declaration._
 import forms.declaration.additionaldocuments.{AdditionalDocument, AdditionalDocumentsRequired, AdditionalDocumentsSummary}
-import forms.declaration.carrier.CarrierEoriNumber
 import forms.declaration.commodityMeasure.CommodityMeasure
-import forms.declaration.exporter._
+import forms.section1.{ConsignmentReferences, DeclarantDetails, DucrChoice, LinkDucrToMucr}
+import forms.section2.carrier.CarrierEoriNumber
+import forms.section2.exporter.{ExporterDetails, ExporterEoriNumber}
+import forms.section2._
+import forms.section2.representative.RepresentativeAgent
+import forms.section3.LocationOfGoods
 import models.ExportsDeclaration
 import play.api.mvc.Call
 
 trait StandardNavigator extends CacheDependentNavigators {
 
   val standard: PartialFunction[DeclarationPage, Call] = {
-    case DeclarantDetails           => routes.AdditionalDeclarationTypeController.displayPage
-    case LinkDucrToMucr             => routes.LocalReferenceNumberController.displayPage
-    case DucrChoice                 => routes.DeclarantDetailsController.displayPage
-    case ConsignmentReferences      => routes.DeclarantDetailsController.displayPage
-    case ExporterEoriNumber         => routes.DeclarantExporterController.displayPage
-    case ExporterDetails            => routes.ExporterEoriNumberController.displayPage
-    case AdditionalActor            => routes.ConsigneeDetailsController.displayPage
-    case RoutingCountryQuestionPage => routes.DestinationCountryController.displayPage
-    case RemoveCountryPage          => routes.RoutingCountriesController.displayRoutingCountry
-    case ChangeCountryPage          => routes.RoutingCountriesController.displayRoutingCountry
-    case LocationOfGoods            => routes.RoutingCountriesController.displayRoutingCountry
-    case AdditionalActorsSummary    => routes.ConsigneeDetailsController.displayPage
-    case DocumentSummary            => routes.NatureOfTransactionController.displayPage
-    case ContainerAdd               => routes.TransportContainerController.displayContainerSummary
-    case CarrierEoriNumber          => routes.ThirdPartyGoodsTransportationController.displayPage
+    case DeclarantDetails           => AdditionalDeclarationTypeController.displayPage
+    case LinkDucrToMucr             => LocalReferenceNumberController.displayPage
+    case DucrChoice                 => DeclarantDetailsController.displayPage
+    case ConsignmentReferences      => DeclarantDetailsController.displayPage
+    case ExporterEoriNumber         => DeclarantExporterController.displayPage
+    case ExporterDetails            => ExporterEoriNumberController.displayPage
+    case AdditionalActor            => ConsigneeDetailsController.displayPage
+    case RoutingCountryQuestionPage => DestinationCountryController.displayPage
+    case RemoveCountryPage          => RoutingCountriesController.displayRoutingCountry
+    case ChangeCountryPage          => RoutingCountriesController.displayRoutingCountry
+    case LocationOfGoods            => RoutingCountriesController.displayRoutingCountry
+    case AdditionalActorsSummary    => ConsigneeDetailsController.displayPage
+    case DocumentSummary            => NatureOfTransactionController.displayPage
+    case ContainerAdd               => TransportContainerController.displayContainerSummary
+    case CarrierEoriNumber          => ThirdPartyGoodsTransportationController.displayPage
     case page                       => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on standard")
   }
 
   val standardItemPage: PartialFunction[DeclarationPage, String => Call] = {
-    case AdditionalDocumentsRequired => routes.IsLicenceRequiredController.displayPage
-    case AdditionalDocumentsSummary  => routes.IsLicenceRequiredController.displayPage
-    case PackageInformation          => routes.StatisticalValueController.displayPage
-    case CusCode                     => routes.UNDangerousGoodsCodeController.displayPage
-    case NactCode                    => routes.NactCodeSummaryController.displayPage
-    case CommodityMeasure            => routes.PackageInformationSummaryController.displayPage
+    case AdditionalDocumentsRequired => IsLicenceRequiredController.displayPage
+    case AdditionalDocumentsSummary  => IsLicenceRequiredController.displayPage
+    case PackageInformation          => StatisticalValueController.displayPage
+    case CusCode                     => UNDangerousGoodsCodeController.displayPage
+    case NactCode                    => NactCodeSummaryController.displayPage
+    case CommodityMeasure            => PackageInformationSummaryController.displayPage
     case page                        => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on standard")
   }
 

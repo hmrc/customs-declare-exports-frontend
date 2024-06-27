@@ -16,7 +16,7 @@
 
 package forms
 
-import forms.declaration.ConsignmentReferences
+import forms.section1.ConsignmentReferences
 import models.DeclarationType.DeclarationType
 import models.viewmodels.TariffContentKey
 import play.api.data.{Form, FormError}
