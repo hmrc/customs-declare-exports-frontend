@@ -2434,6 +2434,7 @@ field.declaration.items.$.additionalFiscalReferences.$.id = Eitem {0} - Cyflenwi
 field.declaration.items.$.additionalFiscalReferences.$.roleCode = Eitem {0} - Cyflenwi rhyddhad anfon ymlaen {1} - Rhif TAW
 field.declaration.items.$.procedureCodes.procedureCode.current = Cod gweithdrefn, Eitem {0}, sydd wedi’i ofyn amdano
 field.declaration.items.$.procedureCodes.procedureCode.previous = Cod gweithdrefn blaenorol Eitem {0}
+field.declaration.items.$.procedureCodes.additionalProcedureCodes.$ = Eitem {0} - Cod Gweithdrefn Ychwanegol
 field.declaration.items.$.packageInformation.$.shippingMarks = Eitem {0} - Marciau pecyn o Wybodaeth am Becyn {1}
 field.declaration.items.$.packageInformation.$.numberOfPackages = Eitem {0} - Nifer y math o becyn o Wybodaeth am Becyn {1}
 field.declaration.items.$.packageInformation.$.typesOfPackages = Eitem {0} - Math o becyn o Wybodaeth am Becyn {1}

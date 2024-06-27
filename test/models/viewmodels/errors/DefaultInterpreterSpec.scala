@@ -53,6 +53,7 @@ class DefaultInterpreterSpec extends UnitSpec with UnitViewSpec with ExportsDecl
   val colHeader3 = messages("rejected.notification.fieldTable.column.3.title")
   val dummyLink = """<a href="">Change</a>"""
   val fieldPointer = "declaration.items.#1.additionalDocument.#2.documentStatus"
+  val APCFieldPointer = "declaration.items.#1.procedureCodes.additionalProcedureCodes.#2"
 
   "DefaultInterpreter.generateHtmlFor" should {
 
@@ -124,6 +125,18 @@ class DefaultInterpreterSpec extends UnitSpec with UnitViewSpec with ExportsDecl
           html must include("isAmendment=false")
         }
       }
+    }
+
+    "corrects sequence arg of APC pointer to display a user friendly value" in {
+      val errorCode = "CDS12056"
+      val originalVal = "000"
+      val draftVal = "1CS"
+      val field = FieldInvolved(Pointer(APCFieldPointer), Some(originalVal), Some(draftVal), Some(Html(dummyLink)), None)
+      val error = ErrorInstance(declaration, 1, errorCode, Seq(field))
+
+      val html = DefaultInterpreter.generateHtmlFor(error).toString
+
+      html must include(messages(field.pointer.messageKey, field.pointer.sequenceArgs: _*))
     }
   }
 }
