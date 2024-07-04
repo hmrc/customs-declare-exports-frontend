@@ -20,18 +20,20 @@ import controllers.declaration.routes._
 import controllers.section1.routes._
 import controllers.section2.routes._
 import controllers.section3.routes.{DestinationCountryController, RoutingCountriesController}
+import controllers.section6.routes.ContainerController
 import forms.DeclarationPage
-import forms.section3.RoutingCountryQuestionYesNo.{ChangeCountryPage, RemoveCountryPage, RoutingCountryQuestionPage}
 import forms.declaration._
 import forms.declaration.additionaldocuments.{AdditionalDocument, AdditionalDocumentsRequired, AdditionalDocumentsSummary}
 import forms.declaration.commodityMeasure.CommodityMeasure
 import forms.section1.{ConsignmentReferences, DeclarantDetails, DucrChoice, LinkDucrToMucr}
+import forms.section2._
 import forms.section2.carrier.CarrierEoriNumber
 import forms.section2.exporter.{ExporterDetails, ExporterEoriNumber}
-import forms.section2._
 import forms.section2.representative.RepresentativeAgent
 import forms.section3.LocationOfGoods
+import forms.section3.RoutingCountryQuestionYesNo.{ChangeCountryPage, RemoveCountryPage, RoutingCountryQuestionPage}
 import forms.section4.{Document, DocumentSummary}
+import forms.section6._
 import models.ExportsDeclaration
 import play.api.mvc.Call
 
@@ -45,7 +47,7 @@ trait SimplifiedNavigator extends CacheDependentNavigators {
     case ExporterEoriNumber         => DeclarantExporterController.displayPage
     case ExporterDetails            => ExporterEoriNumberController.displayPage
     case AdditionalActor            => ConsigneeDetailsController.displayPage
-    case ContainerAdd               => TransportContainerController.displayContainerSummary
+    case ContainerAdd               => ContainerController.displayContainerSummary
     case RoutingCountryQuestionPage => DestinationCountryController.displayPage
     case RemoveCountryPage          => RoutingCountriesController.displayRoutingCountry
     case ChangeCountryPage          => RoutingCountriesController.displayRoutingCountry

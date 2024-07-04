@@ -18,8 +18,8 @@ package views.declaration.procedureCodes
 
 import base.Injector
 import controllers.helpers.TransportSectionHelper.{Guernsey, Jersey}
+import forms.common.Country
 import forms.common.YesNoAnswer.allYesNoAnswers
-import forms.declaration.countries.Country
 import forms.declaration.procedurecodes.AdditionalProcedureCode
 import forms.declaration.procedurecodes.AdditionalProcedureCode.form
 import models.DeclarationType.{CLEARANCE, STANDARD}

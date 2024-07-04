@@ -19,7 +19,7 @@ package views.section4
 import base.Injector
 import controllers.helpers.TransportSectionHelper.{Guernsey, Jersey}
 import controllers.section4.routes.{InvoiceAndExchangeRateChoiceController, TotalPackageQuantityController}
-import forms.declaration.countries.Country
+import forms.common.Country
 import forms.section4.NatureOfTransaction
 import forms.section4.NatureOfTransaction._
 import models.DeclarationType._

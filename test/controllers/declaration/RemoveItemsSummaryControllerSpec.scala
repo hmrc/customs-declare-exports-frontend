@@ -20,7 +20,7 @@ import base.ControllerWithoutFormSpec
 import controllers.declaration.routes.{ItemsSummaryController, SectionSummaryController, SummaryController}
 import controllers.helpers.SequenceIdHelper.valueOfEso
 import forms.common.YesNoAnswer.YesNoAnswers
-import forms.declaration.WarehouseIdentification
+import forms.section6.WarehouseIdentification
 import models.DeclarationType._
 import models.declaration.{CommodityMeasure, DeclarationStatus, ExportItem}
 import org.mockito.ArgumentCaptor

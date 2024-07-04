@@ -455,85 +455,85 @@ POST        /items/:itemId/additional-documentation-list        controllers.decl
 
 # Transport leaving the border
 
-GET         /transport-leaving-the-border       controllers.declaration.TransportLeavingTheBorderController.displayPage
+GET         /transport-leaving-the-border       controllers.section6.TransportLeavingTheBorderController.displayPage
 
-POST        /transport-leaving-the-border       controllers.declaration.TransportLeavingTheBorderController.submitForm
+POST        /transport-leaving-the-border       controllers.section6.TransportLeavingTheBorderController.submitForm
 
 # Identification of a Warehouse
 
-GET         /warehouse-details                   controllers.declaration.WarehouseIdentificationController.displayPage
+GET         /warehouse-details                   controllers.section6.WarehouseIdentificationController.displayPage
 
-POST        /warehouse-details                   controllers.declaration.WarehouseIdentificationController.saveIdentificationNumber
+POST        /warehouse-details                   controllers.section6.WarehouseIdentificationController.saveIdentificationNumber
 
 # Supervising Customs Office
 
-GET         /supervising-customs-office          controllers.declaration.SupervisingCustomsOfficeController.displayPage
+GET         /supervising-customs-office          controllers.section6.SupervisingCustomsOfficeController.displayPage
 
-POST        /supervising-customs-office          controllers.declaration.SupervisingCustomsOfficeController.submit
+POST        /supervising-customs-office          controllers.section6.SupervisingCustomsOfficeController.submit
 
 # UK border or Inland (Customs controlled locations)
 
-GET         /inland-or-border                    controllers.declaration.InlandOrBorderController.displayPage
+GET         /inland-or-border                    controllers.section6.InlandOrBorderController.displayPage
 
-POST        /inland-or-border                    controllers.declaration.InlandOrBorderController.submitPage
+POST        /inland-or-border                    controllers.section6.InlandOrBorderController.submitPage
 
 # Inland Transport Details
 
-GET         /inland-transport-details            controllers.declaration.InlandTransportDetailsController.displayPage
+GET         /inland-transport-details            controllers.section6.InlandTransportDetailsController.displayPage
 
-POST        /inland-transport-details            controllers.declaration.InlandTransportDetailsController.submit
+POST        /inland-transport-details            controllers.section6.InlandTransportDetailsController.submit
 
 # Departure Transport
 
-GET         /departure-transport                controllers.declaration.DepartureTransportController.displayPage
+GET         /departure-transport                controllers.section6.DepartureTransportController.displayPage
 
-POST        /departure-transport                controllers.declaration.DepartureTransportController.submitForm
+POST        /departure-transport                controllers.section6.DepartureTransportController.submitForm
 
 # Border Transport
 
-GET         /border-transport                   controllers.declaration.BorderTransportController.displayPage
+GET         /border-transport                   controllers.section6.BorderTransportController.displayPage
 
-POST        /border-transport                   controllers.declaration.BorderTransportController.submitForm
+POST        /border-transport                   controllers.section6.BorderTransportController.submitForm
 
-GET         /transport-country                  controllers.declaration.TransportCountryController.displayPage
+GET         /transport-country                  controllers.section6.TransportCountryController.displayPage
 
-POST        /transport-country                  controllers.declaration.TransportCountryController.submitForm
+POST        /transport-country                  controllers.section6.TransportCountryController.submitForm
 
 # Transport Payment
 
-GET         /express-consignment                 controllers.declaration.ExpressConsignmentController.displayPage
+GET         /express-consignment                 controllers.section6.ExpressConsignmentController.displayPage
 
-POST        /express-consignment                 controllers.declaration.ExpressConsignmentController.submitForm
+POST        /express-consignment                 controllers.section6.ExpressConsignmentController.submitForm
 
-GET         /transport-payment                   controllers.declaration.TransportPaymentController.displayPage
+GET         /transport-payment                   controllers.section6.TransportPaymentController.displayPage
 
-POST        /transport-payment                   controllers.declaration.TransportPaymentController.submitForm
+POST        /transport-payment                   controllers.section6.TransportPaymentController.submitForm
 
 # Transport Containers & Seals
 
-GET         /containers                          controllers.declaration.TransportContainerController.displayContainerSummary
+GET         /containers                          controllers.section6.ContainerController.displayContainerSummary
 
-POST        /containers                          controllers.declaration.TransportContainerController.submitSummaryAction
+POST        /containers                          controllers.section6.ContainerController.submitSummaryAction
 
-GET         /container                           controllers.declaration.TransportContainerController.displayAddContainer
+GET         /container                           controllers.section6.ContainerController.displayAddContainer
 
-POST        /container                           controllers.declaration.TransportContainerController.submitAddContainer
+POST        /container                           controllers.section6.ContainerController.submitAddContainer
 
-GET         /containers/:containerId/remove      controllers.declaration.TransportContainerController.displayContainerRemove(containerId)
+GET         /containers/:containerId/remove      controllers.section6.ContainerController.displayContainerRemove(containerId)
 
-POST        /containers/:containerId/remove      controllers.declaration.TransportContainerController.submitContainerRemove(containerId)
+POST        /containers/:containerId/remove      controllers.section6.ContainerController.submitContainerRemove(containerId)
 
-GET         /containers/:containerId/seals       controllers.declaration.SealController.displaySealSummary(containerId)
+GET         /containers/:containerId/seals       controllers.section6.SealController.displaySealSummary(containerId)
 
-POST        /containers/:containerId/seals       controllers.declaration.SealController.submitSummaryAction(containerId)
+POST        /containers/:containerId/seals       controllers.section6.SealController.submitSummaryAction(containerId)
 
-GET         /containers/:containerId/add-seal    controllers.declaration.SealController.displayAddSeal(containerId)
+GET         /containers/:containerId/add-seal    controllers.section6.SealController.displayAddSeal(containerId)
 
-POST        /containers/:containerId/add-seal    controllers.declaration.SealController.submitAddSeal(containerId)
+POST        /containers/:containerId/add-seal    controllers.section6.SealController.submitAddSeal(containerId)
 
-GET         /containers/:containerId/seals/:sealId/remove    controllers.declaration.SealController.displaySealRemove(containerId, sealId)
+GET         /containers/:containerId/seals/:sealId/remove    controllers.section6.SealController.displaySealRemove(containerId, sealId)
 
-POST        /containers/:containerId/seals/:sealId/remove    controllers.declaration.SealController.submitSealRemove(containerId, sealId)
+POST        /containers/:containerId/seals/:sealId/remove    controllers.section6.SealController.submitSealRemove(containerId, sealId)
 
 ## END OF SECTIONS -----------------------------------------------------------------------------------------------------
 

@@ -17,9 +17,9 @@
 package forms.section3
 
 import base.UnitSpec
-import forms.declaration.ModeOfTransportCode.{Maritime, Rail}
-import forms.declaration.countries.Country
-import forms.declaration.{InlandModeOfTransportCode, SupervisingCustomsOffice, WarehouseIdentification}
+import forms.common.Country
+import forms.section6.ModeOfTransportCode.{Maritime, Rail}
+import forms.section6.{InlandModeOfTransportCode, SupervisingCustomsOffice, WarehouseIdentification}
 import models.declaration.{GoodsLocation, Locations, RoutingCountry}
 import services.AlteredField
 import services.AlteredField.constructAlteredField

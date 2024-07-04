@@ -16,7 +16,7 @@
 
 package base
 
-import forms.declaration.ModeOfTransportCode.RoRo
+import forms.section6.ModeOfTransportCode.RoRo
 import forms.section2.authorisationHolder.AuthorizationTypeCodes.{CSE, EXRR}
 import forms.section3.LocationOfGoods
 import models.AuthKey.{enrolment, hashIdentifierKey, identifierKey}

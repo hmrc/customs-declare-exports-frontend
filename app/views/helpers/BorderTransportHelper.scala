@@ -16,8 +16,8 @@
 
 package views.helpers
 
-import forms.declaration.BorderTransport.radioButtonGroupId
-import forms.declaration.{BorderTransport, TransportCode}
+import forms.section6.BorderTransport.radioButtonGroupId
+import forms.section6.{BorderTransport, TransportCode}
 import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.Messages

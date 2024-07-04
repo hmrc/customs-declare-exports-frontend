@@ -18,9 +18,8 @@ package forms.section3
 
 import base.JourneyTypeTestRunner
 import connectors.CodeListConnector
-import forms.common.DeclarationPageBaseSpec
-import forms.declaration.countries.Countries._
-import forms.declaration.countries.{Countries, Country}
+import forms.common.{Countries, Country, DeclarationPageBaseSpec}
+import forms.common.Countries._
 import models.DeclarationType._
 import models.codes.{Country => ModelCountry}
 import models.viewmodels.TariffContentKey

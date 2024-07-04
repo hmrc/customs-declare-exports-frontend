@@ -23,8 +23,8 @@ import controllers.section3.routes.{LocationOfGoodsController, RoutingCountriesC
 import controllers.helpers._
 import controllers.helpers.SequenceIdHelper.handleSequencing
 import controllers.navigation.Navigator
-import forms.declaration.countries.Countries.RoutingCountryPage
-import forms.declaration.countries.{Countries, Country}
+import forms.common.{Countries, Country}
+import forms.common.Countries.RoutingCountryPage
 import forms.section3.RoutingCountryQuestionYesNo._
 import models.ExportsDeclaration
 import models.declaration.RoutingCountry

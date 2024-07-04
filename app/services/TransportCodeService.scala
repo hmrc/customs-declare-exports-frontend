@@ -17,7 +17,7 @@
 package services
 
 import connectors.{CodeLinkConnector, Tag}
-import forms.declaration.{TransportCode, TransportCodes}
+import forms.section6.{TransportCode, TransportCodes}
 
 import javax.inject.{Inject, Singleton}
 

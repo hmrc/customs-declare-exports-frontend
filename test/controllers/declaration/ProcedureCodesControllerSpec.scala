@@ -18,9 +18,9 @@ package controllers.declaration
 
 import base.{AuditedControllerSpec, ControllerSpec}
 import controllers.declaration.routes.AdditionalProcedureCodesController
-import forms.declaration._
 import forms.declaration.procedurecodes.ProcedureCode
 import forms.declaration.procedurecodes.ProcedureCode.procedureCodeKey
+import forms.section6.WarehouseIdentification
 import models.DeclarationType._
 import models.declaration.ProcedureCodesData.{osrProcedureCode, warehouseRequiredProcedureCodes}
 import models.declaration.{ExportItem, ProcedureCodesData}

@@ -18,6 +18,7 @@ package views.helpers.summary
 
 import base.Injector
 import controllers.declaration.routes._
+import controllers.section6.routes.TransportLeavingTheBorderController
 import forms.common.YesNoAnswer.Yes
 import forms.section4.NatureOfTransaction.BusinessPurchase
 import forms.declaration._

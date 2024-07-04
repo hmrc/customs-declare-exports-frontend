@@ -16,8 +16,8 @@
 
 package views.helpers
 
-import forms.declaration.ModeOfTransportCode
-import forms.declaration.ModeOfTransportCode._
+import forms.section6.ModeOfTransportCode._
+import forms.section6.ModeOfTransportCode
 import play.api.i18n.Messages
 
 object ModeOfTransportCodeHelper {

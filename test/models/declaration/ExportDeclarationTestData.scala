@@ -19,22 +19,22 @@ package models.declaration
 import base.ExportsTestData.eori
 import forms.Lrn
 import forms.common.YesNoAnswer.Yes
-import forms.common.{Date, Eori}
-import forms.section1.ConsignmentReferencesSpec._
-import forms.section4.NatureOfTransactionSpec._
-import forms.declaration.TransportPayment.cash
+import forms.common.{Country, Date, Eori}
 import forms.declaration._
-import forms.section2.AdditionalActorsSpec._
-import forms.section1.additionaldeclarationtype.AdditionalDeclarationType.SUPPLEMENTARY_SIMPLIFIED
 import forms.declaration.additionaldocuments.{AdditionalDocument, DocumentWriteOff}
-import forms.declaration.countries.Country
+import forms.section1.ConsignmentReferencesSpec._
 import forms.section1.DeclarantDetails
+import forms.section1.additionaldeclarationtype.AdditionalDeclarationType.SUPPLEMENTARY_SIMPLIFIED
+import forms.section2.AdditionalActorsSpec._
 import forms.section2.ConsigneeDetails
 import forms.section2.authorisationHolder.AuthorisationHolder
 import forms.section2.carrier.CarrierDetails
 import forms.section2.exporter.ExporterDetails
 import forms.section3.{LocationOfGoods, OfficeOfExit}
+import forms.section4.NatureOfTransactionSpec._
 import forms.section4.{Document, PreviousDocumentsData}
+import forms.section6.TransportPayment.cash
+import forms.section6._
 import models.declaration.governmentagencygoodsitem.Formats._
 import models.declaration.governmentagencygoodsitem.{Amount, GovernmentAgencyGoodsItem}
 import models.{CancelDeclaration, DeclarationMeta, DeclarationType, ExportsDeclaration}
@@ -97,7 +97,7 @@ object ExportDeclarationTestData {
       routingCountries = Seq(RoutingCountry(1, Country(Some("FR")))),
       goodsLocation = Some(LocationOfGoods("GBAUEMAEMAEMA").toModel),
       officeOfExit = Some(OfficeOfExit("officeId")),
-      warehouseIdentification = Some(WarehouseIdentificationYesNoSpec.correctWarehouseDetails),
+      warehouseIdentification = Some(WarehouseIdentificationSpec.warehouseDetails),
       supervisingCustomsOffice = Some(SupervisingCustomsOfficeSpec.correctSupervisingCustomsOffice),
       inlandModeOfTransportCode = Some(InlandModeOfTransportCodeSpec.correctInlandModeOfTransportCode)
     )
@@ -160,7 +160,7 @@ object ExportDeclarationTestData {
       routingCountries = Seq(RoutingCountry(1, Country(Some("FR")))),
       goodsLocation = Some(LocationOfGoods("GBAUEMAEMAEMA").toModel),
       officeOfExit = Some(OfficeOfExit("officeId")),
-      warehouseIdentification = Some(WarehouseIdentificationYesNoSpec.correctWarehouseDetails),
+      warehouseIdentification = Some(WarehouseIdentificationSpec.warehouseDetails),
       supervisingCustomsOffice = Some(SupervisingCustomsOfficeSpec.correctSupervisingCustomsOffice),
       inlandModeOfTransportCode = Some(InlandModeOfTransportCodeSpec.correctInlandModeOfTransportCode)
     ),

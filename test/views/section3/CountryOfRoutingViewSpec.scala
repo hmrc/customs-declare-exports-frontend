@@ -19,8 +19,8 @@ package views.section3
 import base.Injector
 import connectors.CodeListConnector
 import controllers.section3.routes.RoutingCountriesController
-import forms.declaration.countries.Countries.RoutingCountryPage
-import forms.declaration.countries.{Countries, Country}
+import forms.common.{Countries, Country}
+import forms.common.Countries.RoutingCountryPage
 import models.DeclarationType.{OCCASIONAL, SIMPLIFIED, STANDARD}
 import models.codes.{Country => ModelCountry}
 import models.requests.JourneyRequest

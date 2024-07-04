@@ -1,0 +1,146 @@
+@*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import config.AppConfig
+@import controllers.navigation.Navigator
+@import controllers.section6.routes.{SealController, ContainerController}
+@import forms.common.YesNoAnswer
+@import forms.section6.{ContainerAdd, ContainerFirst}
+@import models.declaration.Container
+@import models.requests.JourneyRequest
+@import play.twirl.api.HtmlFormat
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.components.gds.Styles._
+@import views.helpers.{BackButton, Title}
+@import views.helpers.ErrorMapper.yesNoErrors
+@import views.html.components.gds._
+
+@this(
+    govukLayout: gdsMainTemplate,
+    sectionHeader: sectionHeader,
+    govukFieldset: GovukFieldset,
+    link: link,
+    yesNoRadios: yesNoRadios,
+    govukButton: GovukButton,
+    govukTable: GovukTable,
+    errorSummary: errorSummary,
+    spanVisuallyHidden: spanVisuallyHidden,
+    saveButtons: saveButtons,
+    formHelper: FormWithCSRF,
+    navigator: Navigator,
+    appConfig: AppConfig
+)
+
+@(form: Form[YesNoAnswer], containers: Seq[Container])(implicit request: JourneyRequest[_], messages: Messages)
+
+@containersTable = {
+    @if(containers.nonEmpty) {
+        @govukTable(Table(
+            attributes = Map("id" -> "container-table"),
+            rows = containers.zipWithIndex.map{ case(container, index) =>
+                Seq(
+                    TableRow(
+                        content = Text(container.id),
+                        attributes = Map("id" -> s"containers-row$index-container")
+                    ),
+                    TableRow(
+                        content = if(container.seals.isEmpty) Text(messages("declaration.seal.summary.noSeals")) else HtmlContent(container.seals.map(_.id).mkString("<br/>")),
+                        attributes = Map("id" -> s"containers-row$index-seals")
+                    ),
+                    TableRow(
+                        content = HtmlContent(link(
+                            messages("declaration.transportInformation.containers.change"),
+                            SealController.displaySealSummary(container.id),
+                            textHidden = Some(messages("declaration.transportInformation.containers.change.hint", container.id))
+                        )),
+                        attributes = Map("id" -> s"containers-row$index-change_button")
+                    ),
+                    TableRow(
+                        content = HtmlContent(link(
+                            messages("site.remove"),
+                            ContainerController.submitContainerRemove(container.id),
+                            textHidden = Some(messages("declaration.transportInformation.containers.remove.hint", container.id))
+                        )),
+                        attributes = Map("id" -> s"containers-row$index-remove_button")
+                    )
+                )
+            },
+            head = Some(List(
+                HeadCell(
+                    content = Text(messages("declaration.transportInformation.containerId.title"))
+                ),
+                HeadCell(
+                    content = Text(messages("declaration.seal.summary.heading"))
+                ),
+                HeadCell(
+                    content = HtmlContent(spanVisuallyHidden(messages("site.change.header")))
+                ),
+                HeadCell(
+                    content = HtmlContent(spanVisuallyHidden(messages("site.remove.header")))
+                )
+            )),
+            caption = Some(messages("declaration.transportInformation.containers.table.caption")),
+            captionClasses = "govuk-visually-hidden"
+        ))
+
+    }
+}
+
+@addContainerRadios = {
+    @yesNoRadios(
+        form,
+        Some(Fieldset(
+            legend = Some(Legend(
+                content = Text(messages("declaration.transportInformation.containers.add")),
+                classes = "govuk-fieldset__legend--m"
+            ))
+        )),
+        inline = true
+    )
+}
+
+@title = @{
+  val hasErrors = form.hasErrors || form.hasGlobalErrors
+  if (containers.size == 1) Title("declaration.transportInformation.containers.title", "declaration.section.6", hasErrors = hasErrors)
+  else Title("declaration.transportInformation.containers.multiple.title", "declaration.section.6", containers.size.toString, hasErrors = hasErrors)
+}
+
+@govukLayout(
+    title = title,
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(ContainerFirst)))
+) {
+    @formHelper(action = ContainerController.submitSummaryAction, 'autoComplete -> "off") {
+        @errorSummary(yesNoErrors(form.errors))
+
+        @sectionHeader(messages("declaration.section.6"))
+
+        @govukFieldset(Fieldset(
+            legend = Some(Legend(
+                content = Text(
+                  if(containers.size == 1) messages("declaration.transportInformation.containers.title")
+                  else messages("declaration.transportInformation.containers.multiple.title", containers.size)
+                ),
+                classes = gdsPageLegend,
+                isPageHeading = true
+            )),
+            html = HtmlFormat.fill(List(
+                containersTable,
+                addContainerRadios,
+                saveButtons()
+            ))
+        ))
+    }
+}

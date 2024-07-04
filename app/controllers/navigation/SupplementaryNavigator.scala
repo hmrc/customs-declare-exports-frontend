@@ -21,6 +21,7 @@ import controllers.section1.routes._
 import controllers.section2.routes._
 import controllers.section3.routes.DestinationCountryController
 import controllers.section4.routes.NatureOfTransactionController
+import controllers.section6.routes.ContainerController
 import forms.DeclarationPage
 import forms.declaration._
 import forms.declaration.additionaldocuments.{AdditionalDocument, AdditionalDocumentsRequired, AdditionalDocumentsSummary}
@@ -31,6 +32,7 @@ import forms.section2.exporter.{ExporterDetails, ExporterEoriNumber}
 import forms.section2.representative.RepresentativeAgent
 import forms.section3.LocationOfGoods
 import forms.section4.{Document, DocumentSummary, TotalPackageQuantity}
+import forms.section6._
 import models.ExportsDeclaration
 import play.api.mvc.Call
 
@@ -42,7 +44,7 @@ trait SupplementaryNavigator extends CacheDependentNavigators {
     case ConsignmentReferences   => DeclarantDetailsController.displayPage
     case ExporterEoriNumber      => DeclarantExporterController.displayPage
     case ExporterDetails         => ExporterEoriNumberController.displayPage
-    case ContainerAdd            => TransportContainerController.displayContainerSummary
+    case ContainerAdd            => ContainerController.displayContainerSummary
     case LocationOfGoods         => DestinationCountryController.displayPage
     case DocumentSummary         => NatureOfTransactionController.displayPage
     case AdditionalActorsSummary => ConsigneeDetailsController.displayPage

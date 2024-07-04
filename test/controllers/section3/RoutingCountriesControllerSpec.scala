@@ -21,8 +21,8 @@ import connectors.CodeListConnector
 import controllers.helpers.Remove
 import controllers.helpers.SequenceIdHelper.valueOfEso
 import controllers.section3.routes.{LocationOfGoodsController, RoutingCountriesController}
-import forms.declaration.countries.Countries.fieldId
-import forms.declaration.countries.{Country => FormCountry}
+import forms.common.Countries.fieldId
+import forms.common.{Country => FormCountry}
 import models.codes.Country
 import models.declaration.RoutingCountry
 import org.mockito.ArgumentCaptor

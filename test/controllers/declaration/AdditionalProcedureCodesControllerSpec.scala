@@ -19,9 +19,9 @@ package controllers.declaration
 import base.ExportsTestData.pc1040
 import base.{AuditedControllerSpec, ControllerSpec}
 import controllers.helpers.{Remove, SupervisingCustomsOfficeHelper}
-import forms.declaration.SupervisingCustomsOffice
 import forms.declaration.procedurecodes.AdditionalProcedureCode
 import forms.declaration.procedurecodes.AdditionalProcedureCode.additionalProcedureCodeKey
+import forms.section6.SupervisingCustomsOffice
 import models.DeclarationType
 import models.codes.AdditionalProcedureCode.NO_APC_APPLIES_CODE
 import models.codes.{AdditionalProcedureCode => AdditionalProcedureCodeModel, ProcedureCode}

@@ -19,7 +19,7 @@ package services
 import base.{Injector, MockConnectors, MockExportCacheService, UnitWithMocksSpec}
 import uk.gov.hmrc.play.bootstrap.metrics.Metrics
 import connectors.CustomsDeclareExportsConnector
-import forms.declaration.countries.Country
+import forms.common.Country
 import forms.declaration.{AmendmentSubmission, LegalDeclaration}
 import forms.section1.additionaldeclarationtype.AdditionalDeclarationType
 import metrics.{ExportsMetrics, MetricIdentifiers}

@@ -21,8 +21,8 @@ import controllers.actions.{AuthAction, JourneyAction}
 import controllers.section3.routes.{LocationOfGoodsController, OfficeOfExitController, RoutingCountriesController}
 import controllers.declaration.{ModelCacheable, SubmissionErrors}
 import controllers.navigation.Navigator
-import forms.declaration.countries.Countries
-import forms.declaration.countries.Countries.DestinationCountryPage
+import forms.common.Countries
+import Countries.DestinationCountryPage
 import models.DeclarationType._
 import models.ExportsDeclaration
 import play.api.i18n.I18nSupport

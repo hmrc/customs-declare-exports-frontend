@@ -94,10 +94,10 @@ seal_add
 seal_remove
 seal_summary
 supervising_customs_office
-transport_container_add
-transport_container_add_first
-transport_container_remove
-transport_container_summary
+container_add
+container_add_first
+container_remove
+container_summary
 transport_country
 transport_leaving_the_border
 transport_payment

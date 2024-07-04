@@ -1,0 +1,59 @@
+@*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import config.AppConfig
+@import controllers.navigation.Navigator
+@import controllers.section6.routes.DepartureTransportController
+@import forms.section6.DepartureTransport
+@import forms.section6.DepartureTransport.radioButtonGroupId
+@import models.requests.JourneyRequest
+@import uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF
+@import views.helpers.{BackButton, DepartureTransportHelper}
+@import views.helpers.ErrorMapper.radioGroupErrors
+@import views.html.components.gds._
+
+@this(
+    departureTransportHelper: DepartureTransportHelper,
+    govukLayout: gdsMainTemplate,
+    errorSummary: errorSummary,
+    heading: heading,
+    sectionHeader: sectionHeader,
+    saveButtons: saveButtons,
+    tariffExpander: tariffExpander,
+    formHelper: FormWithCSRF,
+    navigator: Navigator,
+    appConfig: AppConfig
+)
+
+@(form: Form[DepartureTransport])(implicit request: JourneyRequest[_], messages: Messages)
+
+@govukLayout(
+    title = departureTransportHelper.titleInHeadTag(form.hasErrors || form.hasGlobalErrors),
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(DepartureTransport)))) {
+
+    @formHelper(action = DepartureTransportController.submitForm, 'autoComplete -> "off") {
+        @errorSummary(radioGroupErrors(radioButtonGroupId, departureTransportHelper.transportCodes.code1.id, form.errors))
+
+        @sectionHeader(messages("declaration.section.6"))
+        <fieldset class="govuk-fieldset" @if(form.hasErrors) { aria-describedby="departureTransportType-error" }>
+        @departureTransportHelper.dynamicContent(form)
+        </fieldset>
+
+        @tariffExpander(DepartureTransport, request.declarationType)(messages, appConfig)
+
+        @saveButtons(showReturnToSummaryButton = false, showReturnToErrorsButton = false, showExitButton = true)
+    }
+}

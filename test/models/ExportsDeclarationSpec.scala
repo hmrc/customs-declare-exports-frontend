@@ -17,8 +17,7 @@
 package models
 
 import base.{MockTaggedCodes, UnitSpec}
-import forms.common.YesNoAnswer
-import forms.declaration.countries.Country
+import forms.common.{Country, YesNoAnswer}
 import forms.declaration.CommodityDetails
 import forms.section4.{Document, NatureOfTransaction, PreviousDocumentsData}
 import models.declaration._

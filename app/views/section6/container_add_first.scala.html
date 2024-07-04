@@ -1,0 +1,103 @@
+@*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import config.AppConfig
+@import controllers.navigation.Navigator
+@import controllers.section6.routes.ContainerController
+@import forms.section6.ContainerFirst
+@import forms.section6.ContainerFirst._
+@import models.requests.JourneyRequest
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.components.gds.Styles._
+@import views.helpers.{BackButton, Title}
+@import views.helpers.ErrorMapper.radioGroupErrors
+@import views.html.components.gds._
+
+@this(
+    govukLayout: gdsMainTemplate,
+    govukRadios: GovukRadios,
+    errorSummary: errorSummary,
+    sectionHeader: sectionHeader,
+    heading: heading,
+    paragraphBody: paragraphBody,
+    exportsInputText: exportsInputText,
+    bulletList: bulletList,
+    saveButtons: saveButtons,
+    tariffExpander: tariffExpander,
+    formHelper: FormWithCSRF,
+    navigator: Navigator,
+    appConfig: AppConfig
+)
+
+@(form: Form[ContainerFirst])(implicit request: JourneyRequest[_], messages: Messages)
+
+@hasErrors = @{form.hasErrors || form.hasGlobalErrors}
+
+@govukLayout(
+    title = Title("declaration.transportInformation.containers.first.title", "declaration.section.6", hasErrors = hasErrors),
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(ContainerFirst)))) {
+
+    @formHelper(action = ContainerController.submitAddContainer, 'autoComplete -> "off") {
+        @errorSummary(radioGroupErrors(hasContainerKey, "code_yes", form.errors))
+
+        @sectionHeader(messages("declaration.section.6"))
+        @heading(messages("declaration.transportInformation.containers.first.title"))
+
+        @paragraphBody(messages("declaration.transportInformation.containers.paragraph"))
+
+        @bulletList(
+            items = Seq(
+                Html(messages("declaration.transportInformation.containers.bullet1")),
+                Html(messages("declaration.transportInformation.containers.bullet2")),
+                Html(messages("declaration.transportInformation.containers.bullet3"))
+            )
+        )
+
+        @govukRadios(Radios(
+            name = hasContainerKey,
+            fieldset = Some(Fieldset(
+                legend = Some(Legend(
+                    content = Text(messages("declaration.transportInformation.containers.first.title")),
+                    classes = "govuk-visually-hidden"
+                ))
+            )),
+            items = Seq(
+                RadioItem(
+                    id = Some("code_yes"),
+                    value = Some(HasContainerAnswers.yes),
+                    content = Text(messages("declaration.transportInformation.containers.yes")),
+                    conditionalHtml = Some(exportsInputText(
+                        field = form(containerIdKey),
+                        inputClasses = Some("govuk-input govuk-input--width-20"),
+                        labelKey = "declaration.transportInformation.containerId"
+                    )),
+                    checked = form(hasContainerKey).value.contains(HasContainerAnswers.yes)
+                ),
+                RadioItem(
+                    id = Some("code_no"),
+                    value = Some(HasContainerAnswers.no),
+                    content = Text(messages("declaration.transportInformation.containers.no")),
+                    checked = form(hasContainerKey).value.contains(HasContainerAnswers.no)
+                )
+            ),
+            errorMessage = form(hasContainerKey).error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
+        ))
+
+        @tariffExpander(ContainerFirst, request.declarationType)(messages, appConfig)
+
+        @saveButtons()
+    }
+}

@@ -21,6 +21,7 @@ import controllers.section1.routes._
 import controllers.section2.routes._
 import controllers.section3.routes._
 import controllers.section4.routes._
+import controllers.section6.routes._
 import models.DeclarationType.CLEARANCE
 import models.{ExportsDeclaration, Pointer}
 import play.api.Logging
@@ -155,8 +156,8 @@ object PointerHelper extends Logging {
     "declaration.locations.goodsLocation.postCode" -> LocationOfGoodsController.displayPage,
     "declaration.locations.goodsLocation.qualifierOfIdentification" -> LocationOfGoodsController.displayPage,
     "declaration.locations.goodsLocation.typeOfLocation" -> LocationOfGoodsController.displayPage,
-    "declaration.containers.container.$.id" -> TransportContainerController.displayContainerSummary, // ?? SealController.displaySealSummary
-    "declaration.containers.container.$.seals.seal.$.id" -> TransportContainerController.displayContainerSummary, // ?? SealController.displaySealRemove
+    "declaration.containers.container.$.id" -> ContainerController.displayContainerSummary, // ?? SealController.displaySealSummary
+    "declaration.containers.container.$.seals.seal.$.id" -> ContainerController.displayContainerSummary, // ?? SealController.displaySealRemove
     "declaration.previousDocuments.$.documentCategory" -> PreviousDocumentsSummaryController.displayPage, // ?? PreviousDocumentsChangeController.displayOutcomePage
     "declaration.previousDocuments.$.documentReference" -> PreviousDocumentsSummaryController.displayPage, // ?? PreviousDocumentsChangeController.displayOutcomePage
     "declaration.previousDocuments.$.documentType" -> PreviousDocumentsSummaryController.displayPage, // ?? PreviousDocumentsChangeController.displayOutcomePage

@@ -20,7 +20,7 @@ import base.{AuditedControllerSpec, ControllerSpec}
 import controllers.helpers.TransportSectionHelper.{Guernsey, Jersey}
 import controllers.routes.RootController
 import controllers.section4.routes.NatureOfTransactionController
-import forms.declaration.countries.Country
+import forms.common.Country
 import forms.section4.TotalPackageQuantity
 import models.DeclarationType._
 import org.mockito.ArgumentMatchers.any

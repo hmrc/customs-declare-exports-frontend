@@ -16,7 +16,7 @@
 
 package models.declaration
 
-import forms.declaration.Seal
+import forms.section6.Seal
 import models.AmendmentRow.{forAddedValue, forRemovedValue}
 import models.DeclarationMeta.sequenceIdPlaceholder
 import models.ExportsFieldPointer.ExportsFieldPointer

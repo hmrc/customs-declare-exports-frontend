@@ -17,7 +17,7 @@
 package models.declaration
 
 import forms.common.YesNoAnswer
-import forms.declaration.{TransportCountry, TransportLeavingTheBorder, TransportPayment}
+import forms.section6.{TransportCountry, TransportLeavingTheBorder, TransportPayment}
 import models.ExportsFieldPointer.ExportsFieldPointer
 import models.FieldMapping
 import play.api.libs.json.{Format, Json}

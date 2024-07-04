@@ -19,18 +19,18 @@ package views.helpers
 import base.Injector
 import connectors.CodeListConnector
 import forms.common.YesNoAnswer.{Yes, YesNoAnswers}
-import forms.common.{Address, Date, Eori}
-import forms.declaration.InlandOrBorder.Border
-import forms.declaration.ModeOfTransportCode.Maritime
+import forms.common.{Address, Country, Date, Eori}
+import forms.section6.InlandOrBorder.Border
+import forms.section6.ModeOfTransportCode.Maritime
 import forms.section4.NatureOfTransaction.BusinessPurchase
-import forms.declaration.TransportPayment.cash
+import forms.section6.TransportPayment.cash
 import forms.declaration.additionaldocuments.{AdditionalDocument, DocumentWriteOff}
 import forms.section2.authorisationHolder.AuthorizationTypeCodes.CSE
-import forms.declaration.countries.Country
 import forms.declaration._
 import forms.section2.AdditionalActor
 import forms.section3.LocationOfGoods
 import forms.section4.{Document, InvoiceAndExchangeRate}
+import forms.section6.{ModeOfTransportCode, Seal, SupervisingCustomsOffice, TransportPayment, WarehouseIdentification}
 import models.codes.{Country => ModelCountry}
 import models.declaration.{AdditionalDocuments, CommodityMeasure, Container}
 import org.mockito.ArgumentMatchers.{any, eq => meq}

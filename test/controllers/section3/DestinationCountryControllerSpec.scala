@@ -20,11 +20,11 @@ import base.{AuditedControllerSpec, ControllerSpec, MockTaggedCodes}
 import connectors.CodeListConnector
 import controllers.helpers.TransportSectionHelper.{Guernsey, Jersey}
 import controllers.section3.routes._
-import forms.declaration.BorderTransport
-import forms.declaration.ModeOfTransportCode.Maritime
-import forms.declaration.countries.Countries.fieldId
-import forms.declaration.countries.Country
+import forms.section6.ModeOfTransportCode.Maritime
+import forms.common.Countries.fieldId
+import forms.common.Country
 import forms.section1.additionaldeclarationtype.AdditionalDeclarationType.SUPPLEMENTARY_EIDR
+import forms.section6.BorderTransport
 import models.DeclarationType._
 import models.codes.{Country => ModelCountry}
 import org.mockito.ArgumentCaptor

@@ -19,11 +19,10 @@ package views.declaration.amendments
 import base.{Injector, MockAuthAction, OverridableInjector}
 import controllers.routes.DeclarationDetailsController
 import forms.common.YesNoAnswer.YesNoAnswers.{no, yes}
-import forms.common.{Address, Date, Eori, YesNoAnswer}
+import forms.common.{Address, Country, Date, Eori, YesNoAnswer}
 import forms.declaration.additionaldocuments.{AdditionalDocument, DocumentWriteOff}
-import forms.declaration.ModeOfTransportCode.{InlandWaterway, Maritime, RoRo, Road}
-import forms.declaration.TransportPayment.{cash, cheque}
-import forms.declaration.countries.Country
+import forms.section6.ModeOfTransportCode.{InlandWaterway, Maritime, RoRo, Road}
+import forms.section6.TransportPayment.{cash, cheque}
 import forms.declaration.{
   AdditionalFiscalReference,
   AdditionalFiscalReferencesData,
@@ -31,17 +30,10 @@ import forms.declaration.{
   CommodityDetails,
   CusCode,
   EntityDetails,
-  InlandModeOfTransportCode,
   NactCode,
   PackageInformation,
-  Seal,
   StatisticalValue,
-  SupervisingCustomsOffice,
-  TransportCountry,
-  TransportLeavingTheBorder,
-  TransportPayment,
-  UNDangerousGoodsCode,
-  WarehouseIdentification
+  UNDangerousGoodsCode
 }
 import forms.section1.DeclarantDetails
 import forms.section2.authorisationHolder.AuthorisationHolder
@@ -51,6 +43,15 @@ import forms.section2.consignor.ConsignorDetails
 import forms.section2.exporter.ExporterDetails
 import forms.section3.OfficeOfExit
 import forms.section4.{Document, NatureOfTransaction}
+import forms.section6.{
+  InlandModeOfTransportCode,
+  Seal,
+  SupervisingCustomsOffice,
+  TransportCountry,
+  TransportLeavingTheBorder,
+  TransportPayment,
+  WarehouseIdentification
+}
 import models.declaration.{
   AdditionalDocuments,
   AdditionalInformationData,

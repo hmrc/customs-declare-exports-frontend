@@ -18,9 +18,8 @@ package forms.section3
 
 import forms.DeclarationPage
 import forms.MappingHelper.requiredRadio
-import forms.common.YesNoAnswer
+import forms.common.{Countries, Country, YesNoAnswer}
 import forms.common.YesNoAnswer.YesNoAnswers
-import forms.declaration.countries.{Countries, Country}
 import play.api.data.{Form, Forms}
 import utils.validators.forms.FieldValidator.isContainedIn
 

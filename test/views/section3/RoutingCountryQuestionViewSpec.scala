@@ -19,7 +19,7 @@ package views.section3
 import base.Injector
 import connectors.CodeListConnector
 import controllers.section3.routes.DestinationCountryController
-import forms.declaration.countries.Country
+import forms.common.Country
 import forms.section3.RoutingCountryQuestionYesNo.formAdd
 import models.DeclarationType.STANDARD
 import models.codes.{Country => ModelCountry}
