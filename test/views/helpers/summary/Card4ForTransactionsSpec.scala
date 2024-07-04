@@ -17,8 +17,9 @@
 package views.helpers.summary
 
 import base.Injector
-import controllers.declaration.routes._
-import forms.declaration.{Document, PreviousDocumentsData}
+import controllers.declaration.routes.ItemsSummaryController
+import controllers.section4.routes._
+import forms.section4.{Document, PreviousDocumentsData}
 import models.DeclarationType._
 import models.declaration.InvoiceAndPackageTotals
 import services.cache.ExportsTestHelper

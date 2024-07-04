@@ -18,9 +18,10 @@ package views.helpers
 
 import base.ExportsTestData.eori
 import base.{Injector, UnitSpec}
-import controllers.declaration.routes.{AdditionalDocumentsController, TotalPackageQuantityController}
+import controllers.declaration.routes.AdditionalDocumentsController
 import controllers.section1.routes.DeclarantDetailsController
 import controllers.section2.routes.PersonPresentingGoodsDetailsController
+import controllers.section4.routes.TotalPackageQuantityController
 import forms.common.Eori
 import models.DeclarationType.CLEARANCE
 import models.Pointer

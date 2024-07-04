@@ -21,7 +21,7 @@ import config.AppConfig
 import controllers.declaration.routes.{UNDangerousGoodsCodeController, ZeroRatedForVatController}
 import forms.declaration.NactCodeFirst
 import forms.declaration.NactCodeFirst.form
-import forms.declaration.NatureOfTransaction.{BusinessPurchase, Construction, Sale}
+import forms.section4.NatureOfTransaction.{BusinessPurchase, Construction, Sale}
 import models.DeclarationType._
 import models.declaration.ProcedureCodesData.lowValueDeclaration
 import models.requests.JourneyRequest

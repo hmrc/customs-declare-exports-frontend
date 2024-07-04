@@ -26,6 +26,7 @@ import forms.declaration.additionaldocuments.AdditionalDocument
 import forms.declaration.countries.Country
 import forms.section1.{ConsignmentReferences, Mucr}
 import forms.section2.authorisationHolder.AuthorisationHolder
+import forms.section4.{Document, NatureOfTransaction, PreviousDocumentsData}
 import models.DeclarationType.DeclarationType
 import models.ExportsDeclaration.isCodePrefixedWith
 import models.ExportsFieldPointer.ExportsFieldPointer

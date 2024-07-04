@@ -16,7 +16,8 @@
 
 package views.helpers.summary
 
-import controllers.declaration.routes._
+import controllers.declaration.routes.ItemsSummaryController
+import controllers.section4.routes._
 import models.DeclarationType.{STANDARD, SUPPLEMENTARY}
 import models.ExportsDeclaration
 import models.requests.JourneyRequest

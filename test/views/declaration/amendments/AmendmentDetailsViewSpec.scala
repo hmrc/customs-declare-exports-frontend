@@ -30,11 +30,9 @@ import forms.declaration.{
   AdditionalInformation,
   CommodityDetails,
   CusCode,
-  Document,
   EntityDetails,
   InlandModeOfTransportCode,
   NactCode,
-  NatureOfTransaction,
   PackageInformation,
   Seal,
   StatisticalValue,
@@ -52,6 +50,7 @@ import forms.section2.{AdditionalActor, ConsigneeDetails, PersonPresentingGoodsD
 import forms.section2.consignor.ConsignorDetails
 import forms.section2.exporter.ExporterDetails
 import forms.section3.OfficeOfExit
+import forms.section4.{Document, NatureOfTransaction}
 import models.declaration.{
   AdditionalDocuments,
   AdditionalInformationData,

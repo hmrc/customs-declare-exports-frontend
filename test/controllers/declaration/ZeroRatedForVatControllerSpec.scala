@@ -21,8 +21,8 @@ import connectors.CodeLinkConnector
 import controllers.declaration.routes.NactCodeSummaryController
 import forms.declaration.NactCode
 import forms.declaration.NactCode.nactCodeKey
-import forms.declaration.NatureOfTransaction.{allowedTypes, BusinessPurchase, Sale}
 import forms.declaration.ZeroRatedForVat._
+import forms.section4.NatureOfTransaction.{allowedTypes, BusinessPurchase, Sale}
 import models.DeclarationType._
 import models.ExportsDeclaration
 import models.declaration.ProcedureCodesData.lowValueDeclaration

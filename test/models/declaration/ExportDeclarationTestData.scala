@@ -21,7 +21,7 @@ import forms.Lrn
 import forms.common.YesNoAnswer.Yes
 import forms.common.{Date, Eori}
 import forms.section1.ConsignmentReferencesSpec._
-import forms.declaration.NatureOfTransactionSpec._
+import forms.section4.NatureOfTransactionSpec._
 import forms.declaration.TransportPayment.cash
 import forms.declaration._
 import forms.section2.AdditionalActorsSpec._
@@ -34,6 +34,7 @@ import forms.section2.authorisationHolder.AuthorisationHolder
 import forms.section2.carrier.CarrierDetails
 import forms.section2.exporter.ExporterDetails
 import forms.section3.{LocationOfGoods, OfficeOfExit}
+import forms.section4.{Document, PreviousDocumentsData}
 import models.declaration.governmentagencygoodsitem.Formats._
 import models.declaration.governmentagencygoodsitem.{Amount, GovernmentAgencyGoodsItem}
 import models.{CancelDeclaration, DeclarationMeta, DeclarationType, ExportsDeclaration}

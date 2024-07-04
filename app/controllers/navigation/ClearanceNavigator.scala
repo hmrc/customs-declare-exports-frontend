@@ -32,6 +32,7 @@ import forms.section2.exporter.{ExporterDetails, ExporterEoriNumber}
 import forms.section2._
 import forms.section2.representative.RepresentativeAgent
 import forms.section3.LocationOfGoods
+import forms.section4.{Document, DocumentSummary}
 import models.ExportsDeclaration
 import play.api.mvc.Call
 

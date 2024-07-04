@@ -243,43 +243,43 @@ POST        /office-of-exit                      controllers.section3.OfficeOfEx
 
 # Invoices & Exchange Rate
 
-GET         /invoices-and-exchange-rate-choice   controllers.declaration.InvoiceAndExchangeRateChoiceController.displayPage
+GET         /invoices-and-exchange-rate-choice   controllers.section4.InvoiceAndExchangeRateChoiceController.displayPage
 
-POST        /invoices-and-exchange-rate-choice   controllers.declaration.InvoiceAndExchangeRateChoiceController.submitForm
+POST        /invoices-and-exchange-rate-choice   controllers.section4.InvoiceAndExchangeRateChoiceController.submitForm
 
-GET         /invoices-and-exchange-rate          controllers.declaration.InvoiceAndExchangeRateController.displayPage
+GET         /invoices-and-exchange-rate          controllers.section4.InvoiceAndExchangeRateController.displayPage
 
-POST        /invoices-and-exchange-rate          controllers.declaration.InvoiceAndExchangeRateController.saveNoOfItems
+POST        /invoices-and-exchange-rate          controllers.section4.InvoiceAndExchangeRateController.saveNoOfItems
 
 # Total package quantity
 
-GET         /total-package-quantity              controllers.declaration.TotalPackageQuantityController.displayPage
+GET         /total-package-quantity              controllers.section4.TotalPackageQuantityController.displayPage
 
-POST        /total-package-quantity              controllers.declaration.TotalPackageQuantityController.saveTotalPackageQuantity
+POST        /total-package-quantity              controllers.section4.TotalPackageQuantityController.saveTotalPackageQuantity
 
 # Previous documents
 
-GET         /add-previous-document               controllers.declaration.PreviousDocumentsController.displayPage
+GET         /add-previous-document               controllers.section4.PreviousDocumentsController.displayPage
 
-POST        /add-previous-document               controllers.declaration.PreviousDocumentsController.submit
+POST        /add-previous-document               controllers.section4.PreviousDocumentsController.submit
 
-GET         /previous-documents-list             controllers.declaration.PreviousDocumentsSummaryController.displayPage
+GET         /previous-documents-list             controllers.section4.PreviousDocumentsSummaryController.displayPage
 
-POST        /previous-documents-list             controllers.declaration.PreviousDocumentsSummaryController.submit
+POST        /previous-documents-list             controllers.section4.PreviousDocumentsSummaryController.submit
 
-GET         /previous-documents/:id/remove       controllers.declaration.PreviousDocumentsRemoveController.displayPage(id: String)
+GET         /previous-documents/:id/remove       controllers.section4.PreviousDocumentsRemoveController.displayPage(id: String)
 
-POST        /previous-documents/:id/remove       controllers.declaration.PreviousDocumentsRemoveController.submit(id: String)
+POST        /previous-documents/:id/remove       controllers.section4.PreviousDocumentsRemoveController.submit(id: String)
 
-GET         /previous-documents/:id/change       controllers.declaration.PreviousDocumentsChangeController.displayPage(id: String)
+GET         /previous-documents/:id/change       controllers.section4.PreviousDocumentsChangeController.displayPage(id: String)
 
-POST        /previous-documents/:id/change       controllers.declaration.PreviousDocumentsChangeController.submit(id: String)
+POST        /previous-documents/:id/change       controllers.section4.PreviousDocumentsChangeController.submit(id: String)
 
 # Transaction type
 
-GET         /nature-of-transaction               controllers.declaration.NatureOfTransactionController.displayPage
+GET         /nature-of-transaction               controllers.section4.NatureOfTransactionController.displayPage
 
-POST        /nature-of-transaction               controllers.declaration.NatureOfTransactionController.saveTransactionType
+POST        /nature-of-transaction               controllers.section4.NatureOfTransactionController.saveTransactionType
 
 ## SECTION 5 -----------------------------------------------------------------------------------------------------------
 

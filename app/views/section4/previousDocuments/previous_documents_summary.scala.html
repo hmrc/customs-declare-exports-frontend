@@ -1,0 +1,147 @@
+@*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import config.AppConfig
+@import controllers.declaration.routes.SectionSummaryController
+@import controllers.navigation.Navigator
+@import controllers.section4.routes.{PreviousDocumentsRemoveController, PreviousDocumentsSummaryController}
+@import forms.common.YesNoAnswer
+@import forms.section4.{Document, DocumentSummary}
+@import models.requests.JourneyRequest
+@import play.twirl.api.HtmlFormat
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import utils.ListItem._
+@import views.components.gds.Styles._
+@import views.helpers.{BackButton, PreviousDocumentsHelper, Title}
+@import views.helpers.ErrorMapper.yesNoErrors
+@import views.html.components.gds._
+@import services.DocumentTypeService
+
+@this(
+    templateHelper: PreviousDocumentsHelper,
+    govukLayout: gdsMainTemplate,
+    govukFieldset: GovukFieldset,
+    govukTable : GovukTable,
+    govukWarningText: GovukWarningText,
+    errorSummary: errorSummary,
+    sectionHeader: sectionHeader,
+    spanVisuallyHidden: spanVisuallyHidden,
+    addAnotherQuestion: addAnotherQuestion,
+    link: link,
+    paragraphBody: paragraphBody,
+    saveButtons: saveButtons,
+    formHelper: FormWithCSRF,
+    navigator: Navigator,
+    appConfig: AppConfig,
+    documentTypeService: DocumentTypeService
+)
+
+@(form: Form[YesNoAnswer], documents: Seq[Document])(implicit request: JourneyRequest[_], messages: Messages)
+
+@hasErrors = @{form.hasErrors || form.hasGlobalErrors}
+
+@backLink = @{navigator.backLink(DocumentSummary)}
+@backButtonText = @{
+    if(backLink == SectionSummaryController.displayPage(3)) { "site.back" }
+    else "site.backToPreviousQuestion"
+}
+
+@header = @{
+  val documentsSize = documents.size
+  if (documentsSize == 1) Text(messages("declaration.previousDocuments.summary.header.singular"))
+  else Text(messages("declaration.previousDocuments.summary.header.plural", documentsSize))
+}
+
+@body = {
+    @paragraphBody(messages("declaration.previousDocuments.summary.body"))
+}
+
+@warning = {
+    @govukWarningText(WarningText(
+        iconFallbackText = Some(messages("site.warning")),
+        content = Text(messages("declaration.previousDocuments.summary.warning.text"))
+    ))
+}
+
+@documentsTable = {
+    @if(documents.nonEmpty) {
+        @govukTable(Table(
+            rows = documents.zipWithIndex.map { case (document, index) =>
+                Seq(
+                    TableRow(content = Text(documentTypeService.findByCode(document.documentType).asTextWithBrackets)),
+
+                    TableRow(content = Text(document.documentReference)),
+
+                    TableRow(content = Text(document.goodsItemIdentifier.getOrElse(""))),
+
+                    TableRow(
+                        content = HtmlContent(link(
+                            messages("site.remove"),
+                            PreviousDocumentsRemoveController.displayPage(createId(index, document)),
+                            textHidden = Some(messages(
+                                "declaration.previousDocuments.remove.hint",
+                                index + 1,
+                                documentTypeService.findByCode(document.documentType).asTextWithBrackets,
+                                document.documentReference
+                            )),
+                        )),
+                        classes = "govuk-table__cell--numeric",
+                        attributes = Map("id" -> s"previous-document-$index-remove_button")
+                    )
+                )
+            },
+            head = Some(List(
+                HeadCell(content = Text(messages("declaration.previousDocuments.summary.documentCode.label"))),
+
+                HeadCell(content = Text(messages("declaration.previousDocuments.summary.documentReference.label"))),
+
+                HeadCell(content =
+                    if (templateHelper.versionSelection == 1) Empty
+                    else Text(messages("declaration.previousDocuments.summary.goodsItemIdentifier.label"))
+                ),
+
+                HeadCell(content = HtmlContent(spanVisuallyHidden(messages("site.remove.header"))))
+            ))
+        ))
+    }
+}
+
+@govukLayout.apply(
+  title = templateHelper.titleInHead(documents, hasErrors),
+  backButton = Some(BackButton(messages(backButtonText), backLink))
+) {
+    @formHelper(action = PreviousDocumentsSummaryController.submit, 'autoComplete -> "off") {
+
+        @errorSummary(yesNoErrors(form.errors))
+
+        @sectionHeader(messages("declaration.section.4"))
+
+        @govukFieldset(Fieldset(
+            legend = Some(Legend(
+                content = header,
+                classes = gdsPageLegend,
+                isPageHeading = true
+            )),
+            html = HtmlFormat.fill(List(
+                body,
+                warning,
+                documentsTable,
+                addAnotherQuestion("declaration.previousDocuments.addAnotherDocument", form),
+                saveButtons()
+            ))
+        ))
+    }
+}

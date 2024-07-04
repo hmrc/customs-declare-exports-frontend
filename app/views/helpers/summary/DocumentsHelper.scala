@@ -16,8 +16,8 @@
 
 package views.helpers.summary
 
-import controllers.declaration.routes.PreviousDocumentsSummaryController
-import forms.declaration.Document
+import controllers.section4.routes.PreviousDocumentsSummaryController
+import forms.section4.Document
 import models.ExportsDeclaration
 import play.api.i18n.Messages
 import services.DocumentTypeService

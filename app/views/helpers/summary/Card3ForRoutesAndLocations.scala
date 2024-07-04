@@ -17,8 +17,8 @@
 package views.helpers.summary
 
 import connectors.CodeListConnector
-import controllers.declaration.routes.{InvoiceAndExchangeRateChoiceController, PreviousDocumentsSummaryController}
 import controllers.section3.routes._
+import controllers.section4.routes.{InvoiceAndExchangeRateChoiceController, PreviousDocumentsSummaryController}
 import forms.section3.LocationOfGoods.suffixForGVMS
 import models.DeclarationType._
 import models.ExportsDeclaration

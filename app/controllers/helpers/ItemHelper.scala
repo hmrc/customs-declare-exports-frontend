@@ -22,8 +22,8 @@ import controllers.declaration.routes.{
   StatisticalValueController,
   ZeroRatedForVatController
 }
-import forms.declaration.NatureOfTransaction
-import forms.declaration.NatureOfTransaction.{BusinessPurchase, Sale}
+import forms.section4.NatureOfTransaction.{BusinessPurchase, Sale}
+import forms.section4.NatureOfTransaction
 import models.DeclarationType._
 import models.ExportsDeclaration
 import models.requests.JourneyRequest

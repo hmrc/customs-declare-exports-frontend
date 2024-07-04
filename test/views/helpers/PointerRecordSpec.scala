@@ -22,7 +22,7 @@ import forms.common.YesNoAnswer.{Yes, YesNoAnswers}
 import forms.common.{Address, Date, Eori}
 import forms.declaration.InlandOrBorder.Border
 import forms.declaration.ModeOfTransportCode.Maritime
-import forms.declaration.NatureOfTransaction.BusinessPurchase
+import forms.section4.NatureOfTransaction.BusinessPurchase
 import forms.declaration.TransportPayment.cash
 import forms.declaration.additionaldocuments.{AdditionalDocument, DocumentWriteOff}
 import forms.section2.authorisationHolder.AuthorizationTypeCodes.CSE
@@ -30,6 +30,7 @@ import forms.declaration.countries.Country
 import forms.declaration._
 import forms.section2.AdditionalActor
 import forms.section3.LocationOfGoods
+import forms.section4.{Document, InvoiceAndExchangeRate}
 import models.codes.{Country => ModelCountry}
 import models.declaration.{AdditionalDocuments, CommodityMeasure, Container}
 import org.mockito.ArgumentMatchers.{any, eq => meq}

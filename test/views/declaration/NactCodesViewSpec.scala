@@ -20,7 +20,7 @@ import base.Injector
 import controllers.declaration.routes.{UNDangerousGoodsCodeController, ZeroRatedForVatController}
 import forms.common.YesNoAnswer.{form, YesNoAnswers}
 import forms.declaration.NactCode
-import forms.declaration.NatureOfTransaction.{BusinessPurchase, HouseRemoval, Sale}
+import forms.section4.NatureOfTransaction.{BusinessPurchase, HouseRemoval, Sale}
 import models.DeclarationType._
 import models.declaration.ProcedureCodesData.lowValueDeclaration
 import models.requests.JourneyRequest

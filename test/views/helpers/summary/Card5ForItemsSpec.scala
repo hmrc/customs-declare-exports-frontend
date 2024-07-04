@@ -19,8 +19,9 @@ package views.helpers.summary
 import base.Injector
 import controllers.declaration.routes._
 import forms.common.YesNoAnswer.Yes
-import forms.declaration.NatureOfTransaction.BusinessPurchase
+import forms.section4.NatureOfTransaction.BusinessPurchase
 import forms.declaration._
+import forms.section4.Document
 import models.DeclarationType._
 import models.ExportsDeclaration
 import models.declaration.{AdditionalDocuments, AdditionalInformationData, CommodityMeasure}

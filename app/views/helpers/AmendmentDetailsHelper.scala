@@ -19,7 +19,7 @@ package views.helpers
 import connectors.CodeListConnector
 import forms.common.{Address, Eori}
 import forms.declaration.CommodityDetails.{combinedNomenclatureCodePointer, descriptionOfGoodsPointer}
-import forms.declaration.Document.documentTypePointer
+import forms.section4.Document.documentTypePointer
 import forms.declaration.PackageInformation._
 import forms.declaration._
 import forms.declaration.additionaldocuments.{AdditionalDocument, DocumentWriteOff}
@@ -31,6 +31,7 @@ import forms.section2.{AdditionalActor, ConsigneeDetails, PersonPresentingGoodsD
 import forms.section2.consignor.ConsignorDetails
 import forms.section2.exporter.ExporterDetails
 import forms.section3.OfficeOfExit
+import forms.section4.{Document, NatureOfTransaction, PreviousDocumentsData}
 import models.AmendmentRow._
 import models.ExportsFieldPointer.ExportsFieldPointer
 import models.declaration.CommodityMeasure._

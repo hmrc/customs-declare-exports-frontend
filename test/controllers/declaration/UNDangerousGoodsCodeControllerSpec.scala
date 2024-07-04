@@ -25,9 +25,9 @@ import controllers.declaration.routes.{
   ZeroRatedForVatController
 }
 import forms.declaration.CommodityDetails.commodityCodeChemicalPrefixes
-import forms.declaration.NatureOfTransaction.{BusinessPurchase, Sale}
 import forms.declaration.UNDangerousGoodsCode.{dangerousGoodsCodeKey, hasDangerousGoodsCodeKey}
 import forms.declaration.{CommodityDetails, UNDangerousGoodsCode}
+import forms.section4.NatureOfTransaction.{BusinessPurchase, Sale}
 import models.DeclarationType._
 import models.ExportsDeclaration
 import models.declaration.ProcedureCodesData.lowValueDeclaration

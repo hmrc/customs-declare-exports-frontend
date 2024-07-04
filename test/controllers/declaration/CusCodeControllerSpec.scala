@@ -21,7 +21,7 @@ import controllers.declaration.routes.{NactCodeSummaryController, ZeroRatedForVa
 import controllers.routes.RootController
 import forms.declaration.CusCode
 import forms.declaration.CusCode._
-import forms.declaration.NatureOfTransaction.{BusinessPurchase, Sale}
+import forms.section4.NatureOfTransaction.{BusinessPurchase, Sale}
 import models.DeclarationType._
 import models.ExportsDeclaration
 import models.declaration.ProcedureCodesData.lowValueDeclaration

@@ -17,6 +17,7 @@
 package forms.declaration
 
 import forms.common.DeclarationPageBaseSpec
+import forms.section4.{Document, PreviousDocumentsData}
 import org.scalatest.OptionValues
 import services.AlteredField
 import services.AlteredField.constructAlteredField

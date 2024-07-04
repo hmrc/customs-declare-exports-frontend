@@ -18,6 +18,7 @@ package forms.declaration
 
 import forms.DeclarationPage
 import forms.common.YesNoAnswer
+import forms.section4.NatureOfTransaction
 import models.DeclarationType.DeclarationType
 import models.viewmodels.TariffContentKey
 import play.api.data.Form

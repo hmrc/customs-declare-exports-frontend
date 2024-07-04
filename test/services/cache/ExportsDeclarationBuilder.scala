@@ -29,6 +29,7 @@ import forms.section2.{AdditionalActor, AuthorisationProcedureCodeChoice, Consig
 import forms.section2.consignor.ConsignorDetails
 import forms.section2.exporter.ExporterDetails
 import forms.section3.{LocationOfGoods, OfficeOfExit}
+import forms.section4.{Document, InvoiceAndExchangeRate, NatureOfTransaction, PreviousDocumentsData}
 import forms.{Ducr, Lrn, Mrn}
 import models.DeclarationType.DeclarationType
 import models.declaration.DeclarationStatus.DeclarationStatus

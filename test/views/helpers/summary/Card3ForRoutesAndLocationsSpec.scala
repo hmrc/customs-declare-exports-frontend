@@ -17,8 +17,8 @@
 package views.helpers.summary
 
 import base.Injector
-import controllers.declaration.routes.{InvoiceAndExchangeRateChoiceController, PreviousDocumentsSummaryController}
 import controllers.section3.routes._
+import controllers.section4.routes.{InvoiceAndExchangeRateChoiceController, PreviousDocumentsSummaryController}
 import forms.declaration.countries.Country
 import forms.section3.LocationOfGoods
 import models.DeclarationType._
