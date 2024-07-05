@@ -24,12 +24,13 @@ import controllers.section1.routes._
 import controllers.section2.routes._
 import controllers.section3.routes._
 import controllers.section4.routes._
+import controllers.section5.routes._
 import controllers.section6.routes._
 import forms.Ducr.generateDucrPrefix
-import forms.section6.InlandOrBorder.Border
-import forms.section4.NatureOfTransaction.{BusinessPurchase, Sale}
-import forms.declaration._
 import forms.section4.NatureOfTransaction
+import forms.section4.NatureOfTransaction.{BusinessPurchase, Sale}
+import forms.section5.CommodityDetails
+import forms.section6.InlandOrBorder.Border
 import models.DeclarationType._
 import models.ExportsDeclaration
 import models.requests.JourneyRequest

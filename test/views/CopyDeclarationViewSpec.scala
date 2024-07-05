@@ -26,9 +26,9 @@ import models.DeclarationType.SUPPLEMENTARY
 import models.requests.{JourneyRequest, SessionHelper}
 import org.jsoup.nodes.Document
 import tools.Stubs
-import views.declaration.spec.UnitViewSpec
 import views.helpers.CommonMessages
 import views.html.copy_declaration
+import views.common.UnitViewSpec
 import views.tags.ViewTest
 
 @ViewTest

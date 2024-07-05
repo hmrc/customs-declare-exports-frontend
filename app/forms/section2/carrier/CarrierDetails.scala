@@ -19,7 +19,7 @@ package forms.section2.carrier
 import connectors.CodeListConnector
 import forms.DeclarationPage
 import forms.common.Eori
-import forms.declaration.{Details, EntityDetails}
+import forms.section2.{Details, EntityDetails}
 import models.DeclarationType.{CLEARANCE, DeclarationType}
 import models.ExportsFieldPointer.ExportsFieldPointer
 import models.viewmodels.TariffContentKey

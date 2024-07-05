@@ -26,9 +26,9 @@ import org.jsoup.nodes.Document
 import services.cache.ExportsTestHelper
 import tools.Stubs
 import views.components.gds.Styles
-import views.declaration.spec.UnitViewSpec
 import views.helpers.CommonMessages
 import views.html.section2.is_exs
+import views.common.UnitViewSpec
 
 class IsExsViewSpec extends UnitViewSpec with ExportsTestHelper with CommonMessages with Stubs with Injector {
 

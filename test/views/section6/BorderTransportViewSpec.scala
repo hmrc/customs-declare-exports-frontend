@@ -24,8 +24,8 @@ import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.mvc.AnyContent
 import services.TransportCodeService
-import views.declaration.spec.PageWithButtonsSpec
 import views.html.section6.border_transport
+import views.common.PageWithButtonsSpec
 import views.tags.ViewTest
 
 @ViewTest

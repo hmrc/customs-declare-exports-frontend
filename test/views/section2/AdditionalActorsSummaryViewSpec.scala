@@ -24,8 +24,8 @@ import forms.section2.AdditionalActor
 import models.DeclarationType.{OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
-import views.declaration.spec.PageWithButtonsSpec
 import views.html.section2.additionalActors.additional_actors_summary
+import views.common.PageWithButtonsSpec
 import views.tags.ViewTest
 
 @ViewTest

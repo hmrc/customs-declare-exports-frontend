@@ -26,8 +26,8 @@ import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import play.twirl.api.HtmlFormat.Appendable
-import views.declaration.spec.UnitViewSpec
 import views.html.section2.third_party_goods_transportation
+import views.common.UnitViewSpec
 
 class ThirdPartyGoodsTransportationViewSpec extends UnitViewSpec with Injector {
 

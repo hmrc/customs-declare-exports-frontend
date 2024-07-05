@@ -23,9 +23,9 @@ import forms.section1.additionaldeclarationtype.AdditionalDeclarationType._
 import forms.section1.additionaldeclarationtype.AdditionalDeclarationTypePage.{form, radioButtonGroupId}
 import models.DeclarationType._
 import play.twirl.api.Html
-import views.declaration.spec.UnitViewSpec
 import views.helpers.CommonMessages
 import views.html.section1.additional_declaration_type
+import views.common.UnitViewSpec
 import views.tags.ViewTest
 
 @ViewTest

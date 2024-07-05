@@ -26,8 +26,8 @@ import play.api.data.Form
 import services.cache.ExportsTestHelper
 import tools.Stubs
 import utils.ListItem
-import views.declaration.spec.UnitViewSpec
 import views.html.section2.additionalActors.additional_actors_remove
+import views.common.UnitViewSpec
 import views.tags.ViewTest
 
 @ViewTest

@@ -23,9 +23,9 @@ import forms.section2.PersonPresentingGoodsDetails
 import models.DeclarationType
 import org.jsoup.nodes.Document
 import play.api.data.{Form, FormError}
-import views.declaration.spec.UnitViewSpec
 import views.helpers.CommonMessages
 import views.html.section2.person_presenting_goods_details
+import views.common.UnitViewSpec
 
 class PersonPresentingGoodsDetailsViewSpec extends UnitViewSpec with Injector with CommonMessages {
 

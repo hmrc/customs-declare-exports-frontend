@@ -25,8 +25,8 @@ import models.DeclarationType
 import models.DeclarationType.STANDARD
 import models.requests.JourneyRequest
 import play.twirl.api.Html
-import views.declaration.spec.PageWithButtonsSpec
 import views.html.section4.previousDocuments.previous_documents_summary
+import views.common.PageWithButtonsSpec
 
 class PreviousDocumentsSummaryViewSpec extends PageWithButtonsSpec with Injector {
 

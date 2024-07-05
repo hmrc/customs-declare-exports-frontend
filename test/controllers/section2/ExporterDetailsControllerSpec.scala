@@ -20,7 +20,7 @@ import base.{AuditedControllerSpec, ControllerSpec}
 import connectors.CodeListConnector
 import controllers.section2.routes.{IsExsController, RepresentativeAgentController}
 import forms.common.{Address, Eori}
-import forms.declaration.EntityDetails
+import forms.section2.EntityDetails
 import forms.section2.exporter.ExporterDetails
 import models.DeclarationType._
 import models.codes.Country

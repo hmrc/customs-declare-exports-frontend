@@ -33,8 +33,8 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.Assertion
 import play.api.mvc.Call
-import views.declaration.spec.PageWithButtonsSpec
 import views.html.section3.location_of_goods
+import views.common.PageWithButtonsSpec
 import views.tags.ViewTest
 
 import scala.collection.immutable.ListMap

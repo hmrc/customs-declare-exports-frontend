@@ -24,8 +24,8 @@ import models.DeclarationType.STANDARD
 import models.requests.JourneyRequest
 import play.twirl.api.Html
 import utils.ListItem
-import views.declaration.spec.PageWithButtonsSpec
 import views.html.section4.previousDocuments.previous_documents_remove
+import views.common.PageWithButtonsSpec
 import views.tags.ViewTest
 
 @ViewTest

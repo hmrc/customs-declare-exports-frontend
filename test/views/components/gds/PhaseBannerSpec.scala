@@ -24,8 +24,8 @@ import play.api.inject.bind
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import play.twirl.api.Html
-import views.declaration.spec.UnitViewSpec
 import views.html.components.gds.phaseBanner
+import views.common.UnitViewSpec
 
 class PhaseBannerSpec extends UnitViewSpec with BeforeAndAfterEach {
 

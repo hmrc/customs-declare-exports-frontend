@@ -1,0 +1,72 @@
+@*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import config.AppConfig
+@import controllers.section5.routes.AdditionalInformationRequiredController
+@import forms.common.YesNoAnswer
+@import forms.section5.AdditionalInformationRequired
+@import models.declaration.ProcedureCodesData
+@import models.requests.JourneyRequest
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.components.gds.Styles
+@import views.helpers.{AdditionalInformationRequiredHelper, BackButton, Title}
+@import views.helpers.ErrorMapper.yesNoErrors
+@import views.html.components.gds._
+
+@this(
+    govukLayout: gdsMainTemplate,
+    errorSummary: errorSummary,
+    sectionHeader: sectionHeader,
+    saveButtons: saveButtons,
+    tariffExpander: tariffExpander,
+    heading: heading,
+    appConfig: AppConfig,
+    yesNoRadios: yesNoRadios,
+    additionalInformationRequiredHelper: AdditionalInformationRequiredHelper,
+    formHelper: FormWithCSRF
+)
+
+@(itemId: String, form: Form[YesNoAnswer], backLink: Call, maybeProcedureCode: Option[ProcedureCodesData])(implicit request: JourneyRequest[_], messages: Messages)
+
+@hasErrors = @{form.hasErrors || form.hasGlobalErrors}
+
+@govukLayout(
+    title = Title("declaration.additionalInformationRequired.title", "declaration.section.5", hasErrors = hasErrors),
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), backLink))
+) {
+    @formHelper(action = AdditionalInformationRequiredController.submitForm((itemId)), 'autoComplete -> "off") {
+        @errorSummary(yesNoErrors(form.errors))
+
+        @sectionHeader(messages("declaration.section.5"))
+
+        <fieldset class="govuk-fieldset" @if(form.hasErrors) { aria-describedby="yesNo-error" }>
+            <legend class="govuk-fieldset__legend govuk-!-margin-bottom-0">
+                @heading(messages("declaration.additionalInformationRequired.title"), Styles.gdsPageLegend)
+            </legend>
+
+        @additionalInformationRequiredHelper.getBodyContent(request.declarationType, maybeProcedureCode)
+
+        @yesNoRadios(
+              form,
+              inline = true
+        )
+        </fieldset>
+
+        @tariffExpander(AdditionalInformationRequired, request.declarationType)(messages, appConfig)
+
+        @saveButtons()
+    }
+}

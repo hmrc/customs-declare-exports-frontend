@@ -16,8 +16,8 @@
 
 package views.helpers.summary
 
-import controllers.declaration.routes.PackageInformationSummaryController
-import forms.declaration.PackageInformation
+import controllers.section5.routes.PackageInformationSummaryController
+import forms.section5.PackageInformation
 import models.declaration.ExportItem
 import play.api.i18n.Messages
 import services.PackageTypesService

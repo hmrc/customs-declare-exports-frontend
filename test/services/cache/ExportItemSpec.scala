@@ -18,8 +18,9 @@ package services.cache
 
 import base.UnitWithMocksSpec
 import forms.common.Date
-import forms.declaration.FiscalInformation.AllowedFiscalInformationAnswers
-import forms.declaration.{
+import forms.section5.FiscalInformation.AllowedFiscalInformationAnswers
+import forms.section5.additionaldocuments.{AdditionalDocument, DocumentWriteOff}
+import forms.section5.{
   AdditionalFiscalReference,
   AdditionalFiscalReferencesData,
   AdditionalInformation,
@@ -31,7 +32,6 @@ import forms.declaration.{
   StatisticalValue,
   UNDangerousGoodsCode
 }
-import forms.declaration.additionaldocuments.{AdditionalDocument, DocumentWriteOff}
 import models.declaration.{AdditionalDocuments, AdditionalInformationData, CommodityMeasure, ExportItem, ProcedureCodesData}
 import models.DeclarationType
 import services.AlteredField.constructAlteredField

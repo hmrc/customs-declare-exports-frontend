@@ -26,8 +26,8 @@ import org.mockito.Mockito.{reset, when}
 import org.scalatestplus.mockito.MockitoSugar
 import play.twirl.api.Html
 import services.cache.{ExportsDeclarationBuilder, ExportsItemBuilder}
-import views.declaration.spec.UnitViewSpec
 import views.html.components.gds.link
+import views.common.UnitViewSpec
 
 import scala.collection.immutable.ListMap
 

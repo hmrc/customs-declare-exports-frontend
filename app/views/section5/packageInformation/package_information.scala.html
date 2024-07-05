@@ -1,0 +1,130 @@
+@*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import config.AppConfig
+@import controllers.navigation.{ItemId, Navigator}
+@import controllers.section5.routes.{PackageInformationChangeController, PackageInformationRemoveController, PackageInformationSummaryController}
+@import forms.section5.PackageInformation
+@import models.requests.JourneyRequest
+@import play.twirl.api.HtmlFormat
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import services.PackageTypesService
+@import views.components.gds.Styles._
+@import views.helpers.{BackButton, Title}
+@import views.helpers.ErrorMapper.yesNoErrors
+@import views.html.components.gds._
+
+@this(
+    govukLayout: gdsMainTemplate,
+    govukFieldset: GovukFieldset,
+    govukTable : GovukTable,
+    errorSummary: errorSummary,
+    sectionHeader: sectionHeader,
+    addAnotherQuestion: addAnotherQuestion,
+    spanVisuallyHidden: spanVisuallyHidden,
+    link: link,
+    saveButtons: saveButtons,
+    formHelper: FormWithCSRF,
+    navigator: Navigator,
+    appConfig: AppConfig,
+    packageTypesService: PackageTypesService
+)
+
+@(itemId: String, form: Form[_], packages: Seq[PackageInformation])(implicit request: JourneyRequest[_], messages: Messages)
+
+@title = @{
+  val hasErrors = form.hasErrors || form.hasGlobalErrors
+  if (packages.size == 1) Title("declaration.packageInformation.table.heading", "declaration.section.5", hasErrors = hasErrors)
+  else Title("declaration.packageInformation.table.multiple.heading", "declaration.section.5", packages.size.toString, hasErrors = hasErrors)
+}
+
+@header = @{
+  if (packages.size == 1) Text(messages("declaration.packageInformation.table.heading"))
+  else Text(messages("declaration.packageInformation.table.multiple.heading", packages.size))
+}
+
+@packageInfoTable = {
+  @if(packages.nonEmpty) {
+    @govukTable(Table(
+      head = Some(List(
+        HeadCell(content = Text(messages("declaration.packageInformation.table.heading.typesOfPackages"))),
+        HeadCell(content = Text(messages("declaration.packageInformation.table.heading.numberOfPackages"))),
+        HeadCell(content = Text(messages("declaration.packageInformation.table.heading.shippingMarks"))),
+        HeadCell(content = HtmlContent(spanVisuallyHidden(messages("site.change.header")))),
+        HeadCell(content = HtmlContent(spanVisuallyHidden(messages("site.remove.header"))))
+      )),
+      caption = Some(messages("declaration.packageInformation.table.caption")),
+      captionClasses = "govuk-visually-hidden",
+      rows = packages.zipWithIndex.map { case (item, index) =>
+        Seq(
+          TableRow(content = Text(item.typesOfPackages.map(packageTypesService.findByCode).map(_.asText).getOrElse(""))),
+          TableRow(content = Text(item.numberOfPackages.getOrElse(0).toString)),
+          TableRow(content = Text(item.shippingMarks.getOrElse(""))),
+          TableRow(
+            content = HtmlContent(link(
+              messages("site.change"),
+              PackageInformationChangeController.displayPage(itemId, item.id),
+              textHidden = Some(messages(
+                "declaration.packageInformation.change.hint",
+                item.typesOfPackages.getOrElse(""),
+                item.shippingMarks.getOrElse("")
+              ))
+            )),
+            classes = "govuk-table__cell--numeric",
+            attributes = Map("id" -> s"package-table-row$index-change_button")
+          ),
+          TableRow(
+             content = HtmlContent(link(
+                 messages("site.remove"),
+                 PackageInformationRemoveController.displayPage(itemId, item.id),
+                 textHidden = Some(messages(
+                     "declaration.packageInformation.remove.hint",
+                     item.typesOfPackages.getOrElse(""),
+                     item.shippingMarks.getOrElse("")
+                 ))
+             )),
+             classes = "govuk-table__cell--numeric",
+             attributes = Map("id" -> s"package-table-row$index-remove_button")
+          )
+        )
+      }
+    ))
+  }
+}
+
+@govukLayout(
+    title = title,
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(PackageInformation, ItemId(itemId))))
+) {
+    @formHelper(action = PackageInformationSummaryController.submitForm(itemId), 'autoComplete -> "off") {
+        @errorSummary(yesNoErrors(form.errors))
+
+        @sectionHeader(messages("declaration.section.5"))
+
+        @govukFieldset(Fieldset(
+            legend = Some(Legend(
+                content = header,
+                classes = gdsPageLegend,
+                isPageHeading = true
+            )),
+            html = HtmlFormat.fill(List(
+                packageInfoTable,
+                addAnotherQuestion("declaration.packageInformation.add.another", form),
+                saveButtons()
+            ))
+        ))
+    }
+}

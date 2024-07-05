@@ -20,9 +20,9 @@ import base.Injector
 import controllers.routes.{ChoiceController, DraftDeclarationController}
 import play.twirl.api.Html
 import tools.Stubs
-import views.declaration.spec.UnitViewSpec
 import views.helpers.CommonMessages
 import views.html.declaration.draft_declaration_page
+import views.common.UnitViewSpec
 import views.tags.ViewTest
 
 import java.time.{LocalDateTime, ZoneOffset}

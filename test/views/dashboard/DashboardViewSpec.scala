@@ -37,9 +37,9 @@ import play.api.test.Helpers.{stubLangs, stubMessagesApi}
 import play.twirl.api.Html
 import services.cache.ExportsTestHelper
 import views.dashboard.DashboardHelper._
-import views.declaration.spec.UnitViewSpec
 import views.helpers.ViewDates
 import views.html.dashboard.dashboard
+import views.common.UnitViewSpec
 import views.tags.ViewTest
 
 import java.time.{ZoneId, ZonedDateTime}

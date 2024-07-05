@@ -60,10 +60,10 @@ commodity_details
 commodityMeasure/commodity_measure
 commodityMeasure/supplementary_units_yes_no
 cus_code
-declarationitems/items_add_item
-declarationitems/items_cannot_remove
-declarationitems/items_remove_item
-declarationitems/items_summary
+items/items_add_item
+items/items_cannot_remove
+items/items_remove_item
+items/items_summary
 fiscalInformation/additional_fiscal_reference_add
 fiscalInformation/additional_fiscal_reference_remove
 fiscalInformation/additional_fiscal_references

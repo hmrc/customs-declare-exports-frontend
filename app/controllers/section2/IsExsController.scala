@@ -21,8 +21,8 @@ import controllers.declaration.{ModelCacheable, SubmissionErrors}
 import controllers.navigation.Navigator
 import controllers.section2.routes.{ConsigneeDetailsController, ConsignorEoriNumberController, RepresentativeAgentController}
 import forms.common.YesNoAnswer.YesNoAnswers
-import forms.declaration.UNDangerousGoodsCode
 import forms.section2.IsExs
+import forms.section5.UNDangerousGoodsCode
 import models.DeclarationType.{CLEARANCE, DeclarationType}
 import models.ExportsDeclaration
 import models.declaration.{ExportItem, Parties}

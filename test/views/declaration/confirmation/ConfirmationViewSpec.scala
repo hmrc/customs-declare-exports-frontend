@@ -26,10 +26,10 @@ import org.jsoup.nodes.Document
 import org.scalatest.GivenWhenThen
 import testdata.SubmissionsTestData._
 import views.dashboard.DashboardHelper.toDashboard
-import views.declaration.spec.UnitViewSpec
 import views.helpers.Confirmation
 import views.helpers.ViewDates.formatTimeDate
 import views.html.declaration.confirmation.confirmation_page
+import views.common.UnitViewSpec
 import views.tags.ViewTest
 
 import java.time.{ZoneOffset, ZonedDateTime}

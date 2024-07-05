@@ -29,8 +29,8 @@ import org.mockito.Mockito.{reset, when}
 import play.api.data.Form
 import play.twirl.api.Html
 import services.cache.ExportsTestHelper
-import views.declaration.spec.PageWithButtonsSpec
 import views.html.section3.country_of_routing
+import views.common.PageWithButtonsSpec
 
 import scala.collection.immutable.ListMap
 

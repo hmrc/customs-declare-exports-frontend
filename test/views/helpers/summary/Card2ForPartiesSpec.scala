@@ -29,7 +29,7 @@ import models.DeclarationType._
 import org.scalatest.Assertion
 import play.api.mvc.Call
 import services.cache.ExportsTestHelper
-import views.declaration.spec.UnitViewSpec
+import views.common.UnitViewSpec
 
 class Card2ForPartiesSpec extends UnitViewSpec with ExportsTestHelper with Injector {
 

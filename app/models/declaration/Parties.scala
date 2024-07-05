@@ -18,10 +18,10 @@ package models.declaration
 
 import forms.common.YesNoAnswer
 import forms.section1.DeclarantDetails
+import forms.section2._
 import forms.section2.carrier.CarrierDetails
 import forms.section2.consignor.ConsignorDetails
 import forms.section2.exporter.ExporterDetails
-import forms.section2._
 import models.ExportsFieldPointer.ExportsFieldPointer
 import models.{ExportsDeclaration, FieldMapping}
 import play.api.libs.json.{Json, OFormat}

@@ -35,11 +35,11 @@ import org.scalatest.OptionValues
 import play.api.libs.json.Json
 import play.twirl.api.Html
 import services.cache.ExportsTestHelper
-import views.declaration.spec.UnitViewSpec
 import views.helpers.EnhancedStatusHelper.asText
 import views.helpers.ViewDates
 import views.helpers.ViewDates.formatDateAtTime
 import views.helpers.summary.Card1ForReferencesSpec.{notifications, submission}
+import views.common.UnitViewSpec
 
 import scala.concurrent.duration.Duration
 

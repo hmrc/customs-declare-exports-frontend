@@ -20,7 +20,7 @@ import base.{AuditedControllerSpec, ControllerSpec}
 import controllers.section2.routes.{ExporterDetailsController, IsExsController, RepresentativeAgentController}
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.common.{Address, Eori}
-import forms.declaration.EntityDetails
+import forms.section2.EntityDetails
 import forms.section2.exporter.{ExporterDetails, ExporterEoriNumber}
 import models.DeclarationType._
 import org.mockito.ArgumentCaptor

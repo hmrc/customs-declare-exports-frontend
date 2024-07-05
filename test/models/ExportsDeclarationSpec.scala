@@ -18,8 +18,8 @@ package models
 
 import base.{MockTaggedCodes, UnitSpec}
 import forms.common.{Country, YesNoAnswer}
-import forms.declaration.CommodityDetails
 import forms.section4.{Document, NatureOfTransaction, PreviousDocumentsData}
+import forms.section5.CommodityDetails
 import models.declaration._
 import org.scalatest.OptionValues
 import org.scalatestplus.mockito.MockitoSugar

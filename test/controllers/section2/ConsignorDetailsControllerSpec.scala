@@ -21,7 +21,7 @@ import connectors.CodeListConnector
 import controllers.routes.RootController
 import controllers.section2.routes.ThirdPartyGoodsTransportationController
 import forms.common.Address
-import forms.declaration.EntityDetails
+import forms.section2.EntityDetails
 import forms.section2.consignor.ConsignorDetails
 import models.DeclarationType
 import models.DeclarationType._

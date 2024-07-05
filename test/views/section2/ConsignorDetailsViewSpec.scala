@@ -20,7 +20,7 @@ import base.Injector
 import connectors.CodeListConnector
 import controllers.section2.routes.ConsignorEoriNumberController
 import forms.common.{Address, AddressSpec}
-import forms.declaration.EntityDetails
+import forms.section2.EntityDetails
 import forms.section2.consignor.ConsignorDetails.form
 import forms.section2.consignor.ConsignorDetails
 import models.DeclarationType.CLEARANCE
@@ -32,8 +32,8 @@ import org.mockito.Mockito.{reset, when}
 import org.scalatest.Assertion
 import play.api.data.Form
 import play.api.i18n.MessagesApi
-import views.declaration.spec.{AddressViewSpec, PageWithButtonsSpec}
 import views.html.section2.consignor_details
+import views.common.PageWithButtonsSpec
 import views.tags.ViewTest
 
 import scala.collection.immutable.ListMap

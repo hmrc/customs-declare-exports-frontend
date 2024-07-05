@@ -29,9 +29,9 @@ import org.jsoup.nodes.Document
 import services.cache.ExportsTestHelper
 import tools.Stubs
 import views.components.gds.Styles
-import views.declaration.spec.UnitViewSpec
 import views.helpers.CommonMessages
 import views.html.section2.authorisationHolder.authorisation_holder_required
+import views.common.UnitViewSpec
 import views.tags.ViewTest
 
 @ViewTest

@@ -24,8 +24,8 @@ import forms.section6.TransportLeavingTheBorder.form
 import models.DeclarationType._
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
-import views.declaration.spec.PageWithButtonsSpec
 import views.html.section6.transport_leaving_the_border
+import views.common.PageWithButtonsSpec
 import views.tags.ViewTest
 
 @ViewTest

@@ -25,7 +25,7 @@ import forms.section6.ModeOfTransportCode.Maritime
 import forms.section6._
 import models.declaration.Container
 import services.cache.ExportsTestHelper
-import views.declaration.spec.UnitViewSpec
+import views.common.UnitViewSpec
 
 class Card6ForTransportSpec extends UnitViewSpec with ExportsTestHelper with Injector {
 

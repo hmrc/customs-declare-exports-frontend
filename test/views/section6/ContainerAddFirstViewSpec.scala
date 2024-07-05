@@ -31,9 +31,9 @@ import play.api.data.Form
 import play.api.mvc.Call
 import services.cache.ExportsTestHelper
 import tools.Stubs
-import views.declaration.spec.UnitViewSpec
 import views.helpers.CommonMessages
 import views.html.section6.container_add_first
+import views.common.UnitViewSpec
 import views.tags.ViewTest
 
 @ViewTest

@@ -17,8 +17,8 @@
 package forms.section6
 
 import forms.DeclarationPage
-import ModeOfTransportCode.RoRo
 import forms.section3.LocationOfGoods
+import forms.section6.ModeOfTransportCode.RoRo
 import forms.section6.TransportLeavingTheBorder.keyForAmend
 import models.AmendmentRow.{forAddedValue, forAmendedValue, forRemovedValue, safeMessage}
 import models.DeclarationType.{CLEARANCE, DeclarationType}

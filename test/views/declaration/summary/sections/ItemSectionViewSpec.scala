@@ -18,12 +18,12 @@ package views.declaration.summary.sections
 
 import base.Injector
 import forms.common.YesNoAnswer.Yes
-import forms.declaration._
+import forms.section5._
 import models.DeclarationType.STANDARD
 import models.declaration.{CommodityMeasure, ExportItem}
 import play.twirl.api.HtmlFormat.Appendable
 import services.cache.ExportsTestHelper
-import views.declaration.spec.UnitViewSpec
+import views.common.UnitViewSpec
 import views.html.declaration.summary.sections.item_section
 
 class ItemSectionViewSpec extends UnitViewSpec with ExportsTestHelper with Injector {

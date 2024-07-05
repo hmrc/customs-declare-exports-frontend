@@ -16,7 +16,7 @@
 
 package models.declaration
 
-import forms.declaration.PackageInformation
+import forms.section5.PackageInformation
 import forms.section6.Seal
 
 trait ExplicitlySequencedObject[T] {

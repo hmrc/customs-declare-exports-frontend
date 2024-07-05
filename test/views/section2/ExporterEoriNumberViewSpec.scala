@@ -20,7 +20,7 @@ import base.Injector
 import controllers.section2.routes.{DeclarantExporterController, PersonPresentingGoodsDetailsController}
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.common.{Address, Eori, YesNoAnswer}
-import forms.declaration.EntityDetails
+import forms.section2.EntityDetails
 import forms.section2.exporter.ExporterEoriNumber.form
 import forms.section2.consignor.ConsignorDetails
 import forms.section2.exporter.ExporterEoriNumber
@@ -31,8 +31,8 @@ import org.jsoup.nodes.Document
 import play.api.data.Form
 import services.cache.ExportsTestHelper
 import views.components.gds.Styles
-import views.declaration.spec.PageWithButtonsSpec
 import views.html.section2.exporter_eori_number
+import views.common.PageWithButtonsSpec
 import views.tags.ViewTest
 
 @ViewTest

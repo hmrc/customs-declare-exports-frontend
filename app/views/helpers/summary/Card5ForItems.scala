@@ -16,7 +16,7 @@
 
 package views.helpers.summary
 
-import controllers.declaration.routes._
+import controllers.section5.routes._
 import controllers.section6.routes.TransportLeavingTheBorderController
 import models.DeclarationType._
 import models.ExportsDeclaration

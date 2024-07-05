@@ -18,20 +18,20 @@ package views.helpers
 
 import connectors.CodeListConnector
 import forms.common.{Address, Country, Eori}
-import forms.declaration.CommodityDetails.{combinedNomenclatureCodePointer, descriptionOfGoodsPointer}
-import forms.section4.Document.documentTypePointer
-import forms.declaration.PackageInformation._
-import forms.declaration._
-import forms.declaration.additionaldocuments.{AdditionalDocument, DocumentWriteOff}
 import forms.section1.DeclarantDetails
 import forms.section2.authorisationHolder.AuthorisationHolder
 import forms.section2.carrier.CarrierDetails
-import forms.section2.{AdditionalActor, ConsigneeDetails, PersonPresentingGoodsDetails}
 import forms.section2.consignor.ConsignorDetails
 import forms.section2.exporter.ExporterDetails
+import forms.section2.{AdditionalActor, ConsigneeDetails, Details, EntityDetails, PersonPresentingGoodsDetails}
 import forms.section3.OfficeOfExit
+import forms.section4.Document.documentTypePointer
 import forms.section4.{Document, NatureOfTransaction, PreviousDocumentsData}
-import forms.section6.{InlandModeOfTransportCode, Seal, SupervisingCustomsOffice, TransportCountry, WarehouseIdentification}
+import forms.section5.CommodityDetails.{combinedNomenclatureCodePointer, descriptionOfGoodsPointer}
+import forms.section5.PackageInformation._
+import forms.section5.additionaldocuments.{AdditionalDocument, DocumentWriteOff}
+import forms.section5.{AdditionalInformation, CommodityDetails, PackageInformation}
+import forms.section6._
 import models.AmendmentRow._
 import models.ExportsFieldPointer.ExportsFieldPointer
 import models.declaration.CommodityMeasure._

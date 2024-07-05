@@ -31,8 +31,8 @@ import org.mockito.Mockito.when
 import org.scalatest.Assertion
 import play.twirl.api.Html
 import services.{DocumentType, DocumentTypeService}
-import views.declaration.spec.{PageWithButtonsSpec, UnitViewSpec}
 import views.html.section4.previousDocuments.previous_documents
+import views.common.{PageWithButtonsSpec, UnitViewSpec}
 import views.tags.ViewTest
 
 @ViewTest

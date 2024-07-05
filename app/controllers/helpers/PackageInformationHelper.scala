@@ -16,7 +16,7 @@
 
 package controllers.helpers
 
-import forms.declaration.PackageInformation
+import forms.section5.PackageInformation
 import models.requests.JourneyRequest
 
 object PackageInformationHelper {

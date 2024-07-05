@@ -19,8 +19,8 @@ package views
 import base.Injector
 import controllers.routes
 import models.SignOutReason.UserAction
-import views.declaration.spec.UnitViewSpec
 import views.html.unauthorised
+import views.common.UnitViewSpec
 import views.tags.ViewTest
 
 @ViewTest

@@ -24,8 +24,8 @@ import models.DeclarationType.{STANDARD, SUPPLEMENTARY}
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
-import views.declaration.spec.PageWithButtonsSpec
 import views.html.section4.invoice_and_exchange_rate_choice
+import views.common.PageWithButtonsSpec
 import views.tags.ViewTest
 
 @ViewTest

@@ -18,10 +18,10 @@ package views.guidance
 
 import base.Injector
 import tools.Stubs
-import views.declaration.spec.UnitViewSpec
 import views.html.guidance.send_by_roro
 import views.tags.ViewTest
 import config.AppConfig
+import views.common.UnitViewSpec
 
 import scala.jdk.CollectionConverters.CollectionHasAsScala
 

@@ -17,10 +17,11 @@
 package controllers.navigation
 
 import base._
-import controllers.declaration.routes._
+import controllers.declaration.routes.SummaryController
 import controllers.helpers._
 import controllers.routes.RejectedNotificationsController
-import forms.declaration.{AdditionalInformationRequired, AdditionalInformationSummary}
+import controllers.section5.routes._
+import forms.section5.{AdditionalInformationRequired, AdditionalInformationSummary}
 import mock.FeatureFlagMocks
 import models.DeclarationType.{STANDARD, SUPPLEMENTARY}
 import models.requests.JourneyRequest

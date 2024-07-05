@@ -23,8 +23,8 @@ import models.DeclarationType
 import models.DeclarationType.STANDARD
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
-import views.declaration.spec.PageWithButtonsSpec
 import views.html.section6.transport_payment
+import views.common.PageWithButtonsSpec
 import views.tags.ViewTest
 
 @ViewTest

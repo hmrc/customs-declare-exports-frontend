@@ -22,8 +22,8 @@ import controllers.routes.DeclarationDetailsController
 import forms.declaration.AmendmentSubmission.{confirmationKey, emailKey, form, jobRoleKey, nameKey, reasonKey}
 import play.twirl.api.HtmlFormat.Appendable
 import services.view.AmendmentAction.{AmendmentAction, Cancellation, Resubmission, Submission}
-import views.declaration.spec.UnitViewSpec
 import views.html.declaration.amendments.amendment_submission
+import views.common.UnitViewSpec
 
 class AmendmentSubmissionViewSpec extends UnitViewSpec with Injector {
 

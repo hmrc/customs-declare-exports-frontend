@@ -39,9 +39,9 @@ import play.twirl.api.HtmlFormat
 import services.SubmissionService
 import services.view.AmendmentAction.{Cancellation, Resubmission, Submission => SubmissionAmendment}
 import uk.gov.hmrc.http.HeaderCarrier
-import views.declaration.spec.UnitViewSpec
 import views.html.declaration.amendments.amendment_submission
 import views.html.declaration.summary.legal_declaration
+import views.common.UnitViewSpec
 
 import java.util.UUID
 import scala.concurrent.{ExecutionContext, Future}

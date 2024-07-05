@@ -23,9 +23,9 @@ import forms.declaration.DeclarationChoice.{standardOrOtherJourneys, NonStandard
 import models.DeclarationType._
 import org.jsoup.nodes.Document
 import play.api.data.Form
-import views.declaration.spec.UnitViewSpec
 import views.helpers.CommonMessages
 import views.html.declaration.standard_or_other_journey
+import views.common.UnitViewSpec
 import views.tags.ViewTest
 
 @ViewTest

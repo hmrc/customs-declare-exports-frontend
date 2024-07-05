@@ -27,8 +27,8 @@ import models.DeclarationType._
 import models.declaration.{EoriSource, Parties}
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
-import views.declaration.spec.PageWithButtonsSpec
 import views.html.section2.authorisationHolder.authorisation_holder_summary
+import views.common.PageWithButtonsSpec
 import views.tags.ViewTest
 
 @ViewTest

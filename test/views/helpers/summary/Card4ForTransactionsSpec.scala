@@ -17,13 +17,13 @@
 package views.helpers.summary
 
 import base.Injector
-import controllers.declaration.routes.ItemsSummaryController
 import controllers.section4.routes._
+import controllers.section5.routes.ItemsSummaryController
 import forms.section4.{Document, PreviousDocumentsData}
 import models.DeclarationType._
 import models.declaration.InvoiceAndPackageTotals
 import services.cache.ExportsTestHelper
-import views.declaration.spec.UnitViewSpec
+import views.common.UnitViewSpec
 
 class Card4ForTransactionsSpec extends UnitViewSpec with ExportsTestHelper with Injector {
 

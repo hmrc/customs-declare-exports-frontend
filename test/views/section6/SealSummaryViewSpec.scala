@@ -25,8 +25,8 @@ import models.DeclarationType.STANDARD
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import views.components.gds.Styles
-import views.declaration.spec.PageWithButtonsSpec
 import views.html.section6.seal_summary
+import views.common.PageWithButtonsSpec
 import views.tags.ViewTest
 
 @ViewTest

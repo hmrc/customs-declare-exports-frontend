@@ -28,8 +28,8 @@ import org.scalatest.Assertion
 import play.api.data.Form
 import play.api.mvc.Call
 import services.cache.ExportsTestHelper
-import views.declaration.spec.UnitViewSpec
 import views.html.section3.office_of_exit
+import views.common.UnitViewSpec
 import views.tags.ViewTest
 
 @ViewTest

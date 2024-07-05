@@ -17,7 +17,7 @@
 package forms.section1
 
 import forms.DeclarationPage
-import forms.declaration.EntityDetails
+import forms.section2.EntityDetails
 import models.ExportsFieldPointer.ExportsFieldPointer
 import models.{AmendmentOp, FieldMapping}
 import play.api.i18n.Messages

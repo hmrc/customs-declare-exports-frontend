@@ -19,7 +19,7 @@ package controllers.section2
 import base.{AuditedControllerSpec, ControllerSpec}
 import controllers.section2.routes.RepresentativeStatusController
 import forms.common.Eori
-import forms.declaration.EntityDetails
+import forms.section2.EntityDetails
 import forms.section2.representative.RepresentativeEntity
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any

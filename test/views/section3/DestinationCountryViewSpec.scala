@@ -34,8 +34,8 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import play.api.data.Form
 import play.api.mvc.Call
-import views.declaration.spec.PageWithButtonsSpec
 import views.html.section3.destination_country
+import views.common.PageWithButtonsSpec
 
 import scala.collection.immutable.ListMap
 

@@ -25,9 +25,9 @@ import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import org.scalatest.Assertion
 import play.api.data.Form
-import views.declaration.spec.UnitViewSpec
 import views.helpers.CommonMessages
 import views.html.section1.mucr_code
+import views.common.UnitViewSpec
 import views.tags.ViewTest
 
 @ViewTest

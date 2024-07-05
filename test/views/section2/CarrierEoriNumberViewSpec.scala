@@ -28,9 +28,9 @@ import org.jsoup.nodes.Document
 import play.api.data.Form
 import services.cache.ExportsTestHelper
 import tools.Stubs
-import views.declaration.spec.UnitViewSpec
 import views.helpers.CommonMessages
 import views.html.section2.carrier_eori_number
+import views.common.UnitViewSpec
 import views.tags.ViewTest
 
 @ViewTest

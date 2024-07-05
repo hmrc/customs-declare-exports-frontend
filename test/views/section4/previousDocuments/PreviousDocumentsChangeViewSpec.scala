@@ -25,8 +25,8 @@ import org.mockito.Mockito.when
 import play.twirl.api.Html
 import services.{DocumentType, DocumentTypeService}
 import utils.ListItem
-import views.declaration.spec.UnitViewSpec
 import views.html.section4.previousDocuments.previous_documents_change
+import views.common.UnitViewSpec
 
 class PreviousDocumentsChangeViewSpec extends UnitViewSpec with Injector {
 

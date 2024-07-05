@@ -19,8 +19,8 @@ package views.declaration.confirmation
 import base.Injector
 import controllers.declaration.routes.ConfirmationController
 import org.scalatest.GivenWhenThen
-import views.declaration.spec.UnitViewSpec
 import views.html.declaration.confirmation.holding_page
+import views.common.UnitViewSpec
 import views.tags.ViewTest
 
 import scala.jdk.CollectionConverters.IteratorHasAsScala

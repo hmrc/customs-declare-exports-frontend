@@ -1,0 +1,112 @@
+@*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import config.AppConfig
+@import controllers.navigation.{ItemId, Navigator}
+@import controllers.section5.routes.NactCodeAddController
+@import forms.common.YesNoAnswer.YesNoAnswers
+@import forms.section5.NactCodeFirst
+@import forms.section5.NactCodeFirst._
+@import forms.section5.NactCode._
+@import models.requests.JourneyRequest
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.components.gds.Styles._
+@import views.helpers.{BackButton, Title}
+@import views.helpers.ErrorMapper.radioGroupErrors
+@import views.html.components.gds._
+
+@this(
+    govukLayout: gdsMainTemplate,
+    govukButton: GovukButton,
+    govukRadios: GovukRadios,
+    govukDetails : GovukDetails,
+    errorSummary: errorSummary,
+    sectionHeader: sectionHeader,
+    notificationBanner: notificationBanner,
+    pageTitle: pageTitle,
+    paragraphBody: paragraphBody,
+    externalLink: externalLink,
+    exportsInputText: exportsInputText,
+    saveButtons: saveButtons,
+    tariffExpander: tariffExpander,
+    appConfig: AppConfig,
+    navigator: Navigator,
+    formHelper: FormWithCSRF
+)
+
+@(itemId: String, form: Form[NactCodeFirst])(implicit request: JourneyRequest[_], messages: Messages)
+
+@hasErrors = @{form.hasErrors || form.hasGlobalErrors}
+
+@govukLayout(
+    title = Title("declaration.nationalAdditionalCode.addfirst.header", "declaration.section.5", hasErrors = hasErrors),
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(NactCodeFirst, ItemId(itemId))))
+) {
+    @formHelper(action = NactCodeAddController.submitForm(itemId), 'autoComplete -> "off") {
+        @errorSummary(radioGroupErrors(hasNactCodeKey, "code_yes", form.errors))
+
+        @sectionHeader(messages("declaration.section.5"))
+
+        @notificationBanner(
+            title = messages("declaration.nationalAdditionalCode.banner.title"),
+            content = paragraphBody(messages("declaration.nationalAdditionalCode.banner.content")),
+            classes = List("govuk-!-margin-top-4")
+        )
+
+        <fieldset class="govuk-fieldset" @if(form.hasErrors) { aria-describedby="hasNactCodeKey-error" }>
+            <legend class="govuk-fieldset__legend govuk-!-margin-bottom-0">
+                @pageTitle(messages("declaration.nationalAdditionalCode.addfirst.header"))
+            </legend>
+
+        @paragraphBody(messages(
+            "declaration.nationalAdditionalCode.addfirst.body",
+            externalLink(
+                text = messages("declaration.nationalAdditionalCode.addfirst.body.link"),
+                url = appConfig.nationalAdditionalCodes
+            )
+        ))
+
+        @govukRadios(Radios(
+            name = hasNactCodeKey,
+            hint = Some(Hint(content = HtmlContent(messages("declaration.nationalAdditionalCode.addfirst.hint")))),
+            items = Seq(
+                RadioItem(
+                    id = Some("code_yes"),
+                    value = Some(YesNoAnswers.yes),
+                    content = Text(messages("site.yes")),
+                    conditionalHtml = Some(exportsInputText(
+                        field = form(nactCodeKey),
+                        labelKey = "declaration.nationalAdditionalCode.addfirst.label",
+                        inputClasses = Some("govuk-input--width-10")
+                    )),
+                    checked = form(hasNactCodeKey).value.contains(YesNoAnswers.yes)
+                ),
+                RadioItem(
+                    id = Some("code_no"),
+                    value = Some(YesNoAnswers.no),
+                    content = Text(messages("site.no")),
+                    checked = form(hasNactCodeKey).value.contains(YesNoAnswers.no)
+                )
+            ),
+            errorMessage = form(hasNactCodeKey).error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
+        ))
+        </fieldset>
+
+        @tariffExpander(NactCodeFirst, request.declarationType)(messages, appConfig)
+
+        @saveButtons()
+    }
+}

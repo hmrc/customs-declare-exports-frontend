@@ -32,9 +32,9 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import play.api.data.Form
 import play.api.libs.json.Json
-import views.declaration.spec.PageWithButtonsSpec
 import views.helpers.ModeOfTransportCodeHelper
 import views.html.section6.transport_country
+import views.common.PageWithButtonsSpec
 import views.tags.ViewTest
 
 import scala.collection.immutable.ListMap

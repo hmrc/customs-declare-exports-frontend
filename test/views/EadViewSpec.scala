@@ -22,9 +22,9 @@ import models.requests.SessionHelper
 import org.jsoup.nodes.Document
 import play.api.test.FakeRequest
 import tools.Stubs
-import views.declaration.spec.UnitViewSpec
 import views.ead.DeclarationType
 import views.helpers.{CommonMessages, Title, ViewDates}
+import views.common.UnitViewSpec
 import views.tags.ViewTest
 
 @ViewTest

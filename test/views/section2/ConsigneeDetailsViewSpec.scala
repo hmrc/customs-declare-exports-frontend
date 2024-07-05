@@ -22,9 +22,8 @@ import controllers.section2.routes._
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.common.{Address, AddressSpec, Eori}
 import forms.section2.ConsigneeDetails.form
-import forms.declaration.EntityDetails
 import forms.section2.carrier.CarrierDetails
-import forms.section2.{ConsigneeDetails, DeclarantIsExporter, IsExs}
+import forms.section2.{ConsigneeDetails, DeclarantIsExporter, EntityDetails, IsExs}
 import models.DeclarationType._
 import models.codes.Country
 import models.declaration.Parties
@@ -34,8 +33,8 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.Assertion
 import play.api.data.Form
-import views.declaration.spec.{AddressViewSpec, PageWithButtonsSpec}
 import views.html.section2.consignee_details
+import views.common.PageWithButtonsSpec
 import views.tags.ViewTest
 
 import scala.collection.immutable.ListMap

@@ -36,9 +36,9 @@ import play.api.inject.bind
 import play.api.mvc.Call
 import play.twirl.api.HtmlFormat.Appendable
 import views.dashboard.DashboardHelper.toDashboard
-import views.declaration.spec.UnitViewSpec
 import views.helpers.{EnhancedStatusHelper, NotificationEvent, ViewDates}
 import views.html.declaration_details
+import views.common.UnitViewSpec
 
 import java.time.ZonedDateTime
 import java.util.UUID

@@ -21,7 +21,7 @@ import connectors.CodeListConnector
 import controllers.routes.RootController
 import controllers.section2.routes.ConsigneeDetailsController
 import forms.common.Address
-import forms.declaration.EntityDetails
+import forms.section2.EntityDetails
 import forms.section2.carrier.CarrierDetails
 import models.DeclarationType._
 import models.codes.Country

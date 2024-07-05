@@ -24,7 +24,7 @@ import forms.section3.LocationOfGoods
 import models.DeclarationType._
 import models.declaration.DeclarationStatus.AMENDMENT_DRAFT
 import services.cache.ExportsTestHelper
-import views.declaration.spec.UnitViewSpec
+import views.common.UnitViewSpec
 
 class Card3ForRoutesAndLocationsSpec extends UnitViewSpec with ExportsTestHelper with Injector {
 

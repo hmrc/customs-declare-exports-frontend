@@ -19,8 +19,8 @@ package views.declaration.summary
 import base.Injector
 import services.cache.ExportsTestHelper
 import tools.Stubs
-import views.declaration.spec.UnitViewSpec
 import views.html.declaration.summary.summary_page_no_data
+import views.common.UnitViewSpec
 
 class SummaryNoDataViewSpec extends UnitViewSpec with Stubs with ExportsTestHelper with Injector {
 

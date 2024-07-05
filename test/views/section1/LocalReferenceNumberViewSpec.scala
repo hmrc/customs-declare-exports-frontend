@@ -26,8 +26,8 @@ import models.DeclarationType._
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
-import views.declaration.spec.PageWithButtonsSpec
 import views.html.section1.local_reference_number
+import views.common.PageWithButtonsSpec
 import views.tags.ViewTest
 
 @ViewTest

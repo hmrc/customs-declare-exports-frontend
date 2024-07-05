@@ -16,22 +16,22 @@
 
 package controllers.navigation
 
-import controllers.declaration.routes._
 import controllers.section1.routes._
 import controllers.section2.routes._
 import controllers.section3.routes.DestinationCountryController
 import controllers.section4.routes.NatureOfTransactionController
+import controllers.section5.routes._
 import controllers.section6.routes.ContainerController
 import forms.DeclarationPage
-import forms.declaration._
-import forms.declaration.additionaldocuments.{AdditionalDocument, AdditionalDocumentsRequired, AdditionalDocumentsSummary}
-import forms.declaration.commodityMeasure.CommodityMeasure
 import forms.section1.{ConsignmentReferences, DeclarantDetails, LinkDucrToMucr}
 import forms.section2._
 import forms.section2.exporter.{ExporterDetails, ExporterEoriNumber}
 import forms.section2.representative.RepresentativeAgent
 import forms.section3.LocationOfGoods
 import forms.section4.{Document, DocumentSummary, TotalPackageQuantity}
+import forms.section5.additionaldocuments.{AdditionalDocument, AdditionalDocumentsRequired, AdditionalDocumentsSummary}
+import forms.section5.commodityMeasure.CommodityMeasure
+import forms.section5.{CusCode, NactCode, NactCodeFirst, PackageInformation}
 import forms.section6._
 import models.ExportsDeclaration
 import play.api.mvc.Call

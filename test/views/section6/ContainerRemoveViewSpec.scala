@@ -25,8 +25,8 @@ import models.DeclarationType.STANDARD
 import models.declaration.Container
 import org.jsoup.nodes.Document
 import play.api.data.Form
-import views.declaration.spec.PageWithButtonsSpec
 import views.html.section6.container_remove
+import views.common.PageWithButtonsSpec
 import views.tags.ViewTest
 
 @ViewTest

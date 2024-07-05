@@ -16,14 +16,9 @@
 
 package controllers.helpers
 
-import controllers.declaration.routes.{
-  NactCodeSummaryController,
-  PackageInformationSummaryController,
-  StatisticalValueController,
-  ZeroRatedForVatController
-}
-import forms.section4.NatureOfTransaction.{BusinessPurchase, Sale}
+import controllers.section5.routes._
 import forms.section4.NatureOfTransaction
+import forms.section4.NatureOfTransaction.{BusinessPurchase, Sale}
 import models.DeclarationType._
 import models.ExportsDeclaration
 import models.requests.JourneyRequest

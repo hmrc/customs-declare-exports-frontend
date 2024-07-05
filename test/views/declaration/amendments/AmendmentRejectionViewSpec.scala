@@ -24,9 +24,9 @@ import models.declaration.submissions.Submission
 import org.jsoup.nodes.Document
 import org.scalatest.GivenWhenThen
 import testdata.SubmissionsTestData._
-import views.declaration.spec.UnitViewSpec
 import views.helpers.Confirmation
 import views.html.declaration.amendments.amendment_rejection
+import views.common.UnitViewSpec
 import views.tags.ViewTest
 
 @ViewTest

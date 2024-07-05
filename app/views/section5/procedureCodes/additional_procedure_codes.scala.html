@@ -1,0 +1,91 @@
+@*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import config.AppConfig
+@import controllers.navigation.{ItemId, Navigator}
+@import controllers.section5.routes.AdditionalProcedureCodesController
+@import forms.section5.procedurecodes.AdditionalProcedureCode
+@import forms.section5.procedurecodes.AdditionalProcedureCode.additionalProcedureCodeKey
+@import models.codes.{AdditionalProcedureCode => AdditionalProcedureCodeModel, ProcedureCode}
+@import models.requests.JourneyRequest
+@import models.viewmodels.ListRows
+@import services.view.AutoCompleteItem
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.components.gds.Styles._
+@import views.helpers.{BackButton, Title, AdditionalProcedureCodesHelper}
+@import views.html.components.gds._
+@import views.html.components.addToTable
+
+@this(
+  govukLayout: gdsMainTemplate,
+  govukTable : GovukTable,
+  addButton: addButton,
+  removeButton: removeButton,
+  link: link,
+  errorSummary: errorSummary,
+  sectionHeader: sectionHeader,
+  addToTable: addToTable,
+  exportsInputText: exportsInputText,
+  heading: heading,
+  paragraphBody: paragraphBody,
+  spanVisuallyHidden: spanVisuallyHidden,
+  tariffExpander: tariffExpander,
+  saveButtons: saveButtons,
+  formHelper: FormWithCSRF,
+  navigator: Navigator,
+  appConfig: AppConfig,
+  addProcCodesHelper: AdditionalProcedureCodesHelper
+)
+
+@(itemId: String, form: Form[AdditionalProcedureCode], procedureCode: ProcedureCode, validAdditionalProcedureCodes: Seq[AdditionalProcedureCodeModel], codes: Seq[String])(implicit request: JourneyRequest[_], messages: Messages)
+
+@hasErrors = @{form.hasErrors || form.hasGlobalErrors}
+
+@hint = @{if(addProcCodesHelper.hintText.isEmpty) List.empty else List(messages(addProcCodesHelper.hintText.get))}
+
+@govukLayout(
+  title = Title("declaration.additionalProcedureCodes.title", "declaration.section.5", procedureCode.code, hasErrors = hasErrors),
+  backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(AdditionalProcedureCode, ItemId(itemId))))) {
+
+  @formHelper(action = AdditionalProcedureCodesController.submitAdditionalProcedureCodes(itemId), 'autoComplete -> "off") {
+
+    @errorSummary(form.errors)
+
+    @sectionHeader(messages("declaration.section.5"))
+    @heading(messages("declaration.additionalProcedureCodes.title", procedureCode.code))
+
+    @paragraphBody(messages("declaration.additionalProcedureCodes.paragraph1"))
+
+    @paragraphBody(messages("declaration.additionalProcedureCodes.paragraph2", procedureCode.code))
+
+    @components.fields.field_accessible_autocomplete_with_header(
+      field = form(additionalProcedureCodeKey),
+      label = messages("declaration.additionalProcedureCodes.title", procedureCode.code),
+      labelClass = Some("govuk-visually-hidden"),
+      hintParagraphs = hint,
+      emptySelectValue = messages("declaration.additionalProcedureCodes.error.empty"),
+      items = AutoCompleteItem.fromAdditionalProcedureCodes(validAdditionalProcedureCodes.toList),
+      isPageHeading = false,
+      rightElement = Some(addButton(hiddenLabel = Some(messages("declaration.additionalProcedureCodes.add.hint"))))
+    )
+
+    @addToTable(ListRows(codes, "additionalProcedureCodes"))
+
+    @tariffExpander(AdditionalProcedureCode, request.declarationType)(messages, appConfig)
+
+    @saveButtons()
+  }
+}

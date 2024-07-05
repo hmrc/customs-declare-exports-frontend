@@ -21,8 +21,8 @@ import models.declaration.submissions.EnhancedStatus
 import models.declaration.submissions.EnhancedStatus.{ERRORS, EnhancedStatus, RECEIVED}
 import models.requests.SessionHelper.errorFixModeSessionKey
 import play.twirl.api.Html
-import views.declaration.spec.UnitViewSpec
 import views.html.components.gds.saveButtons
+import views.common.UnitViewSpec
 
 class SaveButtonsSpec extends UnitViewSpec with Injector {
 

@@ -20,9 +20,9 @@ import base.{AuditedControllerSpec, ControllerSpec}
 import controllers.section2.routes.{ConsigneeDetailsController, ConsignorEoriNumberController, RepresentativeAgentController}
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.common.{Address, Eori}
-import forms.declaration.{EntityDetails, UNDangerousGoodsCode}
-import forms.section2.IsExs
+import forms.section2.{EntityDetails, IsExs}
 import forms.section2.consignor.ConsignorDetails
+import forms.section5.UNDangerousGoodsCode
 import models.DeclarationType
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any

@@ -31,9 +31,9 @@ import org.jsoup.nodes.Document
 import play.api.data.Form
 import play.api.mvc.Call
 import tools.Stubs
-import views.declaration.spec.UnitViewSpec
 import views.helpers.CommonMessages
 import views.html.section2.authorisationHolder.authorisation_holder_add
+import views.common.UnitViewSpec
 import views.tags.ViewTest
 
 @ViewTest

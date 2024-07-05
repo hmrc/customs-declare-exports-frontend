@@ -23,8 +23,8 @@ import org.jsoup.nodes.Document
 import play.api.data.Form
 import services.cache.ExportsTestHelper
 import tools.Stubs
-import views.declaration.spec.UnitViewSpec
 import views.html.section2.representative.representative_details_entity
+import views.common.UnitViewSpec
 import views.tags.ViewTest
 
 @ViewTest

@@ -18,7 +18,7 @@ package forms.section2.representative
 
 import forms.DeclarationPage
 import forms.common.Eori
-import forms.declaration.EntityDetails
+import forms.section2.EntityDetails
 import models.DeclarationType.DeclarationType
 import models.viewmodels.TariffContentKey
 import play.api.data.{Form, Forms}

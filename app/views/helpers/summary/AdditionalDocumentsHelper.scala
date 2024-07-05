@@ -16,8 +16,8 @@
 
 package views.helpers.summary
 
-import controllers.declaration.routes.{AdditionalDocumentsController, IsLicenceRequiredController}
-import forms.declaration.additionaldocuments.AdditionalDocument
+import controllers.section5.routes.{AdditionalDocumentsController, IsLicenceRequiredController}
+import forms.section5.additionaldocuments.AdditionalDocument
 import models.declaration.ExportItem
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Actions, SummaryListRow}

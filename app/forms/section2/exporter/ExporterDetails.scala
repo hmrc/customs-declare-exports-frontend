@@ -18,7 +18,7 @@ package forms.section2.exporter
 
 import connectors.CodeListConnector
 import forms.DeclarationPage
-import forms.declaration.{Details, EntityDetails}
+import forms.section2.{Details, EntityDetails}
 import models.DeclarationType.{CLEARANCE, DeclarationType}
 import models.ExportsFieldPointer.ExportsFieldPointer
 import models.viewmodels.TariffContentKey

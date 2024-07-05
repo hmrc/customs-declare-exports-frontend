@@ -21,8 +21,7 @@ import connectors.CodeListConnector
 import controllers.section2.routes.{AdditionalActorsSummaryController, AuthorisationProcedureCodeChoiceController}
 import forms.common.Address
 import forms.common.YesNoAnswer.YesNoAnswers
-import forms.declaration.EntityDetails
-import forms.section2.ConsigneeDetails
+import forms.section2.{ConsigneeDetails, EntityDetails}
 import models.DeclarationType._
 import models.codes.Country
 import org.mockito.ArgumentCaptor

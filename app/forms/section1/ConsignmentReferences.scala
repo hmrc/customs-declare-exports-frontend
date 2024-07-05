@@ -17,8 +17,8 @@
 package forms.section1
 
 import forms._
-import forms.section1.additionaldeclarationtype.AdditionalDeclarationType.AdditionalDeclarationType
 import forms.section1.additionaldeclarationtype.AdditionalDeclarationType
+import forms.section1.additionaldeclarationtype.AdditionalDeclarationType.AdditionalDeclarationType
 import models.DeclarationType.{CLEARANCE, DeclarationType, SUPPLEMENTARY}
 import models.viewmodels.TariffContentKey
 import play.api.data.Forms.{mapping, optional, text}

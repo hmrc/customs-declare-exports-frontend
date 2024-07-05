@@ -25,9 +25,9 @@ import models.DeclarationType.CLEARANCE
 import models.declaration.DeclarationStatus.AMENDMENT_DRAFT
 import org.jsoup.nodes.Document
 import play.api.data.{Form, FormError}
-import views.declaration.spec.UnitViewSpec
 import views.helpers.CommonMessages
 import views.html.section2.entry_into_declarants_records
+import views.common.UnitViewSpec
 
 class EntryIntoDeclarantsRecordsViewSpec extends UnitViewSpec with Injector with CommonMessages {
 

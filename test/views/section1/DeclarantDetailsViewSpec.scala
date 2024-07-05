@@ -28,9 +28,9 @@ import org.jsoup.nodes.Document
 import play.api.data.Form
 import services.cache.ExportsTestHelper
 import tools.Stubs
-import views.declaration.spec.UnitViewSpec
 import views.helpers.CommonMessages
 import views.html.section1.declarant_details
+import views.common.UnitViewSpec
 import views.tags.ViewTest
 
 @ViewTest

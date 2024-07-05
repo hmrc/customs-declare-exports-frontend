@@ -22,8 +22,8 @@ import forms.Ducr
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import models.DeclarationType.{CLEARANCE, STANDARD}
-import views.declaration.spec.PageWithButtonsSpec
 import views.html.section1.confirm_ducr
+import views.common.PageWithButtonsSpec
 import views.tags.ViewTest
 
 @ViewTest

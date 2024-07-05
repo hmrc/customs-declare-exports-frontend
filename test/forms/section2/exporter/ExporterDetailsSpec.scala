@@ -21,8 +21,8 @@ import connectors.CodeListConnector
 import forms.LightFormMatchers
 import forms.common.DeclarationPageBaseSpec
 import forms.common.YesNoAnswer.YesNoAnswers
-import forms.declaration.EntityDetailsSpec
-import forms.declaration.EntityDetailsSpec.emptyEntityDetailsJSON
+import forms.section2.EntityDetailsSpec.emptyEntityDetailsJSON
+import forms.section2.EntityDetailsSpec
 import models.ExportsDeclaration
 import models.codes.Country
 import models.requests.JourneyRequest

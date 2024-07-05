@@ -19,8 +19,8 @@ package views.section1
 import base.Injector
 import services.cache.ExportsTestHelper
 import tools.Stubs
-import views.declaration.spec.UnitViewSpec
 import views.html.section1.not_eligible
+import views.common.UnitViewSpec
 import views.tags.ViewTest
 
 @ViewTest

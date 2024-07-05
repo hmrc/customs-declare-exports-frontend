@@ -21,8 +21,8 @@ import controllers.section1.routes.DucrChoiceController
 import forms.section1.TraderReference.form
 import forms.section1.TraderReference
 import models.DeclarationType.{CLEARANCE, STANDARD}
-import views.declaration.spec.PageWithButtonsSpec
 import views.html.section1.trader_reference
+import views.common.PageWithButtonsSpec
 import views.tags.ViewTest
 
 @ViewTest

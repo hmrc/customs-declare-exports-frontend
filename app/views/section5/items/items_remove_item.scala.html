@@ -1,0 +1,77 @@
+@*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import controllers.declaration.routes.SummaryController
+@import controllers.section5.routes.RemoveItemsSummaryController
+@import forms.common.YesNoAnswer
+@import models.declaration.ExportItem
+@import models.requests.JourneyRequest
+@import play.twirl.api.HtmlFormat
+@import uk.gov.hmrc.govukfrontend.views.html.components.{Fieldset, FormWithCSRF, GovukFieldset, Legend, Text}
+@import uk.gov.hmrc.play.bootstrap.binders.RedirectUrl
+@import views.components.gds.Styles.gdsPageLegend
+@import views.helpers.ErrorMapper.yesNoErrors
+@import views.helpers.{BackButton, Title}
+@import views.html.components.gds._
+@import views.html.declaration.summary.sections.item_section
+
+@this(
+  govukLayout: gdsMainTemplate,
+  govukFieldset: GovukFieldset,
+  errorSummary: errorSummary,
+  sectionHeader: sectionHeader,
+  item_section: item_section,
+  yesNoRadios: yesNoRadios,
+  saveButtons: saveButtons,
+  saveAndReturnToSummary: saveAndReturnToSummary,
+  formHelper: FormWithCSRF
+)
+
+@(form: Form[YesNoAnswer], item: ExportItem, itemIdx: Int, referrer: Call)(implicit request: JourneyRequest[_], messages: Messages)
+
+@hasErrors = @{form.hasErrors || form.hasGlobalErrors}
+
+@itemDisplayNum = @{ itemIdx + 1 }
+
+@buttons = @{
+  if (referrer.url != SummaryController.displayPage.url) saveButtons()
+  else saveAndReturnToSummary("site.confirm_and_continue", "govuk-button--primary")
+}
+@govukLayout(
+    title = Title("declaration.itemsRemove.title", "declaration.section.5", itemDisplayNum.toString, hasErrors = hasErrors),
+    backButton = Some(BackButton(messages("site.back"), referrer)),
+    showDeclarationSummaryLink = false
+) {
+    @formHelper(action = RemoveItemsSummaryController.removeItem(item.id, RedirectUrl(referrer.url)), 'autoComplete -> "off") {
+      @errorSummary(yesNoErrors(form.errors))
+
+      @sectionHeader(messages("declaration.section.5"))
+
+      @govukFieldset(Fieldset(
+        legend = Some(Legend(
+          content = Text(messages("declaration.itemsRemove.title", itemDisplayNum)),
+          classes = gdsPageLegend,
+          isPageHeading = true
+        )),
+        html = HtmlFormat.fill(Seq(
+          item_section(item, itemIdx, request.declarationType),
+          Html("""<div class="govuk-!-margin-top-7"/>"""),
+          yesNoRadios(form, inline = true),
+          buttons
+        ))
+      ))
+    }
+}

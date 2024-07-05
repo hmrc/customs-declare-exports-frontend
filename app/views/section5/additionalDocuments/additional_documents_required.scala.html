@@ -1,0 +1,135 @@
+@*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import config.AppConfig
+@import controllers.navigation.{ItemId, Navigator}
+@import controllers.section5.routes.AdditionalDocumentsRequiredController
+@import forms.common.YesNoAnswer
+@import forms.common.YesNoAnswer.YesNoAnswers
+@import forms.section5.CommodityDetails
+@import forms.section5.additionaldocuments.AdditionalDocumentsRequired
+@import models.requests.JourneyRequest
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.components.gds.Styles._
+@import views.helpers.{BackButton, Title}
+@import views.helpers.CommodityCodeHelper.commodityCodeOfItem
+@import views.helpers.ErrorMapper.yesNoErrors
+@import views.html.components.gds._
+
+@this(
+    govukLayout: gdsMainTemplate,
+    errorSummary: errorSummary,
+    sectionHeader: sectionHeader,
+    yesNoRadios: yesNoRadios,
+    insetText: exportsInsetText,
+    heading: heading,
+    paragraph: paragraphBody,
+    externalLink: externalLink,
+    saveButtons: saveButtons,
+    formHelper: FormWithCSRF,
+    navigator: Navigator,
+    appConfig: AppConfig
+)
+
+@(itemId: String, form: Form[YesNoAnswer])(implicit request: JourneyRequest[_], messages: Messages)
+
+@hasErrors = @{form.hasErrors || form.hasGlobalErrors}
+
+@showWaiverInfo = @{
+    request.declarationType != DeclarationType.CLEARANCE
+}
+
+@title = @{
+    if(showWaiverInfo){
+        "declaration.additionalDocumentsRequired.title"
+    } else {
+        "declaration.additionalDocumentsRequired.clearance.title"
+    }
+}
+
+@body = @{
+    if(request.declarationType == models.DeclarationType.CLEARANCE){
+       Seq("declaration.additionalDocumentsRequired.clearance.paragraph")
+    } else {
+        Seq(
+            "declaration.additionalDocumentsRequired.paragraph",
+            "declaration.additionalDocumentsRequired.paragraph.1"
+        )
+    }
+}
+
+@commodityCodeLink = {
+    @commodityCodeOfItem(itemId).fold {
+        @externalLink(
+            id = Some("general-trade-tariff-inset-link"),
+            text = messages("declaration.additionalDocumentsRequired.inset.link2Alt"),
+            url = appConfig.tradeTariffUrl
+        )
+    } { commodityCode =>
+        @externalLink(
+            id = Some("commodity-code-inset-link"),
+            text = messages("declaration.additionalDocumentsRequired.inset.link2", commodityCode.codeAsShown),
+            url = appConfig.commodityCodeTariffPageUrl.replace(CommodityDetails.placeholder, commodityCode.codeAsRef)
+        )
+    }
+}
+
+@licenseAndCertificates = {
+    @externalLink(
+        id = Some("licenses-and-certificates-inset-link"),
+        url = appConfig.licensesForExportingGoods,
+        text = messages("declaration.additionalDocumentsRequired.inset.link3")
+    )
+}
+
+@insetSection = {
+    @paragraph(classes = "govuk-label--s", message = messages("declaration.additionalDocumentsRequired.inset.text1"))
+
+    @paragraph(messages("declaration.additionalDocumentsRequired.inset.text2", commodityCodeLink))
+
+    @paragraph(messages("declaration.additionalDocumentsRequired.inset.text3", licenseAndCertificates))
+}
+
+@govukLayout(
+    title = Title(title, "declaration.section.5", hasErrors = hasErrors),
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(AdditionalDocumentsRequired, ItemId(itemId))))) {
+
+    @formHelper(action = AdditionalDocumentsRequiredController.submitForm(itemId), 'autoComplete -> "off") {
+        @errorSummary(yesNoErrors(form.errors))
+
+        @sectionHeader(messages("declaration.section.5"))
+        @heading(messages(title))
+
+        @body.map{ msgKey =>
+            @paragraph(messages(msgKey))
+        }
+
+        @yesNoRadios(
+              form = form,
+              inline = true,
+              heading = Some(Fieldset(
+                  legend = Some(Legend(
+                      content = Text(messages(title)),
+                      classes = "govuk-visually-hidden"
+                  ))
+              ))
+        )
+
+        @insetText(content = HtmlContent(insetSection))
+
+        @saveButtons()
+    }
+}

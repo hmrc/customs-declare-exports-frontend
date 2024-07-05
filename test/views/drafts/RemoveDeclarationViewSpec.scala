@@ -24,8 +24,8 @@ import models.ExportsDeclaration
 import models.declaration.DeclarationStatus
 import org.jsoup.nodes.{Document, Element}
 import play.api.data.Form
-import views.declaration.spec.UnitViewSpec
 import views.html.drafts.remove_declaration
+import views.common.UnitViewSpec
 import views.tags.ViewTest
 
 import java.time.{LocalDateTime, ZoneOffset}

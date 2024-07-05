@@ -24,8 +24,8 @@ import controllers.section2.routes.DeclarantExporterController
 import forms.common.Eori
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.section1.DeclarantEoriConfirmation.form
-import forms.declaration.EntityDetails
 import forms.section1.{DeclarantDetails, DeclarantEoriConfirmation}
+import forms.section2.EntityDetails
 import models.requests.JourneyRequest
 import models.requests.SessionHelper._
 import models.{DeclarationType, ExportsDeclaration}

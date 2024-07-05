@@ -25,8 +25,8 @@ import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import services.cache.ExportsTestHelper
 import tools.Stubs
-import views.declaration.spec.UnitViewSpec
 import views.html.section4.total_package_quantity
+import views.common.UnitViewSpec
 
 class TotalPackageQuantityViewSpec extends UnitViewSpec with ExportsTestHelper with Stubs with Injector {
 

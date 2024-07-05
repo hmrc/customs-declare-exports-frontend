@@ -17,7 +17,7 @@
 package forms.section2
 
 import forms.common.DeclarationPageBaseSpec
-import forms.declaration.EntityDetailsSpec._
+import EntityDetailsSpec._
 import forms.section2.representative.RepresentativeEntity
 import play.api.libs.json.{JsObject, JsValue}
 

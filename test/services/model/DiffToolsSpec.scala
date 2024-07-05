@@ -18,7 +18,7 @@ package services.model
 
 import base.UnitSpec
 import forms.common.Country
-import forms.declaration.PackageInformation
+import forms.section5.PackageInformation
 import forms.section6.Seal
 import models.ExportsDeclaration
 import models.declaration.{Container, ExportItem, Locations, ProcedureCodesData, RoutingCountry, Transport}

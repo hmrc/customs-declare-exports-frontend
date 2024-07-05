@@ -27,8 +27,8 @@ import play.api.data.Form
 import play.twirl.api.HtmlFormat.Appendable
 import services.cache.ExportsTestHelper
 import tools.Stubs
-import views.declaration.spec.UnitViewSpec
 import views.html.section6.supervising_customs_office
+import views.common.UnitViewSpec
 import views.tags.ViewTest
 
 @ViewTest

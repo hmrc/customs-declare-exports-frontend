@@ -20,7 +20,7 @@ import base.Injector
 import connectors.CodeListConnector
 import controllers.section2.routes.ExporterEoriNumberController
 import forms.common.{Address, AddressSpec}
-import forms.declaration.EntityDetails
+import forms.section2.EntityDetails
 import forms.section2.exporter.ExporterDetails
 import models.DeclarationType._
 import models.codes.Country
@@ -30,8 +30,8 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.Assertion
 import play.api.data.Form
-import views.declaration.spec.{AddressViewSpec, PageWithButtonsSpec}
 import views.html.section2.exporter_address
+import views.common.PageWithButtonsSpec
 import views.tags.ViewTest
 
 import scala.collection.immutable.ListMap

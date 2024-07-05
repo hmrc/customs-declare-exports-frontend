@@ -32,9 +32,9 @@ import play.api.i18n.Messages
 import play.api.mvc.Call
 import play.twirl.api.HtmlFormat.Appendable
 import services.TransportCodeService
-import views.declaration.spec.UnitViewSpec
 import views.helpers.ModeOfTransportCodeHelper
 import views.html.section6.departure_transport
+import views.common.UnitViewSpec
 import views.tags.ViewTest
 
 import scala.jdk.CollectionConverters.IteratorHasAsScala

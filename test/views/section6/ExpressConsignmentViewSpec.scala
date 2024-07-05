@@ -28,9 +28,9 @@ import org.jsoup.nodes.Document
 import org.scalatest.Assertion
 import play.api.data.Form
 import play.api.mvc.Call
-import views.declaration.spec.UnitViewSpec
 import views.helpers.CommonMessages
 import views.html.section6.express_consignment
+import views.common.UnitViewSpec
 import views.tags.ViewTest
 
 @ViewTest

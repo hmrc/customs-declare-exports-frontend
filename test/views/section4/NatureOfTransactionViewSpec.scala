@@ -29,8 +29,8 @@ import org.scalatest.Assertion
 import play.api.data.Form
 import play.api.mvc.{AnyContent, Call}
 import views.components.gds.Styles
-import views.declaration.spec.PageWithButtonsSpec
 import views.html.section4.nature_of_transaction
+import views.common.PageWithButtonsSpec
 import views.tags.ViewTest
 
 @ViewTest

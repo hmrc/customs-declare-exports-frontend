@@ -16,7 +16,7 @@
 
 package views.declaration.summary
 
-import views.declaration.spec.UnitViewSpec
+import views.common.UnitViewSpec
 
 class SummaryMessagesSpec extends UnitViewSpec {
 

@@ -30,8 +30,8 @@ import org.jsoup.nodes.Document
 import org.scalatest.Assertion
 import play.api.data.Form
 import play.api.mvc.Call
-import views.declaration.spec.PageWithButtonsSpec
 import views.html.section6.container_summary
+import views.common.PageWithButtonsSpec
 import views.tags.ViewTest
 
 @ViewTest

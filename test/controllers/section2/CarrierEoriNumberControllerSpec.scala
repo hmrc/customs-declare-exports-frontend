@@ -20,7 +20,7 @@ import base.{AuditedControllerSpec, ControllerSpec}
 import controllers.section2.routes.{CarrierDetailsController, ConsigneeDetailsController}
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.common.{Address, Eori}
-import forms.declaration.EntityDetails
+import forms.section2.EntityDetails
 import forms.section2.carrier.{CarrierDetails, CarrierEoriNumber}
 import models.DeclarationType
 import models.DeclarationType.{CLEARANCE, OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}

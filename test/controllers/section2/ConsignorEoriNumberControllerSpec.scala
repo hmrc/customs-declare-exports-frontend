@@ -21,7 +21,7 @@ import controllers.section2.routes.{ConsignorDetailsController, ThirdPartyGoodsT
 import controllers.routes.RootController
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.common.{Address, Eori}
-import forms.declaration.EntityDetails
+import forms.section2.EntityDetails
 import forms.section2.consignor.{ConsignorDetails, ConsignorEoriNumber}
 import models.DeclarationType
 import models.DeclarationType.{OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}

@@ -24,9 +24,9 @@ import models.DeclarationType._
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
-import views.declaration.spec.UnitViewSpec
 import views.helpers.CommonMessages
 import views.html.section1.link_ducr_to_mucr
+import views.common.UnitViewSpec
 import views.tags.ViewTest
 
 @ViewTest

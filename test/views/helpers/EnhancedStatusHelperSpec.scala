@@ -20,9 +20,9 @@ import models.declaration.submissions.EnhancedStatus._
 import models.declaration.submissions.RequestType.{AmendmentCancellationRequest, AmendmentRequest, SubmissionRequest}
 import models.declaration.submissions.{NotificationSummary, RequestType, Submission}
 import play.api.libs.json.Json
-import views.declaration.spec.UnitViewSpec
 import views.helpers.EnhancedStatusHelper.{asText, asTimelineEvent}
 import views.helpers.EnhancedStatusHelperSpec.{submission, submissionWithDMSQRY}
+import views.common.UnitViewSpec
 
 import java.time.ZonedDateTime
 import java.util.UUID

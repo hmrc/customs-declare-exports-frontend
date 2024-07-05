@@ -30,9 +30,9 @@ import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import org.scalatest.{Assertion, GivenWhenThen}
 import tools.Stubs
-import views.declaration.spec.UnitViewSpec
 import views.helpers.AuthorisationHolderEditHelper._
 import views.html.section2.authorisationHolder.authorisation_holder_edit_content
+import views.common.UnitViewSpec
 import views.tags.ViewTest
 
 @ViewTest

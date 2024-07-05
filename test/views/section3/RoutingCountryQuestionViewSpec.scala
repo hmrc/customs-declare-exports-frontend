@@ -28,8 +28,8 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import play.api.mvc.AnyContent
 import play.twirl.api.HtmlFormat.Appendable
-import views.declaration.spec.PageWithButtonsSpec
 import views.html.section3.routing_country_question
+import views.common.PageWithButtonsSpec
 import views.tags.ViewTest
 
 import scala.collection.immutable.ListMap

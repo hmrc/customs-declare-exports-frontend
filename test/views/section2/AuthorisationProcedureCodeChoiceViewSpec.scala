@@ -24,8 +24,8 @@ import models.DeclarationType._
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import views.components.gds.Styles
-import views.declaration.spec.PageWithButtonsSpec
 import views.html.section2.authorisation_procedure_code_choice
+import views.common.PageWithButtonsSpec
 
 class AuthorisationProcedureCodeChoiceViewSpec extends PageWithButtonsSpec with Injector {
 

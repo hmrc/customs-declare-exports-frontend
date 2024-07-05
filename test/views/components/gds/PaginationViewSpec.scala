@@ -18,8 +18,8 @@ package views.components.gds
 
 import base.ExportsTestData
 import models.{ExportsDeclaration, Page, Paginated}
-import views.declaration.spec.UnitViewSpec
 import views.html.drafts.pagination
+import views.common.UnitViewSpec
 
 class PaginationViewSpec extends UnitViewSpec {
 

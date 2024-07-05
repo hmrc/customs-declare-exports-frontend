@@ -24,8 +24,8 @@ import forms.section6.InlandOrBorder.{form, Border, Inland}
 import models.DeclarationType.STANDARD
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
-import views.declaration.spec.PageWithButtonsSpec
 import views.html.section6.inland_border
+import views.common.PageWithButtonsSpec
 import views.tags.ViewTest
 
 @ViewTest

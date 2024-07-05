@@ -23,7 +23,7 @@ import controllers.section3.routes.DestinationCountryController
 import forms.DeclarationPage
 import forms.common.Address
 import forms.common.YesNoAnswer.YesNoAnswers.yes
-import forms.declaration.EntityDetails
+import forms.section2.EntityDetails
 import models.ExportsDeclaration
 import models.declaration.Parties
 import models.requests.JourneyRequest

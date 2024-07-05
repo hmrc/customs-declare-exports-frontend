@@ -17,8 +17,8 @@
 package views
 
 import base.Injector
-import views.declaration.spec.UnitViewSpec
 import views.html.session_timed_out
+import views.common.UnitViewSpec
 import views.tags.ViewTest
 
 @ViewTest

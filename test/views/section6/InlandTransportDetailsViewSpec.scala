@@ -29,8 +29,8 @@ import org.jsoup.nodes.Document
 import play.api.data.Form
 import play.api.mvc.Call
 import services.cache.ExportsTestHelper
-import views.declaration.spec.PageWithButtonsSpec
 import views.html.section6.inland_transport_details
+import views.common.PageWithButtonsSpec
 import views.tags.ViewTest
 
 @ViewTest

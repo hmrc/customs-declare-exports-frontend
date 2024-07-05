@@ -24,8 +24,8 @@ import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import play.api.i18n.MessagesApi
-import views.declaration.spec.PageWithButtonsSpec
 import views.html.section6.warehouse_identification
+import views.common.PageWithButtonsSpec
 import views.tags.ViewTest
 
 @ViewTest
