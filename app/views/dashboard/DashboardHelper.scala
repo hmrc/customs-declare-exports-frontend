@@ -34,7 +34,7 @@ import views.helpers.{EnhancedStatusHelper, ViewDates}
 import views.html.components.gds.link
 import views.html.dashboard.{pagination, table}
 
-import java.time.{ZoneId, ZonedDateTime}
+import java.time.{Instant, ZoneId, ZonedDateTime}
 import javax.inject.{Inject, Singleton}
 
 @Singleton
@@ -47,7 +47,7 @@ class DashboardHelper @Inject() (govukTable: GovukTable, link: link, pagination:
         |""".stripMargin)
 
   def hint(statusGroup: StatusGroup)(implicit messages: Messages): Html =
-    Html(s"""<p class="govuk-body $statusGroup-content-hint govuk-!-margin-bottom-6">
+    Html(s"""<p class="govuk-body $statusGroup-content-hint govuk-!-margin-bottom-4">
         |  ${messages(s"dashboard.$statusGroup.content.hint")}
         |</p>
         |""".stripMargin)
@@ -60,9 +60,9 @@ class DashboardHelper @Inject() (govukTable: GovukTable, link: link, pagination:
   }
 
   def table(pageOfSubmissions: PageOfSubmissions, statusGroup: StatusGroup)(implicit messages: Messages): Appendable =
-    govukTable(Table(rows(pageOfSubmissions, statusGroup), headers(pageOfSubmissions, statusGroup), classes = "sortable"))
+    govukTable(Table(rows(pageOfSubmissions, statusGroup), headers, classes = "sortable"))
 
-  private def headers(pageOfSubmissions: PageOfSubmissions, statusGroup: StatusGroup)(implicit messages: Messages): Option[List[HeadCell]] =
+  private def headers(implicit messages: Messages): Option[List[HeadCell]] =
     Some(
       List(
         HeadCell(Text(messages("dashboard.header.mrn"))),
@@ -142,7 +142,7 @@ object DashboardHelper {
   private def addDatetime(href: String, key: String, maybeDatetime: Option[ZonedDateTime]): String =
     maybeDatetime.fold(href)(datetime => s"${href}&${key}=${toUTC(datetime)}")
 
-  def toUTC(datetime: ZonedDateTime) = datetime.withZoneSameInstant(ZoneId.of("UTC")).toInstant
+  def toUTC(datetime: ZonedDateTime): Instant = datetime.withZoneSameInstant(ZoneId.of("UTC")).toInstant
 
   def buttonGroup(selectedStatusGroup: StatusGroup, govukButton: GovukButton)(implicit messages: Messages): Html = {
     val groupOfButtons = statusGroups.map { statusGroup =>
@@ -158,8 +158,15 @@ object DashboardHelper {
       ).toString()
     }.mkString
 
-    Html(s"""<div class="govuk-button-group">$groupOfButtons</div>""")
+    Html(s"""
+         |<nav id="filters" aria-label="declaration filter">
+         |  <div class="govuk-button-group">$groupOfButtons</div>
+         |</nav>
+         |""".stripMargin)
   }
+
+  def notification(selectedStatusGroup: StatusGroup)(implicit messages: Messages): String =
+    messages("dashboard.notification.180.days", messages(s"dashboard.notification.180.days.$selectedStatusGroup"))
 
   def panels(pageOfSubmissions: PageOfSubmissions, table: table)(implicit request: Request[_], messages: Messages): Html = {
     val statusGroup = pageOfSubmissions.statusGroup
@@ -169,4 +176,6 @@ object DashboardHelper {
           |</div>
           |""".stripMargin)
   }
+
+  def title(selectedStatusGroup: StatusGroup): String = s"dashboard.title.$selectedStatusGroup"
 }
