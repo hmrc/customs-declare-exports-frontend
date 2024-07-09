@@ -16,8 +16,9 @@
 
 package controllers.actions
 
+import controllers.section5.routes.ItemsSummaryController
 import models.requests.{ItemRequest, JourneyRequest}
-import play.api.mvc.{ActionRefiner, Result}
+import play.api.mvc.{ActionBuilder, ActionRefiner, AnyContent, Result}
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -26,18 +27,17 @@ case class ItemAction(itemId: String)(implicit val executionContext: ExecutionCo
 
   import play.api.mvc.Results._
 
-  private val itemsController = controllers.declaration.routes.ItemsSummaryController
-
   override protected def refine[A](request: JourneyRequest[A]): Future[Either[Result, ItemRequest[A]]] =
     Future.successful {
       request.cacheModel
         .itemBy(itemId)
         .map(item => Right(new ItemRequest[A](item, request)))
-        .getOrElse(Left(Redirect(itemsController.displayItemsSummaryPage)))
+        .getOrElse(Left(Redirect(ItemsSummaryController.displayItemsSummaryPage)))
     }
 }
 
 class ItemActionBuilder @Inject() (authorized: AuthAction, journeyAction: JourneyAction)(implicit val executionContext: ExecutionContext) {
 
-  def apply(itemId: String) = authorized andThen journeyAction andThen ItemAction(itemId)
+  def apply(itemId: String): ActionBuilder[ItemRequest, AnyContent] =
+    authorized andThen journeyAction andThen ItemAction(itemId)
 }

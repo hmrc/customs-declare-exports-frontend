@@ -21,8 +21,8 @@ import org.jsoup.nodes.Document
 import play.api.data.Forms._
 import play.api.data.{Field, Form}
 import play.twirl.api.{Html, HtmlFormat}
-import views.declaration.spec.UnitViewSpec
 import views.html.components.gds.formGroupWrapper
+import views.common.UnitViewSpec
 
 import scala.jdk.CollectionConverters.{CollectionHasAsScala, IteratorHasAsScala}
 

@@ -1,0 +1,154 @@
+@*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import config.AppConfig
+@import controllers.navigation.Navigator
+@import controllers.section5.routes.{ItemsSummaryController, ProcedureCodesController, RemoveItemsSummaryController}
+@import forms.common.YesNoAnswer
+@import models.DeclarationType.CLEARANCE
+@import models.declaration.ExportItem
+@import models.requests.JourneyRequest
+@import play.twirl.api.HtmlFormat
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.components.gds.Styles._
+@import views.helpers.{BackButton, Title}
+@import views.helpers.ErrorMapper.yesNoErrors
+@import views.html.components.gds._
+
+@this(
+    govukLayout: gdsMainTemplate,
+    govukFieldset: GovukFieldset,
+    govukTable : GovukTable,
+    errorSummary: errorSummary,
+    sectionHeader: sectionHeader,
+    addAnotherQuestion: addAnotherQuestion,
+    spanVisuallyHidden: spanVisuallyHidden,
+    saveButtons: saveButtons,
+    removeButton: removeButton,
+    link: link,
+    formHelper: FormWithCSRF,
+    tariffExpander: tariffExpander,
+    navigator: Navigator,
+    appConfig: AppConfig
+)
+
+@(form: Form[YesNoAnswer], items: List[ExportItem], itemsErrors: Seq[FormError] = Seq.empty)(implicit request: JourneyRequest[_], messages: Messages)
+
+@hasErrors = @{form.hasErrors || form.hasGlobalErrors}
+
+@titleMessageKey = @{
+  if(items.size == 1) "declaration.itemsAdd.titleWithItem"
+  else "declaration.itemsAdd.titleWithItems"
+}
+
+@addButtonMessage = @{
+    if (items.exists(_.isDefined)) messages("site.add.anotherItem") else messages("site.add.item")
+}
+
+@noOfPackagesSection(item: ExportItem) = {
+    @item.packageInformation.map { packageInformationList =>
+        @if(packageInformationList.drop(1).isEmpty) {
+            @packageInformationList.map { packageInfo =>
+                @packageInfo.numberOfPackages.getOrElse("")
+            }
+        } else {
+            @item.totalPackages
+        }
+    }
+}
+
+@itemsTable = {
+    @if(items.exists(_.isDefined)) {
+        @govukTable(Table(
+            attributes = Map("id" -> "item_table"),
+            head = Some(Seq(
+                HeadCell(content = Text(messages("declaration.itemsSummary.itemNumber"))),
+                HeadCell(content = Text(messages("declaration.itemsSummary.procedureCode"))),
+                HeadCell(content = Text(messages("declaration.itemsSummary.commodityCode"))),
+                HeadCell(content = Text(messages("declaration.itemsSummary.noOfPackages"))),
+                HeadCell(content = HtmlContent(spanVisuallyHidden(messages("site.change.header")))),
+                HeadCell(content = HtmlContent(spanVisuallyHidden(messages("site.remove.header"))))
+            )),
+            caption = Some(messages("declaration.itemsSummary.addAnotherItem.table.caption")),
+            captionClasses = "govuk-visually-hidden",
+            rows = items.zipWithIndex.map { case (item, index) => {
+                Seq(
+                    TableRow(
+                        content = Text((index + 1).toString),
+                        attributes = Map("id" -> s"item_$index--sequence_id")
+                    ),
+                    TableRow(
+                        content = Text(item.procedureCodes.flatMap(_.procedureCode).getOrElse("")),
+                        attributes = Map("id" -> s"item_$index--procedure_code")
+                    ),
+                    TableRow(
+                        content = Text(item.commodityDetails.flatMap(_.combinedNomenclatureCode).getOrElse("")),
+                        attributes = Map("id" -> s"item_$index--item_type")
+                    ),
+                    TableRow(
+                        content = HtmlContent(noOfPackagesSection(item).toString),
+                        attributes = Map("id" -> s"item_$index--package_count")
+                    ),
+                    TableRow(
+                        content = HtmlContent(link(
+                            messages("site.change"),
+                            ProcedureCodesController.displayPage(item.id),
+                            textHidden = Some(messages("declaration.itemsAdd.change.hint", index + 1))
+                        )),
+                        classes = "govuk-table__cell--numeric",
+                        attributes = Map("id" -> s"item_$index--change")
+                    ),
+                    TableRow(
+                        content = HtmlContent(link(
+                            messages("site.remove"),
+                            RemoveItemsSummaryController.displayRemoveItemConfirmationPage(item.id),
+                            textHidden = Some(messages("declaration.itemsAdd.remove.hint", index + 1))
+                        )),
+                        classes = "govuk-table__cell--numeric",
+                        attributes = Map("id" -> s"item_$index--remove")
+                    )
+                )
+            }}
+        ))
+    }
+}
+
+@govukLayout(
+    title = Title(titleMessageKey, "declaration.section.5", items.length.toString, hasErrors = hasErrors),
+    backButton = Some(BackButton(messages("site.back"), navigator.backLink(ExportItem))),
+    useCustomContentWidth = true
+) {
+    @formHelper(action = ItemsSummaryController.submit, 'autoComplete -> "off") {
+        @errorSummary(yesNoErrors(itemsErrors ++ form.errors))
+
+        @sectionHeader(messages("declaration.section.5"))
+        @govukFieldset(Fieldset(
+            legend = Some(Legend(
+                content = Text(messages(titleMessageKey, items.length)),
+                classes = gdsPageLegend,
+                isPageHeading = true
+            )),
+            html = HtmlFormat.fill(List(
+                itemsTable,
+                if (!request.isType(CLEARANCE))
+                addAnotherQuestion("declaration.itemsSummary.addAnotherItem.question", form)
+                else HtmlFormat.empty,
+                tariffExpander(ExportItem, request.declarationType)(messages, appConfig),
+                saveButtons()
+            ))
+        ))
+    }
+}

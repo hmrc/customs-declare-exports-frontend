@@ -17,10 +17,12 @@
 package views.helpers.summary
 
 import base.Injector
-import controllers.declaration.routes._
+import controllers.section5.routes._
+import controllers.section6.routes.TransportLeavingTheBorderController
 import forms.common.YesNoAnswer.Yes
-import forms.declaration.NatureOfTransaction.BusinessPurchase
-import forms.declaration._
+import forms.section4.Document
+import forms.section4.NatureOfTransaction.BusinessPurchase
+import forms.section5.{CommodityDetails, CusCode, NactCode, UNDangerousGoodsCode}
 import models.DeclarationType._
 import models.ExportsDeclaration
 import models.declaration.{AdditionalDocuments, AdditionalInformationData, CommodityMeasure}
@@ -30,7 +32,7 @@ import play.api.mvc.Call
 import play.twirl.api.Html
 import play.twirl.api.HtmlFormat.Appendable
 import services.cache.ExportsTestHelper
-import views.declaration.spec.UnitViewSpec
+import views.common.UnitViewSpec
 
 class Card5ForItemsSpec extends UnitViewSpec with ExportsTestHelper with Injector {
 

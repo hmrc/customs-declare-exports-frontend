@@ -16,8 +16,8 @@
 
 package views.helpers.summary
 
-import controllers.declaration.routes.{AdditionalInformationController, AdditionalInformationRequiredController}
-import forms.declaration.AdditionalInformation
+import controllers.section5.routes.{AdditionalInformationController, AdditionalInformationRequiredController}
+import forms.section5.AdditionalInformation
 import models.declaration.ExportItem
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow

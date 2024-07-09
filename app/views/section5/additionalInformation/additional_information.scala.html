@@ -1,0 +1,133 @@
+@*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import config.AppConfig
+@import controllers.navigation.{ItemId, Navigator}
+@import controllers.section5.routes.{AdditionalInformationChangeController, AdditionalInformationController, AdditionalInformationRemoveController}
+@import forms.common.YesNoAnswer
+@import forms.section5.{AdditionalInformation, AdditionalInformationSummary}
+@import models.requests.JourneyRequest
+@import play.twirl.api.HtmlFormat
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import utils.ListItem._
+@import views.components.gds.Styles._
+@import views.helpers.{BackButton, Title}
+@import views.helpers.ErrorMapper.yesNoErrors
+@import views.html.components.gds._
+
+@this(
+    govukLayout: gdsMainTemplate,
+    govukFieldset: GovukFieldset,
+    govukTable : GovukTable,
+    errorSummary: errorSummary,
+    sectionHeader: sectionHeader,
+    exportsInputText: exportsInputText,
+    saveButtons: saveButtons,
+    appConfig: AppConfig,
+    spanVisuallyHidden: spanVisuallyHidden,
+    link: link,
+    addAnotherQuestion: addAnotherQuestion,
+    formHelper: FormWithCSRF
+)
+
+@(itemId: String, form: Form[YesNoAnswer], items: Seq[AdditionalInformation], backLink: Call)(implicit request: JourneyRequest[_], messages: Messages)
+
+@title = @{
+  val hasErrors = form.hasErrors || form.hasGlobalErrors
+  if (items.size == 1) Title("declaration.additionalInformation.table.heading", "declaration.section.5", hasErrors = hasErrors)
+  else Title("declaration.additionalInformation.table.multiple.heading", "declaration.section.5", items.size.toString, hasErrors = hasErrors)
+}
+
+@header = @{
+  if (items.size == 1) Text(messages("declaration.additionalInformation.table.heading"))
+  else Text(messages("declaration.additionalInformation.table.multiple.heading", items.size))
+}
+
+@additionalInformationTable = {
+    @if(items.nonEmpty) {
+        @govukTable(Table(
+            attributes = Map("id" -> "additional_information"),
+            rows = items.zipWithIndex.map{ case(item, index) =>
+                Seq(
+                    TableRow(
+                        content = Text(item.code),
+                        attributes = Map("id" -> s"additional_information-row$index-code")
+                    ),
+                    TableRow(
+                        content = Text(item.description),
+                        attributes = Map("id" -> s"additional_information-row$index-info")
+                    ),
+                    TableRow(
+                        content = HtmlContent(link(
+                            messages("site.change"),
+                            AdditionalInformationChangeController.displayPage(itemId, createId(index, item)),
+                            textHidden = Some(messages("declaration.additionalInformation.table.change.hint", item.code))
+                        )),
+                        classes = "govuk-table__cell--numeric",
+                        attributes = Map("id" -> s"additional_information-row$index-change_button")
+                    ),
+                    TableRow(
+                        content = HtmlContent(link(
+                            messages("site.remove"),
+                            AdditionalInformationRemoveController.displayPage(itemId, createId(index, item)),
+                            textHidden = Some(messages("declaration.additionalInformation.table.remove.hint", item.code))
+                        )),
+                        classes = "govuk-table__cell--numeric",
+                        attributes = Map("id" -> s"additional_information-row$index-remove_button")
+                    )
+                )
+            },
+            head = Some(List(
+                HeadCell(
+                    content = Text(messages("declaration.additionalInformation.table.headers.code"))
+                ),
+                HeadCell(
+                    content = Text(messages("declaration.additionalInformation.table.headers.description"))
+                ),
+                HeadCell(
+                    content = HtmlContent(spanVisuallyHidden(messages("site.change.header")))
+                ),
+                HeadCell(
+                    content = HtmlContent(spanVisuallyHidden(messages("site.remove.header")))
+                )
+            )),
+            caption = Some(messages("declaration.additionalInformation.table.caption")),
+            captionClasses = "govuk-visually-hidden"
+        ))
+    }
+}
+
+@govukLayout(title = title, backButton = Some(BackButton(messages("site.backToPreviousQuestion"), backLink))) {
+
+    @formHelper(action = AdditionalInformationController.submitForm(itemId), 'autoComplete -> "off") {
+        @errorSummary(yesNoErrors(form.errors))
+
+        @sectionHeader(messages("declaration.section.5"))
+
+        @govukFieldset(Fieldset(
+            legend = Some(Legend(
+                content = header,
+                classes = gdsPageLegend,
+                isPageHeading = true
+            )),
+            html = HtmlFormat.fill(List(
+                additionalInformationTable,
+                addAnotherQuestion("declaration.additionalInformation.add.another", form),
+                saveButtons()
+            ))
+        ))
+    }
+}

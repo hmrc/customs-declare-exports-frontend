@@ -18,15 +18,17 @@ package services.cache
 
 import base.ExportsTestData._
 import forms.common.YesNoAnswer.{No, YesNoAnswers}
-import forms.common.{Address, Eori, YesNoAnswer}
-import forms.declaration._
-import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.{AdditionalDeclarationType, STANDARD_FRONTIER}
-import forms.declaration.carrier.CarrierDetails
-import forms.declaration.consignor.ConsignorDetails
-import forms.declaration.countries.Country
-import forms.declaration.authorisationHolder.AuthorisationHolder
-import forms.declaration.exporter.ExporterDetails
-import forms.declaration.officeOfExit.OfficeOfExit
+import forms.common.{Address, Country, Eori, YesNoAnswer}
+import forms.section1.additionaldeclarationtype.AdditionalDeclarationType.{AdditionalDeclarationType, STANDARD_FRONTIER}
+import forms.section1.{ConsignmentReferences, DeclarantDetails, Mucr}
+import forms.section2.authorisationHolder.AuthorisationHolder
+import forms.section2.carrier.CarrierDetails
+import forms.section2.consignor.ConsignorDetails
+import forms.section2.exporter.ExporterDetails
+import forms.section2._
+import forms.section3.{LocationOfGoods, OfficeOfExit}
+import forms.section4.{Document, InvoiceAndExchangeRate, NatureOfTransaction, PreviousDocumentsData}
+import forms.section6._
 import forms.{Ducr, Lrn, Mrn}
 import models.DeclarationType.DeclarationType
 import models.declaration.DeclarationStatus.DeclarationStatus

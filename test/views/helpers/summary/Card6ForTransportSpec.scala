@@ -17,14 +17,15 @@
 package views.helpers.summary
 
 import base.{Injector, MockTransportCodeService}
-import controllers.declaration.routes._
+import controllers.declaration.routes.SummaryController
+import controllers.section6.routes._
 import forms.common.YesNoAnswer.YesNoAnswers
-import forms.declaration.InlandOrBorder.Border
-import forms.declaration.ModeOfTransportCode.Maritime
-import forms.declaration._
+import forms.section6.InlandOrBorder.Border
+import forms.section6.ModeOfTransportCode.Maritime
+import forms.section6._
 import models.declaration.Container
 import services.cache.ExportsTestHelper
-import views.declaration.spec.UnitViewSpec
+import views.common.UnitViewSpec
 
 class Card6ForTransportSpec extends UnitViewSpec with ExportsTestHelper with Injector {
 
@@ -317,7 +318,7 @@ class Card6ForTransportSpec extends UnitViewSpec with ExportsTestHelper with Inj
         container1Id must haveSummaryKey(messages("declaration.summary.container.id"))
         container1Id must haveSummaryValue(id1)
         container1Id must haveSummaryActionsTexts("site.change", "declaration.summary.container.change")
-        container1Id must haveSummaryActionWithPlaceholder(TransportContainerController.displayContainerSummary)
+        container1Id must haveSummaryActionWithPlaceholder(ContainerController.displayContainerSummary)
 
         val container1Seals = sealsSummaryListRows.first.getElementsByClass("container-1-seals")
         container1Seals must haveSummaryKey(messages("declaration.summary.container.securitySeals"))
@@ -328,7 +329,7 @@ class Card6ForTransportSpec extends UnitViewSpec with ExportsTestHelper with Inj
         container2Id must haveSummaryKey(messages("declaration.summary.container.id"))
         container2Id must haveSummaryValue(id2)
         container2Id must haveSummaryActionsTexts("site.change", "declaration.summary.container.change")
-        container2Id must haveSummaryActionWithPlaceholder(TransportContainerController.displayContainerSummary)
+        container2Id must haveSummaryActionWithPlaceholder(ContainerController.displayContainerSummary)
 
         val container2Seals = sealsSummaryListRows.get(1).getElementsByClass("container-2-seals")
         container2Seals must haveSummaryKey(messages("declaration.summary.container.securitySeals"))
@@ -343,7 +344,7 @@ class Card6ForTransportSpec extends UnitViewSpec with ExportsTestHelper with Inj
         row must haveSummaryKey(messages("declaration.summary.containers"))
         row must haveSummaryValue(messages("site.none"))
         row must haveSummaryActionsTexts("site.change", "declaration.summary.container.change")
-        row must haveSummaryActionWithPlaceholder(TransportContainerController.displayContainerSummary)
+        row must haveSummaryActionWithPlaceholder(ContainerController.displayContainerSummary)
       }
     }
 
@@ -363,7 +364,7 @@ class Card6ForTransportSpec extends UnitViewSpec with ExportsTestHelper with Inj
 
     "Card6ForTransport.backLink" when {
       "go to PreviousDocumentsSummaryController" in {
-        card6ForTransport.backLink(journeyRequest()) mustBe TransportContainerController.displayContainerSummary
+        card6ForTransport.backLink(journeyRequest()) mustBe ContainerController.displayContainerSummary
       }
     }
 

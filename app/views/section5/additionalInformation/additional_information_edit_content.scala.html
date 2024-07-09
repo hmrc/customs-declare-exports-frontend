@@ -1,0 +1,81 @@
+@*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import config.AppConfig
+@import controllers.section5.AdditionalInformationAddController.AdditionalInformationFormGroupId
+@import forms.section5.AdditionalInformation
+@import models.requests.JourneyRequest
+@import play.twirl.api.HtmlFormat
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.components.gds.Styles._
+@import views.html.components.gds._
+
+@this(
+    govukFieldset: GovukFieldset,
+    errorSummary: errorSummary,
+    formGroupWrapper: formGroupWrapper,
+    sectionHeader: sectionHeader,
+    heading: heading,
+    paragraphBody: paragraphBody,
+    externalLink: externalLink,
+    exportsInputText: exportsInputText,
+    characterCount: exportsInputCharacterCount,
+    tariffExpander: tariffExpander,
+    tariffLink: tariffLink,
+    saveButtons: saveButtons,
+    appConfig: AppConfig
+)
+
+@(itemId: String, form: Form[AdditionalInformation])(implicit request: JourneyRequest[_], messages: Messages)
+
+@pageFields = {
+    @formGroupWrapper(field = form(AdditionalInformationFormGroupId)){
+        @exportsInputText(
+            field = form(AdditionalInformation.codeKey),
+            labelKey = "declaration.additionalInformation.code",
+            labelClasses = "govuk-label--m",
+            inputClasses = Some("govuk-input--width-4"),
+            hintKey = Some("declaration.additionalInformation.code.hint")
+        )
+        @characterCount(
+            field = form(AdditionalInformation.descriptionKey),
+            labelKey = Some("declaration.additionalInformation.description"),
+            labelClasses = "govuk-label--m",
+            maxLength = Some(AdditionalInformation.descriptionMaxLength),
+            inputClasses = "govuk-input--width-20",
+            hintKey = Some("declaration.additionalInformation.description.hint")
+        )
+    }
+}
+
+@errorSummary(form.errors)
+
+@sectionHeader(messages("declaration.section.5"))
+@heading(messages("declaration.additionalInformation.title"))
+
+@paragraphBody(messages("declaration.additionalInformation.code.paragraph", externalLink(
+    id = Some("trade_tariff_link"),
+    text = messages("declaration.additionalInformation.code.paragraph.link"),
+    url = appConfig.additionalInformationAppendix4
+)))
+
+@govukFieldset(Fieldset(
+    html = HtmlFormat.fill(List(
+        pageFields,
+        tariffExpander(AdditionalInformation, request.declarationType)(messages, appConfig),
+        saveButtons()
+    ))
+))

@@ -17,14 +17,14 @@
 package views.declaration.summary
 
 import base.Injector
-import forms.declaration.CommodityDetails
+import forms.section5.CommodityDetails
 import models.DeclarationType._
 import models.ExportsDeclaration
 import play.api.data.FormError
 import play.api.mvc.Call
 import play.twirl.api.HtmlFormat.Appendable
 import tools.Stubs
-import views.declaration.spec.UnitViewSpec
+import views.common.UnitViewSpec
 
 trait SummaryViewSpec extends UnitViewSpec with Injector with Stubs {
 

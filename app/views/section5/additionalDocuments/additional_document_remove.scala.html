@@ -1,0 +1,117 @@
+@*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import controllers.section5.routes.{AdditionalDocumentsController, AdditionalDocumentRemoveController}
+@import forms.common.YesNoAnswer
+@import forms.section5.additionaldocuments.AdditionalDocument
+@import models.requests.JourneyRequest
+@import play.twirl.api.HtmlFormat
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.components.gds.Styles._
+@import views.helpers.{BackButton, Title}
+@import views.helpers.ErrorMapper.yesNoErrors
+@import views.html.components.gds._
+
+@this(
+    govukLayout: gdsMainTemplate,
+    sectionHeader: sectionHeader,
+    govukFieldset: GovukFieldset,
+    govukSummaryList: GovukSummaryList,
+    errorSummary: errorSummary,
+    saveButtons: saveButtons,
+    yesNoRadios: yesNoRadios,
+    formHelper: FormWithCSRF
+)
+
+@(itemId: String, documentId: String, document: AdditionalDocument, form: Form[YesNoAnswer])(implicit request: JourneyRequest[_], messages: Messages)
+
+@hasErrors = @{form.hasErrors || form.hasGlobalErrors}
+
+@documentTableRows = @{
+    Seq.empty :+ document.documentTypeCode.map(typeCode =>
+        SummaryListRow(
+            Key(Text(messages("declaration.additionalDocument.remove.code"))),
+            Value(Text(typeCode))
+        )
+    ):+ document.documentIdentifier.map(identifier =>
+        SummaryListRow(
+            Key(Text(messages("declaration.additionalDocument.remove.reference"))),
+            Value(Text(identifier))
+        )
+    ):+ document.documentStatus.map(status =>
+        SummaryListRow(
+            Key(Text(messages("declaration.additionalDocument.remove.statusCode"))),
+            Value(Text(status))
+        )
+    ):+ document.documentStatusReason.map(reason =>
+        SummaryListRow(
+            Key(Text(messages("declaration.additionalDocument.remove.statusReason"))),
+            Value(Text(reason))
+        )
+    ):+ document.issuingAuthorityName.map(issuingAuth =>
+        SummaryListRow(
+            Key(Text(messages("declaration.additionalDocument.remove.issuingAuthorityName"))),
+            Value(Text(issuingAuth))
+        )
+    ):+ document.dateOfValidity.map(dateOfValidity =>
+        SummaryListRow(
+            Key(Text(messages("declaration.additionalDocument.remove.dateOfValidity"))),
+            Value(Text(dateOfValidity.toDisplayFormat))
+        )
+    ):+ document.documentWriteOff.flatMap(_.measurementUnit).map(unit =>
+        SummaryListRow(
+            Key(Text(messages("declaration.additionalDocument.remove.measurementUnitAndQualifier"))),
+            Value(Text(document.documentWriteOff.map(_.measurementUnitDisplay).getOrElse("")))
+        )
+    ):+ document.documentWriteOff.flatMap(_.documentQuantity).map(quantity =>
+        SummaryListRow(
+            Key(Text(messages("declaration.additionalDocument.remove.documentQuantity"))),
+            Value(Text(quantity.toString))
+        )
+    )
+}
+
+@documentTable = {
+    @govukSummaryList(SummaryList(
+        classes = "govuk-!-margin-bottom-6",
+        rows = documentTableRows.flatten
+    ))
+}
+
+@govukLayout(
+    title = Title("declaration.additionalDocument.remove.title", "declaration.section.5", hasErrors = hasErrors),
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), AdditionalDocumentsController.displayPage(itemId)))) {
+
+    @formHelper(action = AdditionalDocumentRemoveController.submitForm(itemId, documentId), 'autoComplete -> "off") {
+        @errorSummary(yesNoErrors(form.errors))
+
+        @sectionHeader(messages("declaration.section.5"))
+
+        @govukFieldset(Fieldset(
+            legend = Some(Legend(
+                content = Text(messages("declaration.additionalDocument.remove.title")),
+                classes = gdsPageLegend,
+                isPageHeading = true
+            )),
+            html = HtmlFormat.fill(List(
+                documentTable,
+                yesNoRadios(form, inline = true),
+                saveButtons()
+            ))
+        ))
+    }
+
+}

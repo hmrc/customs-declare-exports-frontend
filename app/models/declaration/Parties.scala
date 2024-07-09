@@ -17,12 +17,13 @@
 package models.declaration
 
 import forms.common.YesNoAnswer
-import forms.declaration._
-import forms.declaration.carrier.CarrierDetails
-import forms.declaration.consignor.ConsignorDetails
-import forms.declaration.exporter.ExporterDetails
-import models.{ExportsDeclaration, FieldMapping}
+import forms.section1.DeclarantDetails
+import forms.section2._
+import forms.section2.carrier.CarrierDetails
+import forms.section2.consignor.ConsignorDetails
+import forms.section2.exporter.ExporterDetails
 import models.ExportsFieldPointer.ExportsFieldPointer
+import models.{ExportsDeclaration, FieldMapping}
 import play.api.libs.json.{Json, OFormat}
 import services.DiffTools
 import services.DiffTools.{combinePointers, compareDifference, ExportsDeclarationDiff}

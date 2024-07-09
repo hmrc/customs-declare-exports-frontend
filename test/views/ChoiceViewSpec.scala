@@ -23,9 +23,9 @@ import controllers.routes.{DraftDeclarationController, FileUploadController}
 import org.mockito.Mockito.when
 import play.api.inject.bind
 import views.dashboard.DashboardHelper.toDashboard
-import views.declaration.spec.UnitViewSpec
 import views.helpers.CommonMessages
 import views.html.choice_page
+import views.common.UnitViewSpec
 import views.tags.ViewTest
 
 @ViewTest

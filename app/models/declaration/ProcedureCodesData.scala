@@ -16,7 +16,7 @@
 
 package models.declaration
 
-import forms.declaration.procedurecodes.ProcedureCode
+import forms.section5.procedurecodes.ProcedureCode
 import models.AmendmentRow.{forAddedValue, forRemovedValue, pointerToSelector}
 import models.ExportsFieldPointer.ExportsFieldPointer
 import models.declaration.ExportItem.itemsPrefix

@@ -16,43 +16,54 @@
 
 package controllers.navigation
 
-import controllers.declaration.routes
+import controllers.declaration.routes._
+import controllers.section1.routes._
+import controllers.section2.routes._
+import controllers.section3.routes.{DestinationCountryController, RoutingCountriesController}
+import controllers.section5.routes.CommodityMeasureController
+import controllers.section6.routes.ContainerController
 import forms.DeclarationPage
-import forms.declaration.RoutingCountryQuestionYesNo.{ChangeCountryPage, RemoveCountryPage, RoutingCountryQuestionPage}
-import forms.declaration._
-import forms.declaration.additionaldocuments.{AdditionalDocument, AdditionalDocumentsRequired, AdditionalDocumentsSummary}
-import forms.declaration.carrier.CarrierEoriNumber
-import forms.declaration.commodityMeasure.CommodityMeasure
-import forms.declaration.consignor.{ConsignorDetails, ConsignorEoriNumber}
-import forms.declaration.exporter.{ExporterDetails, ExporterEoriNumber}
+import forms.section1.{ConsignmentReferences, DeclarantDetails, DucrChoice, LinkDucrToMucr}
+import forms.section2._
+import forms.section2.carrier.CarrierEoriNumber
+import forms.section2.consignor.{ConsignorDetails, ConsignorEoriNumber}
+import forms.section2.exporter.{ExporterDetails, ExporterEoriNumber}
+import forms.section2.representative.RepresentativeAgent
+import forms.section3.LocationOfGoods
+import forms.section3.RoutingCountryQuestionYesNo.{ChangeCountryPage, RemoveCountryPage, RoutingCountryQuestionPage}
+import forms.section4.{Document, DocumentSummary}
+import forms.section5._
+import forms.section5.additionaldocuments.{AdditionalDocument, AdditionalDocumentsRequired, AdditionalDocumentsSummary}
+import forms.section5.commodityMeasure.CommodityMeasure
+import forms.section6.{ContainerAdd, ContainerFirst, DepartureTransport, ExpressConsignment}
 import models.ExportsDeclaration
 import play.api.mvc.Call
 
 trait ClearanceNavigator extends CacheDependentNavigators {
 
   val clearance: PartialFunction[DeclarationPage, Call] = {
-    case EntryIntoDeclarantsRecords   => routes.SectionSummaryController.displayPage(1)
-    case DucrChoice                   => routes.AdditionalDeclarationTypeController.displayPage
-    case ConsignmentReferences        => routes.AdditionalDeclarationTypeController.displayPage
-    case LinkDucrToMucr               => routes.LocalReferenceNumberController.displayPage
-    case ExporterDetails              => routes.ExporterEoriNumberController.displayPage
-    case DeclarantDetails             => routes.EntryIntoDeclarantsRecordsController.displayPage
-    case PersonPresentingGoodsDetails => routes.EntryIntoDeclarantsRecordsController.displayPage
-    case ContainerAdd                 => routes.TransportContainerController.displayContainerSummary
-    case RoutingCountryQuestionPage   => routes.DestinationCountryController.displayPage
-    case RemoveCountryPage            => routes.RoutingCountriesController.displayRoutingCountry
-    case ChangeCountryPage            => routes.RoutingCountriesController.displayRoutingCountry
-    case LocationOfGoods              => routes.DestinationCountryController.displayPage
-    case ConsignorEoriNumber          => routes.IsExsController.displayPage
-    case ConsignorDetails             => routes.ConsignorEoriNumberController.displayPage
-    case DocumentSummary              => routes.SectionSummaryController.displayPage(3)
-    case CarrierEoriNumber            => routes.ThirdPartyGoodsTransportationController.displayPage
+    case EntryIntoDeclarantsRecords   => SectionSummaryController.displayPage(1)
+    case DucrChoice                   => AdditionalDeclarationTypeController.displayPage
+    case ConsignmentReferences        => AdditionalDeclarationTypeController.displayPage
+    case LinkDucrToMucr               => LocalReferenceNumberController.displayPage
+    case ExporterDetails              => ExporterEoriNumberController.displayPage
+    case DeclarantDetails             => EntryIntoDeclarantsRecordsController.displayPage
+    case PersonPresentingGoodsDetails => EntryIntoDeclarantsRecordsController.displayPage
+    case ContainerAdd                 => ContainerController.displayContainerSummary
+    case RoutingCountryQuestionPage   => DestinationCountryController.displayPage
+    case RemoveCountryPage            => RoutingCountriesController.displayRoutingCountry
+    case ChangeCountryPage            => RoutingCountriesController.displayRoutingCountry
+    case LocationOfGoods              => DestinationCountryController.displayPage
+    case ConsignorEoriNumber          => IsExsController.displayPage
+    case ConsignorDetails             => ConsignorEoriNumberController.displayPage
+    case DocumentSummary              => SectionSummaryController.displayPage(3)
+    case CarrierEoriNumber            => ThirdPartyGoodsTransportationController.displayPage
     case page                         => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on clearance")
   }
 
   val clearanceItemPage: PartialFunction[DeclarationPage, String => Call] = {
-    case AdditionalInformationRequired => routes.CommodityMeasureController.displayPage
-    case AdditionalInformationSummary  => routes.CommodityMeasureController.displayPage
+    case AdditionalInformationRequired => CommodityMeasureController.displayPage
+    case AdditionalInformationSummary  => CommodityMeasureController.displayPage
     case page                          => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on clearance")
   }
 

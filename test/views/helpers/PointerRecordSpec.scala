@@ -19,15 +19,18 @@ package views.helpers
 import base.Injector
 import connectors.CodeListConnector
 import forms.common.YesNoAnswer.{Yes, YesNoAnswers}
-import forms.common.{Address, Date, Eori}
-import forms.declaration.InlandOrBorder.Border
-import forms.declaration.ModeOfTransportCode.Maritime
-import forms.declaration.NatureOfTransaction.BusinessPurchase
-import forms.declaration.TransportPayment.cash
-import forms.declaration.additionaldocuments.{AdditionalDocument, DocumentWriteOff}
-import forms.declaration.authorisationHolder.AuthorizationTypeCodes.CSE
-import forms.declaration.countries.Country
-import forms.declaration._
+import forms.common.{Address, Country, Date, Eori}
+import forms.section2.AdditionalActor
+import forms.section2.authorisationHolder.AuthorizationTypeCodes.CSE
+import forms.section3.LocationOfGoods
+import forms.section4.NatureOfTransaction.BusinessPurchase
+import forms.section4.{Document, InvoiceAndExchangeRate}
+import forms.section5.additionaldocuments.{AdditionalDocument, DocumentWriteOff}
+import forms.section5._
+import forms.section6.InlandOrBorder.Border
+import forms.section6.ModeOfTransportCode.Maritime
+import forms.section6.TransportPayment.cash
+import forms.section6._
 import models.codes.{Country => ModelCountry}
 import models.declaration.{AdditionalDocuments, CommodityMeasure, Container}
 import org.mockito.ArgumentMatchers.{any, eq => meq}
@@ -36,7 +39,7 @@ import org.scalatest.Assertion
 import services.DocumentType
 import services.cache.ExportsTestHelper
 import services.model.PackageType
-import views.declaration.spec.UnitViewSpec
+import views.common.UnitViewSpec
 import views.helpers.PointerPatterns.pointerToAdditionalProcedureCodes
 
 import scala.collection.immutable.ListMap

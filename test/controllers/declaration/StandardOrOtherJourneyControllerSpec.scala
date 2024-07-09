@@ -17,7 +17,8 @@
 package controllers.declaration
 
 import base.ControllerWithoutFormSpec
-import controllers.declaration.routes.{AdditionalDeclarationTypeController, DeclarationChoiceController}
+import controllers.declaration.routes.DeclarationChoiceController
+import controllers.section1.routes.AdditionalDeclarationTypeController
 import forms.declaration.DeclarationChoice.{form, nonStandardJourneys, NonStandardDeclarationType}
 import models.DeclarationType._
 import models.ExportsDeclaration

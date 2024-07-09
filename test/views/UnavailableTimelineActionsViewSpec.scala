@@ -18,8 +18,8 @@ package views
 
 import base.{Injector, MockAuthAction}
 import controllers.routes.DeclarationDetailsController
-import views.declaration.spec.UnitViewSpec
 import views.html.unavailable_timeline_actions
+import views.common.UnitViewSpec
 import views.tags.ViewTest
 
 @ViewTest

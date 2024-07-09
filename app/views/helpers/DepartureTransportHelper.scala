@@ -16,10 +16,10 @@
 
 package views.helpers
 
-import forms.declaration.DepartureTransport.radioButtonGroupId
-import forms.declaration.InlandOrBorder.Border
-import forms.declaration.ModeOfTransportCode.Road
-import forms.declaration.{TransportCode, TransportCodes}
+import forms.section6.DepartureTransport.radioButtonGroupId
+import forms.section6.InlandOrBorder.Border
+import forms.section6.ModeOfTransportCode.Road
+import forms.section6.{TransportCode, TransportCodes}
 import models.DeclarationType._
 import models.ExportsDeclaration
 import models.requests.JourneyRequest

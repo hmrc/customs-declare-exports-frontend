@@ -25,9 +25,9 @@ import models.requests.SessionHelper
 import org.jsoup.nodes.Document
 import play.api.data.{Form, FormError}
 import tools.Stubs
-import views.declaration.spec.UnitViewSpec
 import views.helpers.CommonMessages
 import views.html.cancel_declaration
+import views.common.UnitViewSpec
 import views.tags.ViewTest
 
 @ViewTest

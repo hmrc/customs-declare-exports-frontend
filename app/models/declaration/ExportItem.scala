@@ -18,8 +18,8 @@ package models.declaration
 
 import forms.DeclarationPage
 import forms.common.YesNoAnswer.valueForYesNo
-import forms.declaration.FiscalInformation.AllowedFiscalInformationAnswers.yes
-import forms.declaration._
+import forms.section5.FiscalInformation.AllowedFiscalInformationAnswers.yes
+import forms.section5._
 import models.AmendmentRow.{forAddedValue, forRemovedValue}
 import models.DeclarationMeta.sequenceIdPlaceholder
 import models.DeclarationType.DeclarationType

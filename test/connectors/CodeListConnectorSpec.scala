@@ -18,7 +18,7 @@ package connectors
 
 import base.UnitWithMocksSpec
 import config.AppConfig
-import forms.declaration.authorisationHolder.AuthorizationTypeCodes.MIB
+import forms.section2.authorisationHolder.AuthorizationTypeCodes.MIB
 import models.codes._
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach

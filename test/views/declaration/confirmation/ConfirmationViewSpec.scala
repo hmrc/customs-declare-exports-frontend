@@ -19,17 +19,17 @@ package views.declaration.confirmation
 import base.{Injector, MockAuthAction}
 import config.ExternalServicesConfig
 import controllers.routes.{DeclarationDetailsController, FileUploadController}
-import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
+import forms.section1.additionaldeclarationtype.AdditionalDeclarationType._
 import models.declaration.submissions.EnhancedStatus._
 import models.declaration.submissions.Submission
 import org.jsoup.nodes.Document
 import org.scalatest.GivenWhenThen
 import testdata.SubmissionsTestData._
 import views.dashboard.DashboardHelper.toDashboard
-import views.declaration.spec.UnitViewSpec
 import views.helpers.Confirmation
 import views.helpers.ViewDates.formatTimeDate
 import views.html.declaration.confirmation.confirmation_page
+import views.common.UnitViewSpec
 import views.tags.ViewTest
 
 import java.time.{ZoneOffset, ZonedDateTime}

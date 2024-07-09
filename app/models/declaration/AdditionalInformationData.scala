@@ -18,7 +18,7 @@ package models.declaration
 
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.{No, Yes}
-import forms.declaration.AdditionalInformation
+import forms.section5.AdditionalInformation
 import models.ExportsFieldPointer.ExportsFieldPointer
 import models.FieldMapping
 import play.api.libs.json.{Json, OFormat}

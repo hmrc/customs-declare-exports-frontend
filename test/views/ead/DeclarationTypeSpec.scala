@@ -16,7 +16,7 @@
 
 package views.ead
 
-import views.declaration.spec.UnitViewSpec
+import views.common.UnitViewSpec
 
 class DeclarationTypeSpec extends UnitViewSpec {
 

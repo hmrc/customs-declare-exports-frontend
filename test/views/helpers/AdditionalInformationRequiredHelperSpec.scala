@@ -22,7 +22,7 @@ import models.DeclarationType._
 import models.declaration.{ExportItem, ProcedureCodesData}
 import org.scalatest.Assertion
 import services.cache.ExportsTestHelper
-import views.declaration.spec.UnitViewSpec
+import views.common.UnitViewSpec
 
 class AdditionalInformationRequiredHelperSpec extends UnitViewSpec with ExportsTestHelper with Injector {
 

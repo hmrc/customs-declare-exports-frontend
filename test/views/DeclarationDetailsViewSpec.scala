@@ -23,7 +23,7 @@ import config.featureFlags._
 import controllers.declaration.amendments.routes.AmendDeclarationController
 import controllers.declaration.routes.SubmissionController
 import controllers.routes._
-import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
+import forms.section1.additionaldeclarationtype.AdditionalDeclarationType._
 import models.declaration.submissions.EnhancedStatus._
 import models.declaration.submissions.RequestType.{AmendmentRequest, ExternalAmendmentRequest, SubmissionRequest}
 import models.declaration.submissions.{EnhancedStatus, _}
@@ -36,9 +36,9 @@ import play.api.inject.bind
 import play.api.mvc.Call
 import play.twirl.api.HtmlFormat.Appendable
 import views.dashboard.DashboardHelper.toDashboard
-import views.declaration.spec.UnitViewSpec
 import views.helpers.{EnhancedStatusHelper, NotificationEvent, ViewDates}
 import views.html.declaration_details
+import views.common.UnitViewSpec
 
 import java.time.ZonedDateTime
 import java.util.UUID

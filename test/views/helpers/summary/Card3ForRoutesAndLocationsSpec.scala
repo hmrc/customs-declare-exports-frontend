@@ -17,13 +17,14 @@
 package views.helpers.summary
 
 import base.Injector
-import controllers.declaration.routes._
+import controllers.section3.routes._
+import controllers.section4.routes.{InvoiceAndExchangeRateChoiceController, PreviousDocumentsSummaryController}
+import forms.common.Country
+import forms.section3.LocationOfGoods
 import models.DeclarationType._
-import forms.declaration.LocationOfGoods
-import forms.declaration.countries.Country
 import models.declaration.DeclarationStatus.AMENDMENT_DRAFT
 import services.cache.ExportsTestHelper
-import views.declaration.spec.UnitViewSpec
+import views.common.UnitViewSpec
 
 class Card3ForRoutesAndLocationsSpec extends UnitViewSpec with ExportsTestHelper with Injector {
 

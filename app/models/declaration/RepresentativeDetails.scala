@@ -16,10 +16,9 @@
 
 package models.declaration
 
-import forms.declaration.EntityDetails
-import models.AmendmentRow.{forAddedValue, forRemovedValue}
+import forms.section2.EntityDetails
+import models.AmendmentRow.{forAddedValue, forRemovedValue, safeMessage}
 import models.ExportsFieldPointer.ExportsFieldPointer
-import models.AmendmentRow.safeMessage
 import models.declaration.Parties.partiesPrefix
 import models.declaration.RepresentativeDetails.keyForAmend
 import models.{AmendmentOp, FieldMapping}

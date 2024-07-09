@@ -17,7 +17,7 @@
 package views.declaration.summary
 
 import base.Injector
-import forms.declaration.CommodityDetails
+import forms.section5.CommodityDetails
 import models.DeclarationType._
 import models.ExportsDeclaration
 import models.requests.SessionHelper
@@ -27,8 +27,8 @@ import play.twirl.api.HtmlFormat.Appendable
 import services.cache.ExportsTestHelper
 import testdata.SubmissionsTestData.submission
 import tools.Stubs
-import views.declaration.spec.UnitViewSpec
 import views.html.declaration.summary.submitted_declaration_page
+import views.common.UnitViewSpec
 
 import java.util.function.Predicate
 

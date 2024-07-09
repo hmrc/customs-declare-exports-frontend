@@ -17,7 +17,7 @@
 package models.declaration
 
 import forms.common.YesNoAnswer
-import forms.declaration.additionaldocuments.{AdditionalDocument, DocumentWriteOff}
+import forms.section5.additionaldocuments.{AdditionalDocument, DocumentWriteOff}
 import models.ExportsFieldPointer.ExportsFieldPointer
 import models.FieldMapping
 import play.api.libs.json.{Json, OFormat}

@@ -19,8 +19,8 @@ package views.guidance
 import base.Injector
 import tools.Stubs
 import config.AppConfig
-import views.declaration.spec.UnitViewSpec
 import views.html.guidance.entry
+import views.common.UnitViewSpec
 import views.tags.ViewTest
 
 @ViewTest

@@ -17,9 +17,9 @@
 package models
 
 import base.{MockTaggedCodes, UnitSpec}
-import forms.common.YesNoAnswer
-import forms.declaration.countries.Country
-import forms.declaration.{CommodityDetails, Document, NatureOfTransaction, PreviousDocumentsData}
+import forms.common.{Country, YesNoAnswer}
+import forms.section4.{Document, NatureOfTransaction, PreviousDocumentsData}
+import forms.section5.CommodityDetails
 import models.declaration._
 import org.scalatest.OptionValues
 import org.scalatestplus.mockito.MockitoSugar

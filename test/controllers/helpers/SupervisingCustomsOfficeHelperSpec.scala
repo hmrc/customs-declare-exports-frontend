@@ -18,14 +18,9 @@ package controllers.helpers
 
 import base.ExportsTestData.modifierForPC1040
 import base.{JourneyTypeTestRunner, MockAuthAction, MockExportCacheService, UnitSpec}
-import controllers.declaration.routes.{
-  DepartureTransportController,
-  ExpressConsignmentController,
-  InlandOrBorderController,
-  InlandTransportDetailsController
-}
 import controllers.helpers.TransportSectionHelper._
-import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.SUPPLEMENTARY_EIDR
+import controllers.section6.routes._
+import forms.section1.additionaldeclarationtype.AdditionalDeclarationType.SUPPLEMENTARY_EIDR
 import models.DeclarationType.CLEARANCE
 import services.cache.{ExportsDeclarationBuilder, ExportsItemBuilder}
 

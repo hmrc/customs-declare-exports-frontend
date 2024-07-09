@@ -73,10 +73,10 @@ object YesNoAnswer {
 
   val allowedValues: Seq[String] = Seq(yes, no)
 
-  val Yes = Some(YesNoAnswer(yes))
-  val No = Some(YesNoAnswer(no))
+  val Yes: Some[YesNoAnswer] = Some(YesNoAnswer(yes))
+  val No: Some[YesNoAnswer] = Some(YesNoAnswer(no))
 
-  val allYesNoAnswers = Seq(YesNoAnswers.yes, YesNoAnswers.no)
+  val allYesNoAnswers: Seq[ExportsFieldPointer] = List(YesNoAnswers.yes, YesNoAnswers.no)
 
   private def mapping(fieldName: String, errorKey: String): Mapping[YesNoAnswer] =
     Forms.mapping(

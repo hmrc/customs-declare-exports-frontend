@@ -17,7 +17,7 @@
 package models.viewmodels.errors
 
 import connectors.CodeListConnector
-import controllers.declaration.routes.ProcedureCodesController
+import controllers.section5.routes.ProcedureCodesController
 import models.Pointer
 import models.declaration.errors.ErrorInstance
 import play.api.i18n.Messages

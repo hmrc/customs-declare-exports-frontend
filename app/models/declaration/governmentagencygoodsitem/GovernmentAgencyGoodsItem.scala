@@ -16,7 +16,7 @@
 
 package models.declaration.governmentagencygoodsitem
 
-import forms.declaration.{AdditionalFiscalReference, AdditionalInformation}
+import forms.section5.{AdditionalFiscalReference, AdditionalInformation}
 import play.api.libs.json.{Json, OFormat}
 
 object Formats {

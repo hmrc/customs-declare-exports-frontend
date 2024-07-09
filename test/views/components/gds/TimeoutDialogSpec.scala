@@ -23,9 +23,9 @@ import controllers.routes.SignOutController
 import play.api.Configuration
 import play.api.inject.bind
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
-import views.declaration.spec.UnitViewSpec
 import views.helpers.CommonMessages
 import views.html.choice_page
+import views.common.UnitViewSpec
 
 import scala.jdk.CollectionConverters.IteratorHasAsScala
 

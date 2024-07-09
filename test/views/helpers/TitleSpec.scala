@@ -16,7 +16,7 @@
 
 package views.helpers
 
-import views.declaration.spec.UnitViewSpec
+import views.common.UnitViewSpec
 
 class TitleSpec extends UnitViewSpec {
 

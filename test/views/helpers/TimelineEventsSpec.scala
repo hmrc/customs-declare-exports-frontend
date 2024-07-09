@@ -20,7 +20,7 @@ import base.Injector
 import controllers.declaration.amendments.routes.AmendmentDetailsController
 import controllers.declaration.routes.SubmissionController
 import controllers.routes.RejectedNotificationsController
-import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
+import forms.section1.additionaldeclarationtype.AdditionalDeclarationType._
 import models.declaration.submissions.EnhancedStatus._
 import models.declaration.submissions.RequestType.{CancellationRequest, SubmissionRequest}
 import models.declaration.submissions.{Action, EnhancedStatus, NotificationSummary, Submission}
@@ -28,10 +28,10 @@ import org.jsoup.Jsoup
 import org.mockito.Mockito.when
 import org.scalatest.BeforeAndAfterEach
 import play.api.libs.json.Json
-import views.declaration.spec.UnitViewSpec
 import views.helpers.TimelineEventsSpec._
 import views.html.components.gds.{link, linkButton, paragraphBody}
 import views.html.components.upload_files_partial_for_timeline
+import views.common.UnitViewSpec
 
 import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit.SECONDS

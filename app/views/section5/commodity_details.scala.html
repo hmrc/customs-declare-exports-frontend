@@ -1,0 +1,104 @@
+@*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import config.AppConfig
+@import controllers.navigation.{ItemId, Navigator}
+@import controllers.section5.routes.CommodityDetailsController
+@import forms.section5.CommodityDetails
+@import models.requests.JourneyRequest
+@import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF, GovukHint, Hint, Text}
+@import views.helpers.{BackButton, Title}
+@import views.html.components.gds._
+
+@this(
+    govukLayout: gdsMainTemplate,
+    govukHint: GovukHint,
+    sectionHeader: sectionHeader,
+    notificationBanner: notificationBanner,
+    pageTitle: pageTitle,
+    paragraph: paragraphBody,
+    inputText: exportsInputText,
+    label: label,
+    characterCount: exportsInputCharacterCount,
+    errorSummary: errorSummary,
+    saveButtons: saveButtons,
+    tariffExpander: tariffExpander,
+    externalLink: externalLink,
+    appConfig: AppConfig,
+    navigator: Navigator,
+    formHelper: FormWithCSRF
+)
+
+@(itemId: String, form: Form[CommodityDetails])(implicit request: JourneyRequest[_], messages: Messages)
+
+@hasErrors = @{form.hasErrors || form.hasGlobalErrors}
+
+@commodityCodeBody = {
+    @paragraph(messages(
+        "declaration.commodityDetails.combinedNomenclatureCode.body.1",
+        externalLink(messages("declaration.commodityDetails.combinedNomenclatureCode.body.1.link"), appConfig.commodityCodeHelpUrl)
+    ))
+    @paragraph(messages("declaration.commodityDetails.combinedNomenclatureCode.body.2"))
+}
+
+@govukLayout(
+    title = Title("declaration.commodityDetails.title", "declaration.section.5", hasErrors = hasErrors),
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(CommodityDetails, ItemId(itemId))))) {
+
+    @formHelper(action = CommodityDetailsController.submitForm(itemId), 'autoComplete -> "off") {
+        @errorSummary(form.errors)
+
+        @notificationBanner(
+            title = messages("declaration.commodityDetails.notification.title"),
+            content = new Html(List(
+              paragraph(messages("declaration.commodityDetails.notification.body.1")),
+              paragraph(messages("declaration.commodityDetails.notification.body.2"))
+            ))
+        )
+
+        @sectionHeader(messages("declaration.section.5"))
+
+        @pageTitle(messages("declaration.commodityDetails.title"))
+
+        @inputText(
+            field = form(CommodityDetails.combinedNomenclatureCodeKey),
+            labelKey = "declaration.commodityDetails.combinedNomenclatureCode.label",
+            isSubHeading = true,
+            bodyHtml = Some(commodityCodeBody),
+            inputClasses = Some("govuk-input--width-10")
+        )
+
+        @label(
+          "declaration.commodityDetails.description.label",
+          form(CommodityDetails.descriptionOfGoodsKey).id,
+          isSubHeading = true,
+          subHeadingClasses = "govuk-heading govuk-heading-m"
+        )
+
+        @govukHint(Hint(content = Text(messages("declaration.commodityDetails.description.hint"))))
+
+        @characterCount(
+            field = form(CommodityDetails.descriptionOfGoodsKey),
+            labelClasses = "govuk-label--m",
+            maxLength = Some(CommodityDetails.descriptionOfGoodsMaxLength)
+        )
+
+        @tariffExpander(CommodityDetails, request.declarationType)(messages, appConfig)
+
+        @saveButtons()
+
+    }
+}

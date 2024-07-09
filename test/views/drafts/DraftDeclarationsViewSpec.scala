@@ -25,8 +25,8 @@ import org.jsoup.nodes.Element
 import org.mockito.Mockito.when
 import play.twirl.api.Html
 import play.twirl.api.HtmlFormat.Appendable
-import views.declaration.spec.UnitViewSpec
 import views.html.drafts.draft_declarations
+import views.common.UnitViewSpec
 import views.tags.ViewTest
 
 import java.time.{LocalDate, LocalDateTime, ZoneOffset}

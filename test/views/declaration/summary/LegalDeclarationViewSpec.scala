@@ -20,8 +20,8 @@ import base.Injector
 import controllers.declaration.routes.{SubmissionController, SummaryController}
 import forms.declaration.LegalDeclaration
 import forms.declaration.LegalDeclaration.{confirmationKey, emailKey, jobRoleKey, nameKey}
-import views.declaration.spec.UnitViewSpec
 import views.html.declaration.summary.legal_declaration
+import views.common.UnitViewSpec
 
 class LegalDeclarationViewSpec extends UnitViewSpec with Injector {
 

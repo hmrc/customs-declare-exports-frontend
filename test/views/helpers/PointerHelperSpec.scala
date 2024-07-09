@@ -18,7 +18,10 @@ package views.helpers
 
 import base.ExportsTestData.eori
 import base.{Injector, UnitSpec}
-import controllers.declaration.routes
+import controllers.section1.routes.DeclarantDetailsController
+import controllers.section2.routes.PersonPresentingGoodsDetailsController
+import controllers.section4.routes.TotalPackageQuantityController
+import controllers.section5.routes.AdditionalDocumentsController
 import forms.common.Eori
 import models.DeclarationType.CLEARANCE
 import models.Pointer
@@ -47,7 +50,7 @@ class PointerHelperSpec extends UnitSpec with ExportsTestHelper with Injector {
           val result = PointerHelper.getChangeLinkCall(Some(Pointer("declaration.totalPackageQuantity")), aDeclaration())
 
           result.isDefined mustBe true
-          result.get.url mustBe routes.TotalPackageQuantityController.displayPage.url
+          result.get.url mustBe TotalPackageQuantityController.displayPage.url
         }
       }
 
@@ -76,7 +79,7 @@ class PointerHelperSpec extends UnitSpec with ExportsTestHelper with Injector {
           )
 
           result.isDefined mustBe true
-          result.get.url mustBe routes.AdditionalDocumentsController.displayPage(sampleItemId).url
+          result.get.url mustBe AdditionalDocumentsController.displayPage(sampleItemId).url
         }
       }
 
@@ -88,14 +91,14 @@ class PointerHelperSpec extends UnitSpec with ExportsTestHelper with Injector {
           )
 
           result.isDefined mustBe true
-          result.get mustBe routes.PersonPresentingGoodsDetailsController.displayPage
+          result.get mustBe PersonPresentingGoodsDetailsController.displayPage
         }
 
         "also has a declaration that is NOT of type CLEARANCE, EXS=true and personPresentingGoodsDetails is populated" in {
           val result = PointerHelper.getChangeLinkCall(Some(Pointer("declaration.declarantDetails.details.eori")), aStandardDeclaration)
 
           result.isDefined mustBe true
-          result.get mustBe routes.DeclarantDetailsController.displayPage
+          result.get mustBe DeclarantDetailsController.displayPage
         }
       }
     }

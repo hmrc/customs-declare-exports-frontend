@@ -27,8 +27,8 @@ import play.api.i18n.Messages
 import play.api.inject.bind
 import services.cache.ExportsTestHelper
 import tools.Stubs
-import views.declaration.spec.UnitViewSpec
 import views.html.errors_reported
+import views.common.UnitViewSpec
 
 class ErrorsReportedViewSpec extends UnitViewSpec with ExportsTestHelper with Injector with Stubs {
 

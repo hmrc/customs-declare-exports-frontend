@@ -18,7 +18,8 @@ package services.cache
 
 import base.ExportsTestData.{eori, newUser}
 import base.RequestBuilder
-import forms.declaration._
+import forms.section3.LocationOfGoods
+import forms.section6.{ModeOfTransportCode, SupervisingCustomsOffice, WarehouseIdentification}
 import models.DeclarationType.{DeclarationType, STANDARD}
 import models.ExportsDeclaration
 import models.declaration.Container

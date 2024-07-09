@@ -18,8 +18,8 @@ package views.helpers
 
 import config.AppConfig
 import forms.common.YesNoAnswer.Yes
-import forms.declaration.AuthorisationProcedureCodeChoice.{Choice1007, Choice1040, ChoiceOthers}
-import forms.declaration.Document
+import forms.section2.AuthorisationProcedureCodeChoice.{Choice1007, Choice1040, ChoiceOthers}
+import forms.section4.Document
 import models.DeclarationType._
 import models.requests.JourneyRequest
 import play.api.data.Form

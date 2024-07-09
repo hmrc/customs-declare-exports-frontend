@@ -17,8 +17,8 @@
 package views
 
 import base.Injector
-import views.declaration.spec.UnitViewSpec
 import views.html.unverified_email
+import views.common.UnitViewSpec
 
 import scala.jdk.CollectionConverters.CollectionHasAsScala
 

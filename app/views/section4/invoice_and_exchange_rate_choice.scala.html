@@ -1,0 +1,72 @@
+@*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import config.AppConfig
+@import controllers.navigation.Navigator
+@import controllers.section4.routes.InvoiceAndExchangeRateChoiceController
+@import forms.common.YesNoAnswer
+@import forms.section4.InvoiceAndExchangeRateChoice
+@import models.requests.JourneyRequest
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.helpers.{BackButton, Title}
+@import views.helpers.ErrorMapper.yesNoErrors
+@import views.html.components.gds._
+
+@this(
+    govukLayout: gdsMainTemplate,
+    errorSummary: errorSummary,
+    sectionHeader: sectionHeader,
+    heading: heading,
+    paragraphBody: paragraphBody,
+    yesNoRadios: yesNoRadios,
+    saveButtons: saveButtons,
+    tariffExpander: tariffExpander,
+    formHelper: FormWithCSRF,
+    navigator: Navigator,
+    appConfig: AppConfig
+)
+
+@(form: Form[YesNoAnswer])(implicit request: JourneyRequest[_], messages: Messages)
+
+@hasErrors = @{form.hasErrors || form.hasGlobalErrors}
+
+@govukLayout(
+    title = Title("declaration.invoice.amount.choice.title", "declaration.section.4", hasErrors = hasErrors),
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(InvoiceAndExchangeRateChoice)))) {
+
+    @formHelper(action = InvoiceAndExchangeRateChoiceController.submitForm, 'autoComplete -> "off") {
+        @errorSummary(yesNoErrors(form.errors))
+
+        @sectionHeader(messages("declaration.section.4"))
+
+        @heading(messages("declaration.invoice.amount.choice.title"))
+
+        @yesNoRadios(
+            form = form,
+            noKey = Some("declaration.invoice.amount.choice.answer.no"),
+            heading = Some(Fieldset(
+                legend = Some(Legend(
+                    content = Text(messages("declaration.invoice.amount.choice.title")),
+                    classes = "govuk-visually-hidden"
+               ))
+            ))
+        )
+
+        @tariffExpander(InvoiceAndExchangeRateChoice, request.declarationType)(messages, appConfig)
+
+        @saveButtons()
+    }
+}

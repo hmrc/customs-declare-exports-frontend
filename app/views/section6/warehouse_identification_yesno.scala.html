@@ -1,0 +1,91 @@
+@*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import config.AppConfig
+@import controllers.navigation.Navigator
+@import controllers.section6.routes.WarehouseIdentificationController
+@import forms.common.YesNoAnswer.YesNoAnswers._
+@import forms.section6.WarehouseIdentification
+@import forms.section6.WarehouseIdentification._
+@import models.requests.JourneyRequest
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.components.gds.Styles._
+@import views.helpers.{BackButton, Title}
+@import views.html.components.gds._
+
+@this(
+    govukLayout: gdsMainTemplate,
+    govukRadios: GovukRadios,
+    errorSummary: errorSummary,
+    sectionHeader: sectionHeader,
+    exportsInputText: exportsInputText,
+    saveButtons: saveButtons,
+    tariffExpander: tariffExpander,
+    formHelper: FormWithCSRF,
+    navigator: Navigator,
+    appConfig: AppConfig
+)
+
+@(form: Form[WarehouseIdentification])(implicit request: JourneyRequest[_], messages: Messages)
+
+@hasErrors = @{form.hasErrors || form.hasGlobalErrors}
+
+@govukLayout(
+    title = Title("declaration.warehouse.identification.optional.title", "declaration.section.6", hasErrors = hasErrors),
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(WarehouseIdentification)))) {
+
+    @formHelper(action = WarehouseIdentificationController.saveIdentificationNumber, 'autoComplete -> "off") {
+        @errorSummary(form.errors)
+
+        @sectionHeader(messages("declaration.section.6"))
+
+        @govukRadios(Radios(
+            name = inWarehouseKey,
+            fieldset = Some(Fieldset(
+                legend = Some(Legend(
+                    content = Text(messages("declaration.warehouse.identification.optional.title")),
+                    classes = gdsPageLegend,
+                    isPageHeading = true
+                ))
+            )),
+            items = Seq(
+                RadioItem(
+                    id = Some("code_yes"),
+                    value = Some(yes),
+                    content = Text(messages("site.yes")),
+                    conditionalHtml = Some(exportsInputText(
+                        field = form("identificationNumber"),
+                        inputClasses = Some("govuk-input govuk-input--width-10"),
+                        labelKey = "declaration.warehouse.identification.label",
+                        hintKey = Some("declaration.warehouse.identification.label.hint")
+                    )),
+                    checked = form(inWarehouseKey).value.contains(yes)
+                ),
+                RadioItem(
+                    id = Some("code_no"),
+                    value = Some(no),
+                    content = Text(messages("site.no")),
+                    checked = form(inWarehouseKey).value.contains(no)
+                )
+            ),
+            errorMessage = form(inWarehouseKey).error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
+        ))
+
+        @tariffExpander(WarehouseIdentification, request.declarationType)(messages, appConfig)
+
+        @saveButtons()
+    }
+}

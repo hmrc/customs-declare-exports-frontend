@@ -16,12 +16,13 @@
 
 package controllers.navigation
 
-import controllers.declaration.routes.{SummaryController, SupplementaryUnitsController}
+import controllers.declaration.routes.SummaryController
 import controllers.helpers.ErrorFixModeHelper.{inErrorFixMode, setErrorFixMode}
 import controllers.helpers._
 import controllers.routes.RejectedNotificationsController
+import controllers.section5.routes.SupplementaryUnitsController
 import forms.DeclarationPage
-import forms.declaration._
+import forms.section5.{AdditionalInformationRequired, AdditionalInformationSummary}
 import models.DeclarationType._
 import models.ExportsDeclaration
 import models.requests.JourneyRequest

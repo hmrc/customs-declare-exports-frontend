@@ -16,7 +16,7 @@
 
 package controllers.helpers
 
-import forms.declaration.Seal
+import forms.section6.Seal
 import org.apache.commons.lang3.RandomStringUtils
 import play.api.data.{Form, FormError}
 

@@ -19,7 +19,7 @@ package views.helpers
 import base.Injector
 import connectors.CodeListConnector
 import forms.common.Eori
-import forms.declaration.AdditionalActor
+import forms.section2.AdditionalActor
 import models.Pointer
 import models.declaration.notifications.{Notification, NotificationError}
 import models.declaration.submissions.SubmissionStatus
@@ -28,9 +28,9 @@ import org.mockito.ArgumentMatchers.{any, eq => meq}
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import services.cache.{ExportsDeclarationBuilder, ExportsItemBuilder}
-import views.declaration.spec.UnitViewSpec
 import views.helpers.PointerPatterns.pointerToDucr
 import views.html.components.gds.link
+import views.common.UnitViewSpec
 
 import java.net.URLDecoder
 import java.nio.charset.StandardCharsets.UTF_8

@@ -22,8 +22,8 @@ import controllers.routes.ChoiceController
 import models.declaration.submissions.EnhancedStatus._
 import org.scalatest.GivenWhenThen
 import play.twirl.api.HtmlFormat.Appendable
-import views.declaration.spec.UnitViewSpec
 import views.html.cancellation_result
+import views.common.UnitViewSpec
 import views.tags.ViewTest
 
 @ViewTest

@@ -18,11 +18,12 @@ package views.helpers.summary
 
 import base.ExportsTestData.mucr
 import base.Injector
-import controllers.declaration.routes._
+import controllers.section1.routes._
+import controllers.section2.routes.{DeclarantExporterController, EntryIntoDeclarantsRecordsController}
 import forms.common.Eori
 import forms.common.YesNoAnswer.YesNoAnswers.yes
-import forms.declaration.ConsignmentReferences
-import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.STANDARD_PRE_LODGED
+import forms.section1.additionaldeclarationtype.AdditionalDeclarationType.STANDARD_PRE_LODGED
+import forms.section1.ConsignmentReferences
 import forms.{Ducr, Lrn, Mrn}
 import models.DeclarationType._
 import models.ExportsDeclaration
@@ -34,11 +35,11 @@ import org.scalatest.OptionValues
 import play.api.libs.json.Json
 import play.twirl.api.Html
 import services.cache.ExportsTestHelper
-import views.declaration.spec.UnitViewSpec
 import views.helpers.EnhancedStatusHelper.asText
 import views.helpers.ViewDates
 import views.helpers.ViewDates.formatDateAtTime
 import views.helpers.summary.Card1ForReferencesSpec.{notifications, submission}
+import views.common.UnitViewSpec
 
 import scala.concurrent.duration.Duration
 

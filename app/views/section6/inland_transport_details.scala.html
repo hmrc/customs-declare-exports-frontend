@@ -1,0 +1,131 @@
+@*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import config.AppConfig
+@import controllers.navigation.Navigator
+@import controllers.section6.routes.InlandTransportDetailsController
+@import forms.section6.InlandModeOfTransportCode
+@import forms.section6.ModeOfTransportCode._
+@import models.requests.JourneyRequest
+@import play.twirl.api.HtmlFormat
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.components.gds.Styles._
+@import views.helpers.{BackButton, Title}
+@import views.html.components.gds._
+
+@this(
+        govukLayout: gdsMainTemplate,
+        govukFieldset: GovukFieldset,
+        govukDetails : GovukDetails,
+        govukRadios: GovukRadios,
+        errorSummary: errorSummary,
+        sectionHeader: sectionHeader,
+        exportsInputText: exportsInputText,
+        saveButtons: saveButtons,
+        body: paragraphBody,
+        tariffExpander: tariffExpander,
+        formHelper: FormWithCSRF,
+        navigator: Navigator,
+        appConfig: AppConfig
+)
+
+@(form: Form[InlandModeOfTransportCode])(implicit request: JourneyRequest[_], messages: Messages)
+
+@hasErrors = @{form.hasErrors || form.hasGlobalErrors}
+
+@govukLayout(
+    title = Title("declaration.warehouse.inlandTransportDetails.title", "declaration.section.6", hasErrors = hasErrors),
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(InlandModeOfTransportCode)))) {
+
+    @formHelper(InlandTransportDetailsController.submit, 'autoComplete -> "off") {
+        @errorSummary(form.errors)
+
+        @sectionHeader(messages("declaration.section.6"))
+
+        @govukFieldset(Fieldset(
+            legend = Some(Legend(
+                content = Text(messages("declaration.warehouse.inlandTransportDetails.title")),
+                isPageHeading = true,
+                classes = gdsPageLegend
+            )),
+            html = HtmlFormat.fill(List(
+                body(messages("declaration.warehouse.inlandTransportDetails.body")),
+                govukRadios(Radios(
+                    name = "inlandModeOfTransportCode",
+                    items = Seq(
+                        RadioItem(
+                            id = Some("Inland_Road"),
+                            value = Some(Road.value),
+                            content = Text(messages("declaration.warehouse.inlandTransportDetails.transportMode.road")),
+                            hint = Some(Hint(content = Text(messages("declaration.warehouse.inlandTransportDetails.transportMode.road.hint")))),
+                            checked = form("inlandModeOfTransportCode").value.contains(Road.value)
+                        ),
+                        RadioItem(
+                            id = Some("Inland_Rail"),
+                            value = Some(Rail.value),
+                            content = Text(messages("declaration.warehouse.inlandTransportDetails.transportMode.rail")),
+                            checked = form("inlandModeOfTransportCode").value.contains(Rail.value)
+                        ),
+                        RadioItem(
+                            id = Some("Inland_Sea"),
+                            value = Some(Maritime.value),
+                            content = Text(messages("declaration.warehouse.inlandTransportDetails.transportMode.sea")),
+                            hint = Some(Hint(content = Text(messages("declaration.warehouse.inlandTransportDetails.transportMode.sea.hint")))),
+                            checked = form("inlandModeOfTransportCode").value.contains(Maritime.value)
+                        ),
+                        RadioItem(
+                            id = Some("Inland_Air"),
+                            value = Some(Air.value),
+                            content = Text(messages("declaration.warehouse.inlandTransportDetails.transportMode.air")),
+                            hint = Some(Hint(content = Text(messages("declaration.warehouse.inlandTransportDetails.transportMode.air.hint")))),
+                            checked = form("inlandModeOfTransportCode").value.contains(Air.value)
+                        ),
+                        RadioItem(
+                            id = Some("Inland_PostalOrMail"),
+                            value = Some(PostalConsignment.value),
+                            content = Text(messages("declaration.warehouse.inlandTransportDetails.transportMode.postalOrMail")),
+                            hint = Some(Hint(content = Text(messages("declaration.warehouse.inlandTransportDetails.transportMode.postalOrMail.hint")))),
+                            checked = form("inlandModeOfTransportCode").value.contains(PostalConsignment.value)
+                        ),
+                        RadioItem(
+                            id = Some("Inland_FixedTransportInstallations"),
+                            value = Some(FixedTransportInstallations.value),
+                            content = Text(messages("declaration.warehouse.inlandTransportDetails.transportMode.fixedTransportInstallations")),
+                            hint = Some(Hint(content = Text(messages("declaration.warehouse.inlandTransportDetails.transportMode.fixedTransportInstallations.hint")))),
+                            checked = form("inlandModeOfTransportCode").value.contains(FixedTransportInstallations.value)
+                        ),
+                        RadioItem(
+                            id = Some("Inland_InlandWaterway"),
+                            value = Some(InlandWaterway.value),
+                            content = Text(messages("declaration.warehouse.inlandTransportDetails.transportMode.inlandWaterway")),
+                            checked = form("inlandModeOfTransportCode").value.contains(InlandWaterway.value)
+                        ),
+                        RadioItem(
+                            id = Some("Inland_Unknown"),
+                            value = Some(Unknown.value),
+                            content = Text(messages("declaration.warehouse.inlandTransportDetails.transportMode.unknown")),
+                            hint = Some(Hint(content = Text(messages("declaration.warehouse.inlandTransportDetails.transportMode.unknown.hint")))),
+                            checked = form("inlandModeOfTransportCode").value.contains(Unknown.value)
+                        )
+                    ),
+                    errorMessage = form("inlandModeOfTransportCode").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
+                )),
+                tariffExpander(InlandModeOfTransportCode, request.declarationType)(messages, appConfig),
+                saveButtons()
+            ))
+        ))
+    }
+}

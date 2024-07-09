@@ -19,11 +19,11 @@ package views.cancellation
 import base.ExportsTestData.mrn
 import base.Injector
 import controllers.routes.CancellationResultController
-import views.declaration.spec.UnitViewSpec
 import views.html.cancellation_holding
 import views.tags.ViewTest
 import org.jsoup.nodes.Document
 import org.scalatest.GivenWhenThen
+import views.common.UnitViewSpec
 
 import scala.jdk.CollectionConverters.IteratorHasAsScala
 

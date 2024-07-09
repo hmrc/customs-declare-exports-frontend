@@ -11,523 +11,531 @@ GET         /declaration-choice                 controllers.declaration.Declarat
 
 POST        /declaration-choice                 controllers.declaration.DeclarationChoiceController.submitChoice
 
+## SECTION 1 -----------------------------------------------------------------------------------------------------------
+
 # Declaration type
 
-GET         /type                                controllers.declaration.AdditionalDeclarationTypeController.displayPage
+GET         /type                                controllers.section1.AdditionalDeclarationTypeController.displayPage
 
-POST        /type                                controllers.declaration.AdditionalDeclarationTypeController.submitForm
+POST        /type                                controllers.section1.AdditionalDeclarationTypeController.submitForm
 
 # Declarant EORI
 
-GET         /declarant-details                   controllers.declaration.DeclarantDetailsController.displayPage
+GET         /declarant-details                   controllers.section1.DeclarantDetailsController.displayPage
 
-POST        /declarant-details                   controllers.declaration.DeclarantDetailsController.submitForm
+POST        /declarant-details                   controllers.section1.DeclarantDetailsController.submitForm
 
 # Not Eligible
 
-GET         /not-eligible                       controllers.declaration.NotEligibleController.displayNotEligible
+GET         /not-eligible                       controllers.section1.NotEligibleController.displayNotEligible
 
-GET         /not-declarant                      controllers.declaration.NotEligibleController.displayNotDeclarant
+GET         /not-declarant                      controllers.section1.NotEligibleController.displayNotDeclarant
 
 # DUCR Choice
 
-GET         /do-you-have-ducr                    controllers.declaration.DucrChoiceController.displayPage
+GET         /do-you-have-ducr                    controllers.section1.DucrChoiceController.displayPage
 
-POST        /do-you-have-ducr                    controllers.declaration.DucrChoiceController.submitForm
+POST        /do-you-have-ducr                    controllers.section1.DucrChoiceController.submitForm
 
 # DUCR
 
-GET         /ducr-entry                          controllers.declaration.DucrEntryController.displayPage
+GET         /ducr-entry                          controllers.section1.DucrEntryController.displayPage
 
-POST        /ducr-entry                          controllers.declaration.DucrEntryController.submitForm
+POST        /ducr-entry                          controllers.section1.DucrEntryController.submitForm
 
 # LRN
 
-GET         /local-reference-number              controllers.declaration.LocalReferenceNumberController.displayPage
+GET         /local-reference-number              controllers.section1.LocalReferenceNumberController.displayPage
 
-POST        /local-reference-number              controllers.declaration.LocalReferenceNumberController.submitForm
+POST        /local-reference-number              controllers.section1.LocalReferenceNumberController.submitForm
 
 # Trader reference
 
-GET         /trader-reference                   controllers.declaration.TraderReferenceController.displayPage
+GET         /trader-reference                   controllers.section1.TraderReferenceController.displayPage
 
-POST        /trader-reference                   controllers.declaration.TraderReferenceController.submitForm
+POST        /trader-reference                   controllers.section1.TraderReferenceController.submitForm
 
 # Confirm DUCR
 
-GET         /confirm-ducr                       controllers.declaration.ConfirmDucrController.displayPage
+GET         /confirm-ducr                       controllers.section1.ConfirmDucrController.displayPage
 
-POST        /confirm-ducr                       controllers.declaration.ConfirmDucrController.submitForm
+POST        /confirm-ducr                       controllers.section1.ConfirmDucrController.submitForm
 
 # Consignment references
 
-GET         /consignment-references              controllers.declaration.ConsignmentReferencesController.displayPage
+GET         /consignment-references              controllers.section1.ConsignmentReferencesController.displayPage
 
-POST        /consignment-references              controllers.declaration.ConsignmentReferencesController.submitForm
+POST        /consignment-references              controllers.section1.ConsignmentReferencesController.submitForm
 
 # MUCR
 
-GET         /link-to-mucr                        controllers.declaration.LinkDucrToMucrController.displayPage
+GET         /link-to-mucr                        controllers.section1.LinkDucrToMucrController.displayPage
 
-POST        /link-to-mucr                        controllers.declaration.LinkDucrToMucrController.submitForm
+POST        /link-to-mucr                        controllers.section1.LinkDucrToMucrController.submitForm
 
-GET         /enter-a-mucr                        controllers.declaration.MucrController.displayPage
+GET         /enter-a-mucr                        controllers.section1.MucrController.displayPage
 
-POST        /enter-a-mucr                        controllers.declaration.MucrController.submitForm
+POST        /enter-a-mucr                        controllers.section1.MucrController.submitForm
+
+## SECTION 2 -----------------------------------------------------------------------------------------------------------
 
 # Entry into Declarant records (Clearance journey)
 
-GET         /entry-into-declarants-records       controllers.declaration.EntryIntoDeclarantsRecordsController.displayPage
+GET         /entry-into-declarants-records       controllers.section2.EntryIntoDeclarantsRecordsController.displayPage
 
-POST        /entry-into-declarants-records       controllers.declaration.EntryIntoDeclarantsRecordsController.submitForm
+POST        /entry-into-declarants-records       controllers.section2.EntryIntoDeclarantsRecordsController.submitForm
 
 # Person presenting goods (Clearance journey)
 
-GET         /person-presenting-goods             controllers.declaration.PersonPresentingGoodsDetailsController.displayPage
+GET         /person-presenting-goods             controllers.section2.PersonPresentingGoodsDetailsController.displayPage
 
-POST        /person-presenting-goods             controllers.declaration.PersonPresentingGoodsDetailsController.submitForm
+POST        /person-presenting-goods             controllers.section2.PersonPresentingGoodsDetailsController.submitForm
 
 # Declarant is exporter
 
-GET         /are-you-the-exporter                controllers.declaration.DeclarantExporterController.displayPage
+GET         /are-you-the-exporter                controllers.section2.DeclarantExporterController.displayPage
 
-POST        /are-you-the-exporter                controllers.declaration.DeclarantExporterController.submitForm
+POST        /are-you-the-exporter                controllers.section2.DeclarantExporterController.submitForm
 
 # Declarant is not the exporter - Exporter EORI (if known)
 
-GET         /exporter-eori-number                controllers.declaration.ExporterEoriNumberController.displayPage
+GET         /exporter-eori-number                controllers.section2.ExporterEoriNumberController.displayPage
 
-POST        /exporter-eori-number                controllers.declaration.ExporterEoriNumberController.submit
+POST        /exporter-eori-number                controllers.section2.ExporterEoriNumberController.submit
 
 # Declarant is not the exporter - Exporter address (EORI is not known)
 
-GET         /exporter-address                    controllers.declaration.ExporterDetailsController.displayPage
+GET         /exporter-address                    controllers.section2.ExporterDetailsController.displayPage
 
-POST        /exporter-address                    controllers.declaration.ExporterDetailsController.saveAddress
+POST        /exporter-address                    controllers.section2.ExporterDetailsController.saveAddress
 
 # EXS Declaration (Clearance journey)
 
-GET         /is-this-exs                         controllers.declaration.IsExsController.displayPage
+GET         /is-this-exs                         controllers.section2.IsExsController.displayPage
 
-POST        /is-this-exs                         controllers.declaration.IsExsController.submit
+POST        /is-this-exs                         controllers.section2.IsExsController.submit
 
 # Consignor Eori Number (Clearance journey)
 
-GET         /consignor-eori-number               controllers.declaration.ConsignorEoriNumberController.displayPage
+GET         /consignor-eori-number               controllers.section2.ConsignorEoriNumberController.displayPage
 
-POST        /consignor-eori-number               controllers.declaration.ConsignorEoriNumberController.submit
+POST        /consignor-eori-number               controllers.section2.ConsignorEoriNumberController.submit
 
 # Consignor address (Clearance journey)
 
-GET         /consignor-address                   controllers.declaration.ConsignorDetailsController.displayPage
+GET         /consignor-address                   controllers.section2.ConsignorDetailsController.displayPage
 
-POST        /consignor-address                   controllers.declaration.ConsignorDetailsController.saveAddress
+POST        /consignor-address                   controllers.section2.ConsignorDetailsController.saveAddress
 
 # Declarant is not the exporter - Representative details
 
-GET         /are-you-completing-this-declaration-on-behalf-of-another-agent  controllers.declaration.RepresentativeAgentController.displayPage
+GET         /are-you-completing-this-declaration-on-behalf-of-another-agent  controllers.section2.RepresentativeAgentController.displayPage
 
-POST        /are-you-completing-this-declaration-on-behalf-of-another-agent  controllers.declaration.RepresentativeAgentController.submitForm
+POST        /are-you-completing-this-declaration-on-behalf-of-another-agent  controllers.section2.RepresentativeAgentController.submitForm
 
 # Declarant is not the exporter - Representative EORI (if known)
 
-GET         /representatives-eori-number         controllers.declaration.RepresentativeEntityController.displayPage
+GET         /representatives-eori-number         controllers.section2.RepresentativeEntityController.displayPage
 
-POST        /representatives-eori-number         controllers.declaration.RepresentativeEntityController.submitForm
+POST        /representatives-eori-number         controllers.section2.RepresentativeEntityController.submitForm
 
 # Declarant is not the exporter - Representative type (EORI not known)
 
-GET         /representation-type-agreed          controllers.declaration.RepresentativeStatusController.displayPage
+GET         /representation-type-agreed          controllers.section2.RepresentativeStatusController.displayPage
 
-POST        /representation-type-agreed          controllers.declaration.RepresentativeStatusController.submitForm
+POST        /representation-type-agreed          controllers.section2.RepresentativeStatusController.submitForm
 
 # Third Party Goods Transportation
 
-GET         /third-party-goods-transportation    controllers.declaration.ThirdPartyGoodsTransportationController.displayPage
+GET         /third-party-goods-transportation    controllers.section2.ThirdPartyGoodsTransportationController.displayPage
 
-POST        /third-party-goods-transportation    controllers.declaration.ThirdPartyGoodsTransportationController.submitPage
+POST        /third-party-goods-transportation    controllers.section2.ThirdPartyGoodsTransportationController.submitPage
 
 # Carrier Eori Number (if known)
 
-GET         /carrier-eori-number                 controllers.declaration.CarrierEoriNumberController.displayPage
+GET         /carrier-eori-number                 controllers.section2.CarrierEoriNumberController.displayPage
 
-POST        /carrier-eori-number                 controllers.declaration.CarrierEoriNumberController.submit
+POST        /carrier-eori-number                 controllers.section2.CarrierEoriNumberController.submit
 
 # Carrier details (Carrier's EORI not known)
 
-GET         /carrier-address                     controllers.declaration.CarrierDetailsController.displayPage
+GET         /carrier-address                     controllers.section2.CarrierDetailsController.displayPage
 
-POST        /carrier-address                     controllers.declaration.CarrierDetailsController.saveAddress
+POST        /carrier-address                     controllers.section2.CarrierDetailsController.saveAddress
 
 # Consignee details
 
-GET         /consignee-details                   controllers.declaration.ConsigneeDetailsController.displayPage
+GET         /consignee-details                   controllers.section2.ConsigneeDetailsController.displayPage
 
-POST        /consignee-details                   controllers.declaration.ConsigneeDetailsController.saveAddress
+POST        /consignee-details                   controllers.section2.ConsigneeDetailsController.saveAddress
 
 # Declaration other parties
 
-GET         /other-parties-involved              controllers.declaration.AdditionalActorsAddController.displayPage
+GET         /other-parties-involved              controllers.section2.AdditionalActorsAddController.displayPage
 
-POST        /other-parties-involved              controllers.declaration.AdditionalActorsAddController.saveForm
+POST        /other-parties-involved              controllers.section2.AdditionalActorsAddController.saveForm
 
-GET         /other-parties-list                  controllers.declaration.AdditionalActorsSummaryController.displayPage
+GET         /other-parties-list                  controllers.section2.AdditionalActorsSummaryController.displayPage
 
-POST        /other-parties-list                  controllers.declaration.AdditionalActorsSummaryController.submitForm
+POST        /other-parties-list                  controllers.section2.AdditionalActorsSummaryController.submitForm
 
-GET         /other-party/:id/remove              controllers.declaration.AdditionalActorsRemoveController.displayPage(id: String)
+GET         /other-party/:id/remove              controllers.section2.AdditionalActorsRemoveController.displayPage(id: String)
 
-POST        /other-party/:id/remove              controllers.declaration.AdditionalActorsRemoveController.submitForm(id: String)
+POST        /other-party/:id/remove              controllers.section2.AdditionalActorsRemoveController.submitForm(id: String)
 
 # Declaration holder of authorisation
 
-GET         /authorisation-choice                controllers.declaration.AuthorisationProcedureCodeChoiceController.displayPage
+GET         /authorisation-choice                controllers.section2.AuthorisationProcedureCodeChoiceController.displayPage
 
-POST        /authorisation-choice                controllers.declaration.AuthorisationProcedureCodeChoiceController.submitForm
+POST        /authorisation-choice                controllers.section2.AuthorisationProcedureCodeChoiceController.submitForm
 
-GET         /is-authorisation-required           controllers.declaration.AuthorisationHolderRequiredController.displayPage
+GET         /is-authorisation-required           controllers.section2.AuthorisationHolderRequiredController.displayPage
 
-POST        /is-authorisation-required           controllers.declaration.AuthorisationHolderRequiredController.submitForm
+POST        /is-authorisation-required           controllers.section2.AuthorisationHolderRequiredController.submitForm
 
-GET         /add-authorisation-required          controllers.declaration.AuthorisationHolderAddController.displayPage
+GET         /add-authorisation-required          controllers.section2.AuthorisationHolderAddController.displayPage
 
-POST        /add-authorisation-required          controllers.declaration.AuthorisationHolderAddController.submitForm
+POST        /add-authorisation-required          controllers.section2.AuthorisationHolderAddController.submitForm
 
-GET         /authorisations-required             controllers.declaration.AuthorisationHolderSummaryController.displayPage
+GET         /authorisations-required             controllers.section2.AuthorisationHolderSummaryController.displayPage
 
-POST        /authorisations-required             controllers.declaration.AuthorisationHolderSummaryController.submitForm
+POST        /authorisations-required             controllers.section2.AuthorisationHolderSummaryController.submitForm
 
-GET         /authorisations-required/:id/change  controllers.declaration.AuthorisationHolderChangeController.displayPage(id: String)
+GET         /authorisations-required/:id/change  controllers.section2.AuthorisationHolderChangeController.displayPage(id: String)
 
-POST        /authorisations-required/:id/change  controllers.declaration.AuthorisationHolderChangeController.submitForm(id: String)
+POST        /authorisations-required/:id/change  controllers.section2.AuthorisationHolderChangeController.submitForm(id: String)
 
-GET         /authorisations-required/:id/remove  controllers.declaration.AuthorisationHolderRemoveController.displayPage(id: String)
+GET         /authorisations-required/:id/remove  controllers.section2.AuthorisationHolderRemoveController.displayPage(id: String)
 
-POST        /authorisations-required/:id/remove  controllers.declaration.AuthorisationHolderRemoveController.submitForm(id: String)
+POST        /authorisations-required/:id/remove  controllers.section2.AuthorisationHolderRemoveController.submitForm(id: String)
+
+## SECTION 3 -----------------------------------------------------------------------------------------------------------
 
 # Destination country
 
-GET         /destination-country                 controllers.declaration.DestinationCountryController.displayPage
+GET         /destination-country                 controllers.section3.DestinationCountryController.displayPage
 
-POST        /destination-country                 controllers.declaration.DestinationCountryController.submit
+POST        /destination-country                 controllers.section3.DestinationCountryController.submit
 
 # Routing countries
 
-GET         /country-of-routing                  controllers.declaration.RoutingCountriesController.displayRoutingQuestion
+GET         /country-of-routing                  controllers.section3.RoutingCountriesController.displayRoutingQuestion
 
-POST        /country-of-routing                  controllers.declaration.RoutingCountriesController.submitRoutingAnswer
+POST        /country-of-routing                  controllers.section3.RoutingCountriesController.submitRoutingAnswer
 
-GET         /countries-of-routing                controllers.declaration.RoutingCountriesController.displayRoutingCountry
+GET         /countries-of-routing                controllers.section3.RoutingCountriesController.displayRoutingCountry
 
-POST        /countries-of-routing                controllers.declaration.RoutingCountriesController.submitRoutingCountry
+POST        /countries-of-routing                controllers.section3.RoutingCountriesController.submitRoutingCountry
 
 # Location of goods
 
-GET         /location-of-goods                   controllers.declaration.LocationOfGoodsController.displayPage
+GET         /location-of-goods                   controllers.section3.LocationOfGoodsController.displayPage
 
-POST        /location-of-goods                   controllers.declaration.LocationOfGoodsController.saveLocation
+POST        /location-of-goods                   controllers.section3.LocationOfGoodsController.saveLocation
 
 # Office of exit
 
-GET         /office-of-exit                      controllers.declaration.OfficeOfExitController.displayPage
+GET         /office-of-exit                      controllers.section3.OfficeOfExitController.displayPage
 
-POST        /office-of-exit                      controllers.declaration.OfficeOfExitController.saveOffice
+POST        /office-of-exit                      controllers.section3.OfficeOfExitController.saveOffice
+
+## SECTION 4 -----------------------------------------------------------------------------------------------------------
 
 # Invoices & Exchange Rate
 
-GET         /invoices-and-exchange-rate-choice   controllers.declaration.InvoiceAndExchangeRateChoiceController.displayPage
+GET         /invoices-and-exchange-rate-choice   controllers.section4.InvoiceAndExchangeRateChoiceController.displayPage
 
-POST        /invoices-and-exchange-rate-choice   controllers.declaration.InvoiceAndExchangeRateChoiceController.submitForm
+POST        /invoices-and-exchange-rate-choice   controllers.section4.InvoiceAndExchangeRateChoiceController.submitForm
 
-GET         /invoices-and-exchange-rate          controllers.declaration.InvoiceAndExchangeRateController.displayPage
+GET         /invoices-and-exchange-rate          controllers.section4.InvoiceAndExchangeRateController.displayPage
 
-POST        /invoices-and-exchange-rate          controllers.declaration.InvoiceAndExchangeRateController.saveNoOfItems
+POST        /invoices-and-exchange-rate          controllers.section4.InvoiceAndExchangeRateController.saveNoOfItems
 
 # Total package quantity
 
-GET         /total-package-quantity              controllers.declaration.TotalPackageQuantityController.displayPage
+GET         /total-package-quantity              controllers.section4.TotalPackageQuantityController.displayPage
 
-POST        /total-package-quantity              controllers.declaration.TotalPackageQuantityController.saveTotalPackageQuantity
-
+POST        /total-package-quantity              controllers.section4.TotalPackageQuantityController.saveTotalPackageQuantity
 
 # Previous documents
 
-GET         /add-previous-document               controllers.declaration.PreviousDocumentsController.displayPage
+GET         /add-previous-document               controllers.section4.PreviousDocumentsController.displayPage
 
-POST        /add-previous-document               controllers.declaration.PreviousDocumentsController.submit
+POST        /add-previous-document               controllers.section4.PreviousDocumentsController.submit
 
-GET         /previous-documents-list             controllers.declaration.PreviousDocumentsSummaryController.displayPage
+GET         /previous-documents-list             controllers.section4.PreviousDocumentsSummaryController.displayPage
 
-POST        /previous-documents-list             controllers.declaration.PreviousDocumentsSummaryController.submit
+POST        /previous-documents-list             controllers.section4.PreviousDocumentsSummaryController.submit
 
-GET         /previous-documents/:id/remove       controllers.declaration.PreviousDocumentsRemoveController.displayPage(id: String)
+GET         /previous-documents/:id/remove       controllers.section4.PreviousDocumentsRemoveController.displayPage(id: String)
 
-POST        /previous-documents/:id/remove       controllers.declaration.PreviousDocumentsRemoveController.submit(id: String)
+POST        /previous-documents/:id/remove       controllers.section4.PreviousDocumentsRemoveController.submit(id: String)
 
-GET         /previous-documents/:id/change       controllers.declaration.PreviousDocumentsChangeController.displayPage(id: String)
+GET         /previous-documents/:id/change       controllers.section4.PreviousDocumentsChangeController.displayPage(id: String)
 
-POST        /previous-documents/:id/change       controllers.declaration.PreviousDocumentsChangeController.submit(id: String)
+POST        /previous-documents/:id/change       controllers.section4.PreviousDocumentsChangeController.submit(id: String)
 
 # Transaction type
 
-GET         /nature-of-transaction               controllers.declaration.NatureOfTransactionController.displayPage
+GET         /nature-of-transaction               controllers.section4.NatureOfTransactionController.displayPage
 
-POST        /nature-of-transaction               controllers.declaration.NatureOfTransactionController.saveTransactionType
+POST        /nature-of-transaction               controllers.section4.NatureOfTransactionController.saveTransactionType
 
-
-# **** ITEMS PAGES *****
+## SECTION 5 -----------------------------------------------------------------------------------------------------------
 
 # Items Summary
 
-GET         /add-declaration-item                controllers.declaration.ItemsSummaryController.displayAddItemPage
+GET         /add-declaration-item                controllers.section5.ItemsSummaryController.displayAddItemPage
 
-POST        /add-declaration-item                controllers.declaration.ItemsSummaryController.addFirstItem
+POST        /add-declaration-item                controllers.section5.ItemsSummaryController.addFirstItem
 
 # Only reached by the CYA page
-GET         /add-additional-item                 controllers.declaration.ItemsSummaryController.addAdditionalItem
+GET         /add-additional-item                 controllers.section5.ItemsSummaryController.addAdditionalItem
 
-GET         /declaration-items-list              controllers.declaration.ItemsSummaryController.displayItemsSummaryPage
+GET         /declaration-items-list              controllers.section5.ItemsSummaryController.displayItemsSummaryPage
 
-POST        /declaration-items-list              controllers.declaration.ItemsSummaryController.submit
+POST        /declaration-items-list              controllers.section5.ItemsSummaryController.submit
 
-GET         /remove-declaration-item/:itemId    controllers.declaration.RemoveItemsSummaryController.displayRemoveItemConfirmationPage(itemId)
+GET         /remove-declaration-item/:itemId    controllers.section5.RemoveItemsSummaryController.displayRemoveItemConfirmationPage(itemId)
 
-POST        /remove-declaration-item/:itemId    controllers.declaration.RemoveItemsSummaryController.removeItem(itemId, redirectUrl: RedirectUrl)
+POST        /remove-declaration-item/:itemId    controllers.section5.RemoveItemsSummaryController.removeItem(itemId, redirectUrl: RedirectUrl)
 
 # Procedure Codes
 
-GET         /items/:itemId/procedure-codes        controllers.declaration.ProcedureCodesController.displayPage(itemId)
+GET         /items/:itemId/procedure-codes        controllers.section5.ProcedureCodesController.displayPage(itemId)
 
-POST        /items/:itemId/procedure-codes        controllers.declaration.ProcedureCodesController.submitProcedureCodes(itemId)
+POST        /items/:itemId/procedure-codes        controllers.section5.ProcedureCodesController.submitProcedureCodes(itemId)
 
 # Additional Procedure Codes
 
-GET         /items/:itemId/additional-procedure-codes        controllers.declaration.AdditionalProcedureCodesController.displayPage(itemId)
+GET         /items/:itemId/additional-procedure-codes        controllers.section5.AdditionalProcedureCodesController.displayPage(itemId)
 
-POST        /items/:itemId/additional-procedure-codes        controllers.declaration.AdditionalProcedureCodesController.submitAdditionalProcedureCodes(itemId)
+POST        /items/:itemId/additional-procedure-codes        controllers.section5.AdditionalProcedureCodesController.submitAdditionalProcedureCodes(itemId)
 
 # Fiscal Information
 
-GET         /items/:itemId/fiscal-information    controllers.declaration.FiscalInformationController.displayPage(itemId)
+GET         /items/:itemId/fiscal-information    controllers.section5.FiscalInformationController.displayPage(itemId)
 
-POST        /items/:itemId/fiscal-information   controllers.declaration.FiscalInformationController.saveFiscalInformation(itemId)
+POST        /items/:itemId/fiscal-information   controllers.section5.FiscalInformationController.saveFiscalInformation(itemId)
 
 
 # Additional Fiscal References
 
-GET         /items/:itemId/additional-fiscal-references-list        controllers.declaration.AdditionalFiscalReferencesController.displayPage(itemId)
+GET         /items/:itemId/additional-fiscal-references-list        controllers.section5.AdditionalFiscalReferencesController.displayPage(itemId)
 
-POST        /items/:itemId/additional-fiscal-references-list        controllers.declaration.AdditionalFiscalReferencesController.submitForm(itemId)
+POST        /items/:itemId/additional-fiscal-references-list        controllers.section5.AdditionalFiscalReferencesController.submitForm(itemId)
 
-GET         /items/:itemId/additional-fiscal-references             controllers.declaration.AdditionalFiscalReferenceAddController.displayPage(itemId)
+GET         /items/:itemId/additional-fiscal-references             controllers.section5.AdditionalFiscalReferenceAddController.displayPage(itemId)
 
-POST        /items/:itemId/additional-fiscal-references             controllers.declaration.AdditionalFiscalReferenceAddController.submitForm(itemId)
+POST        /items/:itemId/additional-fiscal-references             controllers.section5.AdditionalFiscalReferenceAddController.submitForm(itemId)
 
-GET         /items/:itemId/additional-fiscal-references/:id/remove   controllers.declaration.AdditionalFiscalReferenceRemoveController.displayPage(itemId, id)
+GET         /items/:itemId/additional-fiscal-references/:id/remove   controllers.section5.AdditionalFiscalReferenceRemoveController.displayPage(itemId, id)
 
-POST        /items/:itemId/additional-fiscal-references/:id/remove   controllers.declaration.AdditionalFiscalReferenceRemoveController.submitForm(itemId, id)
+POST        /items/:itemId/additional-fiscal-references/:id/remove   controllers.section5.AdditionalFiscalReferenceRemoveController.submitForm(itemId, id)
 
 # Commodity Details
 
-GET         /items/:itemId/commodity-details                   controllers.declaration.CommodityDetailsController.displayPage(itemId)
+GET         /items/:itemId/commodity-details                   controllers.section5.CommodityDetailsController.displayPage(itemId)
 
-POST        /items/:itemId/commodity-details                   controllers.declaration.CommodityDetailsController.submitForm(itemId)
+POST        /items/:itemId/commodity-details                   controllers.section5.CommodityDetailsController.submitForm(itemId)
 
 # UN Dangerous Goods Code
 
-GET         /items/:itemId/un-dangerous-goods-code             controllers.declaration.UNDangerousGoodsCodeController.displayPage(itemId)
+GET         /items/:itemId/un-dangerous-goods-code             controllers.section5.UNDangerousGoodsCodeController.displayPage(itemId)
 
-POST        /items/:itemId/un-dangerous-goods-code             controllers.declaration.UNDangerousGoodsCodeController.submitForm(itemId)
+POST        /items/:itemId/un-dangerous-goods-code             controllers.section5.UNDangerousGoodsCodeController.submitForm(itemId)
 
 # CUS Code
 
-GET         /items/:itemId/cus-code                            controllers.declaration.CusCodeController.displayPage(itemId)
+GET         /items/:itemId/cus-code                            controllers.section5.CusCodeController.displayPage(itemId)
 
-POST        /items/:itemId/cus-code                            controllers.declaration.CusCodeController.submitForm(itemId)
+POST        /items/:itemId/cus-code                            controllers.section5.CusCodeController.submitForm(itemId)
 
 # NACT Code
 
-GET         /items/:itemId/vat-rating                          controllers.declaration.ZeroRatedForVatController.displayPage(itemId)
+GET         /items/:itemId/vat-rating                          controllers.section5.ZeroRatedForVatController.displayPage(itemId)
 
-POST        /items/:itemId/vat-rating                          controllers.declaration.ZeroRatedForVatController.submitForm(itemId)
+POST        /items/:itemId/vat-rating                          controllers.section5.ZeroRatedForVatController.submitForm(itemId)
 
-GET         /items/:itemId/national-additional-code            controllers.declaration.NactCodeAddController.displayPage(itemId)
+GET         /items/:itemId/national-additional-code            controllers.section5.NactCodeAddController.displayPage(itemId)
 
-POST        /items/:itemId/national-additional-code            controllers.declaration.NactCodeAddController.submitForm(itemId)
+POST        /items/:itemId/national-additional-code            controllers.section5.NactCodeAddController.submitForm(itemId)
 
-GET         /items/:itemId/national-additional-codes-list      controllers.declaration.NactCodeSummaryController.displayPage(itemId)
+GET         /items/:itemId/national-additional-codes-list      controllers.section5.NactCodeSummaryController.displayPage(itemId)
 
-POST        /items/:itemId/national-additional-codes-list      controllers.declaration.NactCodeSummaryController.submitForm(itemId)
+POST        /items/:itemId/national-additional-codes-list      controllers.section5.NactCodeSummaryController.submitForm(itemId)
 
-GET         /items/:itemId/national-additional-code/:code/remove            controllers.declaration.NactCodeRemoveController.displayPage(itemId, code)
+GET         /items/:itemId/national-additional-code/:code/remove            controllers.section5.NactCodeRemoveController.displayPage(itemId, code)
 
-POST        /items/:itemId/national-additional-code/:code/remove            controllers.declaration.NactCodeRemoveController.submitForm(itemId, code)
+POST        /items/:itemId/national-additional-code/:code/remove            controllers.section5.NactCodeRemoveController.submitForm(itemId, code)
 
 # Statistical Value
 
-GET         /items/:itemId/statistical-value                   controllers.declaration.StatisticalValueController.displayPage(itemId)
+GET         /items/:itemId/statistical-value                   controllers.section5.StatisticalValueController.displayPage(itemId)
 
-POST        /items/:itemId/statistical-value                   controllers.declaration.StatisticalValueController.submitItemType(itemId)
+POST        /items/:itemId/statistical-value                   controllers.section5.StatisticalValueController.submitItemType(itemId)
 
 # Package Information
 
-GET         /items/:itemId/package-information                 controllers.declaration.PackageInformationAddController.displayPage(itemId)
+GET         /items/:itemId/package-information                 controllers.section5.PackageInformationAddController.displayPage(itemId)
 
-POST        /items/:itemId/package-information                 controllers.declaration.PackageInformationAddController.submitForm(itemId)
+POST        /items/:itemId/package-information                 controllers.section5.PackageInformationAddController.submitForm(itemId)
 
-GET         /items/:itemId/packages-list                       controllers.declaration.PackageInformationSummaryController.displayPage(itemId)
+GET         /items/:itemId/packages-list                       controllers.section5.PackageInformationSummaryController.displayPage(itemId)
 
-POST        /items/:itemId/packages-list                       controllers.declaration.PackageInformationSummaryController.submitForm(itemId)
+POST        /items/:itemId/packages-list                       controllers.section5.PackageInformationSummaryController.submitForm(itemId)
 
-GET         /items/:itemId/package-information/:code/remove    controllers.declaration.PackageInformationRemoveController.displayPage(itemId, code)
+GET         /items/:itemId/package-information/:code/remove    controllers.section5.PackageInformationRemoveController.displayPage(itemId, code)
 
-POST        /items/:itemId/package-information/:code/remove    controllers.declaration.PackageInformationRemoveController.submitForm(itemId, code)
+POST        /items/:itemId/package-information/:code/remove    controllers.section5.PackageInformationRemoveController.submitForm(itemId, code)
 
-GET         /items/:itemId/package-information/:code/change    controllers.declaration.PackageInformationChangeController.displayPage(itemId, code)
+GET         /items/:itemId/package-information/:code/change    controllers.section5.PackageInformationChangeController.displayPage(itemId, code)
 
-POST        /items/:itemId/package-information/:code/change    controllers.declaration.PackageInformationChangeController.submitForm(itemId, code)
+POST        /items/:itemId/package-information/:code/change    controllers.section5.PackageInformationChangeController.submitForm(itemId, code)
 
 # Commodity Measure Information
 
-GET         /items/:itemId/commodity-measure                   controllers.declaration.CommodityMeasureController.displayPage(itemId)
+GET         /items/:itemId/commodity-measure                   controllers.section5.CommodityMeasureController.displayPage(itemId)
 
-POST        /items/:itemId/commodity-measure                   controllers.declaration.CommodityMeasureController.submitPage(itemId)
+POST        /items/:itemId/commodity-measure                   controllers.section5.CommodityMeasureController.submitPage(itemId)
 
-GET         /items/:itemId/supplementary-units                 controllers.declaration.SupplementaryUnitsController.displayPage(itemId)
+GET         /items/:itemId/supplementary-units                 controllers.section5.SupplementaryUnitsController.displayPage(itemId)
 
-POST        /items/:itemId/supplementary-units                 controllers.declaration.SupplementaryUnitsController.submitPage(itemId)
+POST        /items/:itemId/supplementary-units                 controllers.section5.SupplementaryUnitsController.submitPage(itemId)
 
 # Additional information
 
-GET         /items/:itemId/is-additional-information-required  controllers.declaration.AdditionalInformationRequiredController.displayPage(itemId)
+GET         /items/:itemId/is-additional-information-required  controllers.section5.AdditionalInformationRequiredController.displayPage(itemId)
 
-POST        /items/:itemId/is-additional-information-required  controllers.declaration.AdditionalInformationRequiredController.submitForm(itemId)
+POST        /items/:itemId/is-additional-information-required  controllers.section5.AdditionalInformationRequiredController.submitForm(itemId)
 
-GET         /items/:itemId/additional-information              controllers.declaration.AdditionalInformationAddController.displayPage(itemId)
+GET         /items/:itemId/additional-information              controllers.section5.AdditionalInformationAddController.displayPage(itemId)
 
-POST        /items/:itemId/additional-information              controllers.declaration.AdditionalInformationAddController.submitForm(itemId)
+POST        /items/:itemId/additional-information              controllers.section5.AdditionalInformationAddController.submitForm(itemId)
 
-GET         /items/:itemId/additional-information/:id/remove   controllers.declaration.AdditionalInformationRemoveController.displayPage(itemId, id)
+GET         /items/:itemId/additional-information/:id/remove   controllers.section5.AdditionalInformationRemoveController.displayPage(itemId, id)
 
-POST        /items/:itemId/additional-information/:id/remove   controllers.declaration.AdditionalInformationRemoveController.submitForm(itemId, id)
+POST        /items/:itemId/additional-information/:id/remove   controllers.section5.AdditionalInformationRemoveController.submitForm(itemId, id)
 
-GET         /items/:itemId/additional-information/:id/change   controllers.declaration.AdditionalInformationChangeController.displayPage(itemId, id)
+GET         /items/:itemId/additional-information/:id/change   controllers.section5.AdditionalInformationChangeController.displayPage(itemId, id)
 
-POST        /items/:itemId/additional-information/:id/change   controllers.declaration.AdditionalInformationChangeController.submitForm(itemId, id)
+POST        /items/:itemId/additional-information/:id/change   controllers.section5.AdditionalInformationChangeController.submitForm(itemId, id)
 
-GET         /items/:itemId/additional-information-list         controllers.declaration.AdditionalInformationController.displayPage(itemId)
+GET         /items/:itemId/additional-information-list         controllers.section5.AdditionalInformationController.displayPage(itemId)
 
-POST        /items/:itemId/additional-information-list         controllers.declaration.AdditionalInformationController.submitForm(itemId)
+POST        /items/:itemId/additional-information-list         controllers.section5.AdditionalInformationController.submitForm(itemId)
 
-GET         /items/:itemId/is-licence-required                 controllers.declaration.IsLicenceRequiredController.displayPage(itemId)
+GET         /items/:itemId/is-licence-required                 controllers.section5.IsLicenceRequiredController.displayPage(itemId)
 
-POST        /items/:itemId/is-licence-required                 controllers.declaration.IsLicenceRequiredController.submitForm(itemId)
+POST        /items/:itemId/is-licence-required                 controllers.section5.IsLicenceRequiredController.submitForm(itemId)
 
 # Additional Documents
 
-GET         /items/:itemId/is-additional-documentation-required controllers.declaration.AdditionalDocumentsRequiredController.displayPage(itemId)
+GET         /items/:itemId/is-additional-documentation-required controllers.section5.AdditionalDocumentsRequiredController.displayPage(itemId)
 
-POST        /items/:itemId/is-additional-documentation-required controllers.declaration.AdditionalDocumentsRequiredController.submitForm(itemId)
+POST        /items/:itemId/is-additional-documentation-required controllers.section5.AdditionalDocumentsRequiredController.submitForm(itemId)
 
-GET         /items/:itemId/additional-documentation             controllers.declaration.AdditionalDocumentAddController.displayPage(itemId)
+GET         /items/:itemId/additional-documentation             controllers.section5.AdditionalDocumentAddController.displayPage(itemId)
 
-POST        /items/:itemId/additional-documentation             controllers.declaration.AdditionalDocumentAddController.submitForm(itemId)
+POST        /items/:itemId/additional-documentation             controllers.section5.AdditionalDocumentAddController.submitForm(itemId)
 
-GET         /items/:itemId/additional-documentation/:id/remove  controllers.declaration.AdditionalDocumentRemoveController.displayPage(itemId, id)
+GET         /items/:itemId/additional-documentation/:id/remove  controllers.section5.AdditionalDocumentRemoveController.displayPage(itemId, id)
 
-POST        /items/:itemId/additional-documentation/:id/remove  controllers.declaration.AdditionalDocumentRemoveController.submitForm(itemId, id)
+POST        /items/:itemId/additional-documentation/:id/remove  controllers.section5.AdditionalDocumentRemoveController.submitForm(itemId, id)
 
-GET         /items/:itemId/additional-documentation/:id/change  controllers.declaration.AdditionalDocumentChangeController.displayPage(itemId, id)
+GET         /items/:itemId/additional-documentation/:id/change  controllers.section5.AdditionalDocumentChangeController.displayPage(itemId, id)
 
-POST        /items/:itemId/additional-documentation/:id/change  controllers.declaration.AdditionalDocumentChangeController.submitForm(itemId, id)
+POST        /items/:itemId/additional-documentation/:id/change  controllers.section5.AdditionalDocumentChangeController.submitForm(itemId, id)
 
-GET         /items/:itemId/additional-documentation-list        controllers.declaration.AdditionalDocumentsController.displayPage(itemId)
+GET         /items/:itemId/additional-documentation-list        controllers.section5.AdditionalDocumentsController.displayPage(itemId)
 
-POST        /items/:itemId/additional-documentation-list        controllers.declaration.AdditionalDocumentsController.submitForm(itemId)
+POST        /items/:itemId/additional-documentation-list        controllers.section5.AdditionalDocumentsController.submitForm(itemId)
 
-# **** END OF ITEM PAGES ****
+## SECTION 6 -----------------------------------------------------------------------------------------------------------
 
 # Transport leaving the border
 
-GET         /transport-leaving-the-border       controllers.declaration.TransportLeavingTheBorderController.displayPage
+GET         /transport-leaving-the-border       controllers.section6.TransportLeavingTheBorderController.displayPage
 
-POST        /transport-leaving-the-border       controllers.declaration.TransportLeavingTheBorderController.submitForm
+POST        /transport-leaving-the-border       controllers.section6.TransportLeavingTheBorderController.submitForm
 
 # Identification of a Warehouse
 
-GET         /warehouse-details                   controllers.declaration.WarehouseIdentificationController.displayPage
+GET         /warehouse-details                   controllers.section6.WarehouseIdentificationController.displayPage
 
-POST        /warehouse-details                   controllers.declaration.WarehouseIdentificationController.saveIdentificationNumber
+POST        /warehouse-details                   controllers.section6.WarehouseIdentificationController.saveIdentificationNumber
 
 # Supervising Customs Office
 
-GET         /supervising-customs-office          controllers.declaration.SupervisingCustomsOfficeController.displayPage
+GET         /supervising-customs-office          controllers.section6.SupervisingCustomsOfficeController.displayPage
 
-POST        /supervising-customs-office          controllers.declaration.SupervisingCustomsOfficeController.submit
+POST        /supervising-customs-office          controllers.section6.SupervisingCustomsOfficeController.submit
 
 # UK border or Inland (Customs controlled locations)
 
-GET         /inland-or-border                    controllers.declaration.InlandOrBorderController.displayPage
+GET         /inland-or-border                    controllers.section6.InlandOrBorderController.displayPage
 
-POST        /inland-or-border                    controllers.declaration.InlandOrBorderController.submitPage
+POST        /inland-or-border                    controllers.section6.InlandOrBorderController.submitPage
 
 # Inland Transport Details
 
-GET         /inland-transport-details            controllers.declaration.InlandTransportDetailsController.displayPage
+GET         /inland-transport-details            controllers.section6.InlandTransportDetailsController.displayPage
 
-POST        /inland-transport-details            controllers.declaration.InlandTransportDetailsController.submit
+POST        /inland-transport-details            controllers.section6.InlandTransportDetailsController.submit
 
 # Departure Transport
 
-GET         /departure-transport                controllers.declaration.DepartureTransportController.displayPage
+GET         /departure-transport                controllers.section6.DepartureTransportController.displayPage
 
-POST        /departure-transport                controllers.declaration.DepartureTransportController.submitForm
+POST        /departure-transport                controllers.section6.DepartureTransportController.submitForm
 
 # Border Transport
 
-GET         /border-transport                   controllers.declaration.BorderTransportController.displayPage
+GET         /border-transport                   controllers.section6.BorderTransportController.displayPage
 
-POST        /border-transport                   controllers.declaration.BorderTransportController.submitForm
+POST        /border-transport                   controllers.section6.BorderTransportController.submitForm
 
-GET         /transport-country                  controllers.declaration.TransportCountryController.displayPage
+GET         /transport-country                  controllers.section6.TransportCountryController.displayPage
 
-POST        /transport-country                  controllers.declaration.TransportCountryController.submitForm
+POST        /transport-country                  controllers.section6.TransportCountryController.submitForm
 
 # Transport Payment
 
-GET         /express-consignment                 controllers.declaration.ExpressConsignmentController.displayPage
+GET         /express-consignment                 controllers.section6.ExpressConsignmentController.displayPage
 
-POST        /express-consignment                 controllers.declaration.ExpressConsignmentController.submitForm
+POST        /express-consignment                 controllers.section6.ExpressConsignmentController.submitForm
 
-GET         /transport-payment                   controllers.declaration.TransportPaymentController.displayPage
+GET         /transport-payment                   controllers.section6.TransportPaymentController.displayPage
 
-POST        /transport-payment                   controllers.declaration.TransportPaymentController.submitForm
+POST        /transport-payment                   controllers.section6.TransportPaymentController.submitForm
 
 # Transport Containers & Seals
 
-GET         /containers                          controllers.declaration.TransportContainerController.displayContainerSummary
+GET         /containers                          controllers.section6.ContainerController.displayContainerSummary
 
-POST        /containers                          controllers.declaration.TransportContainerController.submitSummaryAction
+POST        /containers                          controllers.section6.ContainerController.submitSummaryAction
 
-GET         /container                           controllers.declaration.TransportContainerController.displayAddContainer
+GET         /container                           controllers.section6.ContainerController.displayAddContainer
 
-POST        /container                           controllers.declaration.TransportContainerController.submitAddContainer
+POST        /container                           controllers.section6.ContainerController.submitAddContainer
 
-GET         /containers/:containerId/remove      controllers.declaration.TransportContainerController.displayContainerRemove(containerId)
+GET         /containers/:containerId/remove      controllers.section6.ContainerController.displayContainerRemove(containerId)
 
-POST        /containers/:containerId/remove      controllers.declaration.TransportContainerController.submitContainerRemove(containerId)
+POST        /containers/:containerId/remove      controllers.section6.ContainerController.submitContainerRemove(containerId)
 
-GET         /containers/:containerId/seals       controllers.declaration.SealController.displaySealSummary(containerId)
+GET         /containers/:containerId/seals       controllers.section6.SealController.displaySealSummary(containerId)
 
-POST        /containers/:containerId/seals       controllers.declaration.SealController.submitSummaryAction(containerId)
+POST        /containers/:containerId/seals       controllers.section6.SealController.submitSummaryAction(containerId)
 
-GET         /containers/:containerId/add-seal    controllers.declaration.SealController.displayAddSeal(containerId)
+GET         /containers/:containerId/add-seal    controllers.section6.SealController.displayAddSeal(containerId)
 
-POST        /containers/:containerId/add-seal    controllers.declaration.SealController.submitAddSeal(containerId)
+POST        /containers/:containerId/add-seal    controllers.section6.SealController.submitAddSeal(containerId)
 
-GET         /containers/:containerId/seals/:sealId/remove    controllers.declaration.SealController.displaySealRemove(containerId, sealId)
+GET         /containers/:containerId/seals/:sealId/remove    controllers.section6.SealController.displaySealRemove(containerId, sealId)
 
-POST        /containers/:containerId/seals/:sealId/remove    controllers.declaration.SealController.submitSealRemove(containerId, sealId)
+POST        /containers/:containerId/seals/:sealId/remove    controllers.section6.SealController.submitSealRemove(containerId, sealId)
+
+## END OF SECTIONS -----------------------------------------------------------------------------------------------------
 
 # Summary
 

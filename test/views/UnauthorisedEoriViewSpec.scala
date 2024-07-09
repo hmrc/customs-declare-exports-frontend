@@ -17,8 +17,8 @@
 package views
 
 import base.Injector
-import views.declaration.spec.UnitViewSpec
 import views.html.unauthorisedEoriInTdr
+import views.common.UnitViewSpec
 import views.tags.ViewTest
 
 @ViewTest

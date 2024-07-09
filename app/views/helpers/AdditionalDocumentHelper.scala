@@ -17,7 +17,7 @@
 package views.helpers
 
 import config.AppConfig
-import forms.declaration.CommodityDetails
+import forms.section5.CommodityDetails
 import models.DeclarationType.CLEARANCE
 import models.requests.JourneyRequest
 import play.api.i18n.Messages

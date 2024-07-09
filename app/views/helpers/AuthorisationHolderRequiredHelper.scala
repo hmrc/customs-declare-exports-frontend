@@ -16,8 +16,8 @@
 
 package views.helpers
 
-import forms.declaration.AuthorisationProcedureCodeChoice.{Choice1040, ChoiceOthers}
-import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType._
+import forms.section2.AuthorisationProcedureCodeChoice.{Choice1040, ChoiceOthers}
+import forms.section1.additionaldeclarationtype.AdditionalDeclarationType._
 import models.DeclarationType._
 import models.requests.JourneyRequest
 import play.api.i18n.Messages

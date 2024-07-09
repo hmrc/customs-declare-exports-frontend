@@ -16,8 +16,9 @@
 
 package views.helpers.summary
 
-import controllers.declaration.routes._
-import forms.declaration.ModeOfTransportCode.Empty
+import controllers.declaration.routes.SummaryController
+import controllers.section6.routes._
+import forms.section6.ModeOfTransportCode.Empty
 import models.ExportsDeclaration
 import models.declaration.{Container, Locations, Transport}
 import models.requests.JourneyRequest
@@ -186,7 +187,7 @@ class Card6ForTransport @Inject() (govukSummaryList: GovukSummaryList, countryHe
             key("containers"),
             valueKey("site.none"),
             classes = "containers-heading",
-            changeLink(TransportContainerController.displayContainerSummary, "container", actionsEnabled)
+            changeLink(ContainerController.displayContainerSummary, "container", actionsEnabled)
           )
         Some(List(header))
       } else
@@ -205,14 +206,14 @@ class Card6ForTransport @Inject() (govukSummaryList: GovukSummaryList, countryHe
         key("container.id"),
         value(container.id),
         classes = s"govuk-summary-list__row--no-border container container-${container.sequenceId}",
-        changeLink(TransportContainerController.displayContainerSummary, "container", actionsEnabled)
+        changeLink(ContainerController.displayContainerSummary, "container", actionsEnabled)
       ),
       SummaryListRow(key("container.securitySeals"), value(valueOfSeals), classes = s"seal container-${container.sequenceId}-seals")
     )
   }
 
   override def backLink(implicit request: JourneyRequest[_]): Call =
-    TransportContainerController.displayContainerSummary
+    ContainerController.displayContainerSummary
 
   override def continueTo(implicit request: JourneyRequest[_]): Call =
     SummaryController.displayPage

@@ -17,18 +17,19 @@
 package views.helpers.summary
 
 import base.Injector
-import controllers.declaration.routes._
+import controllers.section2.routes._
+import controllers.section3.routes.DestinationCountryController
 import forms.common.{Address, Eori}
-import forms.declaration.AuthorisationProcedureCodeChoice.{Choice1040, ChoiceOthers}
-import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.{STANDARD_FRONTIER, STANDARD_PRE_LODGED}
-import forms.declaration.{AdditionalActor, IsExs}
-import forms.declaration.authorisationHolder.AuthorisationHolder
+import forms.section2.AuthorisationProcedureCodeChoice.{Choice1040, ChoiceOthers}
+import forms.section1.additionaldeclarationtype.AdditionalDeclarationType.{STANDARD_FRONTIER, STANDARD_PRE_LODGED}
+import forms.section2.authorisationHolder.AuthorisationHolder
+import forms.section2.{AdditionalActor, IsExs}
 import models.declaration.RepresentativeDetails
 import models.DeclarationType._
 import org.scalatest.Assertion
 import play.api.mvc.Call
 import services.cache.ExportsTestHelper
-import views.declaration.spec.UnitViewSpec
+import views.common.UnitViewSpec
 
 class Card2ForPartiesSpec extends UnitViewSpec with ExportsTestHelper with Injector {
 

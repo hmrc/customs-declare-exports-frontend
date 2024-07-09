@@ -17,8 +17,13 @@
 package views.helpers
 
 import connectors.CodeListConnector
-import controllers.declaration.routes._
-import forms.declaration.ModeOfTransportCode
+import controllers.section1.routes._
+import controllers.section2.routes._
+import controllers.section3.routes._
+import controllers.section4.routes._
+import controllers.section5.routes._
+import controllers.section6.routes._
+import forms.section6.ModeOfTransportCode
 import models.ExportsDeclaration
 import models.declaration.{Container, ExportItem}
 import play.api.i18n.Messages
@@ -536,7 +541,7 @@ object PointerRecord {
     },
     "declaration.containers.container.$.id" -> new DefaultPointerRecord() {
       def fetchRawValue(dec: ExportsDeclaration, args: Int*): Option[String] = getContainer(dec, args(0)).map(_.id)
-      override val pageLink1Param: Option[Call] = Some(TransportContainerController.displayContainerSummary)
+      override val pageLink1Param: Option[Call] = Some(ContainerController.displayContainerSummary)
     },
     "declaration.containers.container.$.seals.seal.$.id" -> new DefaultPointerRecord() {
       def fetchRawValue(dec: ExportsDeclaration, args: Int*): Option[String] = getSeal(dec.containers(args(0)), args(1)).map(_.id)

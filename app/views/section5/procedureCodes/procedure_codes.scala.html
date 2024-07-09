@@ -1,0 +1,114 @@
+@*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import config.AppConfig
+@import controllers.navigation.Navigator
+@import controllers.section5.routes.ProcedureCodesController
+@import forms.section5.procedurecodes.ProcedureCode
+@import forms.section5.procedurecodes.ProcedureCode.procedureCodeKey
+@import models.requests.JourneyRequest
+@import services.ProcedureCodeService
+@import services.view.AutoCompleteItem
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.components.gds.Styles._
+@import views.helpers.{BackButton, Title}
+@import views.html.components.gds._
+
+@this(
+  govukLayout: gdsMainTemplate,
+  errorSummary: errorSummary,
+  sectionHeader: sectionHeader,
+  govukDetails : GovukDetails,
+  bulletList: bulletList,
+  insetText: exportsInsetText,
+  heading: heading,
+  paragraphBody: paragraphBody,
+  tariffExpander: tariffExpander,
+  tariffLink: tariffLink,
+  saveButtons: saveButtons,
+  formHelper: FormWithCSRF,
+  procedureCodeService: ProcedureCodeService,
+  navigator: Navigator,
+  appConfig: AppConfig
+)
+
+@(itemId: String, form: Form[ProcedureCode])(implicit request: JourneyRequest[_], messages: Messages)
+
+@hasErrors = @{form.hasErrors || form.hasGlobalErrors}
+
+@insetContent = {
+    @paragraphBody(messages("declaration.procedureCodes.inset.title"), "govuk-label--s")
+    @paragraphBody(messages("declaration.procedureCodes.inset.paragraph.1"))
+
+    @bulletList(Seq(
+        Html(messages("declaration.procedureCodes.inset.paragraph.1.bullet.1")),
+        Html(messages("declaration.procedureCodes.inset.paragraph.1.bullet.2")),
+        Html(messages("declaration.procedureCodes.inset.paragraph.1.bullet.3"))
+    ))
+
+    <p>@messages("declaration.procedureCodes.inset.paragraph.2")</p>
+}
+
+@readMoreExpanderContent = {
+  <p>@messages("declaration.procedureCodes.readMoreExpander.paragraph.1")</p>
+  <p>@messages("declaration.procedureCodes.readMoreExpander.removalOfGoodsFromExciseWarehouse") @tariffLink(linkText = messages("declaration.procedureCodes.readMoreExpander.removalOfGoodsFromExciseWarehouse.link.text"), linkUrl = appConfig.procedureCodesRemovalOfGoodsFromExciseWarehouse)</p>
+  <p>@messages("declaration.procedureCodes.readMoreExpander.onwardSupplyRelief") @tariffLink(linkText = messages("declaration.procedureCodes.readMoreExpander.onwardSupplyRelief.link.text"), linkUrl = appConfig.procedureCodesOnwardSupplyRelief)</p>
+  <p>@messages("declaration.procedureCodes.readMoreExpander.endUseRelief") @tariffLink(linkText = messages("declaration.procedureCodes.readMoreExpander.endUseRelief.link.text"), linkUrl = appConfig.procedureCodesEndUseRelief)</p>
+  <p>@messages("declaration.procedureCodes.readMoreExpander.inwardProcessing") @tariffLink(linkText = messages("declaration.procedureCodes.readMoreExpander.inwardProcessing.link.text"), linkUrl = appConfig.procedureCodesInwardProcessing)</p>
+  <p>@messages("declaration.procedureCodes.readMoreExpander.paragraph.2")</p>
+  <p>@tariffLink(linkText = messages("declaration.procedureCodes.readMoreExpander.outwardProcessing.link.text"), linkUrl = appConfig.procedureCodesOutwardProcessing)</p>
+  <p>@tariffLink(linkText = messages("declaration.procedureCodes.readMoreExpander.temporaryExport.link.text"), linkUrl = appConfig.procedureCodesTemporaryExport)</p>
+  <p>@tariffLink(linkText = messages("declaration.procedureCodes.readMoreExpander.reExportFollowingSpecialProcedure.link.text"), linkUrl = appConfig.procedureCodesReExportFollowingSpecialProcedure)</p>
+}
+
+@govukLayout(
+    title = Title("declaration.procedureCodes.title", "declaration.section.5", hasErrors = hasErrors),
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(ProcedureCode)))) {
+
+    @formHelper(action = ProcedureCodesController.submitProcedureCodes(itemId), 'autoComplete -> "off") {
+
+        @errorSummary(form.errors)
+
+        @sectionHeader(messages("declaration.section.5"))
+        @heading(messages("declaration.procedureCodes.title"))
+
+        @paragraphBody(messages("declaration.procedureCodes.paragraph"))
+
+        @components.fields.field_accessible_autocomplete_with_header(
+            field = form(procedureCodeKey),
+            label = messages("declaration.procedureCodes.title"),
+            labelClass = Some("govuk-visually-hidden"),
+            emptySelectValue = messages("declaration.procedureCodes.empty"),
+            items = AutoCompleteItem.fromProcedureCodes(procedureCodeService.getProcedureCodesFor(
+                request.declarationType, request.cacheModel.isEntryIntoDeclarantsRecords, messages.lang.toLocale
+            ).toList),
+            isPageHeading = false
+        )
+      
+        @if(!(request.declarationType == DeclarationType.CLEARANCE && request.cacheModel.isNotEntryIntoDeclarantsRecords)) {
+            @insetText(content = HtmlContent(insetContent))
+
+            @govukDetails(Details(
+                id = Some("procedureCode-readMore"),
+                summary = Text(messages("declaration.procedureCodes.readMoreExpander.header")),
+                content = HtmlContent(readMoreExpanderContent)
+            ))
+        }
+
+        @tariffExpander(ProcedureCode, request.declarationType)(messages, appConfig)
+        @saveButtons()
+    }
+}

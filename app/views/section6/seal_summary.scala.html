@@ -1,0 +1,139 @@
+@*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import config.AppConfig
+@import controllers.section6.routes.{SealController, ContainerController}
+@import forms.common.YesNoAnswer
+@import forms.section6.Seal
+@import models.requests.JourneyRequest
+@import play.twirl.api.HtmlFormat
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.components.gds.Styles._
+@import views.helpers.{BackButton, Title}
+@import views.helpers.ErrorMapper.yesNoErrors
+@import views.html.components.gds._
+
+@this(
+    govukLayout: gdsMainTemplate,
+    sectionHeader: sectionHeader,
+    govukFieldset: GovukFieldset,
+    link: link,
+    govukTable: GovukTable,
+    errorSummary: errorSummary,
+    yesNoRadios: yesNoRadios,
+    tariffExpander: tariffExpander,
+    spanVisuallyHidden: spanVisuallyHidden,
+    saveButtons: saveButtons,
+    formHelper: FormWithCSRF,
+    appConfig: AppConfig
+)
+
+@(form: Form[YesNoAnswer], containerId: String, seals: Seq[Seal])(implicit request: JourneyRequest[_], messages: Messages)
+
+@sealsTable = {
+    @if(seals.nonEmpty) {
+        @govukTable(Table(
+            rows = seals.zipWithIndex.map{ case(seal, index) =>
+                Seq(
+                    TableRow(
+                        content = Text(seal.id),
+                        attributes = Map("id" -> s"removable_elements-row$index-label")
+                    ),
+                    TableRow(
+                        content = HtmlContent(link(
+                            messages("site.remove"),
+                            SealController.submitSealRemove(containerId, seal.id),
+                            textHidden = Some(messages("declaration.seal.remove.hint", seal.id))
+                        )),
+                        attributes = Map("id" -> s"removable_elements-row$index-remove_button")
+                    )
+                )
+            },
+            head = Some(List(
+                HeadCell(
+                    content = Text(messages("declaration.seal.summary.heading")),
+                    attributes = Map("id" -> s"removable_elements-heading")
+                ),
+                HeadCell(
+                    content = HtmlContent(spanVisuallyHidden(messages("site.remove.header")))
+                )
+            ))
+        ))
+    }
+}
+
+@addSealRadios = {
+    @yesNoRadios(
+      form,
+      if(seals.isEmpty)
+        Some(Fieldset(
+            legend = Some(Legend(
+                content = HtmlContent(Html(messages("declaration.seal.add.first", containerId))),
+                classes = gdsPageLegend,
+                isPageHeading = true
+            ))
+        ))
+    else
+        Some(Fieldset(
+            legend = Some(Legend(
+                content = Text(messages("declaration.seal.add.another")),
+                classes = "govuk-fieldset__legend--m"
+            ))
+        )),
+        inline = true
+    )
+}
+
+@title = @{
+  val hasErrors = form.hasErrors || form.hasGlobalErrors
+  if (seals.isEmpty) Title("declaration.seal.add.first", "declaration.section.6", containerId, hasErrors = hasErrors)
+  else if (seals.size == 1) Title("declaration.seal.summary.title", "declaration.section.6", containerId, hasErrors = hasErrors)
+  else Title("declaration.seal.summary.multiple.title", "declaration.section.6", "", Some(Seq(seals.size.toString, containerId)), hasErrors = hasErrors)
+}
+
+@govukLayout(
+    title = title,
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), ContainerController.displayContainerSummary))
+) {
+    @formHelper(action = SealController.submitSummaryAction(containerId), 'autoComplete -> "off") {
+        @errorSummary(yesNoErrors(form.errors))
+
+        @sectionHeader(messages("declaration.section.6"))
+
+        @if(seals.isEmpty){
+            @addSealRadios
+            @tariffExpander(Seal, request.declarationType)(messages, appConfig)
+        } else {
+            @govukFieldset(Fieldset(
+                legend = Some(Legend(
+                    content = Text(
+                        if(seals.isEmpty) messages("declaration.seal.add.first", containerId)
+                        else if(seals.size == 1) messages("declaration.seal.summary.title", containerId)
+                        else messages("declaration.seal.summary.multiple.title", seals.size, containerId)
+                    ),
+                    classes = gdsPageLegend,
+                    isPageHeading = true
+                )),
+                html = HtmlFormat.fill(List(
+                    sealsTable,
+                    addSealRadios
+                ))
+            ))
+        }
+
+        @saveButtons()
+    }
+}

@@ -18,13 +18,15 @@ package models
 
 import controllers.helpers.TransportSectionHelper.clearCacheOnSkippingTransportPages
 import forms.Ducr
-import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
-import forms.declaration._
-import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.AdditionalDeclarationType
-import forms.declaration.additionaldocuments.AdditionalDocument
-import forms.declaration.authorisationHolder.AuthorisationHolder
-import forms.declaration.countries.Country
+import forms.common.{Country, YesNoAnswer}
+import forms.section1.additionaldeclarationtype.AdditionalDeclarationType.AdditionalDeclarationType
+import forms.section1.{ConsignmentReferences, Mucr}
+import forms.section2.authorisationHolder.AuthorisationHolder
+import forms.section4.{Document, NatureOfTransaction, PreviousDocumentsData}
+import forms.section5.AdditionalInformation
+import forms.section5.additionaldocuments.AdditionalDocument
+import forms.section6._
 import models.DeclarationType.DeclarationType
 import models.ExportsDeclaration.isCodePrefixedWith
 import models.ExportsFieldPointer.ExportsFieldPointer

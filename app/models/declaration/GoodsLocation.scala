@@ -16,7 +16,7 @@
 
 package models.declaration
 
-import forms.declaration.LocationOfGoods
+import forms.section3.LocationOfGoods
 import models.AmendmentRow.{forAddedValue, forAmendedValue, forRemovedValue}
 import models.ExportsFieldPointer.ExportsFieldPointer
 import models.declaration.GoodsLocation.keyForAmend

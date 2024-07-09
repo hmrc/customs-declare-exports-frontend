@@ -18,8 +18,8 @@ package views.guidance
 
 import base.Injector
 import config.AppConfig
-import views.declaration.spec.UnitViewSpec
 import views.html.guidance.complete_declaration
+import views.common.UnitViewSpec
 import views.tags.ViewTest
 
 import scala.jdk.CollectionConverters.CollectionHasAsScala

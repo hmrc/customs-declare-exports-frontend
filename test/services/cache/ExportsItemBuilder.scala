@@ -18,8 +18,8 @@ package services.cache
 
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.No
-import forms.declaration.{FiscalInformation, _}
-import forms.declaration.additionaldocuments.AdditionalDocument
+import forms.section5.additionaldocuments.AdditionalDocument
+import forms.section5._
 import models.declaration.ProcedureCodesData.osrProcedureCode
 import models.declaration.{CommodityMeasure => CommodityMeasureModel, _}
 

@@ -1,0 +1,81 @@
+@*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import controllers.section6.routes.ContainerController
+@import forms.common.YesNoAnswer
+@import models.declaration.Container
+@import models.requests.JourneyRequest
+@import play.twirl.api.HtmlFormat
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.components.gds.Styles._
+@import views.helpers.{BackButton, Title}
+@import views.helpers.ErrorMapper.yesNoErrors
+@import views.html.components.gds._
+
+@this(
+    govukLayout: gdsMainTemplate,
+    sectionHeader: sectionHeader,
+    govukFieldset: GovukFieldset,
+    yesNoRadios: yesNoRadios,
+    govukSummaryList: GovukSummaryList,
+    errorSummary: errorSummary,
+    saveButtons: saveButtons,
+    formHelper: FormWithCSRF
+)
+
+@(form: Form[YesNoAnswer], container: Container)(implicit request: JourneyRequest[_], messages: Messages)
+
+@hasErrors = @{form.hasErrors || form.hasGlobalErrors}
+
+@containersSummary = {
+    @govukSummaryList(SummaryList(
+        classes = "govuk-!-margin-bottom-6",
+        rows = Seq(
+            SummaryListRow(
+                Key(Text(messages("declaration.transportInformation.containerId.title"))),
+                Value(Text(container.id))
+            ),
+            SummaryListRow(
+                Key(Text(messages("declaration.seal.summary.heading"))),
+                Value(HtmlContent(container.seals.map(_.id).mkString("<br/>")))
+            )
+        )
+    ))
+}
+
+@govukLayout(
+    title = Title("declaration.transportInformation.container.remove.title", "declaration.section.6", hasErrors = hasErrors),
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), ContainerController.displayContainerSummary))
+) {
+    @formHelper(action = ContainerController.submitContainerRemove(container.id), 'autoComplete -> "off") {
+        @errorSummary(yesNoErrors(form.errors))
+
+        @sectionHeader(messages("declaration.section.6"))
+
+        @govukFieldset(Fieldset(
+            legend = Some(Legend(
+                content = Text(messages("declaration.transportInformation.container.remove.title")),
+                classes = gdsPageLegend,
+                isPageHeading = true
+            )),
+            html = HtmlFormat.fill(List(
+                containersSummary,
+                yesNoRadios(form, inline = true),
+                saveButtons()
+            ))
+        ))
+    }
+}

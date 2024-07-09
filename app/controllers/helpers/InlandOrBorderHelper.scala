@@ -16,9 +16,9 @@
 
 package controllers.helpers
 
-import forms.declaration.InlandOrBorder
-import forms.declaration.ModeOfTransportCode.RoRo
-import forms.declaration.additionaldeclarationtype.AdditionalDeclarationType.SUPPLEMENTARY_EIDR
+import forms.section6.ModeOfTransportCode.RoRo
+import forms.section1.additionaldeclarationtype.AdditionalDeclarationType.SUPPLEMENTARY_EIDR
+import forms.section6.InlandOrBorder
 import models.DeclarationType._
 import models.ExportsDeclaration
 import services.TaggedAuthCodes

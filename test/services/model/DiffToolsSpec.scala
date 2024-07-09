@@ -17,9 +17,10 @@
 package services.model
 
 import base.UnitSpec
-import forms.declaration.{PackageInformation, Seal}
+import forms.common.Country
+import forms.section5.PackageInformation
+import forms.section6.Seal
 import models.ExportsDeclaration
-import forms.declaration.countries.Country
 import models.declaration.{Container, ExportItem, Locations, ProcedureCodesData, RoutingCountry, Transport}
 import org.scalatest.GivenWhenThen
 import services.{AlteredField, OriginalAndNewValues}
