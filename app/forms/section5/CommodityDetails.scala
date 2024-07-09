@@ -83,8 +83,7 @@ object CommodityDetails extends DeclarationPage with FieldMapping {
       text()
         .transform(_.trim, identity[String])
         .verifying("declaration.commodityDetails.combinedNomenclatureCode.error.empty", nonEmpty)
-        .verifying("declaration.commodityDetails.combinedNomenclatureCode.error.invalid", isEmpty or isNumeric)
-        .verifying("declaration.commodityDetails.combinedNomenclatureCode.error.length", isEmpty or hasSpecificLength(8))
+        .verifying("declaration.commodityDetails.combinedNomenclatureCode.error.invalid", isEmpty or (isNumeric and hasSpecificLength(8)))
     )
 
   private val mappingDescriptionOfGoodsRequired =
