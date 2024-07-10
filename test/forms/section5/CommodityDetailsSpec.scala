@@ -41,20 +41,17 @@ class CommodityDetailsSpec extends DeclarationPageBaseSpec with ExportsTestHelpe
 
       s"return a form with errors for $decType" when {
         "provided with invalid commodity code" in {
-          val expectedError = List(
-            FormError(combinedNomenclatureCodeKey, "declaration.commodityDetails.combinedNomenclatureCode.error.invalid"),
-            FormError(combinedNomenclatureCodeKey, "declaration.commodityDetails.combinedNomenclatureCode.error.length")
-          )
+          val expectedError = List(FormError(combinedNomenclatureCodeKey, "declaration.commodityDetails.combinedNomenclatureCode.error.invalid"))
           form.bind(formData("#1234", "description"), JsonBindMaxChars).errors mustBe expectedError
         }
 
         "provided with commodity code too short" in {
-          val expectedError = List(FormError(combinedNomenclatureCodeKey, "declaration.commodityDetails.combinedNomenclatureCode.error.length"))
+          val expectedError = List(FormError(combinedNomenclatureCodeKey, "declaration.commodityDetails.combinedNomenclatureCode.error.invalid"))
           form.bind(formData("12345", "description"), JsonBindMaxChars).errors mustBe expectedError
         }
 
         "provided with commodity code too long" in {
-          val expectedError = List(FormError(combinedNomenclatureCodeKey, "declaration.commodityDetails.combinedNomenclatureCode.error.length"))
+          val expectedError = List(FormError(combinedNomenclatureCodeKey, "declaration.commodityDetails.combinedNomenclatureCode.error.invalid"))
           form.bind(formData("123456789", "description"), JsonBindMaxChars).errors mustBe expectedError
         }
 
@@ -102,28 +99,20 @@ class CommodityDetailsSpec extends DeclarationPageBaseSpec with ExportsTestHelpe
 
         "provided with a commodity code not 8 digits long" in {
           val form1 = CommodityDetails.form.bind(formData("123456789", "description"), JsonBindMaxChars)
-          form1.errors mustBe List(FormError(combinedNomenclatureCodeKey, "declaration.commodityDetails.combinedNomenclatureCode.error.length"))
+          form1.errors mustBe List(FormError(combinedNomenclatureCodeKey, "declaration.commodityDetails.combinedNomenclatureCode.error.invalid"))
 
           val form2 = CommodityDetails.form.bind(formData("1234", "description"), JsonBindMaxChars)
-          form2.errors mustBe List(FormError(combinedNomenclatureCodeKey, "declaration.commodityDetails.combinedNomenclatureCode.error.length"))
+          form2.errors mustBe List(FormError(combinedNomenclatureCodeKey, "declaration.commodityDetails.combinedNomenclatureCode.error.invalid"))
         }
 
         "provided with invalid commodity code that is too long" in {
           val form = CommodityDetails.form.bind(formData("ABCDE1234", "description"), JsonBindMaxChars)
-
-          form.errors mustBe List(
-            FormError(combinedNomenclatureCodeKey, "declaration.commodityDetails.combinedNomenclatureCode.error.invalid"),
-            FormError(combinedNomenclatureCodeKey, "declaration.commodityDetails.combinedNomenclatureCode.error.length")
-          )
+          form.errors mustBe List(FormError(combinedNomenclatureCodeKey, "declaration.commodityDetails.combinedNomenclatureCode.error.invalid"))
         }
 
         "provided with spaces in the commodity code" in {
           val form = CommodityDetails.form.bind(formData("1234 5678", "description"), JsonBindMaxChars)
-
-          form.errors mustBe List(
-            FormError(combinedNomenclatureCodeKey, "declaration.commodityDetails.combinedNomenclatureCode.error.invalid"),
-            FormError(combinedNomenclatureCodeKey, "declaration.commodityDetails.combinedNomenclatureCode.error.length")
-          )
+          form.errors mustBe List(FormError(combinedNomenclatureCodeKey, "declaration.commodityDetails.combinedNomenclatureCode.error.invalid"))
         }
 
         "provided with missing commodity code" in {
@@ -151,20 +140,17 @@ class CommodityDetailsSpec extends DeclarationPageBaseSpec with ExportsTestHelpe
 
     "return a form with errors" when {
       "provided with invalid commodity code" in {
-        val expectedError = List(
-          FormError(combinedNomenclatureCodeKey, "declaration.commodityDetails.combinedNomenclatureCode.error.invalid"),
-          FormError(combinedNomenclatureCodeKey, "declaration.commodityDetails.combinedNomenclatureCode.error.length")
-        )
+        val expectedError = List(FormError(combinedNomenclatureCodeKey, "declaration.commodityDetails.combinedNomenclatureCode.error.invalid"))
         form.bind(formData("#1234", "description"), JsonBindMaxChars).errors mustBe expectedError
       }
 
       "provided with commodity code too short" in {
-        val expectedError = List(FormError(combinedNomenclatureCodeKey, "declaration.commodityDetails.combinedNomenclatureCode.error.length"))
+        val expectedError = List(FormError(combinedNomenclatureCodeKey, "declaration.commodityDetails.combinedNomenclatureCode.error.invalid"))
         form.bind(formData("12345", "description"), JsonBindMaxChars).errors mustBe expectedError
       }
 
       "provided with commodity code too long" in {
-        val expectedError = List(FormError(combinedNomenclatureCodeKey, "declaration.commodityDetails.combinedNomenclatureCode.error.length"))
+        val expectedError = List(FormError(combinedNomenclatureCodeKey, "declaration.commodityDetails.combinedNomenclatureCode.error.invalid"))
         form.bind(formData("123456789", "description"), JsonBindMaxChars).errors mustBe expectedError
       }
 
