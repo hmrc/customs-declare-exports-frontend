@@ -101,8 +101,10 @@ class DashboardViewSpec extends UnitViewSpec with ExportsTestHelper {
     page(PageOfSubmissions(statusGroup, totalSubmissionsInGroup, submissionsInPage))(request(statusGroup, currentPage), messages)
   }
 
-  private val statuses = EnhancedStatus.values.toList
+  private val enhancedStatuses = EnhancedStatus.values.toList
   private val statusGroups = List(SubmittedStatuses, ActionRequiredStatuses, RejectedStatuses, CancelledStatuses)
+
+  private val filterId = "filters"
 
   "Dashboard View" should {
     val view = createView()
@@ -128,16 +130,30 @@ class DashboardViewSpec extends UnitViewSpec with ExportsTestHelper {
       backButton must haveHref(ChoiceController.displayPage)
     }
 
+    "display the link to the button group" in {
+      val link = view.getElementsByClass("govuk-skip-link").get(1)
+      link.tagName mustBe "a"
+      link.text mustBe messages("dashboard.button.group.link")
+      link.attr("href") mustBe s"#$filterId"
+    }
+
     "display same page title as header" in {
       view.title must startWith(view.getElementsByTag("h1").text)
     }
 
     "display the expected page title" in {
-      view.getElementsByTag("h1").text mustBe messages("dashboard.title")
+      enhancedStatuses.foreach { status =>
+        val statusGroup = toStatusGroup(status)
+        createView(status).getElementsByTag("h1").text mustBe messages(s"dashboard.title.$statusGroup")
+      }
     }
 
     "display the expected 'Save for 180 days' hint" in {
-      view.getElementsByClass("govuk-body").get(0).text mustBe messages("dashboard.notification.180.days")
+      enhancedStatuses.foreach { status =>
+        val statusGroup = toStatusGroup(status)
+        val expectedMessage = messages("dashboard.notification.180.days", messages(s"dashboard.notification.180.days.$statusGroup"))
+        createView(status).getElementsByClass("govuk-body").get(0).text mustBe expectedMessage
+      }
     }
 
     "display the refine-the-status hint" in {
@@ -145,7 +161,10 @@ class DashboardViewSpec extends UnitViewSpec with ExportsTestHelper {
     }
 
     "display the expected group of buttons for status filtering" in {
-      val buttonGroup = view.getElementsByClass("govuk-button-group").get(0)
+      val navigation = view.getElementById(filterId)
+      navigation.tagName mustBe "nav"
+
+      val buttonGroup = navigation.getElementsByClass("govuk-button-group").get(0)
 
       val links = buttonGroup.getElementsByTag("a")
       links.size mustBe 4
@@ -175,7 +194,7 @@ class DashboardViewSpec extends UnitViewSpec with ExportsTestHelper {
       "display a 'No declarations' message" in {
         val expectedMessage = messages("dashboard.status.group.empty")
 
-        statuses.foreach { status =>
+        enhancedStatuses.foreach { status =>
           val statusGroup = toStatusGroup(status)
           val element = createView(status).getElementById(s"${statusGroup}-submissions")
           element.getElementsByClass("ceds-pagination__summary").text mustBe expectedMessage
@@ -186,7 +205,7 @@ class DashboardViewSpec extends UnitViewSpec with ExportsTestHelper {
     "there are submissions for the selected status group" should {
 
       "display header and hint for the selected status group" in {
-        statuses.foreach { status =>
+        enhancedStatuses.foreach { status =>
           val currentStatusGroup = toStatusGroup(status)
           val view = createView(status, totalSubmissionsInPage = 1, totalSubmissionsInGroup = 1)
 
@@ -207,7 +226,7 @@ class DashboardViewSpec extends UnitViewSpec with ExportsTestHelper {
         "there is a single submission" in {
           val expectedMessage = s"${messages("site.pagination.showing")} 1 ${messages("dashboard.pagination.singular")}"
 
-          statuses.foreach { status =>
+          enhancedStatuses.foreach { status =>
             val statusGroup = toStatusGroup(status)
             val view = createView(status, totalSubmissionsInPage = 1, totalSubmissionsInGroup = 1)
             val element = view.getElementById(s"${statusGroup}-submissions")
@@ -218,7 +237,7 @@ class DashboardViewSpec extends UnitViewSpec with ExportsTestHelper {
         "there is a single page of submissions" in {
           val expectedMessage = s"${messages("site.pagination.showing")} $itemsPerPage ${messages("dashboard.pagination.plural")}"
 
-          statuses.foreach { status =>
+          enhancedStatuses.foreach { status =>
             val statusGroup = toStatusGroup(status)
             val view = createView(status, itemsPerPage, itemsPerPage)
             val element = view.getElementById(s"${statusGroup}-submissions")
@@ -234,7 +253,7 @@ class DashboardViewSpec extends UnitViewSpec with ExportsTestHelper {
 
           val expectedMessage = s"$showing 1 – $itemsPerPage $of $totalSubmissionInGroup $plural"
 
-          statuses.foreach { status =>
+          enhancedStatuses.foreach { status =>
             val statusGroup = toStatusGroup(status)
             val view = createView(status, itemsPerPage, totalSubmissionInGroup)
             val element = view.getElementById(s"${statusGroup}-submissions")
@@ -245,7 +264,7 @@ class DashboardViewSpec extends UnitViewSpec with ExportsTestHelper {
 
       "NOT display the pagination controls" when {
         "there is a single page of submissions" in {
-          statuses.foreach { status =>
+          enhancedStatuses.foreach { status =>
             val statusGroup = toStatusGroup(status)
             val view = createView(status, totalSubmissionsInPage = itemsPerPage, totalSubmissionsInGroup = itemsPerPage)
             val element = view.getElementById(s"${statusGroup}-submissions")
@@ -278,7 +297,7 @@ class DashboardViewSpec extends UnitViewSpec with ExportsTestHelper {
         "there are multiple pages of submissions and" when {
 
           "the current page is '1'" in {
-            statuses.foreach { status =>
+            enhancedStatuses.foreach { status =>
               val submissions = listOfSubmissions(status, itemsPerPage)
               val controls = pageControls(submissions, itemsPerPage * 3 + lastPage, 1)
               controls.size mustBe 5
@@ -299,7 +318,7 @@ class DashboardViewSpec extends UnitViewSpec with ExportsTestHelper {
           }
 
           "the current page is '3'" in {
-            statuses.foreach { status =>
+            enhancedStatuses.foreach { status =>
               val submissions = listOfSubmissions(status, itemsPerPage)
               val controls = pageControls(submissions, itemsPerPage * 5 + lastPage, 3)
               controls.size mustBe 8

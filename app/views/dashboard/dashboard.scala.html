@@ -18,7 +18,7 @@
 @import models.PageOfSubmissions
 @import uk.gov.hmrc.govukfrontend.views.html.components.GovukButton
 @import views.components.gds.Styles.gdsPageHeading
-@import views.dashboard.DashboardHelper.{buttonGroup, panels}
+@import views.dashboard.DashboardHelper.{buttonGroup, notification, panels, title}
 @import views.helpers.{BackButton, Title}
 @import views.html.components.gds.{gdsMainTemplate, linkButton, pageTitle, paragraphBody}
 
@@ -34,19 +34,22 @@
 @(pageOfSubmissions: PageOfSubmissions)(implicit request: Request[_], messages: Messages)
 
 @govukLayout(
-    title = Title("dashboard.title"),
+    title = Title(title(pageOfSubmissions.statusGroup)),
     backButton = Some(BackButton(messages("site.backToSelectionPage"), ChoiceController.displayPage)),
     useCustomContentWidth = true,
     showDeclarationSummaryLink = false
 ) {
+    <a href="#filters" class="govuk-skip-link" data-module="govuk-skip-link">
+      @messages("dashboard.button.group.link")
+    </a>
+
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-full">
+            @pageTitle(messages(title(pageOfSubmissions.statusGroup)), s"$gdsPageHeading govuk-!-margin-top-1 govuk-!-margin-bottom-2")
 
-            @pageTitle(messages("dashboard.title"), s"$gdsPageHeading govuk-!-margin-bottom-3")
+            @paragraph(notification(pageOfSubmissions.statusGroup), classes = "govuk-body govuk-!-margin-bottom-6")
 
-            @paragraph(messages("dashboard.notification.180.days"), classes = "govuk-body govuk-!-margin-bottom-9")
-
-            @paragraph(messages("dashboard.check.status.hint"), classes = "govuk-body govuk-!-margin-bottom-6")
+            @paragraph(messages("dashboard.check.status.hint"), classes = "govuk-body govuk-!-margin-bottom-4")
 
             @buttonGroup(pageOfSubmissions.statusGroup, govukButton)
 
