@@ -37,7 +37,7 @@ import forms.section5.commodityMeasure.SupplementaryUnits
 import forms.section5.procedurecodes.{AdditionalProcedureCode, ProcedureCode}
 import forms.section5._
 import forms.section6.{SupervisingCustomsOffice, TransportLeavingTheBorder, TransportPayment, WarehouseIdentification}
-import forms.{DeclarationPage, Ducr, Lrn}
+import forms.DeclarationPage
 import models.ExportsDeclaration
 import models.declaration.ExportItem
 import models.requests.JourneyRequest

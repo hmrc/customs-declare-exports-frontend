@@ -17,65 +17,36 @@
 package views.declaration.amendments
 
 import base.{Injector, MockAuthAction, OverridableInjector}
-import controllers.routes.DeclarationDetailsController
+import controllers.timeline.routes.DeclarationDetailsController
 import forms.common.YesNoAnswer.YesNoAnswers.{no, yes}
-import forms.common.{Address, Country, Date, Eori, YesNoAnswer}
-import forms.section6.ModeOfTransportCode.{InlandWaterway, Maritime, RoRo, Road}
-import forms.section6.TransportPayment.{cash, cheque}
+import forms.common._
 import forms.section1.DeclarantDetails
 import forms.section2.authorisationHolder.AuthorisationHolder
 import forms.section2.carrier.CarrierDetails
-import forms.section2.{AdditionalActor, ConsigneeDetails, EntityDetails, PersonPresentingGoodsDetails}
 import forms.section2.consignor.ConsignorDetails
 import forms.section2.exporter.ExporterDetails
+import forms.section2.{AdditionalActor, ConsigneeDetails, EntityDetails, PersonPresentingGoodsDetails}
 import forms.section3.OfficeOfExit
 import forms.section4.{Document, NatureOfTransaction}
+import forms.section5._
 import forms.section5.additionaldocuments.{AdditionalDocument, DocumentWriteOff}
-import forms.section5.{
-  AdditionalFiscalReference,
-  AdditionalFiscalReferencesData,
-  AdditionalInformation,
-  CommodityDetails,
-  CusCode,
-  NactCode,
-  PackageInformation,
-  StatisticalValue,
-  UNDangerousGoodsCode
-}
-import forms.section6.{
-  InlandModeOfTransportCode,
-  Seal,
-  SupervisingCustomsOffice,
-  TransportCountry,
-  TransportLeavingTheBorder,
-  TransportPayment,
-  WarehouseIdentification
-}
-import models.declaration.{
-  AdditionalDocuments,
-  AdditionalInformationData,
-  CommodityMeasure,
-  Container,
-  ExportItem,
-  GoodsLocation,
-  InvoiceAndPackageTotals,
-  ProcedureCodesData,
-  RepresentativeDetails,
-  RoutingCountry
-}
+import forms.section6.ModeOfTransportCode.{InlandWaterway, Maritime, RoRo, Road}
+import forms.section6.TransportPayment.{cash, cheque}
+import forms.section6._
+import models.declaration._
 import models.declaration.submissions.RequestType.ExternalAmendmentRequest
 import org.mockito.ArgumentMatchers.{any, refEq}
 import org.mockito.Mockito.when
 import play.api.inject.bind
 import play.twirl.api.HtmlFormat.Appendable
 import services.DiffTools.ExportsDeclarationDiff
+import services._
 import services.model.PackageType
-import services.{AlteredField, DocumentType, DocumentTypeService, OriginalAndNewValues, PackageTypesService}
 import testdata.SubmissionsTestData.{action, submission}
+import views.common.UnitViewSpec
 import views.declaration.amendments.AmendmentDetailsViewSpec._
 import views.helpers.{CommonMessages, ViewDates}
 import views.html.declaration.amendments.amendment_details
-import views.common.UnitViewSpec
 import views.tags.ViewTest
 
 import scala.jdk.CollectionConverters._

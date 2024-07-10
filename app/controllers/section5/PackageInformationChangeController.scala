@@ -18,15 +18,14 @@ package controllers.section5
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.declaration.{ModelCacheable, SubmissionErrors}
-import controllers.helpers.MultipleItemsHelper
 import controllers.helpers.PackageInformationHelper.{allCachedPackageInformation, singleCachedPackageInformation}
 import controllers.helpers.SequenceIdHelper.handleSequencing
+import controllers.helpers.{ErrorHandler, MultipleItemsHelper}
 import controllers.navigation.Navigator
 import controllers.section5.PackageInformationAddController.PackageInformationFormGroupId
 import controllers.section5.routes.PackageInformationSummaryController
 import forms.section5.PackageInformation
 import forms.section5.PackageInformation.form
-import handlers.ErrorHandler
 import models.ExportsDeclaration
 import models.requests.JourneyRequest
 import play.api.data.Form

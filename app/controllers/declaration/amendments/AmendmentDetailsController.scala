@@ -20,10 +20,10 @@ import com.google.inject.Inject
 import config.featureFlags.DeclarationAmendmentsConfig
 import connectors.CustomsDeclareExportsConnector
 import controllers.actions.{AuthAction, VerifiedEmailAction}
+import controllers.helpers.ErrorHandler
 import controllers.routes.RootController
-import handlers.ErrorHandler
 import models.ExportsDeclaration
-import models.declaration.submissions.{Action => ActionOfSubmission, Submission}
+import models.declaration.submissions.{Submission, Action => ActionOfSubmission}
 import models.requests.VerifiedEmailRequest
 import play.api.Logging
 import play.api.i18n.I18nSupport

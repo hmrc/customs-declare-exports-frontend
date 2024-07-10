@@ -18,12 +18,12 @@ package views.declaration.amendments
 
 import base.Injector
 import controllers.declaration.routes.{SubmissionController, SummaryController}
-import controllers.routes.DeclarationDetailsController
-import forms.declaration.AmendmentSubmission.{confirmationKey, emailKey, form, jobRoleKey, nameKey, reasonKey}
+import controllers.timeline.routes.DeclarationDetailsController
+import forms.timeline.AmendmentSubmission.{confirmationKey, emailKey, form, jobRoleKey, nameKey, reasonKey}
 import play.twirl.api.HtmlFormat.Appendable
 import services.view.AmendmentAction.{AmendmentAction, Cancellation, Resubmission, Submission}
-import views.html.declaration.amendments.amendment_submission
 import views.common.UnitViewSpec
+import views.html.declaration.amendments.amendment_submission
 
 class AmendmentSubmissionViewSpec extends UnitViewSpec with Injector {
 

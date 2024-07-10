@@ -19,12 +19,11 @@ package controllers.section2
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.declaration.{ModelCacheable, SubmissionErrors}
 import controllers.helpers.AuthorisationHolderHelper._
-import controllers.helpers.MultipleItemsHelper
+import controllers.helpers.{ErrorHandler, MultipleItemsHelper}
 import controllers.navigation.Navigator
 import controllers.section2.routes.AuthorisationHolderSummaryController
-import forms.section2.authorisationHolder.AuthorisationHolder.authorisationHolderFormGroupId
 import forms.section2.authorisationHolder.AuthorisationHolder
-import handlers.ErrorHandler
+import forms.section2.authorisationHolder.AuthorisationHolder.authorisationHolderFormGroupId
 import models.ExportsDeclaration
 import models.declaration.AuthorisationHolders
 import models.declaration.AuthorisationHolders.limitOfHolders

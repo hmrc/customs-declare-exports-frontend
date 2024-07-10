@@ -17,7 +17,7 @@
 package forms.declaration
 
 import forms.DeclarationPage
-import forms.MappingHelper.requiredRadio
+import forms.mappings.MappingHelper.requiredRadio
 import models.DeclarationType.{allDeclarationTypesExcluding, STANDARD}
 import play.api.data.{Form, Forms, Mapping}
 import utils.validators.forms.FieldValidator.isContainedIn

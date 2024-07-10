@@ -19,14 +19,15 @@ package controllers.actions
 import base.ControllerWithoutFormSpec
 import base.ExportsTestData.{eori, newUser}
 import config.{AppConfig, ExternalServicesConfig}
-import controllers.{routes, ChoiceController}
+import controllers.{ChoiceController, routes}
 import models.UnauthorisedReason.{UrlDirect, UserEoriNotAllowed, UserIsAgent, UserIsNotEnrolled}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.auth.core.{BearerTokenExpired, InternalError, UnsupportedAffinityGroup}
-import views.html.{choice_page, declaration_details}
+import views.html.choice_page
+import views.html.timeline.declaration_details
 
 import java.net.URLEncoder
 import scala.concurrent.Future

@@ -19,8 +19,8 @@ package controllers.navigation
 import base._
 import controllers.declaration.routes.SummaryController
 import controllers.helpers._
-import controllers.routes.RejectedNotificationsController
 import controllers.section5.routes._
+import controllers.timeline.routes.RejectedNotificationsController
 import forms.section5.{AdditionalInformationRequired, AdditionalInformationSummary}
 import mock.FeatureFlagMocks
 import models.DeclarationType.{STANDARD, SUPPLEMENTARY}

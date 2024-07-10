@@ -20,13 +20,12 @@ import controllers.actions.{AuthAction, JourneyAction}
 import controllers.declaration.{ModelCacheable, SubmissionErrors}
 import controllers.helpers.MultipleItemsHelper.saveAndContinue
 import controllers.helpers.SequenceIdHelper.handleSequencing
-import controllers.helpers.{FormAction, Remove}
+import controllers.helpers.{ErrorHandler, FormAction, Remove}
 import controllers.navigation.Navigator
 import controllers.section6.routes.{ContainerController, SealController}
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.section6.Seal
-import handlers.ErrorHandler
 import models.ExportsDeclaration
 import models.declaration.Container
 import models.requests.JourneyRequest

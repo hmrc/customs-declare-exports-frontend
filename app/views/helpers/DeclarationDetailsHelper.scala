@@ -17,7 +17,7 @@
 package views.helpers
 
 import controllers.declaration.amendments.AmendDeclarationController
-import controllers.routes.DeclarationDetailsController
+import controllers.timeline.routes.DeclarationDetailsController
 import models.declaration.submissions.EnhancedStatus._
 import models.declaration.submissions.Submission
 import play.api.mvc.Call

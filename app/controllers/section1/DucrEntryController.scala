@@ -20,8 +20,8 @@ import controllers.actions.{AmendmentDraftFilter, AuthAction, JourneyAction}
 import controllers.declaration.{ModelCacheable, SubmissionErrors}
 import controllers.navigation.Navigator
 import controllers.section1.routes.LocalReferenceNumberController
-import forms.Ducr
-import forms.Ducr.form
+import forms.declaration.Ducr.form
+import forms.declaration.Ducr
 import forms.section1.ConsignmentReferences
 import models.DeclarationType.{allDeclarationTypesExcluding, SUPPLEMENTARY}
 import models.requests.JourneyRequest

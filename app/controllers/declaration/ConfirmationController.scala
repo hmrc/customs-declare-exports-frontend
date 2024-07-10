@@ -18,8 +18,8 @@ package controllers.declaration
 
 import connectors.CustomsDeclareExportsConnector
 import controllers.actions.{AuthAction, VerifiedEmailAction}
-import controllers.routes.RejectedNotificationsController
-import handlers.ErrorHandler
+import controllers.helpers.ErrorHandler
+import controllers.timeline.routes.RejectedNotificationsController
 import models.declaration.submissions.RequestType.SubmissionRequest
 import models.declaration.submissions.{EnhancedStatus, Submission}
 import models.requests.SessionHelper.{getValue, submissionUuid}

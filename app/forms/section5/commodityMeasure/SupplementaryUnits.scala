@@ -17,7 +17,7 @@
 package forms.section5.commodityMeasure
 
 import forms.DeclarationPage
-import forms.MappingHelper.requiredRadio
+import forms.mappings.MappingHelper.requiredRadio
 import forms.common.YesNoAnswer.YesNoAnswers
 import models.DeclarationType.DeclarationType
 import models.declaration.{CommodityMeasure => CommodityMeasureModel}

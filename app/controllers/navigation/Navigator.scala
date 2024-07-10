@@ -19,8 +19,8 @@ package controllers.navigation
 import controllers.declaration.routes.SummaryController
 import controllers.helpers.ErrorFixModeHelper.{inErrorFixMode, setErrorFixMode}
 import controllers.helpers._
-import controllers.routes.RejectedNotificationsController
 import controllers.section5.routes.SupplementaryUnitsController
+import controllers.timeline.routes.RejectedNotificationsController
 import forms.DeclarationPage
 import forms.section5.{AdditionalInformationRequired, AdditionalInformationSummary}
 import models.DeclarationType._

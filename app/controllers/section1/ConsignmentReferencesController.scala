@@ -23,7 +23,7 @@ import controllers.declaration.{ModelCacheable, SubmissionErrors}
 import controllers.navigation.Navigator
 import forms.section1.ConsignmentReferences.form
 import forms.section1.ConsignmentReferences
-import forms.{Ducr, LrnValidator}
+import forms.declaration.{Ducr, LrnValidator}
 import models.DeclarationType.SUPPLEMENTARY
 import models.requests.JourneyRequest
 import play.api.i18n.I18nSupport

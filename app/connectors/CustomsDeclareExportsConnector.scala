@@ -18,7 +18,7 @@ package connectors
 
 import com.codahale.metrics.Timer
 import config.AppConfig
-import forms.Lrn
+import forms.declaration.Lrn
 import models.CancellationStatus.CancellationResult
 import models._
 import models.declaration.DeclarationStatus.{AMENDMENT_DRAFT, DRAFT, INITIAL}

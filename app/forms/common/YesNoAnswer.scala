@@ -16,7 +16,7 @@
 
 package forms.common
 
-import forms.MappingHelper.requiredRadio
+import forms.mappings.MappingHelper.requiredRadio
 import forms.common.YesNoAnswer.YesNoAnswers.yes
 import forms.common.YesNoAnswer.{mappingsForAmendment, valueForYesNo}
 import models.{Amendment, ExportsDeclaration}

@@ -17,7 +17,7 @@
 package forms.section6
 
 import forms.DeclarationPage
-import forms.MappingHelper.requiredRadio
+import forms.mappings.MappingHelper.requiredRadio
 import models.DeclarationType.DeclarationType
 import models.viewmodels.TariffContentKey
 import play.api.data.{Form, Forms, Mapping}

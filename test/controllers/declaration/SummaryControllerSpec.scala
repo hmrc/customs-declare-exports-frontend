@@ -20,7 +20,7 @@ import base.{AuditedControllerSpec, ControllerWithoutFormSpec}
 import controllers.declaration.SummaryControllerSpec.{expectedHref, fakeSummaryPage}
 import controllers.declaration.routes.SummaryController
 import controllers.routes.DraftDeclarationController
-import forms.{Lrn, LrnValidator}
+import forms.declaration.{Lrn, LrnValidator}
 import models.declaration.DeclarationStatus.AMENDMENT_DRAFT
 import org.jsoup.Jsoup
 import org.mockito.ArgumentCaptor

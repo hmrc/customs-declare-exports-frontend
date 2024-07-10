@@ -1,0 +1,39 @@
+@*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import controllers.timeline.routes.DeclarationDetailsController
+@import models.requests.VerifiedEmailRequest
+@import views.helpers.{BackButton, Title}
+@import views.html.components.gds.{gdsMainTemplate, pageTitle, paragraphBody}
+
+@this(
+    govukLayout: gdsMainTemplate,
+    pageTitle: pageTitle,
+    paragraph: paragraphBody
+)
+
+@(submissionId: String)(implicit request: VerifiedEmailRequest[_], messages: Messages)
+
+@govukLayout(
+    title = Title("declaration.details.unavailable.actions.header"),
+    backButton = Some(BackButton(messages("site.back"), DeclarationDetailsController.displayPage(submissionId))),
+    useCustomContentWidth = true,
+    showDeclarationSummaryLink = false
+) {
+    @pageTitle(messages("declaration.details.unavailable.actions.header"))
+
+    @paragraph(messages("declaration.details.unavailable.actions.paragraph"))
+}

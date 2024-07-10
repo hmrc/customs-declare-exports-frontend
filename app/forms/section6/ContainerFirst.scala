@@ -17,7 +17,7 @@
 package forms.section6
 
 import forms.DeclarationPage
-import forms.MappingHelper.requiredRadio
+import forms.mappings.MappingHelper.requiredRadio
 import forms.section6.ContainerAdd.maxContainerIdLength
 import models.DeclarationType.{CLEARANCE, DeclarationType}
 import models.viewmodels.TariffContentKey

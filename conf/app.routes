@@ -18,43 +18,39 @@ GET         /undeliverable-email                           controllers.Unverifie
 
 GET         /file-upload                                   controllers.FileUploadController.startFileUpload(mrn: String)
 
-# Notifications
-
-GET         /submissions/:id/rejected-notifications        controllers.RejectedNotificationsController.displayPage(id: String)
-GET         /submissions/unaccepted-amendment/:actionId    controllers.RejectedNotificationsController.displayPageOnUnacceptedAmendment(actionId: String, draftDeclarationId: Option[String] ?= None)
-
 # Dashboard
 
 GET         /dashboard                                     controllers.DashboardController.displayPage
 
 # Submissions
 
-GET         /submissions/:id/information                   controllers.DeclarationDetailsController.displayPage(id: String)
-GET         /submissions/:id/unavailable-actions           controllers.DeclarationDetailsController.unavailableActions(id: String)
-
 GET         /submissions/:id/view                          controllers.SubmissionsController.viewDeclaration(id: String)
+
+# Timeline
+
+GET         /submissions/:id/information                   controllers.timeline.DeclarationDetailsController.displayPage(id: String)
+GET         /submissions/:id/unavailable-actions           controllers.timeline.DeclarationDetailsController.unavailableActions(id: String)
 
 GET         /submissions/:id                               controllers.SubmissionsController.amend(id: String, isAmendment: Boolean)
 
 GET         /submissions/:id/:pattern/:messageKey          controllers.SubmissionsController.amendErrors(id: String, pattern: String, messageKey: String, isAmendment: Boolean, url: RedirectUrl)
 
-GET         /ead-print-view/:mrn                           controllers.EADController.generateDocument(mrn)
+GET         /ead-print-view/:mrn                           controllers.timeline.EADController.generateDocument(mrn)
 
-# Cancel declaration
+GET         /cancel-declaration                            controllers.timeline.CancelDeclarationController.displayPage
+POST        /cancel-declaration                            controllers.timeline.CancelDeclarationController.onSubmit
 
-GET         /cancel-declaration                            controllers.CancelDeclarationController.displayPage
-POST        /cancel-declaration                            controllers.CancelDeclarationController.onSubmit
+GET         /copy-declaration/:id                          controllers.timeline.CopyDeclarationController.redirectToReceiveJourneyRequest(id: String)
+GET         /copy-declaration                              controllers.timeline.CopyDeclarationController.displayPage
+POST        /copy-declaration                              controllers.timeline.CopyDeclarationController.submitPage
 
-# Copy declaration
+GET         /cancellation-holding                          controllers.timeline.CancellationResultController.displayHoldingPage
+GET         /cancellation-result                           controllers.timeline.CancellationResultController.displayResultPage
 
-GET         /copy-declaration/:id                          controllers.CopyDeclarationController.redirectToReceiveJourneyRequest(id: String)
-GET         /copy-declaration                              controllers.CopyDeclarationController.displayPage
-POST        /copy-declaration                              controllers.CopyDeclarationController.submitPage
+# Timeline => Rejected notifications
 
-# Cancellation Result
-
-GET         /cancellation-holding                          controllers.CancellationResultController.displayHoldingPage
-GET         /cancellation-result                           controllers.CancellationResultController.displayResultPage
+GET         /submissions/:id/rejected-notifications        controllers.timeline.RejectedNotificationsController.displayPage(id: String)
+GET         /submissions/unaccepted-amendment/:actionId    controllers.timeline.RejectedNotificationsController.displayPageOnUnacceptedAmendment(actionId: String, draftDeclarationId: Option[String] ?= None)
 
 # Draft declarations
 

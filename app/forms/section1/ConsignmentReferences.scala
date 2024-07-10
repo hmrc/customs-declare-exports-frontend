@@ -17,6 +17,7 @@
 package forms.section1
 
 import forms._
+import forms.declaration.{Ducr, Lrn, LrnValidator, Mrn}
 import forms.section1.additionaldeclarationtype.AdditionalDeclarationType
 import forms.section1.additionaldeclarationtype.AdditionalDeclarationType.AdditionalDeclarationType
 import models.DeclarationType.{CLEARANCE, DeclarationType, SUPPLEMENTARY}

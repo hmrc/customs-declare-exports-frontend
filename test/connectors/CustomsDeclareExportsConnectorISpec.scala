@@ -21,7 +21,7 @@ import com.codahale.metrics.SharedMetricRegistries
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.client.WireMock._
 import config.featureFlags.DeclarationAmendmentsConfig
-import forms.Lrn
+import forms.declaration.Lrn
 import mock.FeatureFlagMocks
 import models.CancellationStatus.CancellationResult
 import models.declaration.DeclarationStatus.DRAFT

@@ -17,6 +17,7 @@
 package forms.section5.additionaldocuments
 
 import forms.common.Date
+import forms.mappings.{AdditionalConstraintsMapping, ConditionalConstraint}
 import forms.section5.additionaldocuments.AdditionalDocument.{
   dateOfValidityPointer,
   documentIdentifierPointer,
@@ -33,7 +34,7 @@ import forms.section5.additionaldocuments.AdditionalDocument.{
   keyForTypeCode
 }
 import forms.section5.additionaldocuments.DocumentWriteOff.documentWriteOffKey
-import forms.{AdditionalConstraintsMapping, ConditionalConstraint, DeclarationPage}
+import forms.DeclarationPage
 import models.AmendmentRow.{forAddedValue, forRemovedValue, pointerToSelector}
 import models.DeclarationType.{CLEARANCE, DeclarationType}
 import models.ExportsFieldPointer.ExportsFieldPointer
@@ -48,7 +49,7 @@ import play.api.libs.json.{JsValue, Json, OFormat, OWrites}
 import services.DiffTools.{combinePointers, compareStringDifference, ExportsDeclarationDiff}
 import services.{DiffTools, TaggedAdditionalDocumentCodes, TaggedAuthCodes}
 import uk.gov.voa.play.form.ConditionalMappings.isAnyOf
-import utils.validators.forms.FieldValidator.{nonEmpty, _}
+import utils.validators.forms.FieldValidator._
 
 case class AdditionalDocument(
   documentTypeCode: Option[String],

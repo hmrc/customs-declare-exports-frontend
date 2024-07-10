@@ -14,6 +14,7 @@
  * limitations under the License.
  *@
 
+@import controllers.timeline.routes.DeclarationDetailsController
 @import models.ExportsDeclaration
 @import models.declaration.submissions.Submission
 @import views.helpers.{BackButton, Title}
@@ -36,7 +37,7 @@
 
 @(submission: Submission, declaration: ExportsDeclaration)(implicit request: Request[_], messages: Messages)
 
-@backLink = @{routes.DeclarationDetailsController.displayPage(submission.uuid)}
+@backLink = @{ DeclarationDetailsController.displayPage(submission.uuid) }
 
 @govukLayout(
     title = Title("declaration.summary.submitted-header"),

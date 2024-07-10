@@ -17,7 +17,7 @@
 package controllers.declaration
 
 import base.ControllerWithoutFormSpec
-import controllers.routes.RejectedNotificationsController
+import controllers.timeline.routes.RejectedNotificationsController
 import forms.section1.additionaldeclarationtype.AdditionalDeclarationType.STANDARD_FRONTIER
 import forms.section3.LocationOfGoods
 import models.declaration.submissions.EnhancedStatus.{ERRORS, RECEIVED}

@@ -16,7 +16,7 @@
 
 package views.helpers
 
-import controllers.routes.DeclarationDetailsController
+import controllers.timeline.routes.DeclarationDetailsController
 import forms.section1.additionaldeclarationtype.AdditionalDeclarationType.{
   arrivedTypes,
   from,

@@ -19,9 +19,9 @@ package controllers.section1
 import base.{AuditedControllerSpec, ControllerSpec}
 import controllers.actions.AmendmentDraftFilterSpec
 import controllers.section1.routes.DucrEntryController
-import forms.Ducr
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
+import forms.declaration.Ducr
 import forms.section1.ConsignmentReferences
 import models.DeclarationType.{allDeclarationTypesExcluding, SUPPLEMENTARY}
 import org.mockito.ArgumentCaptor

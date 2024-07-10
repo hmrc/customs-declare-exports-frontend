@@ -17,9 +17,9 @@
 package models.declaration
 
 import base.ExportsTestData.eori
-import forms.Lrn
 import forms.common.YesNoAnswer.Yes
 import forms.common.{Country, Date, Eori}
+import forms.declaration.Lrn
 import forms.section1.ConsignmentReferencesSpec._
 import forms.section1.DeclarantDetails
 import forms.section1.additionaldeclarationtype.AdditionalDeclarationType.SUPPLEMENTARY_SIMPLIFIED

@@ -23,12 +23,13 @@ import controllers.actions.{AuthAction, JourneyAction, VerifiedEmailAction}
 import controllers.declaration.amendments.routes.AmendmentOutcomeController
 import controllers.declaration.routes.ConfirmationController
 import controllers.helpers.ErrorFixModeHelper.inErrorFixMode
+import controllers.helpers.ErrorHandler
 import controllers.routes.{ChoiceController, RootController}
-import forms.declaration.{AmendmentSubmission, LegalDeclaration}
-import handlers.ErrorHandler
+import forms.declaration.LegalDeclaration
+import forms.timeline.AmendmentSubmission
 import models.declaration.submissions.Submission
-import models.requests.{JourneyRequest, VerifiedEmailRequest}
 import models.requests.SessionHelper._
+import models.requests.{JourneyRequest, VerifiedEmailRequest}
 import play.api.Logging
 import play.api.data.Form
 import play.api.i18n.I18nSupport

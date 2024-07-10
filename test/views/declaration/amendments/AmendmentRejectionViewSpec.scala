@@ -17,16 +17,16 @@
 package views.declaration.amendments
 
 import base.{Injector, MockAuthAction}
-import controllers.routes.DeclarationDetailsController
+import controllers.timeline.routes.DeclarationDetailsController
 import forms.section1.additionaldeclarationtype.AdditionalDeclarationType._
 import models.declaration.submissions.EnhancedStatus._
 import models.declaration.submissions.Submission
 import org.jsoup.nodes.Document
 import org.scalatest.GivenWhenThen
 import testdata.SubmissionsTestData._
+import views.common.UnitViewSpec
 import views.helpers.Confirmation
 import views.html.declaration.amendments.amendment_rejection
-import views.common.UnitViewSpec
 import views.tags.ViewTest
 
 @ViewTest

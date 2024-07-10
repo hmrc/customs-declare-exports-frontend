@@ -20,8 +20,8 @@ import controllers.actions.{AmendmentDraftFilter, AuthAction, JourneyAction}
 import controllers.section1.routes.ConfirmDucrController
 import controllers.declaration.{ModelCacheable, SubmissionErrors}
 import controllers.navigation.Navigator
-import forms.Ducr
-import forms.Ducr.generateDucrPrefix
+import forms.declaration.Ducr.generateDucrPrefix
+import forms.declaration.Ducr
 import forms.section1.{ConsignmentReferences, TraderReference}
 import models.DeclarationType.{allDeclarationTypesExcluding, SUPPLEMENTARY}
 import models.ExportsDeclaration

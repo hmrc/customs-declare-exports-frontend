@@ -17,6 +17,7 @@
 package views.declaration.summary
 
 import base.Injector
+import controllers.timeline.routes.DeclarationDetailsController
 import forms.section5.CommodityDetails
 import models.DeclarationType._
 import models.ExportsDeclaration
@@ -27,8 +28,8 @@ import play.twirl.api.HtmlFormat.Appendable
 import services.cache.ExportsTestHelper
 import testdata.SubmissionsTestData.submission
 import tools.Stubs
-import views.html.declaration.summary.submitted_declaration_page
 import views.common.UnitViewSpec
+import views.html.declaration.summary.submitted_declaration_page
 
 import java.util.function.Predicate
 
@@ -68,7 +69,7 @@ class SubmittedDeclarationViewSpec extends UnitViewSpec with Stubs with ExportsT
       val backButton = createView(aDeclaration(withId("declaration-id"))).getElementById("back-link")
 
       backButton.text mustBe messages("site.back")
-      backButton must haveHref(controllers.routes.DeclarationDetailsController.displayPage(submission.uuid))
+      backButton must haveHref(DeclarationDetailsController.displayPage(submission.uuid))
     }
 
     "not have View declaration summary link" in {

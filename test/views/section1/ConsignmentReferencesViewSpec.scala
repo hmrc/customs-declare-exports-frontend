@@ -19,10 +19,10 @@ package views.section1
 import base.ExportsTestData._
 import base.{Injector, TestHelper}
 import controllers.section1.routes.{AdditionalDeclarationTypeController, DeclarantDetailsController}
+import forms.declaration.{Ducr, Lrn, Mrn}
 import forms.section1.ConsignmentReferences.form
 import forms.section1.additionaldeclarationtype.AdditionalDeclarationType.{STANDARD_PRE_LODGED, SUPPLEMENTARY_EIDR, SUPPLEMENTARY_SIMPLIFIED}
 import forms.section1.ConsignmentReferences
-import forms.{Ducr, Lrn, Mrn}
 import models.DeclarationType._
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document

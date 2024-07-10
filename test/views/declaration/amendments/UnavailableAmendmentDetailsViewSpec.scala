@@ -18,10 +18,10 @@ package views.declaration.amendments
 
 import base.{Injector, MockAuthAction}
 import config.ExternalServicesConfig
-import controllers.routes.DeclarationDetailsController
+import controllers.timeline.routes.DeclarationDetailsController
+import views.common.UnitViewSpec
 import views.helpers.CommonMessages
 import views.html.declaration.amendments.unavailable_amendment_details
-import views.common.UnitViewSpec
 import views.tags.ViewTest
 
 @ViewTest

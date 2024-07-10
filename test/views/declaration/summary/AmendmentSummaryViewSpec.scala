@@ -17,7 +17,8 @@
 package views.declaration.summary
 
 import base.ExportsTestData.{eori, newUser}
-import controllers.routes.{DeclarationDetailsController, DraftDeclarationController}
+import controllers.routes.DraftDeclarationController
+import controllers.timeline.routes.DeclarationDetailsController
 import models.ExportsDeclaration
 import models.declaration.DeclarationStatus.AMENDMENT_DRAFT
 import models.requests.JourneyRequest

@@ -17,8 +17,7 @@
 package base
 
 import config.AppConfig
-import controllers.helpers.{Add, AddField, SaveAndContinue}
-import handlers.ErrorHandler
+import controllers.helpers.{Add, AddField, ErrorHandler, SaveAndContinue}
 import mock.{ErrorHandlerMocks, FeatureFlagMocks, JourneyActionMocks, VerifiedEmailMocks}
 import models.ExportsDeclaration
 import models.requests.{JourneyRequest, SessionHelper}

@@ -19,7 +19,7 @@ package controllers
 import connectors.CustomsDeclareExportsConnector
 import controllers.actions.{AuthAction, VerifiedEmailAction}
 import controllers.routes.DraftDeclarationController
-import forms.RemoveDraftDeclaration.form
+import forms.declaration.RemoveDraftDeclaration.form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.controller.WithUnsafeDefaultFormBinding

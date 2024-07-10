@@ -17,16 +17,16 @@
 package views.declaration.amendments
 
 import base.{Injector, MockAuthAction}
-import controllers.routes.DeclarationDetailsController
+import controllers.timeline.routes.DeclarationDetailsController
 import forms.section1.additionaldeclarationtype.AdditionalDeclarationType._
 import models.declaration.submissions.EnhancedStatus._
 import models.declaration.submissions.Submission
 import org.jsoup.nodes.Document
 import org.scalatest.GivenWhenThen
 import testdata.SubmissionsTestData._
+import views.common.UnitViewSpec
 import views.helpers.Confirmation
 import views.html.declaration.amendments.amendment_pending
-import views.common.UnitViewSpec
 import views.tags.ViewTest
 
 @ViewTest
@@ -38,9 +38,9 @@ class AmendmentPendingViewSpec extends UnitViewSpec with GivenWhenThen with Inje
   private val declarationDetailsRoute = DeclarationDetailsController.displayPage(submissionId).url
 
   private def createView(submission: Submission, declarationType: AdditionalDeclarationType = STANDARD_FRONTIER): Document = {
-    val req = buildVerifiedEmailRequest(request, exampleUser)
-    val confirmation = Confirmation(req.email, declarationType.toString, submission, None)
-    page(confirmation)(req, messages)
+    val verifiedEmailRequest = buildVerifiedEmailRequest(request, exampleUser)
+    val confirmation = Confirmation(verifiedEmailRequest.email, declarationType.toString, submission, None)
+    page(confirmation)(verifiedEmailRequest, messages)
   }
 
   "Amendment PENDING View" when {

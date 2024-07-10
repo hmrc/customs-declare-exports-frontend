@@ -19,12 +19,11 @@ package controllers.declaration.amendments
 import config.featureFlags.DeclarationAmendmentsConfig
 import connectors.CustomsDeclareExportsConnector
 import controllers.actions.{AuthAction, VerifiedEmailAction}
-import controllers.declaration.amendments.routes
+import controllers.helpers.ErrorHandler
 import controllers.routes.RootController
-import handlers.ErrorHandler
 import models.declaration.submissions.EnhancedStatus.{CUSTOMS_POSITION_DENIED, CUSTOMS_POSITION_GRANTED, ERRORS}
 import models.declaration.submissions.RequestType.AmendmentCancellationRequest
-import models.declaration.submissions.{Action => Actn, Submission}
+import models.declaration.submissions.{Submission, Action => Actn}
 import models.requests.SessionHelper._
 import models.requests.{AuthenticatedRequest, VerifiedEmailRequest}
 import play.api.Logging

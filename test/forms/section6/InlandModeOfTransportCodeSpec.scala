@@ -16,8 +16,7 @@
 
 package forms.section6
 
-import forms.LightFormMatchers
-import forms.common.DeclarationPageBaseSpec
+import forms.common.{DeclarationPageBaseSpec, LightFormMatchers}
 import play.api.libs.json.{JsObject, JsString, JsValue}
 
 class InlandModeOfTransportCodeSpec extends DeclarationPageBaseSpec with LightFormMatchers {

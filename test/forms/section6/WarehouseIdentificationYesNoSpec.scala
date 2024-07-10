@@ -18,7 +18,7 @@ package forms.section6
 
 import base.TestHelper.createRandomAlphanumericString
 import base.UnitWithMocksSpec
-import forms.LightFormMatchers
+import forms.common.LightFormMatchers
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.section6.WarehouseIdentification._
 import forms.section6.WarehouseIdentificationSpec._

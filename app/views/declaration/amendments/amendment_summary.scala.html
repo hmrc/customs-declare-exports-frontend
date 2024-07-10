@@ -16,15 +16,16 @@
 
 @import config.AppConfig
 @import controllers.declaration.routes.SubmissionController
-@import controllers.routes.{DeclarationDetailsController, DraftDeclarationController}
+@import controllers.routes.DraftDeclarationController
+@import controllers.timeline.routes.DeclarationDetailsController
 @import models.declaration.submissions.EnhancedStatus.ERRORS
 @import models.requests.JourneyRequest
+@import play.api.http.HeaderNames
+@import uk.gov.hmrc.govukfrontend.views.html.components.{GovukWarningText, Text, WarningText}
 @import views.helpers.{BackButton, Title}
 @import views.helpers.summary._
 @import views.html.components.gds.{gdsMainTemplate, linkButton, pageTitle, paragraphBody}
 @import views.html.declaration.summary.sections._
-@import uk.gov.hmrc.govukfrontend.views.html.components.{GovukWarningText, Text, WarningText}
-@import play.api.http.HeaderNames
 
 @this(
     govukLayout: gdsMainTemplate,

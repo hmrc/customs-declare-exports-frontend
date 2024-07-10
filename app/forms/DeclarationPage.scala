@@ -24,6 +24,7 @@ trait DeclarationPage {
 }
 
 object DeclarationPage {
+
   def getJourneyTypeSpecialisation(decType: DeclarationType): String = decType match {
     case CLEARANCE => "clearance"
     case _         => "common"

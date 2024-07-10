@@ -19,9 +19,9 @@ package controllers.declaration
 import config.AppConfig
 import connectors.CustomsDeclareExportsConnector
 import controllers.actions.{AuthAction, JourneyAction, VerifiedEmailAction}
+import controllers.helpers.ErrorHandler
 import controllers.routes.DraftDeclarationController
-import forms.{Lrn, LrnValidator}
-import handlers.ErrorHandler
+import forms.declaration.{Lrn, LrnValidator}
 import models.declaration.submissions.EnhancedStatus.ERRORS
 import models.requests.JourneyRequest
 import models.requests.SessionHelper._

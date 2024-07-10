@@ -20,20 +20,20 @@ import connectors.CustomsDeclareExportsConnector
 import controllers.actions.{AuthAction, VerifiedEmailAction}
 import controllers.declaration.routes._
 import controllers.helpers.ErrorFixModeHelper.setErrorFixMode
-import handlers.ErrorHandler
+import controllers.helpers.ErrorHandler
+import controllers.routes.RootController
 import models.declaration.submissions.EnhancedStatus.ERRORS
+import models.declaration.submissions.Submission
 import models.requests.AuthenticatedRequest
 import models.requests.SessionHelper.declarationUuid
 import models.responses.FlashKeys
-import controllers.routes.RootController
-import models.declaration.submissions.Submission
+import play.api.Logging
 import play.api.i18n.I18nSupport
 import play.api.mvc._
-import play.api.Logging
 import services.cache.ExportsCacheService
 import services.model.FieldNamePointer
-import uk.gov.hmrc.play.bootstrap.binders.{OnlyRelative, RedirectUrl}
 import uk.gov.hmrc.play.bootstrap.binders.RedirectUrl._
+import uk.gov.hmrc.play.bootstrap.binders.{OnlyRelative, RedirectUrl}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.declaration.summary.submitted_declaration_page
 

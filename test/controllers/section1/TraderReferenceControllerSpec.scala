@@ -21,7 +21,7 @@ import base.{AuditedControllerSpec, ControllerSpec}
 import controllers.actions.AmendmentDraftFilterSpec
 import controllers.routes.RootController
 import controllers.section1.routes.ConfirmDucrController
-import forms.Ducr
+import forms.declaration.Ducr
 import forms.section1.TraderReference.traderReferenceKey
 import forms.section1.{ConsignmentReferences, TraderReference}
 import models.DeclarationType.{allDeclarationTypesExcluding, SUPPLEMENTARY}

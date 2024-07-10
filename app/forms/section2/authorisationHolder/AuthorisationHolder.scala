@@ -17,7 +17,7 @@
 package forms.section2.authorisationHolder
 
 import forms.DeclarationPage
-import forms.MappingHelper.requiredRadio
+import forms.mappings.MappingHelper.requiredRadio
 import forms.common.Eori
 import forms.section1.additionaldeclarationtype.AdditionalDeclarationType._
 import forms.section2.authorisationHolder.AuthorisationHolder.{keyForEori, keyForTypeCode}

@@ -17,9 +17,9 @@
 package views.declaration.summary
 
 import controllers.declaration.routes.{SubmissionController, SummaryController}
-import controllers.routes.RejectedNotificationsController
-import models.declaration.DeclarationStatus.{COMPLETE, DRAFT, INITIAL}
+import controllers.timeline.routes.RejectedNotificationsController
 import models.ExportsDeclaration
+import models.declaration.DeclarationStatus.{COMPLETE, DRAFT, INITIAL}
 import models.declaration.submissions.EnhancedStatus.ERRORS
 import play.twirl.api.HtmlFormat.Appendable
 import views.html.declaration.summary.normal_summary_page

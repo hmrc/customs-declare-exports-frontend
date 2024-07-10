@@ -20,7 +20,7 @@ import base.ControllerWithoutFormSpec
 import controllers.declaration.amendments.routes.AmendmentOutcomeController
 import controllers.declaration.routes.{ConfirmationController, SummaryController}
 import controllers.routes.{ChoiceController, RootController}
-import forms.declaration.AmendmentSubmission.reasonKey
+import forms.timeline.AmendmentSubmission.reasonKey
 import forms.declaration.LegalDeclaration
 import forms.declaration.LegalDeclaration._
 import models.ExportsDeclaration
