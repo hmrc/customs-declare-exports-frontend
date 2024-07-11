@@ -20,7 +20,7 @@ import base.{Injector, TestHelper}
 import config.AppConfig
 import connectors.CodeListConnector
 import controllers.section3.routes.{DestinationCountryController, RoutingCountriesController}
-import forms.section1.additionaldeclarationtype.AdditionalDeclarationType._
+import forms.section1.AdditionalDeclarationType._
 import forms.section2.AuthorisationProcedureCodeChoice.{Choice1007, ChoiceOthers}
 import forms.section2.authorisationHolder.AuthorizationTypeCodes.{CSE, EXRR, MIB}
 import forms.section3.LocationOfGoods

@@ -18,7 +18,7 @@ package controllers.timeline
 
 import connectors.CustomsDeclareExportsConnector
 import controllers.actions.{AuthAction, VerifiedEmailAction}
-import controllers.helpers.ErrorHandler
+import controllers.general.ErrorHandler
 import controllers.timeline.routes.CancellationResultController
 import forms.timeline.CancelDeclarationDescription
 import forms.timeline.CancelDeclarationDescription._
@@ -97,8 +97,11 @@ class CancelDeclarationController @Inject() (
   ): Future[Either[String, CancellationStatus]] = {
 
     val cancelDeclaration = CancelDeclaration(
-      cancelDeclarationData.submissionId, cancelDeclarationData.lrn, cancelDeclarationData.mrn,
-      userInput.statementDescription, userInput.changeReason
+      cancelDeclarationData.submissionId,
+      cancelDeclarationData.lrn,
+      cancelDeclarationData.mrn,
+      userInput.statementDescription,
+      userInput.changeReason
     )
 
     def sendCancellationAndAudit(submission: Submission, declaration: ExportsDeclaration): Future[Either[String, CancellationStatus]] = {

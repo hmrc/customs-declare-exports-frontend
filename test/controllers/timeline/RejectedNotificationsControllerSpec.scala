@@ -19,7 +19,7 @@ package controllers.timeline
 import base.ControllerWithoutFormSpec
 import config.AppConfig
 import connectors.CodeListConnector
-import controllers.helpers.ErrorHandler
+import controllers.general.ErrorHandler
 import mock.FeatureFlagMocks
 import models.declaration.notifications.Notification
 import models.declaration.submissions.Action
@@ -34,7 +34,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import views.helpers.ErrorsReportedHelper
-import views.html.error_template
+import views.html.general.error_template
 import views.html.timeline.errors_reported
 
 import scala.concurrent.ExecutionContext.global

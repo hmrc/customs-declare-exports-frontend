@@ -17,8 +17,9 @@
 package controllers.section1
 
 import controllers.actions.{AmendmentDraftFilter, AuthAction, JourneyAction}
+import controllers.general.{ModelCacheable, SubmissionErrors}
 import controllers.section1.routes.MucrController
-import controllers.declaration.{routes, ModelCacheable, SubmissionErrors}
+import controllers.summary.routes.SectionSummaryController
 import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.{form, YesNoAnswers}
@@ -47,8 +48,7 @@ class LinkDucrToMucrController @Inject() (
     extends FrontendController(mcc) with AmendmentDraftFilter with I18nSupport with ModelCacheable with SubmissionErrors
     with WithUnsafeDefaultFormBinding {
 
-  val nextPage: JourneyRequest[_] => Call =
-    _ => routes.SectionSummaryController.displayPage(1)
+  val nextPage: JourneyRequest[_] => Call = _ => SectionSummaryController.displayPage(1)
 
   private val actionFilters = authenticate andThen journeyAction andThen nextPageIfAmendmentDraft
 

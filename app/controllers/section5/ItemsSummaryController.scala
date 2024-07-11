@@ -17,11 +17,11 @@
 package controllers.section5
 
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.declaration.routes.SectionSummaryController
 import controllers.helpers.MultipleItemsHelper.generateItemId
 import controllers.helpers.SequenceIdHelper.handleSequencing
 import controllers.navigation.Navigator
 import controllers.section5.routes.{ItemsSummaryController, ProcedureCodesController}
+import controllers.summary.routes.SectionSummaryController
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import models.DeclarationType.CLEARANCE

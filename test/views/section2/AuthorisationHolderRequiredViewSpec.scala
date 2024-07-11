@@ -21,7 +21,7 @@ import controllers.section2.routes.{AdditionalActorsSummaryController, Authorisa
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.section2.AuthorisationProcedureCodeChoice.{Choice1007, Choice1040, ChoiceOthers}
-import forms.section1.additionaldeclarationtype.AdditionalDeclarationType._
+import forms.section1.AdditionalDeclarationType._
 import models.DeclarationType._
 import models.declaration.Parties
 import models.requests.JourneyRequest

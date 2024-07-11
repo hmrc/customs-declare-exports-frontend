@@ -18,11 +18,10 @@ package controllers.section1
 
 import controllers.actions.{AmendmentDraftFilter, AuthAction, JourneyAction}
 import controllers.section1.routes.ConfirmDucrController
-import controllers.declaration.{ModelCacheable, SubmissionErrors}
+import controllers.general.{ModelCacheable, SubmissionErrors}
 import controllers.navigation.Navigator
-import forms.declaration.Ducr.generateDucrPrefix
-import forms.declaration.Ducr
-import forms.section1.{ConsignmentReferences, TraderReference}
+import forms.section1.Ducr.generateDucrPrefix
+import forms.section1.{ConsignmentReferences, Ducr, TraderReference}
 import models.DeclarationType.{allDeclarationTypesExcluding, SUPPLEMENTARY}
 import models.ExportsDeclaration
 import models.requests.JourneyRequest

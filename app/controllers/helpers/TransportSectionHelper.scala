@@ -18,7 +18,7 @@ package controllers.helpers
 
 import forms.section6.InlandOrBorder.Border
 import forms.section6.ModeOfTransportCode.{meaningfulModeOfTransportCodes, FixedTransportInstallations, PostalConsignment, Rail}
-import forms.section1.additionaldeclarationtype.AdditionalDeclarationType._
+import forms.section1.AdditionalDeclarationType._
 import forms.section6.{BorderTransport, DepartureTransport, ModeOfTransportCode, TransportCountry}
 import models.DeclarationType._
 import models.ExportsDeclaration

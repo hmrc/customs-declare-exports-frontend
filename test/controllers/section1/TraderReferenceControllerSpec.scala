@@ -19,11 +19,10 @@ package controllers.section1
 import base.ExportsTestData.eori
 import base.{AuditedControllerSpec, ControllerSpec}
 import controllers.actions.AmendmentDraftFilterSpec
-import controllers.routes.RootController
+import controllers.general.routes.RootController
 import controllers.section1.routes.ConfirmDucrController
-import forms.declaration.Ducr
 import forms.section1.TraderReference.traderReferenceKey
-import forms.section1.{ConsignmentReferences, TraderReference}
+import forms.section1.{ConsignmentReferences, Ducr, TraderReference}
 import models.DeclarationType.{allDeclarationTypesExcluding, SUPPLEMENTARY}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{verify, when}

@@ -19,7 +19,7 @@ package views.timeline
 import base.ExportsTestData._
 import base.{Injector, TestHelper}
 import controllers.timeline.routes.DeclarationDetailsController
-import forms.declaration.{Ducr, Lrn}
+import forms.section1.{Ducr, Lrn}
 import forms.section1.ConsignmentReferences.ducrId
 import forms.timeline.CopyDeclaration
 import forms.timeline.CopyDeclaration.form

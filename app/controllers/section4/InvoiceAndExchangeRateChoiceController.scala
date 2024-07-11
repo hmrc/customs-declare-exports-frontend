@@ -17,7 +17,7 @@
 package controllers.section4
 
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.declaration.{ModelCacheable, SubmissionErrors}
+import controllers.general.{ModelCacheable, SubmissionErrors}
 import controllers.navigation.Navigator
 import controllers.section4.routes.{InvoiceAndExchangeRateController, TotalPackageQuantityController}
 import forms.common.YesNoAnswer

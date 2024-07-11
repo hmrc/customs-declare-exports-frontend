@@ -18,10 +18,10 @@ package views.section3
 
 import base.{ExportsTestData, Injector}
 import connectors.CodeListConnector
-import controllers.declaration.routes.SectionSummaryController
+import controllers.summary.routes.SectionSummaryController
 import forms.common.{Countries, Country, Eori}
 import forms.common.Countries.DestinationCountryPage
-import forms.section1.additionaldeclarationtype.AdditionalDeclarationType.{STANDARD_FRONTIER, STANDARD_PRE_LODGED}
+import forms.section1.AdditionalDeclarationType.{STANDARD_FRONTIER, STANDARD_PRE_LODGED}
 import forms.section2.AuthorisationProcedureCodeChoice.{Choice1040, ChoiceOthers}
 import forms.section2.authorisationHolder.AuthorisationHolder
 import forms.section2.authorisationHolder.AuthorizationTypeCodes.CSE

@@ -18,12 +18,10 @@ package controllers.timeline
 
 import connectors.CustomsDeclareExportsConnector
 import controllers.actions.{AuthAction, JourneyAction, VerifiedEmailAction}
-import controllers.declaration.routes.SummaryController
-import controllers.declaration.{ModelCacheable, SubmissionErrors}
-import controllers.helpers.ErrorHandler
+import controllers.general.{ErrorHandler, ModelCacheable, SubmissionErrors}
+import controllers.summary.routes.SummaryController
 import controllers.timeline.routes.{CopyDeclarationController, DeclarationDetailsController}
-import forms.declaration.{Ducr, LrnValidator}
-import forms.section1.ConsignmentReferences
+import forms.section1.{ConsignmentReferences, Ducr, LrnValidator}
 import forms.timeline.CopyDeclaration
 import forms.timeline.CopyDeclaration.form
 import models.declaration.DeclarationStatus.DRAFT

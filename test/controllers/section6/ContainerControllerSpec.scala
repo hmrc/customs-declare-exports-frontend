@@ -17,10 +17,10 @@
 package controllers.section6
 
 import base.{AuditedControllerSpec, ControllerSpec, Injector}
-import controllers.declaration.routes.SectionSummaryController
 import controllers.helpers.Remove
 import controllers.helpers.SequenceIdHelper.valueOfEso
 import controllers.section6.routes.{ContainerController, SealController}
+import controllers.summary.routes.SectionSummaryController
 import forms.common.YesNoAnswer
 import forms.section6.{ContainerAdd, ContainerFirst, Seal}
 import models.DeclarationType

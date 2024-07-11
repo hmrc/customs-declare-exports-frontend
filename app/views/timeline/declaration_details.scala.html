@@ -16,10 +16,10 @@
 
 @import config.ExternalServicesConfig
 @import config.featureFlags.DeclarationAmendmentsConfig
-@import controllers.declaration.amendments.AmendDeclarationController
-@import controllers.routes.{FileUploadController, SubmissionsController}
+@import controllers.amendments.AmendDeclarationController
+@import controllers.routes.FileUploadController
 @import controllers.timeline.routes._
-@import forms.section1.additionaldeclarationtype.AdditionalDeclarationType.AdditionalDeclarationType
+@import forms.section1.AdditionalDeclarationType.AdditionalDeclarationType
 @import models.declaration.notifications.Notification
 @import models.declaration.submissions.Submission
 @import models.declaration.submissions.EnhancedStatus.{amendmentBlockingStatuses, cancelledStatuses, GOODS_ARRIVED, GOODS_ARRIVED_MESSAGE}

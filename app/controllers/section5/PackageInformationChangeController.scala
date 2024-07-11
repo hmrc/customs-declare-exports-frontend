@@ -17,10 +17,10 @@
 package controllers.section5
 
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.declaration.{ModelCacheable, SubmissionErrors}
+import controllers.general.{ErrorHandler, ModelCacheable, SubmissionErrors}
 import controllers.helpers.PackageInformationHelper.{allCachedPackageInformation, singleCachedPackageInformation}
 import controllers.helpers.SequenceIdHelper.handleSequencing
-import controllers.helpers.{ErrorHandler, MultipleItemsHelper}
+import controllers.helpers.MultipleItemsHelper
 import controllers.navigation.Navigator
 import controllers.section5.PackageInformationAddController.PackageInformationFormGroupId
 import controllers.section5.routes.PackageInformationSummaryController

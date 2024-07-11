@@ -17,7 +17,7 @@
 package controllers.section6
 
 import base.{AuditedControllerSpec, ControllerSpec}
-import controllers.routes.RootController
+import controllers.general.routes.RootController
 import controllers.section6.routes.ContainerController
 import forms.section6.TransportPayment
 import models.DeclarationType._

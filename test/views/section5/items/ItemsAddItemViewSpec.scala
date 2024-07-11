@@ -17,7 +17,7 @@
 package views.section5.items
 
 import base.Injector
-import controllers.declaration.routes.SectionSummaryController
+import controllers.summary.routes.SectionSummaryController
 import models.DeclarationType.{CLEARANCE, STANDARD}
 import org.jsoup.nodes.Document
 import services.cache.ExportsTestHelper

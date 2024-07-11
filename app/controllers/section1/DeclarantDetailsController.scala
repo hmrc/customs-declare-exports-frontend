@@ -17,7 +17,7 @@
 package controllers.section1
 
 import controllers.actions.{AmendmentDraftFilter, AuthAction, JourneyAction}
-import controllers.declaration.{ModelCacheable, SubmissionErrors}
+import controllers.general.{ModelCacheable, SubmissionErrors}
 import controllers.navigation.Navigator
 import controllers.section1.routes.{ConsignmentReferencesController, DucrChoiceController, NotEligibleController}
 import controllers.section2.routes.DeclarantExporterController

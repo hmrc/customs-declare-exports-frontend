@@ -17,10 +17,10 @@
 package controllers.section6
 
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.declaration.{ModelCacheable, SubmissionErrors}
+import controllers.general.{ErrorHandler, ModelCacheable, SubmissionErrors}
 import controllers.helpers.MultipleItemsHelper.saveAndContinue
 import controllers.helpers.SequenceIdHelper.handleSequencing
-import controllers.helpers.{ErrorHandler, FormAction, Remove}
+import controllers.helpers.{FormAction, Remove}
 import controllers.navigation.Navigator
 import controllers.section6.routes.{ContainerController, SealController}
 import forms.common.YesNoAnswer

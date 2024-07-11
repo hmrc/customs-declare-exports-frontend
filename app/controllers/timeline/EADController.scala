@@ -18,7 +18,7 @@ package controllers.timeline
 
 import connectors.CustomsDeclareExportsConnector
 import controllers.actions.AuthAction
-import controllers.helpers.ErrorHandler
+import controllers.general.ErrorHandler
 import play.api.Logging
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}

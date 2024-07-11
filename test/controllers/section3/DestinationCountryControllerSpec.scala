@@ -23,7 +23,7 @@ import controllers.section3.routes._
 import forms.section6.ModeOfTransportCode.Maritime
 import forms.common.Countries.fieldId
 import forms.common.Country
-import forms.section1.additionaldeclarationtype.AdditionalDeclarationType.SUPPLEMENTARY_EIDR
+import forms.section1.AdditionalDeclarationType.SUPPLEMENTARY_EIDR
 import forms.section6.BorderTransport
 import models.DeclarationType._
 import models.codes.{Country => ModelCountry}

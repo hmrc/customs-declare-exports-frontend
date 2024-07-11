@@ -17,7 +17,8 @@
 package base
 
 import config.AppConfig
-import controllers.helpers.{Add, AddField, ErrorHandler, SaveAndContinue}
+import controllers.general.ErrorHandler
+import controllers.helpers.{Add, AddField, SaveAndContinue}
 import mock.{ErrorHandlerMocks, FeatureFlagMocks, JourneyActionMocks, VerifiedEmailMocks}
 import models.ExportsDeclaration
 import models.requests.{JourneyRequest, SessionHelper}
@@ -31,7 +32,7 @@ import play.api.test.{DefaultAwaitTimeout, FakeRequest}
 import play.twirl.api.Html
 import services.cache.ExportsItemBuilder
 import utils.FakeRequestCSRFSupport._
-import views.html.error_template
+import views.html.general.error_template
 
 import scala.concurrent.{ExecutionContext, Future}
 

@@ -16,8 +16,7 @@
 
 package forms.timeline
 
-import forms.declaration.{Ducr, Lrn, LrnValidator}
-import forms.section1.ConsignmentReferences
+import forms.section1.{ConsignmentReferences, Ducr, Lrn, LrnValidator}
 import forms.DeclarationPage
 import models.DeclarationType.DeclarationType
 import models.viewmodels.TariffContentKey

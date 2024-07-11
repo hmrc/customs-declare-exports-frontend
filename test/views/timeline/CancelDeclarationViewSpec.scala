@@ -19,7 +19,7 @@ package views.timeline
 import base.Injector
 import base.TestHelper.createRandomAlphanumericString
 import controllers.timeline.routes.DeclarationDetailsController
-import forms.declaration.Lrn
+import forms.section1.Lrn
 import forms.timeline.CancelDeclarationDescription
 import forms.timeline.CancellationChangeReason.NoLongerRequired
 import models.requests.{CancelDeclarationData, SessionHelper}
@@ -45,10 +45,7 @@ class CancelDeclarationViewSpec extends UnitViewSpec with CommonMessages with St
   private val cancelDeclarationData = CancelDeclarationData(submissionId, mrn, lrn, ducr)
 
   private def createView(form: Form[CancelDeclarationDescription] = form): Document =
-    cancelDeclarationPage(form, cancelDeclarationData)(
-      journeyRequest(aDeclaration(), (SessionHelper.declarationUuid, "decId")),
-      messages
-    )
+    cancelDeclarationPage(form, cancelDeclarationData)(journeyRequest(aDeclaration(), (SessionHelper.declarationUuid, "decId")), messages)
 
   "Cancel DeclarationView on empty page" should {
     val view = createView()

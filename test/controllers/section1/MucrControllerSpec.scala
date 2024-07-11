@@ -19,7 +19,7 @@ package controllers.section1
 import base.TestHelper._
 import base.{AuditedControllerSpec, ControllerSpec}
 import controllers.actions.AmendmentDraftFilterSpec
-import controllers.declaration.routes.SectionSummaryController
+import controllers.summary.routes.SectionSummaryController
 import forms.section1.Mucr
 import models.DeclarationType._
 import models.requests.JourneyRequest

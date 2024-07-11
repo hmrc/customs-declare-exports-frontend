@@ -29,7 +29,7 @@ import org.scalatest.GivenWhenThen
 import play.api.http.Status.{BAD_REQUEST, NOT_FOUND, SEE_OTHER}
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
-import play.api.test.Helpers.{OK, redirectLocation, session, status}
+import play.api.test.Helpers.{redirectLocation, session, status, OK}
 import play.twirl.api.HtmlFormat
 import testdata.SubmissionsTestData.{eori, lrn, mrn, uuid}
 import views.html.timeline.{cancellation_holding, cancellation_result}

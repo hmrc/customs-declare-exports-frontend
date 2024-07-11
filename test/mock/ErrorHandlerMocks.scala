@@ -16,7 +16,7 @@
 
 package mock
 
-import controllers.helpers.ErrorHandler
+import controllers.general.ErrorHandler
 import org.mockito.ArgumentMatchers.{any, anyString}
 import org.mockito.Mockito
 import org.mockito.Mockito.when

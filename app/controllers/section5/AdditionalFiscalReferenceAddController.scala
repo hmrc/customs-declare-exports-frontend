@@ -18,7 +18,7 @@ package controllers.section5
 
 import connectors.CodeListConnector
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.declaration.{ModelCacheable, SubmissionErrors}
+import controllers.general.{ModelCacheable, SubmissionErrors}
 import controllers.helpers.MultipleItemsHelper
 import controllers.navigation.Navigator
 import controllers.section5.AdditionalFiscalReferenceAddController.AdditionalFiscalReferencesFormGroupId

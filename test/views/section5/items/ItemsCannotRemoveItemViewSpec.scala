@@ -17,8 +17,8 @@
 package views.section5.items
 
 import base.Injector
-import controllers.declaration.routes.{SectionSummaryController, SummaryController}
 import controllers.section5.routes.ItemsSummaryController
+import controllers.summary.routes.{SectionSummaryController, SummaryController}
 import models.declaration.ExportItem
 import org.jsoup.nodes.Document
 import play.api.mvc.Call

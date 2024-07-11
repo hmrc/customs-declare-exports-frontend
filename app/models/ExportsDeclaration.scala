@@ -19,9 +19,8 @@ package models
 import controllers.helpers.TransportSectionHelper.clearCacheOnSkippingTransportPages
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.common.{Country, YesNoAnswer}
-import forms.declaration.Ducr
-import forms.section1.additionaldeclarationtype.AdditionalDeclarationType.AdditionalDeclarationType
-import forms.section1.{ConsignmentReferences, Mucr}
+import forms.section1.AdditionalDeclarationType.AdditionalDeclarationType
+import forms.section1.{ConsignmentReferences, Ducr, Mucr}
 import forms.section2.authorisationHolder.AuthorisationHolder
 import forms.section4.{Document, NatureOfTransaction, PreviousDocumentsData}
 import forms.section5.AdditionalInformation

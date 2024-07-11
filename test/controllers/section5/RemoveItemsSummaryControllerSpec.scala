@@ -17,9 +17,9 @@
 package controllers.section5
 
 import base.ControllerWithoutFormSpec
-import controllers.declaration.routes.{SectionSummaryController, SummaryController}
 import controllers.helpers.SequenceIdHelper.valueOfEso
 import controllers.section5.routes.ItemsSummaryController
+import controllers.summary.routes.{SectionSummaryController, SummaryController}
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.section6.WarehouseIdentification
 import models.DeclarationType._

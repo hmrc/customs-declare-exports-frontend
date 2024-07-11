@@ -17,9 +17,9 @@
 package controllers.section2
 
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.declaration.{ModelCacheable, SubmissionErrors}
+import controllers.general.{ErrorHandler, ModelCacheable, SubmissionErrors}
 import controllers.helpers.AuthorisationHolderHelper._
-import controllers.helpers.{ErrorHandler, MultipleItemsHelper}
+import controllers.helpers.MultipleItemsHelper
 import controllers.navigation.Navigator
 import controllers.section2.routes.AuthorisationHolderSummaryController
 import forms.section2.authorisationHolder.AuthorisationHolder

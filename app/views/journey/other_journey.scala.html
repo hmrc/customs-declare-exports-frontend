@@ -1,0 +1,124 @@
+@*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import config.AppConfig
+@import controllers.journey.routes.{OtherJourneyController, StandardOrOtherJourneyController}
+@import models.DeclarationType._
+@import play.twirl.api.HtmlFormat
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.components.gds.Styles.gdsPageLegend
+@import views.components.inputs.RadioOption
+@import views.helpers.{BackButton, Title}
+@import views.helpers.ErrorMapper.radioGroupErrors
+@import views.html.components.gds._
+
+@this(
+    govukLayout: gdsMainTemplate,
+    govukDetails : GovukDetails,
+    govukRadios: GovukRadios,
+    errorSummary: errorSummary,
+    insetText: exportsInsetText,
+    paragraphBody: paragraphBody,
+    externalLink: externalLink,
+    saveAndContinue: saveAndContinue,
+    formHelper: FormWithCSRF,
+    appConfig: AppConfig
+)
+
+@(form: Form[_])(implicit request: Request[_], messages: Messages)
+
+@insetLink = @{
+    externalLink(
+        text = messages("declaration.type.insetText.linkText"),
+        url = appConfig.declareGoodsExported
+    )
+}
+
+@detailsText = @{
+  val detailsLink = externalLink(
+    text = messages("tariff.declaration.others.linkText.0"),
+    url = appConfig.additionalDeclarationType
+  )
+  HtmlContent(HtmlFormat.fill(List(
+    paragraphBody(messages("tariff.declaration.others.text", detailsLink))
+  )))
+}
+
+@govukLayout(
+    title = Title("declaration.type.description.other", hasErrors = form.hasErrors || form.hasGlobalErrors),
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), StandardOrOtherJourneyController.displayPage)),
+    showDeclarationSummaryLink = false
+) {
+    @formHelper(action = OtherJourneyController.submitChoice, 'autoComplete -> "off") {
+        @errorSummary(radioGroupErrors("type", SIMPLIFIED.toString, form.errors))
+
+        @govukRadios(Radios(
+            name = "type",
+            fieldset = Some(Fieldset(
+                legend = Some(Legend(
+                    content = Text(messages("declaration.type.description.other")),
+                    isPageHeading = true,
+                    classes = gdsPageLegend
+                ))
+            )),
+            items = Seq(
+                RadioItem(
+                    id = Some(SIMPLIFIED.toString),
+                    value = Some(SIMPLIFIED.toString),
+                    content = Text(messages("declaration.type.simplified")),
+                    hint = Some(Hint(content = Text(messages("declaration.type.simplified.hint")))),
+                    checked = form("type").value.contains(SIMPLIFIED.toString)
+                ),
+                RadioItem(
+                    id = Some(CLEARANCE.toString),
+                    value = Some(CLEARANCE.toString),
+                    content = Text(messages("declaration.type.clearance")),
+                    hint = Some(Hint(content = Text(messages("declaration.type.clearance.hint")))),
+                    checked = form("type").value.contains(CLEARANCE.toString)
+                ),
+                RadioItem(
+                    id = Some(SUPPLEMENTARY.toString),
+                    value = Some(SUPPLEMENTARY.toString),
+                    content = Text(messages("declaration.type.supplementary")),
+                    hint = Some(Hint(content = Text(messages("declaration.type.supplementary.hint")))),
+                    checked = form("type").value.contains(SUPPLEMENTARY.toString)
+                ),
+                RadioItem(
+                    id = Some(OCCASIONAL.toString),
+                    value = Some(OCCASIONAL.toString),
+                    content = Text(messages("declaration.type.occasional")),
+                    hint = Some(Hint(content = Text(messages("declaration.type.occasional.hint")))),
+                    checked = form("type").value.contains(OCCASIONAL.toString)
+                )
+            ),
+            errorMessage = form("type").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
+        ))
+
+        @insetText(content = HtmlContent(HtmlFormat.fill(List(
+            paragraphBody(messages("declaration.type.insetText.header"), "govuk-heading-s"),
+            paragraphBody(messages("declaration.type.insetText.p1", insetLink)),
+            paragraphBody(messages("declaration.type.insetText.p2"))
+        ))))
+
+        @govukDetails(Details(
+            attributes = Map("id" -> "tariffReference"),
+            summary = Text(messages("tariff.expander.title.common")),
+            content = detailsText
+        ))
+
+        @saveAndContinue("site.continue")
+    }
+}

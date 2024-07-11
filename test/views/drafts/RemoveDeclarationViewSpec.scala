@@ -17,9 +17,9 @@
 package views.drafts
 
 import base.{ExportsTestData, Injector}
-import forms.declaration.RemoveDraftDeclaration.form
-import forms.declaration.{Ducr, Lrn, RemoveDraftDeclaration}
-import forms.section1.ConsignmentReferences
+import forms.drafts.RemoveDraftDeclaration
+import forms.drafts.RemoveDraftDeclaration.form
+import forms.section1.{ConsignmentReferences, Ducr, Lrn}
 import models.ExportsDeclaration
 import models.declaration.DeclarationStatus
 import org.jsoup.nodes.{Document, Element}

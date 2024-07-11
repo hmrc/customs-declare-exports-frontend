@@ -17,10 +17,10 @@
 package controllers.section4
 
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.declaration.routes.SectionSummaryController
-import controllers.declaration.{ModelCacheable, SubmissionErrors}
+import controllers.general.{ModelCacheable, SubmissionErrors}
 import controllers.navigation.Navigator
 import controllers.section4.routes.PreviousDocumentsController
+import controllers.summary.routes.SectionSummaryController
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import play.api.data.Form

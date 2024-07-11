@@ -18,7 +18,7 @@ package controllers.section2
 
 import base.{AuditedControllerSpec, ControllerSpec}
 import controllers.section2.routes.PersonPresentingGoodsDetailsController
-import controllers.routes.RootController
+import controllers.general.routes.RootController
 import controllers.section1.routes.DeclarantDetailsController
 import forms.common.YesNoAnswer.{No, Yes, YesNoAnswers}
 import forms.common.{Eori, YesNoAnswer}

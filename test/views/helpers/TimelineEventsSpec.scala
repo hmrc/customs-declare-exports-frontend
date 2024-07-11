@@ -17,10 +17,10 @@
 package views.helpers
 
 import base.Injector
-import controllers.declaration.amendments.routes.AmendmentDetailsController
-import controllers.declaration.routes.SubmissionController
+import controllers.amendments.routes.AmendmentDetailsController
+import controllers.summary.routes.SubmissionController
 import controllers.timeline.routes.RejectedNotificationsController
-import forms.section1.additionaldeclarationtype.AdditionalDeclarationType._
+import forms.section1.AdditionalDeclarationType._
 import models.declaration.submissions.EnhancedStatus._
 import models.declaration.submissions.RequestType.{CancellationRequest, SubmissionRequest}
 import models.declaration.submissions.{Action, EnhancedStatus, NotificationSummary, Submission}

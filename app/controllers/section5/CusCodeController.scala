@@ -17,7 +17,7 @@
 package controllers.section5
 
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.declaration.{ModelCacheable, SubmissionErrors}
+import controllers.general.{ModelCacheable, SubmissionErrors}
 import controllers.helpers.ItemHelper.cusCodeAndDangerousGoodsNextPage
 import controllers.navigation.Navigator
 import forms.section5.CusCode

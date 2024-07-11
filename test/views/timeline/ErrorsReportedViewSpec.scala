@@ -19,8 +19,8 @@ package views.timeline
 import base.{Injector, OverridableInjector}
 import config.featureFlags.TdrFeatureFlags
 import connectors.CodeListConnector
-import controllers.routes.{DraftDeclarationController, SubmissionsController}
-import controllers.timeline.routes.DeclarationDetailsController
+import controllers.routes.SavedDeclarationsController
+import controllers.timeline.routes.{DeclarationDetailsController, SubmissionsController}
 import models.declaration.errors.ErrorInstance
 import org.jsoup.nodes.Document
 import org.mockito.Mockito.when
@@ -133,7 +133,7 @@ class ErrorsReportedViewSpec extends UnitViewSpec with ExportsTestHelper with In
         messages("rejected.notification.guidance.section.1.paragraph.1.link")
       )
       val draftDeclarationLink = body.get(0).getElementsByClass("govuk-link").get(0)
-      draftDeclarationLink.getElementsByAttributeValue("href", DraftDeclarationController.displayDeclarations().url)
+      draftDeclarationLink.getElementsByAttributeValue("href", SavedDeclarationsController.displayDeclarations().url)
 
       // Section 2
       body.get(1).text mustBe messages("rejected.notification.guidance.section.2.paragraph.1")

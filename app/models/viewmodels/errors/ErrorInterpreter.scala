@@ -17,7 +17,7 @@
 package models.viewmodels.errors
 
 import connectors.CodeListConnector
-import controllers.routes.SubmissionsController
+import controllers.timeline.routes.SubmissionsController
 import models.Pointer
 import models.declaration.errors.ErrorInstance
 import play.api.i18n.Messages

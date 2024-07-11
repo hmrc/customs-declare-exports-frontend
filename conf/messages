@@ -2667,30 +2667,7 @@ ead.template.previousDocuments = Previous Documents
 ead.template.createdDateTime = Created
 ead.template.versionId = Version ID
 
-guidance.subHeading = Guidance
-
-guidance.entry.title = You need to declare the goods before they leave Great Britain
-guidance.entry.section.1.paragraph.1 = You must declare the goods before they get to the port or location where they are leaving Great Britain.
-guidance.entry.section.1.paragraph.2 = You can {0}, such as a freight forwarder, customs agent, or by using the Royal Mail or a courier company.
-guidance.entry.section.1.paragraph.2.link.1 = get someone to deal with customs declarations for you
-guidance.entry.section.1.paragraph.3 = There are different rules if you’re:
-guidance.entry.section.1.paragraph.4 = Find out about {0}.
-guidance.entry.section.1.paragraph.4.link.1 = declarations of exports from the UK using roll on roll off (RoRo)
-guidance.entry.section.1.list.1.bullet.1 = {0}
-guidance.entry.section.1.list.1.bullet.1.link = taking goods in your luggage, car or van to use in your business or sell
-guidance.entry.section.1.list.1.bullet.2 = {0}
-guidance.entry.section.1.list.1.bullet.2.link = exporting goods by post
-
-guidance.entry.section.2.header.1 = Make the declaration yourself
-guidance.entry.section.2.paragraph.1 = Make a declaration on the new Customs Declaration Service (CDS) system
-guidance.entry.section.2.paragraph.2 = If you are new to making export declarations or if you are migrating from the NESWEB platform, you first need to get access to CDS. Then you can do one (or both) of the following:
-guidance.entry.section.2.paragraph.3 = If you need access to the export declaration service for other people in your business, you can {0}.
-guidance.entry.section.2.paragraph.3.link = add team members so they can use the service
-guidance.entry.section.2.list.1.bullet.1 = start using HMRC’s free {0}
-guidance.entry.section.2.list.1.bullet.1.link = CDS export declaration service
-guidance.entry.section.2.list.1.bullet.2 = purchase {0}
-guidance.entry.section.2.list.1.bullet.2.link = software that can submit CDS declarations
-
+guidance.roro.heading = Guidance
 guidance.roro.title = Sending goods for export from roll on roll off ports or via Eurotunnel
 guidance.roro.intro = Find out what to do if you use roll on roll off (RoRo) including Eurotunnel to export road freight, rail freight or unaccompanied freight from the UK to other countries.
 
@@ -2740,79 +2717,3 @@ guidance.roro.section.5.paragraph.2 = Goods that entered the UK under import rel
 guidance.roro.section.6.header = Documents as proof of departure
 guidance.roro.section.6.paragraph.1 = As long as your declaration status shows as ‘Cleared’ you can be satisfied that HMRC will assume that your goods have departed.
 guidance.roro.section.6.paragraph.2 = You still need to keep commercial evidence of the export such as boarding tickets, and proof of import. These documents do not need to be provided to NCH for documentary checks but HMRC may ask to see proof of departure.
-
-guidance.completeDeclaration.title = Completing an online export declaration using the Customs Declaration Service
-guidance.completeDeclaration.intro = Find out what information you need to complete an online export declaration using the Customs Declarations Service.
-
-guidance.completeDeclaration.section.1.header = Migrating from an existing NES service
-guidance.completeDeclaration.section.1.paragraph.1 = NESWEB users who currently make export declarations on CHIEF need to find out about the different codes and requirements for the Customs Declaration Service (CDS). The ‘box numbers’ on CHIEF are replaced by ‘Data Elements’ on CDS.
-guidance.completeDeclaration.section.1.paragraph.2 = The online service will first ask for information that applies to the whole declaration, before asking for information about the goods being declared.
-
-guidance.completeDeclaration.section.2.header = Data Elements that apply to the whole declaration
-guidance.completeDeclaration.section.2.paragraph.1 = Each Data Element is listed in the {0}. Details about each Data Element are given in a link at the base of the relevant page of the online service.
-guidance.completeDeclaration.section.2.paragraph.1.link.1 = CDS tariff completion guide
-guidance.completeDeclaration.section.2.paragraph.2 = Data Elements that apply to the whole declaration are called ‘header level’ Data Elements. This includes things like the:
-guidance.completeDeclaration.section.2.list.1.bullet.1 = EORI number or registered business address for people involved in the process, for example:
-guidance.completeDeclaration.section.2.list.1.bullet.2 = identifying reference for the declaration - Declaration Unique Consignment Reference (DUCR)
-guidance.completeDeclaration.section.2.list.1.bullet.3 = types of authorisations you have
-guidance.completeDeclaration.section.2.list.1.bullet.4 = countries where the goods will start, end, and are routed through
-guidance.completeDeclaration.section.2.list.1.bullet.5 = customs location where your goods will be declared (the office of export)
-guidance.completeDeclaration.section.2.list.1.bullet.6 = port or airport where they will leave the UK
-guidance.completeDeclaration.section.2.list.1.bullet.7 = full invoice-value, in pounds or in non-UK currency, for all the goods where the total value is £100,000 or more (an amount is not required for lower values)
-guidance.completeDeclaration.section.2.list.2.bullet.1 = the person making the declaration
-guidance.completeDeclaration.section.2.list.2.bullet.2 = carrier - shipper, airline or courier
-guidance.completeDeclaration.section.2.list.2.bullet.3 = consolidator
-guidance.completeDeclaration.section.2.list.2.bullet.4 = warehouse keeper
-
-guidance.completeDeclaration.section.3.header = Data Elements that apply to the individual goods
-guidance.completeDeclaration.section.3.paragraph.1 = Data Elements that apply to the goods covered on the declaration are called ‘item level’ Data Elements. Each item is identified by the commodity code and the export procedure you are using for that item.
-guidance.completeDeclaration.section.3.sub.1 = Commodity code
-guidance.completeDeclaration.section.3.sub.1.paragraph.1 = You need to {0} before you start your declaration.
-guidance.completeDeclaration.section.3.sub.1.paragraph.1.link.1 = find the right commodity code for your goods
-guidance.completeDeclaration.section.3.sub.2 = Procedure code
-guidance.completeDeclaration.section.3.sub.2.paragraph.1 = The Customs Declaration Service procedure codes are not the same as the customs procedure codes (CPCs) on the CHIEF system.
-guidance.completeDeclaration.section.3.sub.2.paragraph.2 = The standard export procedure on the Customs Declaration Service uses procedure code 1040, for the permanent export of goods that are one of the following:
-guidance.completeDeclaration.section.3.sub.2.list.1.bullet.1 = produced in the UK
-guidance.completeDeclaration.section.3.sub.2.list.1.bullet.2 = in free circulation
-guidance.completeDeclaration.section.3.sub.2.list.1.bullet.3 = imported, but no longer under a customs special procedure
-guidance.completeDeclaration.section.3.sub.3 = National additional code
-guidance.completeDeclaration.section.3.sub.3.paragraph.1 = National additional codes are 4-character codes that may apply to a commodity code - they contain at least one letter.
-guidance.completeDeclaration.section.3.sub.3.paragraph.2 = You can find the national additional code by {0}.
-guidance.completeDeclaration.section.3.sub.3.paragraph.2.link.1 = finding the right commodity code for your goods
-guidance.completeDeclaration.section.3.sub.3.paragraph.3 = Use a national additional code to indicate the VAT status of the export, for example VATZ to indicate that the goods are being zero-rated. You can then use the declaration as evidence of export when you claim the VAT rating as long as it shows the ‘Goods have exited the UK’ departure message.
-guidance.completeDeclaration.section.3.sub.3.paragraph.4 = The {0} in appendix 1 of the CDS Tariff explains the use of the code. For other export procedures, see the relevant section in appendix 1. For full guidance, see {1}.
-guidance.completeDeclaration.section.3.sub.3.paragraph.4.link.1 = section on VAT rating for a standard export procedure
-guidance.completeDeclaration.section.3.sub.3.paragraph.4.link.2 = VAT on goods exported from the UK (VAT Notice 703)
-guidance.completeDeclaration.section.3.sub.4 = Supplementary units
-guidance.completeDeclaration.section.3.sub.4.paragraph.1 = A supplementary unit is a measurement specified by the commodity code, for example, for single malt whisky, litres of 100% alcohol are specified.
-guidance.completeDeclaration.section.3.sub.4.paragraph.2 = See {0} for an example of a required supplementary unit (litres pure (100 per cent) alcohol).
-guidance.completeDeclaration.section.3.sub.4.paragraph.2.link.1 = commodity code 2208303000
-guidance.completeDeclaration.section.3.sub.4.paragraph.3 = If the commodity code has a supplementary unit, you must enter in figures the amount that you are exporting measured in that unit.
-guidance.completeDeclaration.section.3.sub.5 = Additional Information statement codes
-guidance.completeDeclaration.section.3.sub.5.paragraph.1 = You can view all the statement codes and what they are for in the {0}.
-guidance.completeDeclaration.section.3.sub.5.paragraph.1.link.1 = Additional Information statement codes list
-guidance.completeDeclaration.section.3.sub.5.paragraph.2 = If you’re moving pallets and containers you can {0}.
-guidance.completeDeclaration.section.3.sub.5.paragraph.2.link.1 = find more information about the Additional Information codes you would need for this
-guidance.completeDeclaration.section.3.sub.6 = Additional documentation
-guidance.completeDeclaration.section.3.sub.6.paragraph.1 = You need to enter a document code for each additional document that you provide. This lets HMRC know what document it is. These codes are all 4-character codes and they are listed in appendix 5A. There are two lists:
-guidance.completeDeclaration.section.3.sub.6.list.1.bullet.1 = {0} - these begin with a letter
-guidance.completeDeclaration.section.3.sub.6.list.1.bullet.1.link.1 = Union document codes
-guidance.completeDeclaration.section.3.sub.6.list.1.bullet.2 = {0} - these begin with a number
-guidance.completeDeclaration.section.3.sub.6.list.1.bullet.2.link.1 = National document codes
-guidance.completeDeclaration.section.3.sub.6.paragraph.2 = If you have a licence, the licence issuer will have given you the document code and the document identifier (the licence number) you need.
-guidance.completeDeclaration.section.3.sub.6.paragraph.3 = If you want to declare a waiver or exemption for a licence, the permitted waivers or exemptions will be listed in the Tariff on the page for your commodity code. You need to select the ‘Export’ tab and open the link ‘Conditions’ and it shows the required licence and any permitted exemptions or waivers. When entering a waiver, enter the 4-character code and then in ‘Reason’ enter the reason statement, which is given in column 4 of the document code table, along with other specific instructions.
-guidance.completeDeclaration.section.3.sub.6.paragraph.4 = For example, {0} requires a C673 certificate, or a Y927 exemption.
-guidance.completeDeclaration.section.3.sub.6.paragraph.4.link.1 = commodity code 0306310010
-guidance.completeDeclaration.section.3.sub.6.paragraph.5 = If your goods require a licence or exemption and you do not declare it, then you will see error code CDS40045, missing document, when you submit your declaration.
-
-guidance.completeDeclaration.section.4.header = Supporting documentation
-guidance.completeDeclaration.section.4.paragraph.1 = Supporting documents may be requested by customs authorities needing evidence of the value of the goods in the consignment, or the goods contents.
-guidance.completeDeclaration.section.4.paragraph.2 = You do not need to upload documents with your declaration, but you must have them ready to present to customs authorities. If documents are required, you will get a notification that your goods are entering documentary or physical control and HMRC wants to inspect your documents.
-guidance.completeDeclaration.section.4.paragraph.3 = To present documents to customs, you need to use the new service for uploading documents and getting messages for the Customs Declaration Service. Find out more about {0}.
-guidance.completeDeclaration.section.4.paragraph.3.link.1 = clearing goods entering, leaving or transiting the UK
-
-guidance.completeDeclaration.section.5.header = Further support
-guidance.completeDeclaration.section.5.paragraph.1 = You can find out more about what {0}. This includes what boxes the information would be included in if you’ve used CHIEF to make your declarations before.
-guidance.completeDeclaration.section.5.paragraph.1.link.1 = Data Elements you need to enter for each declaration type
-guidance.completeDeclaration.section.5.paragraph.2 = You can also find information on {0}.
-guidance.completeDeclaration.section.5.paragraph.2.link.1 = special procedures

@@ -1,0 +1,111 @@
+@*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import controllers.summary.routes.{SubmissionController, SummaryController}
+@import controllers.timeline.routes.DeclarationDetailsController
+@import forms.timeline.AmendmentSubmission._
+@import forms.timeline.AmendmentSubmission
+@import models.requests.JourneyRequest
+@import models.requests.SessionHelper.{getOrElse, submissionUuid}
+@import services.view.AmendmentAction._
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.helpers.{BackButton, Title}
+@import views.html.components.gds._
+
+@this(
+    govukLayout: gdsMainTemplate,
+    govukButton: GovukButton,
+    govukFieldset: GovukFieldset,
+    govukWarningText: GovukWarningText,
+    formHelper: FormWithCSRF,
+    errorSummary: errorSummary,
+    pageTitle: pageTitle,
+    exportsInputCheckbox: exportsInputCheckbox,
+    exportsInputText: exportsInputText,
+    exportsInputCharacterCount: exportsInputCharacterCount
+)
+
+@(form: Form[AmendmentSubmission], amendmentAction: AmendmentAction)(implicit request: JourneyRequest[_], messages: Messages)
+
+@key = @{ amendmentAction.toString.toLowerCase }
+
+@content = {
+    @govukWarningText(WarningText(
+        iconFallbackText = Some(messages("site.warning")),
+        content = Text(messages("legal.declaration.warning"))
+    ))
+
+    @exportsInputText(
+        field = form(nameKey),
+        labelKey = "amendment.submission.fullName",
+        inputClasses = Some("govuk-input govuk-!-width-one-half")
+    )
+
+    @exportsInputText(
+        field = form(jobRoleKey),
+        labelKey = "amendment.submission.jobRole",
+        inputClasses = Some("govuk-input govuk-!-width-one-half")
+    )
+
+    @exportsInputText(
+        field = form(emailKey),
+        labelKey = "amendment.submission.email",
+        inputClasses = Some("govuk-input govuk-!-width-one-half")
+    )
+
+    @exportsInputCharacterCount(
+      field = form(reasonKey),
+      labelKey = Some(s"amendment.${key}.reason"),
+      labelClasses = "govuk-!-font-weight-bold govuk-!-font-size-24",
+      maxLength = Some(reasonMaxLength),
+      inputClasses = "govuk-!-width-one-half"
+   )
+
+   @exportsInputCheckbox(
+       field = form(confirmationKey),
+       labelKey = "amendment.submission.confirmation"
+   )
+}
+
+@backButton = @{
+  if (amendmentAction == Submission) SummaryController.displayPage
+  else DeclarationDetailsController.displayPage(getOrElse(submissionUuid))
+}
+
+@submitButton = @{
+  amendmentAction match {
+    case Cancellation => "site.submit"
+    case Resubmission => "amendment.resubmission.button"
+    case _            => "amendment.submission.button"
+  }
+}
+
+@govukLayout(
+    title = Title(s"amendment.${key}.heading", hasErrors = form.hasErrors || form.hasGlobalErrors),
+    backButton = Some(BackButton(messages("site.back"), backButton)),
+    useCustomContentWidth = true,
+    showDeclarationSummaryLink = false
+) {
+    @formHelper(action = SubmissionController.submitAmendment(amendmentAction.toString), 'autoComplete -> "off") {
+        @errorSummary(form.errors)
+
+        @pageTitle(messages(s"amendment.${key}.heading"))
+
+        @govukFieldset(Fieldset(html = content))
+
+        @govukButton(Button(id = Some("submit"), content = Text(messages(submitButton))))
+    }
+}

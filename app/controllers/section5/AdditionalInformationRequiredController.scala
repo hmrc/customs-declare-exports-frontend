@@ -18,7 +18,7 @@ package controllers.section5
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.section5.routes.{AdditionalDocumentsController, AdditionalInformationController, IsLicenceRequiredController}
-import controllers.declaration.{ModelCacheable, SubmissionErrors}
+import controllers.general.{ModelCacheable, SubmissionErrors}
 import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers

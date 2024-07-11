@@ -19,7 +19,7 @@ package controllers.section2
 import connectors.CodeListConnector
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.section2.routes.ConsigneeDetailsController
-import controllers.declaration.{ModelCacheable, SubmissionErrors}
+import controllers.general.{ModelCacheable, SubmissionErrors}
 import controllers.navigation.Navigator
 import forms.common.Address.{addressId, countryId}
 import forms.section2.carrier.CarrierDetails

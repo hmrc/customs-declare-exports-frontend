@@ -17,11 +17,11 @@
 package controllers.section2
 
 import base.ControllerSpec
-import controllers.declaration.routes.SectionSummaryController
 import controllers.section2.routes.AuthorisationHolderAddController
+import controllers.summary.routes.SectionSummaryController
 import forms.common.YesNoAnswer.formId
 import forms.common.{Eori, YesNoAnswer}
-import forms.section1.additionaldeclarationtype.AdditionalDeclarationType.arrivedTypes
+import forms.section1.AdditionalDeclarationType.arrivedTypes
 import forms.section2.authorisationHolder.AuthorisationHolder
 import models.DeclarationType._
 import models.declaration.EoriSource

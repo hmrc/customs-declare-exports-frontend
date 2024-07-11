@@ -14,8 +14,9 @@
  * limitations under the License.
  *@
 
-@import controllers.routes.{DraftDeclarationController, RemoveDraftDeclarationController}
-@import forms.declaration.RemoveDraftDeclaration
+@import controllers.drafts.routes.RemoveDraftDeclarationController
+@import controllers.routes.SavedDeclarationsController
+@import forms.drafts.RemoveDraftDeclaration
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.components.gds.Styles._
 @import views.helpers.{BackButton, Title, ViewDates}
@@ -94,7 +95,7 @@
 
 @govukLayout(
     title = Title("draft.declarations.remove.title", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.back"), DraftDeclarationController.displayDeclarations()))) {
+    backButton = Some(BackButton(messages("site.back"), SavedDeclarationsController.displayDeclarations()))) {
 
     @formHelper(action = RemoveDraftDeclarationController.removeDeclaration(declaration.id), 'autoComplete -> "off") {
         @errorSummary(radioGroupErrors("remove", "Yes", form.errors))

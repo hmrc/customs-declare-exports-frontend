@@ -18,7 +18,7 @@ package controllers.section1
 
 import base.{AuditedControllerSpec, ControllerSpec}
 import controllers.actions.AmendmentDraftFilterSpec
-import controllers.declaration.routes.SectionSummaryController
+import controllers.summary.routes.SectionSummaryController
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import models.DeclarationType._

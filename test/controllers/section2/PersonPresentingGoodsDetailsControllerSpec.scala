@@ -18,7 +18,7 @@ package controllers.section2
 
 import base.{AuditedControllerSpec, ControllerSpec}
 import controllers.section2.routes.ExporterEoriNumberController
-import controllers.routes.RootController
+import controllers.general.routes.RootController
 import forms.common.Eori
 import forms.section2.PersonPresentingGoodsDetails
 import models.DeclarationType

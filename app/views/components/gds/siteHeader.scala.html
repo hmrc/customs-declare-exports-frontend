@@ -14,7 +14,8 @@
  * limitations under the License.
  *@
 
-@import controllers.routes.{ChoiceController, SignOutController}
+@import controllers.routes.ChoiceController
+@import controllers.general.routes.SignOutController
 @import models.requests.AuthenticatedRequest
 @import models.requests.JourneyRequest
 @import uk.gov.hmrc.hmrcfrontend.views.html.components.{Header, HmrcHeader}
@@ -27,8 +28,7 @@
 @signOutHref = @{
     if (request.isInstanceOf[AuthenticatedRequest[_]] || request.isInstanceOf[JourneyRequest[_]] || displaySignOut)
         Some(SignOutController.signOut(models.SignOutReason.UserAction).url)
-    else
-        None
+    else None
 }
 
 @hmrcHeader(Header(

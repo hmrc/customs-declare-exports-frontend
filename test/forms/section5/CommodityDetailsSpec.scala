@@ -17,7 +17,7 @@
 package forms.section5
 
 import forms.common.DeclarationPageBaseSpec
-import forms.section1.additionaldeclarationtype.AdditionalDeclarationType.SUPPLEMENTARY_EIDR
+import forms.section1.AdditionalDeclarationType.SUPPLEMENTARY_EIDR
 import forms.section5.CommodityDetails._
 import models.DeclarationType._
 import models.requests.JourneyRequest

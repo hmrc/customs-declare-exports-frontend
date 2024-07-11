@@ -18,7 +18,7 @@ package controllers.timeline
 
 import connectors.{CodeListConnector, CustomsDeclareExportsConnector}
 import controllers.actions.{AuthAction, VerifiedEmailAction}
-import controllers.helpers.ErrorHandler
+import controllers.general.ErrorHandler
 import models.requests.SessionHelper.{getValue, submissionActionId, submissionUuid}
 import play.api.Logging
 import play.api.i18n.I18nSupport

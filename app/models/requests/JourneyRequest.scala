@@ -16,7 +16,7 @@
 
 package models.requests
 
-import forms.section1.additionaldeclarationtype.AdditionalDeclarationType.AdditionalDeclarationType
+import forms.section1.AdditionalDeclarationType.AdditionalDeclarationType
 import models.DeclarationType.DeclarationType
 import models.ExportsDeclaration
 import models.responses.FlashKeys

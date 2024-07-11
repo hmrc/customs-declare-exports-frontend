@@ -21,7 +21,7 @@ import base.{AuditedControllerSpec, ControllerSpec}
 import controllers.helpers.TransportSectionHelper.additionalDeclTypesAllowedOnInlandOrBorder
 import controllers.helpers.{InlandOrBorderHelper, SupervisingCustomsOfficeHelper}
 import controllers.section6.routes._
-import forms.section1.additionaldeclarationtype.AdditionalDeclarationType._
+import forms.section1.AdditionalDeclarationType._
 import forms.section6.InlandOrBorder.{Border, Inland}
 import forms.section6.ModeOfTransportCode.{FixedTransportInstallations, PostalConsignment}
 import forms.section6.SupervisingCustomsOffice

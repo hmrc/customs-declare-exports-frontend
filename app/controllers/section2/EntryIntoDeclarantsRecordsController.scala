@@ -18,7 +18,7 @@ package controllers.section2
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.section2.routes.PersonPresentingGoodsDetailsController
-import controllers.declaration.{ModelCacheable, SubmissionErrors}
+import controllers.general.{ModelCacheable, SubmissionErrors}
 import controllers.navigation.Navigator
 import controllers.section1.routes.DeclarantDetailsController
 import forms.common.YesNoAnswer

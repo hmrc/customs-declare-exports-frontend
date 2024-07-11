@@ -17,11 +17,11 @@
 package controllers.section2
 
 import base.{AuditedControllerSpec, ControllerSpec}
-import controllers.declaration.routes.SectionSummaryController
 import controllers.section2.routes.{AuthorisationHolderAddController, AuthorisationHolderSummaryController}
+import controllers.summary.routes.SectionSummaryController
 import forms.common.{Eori, YesNoAnswer}
+import forms.section1.AdditionalDeclarationType._
 import forms.section2.AuthorisationProcedureCodeChoice.{Choice1007, Choice1040, ChoiceOthers}
-import forms.section1.additionaldeclarationtype.AdditionalDeclarationType._
 import forms.section2.authorisationHolder.AuthorisationHolder
 import models.DeclarationType.{CLEARANCE, OCCASIONAL}
 import models.ExportsDeclaration

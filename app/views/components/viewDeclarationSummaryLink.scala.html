@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import routes.DraftDeclarationController
+@import routes.SavedDeclarationsController
 @import views.html.components.gds._
 
 @this(
@@ -27,5 +27,5 @@
 @link(
     id = Some("view_declaration_summary"),
     text = messages("declaration.draft.viewSummary"),
-    call = DraftDeclarationController.displayDeclaration(declarationId)
+    call = SavedDeclarationsController.displayDeclaration(declarationId)
 )

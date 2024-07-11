@@ -17,8 +17,8 @@
 package views.helpers.summary
 
 import base.{Injector, MockTransportCodeService}
-import controllers.declaration.routes.SummaryController
 import controllers.section6.routes._
+import controllers.summary.routes.SummaryController
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.section6.InlandOrBorder.Border
 import forms.section6.ModeOfTransportCode.Maritime

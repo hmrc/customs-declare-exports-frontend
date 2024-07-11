@@ -17,7 +17,7 @@
 package controllers.section5
 
 import base.{AuditedControllerSpec, ControllerSpec}
-import controllers.routes.RootController
+import controllers.general.routes.RootController
 import controllers.section5.routes.NactCodeSummaryController
 import forms.common.YesNoAnswer
 import forms.section5.NactCode

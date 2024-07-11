@@ -18,7 +18,7 @@ package controllers.section2
 
 import connectors.CodeListConnector
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.declaration.{ModelCacheable, SubmissionErrors}
+import controllers.general.{ModelCacheable, SubmissionErrors}
 import controllers.navigation.Navigator
 import controllers.section2.routes.{AdditionalActorsSummaryController, AuthorisationProcedureCodeChoiceController}
 import forms.common.Address.{addressId, countryId}

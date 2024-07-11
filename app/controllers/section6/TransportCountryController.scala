@@ -18,7 +18,7 @@ package controllers.section6
 
 import connectors.CodeListConnector
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.declaration.{ModelCacheable, SubmissionErrors}
+import controllers.general.{ModelCacheable, SubmissionErrors}
 import controllers.helpers.TransportSectionHelper.skipTransportCountry
 import controllers.navigation.Navigator
 import controllers.section6.routes.{ContainerController, ExpressConsignmentController}

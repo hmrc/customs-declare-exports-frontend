@@ -17,14 +17,8 @@
 package views.helpers
 
 import controllers.timeline.routes.DeclarationDetailsController
-import forms.section1.additionaldeclarationtype.AdditionalDeclarationType.{
-  arrivedTypes,
-  from,
-  preLodgedTypes,
-  SUPPLEMENTARY_EIDR,
-  SUPPLEMENTARY_SIMPLIFIED
-}
-import forms.section1.additionaldeclarationtype.AdditionalDeclarationType
+import forms.section1.AdditionalDeclarationType.{arrivedTypes, from, preLodgedTypes, SUPPLEMENTARY_EIDR, SUPPLEMENTARY_SIMPLIFIED}
+import forms.section1.AdditionalDeclarationType
 import models.declaration.submissions.EnhancedStatus._
 import play.api.i18n.Messages
 import play.api.mvc.{Call, Request}

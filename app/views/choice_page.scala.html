@@ -15,8 +15,8 @@
  *@
 
 @import config.ExternalServicesConfig
-@import controllers.declaration.routes.StandardOrOtherJourneyController
-@import controllers.routes.{FileUploadController, DraftDeclarationController}
+@import controllers.journey.routes.StandardOrOtherJourneyController
+@import controllers.routes.{FileUploadController, SavedDeclarationsController}
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.dashboard.DashboardHelper.toDashboard
 @import views.helpers.Title
@@ -51,7 +51,7 @@
     @paragraph(link(
         id = Some("manage-draft-declarations"),
         text = messages("declaration.choice.link.manage.drafts"),
-        call = DraftDeclarationController.displayDeclarations()
+        call = SavedDeclarationsController.displayDeclarations()
     ))
 
     @paragraph(link(

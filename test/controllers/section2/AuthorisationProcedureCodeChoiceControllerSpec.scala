@@ -18,10 +18,10 @@ package controllers.section2
 
 import base.{AuditedControllerSpec, ControllerSpec}
 import controllers.section2.routes
-import controllers.routes.RootController
+import controllers.general.routes.RootController
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.section2.AuthorisationProcedureCodeChoice.{allProcedureCodes, formFieldName}
-import forms.section1.additionaldeclarationtype.AdditionalDeclarationType.{apply => _}
+import forms.section1.AdditionalDeclarationType.{apply => _}
 import forms.section2.AuthorisationProcedureCodeChoice
 import models.DeclarationType._
 import models.ExportsDeclaration

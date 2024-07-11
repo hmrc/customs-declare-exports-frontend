@@ -17,8 +17,8 @@
 package views.section5.items
 
 import base.Injector
-import controllers.declaration.routes.{SectionSummaryController, SummaryController}
 import controllers.section5.routes.ItemsSummaryController
+import controllers.summary.routes.{SectionSummaryController, SummaryController}
 import forms.common.YesNoAnswer
 import org.jsoup.nodes.Document
 import org.scalatest.Assertion

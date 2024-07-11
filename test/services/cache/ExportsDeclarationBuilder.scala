@@ -19,9 +19,8 @@ package services.cache
 import base.ExportsTestData._
 import forms.common.YesNoAnswer.{No, YesNoAnswers}
 import forms.common.{Address, Country, Eori, YesNoAnswer}
-import forms.declaration.{Ducr, Lrn, Mrn}
-import forms.section1.additionaldeclarationtype.AdditionalDeclarationType.{AdditionalDeclarationType, STANDARD_FRONTIER}
-import forms.section1.{ConsignmentReferences, DeclarantDetails, Mucr}
+import forms.section1.AdditionalDeclarationType.{AdditionalDeclarationType, STANDARD_FRONTIER}
+import forms.section1.{ConsignmentReferences, DeclarantDetails, Ducr, Lrn, Mrn, Mucr}
 import forms.section2.authorisationHolder.AuthorisationHolder
 import forms.section2.carrier.CarrierDetails
 import forms.section2.consignor.ConsignorDetails

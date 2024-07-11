@@ -18,7 +18,7 @@ package controllers.section2
 
 import base.{AuditedControllerSpec, ControllerSpec}
 import controllers.section2.routes.{ConsignorDetailsController, ThirdPartyGoodsTransportationController}
-import controllers.routes.RootController
+import controllers.general.routes.RootController
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.common.{Address, Eori}
 import forms.section2.EntityDetails

@@ -16,7 +16,8 @@
 
 @import config.{AppConfig, TimeoutDialogConfig}
 @import config.featureFlags.BetaBannerConfig
-@import controllers.routes.{Assets, SignOutController}
+@import controllers.general.routes.SignOutController
+@import controllers.routes.Assets
 @import models.requests.AuthenticatedRequest
 @import models.requests.SessionHelper.{declarationUuid, getValue}
 @import play.twirl.api.HtmlFormat

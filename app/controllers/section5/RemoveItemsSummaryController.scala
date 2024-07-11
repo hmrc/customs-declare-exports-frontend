@@ -18,10 +18,10 @@ package controllers.section5
 
 import connectors.CustomsDeclareExportsConnector
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.declaration.routes.{SectionSummaryController, SummaryController}
-import controllers.helpers.ErrorHandler
+import controllers.general.ErrorHandler
 import controllers.helpers.SequenceIdHelper.handleSequencing
 import controllers.section5.routes.ItemsSummaryController
+import controllers.summary.routes.{SectionSummaryController, SummaryController}
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import models.DeclarationType.CLEARANCE

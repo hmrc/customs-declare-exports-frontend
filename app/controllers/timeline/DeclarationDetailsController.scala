@@ -18,8 +18,8 @@ package controllers.timeline
 
 import connectors.CustomsDeclareExportsConnector
 import controllers.actions.{AuthAction, VerifiedEmailAction}
-import controllers.helpers.ErrorHandler
-import forms.section1.additionaldeclarationtype.AdditionalDeclarationType.AdditionalDeclarationType
+import controllers.general.ErrorHandler
+import forms.section1.AdditionalDeclarationType.AdditionalDeclarationType
 import models.declaration.submissions.Submission
 import models.requests.SessionHelper._
 import play.api.i18n.I18nSupport

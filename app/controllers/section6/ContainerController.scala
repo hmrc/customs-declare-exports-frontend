@@ -17,11 +17,12 @@
 package controllers.section6
 
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.declaration.{routes, ModelCacheable, SubmissionErrors}
+import controllers.general.{ModelCacheable, SubmissionErrors}
 import controllers.helpers.SequenceIdHelper.handleSequencing
 import controllers.helpers.{FormAction, Remove}
 import controllers.navigation.Navigator
 import controllers.section6.routes.{ContainerController, SealController}
+import controllers.summary.routes.SectionSummaryController
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.section6.ContainerAdd.form
@@ -108,7 +109,7 @@ class ContainerController @Inject() (
       case Some(id) => updateCache(Seq(Container(id = id, seals = Seq.empty))).map(_ => redirectAfterAdd(id))
       case None =>
         updateCache(Seq.empty).flatMap(dec => updateDeclaration(dec.updateReadyForSubmission(true), request.eori)) map { _ =>
-          navigator.continueTo(routes.SectionSummaryController.displayPage(6))
+          navigator.continueTo(SectionSummaryController.displayPage(6))
         }
     }
 
@@ -161,7 +162,7 @@ class ContainerController @Inject() (
 
           case YesNoAnswers.no =>
             updateDeclarationFromRequest(_.updateReadyForSubmission(true)) map { _ =>
-              navigator.continueTo(routes.SectionSummaryController.displayPage(6))
+              navigator.continueTo(SectionSummaryController.displayPage(6))
             }
         }
       )

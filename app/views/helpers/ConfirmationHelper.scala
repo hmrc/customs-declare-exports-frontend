@@ -19,8 +19,8 @@ package views.helpers
 import config.{AppConfig, ExternalServicesConfig}
 import controllers.routes.FileUploadController
 import controllers.timeline.routes.DeclarationDetailsController
-import forms.section1.additionaldeclarationtype.AdditionalDeclarationType
-import forms.section1.additionaldeclarationtype.AdditionalDeclarationType.from
+import forms.section1.AdditionalDeclarationType
+import forms.section1.AdditionalDeclarationType.from
 import forms.section3.LocationOfGoods.suffixForGVMS
 import models.declaration.submissions.EnhancedStatus._
 import models.declaration.submissions.Submission

@@ -1,15 +1,15 @@
 
 # Standard or other journey Choice Page
 
-GET         /standard-or-other                  controllers.declaration.StandardOrOtherJourneyController.displayPage
+GET         /standard-or-other                  controllers.journey.StandardOrOtherJourneyController.displayPage
 
-POST        /standard-or-other                  controllers.declaration.StandardOrOtherJourneyController.submitChoice
+POST        /standard-or-other                  controllers.journey.StandardOrOtherJourneyController.submitChoice
 
 # Declaration Choice Page
 
-GET         /declaration-choice                 controllers.declaration.DeclarationChoiceController.displayPage
+GET         /declaration-choice                 controllers.journey.OtherJourneyController.displayPage
 
-POST        /declaration-choice                 controllers.declaration.DeclarationChoiceController.submitChoice
+POST        /declaration-choice                 controllers.journey.OtherJourneyController.submitChoice
 
 ## SECTION 1 -----------------------------------------------------------------------------------------------------------
 
@@ -455,9 +455,13 @@ POST        /items/:itemId/additional-documentation-list        controllers.sect
 
 # Transport leaving the border
 
-GET         /transport-leaving-the-border       controllers.section6.TransportLeavingTheBorderController.displayPage
+GET         /transport-leaving-the-border        controllers.section6.TransportLeavingTheBorderController.displayPage
 
-POST        /transport-leaving-the-border       controllers.section6.TransportLeavingTheBorderController.submitForm
+POST        /transport-leaving-the-border        controllers.section6.TransportLeavingTheBorderController.submitForm
+
+# Guidance page from Transport leaving the border when auth code is EXRR
+
+GET         /send-by-roro                        controllers.section6.TransportLeavingTheBorderController.sendByRoro
 
 # Identification of a Warehouse
 
@@ -539,48 +543,44 @@ POST        /containers/:containerId/seals/:sealId/remove    controllers.section
 
 # Summary
 
-GET         /saved-summary                       controllers.declaration.SummaryController.displayPage
+GET         /saved-summary                       controllers.summary.SummaryController.displayPage
 
-GET         /saved-summary-no-items              controllers.declaration.SummaryController.displayPageOnNoItems
+GET         /saved-summary-no-items              controllers.summary.SummaryController.displayPageOnNoItems
 
-GET         /summary-section/:section            controllers.declaration.SectionSummaryController.displayPage(section: Int)
+GET         /summary-section/:section            controllers.summary.SectionSummaryController.displayPage(section: Int)
 
 # Submission
 
-GET         /submit-your-declaration             controllers.declaration.SubmissionController.displaySubmitDeclarationPage
+GET         /submit-your-declaration             controllers.summary.SubmissionController.displaySubmitDeclarationPage
 
-POST        /submit-your-declaration             controllers.declaration.SubmissionController.submitDeclaration
+POST        /submit-your-declaration             controllers.summary.SubmissionController.submitDeclaration
 
-GET         /submit-your-amendment               controllers.declaration.SubmissionController.displaySubmitAmendmentPage
+GET         /submit-your-amendment               controllers.summary.SubmissionController.displaySubmitAmendmentPage
 
-GET         /resubmit-your-amendment             controllers.declaration.SubmissionController.displayResubmitAmendmentPage
+GET         /resubmit-your-amendment             controllers.summary.SubmissionController.displayResubmitAmendmentPage
 
-POST        /submit-your-amendment               controllers.declaration.SubmissionController.submitAmendment(amendmentAction: String)
+POST        /submit-your-amendment               controllers.summary.SubmissionController.submitAmendment(amendmentAction: String)
 
-GET         /cancel-amendment                    controllers.declaration.SubmissionController.cancelAmendment(id)
+GET         /cancel-amendment                    controllers.summary.SubmissionController.cancelAmendment(id)
 
-GET         /cancel-your-amendment               controllers.declaration.SubmissionController.displayCancelAmendmentPage
+GET         /cancel-your-amendment               controllers.summary.SubmissionController.displayCancelAmendmentPage
 
-POST        /cancel-your-amendment               controllers.declaration.SubmissionController.submitAmendment(amendmentAction: String = "Cancellation")
-
-# Amendment declaration
-
-GET         /amend-declaration/:parentId/:enhancedStatus  controllers.declaration.amendments.AmendDeclarationController.initAmendment(parentId: String, enhancedStatus: String)
-
-GET         /amendment-details/:actionId         controllers.declaration.amendments.AmendmentDetailsController.displayPage(actionId: String)
+POST        /cancel-your-amendment               controllers.summary.SubmissionController.submitAmendment(amendmentAction: String = "Cancellation")
 
 # Confirmation
 
-GET         /holding                             controllers.declaration.ConfirmationController.displayHoldingPage
+GET         /holding                             controllers.summary.ConfirmationController.displayHoldingPage
 
-GET         /confirmation                        controllers.declaration.ConfirmationController.displayConfirmationPage
+GET         /confirmation                        controllers.summary.ConfirmationController.displayConfirmationPage
 
-GET         /confirmation-results                controllers.declaration.ConfirmationController.displayConfirmationResultsPage
+GET         /confirmation-results                controllers.summary.ConfirmationController.displayConfirmationResultsPage
 
-GET         /amendment-holding                   controllers.declaration.amendments.AmendmentOutcomeController.displayHoldingPage(isCancellation: Boolean)
+# Amendments
 
-GET         /amendment-outcome                   controllers.declaration.amendments.AmendmentOutcomeController.displayOutcomePage
+GET         /amend-declaration/:parentId         controllers.amendments.AmendDeclarationController.initAmendment(parentId: String)
 
-# Others
+GET         /amendment-details/:actionId         controllers.amendments.AmendmentDetailsController.displayPage(actionId: String)
 
-GET         /draft-saved                         controllers.declaration.DraftDeclarationController.displayPage
+GET         /amendment-holding                   controllers.amendments.AmendmentOutcomeController.displayHoldingPage(isCancellation: Boolean)
+
+GET         /amendment-outcome                   controllers.amendments.AmendmentOutcomeController.displayOutcomePage

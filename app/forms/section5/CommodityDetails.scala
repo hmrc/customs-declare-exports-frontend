@@ -17,7 +17,7 @@
 package forms.section5
 
 import forms.DeclarationPage
-import forms.section1.additionaldeclarationtype.AdditionalDeclarationType.SUPPLEMENTARY_EIDR
+import forms.section1.AdditionalDeclarationType.SUPPLEMENTARY_EIDR
 import forms.section5.CommodityDetails.{combinedNomenclatureCodePointer, descriptionOfGoodsPointer, keyForCode, keyForDescription}
 import models.AmendmentRow.{forAddedValue, forRemovedValue, pointerToSelector}
 import models.DeclarationType._

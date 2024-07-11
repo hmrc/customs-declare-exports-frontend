@@ -17,7 +17,7 @@
 package controllers.section2
 
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.declaration.{ModelCacheable, SubmissionErrors}
+import controllers.general.{ModelCacheable, SubmissionErrors}
 import controllers.helpers.AuthorisationHolderHelper.{authorisationHolders, userCanLandOnIsAuthRequiredPage}
 import controllers.navigation.Navigator
 import controllers.section2.routes.{AuthorisationHolderAddController, AuthorisationHolderRequiredController, AuthorisationHolderSummaryController}

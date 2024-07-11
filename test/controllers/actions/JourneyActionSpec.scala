@@ -17,6 +17,7 @@
 package controllers.actions
 
 import base.{RequestBuilder, UnitWithMocksSpec}
+import controllers.general.routes.RootController
 import models.requests.JourneyRequest
 import models.{IdentityData, SignedInUser}
 import org.mockito.ArgumentCaptor
@@ -74,19 +75,16 @@ class JourneyActionSpec extends UnitWithMocksSpec with BeforeAndAfterEach with E
     }
 
     "block request" when {
+      val redirect = Results.Redirect(RootController.displayPage)
 
       "answers not found" in {
         given(cache.get(refEq("id"))(any[HeaderCarrier])).willReturn(Future.successful(None))
 
-        await(refiner.invokeBlock(buildVerifiedEmailRequest(request(Some("id")), user), block)) mustBe Results.Redirect(
-          controllers.routes.RootController.displayPage
-        )
+        await(refiner.invokeBlock(buildVerifiedEmailRequest(request(Some("id")), user), block)) mustBe redirect
       }
 
       "id not found" in {
-        await(refiner.invokeBlock(buildVerifiedEmailRequest(request(None), user), block)) mustBe Results.Redirect(
-          controllers.routes.RootController.displayPage
-        )
+        await(refiner.invokeBlock(buildVerifiedEmailRequest(request(None), user), block)) mustBe redirect
       }
     }
   }

@@ -19,13 +19,13 @@ package views.components.gds
 import base.{MockAuthAction, OverridableInjector}
 import com.typesafe.config.ConfigFactory
 import config.{ExternalServicesConfig, TimeoutDialogConfig}
-import controllers.routes.SignOutController
+import controllers.general.routes.SignOutController
 import play.api.Configuration
 import play.api.inject.bind
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
+import views.common.UnitViewSpec
 import views.helpers.CommonMessages
 import views.html.choice_page
-import views.common.UnitViewSpec
 
 import scala.jdk.CollectionConverters.IteratorHasAsScala
 

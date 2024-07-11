@@ -20,11 +20,11 @@ import base.ExportsTestData.{eori, newUser}
 import base.{Injector, OverridableInjector, RequestBuilder}
 import config.ExternalServicesConfig
 import config.featureFlags._
-import controllers.declaration.amendments.routes.AmendDeclarationController
-import controllers.declaration.routes.SubmissionController
-import controllers.routes.{FileUploadController, SubmissionsController}
+import controllers.amendments.routes.AmendDeclarationController
+import controllers.routes.FileUploadController
+import controllers.summary.routes.SubmissionController
 import controllers.timeline.routes._
-import forms.section1.additionaldeclarationtype.AdditionalDeclarationType._
+import forms.section1.AdditionalDeclarationType._
 import models.declaration.submissions.EnhancedStatus._
 import models.declaration.submissions.RequestType.{AmendmentRequest, ExternalAmendmentRequest, SubmissionRequest}
 import models.declaration.submissions.{EnhancedStatus, _}
@@ -139,7 +139,7 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
           amendDeclarationLink must containMessage("declaration.details.amend.declaration")
 
           val parentId = submission.latestDecId.value
-          amendDeclarationLink must haveHref(AmendDeclarationController.initAmendment(parentId, RECEIVED.toString))
+          amendDeclarationLink must haveHref(AmendDeclarationController.initAmendment(parentId))
         }
       }
     }

@@ -17,7 +17,7 @@
 package controllers.section5
 
 import base.ControllerSpec
-import controllers.routes.RootController
+import controllers.general.routes.RootController
 import controllers.section5.routes.{NactCodeAddController, PackageInformationSummaryController, StatisticalValueController}
 import forms.common.YesNoAnswer
 import forms.section5.{NactCode, NactCodeFirst}

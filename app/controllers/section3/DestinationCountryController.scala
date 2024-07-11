@@ -19,7 +19,7 @@ package controllers.section3
 import connectors.CodeListConnector
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.section3.routes.{LocationOfGoodsController, OfficeOfExitController, RoutingCountriesController}
-import controllers.declaration.{ModelCacheable, SubmissionErrors}
+import controllers.general.{ModelCacheable, SubmissionErrors}
 import controllers.navigation.Navigator
 import forms.common.Countries
 import Countries.DestinationCountryPage

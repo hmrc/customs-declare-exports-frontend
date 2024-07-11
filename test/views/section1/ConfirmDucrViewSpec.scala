@@ -20,7 +20,7 @@ import base.{Injector, MockAuthAction}
 import controllers.section1.routes.TraderReferenceController
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
-import forms.declaration.Ducr
+import forms.section1.Ducr
 import models.DeclarationType.{CLEARANCE, STANDARD}
 import views.html.section1.confirm_ducr
 import views.common.PageWithButtonsSpec

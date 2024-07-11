@@ -18,7 +18,7 @@ package forms.timeline
 
 import base.ExportsTestData._
 import forms.common.DeclarationPageBaseSpec
-import forms.declaration.{Lrn, LrnValidator}
+import forms.section1.{Lrn, LrnValidator}
 import models.viewmodels.TariffContentKey
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when

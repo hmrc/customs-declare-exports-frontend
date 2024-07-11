@@ -17,14 +17,14 @@
 package controllers.timeline
 
 import base.ControllerSpec
-import controllers.declaration.routes.SummaryController
+import controllers.summary.routes.SummaryController
 import controllers.timeline.routes.{CopyDeclarationController, DeclarationDetailsController}
-import forms.declaration.{Ducr, Lrn, LrnValidator}
+import forms.section1.{Ducr, Lrn, LrnValidator}
 import forms.timeline.CopyDeclaration
 import models.DeclarationType.STANDARD
 import models.declaration.DeclarationStatus.DRAFT
 import models.declaration.submissions.EnhancedStatus
-import models.declaration.submissions.EnhancedStatus.{CLEARED, rejectedStatuses}
+import models.declaration.submissions.EnhancedStatus.{rejectedStatuses, CLEARED}
 import models.requests.SessionHelper
 import models.requests.SessionHelper.{submissionDucr, submissionLrn, submissionMrn, submissionUuid}
 import org.mockito.ArgumentCaptor

@@ -19,9 +19,9 @@ package controllers.section3
 import connectors.CodeListConnector
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.section3.routes.OfficeOfExitController
-import controllers.declaration.{ModelCacheable, SubmissionErrors}
+import controllers.general.{ModelCacheable, SubmissionErrors}
 import controllers.navigation.Navigator
-import controllers.routes.RootController
+import controllers.general.routes.RootController
 import forms.section3.LocationOfGoods
 import models.ExportsDeclaration
 import models.requests.JourneyRequest

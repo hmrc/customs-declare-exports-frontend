@@ -18,9 +18,9 @@ package controllers.section5
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.section5.routes.PackageInformationSummaryController
-import controllers.declaration.{ModelCacheable, SubmissionErrors}
+import controllers.general.{ModelCacheable, SubmissionErrors}
 import controllers.navigation.Navigator
-import controllers.routes.RootController
+import controllers.general.routes.RootController
 import forms.section5.StatisticalValue
 import forms.section5.StatisticalValue.form
 import models.DeclarationType._

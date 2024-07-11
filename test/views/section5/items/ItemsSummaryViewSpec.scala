@@ -17,8 +17,8 @@
 package views.section5.items
 
 import base.Injector
-import controllers.declaration.routes.SectionSummaryController
 import controllers.section5.routes.{ProcedureCodesController, RemoveItemsSummaryController}
+import controllers.summary.routes.SectionSummaryController
 import forms.common.YesNoAnswer
 import forms.section5.{CommodityDetails, PackageInformation, StatisticalValue}
 import models.declaration.{ExportItem, ProcedureCodesData}

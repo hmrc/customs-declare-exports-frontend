@@ -17,11 +17,11 @@
 package controllers.section6
 
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.declaration.{ModelCacheable, SubmissionErrors}
+import controllers.general.{ModelCacheable, SubmissionErrors}
 import controllers.helpers.InlandOrBorderHelper
 import controllers.helpers.TransportSectionHelper._
 import controllers.navigation.Navigator
-import controllers.routes.RootController
+import controllers.general.routes.RootController
 import controllers.section6.routes._
 import forms.section6.InlandOrBorder.{form, Border, Inland}
 import forms.section6.{BorderTransport, InlandOrBorder}

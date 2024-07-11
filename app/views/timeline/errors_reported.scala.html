@@ -16,7 +16,7 @@
 
 @import config.AppConfig
 @import config.featureFlags.TdrFeatureFlags
-@import controllers.timeline.routes.DeclarationDetailsController
+@import controllers.timeline.routes.{DeclarationDetailsController, SubmissionsController}
 @import models.declaration.notifications.NotificationError
 @import views.helpers.{BackButton, PointerHelper, Title}
 @import views.html.components.gds._
@@ -59,9 +59,7 @@
     else "rejected.notification.warning"
 }
 
-@checkAnswersUrl = @{
-    routes.SubmissionsController.amend(declaration.id, maybeDeclarationId.isDefined).url
-}
+@checkAnswersUrl = @{ SubmissionsController.amend(declaration.id, maybeDeclarationId.isDefined).url }
 
 @guidancePara2Text = @{
     if(maybeDeclarationId.isDefined) "rejected.amendment.guidance.section.2.paragraph.1"
@@ -107,7 +105,7 @@
             @paragraphBody(messages(guidancePara2Text,
                 link(
                     text = messages("rejected.notification.guidance.section.1.paragraph.1.link"),
-                    call = routes.DraftDeclarationController.displayDeclarations()
+                    call = routes.SavedDeclarationsController.displayDeclarations()
                 )))
 
             @* Section 2 *@

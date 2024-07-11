@@ -16,7 +16,7 @@
 
 package views.helpers
 
-import controllers.declaration.amendments.AmendDeclarationController
+import controllers.amendments.AmendDeclarationController
 import controllers.timeline.routes.DeclarationDetailsController
 import models.declaration.submissions.EnhancedStatus._
 import models.declaration.submissions.Submission

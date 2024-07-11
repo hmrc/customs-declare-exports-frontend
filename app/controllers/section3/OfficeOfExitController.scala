@@ -17,9 +17,9 @@
 package controllers.section3
 
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.declaration.routes.SectionSummaryController
-import controllers.declaration.{ModelCacheable, SubmissionErrors}
+import controllers.general.{ModelCacheable, SubmissionErrors}
 import controllers.navigation.Navigator
+import controllers.summary.routes.SectionSummaryController
 import forms.section3.OfficeOfExit
 import forms.section3.OfficeOfExit.{fieldId, form}
 import models.ExportsDeclaration

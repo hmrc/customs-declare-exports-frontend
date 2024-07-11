@@ -18,7 +18,7 @@ package controllers.timeline
 
 import connectors.CustomsDeclareExportsConnector
 import controllers.actions.{AuthAction, VerifiedEmailAction}
-import controllers.helpers.ErrorHandler
+import controllers.general.ErrorHandler
 import models.declaration.submissions.EnhancedStatus.{CUSTOMS_POSITION_DENIED, CUSTOMS_POSITION_GRANTED, EnhancedStatus}
 import models.declaration.submissions.NotificationSummary
 import models.requests.AuthenticatedRequest

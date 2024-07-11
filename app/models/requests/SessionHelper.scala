@@ -16,7 +16,7 @@
 
 package models.requests
 
-import forms.declaration.Lrn
+import forms.section1.Lrn
 import play.api.Logging
 import play.api.mvc.{Request, Session}
 
