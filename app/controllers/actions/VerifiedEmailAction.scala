@@ -16,18 +16,18 @@
 
 package controllers.actions
 
-import scala.concurrent.{ExecutionContext, Future}
 import com.google.inject.ImplementedBy
 import connectors.CustomsDeclareExportsConnector
-import controllers.routes
-
-import javax.inject.{Inject, Singleton}
-import models.{EORI, Email}
+import controllers.general.routes.UnverifiedEmailController
 import models.requests.{AuthenticatedRequest, VerifiedEmailRequest}
+import models.{EORI, Email}
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{ActionRefiner, MessagesControllerComponents, Result}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
+
+import javax.inject.{Inject, Singleton}
+import scala.concurrent.{ExecutionContext, Future}
 
 @ImplementedBy(classOf[VerifiedEmailActionImpl])
 trait VerifiedEmailAction extends ActionRefiner[AuthenticatedRequest, VerifiedEmailRequest]
@@ -37,8 +37,8 @@ class VerifiedEmailActionImpl @Inject() (backendConnector: CustomsDeclareExports
     extends VerifiedEmailAction {
 
   implicit val executionContext: ExecutionContext = mcc.executionContext
-  private lazy val onUnverified = Redirect(routes.UnverifiedEmailController.informUserUnverified)
-  private lazy val onUndeliverable = Redirect(routes.UnverifiedEmailController.informUserUndeliverable)
+  private lazy val onUnverified = Redirect(UnverifiedEmailController.informUserUnverified)
+  private lazy val onUndeliverable = Redirect(UnverifiedEmailController.informUserUndeliverable)
 
   override protected def refine[A](request: AuthenticatedRequest[A]): Future[Either[Result, VerifiedEmailRequest[A]]] = {
 

@@ -17,7 +17,7 @@
 package forms.section2
 
 import forms.DeclarationPage
-import forms.MappingHelper.requiredRadio
+import forms.mappings.MappingHelper.requiredRadio
 import forms.common.YesNoAnswer
 import play.api.data.{Form, Forms, Mapping}
 import play.api.libs.json.{Json, OFormat}

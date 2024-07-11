@@ -18,12 +18,11 @@ package controllers.section1
 
 import controllers.actions.{AmendmentDraftFilter, AuthAction, JourneyAction}
 import controllers.section1.routes.LinkDucrToMucrController
-import controllers.declaration.routes.SectionSummaryController
-import controllers.declaration.{ModelCacheable, SubmissionErrors}
+import controllers.general.{ModelCacheable, SubmissionErrors}
 import controllers.navigation.Navigator
+import controllers.summary.routes.SectionSummaryController
 import forms.section1.ConsignmentReferences.form
-import forms.section1.ConsignmentReferences
-import forms.{Ducr, LrnValidator}
+import forms.section1.{ConsignmentReferences, Ducr, LrnValidator}
 import models.DeclarationType.SUPPLEMENTARY
 import models.requests.JourneyRequest
 import play.api.i18n.I18nSupport

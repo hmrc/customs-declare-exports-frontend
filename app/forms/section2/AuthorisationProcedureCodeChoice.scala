@@ -17,9 +17,9 @@
 package forms.section2
 
 import forms.DeclarationPage
-import forms.MappingHelper.requiredRadio
+import forms.mappings.MappingHelper.requiredRadio
 import models.declaration.AuthorisationProcedureCode
-import models.declaration.AuthorisationProcedureCode.{values, _}
+import models.declaration.AuthorisationProcedureCode._
 import play.api.data.{Form, Forms, Mapping}
 import play.api.libs.json.{Json, OFormat}
 import utils.validators.forms.FieldValidator.isContainedIn

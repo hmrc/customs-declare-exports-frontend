@@ -17,8 +17,8 @@
 package controllers.section4
 
 import base.ControllerSpec
-import controllers.declaration.routes.SectionSummaryController
 import controllers.section4.routes.PreviousDocumentsController
+import controllers.summary.routes.SectionSummaryController
 import forms.common.YesNoAnswer
 import forms.section4.Document
 import org.mockito.ArgumentCaptor

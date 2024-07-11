@@ -18,7 +18,7 @@ package controllers.section5
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.section5.routes.{AdditionalInformationRequiredController, SupplementaryUnitsController}
-import controllers.declaration.{ModelCacheable, SubmissionErrors}
+import controllers.general.{ModelCacheable, SubmissionErrors}
 import controllers.navigation.Navigator
 import forms.section5.commodityMeasure.CommodityMeasure
 import models.DeclarationType.{CLEARANCE, STANDARD, SUPPLEMENTARY}

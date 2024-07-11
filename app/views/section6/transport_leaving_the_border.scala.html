@@ -17,7 +17,6 @@
 @import config.AppConfig
 @import controllers.helpers.AuthorisationHolderHelper.authorisationHolders
 @import controllers.navigation.Navigator
-@import controllers.routes.GuidanceController
 @import controllers.section6.routes.TransportLeavingTheBorderController
 @import forms.section2.authorisationHolder.AuthorizationTypeCodes.{EXRR, isAuthCode}
 @import forms.section6.{ModeOfTransportCode, TransportLeavingTheBorder}
@@ -54,7 +53,7 @@
         @insetText(content = HtmlContent(messages(
             "declaration.transport.leavingTheBorder.inset",
             externalLink(
-                url = GuidanceController.sendByRoro.url,
+                url = TransportLeavingTheBorderController.sendByRoro.url,
                 text = messages("declaration.transport.leavingTheBorder.inset.link")
             )
         )))

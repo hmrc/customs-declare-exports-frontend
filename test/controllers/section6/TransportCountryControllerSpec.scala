@@ -19,7 +19,7 @@ package controllers.section6
 import base.{AuditedControllerSpec, ControllerSpec}
 import connectors.CodeListConnector
 import controllers.helpers.TransportSectionHelper.{Guernsey, Jersey}
-import controllers.routes.RootController
+import controllers.general.routes.RootController
 import controllers.section6.routes.{ContainerController, ExpressConsignmentController}
 import forms.common.Country
 import forms.section6.ModeOfTransportCode.{FixedTransportInstallations, PostalConsignment, Rail}

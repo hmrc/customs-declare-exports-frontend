@@ -17,11 +17,11 @@
 package controllers.section1
 
 import controllers.actions.{AmendmentDraftFilter, AuthAction, JourneyAction}
-import controllers.declaration.{ModelCacheable, SubmissionErrors}
+import controllers.general.{ModelCacheable, SubmissionErrors}
 import controllers.section1.routes.{DeclarantDetailsController, DucrChoiceController}
 import controllers.navigation.Navigator
-import forms.section1.additionaldeclarationtype.AdditionalDeclarationType.AdditionalDeclarationType
-import forms.section1.additionaldeclarationtype.AdditionalDeclarationTypePage
+import forms.section1.AdditionalDeclarationType.AdditionalDeclarationType
+import forms.section1.AdditionalDeclarationTypePage
 import models.DeclarationType.CLEARANCE
 import models.ExportsDeclaration
 import models.requests.JourneyRequest

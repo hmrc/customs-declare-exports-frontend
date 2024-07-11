@@ -17,7 +17,7 @@
 package forms.section3
 
 import forms.DeclarationPage
-import forms.MappingHelper.requiredRadio
+import forms.mappings.MappingHelper.requiredRadio
 import forms.common.{Countries, Country, YesNoAnswer}
 import forms.common.YesNoAnswer.YesNoAnswers
 import play.api.data.{Form, Forms}

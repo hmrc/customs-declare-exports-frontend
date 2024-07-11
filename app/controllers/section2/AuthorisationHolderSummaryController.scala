@@ -17,11 +17,11 @@
 package controllers.section2
 
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.declaration.{ModelCacheable, SubmissionErrors}
-import controllers.declaration.routes.SectionSummaryController
+import controllers.general.{ModelCacheable, SubmissionErrors}
 import controllers.helpers.AuthorisationHolderHelper.authorisationHolders
 import controllers.navigation.Navigator
 import controllers.section2.routes.AuthorisationHolderAddController
+import controllers.summary.routes.SectionSummaryController
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import play.api.data.Form

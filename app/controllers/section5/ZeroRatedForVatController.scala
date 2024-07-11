@@ -20,7 +20,7 @@ import connectors.CodeLinkConnector
 import connectors.Tag.CodesRestrictingZeroVat
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.section5.routes.NactCodeSummaryController
-import controllers.declaration.{ModelCacheable, SubmissionErrors}
+import controllers.general.{ModelCacheable, SubmissionErrors}
 import controllers.helpers.ItemHelper.skipZeroRatedForVatPage
 import controllers.navigation.Navigator
 import forms.section5.{NactCode, ZeroRatedForVat}

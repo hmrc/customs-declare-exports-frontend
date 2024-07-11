@@ -19,8 +19,8 @@ package forms.section1
 import base.ExportsTestData._
 import base.{JourneyTypeTestRunner, TestHelper}
 import forms.common.DeclarationPageBaseSpec
-import forms.section1.additionaldeclarationtype.AdditionalDeclarationType.{AdditionalDeclarationType, SUPPLEMENTARY_EIDR, SUPPLEMENTARY_SIMPLIFIED}
-import forms.{Ducr, Lrn, LrnValidator}
+import forms.section1.{Ducr, Lrn, LrnValidator}
+import forms.section1.AdditionalDeclarationType.{AdditionalDeclarationType, SUPPLEMENTARY_EIDR, SUPPLEMENTARY_SIMPLIFIED}
 import models.DeclarationType.{CLEARANCE, OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
 import models.requests.JourneyRequest
 import models.viewmodels.TariffContentKey

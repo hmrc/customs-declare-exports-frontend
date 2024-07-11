@@ -18,9 +18,9 @@ package views.section1
 
 import base.Injector
 import config.AppConfig
-import controllers.declaration.routes.{DeclarationChoiceController, StandardOrOtherJourneyController}
-import forms.section1.additionaldeclarationtype.AdditionalDeclarationType._
-import forms.section1.additionaldeclarationtype.AdditionalDeclarationTypePage.{form, radioButtonGroupId}
+import controllers.journey.routes.{OtherJourneyController, StandardOrOtherJourneyController}
+import forms.section1.AdditionalDeclarationType._
+import forms.section1.AdditionalDeclarationTypePage.{form, radioButtonGroupId}
 import models.DeclarationType._
 import play.twirl.api.Html
 import views.helpers.CommonMessages
@@ -48,7 +48,7 @@ class AdditionalDeclarationTypeViewSpec extends UnitViewSpec with CommonMessages
           backButton.text mustBe messages(backToPreviousQuestionCaption)
           val expectedCall =
             if (declarationType == STANDARD) StandardOrOtherJourneyController.displayPage
-            else DeclarationChoiceController.displayPage
+            else OtherJourneyController.displayPage
           backButton must haveHref(expectedCall)
         }
 

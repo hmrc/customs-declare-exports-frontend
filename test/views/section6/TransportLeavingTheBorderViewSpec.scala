@@ -17,15 +17,15 @@
 package views.section6
 
 import base.Injector
-import controllers.declaration.routes.SectionSummaryController
-import controllers.routes.GuidanceController
+import controllers.section6.routes.TransportLeavingTheBorderController
+import controllers.summary.routes.SectionSummaryController
 import forms.section2.authorisationHolder.AuthorizationTypeCodes.EXRR
 import forms.section6.TransportLeavingTheBorder.form
 import models.DeclarationType._
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
-import views.html.section6.transport_leaving_the_border
 import views.common.PageWithButtonsSpec
+import views.html.section6.transport_leaving_the_border
 import views.tags.ViewTest
 
 @ViewTest
@@ -169,7 +169,7 @@ class TransportLeavingTheBorderViewSpec extends PageWithButtonsSpec with Injecto
         insetText.text mustBe messages("declaration.transport.leavingTheBorder.inset", messages("declaration.transport.leavingTheBorder.inset.link"))
 
         val links = view.getElementsByClass("govuk-link--no-visited-state")
-        links.get(0) must haveHref(GuidanceController.sendByRoro.url)
+        links.get(0) must haveHref(TransportLeavingTheBorderController.sendByRoro.url)
       }
     }
   }

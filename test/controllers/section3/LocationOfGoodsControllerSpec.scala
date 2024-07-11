@@ -18,9 +18,9 @@ package controllers.section3
 
 import base.{AuditedControllerSpec, ControllerSpec, MockTaggedCodes}
 import connectors.CodeListConnector
-import controllers.routes.RootController
+import controllers.general.routes.RootController
 import controllers.section3.routes.OfficeOfExitController
-import forms.section1.additionaldeclarationtype.AdditionalDeclarationType.SUPPLEMENTARY_EIDR
+import forms.section1.AdditionalDeclarationType.SUPPLEMENTARY_EIDR
 import forms.section3.LocationOfGoods
 import forms.section3.LocationOfGoods.locationId
 import models.DeclarationType

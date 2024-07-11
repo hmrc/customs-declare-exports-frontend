@@ -20,9 +20,9 @@ import base.ExportsTestData.allValuesRequiringToSkipInlandOrBorder
 import base.{AuditedControllerSpec, ControllerSpec}
 import controllers.helpers.InlandOrBorderHelper
 import controllers.helpers.TransportSectionHelper._
-import controllers.routes.RootController
+import controllers.general.routes.RootController
 import controllers.section6.routes._
-import forms.section1.additionaldeclarationtype.AdditionalDeclarationType._
+import forms.section1.AdditionalDeclarationType._
 import forms.section6.InlandOrBorder.{fieldId, Border, Inland}
 import forms.section6.ModeOfTransportCode.Maritime
 import forms.section6.{BorderTransport, InlandOrBorder}

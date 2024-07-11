@@ -18,7 +18,7 @@ package services
 
 import connectors.CodeLinkConnector
 import connectors.Tag._
-import forms.section1.additionaldeclarationtype.AdditionalDeclarationType.SUPPLEMENTARY_EIDR
+import forms.section1.AdditionalDeclarationType.SUPPLEMENTARY_EIDR
 import forms.section2.authorisationHolder.AuthorisationHolder
 import forms.section2.authorisationHolder.AuthorizationTypeCodes.isAuthCode
 import models.ExportsDeclaration

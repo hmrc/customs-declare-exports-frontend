@@ -22,7 +22,7 @@ import base.TestHelper.createRandomAlphanumericString
 import controllers.section2.routes
 import forms.common.Eori
 import forms.section2.AuthorisationProcedureCodeChoice.{Choice1040, ChoiceOthers}
-import forms.section1.additionaldeclarationtype.AdditionalDeclarationType.{STANDARD_FRONTIER, STANDARD_PRE_LODGED}
+import forms.section1.AdditionalDeclarationType.{STANDARD_FRONTIER, STANDARD_PRE_LODGED}
 import forms.section2.authorisationHolder.AuthorisationHolder
 import models.DeclarationType._
 import models.declaration.EoriSource.{OtherEori, UserEori}

@@ -19,7 +19,8 @@ package views.dashboard
 import base.OverridableInjector
 import config.PaginationConfig
 import config.featureFlags.DeclarationAmendmentsConfig
-import controllers.routes.{ChoiceController, DashboardController, DeclarationDetailsController}
+import controllers.routes.{ChoiceController, DashboardController}
+import controllers.timeline.routes.DeclarationDetailsController
 import models.PageOfSubmissions
 import models.declaration.submissions.EnhancedStatus._
 import models.declaration.submissions.RequestType.SubmissionRequest
@@ -36,10 +37,10 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers.{stubLangs, stubMessagesApi}
 import play.twirl.api.Html
 import services.cache.ExportsTestHelper
+import views.common.UnitViewSpec
 import views.dashboard.DashboardHelper._
 import views.helpers.ViewDates
 import views.html.dashboard.dashboard
-import views.common.UnitViewSpec
 import views.tags.ViewTest
 
 import java.time.{ZoneId, ZonedDateTime}

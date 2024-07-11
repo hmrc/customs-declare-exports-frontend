@@ -17,7 +17,7 @@
 package views.helpers
 
 import connectors.CodeListConnector
-import controllers.routes.SubmissionsController
+import controllers.timeline.routes.SubmissionsController
 import models.DeclarationType.CLEARANCE
 import models.declaration.errors.{ErrorInstance, FieldInvolved}
 import models.declaration.notifications.{Notification, NotificationError}

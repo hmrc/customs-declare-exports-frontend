@@ -16,8 +16,8 @@
 
 package base
 
-import forms.section1.additionaldeclarationtype.AdditionalDeclarationType.{declarationType, AdditionalDeclarationType}
-import forms.section1.additionaldeclarationtype.AdditionalDeclarationType
+import forms.section1.AdditionalDeclarationType.{declarationType, AdditionalDeclarationType}
+import forms.section1.AdditionalDeclarationType
 import models.DeclarationType.DeclarationType
 import models.requests.JourneyRequest
 import models.{DeclarationType, ExportsDeclaration}

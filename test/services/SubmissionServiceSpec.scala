@@ -20,8 +20,9 @@ import base.{Injector, MockConnectors, MockExportCacheService, UnitWithMocksSpec
 import uk.gov.hmrc.play.bootstrap.metrics.Metrics
 import connectors.CustomsDeclareExportsConnector
 import forms.common.Country
-import forms.declaration.{AmendmentSubmission, LegalDeclaration}
-import forms.section1.additionaldeclarationtype.AdditionalDeclarationType
+import forms.section1.AdditionalDeclarationType
+import forms.summary.LegalDeclaration
+import forms.timeline.AmendmentSubmission
 import metrics.{ExportsMetrics, MetricIdentifiers}
 import models.declaration.DeclarationStatus
 import models.declaration.submissions.{Action, Submission, SubmissionAmendment}

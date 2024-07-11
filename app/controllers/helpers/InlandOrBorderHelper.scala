@@ -17,7 +17,7 @@
 package controllers.helpers
 
 import forms.section6.ModeOfTransportCode.RoRo
-import forms.section1.additionaldeclarationtype.AdditionalDeclarationType.SUPPLEMENTARY_EIDR
+import forms.section1.AdditionalDeclarationType.SUPPLEMENTARY_EIDR
 import forms.section6.InlandOrBorder
 import models.DeclarationType._
 import models.ExportsDeclaration

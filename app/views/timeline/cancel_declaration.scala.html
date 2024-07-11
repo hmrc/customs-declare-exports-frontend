@@ -1,0 +1,99 @@
+@*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import controllers.timeline.routes.{CancelDeclarationController, DeclarationDetailsController}
+@import forms.section1.Lrn
+@import forms.timeline.CancelDeclarationDescription
+@import forms.timeline.CancellationChangeReason.{NoLongerRequired, Duplication, OtherReason}
+@import models.requests.CancelDeclarationData
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.helpers.{BackButton, Title}
+@import views.helpers.ErrorMapper.radioGroupErrors
+@import views.html.components.gds._
+
+@this(
+    govukLayout: gdsMainTemplate,
+    govukButton: GovukButton,
+    govukRadios: GovukRadios,
+    errorSummary: errorSummary,
+    pageTitle: pageTitle,
+    heading: heading,
+    paragraphBody: paragraphBody,
+    characterCount: exportsInputCharacterCount,
+    formHelper: FormWithCSRF
+)
+
+@(form: Form[CancelDeclarationDescription], cancelDeclarationData: CancelDeclarationData)(implicit request: Request[_], messages: Messages)
+
+@hasErrors = @{form.hasErrors || form.hasGlobalErrors}
+
+@govukLayout(
+    title = Title("cancellation.title", hasErrors = hasErrors),
+    backButton = Some(BackButton(messages("site.back"), DeclarationDetailsController.displayPage(cancelDeclarationData.submissionId))),
+    showDeclarationSummaryLink = false
+) {
+    @formHelper(action = CancelDeclarationController.onSubmit, 'autoComplete -> "off") {
+        @errorSummary(radioGroupErrors("changeReason", "noLongerRequired", form.errors))
+
+        @pageTitle(messages("cancellation.title"), "govuk-heading-xl govuk-!-margin-bottom-2")
+
+        <div class="submission-mrn govuk-caption-xl govuk-!-margin-bottom-8">@messages("mrn.heading", cancelDeclarationData.mrn)</div>
+
+        @paragraphBody(messages("cancellation.ducr", <b>{cancelDeclarationData.ducr}</b>))
+
+        @paragraphBody(messages("cancellation.lrn", <b>{cancelDeclarationData.lrn.lrn}</b>))
+
+        @govukRadios(Radios(
+            name = CancelDeclarationDescription.changeReasonKey,
+            fieldset = Some(Fieldset(
+                legend = Some(Legend(
+                    content = HtmlContent(heading(messages("cancellation.changeReason"), classes = "govuk-heading govuk-heading-m govuk-!-margin-bottom-0", tier = "h2")),
+                    classes = "govuk-fieldset__legend govuk-fieldset__legend--m"
+                ))
+            )),
+            items = Seq(
+                RadioItem(
+                    id = Some("noLongerRequired"),
+                    value = Some(NoLongerRequired.toString),
+                    content = Text(messages("cancellation.reason.noLongerRequired")),
+                    checked = form("changeReason").value.contains(NoLongerRequired.toString)
+                ),
+                RadioItem(
+                    id = Some("duplication"),
+                    value = Some(Duplication.toString),
+                    content = Text(messages("cancellation.reason.duplication")),
+                    checked = form("changeReason").value.contains(Duplication.toString)
+                ),
+                RadioItem(
+                    id = Some("otherReason"),
+                    value = Some(OtherReason.toString),
+                    content = Text(messages("cancellation.reason.otherReason")),
+                    checked = form("changeReason").value.contains(OtherReason.toString)
+                )
+            ),
+            errorMessage = form("changeReason").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
+        ))
+
+        @characterCount(
+            field = form(CancelDeclarationDescription.statementDescriptionKey),
+            labelKey = Some("cancellation.statementDescription"),
+            maxLength = Some(CancelDeclarationDescription.statementDescriptionMaxLength),
+            inputClasses = "govuk-!-width-two-thirds"
+        )
+
+        @govukButton(Button(content = Text(messages("site.submit")), attributes = Map("id" -> "submit", "name" -> "Save")))
+    }
+}

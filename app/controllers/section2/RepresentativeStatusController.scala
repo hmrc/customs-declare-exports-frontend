@@ -18,7 +18,7 @@ package controllers.section2
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.section2.routes.{ConsigneeDetailsController, ThirdPartyGoodsTransportationController}
-import controllers.declaration.{ModelCacheable, SubmissionErrors}
+import controllers.general.{ModelCacheable, SubmissionErrors}
 import controllers.navigation.Navigator
 import forms.DeclarationPage
 import forms.section2.representative.RepresentativeStatus.form

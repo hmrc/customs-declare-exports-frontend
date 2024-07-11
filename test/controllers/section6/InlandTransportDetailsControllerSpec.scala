@@ -18,7 +18,7 @@ package controllers.section6
 
 import base.{AuditedControllerSpec, ControllerSpec}
 import controllers.helpers.TransportSectionHelper.{nonPostalOrFTIModeOfTransportCodes, postalOrFTIModeOfTransportCodes}
-import controllers.routes.RootController
+import controllers.general.routes.RootController
 import controllers.section6.routes._
 import forms.section6.InlandOrBorder.Border
 import forms.section6.ModeOfTransportCode._

@@ -17,16 +17,16 @@
 package views.section4.previousDocuments
 
 import base.Injector
-import controllers.declaration.routes.SectionSummaryController
 import controllers.section4.routes.NatureOfTransactionController
+import controllers.summary.routes.SectionSummaryController
 import forms.common.YesNoAnswer.form
 import forms.section4.Document
 import models.DeclarationType
 import models.DeclarationType.STANDARD
 import models.requests.JourneyRequest
 import play.twirl.api.Html
-import views.html.section4.previousDocuments.previous_documents_summary
 import views.common.PageWithButtonsSpec
+import views.html.section4.previousDocuments.previous_documents_summary
 
 class PreviousDocumentsSummaryViewSpec extends PageWithButtonsSpec with Injector {
 

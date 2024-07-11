@@ -21,7 +21,7 @@ import controllers.section2.routes.{AuthorisationHolderAddController, Authorisat
 import forms.common.YesNoAnswer.Yes
 import forms.common.{Eori, YesNoAnswer}
 import forms.section2.AuthorisationProcedureCodeChoice.{Choice1040, ChoiceOthers}
-import forms.section1.additionaldeclarationtype.AdditionalDeclarationType.STANDARD_PRE_LODGED
+import forms.section1.AdditionalDeclarationType.STANDARD_PRE_LODGED
 import forms.section2.authorisationHolder.AuthorisationHolder
 import models.DeclarationType._
 import models.declaration.{AuthorisationHolders, EoriSource}

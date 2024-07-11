@@ -14,23 +14,24 @@
  * limitations under the License.
  *@
 
-@import controllers.routes._
-@import forms.RemoveDraftDeclaration
+@import controllers.drafts.routes.RemoveDraftDeclarationController
+@import controllers.routes.SavedDeclarationsController
+@import forms.drafts.RemoveDraftDeclaration
 @import uk.gov.hmrc.govukfrontend.views.html.components._
-@import views.html.components.gds._
 @import views.components.gds.Styles._
 @import views.helpers.{BackButton, Title, ViewDates}
 @import views.helpers.ErrorMapper.radioGroupErrors
+@import views.html.components.gds._
 
 @this(
-        govukLayout: gdsMainTemplate,
-        govukFieldset : GovukFieldset,
-        pageTitle: pageTitle,
-        govukRadios: GovukRadios,
-        govukTable: GovukTable,
-        errorSummary: errorSummary,
-        saveAndContinue: saveAndContinue,
-        formHelper: FormWithCSRF
+    govukLayout: gdsMainTemplate,
+    govukFieldset : GovukFieldset,
+    pageTitle: pageTitle,
+    govukRadios: GovukRadios,
+    govukTable: GovukTable,
+    errorSummary: errorSummary,
+    saveAndContinue: saveAndContinue,
+    formHelper: FormWithCSRF
 )
 
 
@@ -94,7 +95,7 @@
 
 @govukLayout(
     title = Title("draft.declarations.remove.title", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.back"), routes.DraftDeclarationController.displayDeclarations()))) {
+    backButton = Some(BackButton(messages("site.back"), SavedDeclarationsController.displayDeclarations()))) {
 
     @formHelper(action = RemoveDraftDeclarationController.removeDeclaration(declaration.id), 'autoComplete -> "off") {
         @errorSummary(radioGroupErrors("remove", "Yes", form.errors))

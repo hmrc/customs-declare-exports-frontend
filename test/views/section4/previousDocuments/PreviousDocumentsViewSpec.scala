@@ -18,8 +18,8 @@ package views.section4.previousDocuments
 
 import base.Injector
 import config.AppConfig
-import controllers.declaration.routes.SectionSummaryController
 import controllers.section4.routes.{NatureOfTransactionController, PreviousDocumentsSummaryController}
+import controllers.summary.routes.SectionSummaryController
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.section2.AuthorisationProcedureCodeChoice.{Choice1007, Choice1040, ChoiceOthers}
 import forms.section4.Document.form
@@ -31,8 +31,8 @@ import org.mockito.Mockito.when
 import org.scalatest.Assertion
 import play.twirl.api.Html
 import services.{DocumentType, DocumentTypeService}
-import views.html.section4.previousDocuments.previous_documents
 import views.common.{PageWithButtonsSpec, UnitViewSpec}
+import views.html.section4.previousDocuments.previous_documents
 import views.tags.ViewTest
 
 @ViewTest

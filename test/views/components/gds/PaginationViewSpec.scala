@@ -17,6 +17,7 @@
 package views.components.gds
 
 import base.ExportsTestData
+import controllers.routes.SavedDeclarationsController
 import models.{ExportsDeclaration, Page, Paginated}
 import views.html.drafts.pagination
 import views.common.UnitViewSpec
@@ -32,7 +33,7 @@ class PaginationViewSpec extends UnitViewSpec {
     singularName = messages("draft.declarations.pagination.singular"),
     pluralName = messages("draft.declarations.pagination.plural"),
     pager = Paginated(declarations, Page(currentPage, pageSize), elementsTotal),
-    onChange = page => controllers.routes.DraftDeclarationController.displayDeclarations(page),
+    onChange = page => SavedDeclarationsController.displayDeclarations(page),
     neighbourPagesAmount = 1
   )
 
@@ -82,10 +83,10 @@ class PaginationViewSpec extends UnitViewSpec {
         controls.getElementsByClass("ceds-pagination__item").size() mustBe 3
         controls.getElementById("pagination-page_active") must containText("1")
         controls.getElementById("pagination-page_2") must containText("2")
-        controls.getElementById("pagination-page_2") must haveHref(controllers.routes.DraftDeclarationController.displayDeclarations(2))
+        controls.getElementById("pagination-page_2") must haveHref(SavedDeclarationsController.displayDeclarations(2))
 
         controls.getElementById("pagination-page_next") must containText("Next")
-        controls.getElementById("pagination-page_next") must haveHref(controllers.routes.DraftDeclarationController.displayDeclarations(2))
+        controls.getElementById("pagination-page_next") must haveHref(SavedDeclarationsController.displayDeclarations(2))
       }
 
       "there are two pages and the current one is 2" in {
@@ -93,10 +94,10 @@ class PaginationViewSpec extends UnitViewSpec {
 
         controls.getElementsByClass("ceds-pagination__item").size() mustBe 3
         controls.getElementById("pagination-page_previous") must containText("Previous")
-        controls.getElementById("pagination-page_previous") must haveHref(controllers.routes.DraftDeclarationController.displayDeclarations(1))
+        controls.getElementById("pagination-page_previous") must haveHref(SavedDeclarationsController.displayDeclarations(1))
 
         controls.getElementById("pagination-page_1") must containText("1")
-        controls.getElementById("pagination-page_1") must haveHref(controllers.routes.DraftDeclarationController.displayDeclarations(1))
+        controls.getElementById("pagination-page_1") must haveHref(SavedDeclarationsController.displayDeclarations(1))
         controls.getElementById("pagination-page_active") must containText("2")
       }
 
@@ -106,18 +107,18 @@ class PaginationViewSpec extends UnitViewSpec {
         controls.getElementsByClass("ceds-pagination__item").size() mustBe 9
 
         controls.getElementById("pagination-page_previous") must containText("Previous")
-        controls.getElementById("pagination-page_previous") must haveHref(controllers.routes.DraftDeclarationController.displayDeclarations(3))
+        controls.getElementById("pagination-page_previous") must haveHref(SavedDeclarationsController.displayDeclarations(3))
 
         controls.getElementById("pagination-page_3") must containText("3")
-        controls.getElementById("pagination-page_3") must haveHref(controllers.routes.DraftDeclarationController.displayDeclarations(3))
+        controls.getElementById("pagination-page_3") must haveHref(SavedDeclarationsController.displayDeclarations(3))
 
         controls.getElementById("pagination-page_active") must containText("4")
 
         controls.getElementById("pagination-page_5") must containText("5")
-        controls.getElementById("pagination-page_5") must haveHref(controllers.routes.DraftDeclarationController.displayDeclarations(5))
+        controls.getElementById("pagination-page_5") must haveHref(SavedDeclarationsController.displayDeclarations(5))
 
         controls.getElementById("pagination-page_next") must containText("Next")
-        controls.getElementById("pagination-page_next") must haveHref(controllers.routes.DraftDeclarationController.displayDeclarations(5))
+        controls.getElementById("pagination-page_next") must haveHref(SavedDeclarationsController.displayDeclarations(5))
 
         controls.getElementsByClass("ceds-pagination__item ceds-pagination__item--dots").size() mustBe 2
       }

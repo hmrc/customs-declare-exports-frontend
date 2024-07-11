@@ -19,11 +19,10 @@ package controllers.section1
 import base.ExportsTestData.eidrDateStamp
 import base.{AuditedControllerSpec, ControllerSpec}
 import controllers.actions.AmendmentDraftFilterSpec
-import controllers.declaration.routes.SectionSummaryController
 import controllers.section1.routes.LinkDucrToMucrController
-import forms.section1.additionaldeclarationtype.AdditionalDeclarationType.{SUPPLEMENTARY_EIDR, SUPPLEMENTARY_SIMPLIFIED}
-import forms.section1.ConsignmentReferences
-import forms.{Ducr, Lrn, LrnValidator}
+import controllers.summary.routes.SectionSummaryController
+import forms.section1.AdditionalDeclarationType.{SUPPLEMENTARY_EIDR, SUPPLEMENTARY_SIMPLIFIED}
+import forms.section1.{ConsignmentReferences, Ducr, Lrn, LrnValidator}
 import models.DeclarationType._
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any

@@ -19,8 +19,8 @@ package services.cache
 import base.ExportsTestData._
 import forms.common.YesNoAnswer.{No, YesNoAnswers}
 import forms.common.{Address, Country, Eori, YesNoAnswer}
-import forms.section1.additionaldeclarationtype.AdditionalDeclarationType.{AdditionalDeclarationType, STANDARD_FRONTIER}
-import forms.section1.{ConsignmentReferences, DeclarantDetails, Mucr}
+import forms.section1.AdditionalDeclarationType.{AdditionalDeclarationType, STANDARD_FRONTIER}
+import forms.section1.{ConsignmentReferences, DeclarantDetails, Ducr, Lrn, Mrn, Mucr}
 import forms.section2.authorisationHolder.AuthorisationHolder
 import forms.section2.carrier.CarrierDetails
 import forms.section2.consignor.ConsignorDetails
@@ -29,7 +29,6 @@ import forms.section2._
 import forms.section3.{LocationOfGoods, OfficeOfExit}
 import forms.section4.{Document, InvoiceAndExchangeRate, NatureOfTransaction, PreviousDocumentsData}
 import forms.section6._
-import forms.{Ducr, Lrn, Mrn}
 import models.DeclarationType.DeclarationType
 import models.declaration.DeclarationStatus.DeclarationStatus
 import models.declaration._

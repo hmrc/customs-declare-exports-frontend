@@ -17,7 +17,7 @@
 package controllers.section5
 
 import base.{AuditedControllerSpec, ControllerSpec, TestHelper}
-import controllers.routes.RootController
+import controllers.general.routes.RootController
 import controllers.section5.routes.{NactCodeSummaryController, PackageInformationSummaryController, StatisticalValueController}
 import forms.section5.{NactCode, NactCodeFirst}
 import models.DeclarationType._

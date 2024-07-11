@@ -17,6 +17,7 @@
 package controllers.section2
 
 import base.{AuditedControllerSpec, ControllerSpec}
+import controllers.general.routes.RootController
 import controllers.section2.routes.{CarrierDetailsController, ConsigneeDetailsController}
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.common.{Address, Eori}
@@ -139,7 +140,7 @@ class CarrierEoriNumberControllerSpec extends ControllerSpec with AuditedControl
         val result = controller.displayPage(getRequest())
 
         status(result) must be(SEE_OTHER)
-        redirectLocation(result) mustBe Some(controllers.routes.RootController.displayPage.url)
+        redirectLocation(result) mustBe Some(RootController.displayPage.url)
       }
     }
   }
@@ -233,7 +234,7 @@ class CarrierEoriNumberControllerSpec extends ControllerSpec with AuditedControl
         val result = controller.submit()(postRequest(correctForm))
 
         status(result) must be(SEE_OTHER)
-        redirectLocation(result) mustBe Some(controllers.routes.RootController.displayPage.url)
+        redirectLocation(result) mustBe Some(RootController.displayPage.url)
         verifyNoAudit()
       }
     }

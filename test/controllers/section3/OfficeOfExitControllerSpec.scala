@@ -17,7 +17,7 @@
 package controllers.section3
 
 import base.{AuditedControllerSpec, ControllerSpec}
-import controllers.declaration.routes.SectionSummaryController
+import controllers.summary.routes.SectionSummaryController
 import forms.section3.OfficeOfExit
 import forms.section3.OfficeOfExit.fieldId
 import org.mockito.ArgumentCaptor

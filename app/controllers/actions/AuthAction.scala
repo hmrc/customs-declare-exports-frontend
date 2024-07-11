@@ -17,20 +17,20 @@
 package controllers.actions
 
 import com.google.inject.{ImplementedBy, Inject, ProvidedBy}
-import uk.gov.hmrc.play.bootstrap.metrics.Metrics
 import config.AppConfig
-import controllers.routes
-import models.{IdentityData, SignedInUser}
+import controllers.general.routes.UnauthorisedController
 import models.AuthKey.{enrolment, hashIdentifierKey, identifierKey}
 import models.UnauthorisedReason.{UrlDirect, UserEoriNotAllowed, UserIsAgent, UserIsNotEnrolled}
 import models.requests.AuthenticatedRequest
-import play.api.{Configuration, Logging}
+import models.{IdentityData, SignedInUser}
 import play.api.mvc._
-import uk.gov.hmrc.auth.core._
+import play.api.{Configuration, Logging}
 import uk.gov.hmrc.auth.core.AffinityGroup.{Individual, Organisation}
+import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals._
 import uk.gov.hmrc.auth.core.retrieve.~
 import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.play.bootstrap.metrics.Metrics
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
 import utils.HashingUtils.generateHashOfValue
 
@@ -104,14 +104,14 @@ class AuthActionImpl @Inject() (
           block(new AuthenticatedRequest(request, cdsLoggedInUser))
         else {
           logger.warn(s"User rejected with onAllowList=$onAllowList & tdrSecretMatches=$tdrSecretMatches")
-          Future.successful(Results.Redirect(routes.UnauthorisedController.onPageLoad(UserEoriNotAllowed)))
+          Future.successful(Results.Redirect(UnauthorisedController.onPageLoad(UserEoriNotAllowed)))
         }
     }
 
     result.recoverWith {
       case _: UnsupportedAffinityGroup =>
         logger.warn("User is an agent")
-        Future.successful(Results.Redirect(routes.UnauthorisedController.onAgentKickOut(UserIsAgent)))
+        Future.successful(Results.Redirect(UnauthorisedController.onAgentKickOut(UserIsAgent)))
 
       case _: NoActiveSession =>
         logger.warn("User is not currently logged in.")
@@ -119,11 +119,11 @@ class AuthActionImpl @Inject() (
 
       case _: InsufficientEnrolments =>
         logger.warn("User does not have sufficient enrolments.")
-        Future.successful(Results.Redirect(routes.UnauthorisedController.onPageLoad(UserIsNotEnrolled)))
+        Future.successful(Results.Redirect(UnauthorisedController.onPageLoad(UserIsNotEnrolled)))
 
       case e: AuthorisationException =>
         logger.warn(s"AuthorisationException raised. Reason is: ${e.reason}")
-        Future.successful(Results.Redirect(routes.UnauthorisedController.onPageLoad(UrlDirect)))
+        Future.successful(Results.Redirect(UnauthorisedController.onPageLoad(UrlDirect)))
 
       case e: Throwable =>
         logger.warn("User failed auth-check.")

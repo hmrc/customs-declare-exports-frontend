@@ -18,7 +18,7 @@ package views.section3
 
 import base.{Injector, MockTaggedCodes}
 import controllers.section3.routes._
-import forms.section1.additionaldeclarationtype.AdditionalDeclarationType.SUPPLEMENTARY_EIDR
+import forms.section1.AdditionalDeclarationType.SUPPLEMENTARY_EIDR
 import forms.section3.OfficeOfExit
 import models.DeclarationType._
 import models.declaration.DeclarationStatus.AMENDMENT_DRAFT

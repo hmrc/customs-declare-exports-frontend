@@ -20,7 +20,7 @@ import base.ExportsTestData.{modifierForPC1040, valuesRequiringToSkipInlandOrBor
 import base.Injector
 import controllers.helpers.TransportSectionHelper.additionalDeclTypesAllowedOnInlandOrBorder
 import controllers.section6.routes._
-import forms.section1.additionaldeclarationtype.AdditionalDeclarationType._
+import forms.section1.AdditionalDeclarationType._
 import forms.section6.InlandModeOfTransportCode
 import forms.section6.InlandModeOfTransportCode.form
 import models.DeclarationType._

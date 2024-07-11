@@ -18,7 +18,7 @@ package controllers.actions
 
 import base.{ControllerWithoutFormSpec, ExportsTestData, Injector}
 import connectors.CustomsDeclareExportsConnector
-import controllers.routes
+import controllers.general.routes.UnverifiedEmailController
 import models.requests.{AuthenticatedRequest, VerifiedEmailRequest}
 import models.{EORI, Email}
 import org.mockito.ArgumentMatchers.{eq => meq, _}
@@ -72,7 +72,7 @@ class VerifiedEmailActionSpec extends ControllerWithoutFormSpec with Injector wi
         val request = new AuthenticatedRequest(authenticatedRequest, user)
 
         whenReady(action.testRefine(request)) { result =>
-          result mustBe Left(Redirect(routes.UnverifiedEmailController.informUserUnverified))
+          result mustBe Left(Redirect(UnverifiedEmailController.informUserUnverified))
         }
       }
 
@@ -82,7 +82,7 @@ class VerifiedEmailActionSpec extends ControllerWithoutFormSpec with Injector wi
         val request = new AuthenticatedRequest(authenticatedRequest, user)
 
         whenReady(action.testRefine(request)) { result =>
-          result mustBe Left(Redirect(routes.UnverifiedEmailController.informUserUndeliverable))
+          result mustBe Left(Redirect(UnverifiedEmailController.informUserUndeliverable))
         }
       }
     }

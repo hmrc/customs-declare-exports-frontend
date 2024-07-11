@@ -17,7 +17,7 @@
 package forms.section2.consignor
 
 import forms.DeclarationPage
-import forms.MappingHelper.requiredRadio
+import forms.mappings.MappingHelper.requiredRadio
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.common.{Eori, YesNoAnswer}
 import models.DeclarationType.DeclarationType

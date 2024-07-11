@@ -17,8 +17,7 @@
 package forms.section6
 
 import base.TestHelper.createRandomAlphanumericString
-import forms.LightFormMatchers
-import forms.common.DeclarationPageBaseSpec
+import forms.common.{DeclarationPageBaseSpec, LightFormMatchers}
 import forms.section6.WarehouseIdentification.warehouseIdKey
 import forms.section6.WarehouseIdentificationSpec.{msgPrefix, warehouseId, warehouseTypeCode, warehouseTypeCodeInvalid}
 import play.api.libs.json.{JsObject, JsString}

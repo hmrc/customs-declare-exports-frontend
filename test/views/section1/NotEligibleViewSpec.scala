@@ -17,6 +17,7 @@
 package views.section1
 
 import base.Injector
+import controllers.general.routes.RootController
 import services.cache.ExportsTestHelper
 import tools.Stubs
 import views.html.section1.not_eligible
@@ -25,6 +26,7 @@ import views.tags.ViewTest
 
 @ViewTest
 class NotEligibleViewSpec extends UnitViewSpec with ExportsTestHelper with Stubs with Injector {
+
   private val page = instanceOf[not_eligible]
 
   private val view = page()(request, messages)
@@ -69,7 +71,7 @@ class NotEligibleViewSpec extends UnitViewSpec with ExportsTestHelper with Stubs
       val backButton = view.getElementById("back-link")
 
       backButton must containMessage("site.backToPreviousQuestion")
-      backButton must haveHref(controllers.routes.RootController.displayPage)
+      backButton must haveHref(RootController.displayPage)
     }
   }
 }

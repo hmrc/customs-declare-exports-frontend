@@ -17,6 +17,7 @@
 package controllers.actions
 
 import base.{RequestBuilder, UnitWithMocksSpec}
+import controllers.general.routes.RootController
 import models.requests.JourneyRequest
 import models.{DeclarationType, IdentityData, SignedInUser}
 import org.mockito.ArgumentCaptor
@@ -88,26 +89,22 @@ class TypedJourneyActionTest extends UnitWithMocksSpec with BeforeAndAfterEach w
     }
 
     "block request" when {
+      val redirect = Results.Redirect(RootController.displayPage)
+
       "id not found" in {
-        await(refiner(DeclarationType.STANDARD).invokeBlock(buildVerifiedEmailRequest(request(None), user), block)) mustBe Results.Redirect(
-          controllers.routes.RootController.displayPage
-        )
+        await(refiner(DeclarationType.STANDARD).invokeBlock(buildVerifiedEmailRequest(request(None), user), block)) mustBe redirect
       }
 
       "answers not found" in {
         given(cache.get(refEq("id"))(any[HeaderCarrier])).willReturn(Future.successful(None))
 
-        await(refiner(DeclarationType.STANDARD).invokeBlock(verifiedEmailReq, block)) mustBe Results.Redirect(
-          controllers.routes.RootController.displayPage
-        )
+        await(refiner(DeclarationType.STANDARD).invokeBlock(verifiedEmailReq, block)) mustBe redirect
       }
 
       "answers found of a different type" in {
         given(cache.get(refEq("id"))(any[HeaderCarrier])).willReturn(Future.successful(Some(declaration)))
 
-        await(refiner(DeclarationType.OCCASIONAL).invokeBlock(verifiedEmailReq, block)) mustBe Results.Redirect(
-          controllers.routes.RootController.displayPage
-        )
+        await(refiner(DeclarationType.OCCASIONAL).invokeBlock(verifiedEmailReq, block)) mustBe redirect
       }
     }
   }

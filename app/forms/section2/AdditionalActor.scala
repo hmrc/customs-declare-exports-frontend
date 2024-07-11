@@ -17,7 +17,7 @@
 package forms.section2
 
 import forms.DeclarationPage
-import forms.MappingHelper._
+import forms.mappings.MappingHelper._
 import forms.common.Eori
 import models.AmendmentRow.{forAddedValue, forRemovedValue, safeMessage}
 import models.DeclarationType.DeclarationType

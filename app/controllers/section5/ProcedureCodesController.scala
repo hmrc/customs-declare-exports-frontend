@@ -18,7 +18,7 @@ package controllers.section5
 
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.section5.routes.AdditionalProcedureCodesController
-import controllers.declaration.{ModelCacheable, SubmissionErrors}
+import controllers.general.{ModelCacheable, SubmissionErrors}
 import controllers.navigation.Navigator
 import forms.section5.procedurecodes.ProcedureCode
 import forms.section5.procedurecodes.ProcedureCode.{form, procedureCodeKey}

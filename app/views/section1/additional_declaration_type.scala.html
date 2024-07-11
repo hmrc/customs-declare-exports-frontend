@@ -15,11 +15,11 @@
  *@
 
 @import config.AppConfig
-@import controllers.declaration.routes.{DeclarationChoiceController, StandardOrOtherJourneyController}
+@import controllers.journey.routes.{OtherJourneyController, StandardOrOtherJourneyController}
 @import controllers.navigation.Navigator
 @import controllers.section1.routes.AdditionalDeclarationTypeController
-@import forms.section1.additionaldeclarationtype.AdditionalDeclarationTypePage
-@import forms.section1.additionaldeclarationtype.AdditionalDeclarationType.AdditionalDeclarationType
+@import forms.section1.AdditionalDeclarationTypePage
+@import forms.section1.AdditionalDeclarationType.AdditionalDeclarationType
 @import models.DeclarationType.{STANDARD, SUPPLEMENTARY}
 @import models.requests.JourneyRequest
 @import uk.gov.hmrc.govukfrontend.views.html.components._
@@ -57,7 +57,7 @@
 
 @previousPage = @{
     if (request.isType(STANDARD)) StandardOrOtherJourneyController.displayPage
-    else DeclarationChoiceController.displayPage
+    else OtherJourneyController.displayPage
 }
 
 @govukLayout(

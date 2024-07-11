@@ -16,7 +16,6 @@
 
 package controllers.navigation
 
-import controllers.declaration.routes._
 import controllers.helpers.AuthorisationHolderHelper.userCanLandOnIsAuthRequiredPage
 import controllers.helpers.TransportSectionHelper._
 import controllers.helpers.{InlandOrBorderHelper, SupervisingCustomsOfficeHelper, TransportSectionHelper}
@@ -26,7 +25,8 @@ import controllers.section3.routes._
 import controllers.section4.routes._
 import controllers.section5.routes._
 import controllers.section6.routes._
-import forms.Ducr.generateDucrPrefix
+import controllers.summary.routes.SectionSummaryController
+import forms.section1.Ducr.generateDucrPrefix
 import forms.section4.NatureOfTransaction
 import forms.section4.NatureOfTransaction.{BusinessPurchase, Sale}
 import forms.section5.CommodityDetails

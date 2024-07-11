@@ -17,20 +17,20 @@
 package views.section2
 
 import base.Injector
-import controllers.declaration.routes.SectionSummaryController
 import controllers.section1.routes.DeclarantDetailsController
 import controllers.section2.routes.EntryIntoDeclarantsRecordsController
+import controllers.summary.routes.SectionSummaryController
 import forms.common.YesNoAnswer.YesNoAnswers
-import forms.section2.DeclarantIsExporter.form
 import forms.section2.DeclarantIsExporter
+import forms.section2.DeclarantIsExporter.form
 import models.DeclarationType._
 import models.declaration.DeclarationStatus.AMENDMENT_DRAFT
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
+import views.common.PageWithButtonsSpec
 import views.components.gds.Styles
 import views.html.section2.declarant_exporter
-import views.common.PageWithButtonsSpec
 import views.tags.ViewTest
 
 @ViewTest

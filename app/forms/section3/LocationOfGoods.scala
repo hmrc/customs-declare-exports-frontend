@@ -18,7 +18,7 @@ package forms.section3
 
 import connectors.CodeListConnector
 import forms.DeclarationPage
-import forms.MappingHelper.requiredRadio
+import forms.mappings.MappingHelper.requiredRadio
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import models.DeclarationType.DeclarationType

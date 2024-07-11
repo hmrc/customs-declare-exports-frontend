@@ -18,8 +18,7 @@ package forms.section2.exporter
 
 import base.{JourneyTypeTestRunner, UnitSpec}
 import connectors.CodeListConnector
-import forms.LightFormMatchers
-import forms.common.DeclarationPageBaseSpec
+import forms.common.{DeclarationPageBaseSpec, LightFormMatchers}
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.section2.EntityDetailsSpec.emptyEntityDetailsJSON
 import forms.section2.EntityDetailsSpec

@@ -17,7 +17,8 @@
 package views.dashboard
 
 import config.PaginationConfig
-import controllers.routes.{DashboardController, DeclarationDetailsController}
+import controllers.routes.DashboardController
+import controllers.timeline.routes.DeclarationDetailsController
 import models.PageOfSubmissions
 import models.declaration.submissions.StatusGroup.{statusGroups, StatusGroup}
 import models.declaration.submissions.Submission

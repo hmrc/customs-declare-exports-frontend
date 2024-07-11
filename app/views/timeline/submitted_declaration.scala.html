@@ -1,0 +1,73 @@
+@*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import controllers.timeline.routes.DeclarationDetailsController
+@import models.ExportsDeclaration
+@import models.declaration.submissions.Submission
+@import views.helpers.{BackButton, Title}
+@import views.helpers.summary._
+@import views.html.components.buttons.print_page_button
+@import views.html.components.gds.{gdsMainTemplate, notificationBanner, pageTitle, paragraphBody}
+
+@this(
+    govukLayout: gdsMainTemplate,
+    pageTitle: pageTitle,
+    paragraphBody: paragraphBody,
+    card1ForReferences: Card1ForReferences,
+    card2ForParties: Card2ForParties,
+    card3ForRoutesAndLocations: Card3ForRoutesAndLocations,
+    card4ForTransactions: Card4ForTransactions,
+    card5ForItems: Card5ForItems,
+    card6ForTransport: Card6ForTransport,
+    notificationBanner: notificationBanner
+)
+
+@(submission: Submission, declaration: ExportsDeclaration)(implicit request: Request[_], messages: Messages)
+
+@backLink = @{ DeclarationDetailsController.displayPage(submission.uuid) }
+
+@govukLayout(
+    title = Title("declaration.summary.submitted-header"),
+    backButton = Some(BackButton(messages("site.back"), backLink)),
+    useCustomContentWidth = true,
+    showDeclarationSummaryLink = false
+) {
+
+    @notificationBanner(
+        title = messages("declaration.summary.banner.title"),
+        content = Html(messages("declaration.summary.banner.body"))
+    )
+
+    @pageTitle(messages("declaration.summary.submitted-header"))
+
+    @paragraphBody(messages("site.printable"), "govuk-body govuk-!-display-none-print")
+
+    @print_page_button(marginBottom = 4)
+
+    @card1ForReferences.eval(declaration, false, false, Some(submission))
+
+    @card2ForParties.eval(declaration, false)
+
+    @card3ForRoutesAndLocations.eval(declaration, false)
+
+    @card4ForTransactions.eval(declaration, false)
+
+    @card5ForItems.eval(declaration, false)
+
+    @card6ForTransport.eval(declaration, false)
+
+    @print_page_button(marginTop = 9, marginBottom = 1)
+}

@@ -17,12 +17,11 @@
 package models.declaration
 
 import base.ExportsTestData.eori
-import forms.Lrn
 import forms.common.YesNoAnswer.Yes
 import forms.common.{Country, Date, Eori}
 import forms.section1.ConsignmentReferencesSpec._
-import forms.section1.DeclarantDetails
-import forms.section1.additionaldeclarationtype.AdditionalDeclarationType.SUPPLEMENTARY_SIMPLIFIED
+import forms.section1.{DeclarantDetails, Lrn}
+import forms.section1.AdditionalDeclarationType.SUPPLEMENTARY_SIMPLIFIED
 import forms.section2.AdditionalActorsSpec._
 import forms.section2.authorisationHolder.AuthorisationHolder
 import forms.section2.carrier.CarrierDetails

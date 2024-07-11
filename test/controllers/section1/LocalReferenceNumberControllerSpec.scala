@@ -19,7 +19,7 @@ package controllers.section1
 import base.{AuditedControllerSpec, ControllerSpec}
 import controllers.actions.AmendmentDraftFilterSpec
 import controllers.section1.routes.LinkDucrToMucrController
-import forms.{Lrn, LrnValidator}
+import forms.section1.{Lrn, LrnValidator}
 import models.DeclarationType._
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any

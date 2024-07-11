@@ -18,10 +18,11 @@ package controllers.section1
 
 import base.{AuditedControllerSpec, ControllerSpec}
 import controllers.actions.AmendmentDraftFilterSpec
+import controllers.general.routes.RootController
 import controllers.section1.routes.DucrEntryController
-import forms.Ducr
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
+import forms.section1.Ducr
 import forms.section1.ConsignmentReferences
 import models.DeclarationType.{allDeclarationTypesExcluding, SUPPLEMENTARY}
 import org.mockito.ArgumentCaptor
@@ -141,7 +142,7 @@ class ConfirmDucrControllerSpec extends ControllerSpec with AuditedControllerSpe
         val result = controller.displayPage(getJourneyRequest())
 
         status(result) mustBe 303
-        redirectLocation(result) mustBe Some(controllers.routes.RootController.displayPage.url)
+        redirectLocation(result) mustBe Some(RootController.displayPage.url)
       }
     }
   }

@@ -16,7 +16,6 @@
 
 package controllers.navigation
 
-import controllers.declaration.routes._
 import controllers.routes.ChoiceController
 import controllers.section1.routes._
 import controllers.section2.routes._
@@ -24,9 +23,9 @@ import controllers.section3.routes.RoutingCountriesController
 import controllers.section4.routes.{InvoiceAndExchangeRateChoiceController, PreviousDocumentsSummaryController}
 import controllers.section5.routes._
 import controllers.section6.routes.{ExpressConsignmentController, TransportLeavingTheBorderController}
+import controllers.summary.routes.SectionSummaryController
 import forms.common.Countries.{DestinationCountryPage, RoutingCountryPage}
-import forms.declaration._
-import forms.section1.{ConfirmDucr, Mucr, TraderReference}
+import forms.section1.{ConfirmDucr, Ducr, Lrn, Mucr, TraderReference}
 import forms.section2.authorisationHolder.{AuthorisationHolder, AuthorisationHolderRequired, AuthorisationHolderSummary}
 import forms.section2.carrier.CarrierDetails
 import forms.section2.representative.{RepresentativeEntity, RepresentativeStatus}
@@ -37,7 +36,8 @@ import forms.section5.commodityMeasure.SupplementaryUnits
 import forms.section5.procedurecodes.{AdditionalProcedureCode, ProcedureCode}
 import forms.section5._
 import forms.section6.{SupervisingCustomsOffice, TransportLeavingTheBorder, TransportPayment, WarehouseIdentification}
-import forms.{DeclarationPage, Ducr, Lrn}
+import forms.DeclarationPage
+import forms.journey.JourneySelection
 import models.ExportsDeclaration
 import models.declaration.ExportItem
 import models.requests.JourneyRequest
@@ -47,7 +47,7 @@ import views.helpers.summary.Card2ForParties
 trait CommonNavigator extends CacheDependentNavigators {
 
   val common: PartialFunction[DeclarationPage, Call] = {
-    case DeclarationChoice            => ChoiceController.displayPage
+    case JourneySelection             => ChoiceController.displayPage
     case Mucr                         => LinkDucrToMucrController.displayPage
     case RepresentativeEntity         => RepresentativeAgentController.displayPage
     case RepresentativeStatus         => RepresentativeEntityController.displayPage

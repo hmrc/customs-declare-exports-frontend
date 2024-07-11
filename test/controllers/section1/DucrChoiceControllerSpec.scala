@@ -19,7 +19,7 @@ package controllers.section1
 import base.{AuditedControllerSpec, ControllerSpec}
 import controllers.actions.AmendmentDraftFilterSpec
 import controllers.section1.routes.{DucrEntryController, TraderReferenceController}
-import controllers.routes.RootController
+import controllers.general.routes.RootController
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import models.DeclarationType._

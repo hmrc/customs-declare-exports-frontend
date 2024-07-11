@@ -21,7 +21,7 @@ import base.Injector
 import forms.common.Eori
 import forms.common.YesNoAnswer._
 import forms.section2.AuthorisationProcedureCodeChoice._
-import forms.section1.additionaldeclarationtype.AdditionalDeclarationType._
+import forms.section1.AdditionalDeclarationType._
 import forms.section2.AuthorisationProcedureCodeChoice
 import forms.section2.authorisationHolder.AuthorisationHolder
 import models.DeclarationType._

@@ -16,12 +16,12 @@
 
 package controllers.navigation
 
-import controllers.declaration.routes._
 import controllers.section1.routes._
 import controllers.section2.routes._
 import controllers.section3.routes.{DestinationCountryController, RoutingCountriesController}
 import controllers.section5.routes._
 import controllers.section6.routes.ContainerController
+import controllers.summary.routes.SectionSummaryController
 import forms.DeclarationPage
 import forms.section1.{ConsignmentReferences, DeclarantDetails, DucrChoice, LinkDucrToMucr}
 import forms.section2._

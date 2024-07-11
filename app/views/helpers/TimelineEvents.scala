@@ -17,10 +17,10 @@
 package views.helpers
 
 import config.featureFlags.{DeclarationAmendmentsConfig, SfusConfig}
-import controllers.declaration.amendments.routes.AmendmentDetailsController
-import controllers.declaration.routes.SubmissionController
-import controllers.routes.RejectedNotificationsController
-import forms.section1.additionaldeclarationtype.AdditionalDeclarationType.{AdditionalDeclarationType, SUPPLEMENTARY_SIMPLIFIED}
+import controllers.amendments.routes.AmendmentDetailsController
+import controllers.summary.routes.SubmissionController
+import controllers.timeline.routes.RejectedNotificationsController
+import forms.section1.AdditionalDeclarationType.{AdditionalDeclarationType, SUPPLEMENTARY_SIMPLIFIED}
 import models.declaration.submissions.EnhancedStatus._
 import models.declaration.submissions.RequestType._
 import models.declaration.submissions.{Action, NotificationSummary, RequestType, Submission}

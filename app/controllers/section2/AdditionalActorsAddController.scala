@@ -17,11 +17,11 @@
 package controllers.section2
 
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.declaration.{ModelCacheable, SubmissionErrors}
+import controllers.general.{ModelCacheable, SubmissionErrors}
 import controllers.helpers.MultipleItemsHelper
 import controllers.navigation.Navigator
 import controllers.section2.routes.{AdditionalActorsSummaryController, AuthorisationProcedureCodeChoiceController}
-import forms.NoneOfTheAbove
+import forms.mappings.NoneOfTheAbove
 import forms.section2.AdditionalActor.{additionalActorsFormGroupId, form}
 import forms.section2.AdditionalActor
 import models.DeclarationType._

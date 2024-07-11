@@ -18,7 +18,7 @@ package controllers.section2
 
 import base.{AuditedControllerSpec, ControllerSpec}
 import connectors.CodeListConnector
-import controllers.routes.RootController
+import controllers.general.routes.RootController
 import controllers.section2.routes.ThirdPartyGoodsTransportationController
 import forms.common.Address
 import forms.section2.EntityDetails

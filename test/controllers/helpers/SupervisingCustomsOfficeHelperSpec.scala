@@ -20,7 +20,7 @@ import base.ExportsTestData.modifierForPC1040
 import base.{JourneyTypeTestRunner, MockAuthAction, MockExportCacheService, UnitSpec}
 import controllers.helpers.TransportSectionHelper._
 import controllers.section6.routes._
-import forms.section1.additionaldeclarationtype.AdditionalDeclarationType.SUPPLEMENTARY_EIDR
+import forms.section1.AdditionalDeclarationType.SUPPLEMENTARY_EIDR
 import models.DeclarationType.CLEARANCE
 import services.cache.{ExportsDeclarationBuilder, ExportsItemBuilder}
 

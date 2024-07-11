@@ -17,9 +17,9 @@
 package controllers.section5
 
 import base.ControllerWithoutFormSpec
-import controllers.declaration.routes.SectionSummaryController
 import controllers.helpers.SequenceIdHelper.valueOfEso
 import controllers.section5.routes.{ItemsSummaryController, ProcedureCodesController}
+import controllers.summary.routes.SectionSummaryController
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import models.DeclarationType.CLEARANCE

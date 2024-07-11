@@ -17,7 +17,7 @@
 package forms.section6
 
 import forms.DeclarationPage
-import forms.MappingHelper.requiredRadio
+import forms.mappings.MappingHelper.requiredRadio
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.section6.WarehouseIdentification.keyForAmend
 import models.AmendmentRow.{forAddedValue, forAmendedValue, forRemovedValue}

@@ -19,7 +19,7 @@ package views.helpers
 import config.AppConfig
 import forms.common.YesNoAnswer.{No, Yes}
 import forms.section2.AuthorisationProcedureCodeChoice.{Choice1007, Choice1040, ChoiceOthers}
-import forms.section1.additionaldeclarationtype.AdditionalDeclarationType._
+import forms.section1.AdditionalDeclarationType._
 import models.DeclarationType._
 import models.ExportsDeclaration
 import models.declaration.Parties

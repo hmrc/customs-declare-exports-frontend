@@ -15,6 +15,7 @@
  *@
 
 @import config.AppConfig
+@import controllers.general.routes.RootController
 @import models.requests.JourneyRequest
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.html.components.gds._
@@ -36,12 +37,12 @@
 
 @govukLayout(
     title = Title("notDeclarent.title"),
-    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), controllers.routes.RootController.displayPage))
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), RootController.displayPage))
 ) {
     @pageTitle(messages("notDeclarent.title"))
 
     <p class="govuk-body">
-      @Html(messages("notDeclarent.paragraph1", link(text = messages("notDeclarent.paragraph1Link"), call = Call("GET", controllers.routes.RootController.displayPage.url))))
+      @Html(messages("notDeclarent.paragraph1", link(text = messages("notDeclarent.paragraph1Link"), call = Call("GET", RootController.displayPage.url))))
     </p>
 
     <p class="govuk-body">

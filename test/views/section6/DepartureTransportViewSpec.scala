@@ -20,7 +20,7 @@ import base.ExportsTestData.itemWithPC
 import base.{Injector, MockTransportCodeService}
 import controllers.helpers.TransportSectionHelper._
 import controllers.section6.routes._
-import forms.section1.additionaldeclarationtype.AdditionalDeclarationType._
+import forms.section1.AdditionalDeclarationType._
 import forms.section6.DepartureTransport.form
 import forms.section6.InlandOrBorder.{Border, Inland}
 import forms.section6.ModeOfTransportCode.{RoRo, Road}

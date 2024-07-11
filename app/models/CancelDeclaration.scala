@@ -16,7 +16,7 @@
 
 package models
 
-import forms.Lrn
+import forms.section1.Lrn
 import play.api.libs.json.{Json, OFormat}
 
 case class CancelDeclaration(submissionId: String, functionalReferenceId: Lrn, mrn: String, statementDescription: String, changeReason: String)

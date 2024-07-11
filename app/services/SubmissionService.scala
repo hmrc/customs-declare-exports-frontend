@@ -18,10 +18,11 @@ package services
 
 import com.google.inject.Inject
 import connectors.CustomsDeclareExportsConnector
-import forms.declaration.{AmendmentSubmission, LegalDeclaration}
+import forms.summary.LegalDeclaration
 import metrics.ExportsMetrics
 import metrics.MetricIdentifiers.{submissionAmendmentMetric, submissionMetric}
-import forms.section1.additionaldeclarationtype.AdditionalDeclarationType.AdditionalDeclarationType
+import forms.section1.AdditionalDeclarationType.AdditionalDeclarationType
+import forms.timeline.AmendmentSubmission
 import models.ExportsDeclaration
 import models.declaration.DeclarationStatus.DeclarationStatus
 import models.declaration.submissions.{Submission, SubmissionAmendment}

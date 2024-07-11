@@ -2645,30 +2645,7 @@ ead.template.previousDocuments = Dogfennau Blaenorol
 ead.template.createdDateTime = Crëwyd
 ead.template.versionId = Dynodydd y Fersiwn
 
-guidance.subHeading = Arweiniad
-
-guidance.entry.title = Mae’n rhaid i chi ddatgan y nwyddau cyn iddynt adael Prydain Fawr.
-guidance.entry.section.1.paragraph.1 = Mae’n rhaid i chi ddatgan y nwyddau cyn iddynt gyrraedd y porthladd neu’r lleoliad ble maent yn gadael Prydain Fawr.
-guidance.entry.section.1.paragraph.2 = Gallwch {0}, fel trefnydd anfon nwyddau, asiant tollau, neu drwy ddefnyddio’r Post Brenhinol neu gwmni cludo.
-guidance.entry.section.1.paragraph.2.link.1 = cael rhywun i ddelio â datganiadau tollau ar eich rhan
-guidance.entry.section.1.paragraph.3 = Mae rheolau gwahanol os yw’r canlynol yn wir:
-guidance.entry.section.1.paragraph.4 = Rhagor o wybodaeth am {0}.
-guidance.entry.section.1.paragraph.4.link.1 = datganiadau o allforion o’r DU drwy ddefnyddio gyrru-ymlaen-ac-i-ffwrdd (RoRo)
-guidance.entry.section.1.list.1.bullet.1 = {0}
-guidance.entry.section.1.list.1.bullet.1.link = mynd â nwyddau yn eich bagiau, car neu fan i’w defnyddio yn eich busnes neu i’w gwerthu
-guidance.entry.section.1.list.1.bullet.2 = {0}
-guidance.entry.section.1.list.1.bullet.2.link = allforio nwyddau drwy’r post
-
-guidance.entry.section.2.header.1 = Gwneud y datganiad eich hun
-guidance.entry.section.2.paragraph.1 = Gwneud datganiad ar y system Gwasanaeth Datganiadau Tollau (CDS) newydd
-guidance.entry.section.2.paragraph.2 = Os nad ydych wedi gwneud datganiadau allforio o’r blaen neu os ydych yn symud o’r platfform NESWEB, mae angen i chi gael mynediad at CDS yn gyntaf. Yna, gallwch wneud un (neu’r ddau) o’r canlynol:
-guidance.entry.section.2.paragraph.3 = Os oes angen i chi gael mynediad at y gwasanaeth datganiadau allforio ar gyfer pobl eraill yn eich busnes, gallwch {0}.
-guidance.entry.section.2.paragraph.3.link = ychwanegu aelodau’r tîm er mwyn iddynt ddefnyddio’r gwasanaeth
-guidance.entry.section.2.list.1.bullet.1 = dechrau defnyddio {0} rhad ac am ddim CThEF
-guidance.entry.section.2.list.1.bullet.1.link = Gwasanaeth datganiadau allforio CDS
-guidance.entry.section.2.list.1.bullet.2 = prynu {0}
-guidance.entry.section.2.list.1.bullet.2.link = meddalwedd a all gyflwyno datganiadau CDS
-
+guidance.roro.heading = Arweiniad
 guidance.roro.title = Anfon nwyddau i’w hallforio o borthladdoedd gyrru-ymlaen-ac-i-ffwrdd neu drwy Eurotunnel
 guidance.roro.intro = Darganfyddwch beth i’w wneud os ydych yn defnyddio gyrru-ymlaen-ac-i-ffwrdd (RoRo) gan gynnwys Eurotunnel i allforio cludiant ffordd, llwythi ar y rheilffordd neu lwythi ar eu pennau eu hunain o’r DU i wledydd eraill.
 
@@ -2718,79 +2695,3 @@ guidance.roro.section.5.paragraph.2 = Gall nwyddau a ddaeth i mewn i’r DU o da
 guidance.roro.section.6.header = Dogfennau fel prawf o ymadael
 guidance.roro.section.6.paragraph.1 = Cyn belled â bod statws eich datganiad yn dangos fel un sydd ‘Wedi’i glirio’, gallwch fod yn fodlon y bydd CThEF yn cymryd bod eich nwyddau wedi ymadael.
 guidance.roro.section.6.paragraph.2 = Mae dal angen i chi gadw tystiolaeth fasnachol o’r allforio megis tocynnau ar gyfer y daith, a phrawf o fewnforio. Nid oes angen darparu’r dogfennau hyn i’r Ganolfan Clirio Genedlaethol ar gyfer gwiriadau dogfennol ond efallai y bydd CThEF yn gofyn am gael gweld prawf o ymadael.
-
-guidance.completeDeclaration.title = Cwblhau datganiad allforio ar-lein drwy ddefnyddio’r Gwasanaeth Datganiadau Tollau
-guidance.completeDeclaration.intro = Dysgwch pa wybodaeth sydd ei hangen arnoch i lenwi datganiad allforio ar-lein gan ddefnyddio’r Gwasanaeth Datganiadau Tollau.
-
-guidance.completeDeclaration.section.1.header = Symud o wasanaeth NES presennol
-guidance.completeDeclaration.section.1.paragraph.1 = Mae angen i ddefnyddwyr NESWEB, sydd ar hyn o bryd yn gwneud datganiadau allforio ar CHIEF, ddysgu am y gwahanol godau a gofynion ar gyfer y Gwasanaeth Datganiadau Tollau (CDS). Mae ‘rhifau’r bylchau’ ar CHIEF yn cael eu disodli gan ‘elfennau data’ ar CDS.
-guidance.completeDeclaration.section.1.paragraph.2 = Bydd y gwasanaeth ar-lein yn gofyn gyntaf am wybodaeth sy’n berthnasol i’r datganiad cyfan, cyn gofyn am wybodaeth am y nwyddau sy’n cael eu datgan.
-
-guidance.completeDeclaration.section.2.header = Elfennau data sy’n berthnasol i’r datganiad cyfan
-guidance.completeDeclaration.section.2.paragraph.1 = Mae pob  Elfen Ddata wedi’i rhestru yn y {0}. Rhoddir manylion am bob  Elfen Ddata mewn cysylltiad ar waelod tudalen berthnasol y gwasanaeth ar-lein.
-guidance.completeDeclaration.section.2.paragraph.1.link.1 = canllaw cwblhau tariff CDS
-guidance.completeDeclaration.section.2.paragraph.2 = Gelwir elfennau data sy’n berthnasol i’r datganiad cyfan yn elfennau data ‘lefel y pennyn’. Mae hyn yn cynnwys pethau fel y canlynol:
-guidance.completeDeclaration.section.2.list.1.bullet.1 = rhif EORI neu gyfeiriad busnes cofrestredig ar gyfer pobl sy’n ymwneud â’r broses, er enghraifft:
-guidance.completeDeclaration.section.2.list.1.bullet.2 = cyfeirnod dynodi’r datganiad – Cyfeirnod Unigryw y Llwyth ar gyfer Datganiad (DUCR)
-guidance.completeDeclaration.section.2.list.1.bullet.3 = mathau o awdurdodiadau sydd gennych
-guidance.completeDeclaration.section.2.list.1.bullet.4 = gwledydd lle bydd y nwyddau’n dechrau, yn gorffen, ac yn teithio drwyddynt
-guidance.completeDeclaration.section.2.list.1.bullet.5 = lleoliad y tollau lle bydd eich nwyddau’n cael eu datgan (y swyddfa allforio)
-guidance.completeDeclaration.section.2.list.1.bullet.6 = y porthladd neu’r maes awyr lle bydd y nwyddau’n gadael y DU
-guidance.completeDeclaration.section.2.list.1.bullet.7 = gwerth yr anfoneb yn llawn, mewn punnoedd neu mewn arian cyfred gwlad y tu allan i’r DU, ar gyfer yr holl nwyddau lle mai cyfanswm y gwerth yw £100,000 neu fwy (nid oes angen swm ar gyfer gwerthoedd is)
-guidance.completeDeclaration.section.2.list.2.bullet.1 = y person sy’n gwneud y datganiad
-guidance.completeDeclaration.section.2.list.2.bullet.2 = y cludwr – anfonwr nwyddau, cwmni hedfan neu dywysydd nwyddau
-guidance.completeDeclaration.section.2.list.2.bullet.3 = Cydgrynhowr
-guidance.completeDeclaration.section.2.list.2.bullet.4 = Ceidwad warws
-
-guidance.completeDeclaration.section.3.header = Elfennau data sy’n berthnasol i’r nwyddau unigol
-guidance.completeDeclaration.section.3.paragraph.1 = Gelwir elfennau data sy’n berthnasol i’r nwyddau a gwmpesir gan y datganiad yn elfennau data ‘lefel yr eitem’. Mae pob eitem yn cael ei adnabod gan y cod nwyddau a’r weithdrefn allforio rydych chi’n ei defnyddio ar gyfer yr eitem honno.
-guidance.completeDeclaration.section.3.sub.1 = Cod nwyddau
-guidance.completeDeclaration.section.3.sub.1.paragraph.1 = Mae angen i chi {0} cyn i chi ddechrau’ch datganiad.
-guidance.completeDeclaration.section.3.sub.1.paragraph.1.link.1 = ddod o hyd i’r cod nwyddau cywir ar gyfer eich nwyddau
-guidance.completeDeclaration.section.3.sub.2 = Cod gweithdrefn
-guidance.completeDeclaration.section.3.sub.2.paragraph.1 = Nid yw codau gweithdrefn y Gwasanaeth Datganiadau Tollau yr un fath â chodau gweithdrefn y tollau (CPCs) ar y system CHIEF.
-guidance.completeDeclaration.section.3.sub.2.paragraph.2 = Mae’r weithdrefn allforio safonol ar y Gwasanaeth Datganiadau Tollau yn defnyddio’r cod gweithdrefn 1040 ar gyfer allforio nwyddau’n barhaol, os yw’r nwyddau naill ai:
-guidance.completeDeclaration.section.3.sub.2.list.1.bullet.1 = wedi’u cynhyrchu yn y DU
-guidance.completeDeclaration.section.3.sub.2.list.1.bullet.2 = mewn cylchrediad rhydd
-guidance.completeDeclaration.section.3.sub.2.list.1.bullet.3 = wedi’u mewnforio, ond nid yw bellach o dan weithdrefn arbennig y tollau
-guidance.completeDeclaration.section.3.sub.3 = Cod ychwanegol cenedlaethol
-guidance.completeDeclaration.section.3.sub.3.paragraph.1 = Mae codau ychwanegol cenedlaethol yn godau 4 o gymeriadau a all fod yn berthnasol i god nwyddau – maent yn cynnwys o leiaf un llythyren.
-guidance.completeDeclaration.section.3.sub.3.paragraph.2 = Gallwch ddod o hyd i’r cod ychwanegol cenedlaethol drwy {0}.
-guidance.completeDeclaration.section.3.sub.3.paragraph.2.link.1 = ddod o hyd i’r cod nwyddau cywir ar gyfer eich nwyddau
-guidance.completeDeclaration.section.3.sub.3.paragraph.3 = Defnyddiwch god ychwanegol cenedlaethol i nodi statws TAW yr allforyn, er enghraifft VATZ i ddangos bod y nwyddau ar gyfradd sero. Yna, gallwch ddefnyddio’r datganiad fel tystiolaeth o allforio pan fyddwch yn hawlio’r gyfradd TAW, cyn belled â’i fod yn dangos y neges ymadael, ‘Nwyddau wedi gadael y DU / Goods have exited the UK’.
-guidance.completeDeclaration.section.3.sub.3.paragraph.4 = Mae’r {0} yn atodiad 1 o’r Tariff CDS yn esbonio defnydd y cod. Ar gyfer gweithdrefnau allforio eraill, gweler yr adran berthnasol yn atodiad 1. Am arweiniad llawn, gweler {1}.
-guidance.completeDeclaration.section.3.sub.3.paragraph.4.link.1 = adran ar gyfradd TAW ar gyfer gweithdrefn allforio safonol
-guidance.completeDeclaration.section.3.sub.3.paragraph.4.link.2 = TAW ar nwyddau a allforiwyd o’r DU (Hysbysiad TAW 703)
-guidance.completeDeclaration.section.3.sub.4 = Unedau atodol
-guidance.completeDeclaration.section.3.sub.4.paragraph.1 = Mae uned atodol yn fesuriad a nodir gan y cod nwyddau, er enghraifft, ar gyfer wisgi brag sengl, bydd litrau sy’n cynnwys 100% alcohol yn cael eu nodi.
-guidance.completeDeclaration.section.3.sub.4.paragraph.2 = Gweler {0} am enghraifft o uned atodol ofynnol (litrau o alcohol pur (100 y cant)).
-guidance.completeDeclaration.section.3.sub.4.paragraph.2.link.1 = cod nwyddau 2208303000
-guidance.completeDeclaration.section.3.sub.4.paragraph.3 = Os oes gan y cod nwyddau uned atodol, mae’n rhaid i chi nodi mewn ffigurau y swm yr ydych yn ei allforio wedi’i fesur yn yr uned honno.
-guidance.completeDeclaration.section.3.sub.5 = Codau datganiad Gwybodaeth Ychwanegol
-guidance.completeDeclaration.section.3.sub.5.paragraph.1 = Gallwch weld yr holl godau datganiad a beth yw eu pwrpas yn y {0}.
-guidance.completeDeclaration.section.3.sub.5.paragraph.1.link.1 = rhestr o godau datganiad Gwybodaeth Ychwanegol
-guidance.completeDeclaration.section.3.sub.5.paragraph.2 = Os ydych chi’n symud paledi a chynwysyddion gallwch {0}.
-guidance.completeDeclaration.section.3.sub.5.paragraph.2.link.1 = ddod o hyd i ragor o wybodaeth am y codau Gwybodaeth Ychwanegol y byddai eu hangen arnoch ar gyfer hyn
-guidance.completeDeclaration.section.3.sub.6 = Dogfennaeth ychwanegol
-guidance.completeDeclaration.section.3.sub.6.paragraph.1 = Mae angen i chi nodi cod dogfen ar gyfer pob dogfen ychwanegol a ddarperir gennych. Mae hyn yn rhoi gwybod i CThEF pa ddogfen sydd dan sylw. Mae’r codau hyn i gyd yn godau 4 o gymeriadau ac maent wedi’u rhestru yn atodiad 5A. Mae dwy restr i’w cael:
-guidance.completeDeclaration.section.3.sub.6.list.1.bullet.1 = {0} – mae’r rhain yn dechrau gyda llythyren
-guidance.completeDeclaration.section.3.sub.6.list.1.bullet.1.link.1 = Codau dogfennau’r Undeb
-guidance.completeDeclaration.section.3.sub.6.list.1.bullet.2 = {0} – mae’r rhain yn dechrau gyda rhif
-guidance.completeDeclaration.section.3.sub.6.list.1.bullet.2.link.1 = Codau dogfennau cenedlaethol
-guidance.completeDeclaration.section.3.sub.6.paragraph.2 = Os oes gennych drwydded, bydd cyhoeddwr y drwydded wedi rhoi cod y ddogfen a dynodydd y ddogfen (rhif y drwydded) sydd eu hangen arnoch.
-guidance.completeDeclaration.section.3.sub.6.paragraph.3 = Os hoffech ddatgan ildiad neu eithriad ar gyfer trwydded, bydd yr ildiadau neu eithriadau a ganiateir wedi’u rhestru yn y Tariff ar y dudalen ar gyfer eich cod nwyddau. Mae angen i chi ddewis y tab, ‘Allforio’, ac agor y ddolen, ‘Amodau’, a bydd yn dangos y drwydded ofynnol ac unrhyw eithriadau neu ildiadau a ganiateir. Wrth nodi ildiad, nodwch y cod 4 o gymeriadau, ac yna yn ‘Rheswm’, rhowch y datganiad o reswm, a roddir yng ngholofn 4 o’r tabl codau dogfennau, ynghyd â chyfarwyddiadau penodol eraill.
-guidance.completeDeclaration.section.3.sub.6.paragraph.4 = Er enghraifft, mae {0} yn gofyn am dystysgrif C673, neu eithriad Y927.
-guidance.completeDeclaration.section.3.sub.6.paragraph.4.link.1 = cod nwyddau 0306310010
-guidance.completeDeclaration.section.3.sub.6.paragraph.5 = Os oes angen trwydded neu eithriad ar eich nwyddau ac nad ydych yn ei ddatgan, yna fe welwch y cod gwall CDS40045, sef dogfen ar goll, pan fyddwch yn cyflwyno’ch datganiad.
-
-guidance.completeDeclaration.section.4.header = Dogfennaeth ategol
-guidance.completeDeclaration.section.4.paragraph.1 = Gall awdurdodau’r tollau ofyn am ddogfennau ategol sy’n dangos tystiolaeth o werth y nwyddau yn y llwyth, neu o gynnwys y nwyddau.
-guidance.completeDeclaration.section.4.paragraph.2 = Nid oes angen i chi uwchlwytho dogfennau gyda’ch datganiad, ond mae’n rhaid iddynt fod yn barod gennych i’w cyflwyno i awdurdodau’r tollau. Os oes angen dogfennau, byddwch yn cael hysbysiad bod eich nwyddau yn mynd i mewn i reolaeth ddogfennol neu ffisegol, a bod CThEF am archwilio eich dogfennau.
-guidance.completeDeclaration.section.4.paragraph.3 = I gyflwyno dogfennau i’r tollau, mae angen i chi ddefnyddio’r gwasanaeth newydd ar gyfer uwchlwytho dogfennau a chael negeseuon ar gyfer y Gwasanaeth Datganiadau Tollau. Dysgwch ragor ynghylch {0}.
-guidance.completeDeclaration.section.4.paragraph.3.link.1 = clirio nwyddau sy’n dod i mewn, sy’n gadael neu sy’n teithio drwy’r DU
-
-guidance.completeDeclaration.section.5.header = Cymorth pellach
-guidance.completeDeclaration.section.5.paragraph.1 = Ceir rhagor o wybodaeth am ba {0}. Mae hyn yn cynnwys ym mha flychau y byddai’r wybodaeth wedi’i chynnwys os ydych chi wedi defnyddio CHIEF i wneud eich datganiadau yn y gorffennol.
-guidance.completeDeclaration.section.5.paragraph.1.link.1 = elfennau data y mae angen i chi eu nodi ar gyfer pob math o ddatganiad
-guidance.completeDeclaration.section.5.paragraph.2 = Yn ogystal, gallwch ddod o hyd i wybodaeth am {0}.
-guidance.completeDeclaration.section.5.paragraph.2.link.1 = weithdrefnau arbennig

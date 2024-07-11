@@ -18,7 +18,7 @@ package controllers.section5
 
 import base.{AuditedControllerSpec, ControllerSpec}
 import controllers.helpers.MultipleItemsHelper
-import controllers.routes.RootController
+import controllers.general.routes.RootController
 import controllers.section5.routes.PackageInformationSummaryController
 import forms.section5.StatisticalValue
 import models.DeclarationType._

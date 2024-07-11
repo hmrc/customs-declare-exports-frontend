@@ -16,10 +16,11 @@
 
 package forms.section4
 
-import forms.MappingHelper.requiredRadio
+import forms.mappings.MappingHelper.requiredRadio
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
-import forms.{AdditionalConstraintsMapping, ConditionalConstraint, DeclarationPage}
+import forms.mappings.{AdditionalConstraintsMapping, ConditionalConstraint}
+import forms.DeclarationPage
 import models.DeclarationType.DeclarationType
 import models.declaration.InvoiceAndPackageTotals
 import models.viewmodels.TariffContentKey

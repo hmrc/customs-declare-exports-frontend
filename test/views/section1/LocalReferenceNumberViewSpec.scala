@@ -19,9 +19,9 @@ package views.section1
 import base.ExportsTestData._
 import base.{Injector, TestHelper}
 import controllers.section1.routes.{ConfirmDucrController, DucrEntryController}
-import forms.Ducr.generateDucrPrefix
-import forms.Lrn
-import forms.Lrn.form
+import forms.section1.Ducr.generateDucrPrefix
+import forms.section1.Lrn.form
+import forms.section1.Lrn
 import models.DeclarationType._
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document

@@ -16,6 +16,7 @@
 
 package models.requests
 
+import forms.section1.Lrn
 import play.api.Logging
 import play.api.mvc.{Request, Session}
 
@@ -42,4 +43,15 @@ object SessionHelper extends Logging {
 
   def print(implicit request: Request[_]): Unit =
     logger.debug(s"\n======\n${request.session.data.toList.sortBy(_._1).map(t => s"${t._1} -> ${t._2}").mkString("\n")}\n======\n")
+
+  def getDataForCancelDeclaration(implicit request: Request[_]): Option[CancelDeclarationData] =
+    for {
+      submissionId <- getValue(submissionUuid)
+      mrn <- getValue(submissionMrn)
+      lrn <- getValue(submissionLrn).map(Lrn(_))
+      ducr <- getValue(submissionDucr)
+    } yield CancelDeclarationData(submissionId, mrn, lrn, ducr)
+
 }
+
+case class CancelDeclarationData(submissionId: String, mrn: String, lrn: Lrn, ducr: String)

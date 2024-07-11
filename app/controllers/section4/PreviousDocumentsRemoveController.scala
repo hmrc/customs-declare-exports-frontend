@@ -17,7 +17,7 @@
 package controllers.section4
 
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.declaration.ModelCacheable
+import controllers.general.ModelCacheable
 import controllers.helpers.MultipleItemsHelper
 import controllers.navigation.Navigator
 import controllers.section4.routes.PreviousDocumentsSummaryController

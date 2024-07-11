@@ -17,7 +17,7 @@
 package controllers.section4
 
 import base.{AuditedControllerSpec, ControllerSpec}
-import controllers.routes.RootController
+import controllers.general.routes.RootController
 import controllers.section4.routes.{InvoiceAndExchangeRateController, TotalPackageQuantityController}
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers

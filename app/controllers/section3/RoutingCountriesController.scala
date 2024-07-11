@@ -18,7 +18,7 @@ package controllers.section3
 
 import connectors.CodeListConnector
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.declaration.{ModelCacheable, SubmissionErrors}
+import controllers.general.{ModelCacheable, SubmissionErrors}
 import controllers.section3.routes.{LocationOfGoodsController, RoutingCountriesController}
 import controllers.helpers._
 import controllers.helpers.SequenceIdHelper.handleSequencing

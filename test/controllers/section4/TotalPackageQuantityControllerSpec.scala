@@ -18,7 +18,7 @@ package controllers.section4
 
 import base.{AuditedControllerSpec, ControllerSpec}
 import controllers.helpers.TransportSectionHelper.{Guernsey, Jersey}
-import controllers.routes.RootController
+import controllers.general.routes.RootController
 import controllers.section4.routes.NatureOfTransactionController
 import forms.common.Country
 import forms.section4.TotalPackageQuantity

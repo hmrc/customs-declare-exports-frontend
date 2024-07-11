@@ -16,8 +16,8 @@
 
 package views.helpers.summary
 
-import controllers.declaration.routes.SummaryController
 import controllers.section6.routes._
+import controllers.summary.routes.SummaryController
 import forms.section6.ModeOfTransportCode.Empty
 import models.ExportsDeclaration
 import models.declaration.{Container, Locations, Transport}

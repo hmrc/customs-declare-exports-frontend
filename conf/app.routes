@@ -1,94 +1,73 @@
 ->          /declaration                                   declaration.Routes
 
-# microservice specific routes
+# HMRC Frontend Static Assets
+->          /hmrc-frontend                                 hmrcfrontend.Routes
 
+# microservice specific routes
 GET         /assets/*file                                  controllers.Assets.versioned(path="/public", file: Asset)
 
-# Kickout pages
+# Root Url
+GET         /                                              controllers.general.RootController.displayPage
 
-GET         /unauthorised                                  controllers.UnauthorisedController.onPageLoad(unauthorisedReason: models.UnauthorisedReason)
-GET         /you-cannot-use-service                        controllers.UnauthorisedController.onAgentKickOut(unauthorisedReason: models.UnauthorisedReason)
-
-# Unverified/Undeclared Email
-
-GET         /unverified-email                              controllers.UnverifiedEmailController.informUserUnverified
-GET         /undeliverable-email                           controllers.UnverifiedEmailController.informUserUndeliverable
-
-# File Upload
-
-GET         /file-upload                                   controllers.FileUploadController.startFileUpload(mrn: String)
-
-# Notifications
-
-GET         /submissions/:id/rejected-notifications        controllers.RejectedNotificationsController.displayPage(id: String)
-GET         /submissions/unaccepted-amendment/:actionId    controllers.RejectedNotificationsController.displayPageOnUnacceptedAmendment(actionId: String, draftDeclarationId: Option[String] ?= None)
+# Choice Page
+GET         /choice                                        controllers.ChoiceController.displayPage
 
 # Dashboard
-
 GET         /dashboard                                     controllers.DashboardController.displayPage
 
-# Submissions
-
-GET         /submissions/:id/information                   controllers.DeclarationDetailsController.displayPage(id: String)
-GET         /submissions/:id/unavailable-actions           controllers.DeclarationDetailsController.unavailableActions(id: String)
-
-GET         /submissions/:id/view                          controllers.SubmissionsController.viewDeclaration(id: String)
-
-GET         /submissions/:id                               controllers.SubmissionsController.amend(id: String, isAmendment: Boolean)
-
-GET         /submissions/:id/:pattern/:messageKey          controllers.SubmissionsController.amendErrors(id: String, pattern: String, messageKey: String, isAmendment: Boolean, url: RedirectUrl)
-
-GET         /ead-print-view/:mrn                           controllers.EADController.generateDocument(mrn)
-
-# Cancel declaration
-
-GET         /cancel-declaration                            controllers.CancelDeclarationController.displayPage
-POST        /cancel-declaration                            controllers.CancelDeclarationController.onSubmit
-
-# Copy declaration
-
-GET         /copy-declaration/:id                          controllers.CopyDeclarationController.redirectToReceiveJourneyRequest(id: String)
-GET         /copy-declaration                              controllers.CopyDeclarationController.displayPage
-POST        /copy-declaration                              controllers.CopyDeclarationController.submitPage
-
-# Cancellation Result
-
-GET         /cancellation-holding                          controllers.CancellationResultController.displayHoldingPage
-GET         /cancellation-result                           controllers.CancellationResultController.displayResultPage
+# File Upload
+GET         /file-upload                                   controllers.FileUploadController.startFileUpload(mrn: String)
 
 # Draft declarations
 
-GET         /saved-declarations                            controllers.DraftDeclarationController.displayDeclarations(page: Int ?= 1)
+GET         /saved-declarations                            controllers.SavedDeclarationsController.displayDeclarations(page: Int ?= 1)
+GET         /saved-declarations/:id                        controllers.SavedDeclarationsController.displayDeclaration(id: String)
 
-GET         /saved-declarations/:id                        controllers.DraftDeclarationController.displayDeclaration(id: String)
+GET         /saved-declarations/:id/remove                 controllers.drafts.RemoveDraftDeclarationController.displayPage(id: String)
+POST        /saved-declarations/:id/remove                 controllers.drafts.RemoveDraftDeclarationController.removeDeclaration(id: String)
 
-GET         /saved-declarations/:id/remove                 controllers.RemoveDraftDeclarationController.displayPage(id: String)
-POST        /saved-declarations/:id/remove                 controllers.RemoveDraftDeclarationController.removeDeclaration(id: String)
-
-# Root Url
-
-GET         /                                              controllers.RootController.displayPage
-
-# Choice Page
-
-GET         /choice                                        controllers.ChoiceController.displayPage
+GET         /draft-saved                                   controllers.drafts.ExitAndCompleteLaterController.displayPage
 
 # Sign out
-
-GET         /sign-out                                      controllers.SignOutController.signOut(signOutReason: models.SignOutReason)
-
-GET         /we-signed-you-out                             controllers.SignOutController.sessionTimeoutSignedOut
-GET         /you-have-signed-out                           controllers.SignOutController.userSignedOut
-
-# Guidance pages
-
-GET         /entry                                         controllers.GuidanceController.entry
-GET         /complete-declaration                          controllers.GuidanceController.completeDeclaration
-GET         /send-by-roro                                  controllers.GuidanceController.sendByRoro
+GET         /sign-out                                      controllers.general.SignOutController.signOut(signOutReason: models.SignOutReason)
+GET         /we-signed-you-out                             controllers.general.SignOutController.sessionTimeoutSignedOut
+GET         /you-have-signed-out                           controllers.general.SignOutController.userSignedOut
 
 # Language controller
+GET        /language/:lang                                 controllers.general.LanguageSwitchController.switchToLanguage(lang: String)
 
-GET        /language/:lang                                 controllers.LanguageSwitchController.switchToLanguage(lang: String)
+# Kickout pages
+GET         /unauthorised                                  controllers.general.UnauthorisedController.onPageLoad(unauthorisedReason: models.UnauthorisedReason)
+GET         /you-cannot-use-service                        controllers.general.UnauthorisedController.onAgentKickOut(unauthorisedReason: models.UnauthorisedReason)
 
-# HMRC Frontend Static Assets
-->          /hmrc-frontend                                 hmrcfrontend.Routes
+# Unverified/Undeclared Email
+GET         /unverified-email                              controllers.general.UnverifiedEmailController.informUserUnverified
+GET         /undeliverable-email                           controllers.general.UnverifiedEmailController.informUserUndeliverable
+
+# Timeline
+
+GET         /submissions/:id/view                          controllers.timeline.SubmissionsController.viewDeclaration(id: String)
+
+GET         /submissions/:id/information                   controllers.timeline.DeclarationDetailsController.displayPage(id: String)
+GET         /submissions/:id/unavailable-actions           controllers.timeline.DeclarationDetailsController.unavailableActions(id: String)
+
+GET         /submissions/:id                               controllers.timeline.SubmissionsController.amend(id: String, isAmendment: Boolean)
+
+GET         /submissions/:id/:pattern/:messageKey          controllers.timeline.SubmissionsController.amendErrors(id: String, pattern: String, messageKey: String, isAmendment: Boolean, url: RedirectUrl)
+
+GET         /ead-print-view/:mrn                           controllers.timeline.EADController.generateDocument(mrn)
+
+GET         /cancel-declaration                            controllers.timeline.CancelDeclarationController.displayPage
+POST        /cancel-declaration                            controllers.timeline.CancelDeclarationController.onSubmit
+
+GET         /copy-declaration/:id                          controllers.timeline.CopyDeclarationController.redirectToReceiveJourneyRequest(id: String)
+GET         /copy-declaration                              controllers.timeline.CopyDeclarationController.displayPage
+POST        /copy-declaration                              controllers.timeline.CopyDeclarationController.submitPage
+
+GET         /cancellation-holding                          controllers.timeline.CancellationResultController.displayHoldingPage
+GET         /cancellation-result                           controllers.timeline.CancellationResultController.displayResultPage
+
+# Timeline => Rejected notifications
+
+GET         /submissions/:id/rejected-notifications        controllers.timeline.RejectedNotificationsController.displayPage(id: String)
+GET         /submissions/unaccepted-amendment/:actionId    controllers.timeline.RejectedNotificationsController.displayPageOnUnacceptedAmendment(actionId: String, draftDeclarationId: Option[String] ?= None)

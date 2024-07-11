@@ -21,7 +21,7 @@ import config.AppConfig
 import connectors.{FileBasedCodeListConnector, GoodsLocationCodesConnector}
 import forms.common.Date.{dayKey, monthKey, yearKey}
 import forms.common.Eori
-import forms.section1.additionaldeclarationtype.AdditionalDeclarationType._
+import forms.section1.AdditionalDeclarationType._
 import forms.section2.authorisationHolder.AuthorisationHolder
 import forms.section5.AdditionalDocumentSpec._
 import forms.section5.CommodityDetails
