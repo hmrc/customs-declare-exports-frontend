@@ -28,6 +28,7 @@ import play.api.Logging
 import play.api.i18n.Messages
 import play.api.mvc.Call
 import play.twirl.api.{Html, HtmlFormat}
+import views.helpers.NotificationEvent.maxSecondsBetweenClearedAndArrived
 import views.html.components.gds.{link, linkButton, paragraphBody}
 import views.html.components.upload_files_partial_for_timeline
 
@@ -46,6 +47,8 @@ object NotificationEvent {
     Ordering.fromLessThan[NotificationEvent] { (a, b) =>
       b.notificationSummary.dateTimeIssued.isBefore(a.notificationSummary.dateTimeIssued)
     }
+
+  val maxSecondsBetweenClearedAndArrived = 10L
 }
 
 // scalastyle:off
@@ -139,12 +142,15 @@ class TimelineEvents @Inject() (
       }
     }.sorted
 
-    if (declarationAmendmentsConfig.isEnabled) {
-      // Filtering out "AMENDED" notifications generated after "external amendments" (not "user amendments"!).
-      allEvents.filterNot { event =>
-        event.requestType == SubmissionRequest && event.notificationSummary.enhancedStatus == AMENDED
-      }
-    } else allEvents.filterNot(_.requestType == ExternalAmendmentRequest)
+    val notificationEvents =
+      if (declarationAmendmentsConfig.isEnabled) {
+        // Filtering out "AMENDED" notifications generated after "external amendments" (not "user amendments"!).
+        allEvents.filterNot { event =>
+          event.requestType == SubmissionRequest && event.notificationSummary.enhancedStatus == AMENDED
+        }
+      } else allEvents.filterNot(_.requestType == ExternalAmendmentRequest)
+
+    clearedMustBeAfterArrivedOnTimeline(notificationEvents)
   }
 
   private def amendmentEvent(action: Action): NotificationEvent = {
@@ -155,6 +161,26 @@ class TimelineEvents @Inject() (
   private def amendmentEventIfEmpty(action: Action): Seq[NotificationEvent] =
     if (amendmentRequests.contains(action.requestType)) List(amendmentEvent(action))
     else List.empty[NotificationEvent]
+
+  private val goodsArrivedStatuses = List(GOODS_ARRIVED, GOODS_ARRIVED_MESSAGE)
+
+  private def clearedMustBeAfterArrivedOnTimeline(notificationEvents: Seq[NotificationEvent]): Seq[NotificationEvent] = {
+    val goodsArrivedPositionOnTimeline = notificationEvents.indexWhere { event =>
+      goodsArrivedStatuses.contains(event.notificationSummary.enhancedStatus)
+    }
+    if (goodsArrivedPositionOnTimeline == -1) notificationEvents
+    else {
+      val goodsArrivedIssuedOn = notificationEvents(goodsArrivedPositionOnTimeline).notificationSummary.dateTimeIssued
+      notificationEvents.zipWithIndex.find { case (event, position) =>
+        event.notificationSummary.enhancedStatus == CLEARED &&
+          position > goodsArrivedPositionOnTimeline &&
+          SECONDS.between(event.notificationSummary.dateTimeIssued, goodsArrivedIssuedOn) <= maxSecondsBetweenClearedAndArrived
+      }
+        .fold(notificationEvents) { case (event, position) =>
+          notificationEvents.patch(position, Nil, 1).patch(goodsArrivedPositionOnTimeline, List(event), 0)
+        }
+    }
+  }
 
   private abstract class AmendmentEventIfLatest { val action: Action }
   private case class AmendmentFailed(action: Action) extends AmendmentEventIfLatest
