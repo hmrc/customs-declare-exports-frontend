@@ -1785,7 +1785,7 @@ declaration.commodityMeasure.expander.title = When Gross or Net weight is option
 declaration.commodityMeasure.expander.paragraph.1 = Where a weight is not required, the field can be left blank.
 declaration.commodityMeasure.expander.paragraph.2 = For exports to Guernsey or Jersey, entering Gross weight is optional.
 declaration.commodityMeasure.expander.paragraph.3 = For customs clearance requests, Gross weight is not required.
-declaration.commodityMeasure.expander.paragraph.4 = For C21e customs clearance requests using procedure code 0019, Net weight is not required, but Gross weight is mandatory.
+declaration.commodityMeasure.expander.paragraph.4 = For C21e customs clearance requests using procedure code 0019, Net weight is not required. Gross weight is only mandatory on EIDR NOP customs clearance requests.
 
 declaration.supplementaryUnits.notification.title = Important: about supplementary units
 declaration.supplementaryUnits.notification.body = Supplementary units are used when an additional measurement unit is needed on customs declarations. For example, a case of bottled products may need an individual volume in millilitres.

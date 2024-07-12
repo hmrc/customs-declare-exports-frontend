@@ -1778,7 +1778,7 @@ declaration.commodityMeasure.expander.title = Pan mae nodi Pwysau Net neu Bwysau
 declaration.commodityMeasure.expander.paragraph.1 = Lle nad yw’n ofynnol i nodi’r pwysau, gellir gadael y maes yn wag.
 declaration.commodityMeasure.expander.paragraph.2 = Ar gyfer allforion i Guernsey a Jersey, mae nodi Pwysau Gros yn ddewisol.
 declaration.commodityMeasure.expander.paragraph.3 = Nid yw’n ofynnol i nodi Pwysau Gros ar geisiadau i glirio’r tollau.
-declaration.commodityMeasure.expander.paragraph.4 = Ar gyfer ceisiadau i glirio’r tollau C21e sy’n defnyddio cod gweithdrefn 0019, nid yw’n ofynnol i nodi Pwysau Net, ond mae’n rhaid nodi Pwysau Gros.
+declaration.commodityMeasure.expander.paragraph.4 = Ar gyfer ceisiadau i glirio’r tollau C21e sy’n defnyddio cod gweithdrefn 0019, nid yw’n ofynnol i nodi Pwysau Net. Mae pwysau gros yn orfodol yn unig ar geisiadau i glirio’r tollau EIDR NOP.
 
 declaration.supplementaryUnits.notification.title = Pwysig: ynghylch unedau atodol
 declaration.supplementaryUnits.notification.body = Defnyddir unedau atodol pan fydd angen uned fesur ychwanegol ar ddatganiadau tollau. Er enghraifft, mae’n bosibl y byddai angen cyfaint unigol mewn mililitrau ar gyfer cist o gynhyrchion wedi’u potelu.
