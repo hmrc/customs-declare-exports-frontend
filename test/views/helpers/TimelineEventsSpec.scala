@@ -58,7 +58,7 @@ class TimelineEventsSpec extends UnitViewSpec with BeforeAndAfterEach with Injec
     notificationSummaries: Seq[NotificationSummary],
     declarationType: AdditionalDeclarationType = STANDARD_PRE_LODGED
   ): Seq[TimelineEvent] = {
-    val action = Action("id", SubmissionRequest, issued(0), Some(notificationSummaries), decId = Some("id"), versionNo = 1)
+    val action = Action("id", SubmissionRequest, issued(), Some(notificationSummaries), decId = Some("id"), versionNo = 1)
     timelineEvents.apply(submission.copy(actions = Seq(action)), declarationType)
   }
 
@@ -73,18 +73,42 @@ class TimelineEventsSpec extends UnitViewSpec with BeforeAndAfterEach with Injec
 
   "TimelineEvents" should {
 
-    "transform an empty sequence of Notifications into an empty sequence of TimelineEvent instances" in {
-      assert(genTimelineEvents(List.empty[NotificationSummary]).isEmpty)
+    "generate a 'Declaration submitted' event from the 'SubmissionRequest' Action and" should {
+      "ignore the associated 'RECEIVED' notification, if any" in {
+        val notification1 = NotificationSummary(UUID.randomUUID, issued(1), RECEIVED)
+        val notification2 = NotificationSummary(UUID.randomUUID, issued(2), GOODS_ARRIVED)
+        val notification3 = NotificationSummary(UUID.randomUUID, issued(3), ADDITIONAL_DOCUMENTS_REQUIRED)
+        val notifications = List(notification3, notification2, notification1)
+        val action = Action("submission", SubmissionRequest, issued(), Some(notifications), None, 1)
+
+        val timelineEvents = createTimelineFromActions(List(action))
+
+        timelineEvents.size mustBe 3
+
+        timelineEvents(0).dateTime mustBe notification3.dateTimeIssued
+        timelineEvents(0).title mustBe messages(s"submission.enhancedStatus.$ADDITIONAL_DOCUMENTS_REQUIRED")
+
+        timelineEvents(1).dateTime mustBe notification2.dateTimeIssued
+        timelineEvents(1).title mustBe messages(s"submission.enhancedStatus.$GOODS_ARRIVED")
+
+        timelineEvents(2).dateTime mustBe action.requestTimestamp // Here is where we really test if notification1 is ignored
+        timelineEvents(2).title mustBe messages(s"submission.enhancedStatus.$RECEIVED")
+      }
+    }
+
+    "transform an empty sequence of Notifications into a single TimelineEvent => 'Declaration submitted'" in {
+      val timelineEvents = genTimelineEvents(List.empty[NotificationSummary])
+      timelineEvents.size mustBe 1
+      timelineEvents(0).title mustBe messages(s"submission.enhancedStatus.$RECEIVED")
     }
 
     "transform an unordered sequence of NotificationSummaries into an ordered sequence of TimelineEvent instances" in {
       val issued1 = issued(1)
-      val issued2 = issued(2)
       val issued3 = issued(3)
       val issued4 = issued(4)
 
       val notifications = List(
-        NotificationSummary(UUID.randomUUID, issued2, RECEIVED),
+        NotificationSummary(UUID.randomUUID, issued(2), RECEIVED),
         NotificationSummary(UUID.randomUUID, issued4, UNKNOWN),
         NotificationSummary(UUID.randomUUID, issued1, PENDING),
         NotificationSummary(UUID.randomUUID, issued3, ERRORS)
@@ -99,18 +123,17 @@ class TimelineEventsSpec extends UnitViewSpec with BeforeAndAfterEach with Injec
       timelineEvents(1).dateTime mustBe issued3
       timelineEvents(1).title mustBe messages(s"submission.enhancedStatus.$ERRORS")
 
-      timelineEvents(2).dateTime mustBe issued2
-      timelineEvents(2).title mustBe messages(s"submission.enhancedStatus.$RECEIVED")
+      timelineEvents(2).dateTime mustBe issued1
+      timelineEvents(2).title mustBe messages(s"submission.enhancedStatus.$PENDING")
 
-      timelineEvents(3).dateTime mustBe issued1
-      timelineEvents(3).title mustBe messages(s"submission.enhancedStatus.$PENDING")
+      timelineEvents(3).title mustBe messages(s"submission.enhancedStatus.$RECEIVED")
     }
 
     "generate a sequence of TimelineEvent instances from both cancellation requests and submission requests" in {
       val action1 = Action("cancellation", CancellationRequest, issued(2), None, decId = None, 1)
 
       val notification2 = NotificationSummary(UUID.randomUUID, issued(1), RECEIVED)
-      val action2 = Action("submission", SubmissionRequest, issued(0), Some(List(notification2)), None, 1)
+      val action2 = Action("submission", SubmissionRequest, issued(), Some(List(notification2)), None, 1)
 
       val timelineEvents = createTimelineFromActions(List(action1, action2))
 
@@ -119,7 +142,7 @@ class TimelineEventsSpec extends UnitViewSpec with BeforeAndAfterEach with Injec
       timelineEvents(0).dateTime mustBe action1.requestTimestamp
       timelineEvents(0).title mustBe messages(s"submission.enhancedStatus.$REQUESTED_CANCELLATION")
 
-      timelineEvents(1).dateTime mustBe notification2.dateTimeIssued
+      timelineEvents(1).dateTime mustBe action2.requestTimestamp
       timelineEvents(1).title mustBe messages(s"submission.enhancedStatus.$RECEIVED")
     }
 
@@ -205,7 +228,7 @@ class TimelineEventsSpec extends UnitViewSpec with BeforeAndAfterEach with Injec
       timelineEvents(3).dateTime mustBe submission.actions(0).notifications.get(1).dateTimeIssued
 
       timelineEvents(4).title mustBe messages(s"submission.enhancedStatus.$RECEIVED")
-      timelineEvents(4).dateTime mustBe submission.actions(0).notifications.get(2).dateTimeIssued
+      timelineEvents(4).dateTime mustBe submission.actions(0).requestTimestamp
     }
 
     "generate the expected sequence of TimelineEvent instances when the amendment is rejected" in {
@@ -220,15 +243,15 @@ class TimelineEventsSpec extends UnitViewSpec with BeforeAndAfterEach with Injec
       timelineEvents(1).title mustBe messages(s"submission.enhancedStatus.$GOODS_ARRIVED_MESSAGE")
       timelineEvents(1).dateTime mustBe submission.actions(0).notifications.get(1).dateTimeIssued
 
-      timelineEvents(2).title mustBe messages(s"submission.enhancedStatus.$RECEIVED")
-      timelineEvents(2).dateTime mustBe submission.actions(0).notifications.get(2).dateTimeIssued
+      timelineEvents(2).title mustBe messages("submission.enhancedStatus.timeline.title.amendment.rejected")
+      timelineEvents(2).dateTime mustBe submission.actions(1).notifications.get(0).dateTimeIssued
+      timelineEvents(2).content mustBe None
 
-      timelineEvents(3).title mustBe messages("submission.enhancedStatus.timeline.title.amendment.rejected")
-      timelineEvents(3).dateTime mustBe submission.actions(1).notifications.get(0).dateTimeIssued
-      timelineEvents(3).content mustBe None
+      timelineEvents(3).title mustBe messages("submission.enhancedStatus.timeline.title.amendment.requested")
+      timelineEvents(3).dateTime mustBe submission.actions(1).requestTimestamp
 
-      timelineEvents(4).title mustBe messages("submission.enhancedStatus.timeline.title.amendment.requested")
-      timelineEvents(4).dateTime mustBe submission.actions(1).requestTimestamp
+      timelineEvents(4).title mustBe messages(s"submission.enhancedStatus.$RECEIVED")
+      timelineEvents(4).dateTime mustBe submission.actions(0).requestTimestamp
     }
 
     "generate the expected sequence of TimelineEvent instances for multiple amendments, with the last one rejected" in {
@@ -271,7 +294,7 @@ class TimelineEventsSpec extends UnitViewSpec with BeforeAndAfterEach with Injec
           link.first.attr("href") mustBe AmendmentDetailsController.displayPage(externalAmendment.last.id).url
 
           timelineEvents(1).title mustBe messages(s"submission.enhancedStatus.$RECEIVED")
-          timelineEvents(1).dateTime mustBe externalAmendment(0).notifications.get(1).dateTimeIssued
+          timelineEvents(1).dateTime mustBe externalAmendment(0).requestTimestamp
         }
 
         "the mockDeclarationAmendmentsConfig flag is disabled" in {
@@ -285,7 +308,7 @@ class TimelineEventsSpec extends UnitViewSpec with BeforeAndAfterEach with Injec
           timelineEvents(0).content mustBe None
 
           timelineEvents(1).title mustBe messages(s"submission.enhancedStatus.$RECEIVED")
-          timelineEvents(1).dateTime mustBe externalAmendment(0).notifications.get(1).dateTimeIssued
+          timelineEvents(1).dateTime mustBe externalAmendment(0).requestTimestamp
         }
       }
     }
@@ -312,9 +335,9 @@ class TimelineEventsSpec extends UnitViewSpec with BeforeAndAfterEach with Injec
       val timelineEvents = createTimelineFromSubmission(submission)
 
       timelineEvents.size mustBe 5
-      timelineEvents(3).title mustBe messages("submission.enhancedStatus.timeline.title.amendment.failed")
-      timelineEvents(3).dateTime mustBe submission.actions(1).notifications.get(0).dateTimeIssued
-      timelineEvents(3).content mustBe None
+      timelineEvents(2).title mustBe messages("submission.enhancedStatus.timeline.title.amendment.failed")
+      timelineEvents(2).dateTime mustBe submission.actions(1).notifications.get(0).dateTimeIssued
+      timelineEvents(2).content mustBe None
     }
 
     "generate the expected sequence of TimelineEvent instances when the EnhancedStatus is CLEARED and" when {
@@ -349,7 +372,6 @@ class TimelineEventsSpec extends UnitViewSpec with BeforeAndAfterEach with Injec
             EXPIRED_NO_DEPARTURE,
             EXPIRED_NO_ARRIVAL,
             CLEARED,
-            RECEIVED,
             GOODS_ARRIVED_MESSAGE
           )
 
@@ -440,7 +462,7 @@ class TimelineEventsSpec extends UnitViewSpec with BeforeAndAfterEach with Injec
 
         val timelineEvents = genTimelineEvents(notifications)
 
-        timelineEvents.size mustBe 2
+        timelineEvents.size mustBe 3
 
         timelineEvents(0).dateTime mustBe issued1
         timelineEvents(0).title mustBe messages(s"submission.enhancedStatus.$CLEARED")
@@ -454,7 +476,7 @@ class TimelineEventsSpec extends UnitViewSpec with BeforeAndAfterEach with Injec
 
 object TimelineEventsSpec {
 
-  val amendmentRequest =
+  private val amendmentRequest =
     Json
       .parse(s"""[
          | {
@@ -481,7 +503,7 @@ object TimelineEventsSpec {
          |""".stripMargin)
       .as[Seq[Action]]
 
-  val amendmentUnsuccessfulLatest = (status: EnhancedStatus) =>
+  private val amendmentUnsuccessfulLatest = (status: EnhancedStatus) =>
     Json
       .parse(s"""{
          |    "uuid" : "9fe6c5a6-179a-4527-b81e-a01f4a02281d",
@@ -536,7 +558,7 @@ object TimelineEventsSpec {
          |}""".stripMargin)
       .as[Submission]
 
-  val amendmentUnsuccessful = (status: EnhancedStatus) =>
+  private val amendmentUnsuccessful = (status: EnhancedStatus) =>
     Json
       .parse(s"""{
          |    "uuid" : "9fe6c5a6-179a-4527-b81e-a01f4a02281e",
@@ -591,7 +613,7 @@ object TimelineEventsSpec {
          |}""".stripMargin)
       .as[Submission]
 
-  val multipleAmendments =
+  private val multipleAmendments =
     Json
       .parse(s"""{
          |    "uuid" : "ee096b12-e0d2-4952-8563-987d096bdeec",
@@ -678,7 +700,7 @@ object TimelineEventsSpec {
          |}""".stripMargin)
       .as[Submission]
 
-  val amendmentGranted =
+  private val amendmentGranted =
     Json
       .parse(s"""[
          |    {
@@ -718,7 +740,7 @@ object TimelineEventsSpec {
          |""".stripMargin)
       .as[Seq[Action]]
 
-  val cancellationDenied =
+  private val cancellationDenied =
     Json
       .parse(s"""[
       |    {
@@ -753,7 +775,7 @@ object TimelineEventsSpec {
       |""".stripMargin)
       .as[Seq[Action]]
 
-  val cancellationGranted =
+  private val cancellationGranted =
     Json
       .parse(s"""[
       |    {
@@ -793,7 +815,7 @@ object TimelineEventsSpec {
       |""".stripMargin)
       .as[Seq[Action]]
 
-  val cancellationRequestNotConfirmedYet =
+  private val cancellationRequestNotConfirmedYet =
     Json
       .parse(s"""[
       |    {
@@ -828,7 +850,7 @@ object TimelineEventsSpec {
       |""".stripMargin)
       .as[Seq[Action]]
 
-  val cancellationRequest =
+  private val cancellationRequest =
     Json
       .parse(s"""[
       |  {
@@ -867,7 +889,7 @@ object TimelineEventsSpec {
       |]""".stripMargin)
       .as[Seq[Action]]
 
-  val externalAmendment =
+  private val externalAmendment =
     Json
       .parse(s"""[
       |  {

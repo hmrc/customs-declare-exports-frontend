@@ -78,7 +78,7 @@ class TimelineEvents @Inject() (
         case _                        => notificationEvents.indexWhere(_.notificationSummary.enhancedStatus == ERRORS)
       }
 
-    notificationEvents.zipWithIndex.map { case (notificationEvent, index) =>
+    val timelineEvents = notificationEvents.zipWithIndex.map { case (notificationEvent, index) =>
       val actionContent = index match {
         case IndexToMatchForFixResubmitContent if notificationEvent.requestType != AmendmentRequest || amendmentFailedIfLatest.isDefined =>
           fixAndResubmitContent(submission, amendmentFailedIfLatest)
@@ -113,8 +113,16 @@ class TimelineEvents @Inject() (
         content = if (content.body.isEmpty) None else Some(content)
       )
     }
+    addDeclarationSubmittedEvent(submission, timelineEvents)
   }
   // scalastyle:on
+
+  private def addDeclarationSubmittedEvent(submission: Submission, timelineEvents: Seq[TimelineEvent])(
+    implicit messages: Messages
+  ): Seq[TimelineEvent] =
+    submission.actions.find(_.requestType == SubmissionRequest).fold(timelineEvents) { action =>
+      timelineEvents :+ TimelineEvent(EnhancedStatusHelper.asText(RECEIVED), action.requestTimestamp, None)
+    }
 
   private def bodyContent(notificationEvent: NotificationEvent, declarationType: AdditionalDeclarationType)(implicit messages: Messages): Html =
     if (declarationType == SUPPLEMENTARY_SIMPLIFIED && notificationEvent.notificationSummary.enhancedStatus == CLEARED) HtmlFormat.empty
@@ -124,12 +132,13 @@ class TimelineEvents @Inject() (
     }
 
   private val amendmentRequests = List(AmendmentRequest, ExternalAmendmentRequest)
+  private val requestTypesForReceived = amendmentRequests :+ SubmissionRequest
 
   private def createNotificationEvents(submission: Submission): Seq[NotificationEvent] = {
     val allEvents = submission.actions.flatMap { action =>
       val events = action.notifications.fold(amendmentEventIfEmpty(action)) { notificationSummaries =>
         val events = notificationSummaries
-          .filterNot(summary => amendmentRequests.contains(action.requestType) && summary.enhancedStatus == RECEIVED)
+          .filterNot(_.enhancedStatus == RECEIVED && requestTypesForReceived.contains(action.requestType))
           .map(NotificationEvent(action.id, action.requestType, _))
         if (amendmentRequests.contains(action.requestType)) events :+ amendmentEvent(action) else events
       }
