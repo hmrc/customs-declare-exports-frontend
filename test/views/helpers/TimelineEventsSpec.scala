@@ -29,6 +29,7 @@ import org.mockito.Mockito.when
 import org.scalatest.BeforeAndAfterEach
 import play.api.libs.json.Json
 import views.common.UnitViewSpec
+import views.helpers.NotificationEvent.maxSecondsBetweenClearedAndArrived
 import views.helpers.TimelineEventsSpec._
 import views.html.components.gds.{link, linkButton, paragraphBody}
 import views.html.components.upload_files_partial_for_timeline
@@ -48,7 +49,7 @@ class TimelineEventsSpec extends UnitViewSpec with BeforeAndAfterEach with Injec
     when(mockSfusConfig.sfusInboxLink).thenReturn("dummyInboxLink")
   }
 
-  private def issued(days: Long): ZonedDateTime = ZonedDateTime.now.plusDays(days)
+  private def issued(days: Long = 0): ZonedDateTime = ZonedDateTime.now.plusDays(days)
 
   private val timelineEvents =
     new TimelineEvents(new link, new linkButton, new paragraphBody, mockSfusConfig, mockDeclarationAmendmentsConfig, uploadFilesPartialForTimeline)
@@ -427,6 +428,25 @@ class TimelineEventsSpec extends UnitViewSpec with BeforeAndAfterEach with Injec
           val timelineEvents = genTimelineEvents(List(notification))
           assert(timelineEvents(0).content.isEmpty)
         }
+      }
+    }
+
+    "place on the timeline a CLEARED notification after a GOODS_ARRIVED notification" when {
+      s"the difference of when the 2 notifications were sent is <= $maxSecondsBetweenClearedAndArrived seconds" in {
+        val issued1 = issued()
+        val issued2 = issued1.plusSeconds(maxSecondsBetweenClearedAndArrived)
+
+        val notifications = List(NotificationSummary(UUID.randomUUID, issued2, GOODS_ARRIVED), NotificationSummary(UUID.randomUUID, issued1, CLEARED))
+
+        val timelineEvents = genTimelineEvents(notifications)
+
+        timelineEvents.size mustBe 2
+
+        timelineEvents(0).dateTime mustBe issued1
+        timelineEvents(0).title mustBe messages(s"submission.enhancedStatus.$CLEARED")
+
+        timelineEvents(1).dateTime mustBe issued2
+        timelineEvents(1).title mustBe messages(s"submission.enhancedStatus.$GOODS_ARRIVED")
       }
     }
   }
