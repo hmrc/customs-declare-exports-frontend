@@ -39,21 +39,20 @@ class JourneyAction @Inject() (cacheService: ExportsCacheService)(implicit val e
   private def refineOnDeclarationTypes[A](request: AuthenticatedRequest[A], types: Seq[DeclarationType]): RefineResult[A] =
     request.declarationId match {
       case Some(id) => verifyDeclaration(id, request, (declaration: ExportsDeclaration) => types.isEmpty || types.contains(declaration.`type`))
-      case None =>
-        Future.successful(redirectToRoot(s"Could not obtain the declaration's id for eori ${request.user.eori} and id ${request.declarationId}"))
+      case _        => Future.successful(redirectToRoot(request, "Could not obtain the declaration id"))
     }
 
   private def refineOnAdditionalTypes[A](request: AuthenticatedRequest[A], additionalTypes: Seq[AdditionalDeclarationType]): RefineResult[A] =
     request.declarationId match {
       case Some(id) => verifyDeclaration(id, request, additionalTypes.isEmpty || _.additionalDeclarationType.exists(additionalTypes.contains))
-      case None     => Future.successful(redirectToRoot(s"Could not obtain the declaration's id for eori ${request.user.eori}"))
+      case None     => Future.successful(redirectToRoot(request, "Could not obtain the declaration id"))
     }
 
   override def refine[A](request: AuthenticatedRequest[A]): RefineResult[A] =
     refineOnDeclarationTypes(request, Seq.empty[DeclarationType])
 
   def apply(type1: DeclarationType, others: DeclarationType*): ActionRefiner[AuthenticatedRequest, JourneyRequest] =
-    apply(others.toSeq.+:(type1))
+    apply(others.toList.prepended(type1))
 
   def apply(types: Seq[DeclarationType]): ActionRefiner[AuthenticatedRequest, JourneyRequest] =
     new ActionRefiner[AuthenticatedRequest, JourneyRequest] {
@@ -70,8 +69,8 @@ class JourneyAction @Inject() (cacheService: ExportsCacheService)(implicit val e
         refineOnAdditionalTypes(request, additionalTypes)
     }
 
-  private def redirectToRoot[A](message: String): Either[Result, JourneyRequest[A]] = {
-    logger.warn(message)
+  private def redirectToRoot[A](request: AuthenticatedRequest[A], message: String): Either[Result, JourneyRequest[A]] = {
+    logger.warn(s"For eori(${request.user.eori}) and request($request) => $message")
     Left(Results.Redirect(RootController.displayPage))
   }
 
@@ -83,10 +82,10 @@ class JourneyAction @Inject() (cacheService: ExportsCacheService)(implicit val e
         if (onCondition(declaration)) Right(new JourneyRequest(request, declaration))
         else {
           val types = s"${declaration.`type`}${declaration.additionalDeclarationType.fold("")(adt => s",$adt")}"
-          redirectToRoot(s"Redirection to start for eori ${request.user.eori}, as types($types) of declaration($id) are not accepted")
+          redirectToRoot(request, s"Types($types) of declaration($id) are not accepted")
         }
 
-      case _ => redirectToRoot(s"Could not retrieve from cache, for eori ${request.user.eori}, the declaration with id $id")
+      case _ => redirectToRoot(request, s"Could not retrieve declaration($id)")
     }
   }
 }
