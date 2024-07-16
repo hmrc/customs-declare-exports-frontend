@@ -43,21 +43,20 @@ object CommodityMeasure extends DeclarationPage {
   def form: Form[CommodityMeasure] = Form(mapping)
 
   private val massFormatValidation: String => Boolean =
-    str => validateDecimalGreaterThanZero(16)(6)(str) and containsNotOnlyZeros(str)
+    str => validateDecimalGreaterThanZero(11)(3)(str) and containsNotOnlyZeros(str)
 
   private val mapping = Forms.mapping(
     "grossMass" -> of(
       CrossFieldFormatter(
         secondaryKey = "",
-        constraints =
-          Seq(("declaration.commodityMeasure.grossMass.error", (gross: String, _: String) => isEmpty(gross) or massFormatValidation(gross)))
+        constraints = List(("declaration.commodityMeasure.error", (gross: String, _) => isEmpty(gross) or massFormatValidation(gross)))
       )
     ),
     "netMass" -> of(
       CrossFieldFormatter(
         secondaryKey = "grossMass",
-        constraints = Seq(
-          ("declaration.commodityMeasure.netMass.error", (net: String, _: String) => isEmpty(net) or massFormatValidation(net)),
+        constraints = List(
+          ("declaration.commodityMeasure.error", (net: String, _) => isEmpty(net) or massFormatValidation(net)),
           (
             "declaration.commodityMeasure.netMass.error.biggerThanGrossMass",
             (net: String, gross: String) => isEmpty(net) or isEmpty(gross) or !massFormatValidation(net) or isFirstSmallerOrEqual(net, gross)

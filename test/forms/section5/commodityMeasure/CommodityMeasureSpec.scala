@@ -30,43 +30,87 @@ class CommodityMeasureSpec extends UnitSpec with DeclarationPageBaseSpec {
 
     "have no errors" when {
 
-      "user fill mandatory fields with correct values" in {
-        form("124.12", "123.12").errors must be(empty)
+      "user fill net and gross mass with correct values" in {
+        form("124.123", "123.123").errors must be(empty)
+      }
+
+      "the user does not enter decimal digits" in {
+        form("124", "123").errors must be(empty)
+      }
+
+      "the user does not enter decimal digits after the decimal separator" in {
+        form("124.", "123.").errors must be(empty)
       }
 
       "net and gross mass are equal" in {
-        form("123.12", "123.12").errors must be(empty)
+        form("12345678.123", "12345678.123").errors must be(empty)
       }
 
-      "mandatory fields are empty" in {
+      "net and gross mass are empty" in {
         form("", "").errors must be(empty)
       }
 
       "user provided net mass only" in {
-        form("", "124.12").errors must be(empty)
+        form("", "124.123").errors must be(empty)
       }
 
       "user provided gross mass only" in {
-        form("123.12", "").errors must be(empty)
+        form("123.123", "").errors must be(empty)
       }
     }
 
     "have errors" when {
 
-      "data provided by user is incorrect" in {
-        val result = form("12345.12333333", "1234.533333333331234")
+      "the user enters too many decimal digits" in {
+        val result = form("12345.1234", "1234.1234")
 
         val expectedErrorKeys = List("grossMass", "netMass")
         val errorKeys = result.errors.map(_.key)
         errorKeys must be(expectedErrorKeys)
 
         val errorMessages = result.errors.map(_.message)
-        val expectedErrorMessages = List("declaration.commodityMeasure.grossMass.error", "declaration.commodityMeasure.netMass.error")
+        val expectedErrorMessages = List("declaration.commodityMeasure.error", "declaration.commodityMeasure.error")
+        errorMessages must be(expectedErrorMessages)
+      }
+
+      "the user enters too many digits" in {
+        val result = form("123456789.123", "123456789.123")
+
+        val expectedErrorKeys = List("grossMass", "netMass")
+        val errorKeys = result.errors.map(_.key)
+        errorKeys must be(expectedErrorKeys)
+
+        val errorMessages = result.errors.map(_.message)
+        val expectedErrorMessages = List("declaration.commodityMeasure.error", "declaration.commodityMeasure.error")
+        errorMessages must be(expectedErrorMessages)
+      }
+
+      "the user enters more than one decimal separator" in {
+        val result = form("123.45.12", "12.34.12")
+
+        val expectedErrorKeys = List("grossMass", "netMass")
+        val errorKeys = result.errors.map(_.key)
+        errorKeys must be(expectedErrorKeys)
+
+        val errorMessages = result.errors.map(_.message)
+        val expectedErrorMessages = List("declaration.commodityMeasure.error", "declaration.commodityMeasure.error")
+        errorMessages must be(expectedErrorMessages)
+      }
+
+      "the user enters non-digit characters" in {
+        val result = form("1234A89", "126B789.12")
+
+        val expectedErrorKeys = List("grossMass", "netMass")
+        val errorKeys = result.errors.map(_.key)
+        errorKeys must be(expectedErrorKeys)
+
+        val errorMessages = result.errors.map(_.message)
+        val expectedErrorMessages = List("declaration.commodityMeasure.error", "declaration.commodityMeasure.error")
         errorMessages must be(expectedErrorMessages)
       }
 
       "net mass is greater than gross mass" in {
-        val result = form("123.12", "124.12")
+        val result = form("123.123", "124.123")
 
         val errorKeys = result.errors.map(_.key)
         val expectedErrorKeys = List("netMass")
