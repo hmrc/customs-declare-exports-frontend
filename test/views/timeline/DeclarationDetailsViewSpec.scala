@@ -438,17 +438,21 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
       def dateTimeAsShown(notification: NotificationSummary): String =
         ViewDates.formatDateAtTime(notification.dateTimeIssued)
 
-      notificationSummaries.reverse.zipWithIndex.foreach { case (notification, ix) =>
-        And("each Timeline event should always include a title")
-        val title = events.get(ix).getElementsByTag("h2")
-        assert(title.hasClass("hmrc-timeline__event-title"))
-        title.text mustBe EnhancedStatusHelper.asTimelineEvent(NotificationEvent(uuid, SubmissionRequest, notification))
+      notificationSummaries
+        .filterNot(_.enhancedStatus == RECEIVED)
+        .reverse
+        .zipWithIndex
+        .foreach { case (notification, ix) =>
+          And("each Timeline event should always include a title")
+          val title = events.get(ix).getElementsByTag("h2")
+          assert(title.hasClass("hmrc-timeline__event-title"))
+          title.text mustBe EnhancedStatusHelper.asTimelineEvent(NotificationEvent(uuid, SubmissionRequest, notification))
 
-        And("a date and time")
-        val datetime = events.get(ix).getElementsByTag("time")
-        assert(datetime.hasClass("hmrc-timeline__event-meta"))
-        datetime.text mustBe dateTimeAsShown(notification)
-      }
+          And("a date and time")
+          val datetime = events.get(ix).getElementsByTag("time")
+          assert(datetime.hasClass("hmrc-timeline__event-meta"))
+          datetime.text mustBe dateTimeAsShown(notification)
+        }
     }
 
     "display on the Declaration Timeline events with content" which {
@@ -458,8 +462,8 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
         "a UNDERGOING_PHYSICAL_CHECK notification is more recent than a QUERY_NOTIFICATION_MESSAGE notification" in {
           val events = eventsOnTimeline(notificationSummaries)
 
-          verifyUploadFilesContent(content(events.get(1)), false)
-          verifyViewQueriesContent(content(events.get(3)), true)
+          verifyUploadFilesContent(content(events.get(0)), false)
+          verifyViewQueriesContent(content(events.get(2)), true)
         }
 
         "a ADDITIONAL_DOCUMENTS_REQUIRED notification is more recent than a QUERY_NOTIFICATION_MESSAGE notification" in {
@@ -553,7 +557,7 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
       }
 
       "must include additional body text" when {
-        val statusesWithBodyText = Seq(CANCELLED, WITHDRAWN, EXPIRED_NO_DEPARTURE, EXPIRED_NO_ARRIVAL, CLEARED, RECEIVED, GOODS_ARRIVED_MESSAGE)
+        val statusesWithBodyText = Seq(CANCELLED, WITHDRAWN, EXPIRED_NO_DEPARTURE, EXPIRED_NO_ARRIVAL, CLEARED, GOODS_ARRIVED_MESSAGE)
 
         statusesWithBodyText.foreach { status =>
           s"displaying a ${status} notification" in {
