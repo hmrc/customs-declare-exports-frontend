@@ -732,6 +732,7 @@ dashboard.notification.180.days.action = Dewiswch MRN i weld pa gamau mae angen 
 dashboard.notification.180.days.cancelled = Dewiswch MRN i fwrw golwg dros ddatganiad sydd wedi’i ganslo. Mae datganiadau yn cael eu canslo neu eu terfynu pan na fydd nwyddau’n cyrraedd neu’n gadael o fewn yr amserlen sydd wedi’i derbyn.
 dashboard.notification.180.days.rejected = Dewiswch MRN i fwrw golwg dros ddatganiad a wrthodwyd a dod o hyd i gyfarwyddiadau ar gyfer datrys y gwallau er mwyn ailgyflwyno’r datganiad.
 dashboard.notification.180.days.submitted = Dewiswch MRN i fwrw golwg dros fanylion llawn y datganiad, ac opsiynau ar gyfer argraffu, diwygio neu gopïo ac ailddefnyddio’r datganiad.
+dashboard.button.group.link = Ewch yn syth i’r hidlydd ar gyfer datganiadau
 dashboard.header.ducr = Cyfeirnod Unigryw y Llwyth (DUCR)
 dashboard.header.lrn = Eich cyfeirnod (LRN)
 dashboard.header.mrn = Rhif Cyfeirnod Symud (MRN)
