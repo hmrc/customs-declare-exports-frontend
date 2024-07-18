@@ -711,7 +711,7 @@ submission.enhancedStatus.timeline.title.amendment.external = Diweddariad allano
 submission.enhancedStatus.timeline.title.amendment.failed = Diwygiad wedi methu
 submission.enhancedStatus.timeline.title.amendment.rejected = Diwygiad wedi’i wrthod
 submission.enhancedStatus.timeline.title.amendment.requested = Cais am ddiwygiad wedi’i wneud
-submission.enhancedStatus.timeline.title.cancel.amendment.accepted = Amendment cancelled
+submission.enhancedStatus.timeline.title.cancel.amendment.accepted = Diwygiad wedi’i ganslo
 submission.enhancedStatus.timeline.title.CUSTOMS_POSITION_DENIED = Cais i ganslo wedi’i wrthod
 
 submission.enhancedStatus.timeline.content.external.amendment = Mae trydydd parti awdurdodedig, er enghraifft Llwythwr, wedi gwneud diwygiad i’r datganiad hwn. Ni fydd y newid hwn yn ymddangos yn fanylion y datganiad.
@@ -1495,7 +1495,7 @@ declaration.exchangeRate.paragraph1.text = Mae hyn yn golygu cyfradd a gytunwyd 
 declaration.exchangeRate.yes = Iawn
 declaration.exchangeRate.no = Na
 declaration.exchangeRate.input.label = Nodwch y gyfradd gyfnewid y cytunwyd arni
-declaration.exchangeRate.input.hint = Er enghraifft, os yw’r contract yn nodi bod cyfradd o USD1.25
+declaration.exchangeRate.input.hint = Er enghraifft, os yw’r contract yn datgan y bydd cyfradd o USD1.25 = £1 yn cael ei defnyddio, mae angen i chi nodi 1.25
 declaration.exchangeRate.expander.title = Beth yw’r gyfradd gyfnewid y cytunwyd arni?
 declaration.exchangeRate.expander.paragraph.1 = Os yw’r anfoneb yn defnyddio cyfradd gyfnewid y cytunwyd arni sy’n wahanol i gyfradd CThEF, a phennir hyn yn y contract gwerthu, nodwch y gyfradd gyfnewid hon. Peidiwch â nodi cyfradd gyfnewid CThEF.
 declaration.exchangeRate.expander.paragraph.2 = Bydd angen i chi hefyd ddefnyddio’r gyfradd gyfnewid hon y cytunwyd arni i drosi’r swm a anfonebwyd i GBP er mwyn nodi’r cyfanswm a anfonebwyd. Mae’n rhaid cael tystiolaeth i ategu’r defnydd o gyfraddau cyfnewid sefydlog, a’u bod ar gael i’r Tollau ar gais.
@@ -2165,14 +2165,14 @@ declaration.transport.sealId.empty.error = Nodwch Ddynodydd (ID) sêl
 declaration.transport.sealId.error.invalid = Mae’n rhaid i Ddynodydd (ID) y sêl gynnwys llythrennau a rhifau’n unig
 
 declaration.amendment.holding.title = Cyflwyno’ch diwygiad
-declaration.cancel.amendment.holding.title = Submit your amendment cancellation
+declaration.cancel.amendment.holding.title = Cyflwyno cais i ganslo diwygiad
 declaration.confirmation.holding.title = Cyflwynwch eich datganiad
 declaration.confirmation.holding.paragraph = Rydym yn gwirio’ch datganiad, arhoswch
 
-declaration.confirmation.amendment.cancelled.button = View declaration details
-declaration.confirmation.amendment.cancelled.next.1 = Your amendment cancellation request has been accepted.
-declaration.confirmation.amendment.cancelled.next.2 = You will be notified about your declaration on the declaration details page. We will notify you on {0} if we need you to upload any documents.
-declaration.confirmation.amendment.cancelled.title = Your amendment cancellation has been accepted
+declaration.confirmation.amendment.cancelled.button = Bwrw golwg dros fanylion y datganiad
+declaration.confirmation.amendment.cancelled.next.1 = Mae’ch cais i ganslo diwygiad wedi’i dderbyn.
+declaration.confirmation.amendment.cancelled.next.2 = Byddwch yn cael gwybod am eich datganiad ar dudalen manylion y datganiad. Byddwn yn rhoi gwybod i chi drwy e-bostio {0} os oes angen i chi uwchlwytho unrhyw ddogfennau.
+declaration.confirmation.amendment.cancelled.title = Mae’ch cais i ganslo diwygiad wedi’i dderbyn
 
 declaration.confirmation.failed.amendment.title = Cais am ddiwygiad wedi methu
 declaration.confirmation.failed.amendment.next.1 = Mae’r wybodaeth a roesoch ynghylch y diwygiad yn gywir, ond nid oedd modd ei derbyn ar hyn o bryd.
@@ -2290,7 +2290,7 @@ legal.declaration.email.empty = Nodwch gyfeiriad e-bost
 legal.declaration.email.long = Mae’n rhaid i’ch cyfeiriad e-bost beidio â bod yn fwy na 64 o gymeriadau
 legal.declaration.email.error = Nodwch gyfeiriad e-bost dilys
 legal.declaration.confirmation = Rwy’n cadarnhau bod yr wybodaeth a roddwyd gennyf yn gywir hyd eithaf fy ngwybodaeth
-legal.declaration.confirmation.missing = Mae’n rhaid i chi gadarnhau bod yr wybodaeth a roddwyd gennych yn gywir hyd eithaf eich gwybodaeth
+legal.declaration.confirmation.missing = Mae’n rhaid i chi gadarnhau bod yr wybodaeth yn gywir hyd eithaf eich gwybodaeth
 
 rejected.amendment.title = Datganiad wedi’i wrthod
 rejected.amendment.warning = Mae angen i chi drwsio’r gwallau hyn ac yna cyflwyno cais am ddiwygiad
