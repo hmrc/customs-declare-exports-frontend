@@ -100,20 +100,20 @@ class CommodityMeasureViewSpec extends PageWithButtonsSpec with Injector with Mo
       checkAllSaveButtonsAreDisplayed(createView())
 
       "display error when net mass is incorrect" in {
-        val view = createView(form.bind(Map("grossMass" -> "20.99", "netMass" -> "10.0055345")))
+        val view = createView(form.bind(Map("grossMass" -> "20.99", "netMass" -> "10.5345")))
 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#netMass")
-        view must containErrorElementWithMessageKey("declaration.commodityMeasure.netMass.error")
+        view must containErrorElementWithMessageKey("declaration.commodityMeasure.error")
       }
 
       "display error when gross mass is incorrect" in {
-        val view = createView(form.bind(Map("grossMass" -> "5.00234ff", "netMass" -> "100.100")))
+        val view = createView(form.bind(Map("grossMass" -> "5.0ff", "netMass" -> "100.100")))
 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#grossMass")
 
-        view must containErrorElementWithMessageKey("declaration.commodityMeasure.grossMass.error")
+        view must containErrorElementWithMessageKey("declaration.commodityMeasure.error")
       }
 
       "display data in net mass input" in {

@@ -17,7 +17,7 @@
 package utils.validators.forms
 
 import java.util.regex.Pattern
-import scala.util.{Success, Try}
+import scala.util.{Failure, Success, Try}
 
 object FieldValidator {
 
@@ -143,15 +143,16 @@ object FieldValidator {
     input => pattern.matcher(input).matches()
   }
 
-  val validateDecimalGreaterThanZero: Int => Int => String => Boolean = (totalLength: Int) =>
-    (decimalPlaces: Int) =>
-      (input: String) =>
-        try
-          BigDecimal(input) > 0 &&
-            BigDecimal(input).scale <= decimalPlaces &&
-            input.length <= totalLength
-        catch {
-          case _: java.lang.NumberFormatException => false
+  val validateDecimalGreaterThanZero: Int => Int => String => Boolean =
+    (totalLength: Int) =>
+      (decimalPlaces: Int) =>
+        (input: String) => {
+          lazy val bigDecimal = BigDecimal(input)
+          lazy val maxLength = if (bigDecimal.scale > 0) totalLength + 1 else totalLength
+          Try(bigDecimal > 0 && bigDecimal.scale <= decimalPlaces && input.length <= maxLength) match {
+            case Success(result) => result
+            case Failure(_)      => false
+          }
         }
 
   val containsDuplicates: Iterable[_] => Boolean = (input: Iterable[_]) => input.toSet.size != input.size
