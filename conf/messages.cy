@@ -2,7 +2,7 @@ date.day = Diwrnod
 date.month = Mis
 date.year = Blwyddyn
 
-service.name = Gwneud datganiad allforio ar-lein
+service.name = Gwneud a rheoli datganiad allforio ar-lein
 
 feedback = Gwasanaeth newydd yn hwn – bydd eich {0} yn ein helpu i’w wella.
 feedback.link = adborth
