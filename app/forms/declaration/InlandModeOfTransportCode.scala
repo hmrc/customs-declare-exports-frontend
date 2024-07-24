@@ -43,7 +43,7 @@ case class InlandModeOfTransportCode(inlandModeOfTransportCode: Option[ModeOfTra
   private def toUserValue(value: String)(implicit messages: Messages): String =
     safeMessage(s"declaration.summary.transport.inlandModeOfTransport.$value", value)
 
-  def valueAdded(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
+  def getLeafPointersIfAny(pointer: ExportsFieldPointer): Seq[ExportsFieldPointer] =
     inlandModeOfTransportCode.fold("")(code => forAddedValue(pointer, messages(keyForAmend), toUserValue(code.toString)))
 
   def valueAmended(newValue: Amendment, pointer: ExportsFieldPointer)(implicit messages: Messages): String =

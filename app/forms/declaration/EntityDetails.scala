@@ -41,9 +41,9 @@ case class EntityDetails(
       createDiffOfOptions(original.address, address, combinePointers(pointerString, Address.pointer, sequenceId))
     ).flatten
 
-  def valueAdded(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
+  def getLeafPointersIfAny(pointer: ExportsFieldPointer): Seq[ExportsFieldPointer] =
     eori.fold("")(eori => forAddedValue(pointer, messages(EntityDetails.mappingsForAmendment(pointer)), eori.value)) +
-      address.fold("")(_.valueAdded(pointer))
+      address.fold("")(_.getLeafPointersIfAny(pointer))
 
   def valueRemoved(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
     eori.fold("")(eori => forRemovedValue(pointer, messages(EntityDetails.mappingsForAmendment(pointer)), eori.value)) +

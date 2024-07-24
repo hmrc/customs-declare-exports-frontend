@@ -36,7 +36,7 @@ case class Container(sequenceId: Int = sequenceIdPlaceholder, id: String, seals:
 
   override def updateSequenceId(sequenceId: Int): Container = copy(sequenceId = sequenceId)
 
-  def valueAdded(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
+  def getLeafPointersIfAny(pointer: ExportsFieldPointer): Seq[ExportsFieldPointer] =
     if (seals.isEmpty) forAddedValue(pointer, messages(keyForContainerId), id)
     else {
       val newValue = s"${messages(keyForContainerId)}: ${id}<br/>${messages(keyForSeals)}:<br/>${seals.map(_.id).mkString("<br/>")}"

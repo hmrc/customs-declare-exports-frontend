@@ -16,7 +16,7 @@
 
 package models.declaration
 
-import models.AmendmentRow.{forAddedValue, forRemovedValue, pointerToSelector}
+import models.AmendmentRow.{forAddedValue, forRemovedValue, convertToLeafPointer}
 import models.ExportsFieldPointer.ExportsFieldPointer
 import models.declaration.CommodityMeasure.{
   grossMassPointer,
@@ -48,15 +48,15 @@ case class CommodityMeasure(
       compareStringDifference(original.grossMass, grossMass, combinePointers(pointerString, grossMassPointer, sequenceId))
     ).flatten
 
-  def valueAdded(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
-    grossMass.fold("")(forAddedValue(pointerToSelector(pointer, grossMassPointer), messages(keyForGrossMass), _)) +
-      netMass.fold("")(forAddedValue(pointerToSelector(pointer, netMassPointer), messages(keyForNetMass), _)) +
-      supplementaryUnits.fold("")(forAddedValue(pointerToSelector(pointer, supplementaryUnitsPointer), messages(keyForSupplementaryUnits), _))
+  def getLeafPointersIfAny(pointer: ExportsFieldPointer): Seq[ExportsFieldPointer] =
+    grossMass.fold("")(forAddedValue(convertToLeafPointer(pointer, grossMassPointer), messages(keyForGrossMass), _)) +
+      netMass.fold("")(forAddedValue(convertToLeafPointer(pointer, netMassPointer), messages(keyForNetMass), _)) +
+      supplementaryUnits.fold("")(forAddedValue(convertToLeafPointer(pointer, supplementaryUnitsPointer), messages(keyForSupplementaryUnits), _))
 
   def valueRemoved(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
-    grossMass.fold("")(forRemovedValue(pointerToSelector(pointer, grossMassPointer), messages(keyForGrossMass), _)) +
-      netMass.fold("")(forRemovedValue(pointerToSelector(pointer, netMassPointer), messages(keyForNetMass), _)) +
-      supplementaryUnits.fold("")(forRemovedValue(pointerToSelector(pointer, supplementaryUnitsPointer), messages(keyForSupplementaryUnits), _))
+    grossMass.fold("")(forRemovedValue(convertToLeafPointer(pointer, grossMassPointer), messages(keyForGrossMass), _)) +
+      netMass.fold("")(forRemovedValue(convertToLeafPointer(pointer, netMassPointer), messages(keyForNetMass), _)) +
+      supplementaryUnits.fold("")(forRemovedValue(convertToLeafPointer(pointer, supplementaryUnitsPointer), messages(keyForSupplementaryUnits), _))
 }
 
 object CommodityMeasure extends FieldMapping {

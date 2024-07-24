@@ -52,7 +52,7 @@ case class AdditionalFiscalReference(country: String, reference: String)
 
   def value: String = country + reference
 
-  def valueAdded(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
+  def getLeafPointersIfAny(pointer: ExportsFieldPointer): Seq[ExportsFieldPointer] =
     forAddedValue(pointer, messages(keyForAmend), value)
 
   override def valueAmended(newValue: Amendment, pointer: ExportsFieldPointer)(implicit messages: Messages): ExportsFieldPointer =

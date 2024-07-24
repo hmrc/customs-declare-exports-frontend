@@ -37,7 +37,7 @@ case class SupervisingCustomsOffice(supervisingCustomsOffice: Option[String] = N
 
   def value: String = supervisingCustomsOffice.getOrElse("")
 
-  def valueAdded(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
+  def getLeafPointersIfAny(pointer: ExportsFieldPointer): Seq[ExportsFieldPointer] =
     supervisingCustomsOffice.fold("")(forAddedValue(pointer, messages(keyForAmend), _))
 
   def valueAmended(newValue: Amendment, pointer: ExportsFieldPointer)(implicit messages: Messages): String =

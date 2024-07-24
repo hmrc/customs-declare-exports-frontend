@@ -42,7 +42,7 @@ case class GoodsLocation(country: String, typeOfLocation: String, qualifierOfIde
 
   def value: String = country + typeOfLocation + qualifierOfIdentification + identificationOfLocation
 
-  def valueAdded(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
+  def getLeafPointersIfAny(pointer: ExportsFieldPointer): Seq[ExportsFieldPointer] =
     forAddedValue(pointer, messages(keyForAmend), value)
 
   def valueAmended(newValue: Amendment, pointer: ExportsFieldPointer)(implicit messages: Messages): String =

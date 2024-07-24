@@ -20,35 +20,18 @@ import models.ExportsFieldPointer.ExportsFieldPointer
 import play.api.i18n.Messages
 
 trait AmendmentOp {
-
-  def valueAdded(pointer: ExportsFieldPointer)(implicit messages: Messages): String
-  def valueRemoved(pointer: ExportsFieldPointer)(implicit messages: Messages): String
+  def getLeafPointersIfAny(pointer: ExportsFieldPointer): Seq[ExportsFieldPointer]
 }
 
 trait Amendment extends AmendmentOp {
-
   def value: String
-  def valueAmended(newValue: Amendment, pointer: ExportsFieldPointer)(implicit messages: Messages): String
+  def valueAmended(newValue: Amendment, pointer: ExportsFieldPointer): Seq[ExportsFieldPointer]
 }
 
 object AmendmentRow {
-
-  def forAddedValue(pointer: ExportsFieldPointer, fieldId: String, newValue: String): String =
-    forAmendedValue(pointer, fieldId, "", newValue)
-
-  def forAmendedValue(pointer: ExportsFieldPointer, fieldId: String, oldValue: String, newValue: String): String =
-    s"""<tr class="govuk-table__row ${pointer.replaceAll("\\.#?", "-")}">
-       |  <td class="govuk-table__cell govuk-table__cell_break-word">$fieldId</th>
-       |  <td class="govuk-table__cell govuk-table__cell_break-word">$oldValue</td>
-       |  <td class="govuk-table__cell govuk-table__cell_break-word">$newValue</td>
-       |</tr>""".stripMargin
-
-  def forRemovedValue(pointer: ExportsFieldPointer, fieldId: String, oldValue: String): String =
-    forAmendedValue(pointer, fieldId, oldValue, "")
-
   def safeMessage(key: String, default: Any)(implicit messages: Messages): String =
     if (messages.isDefinedAt(key)) messages(key) else default.toString
 
-  def pointerToSelector(head: ExportsFieldPointer, tail: ExportsFieldPointer): ExportsFieldPointer =
+  def convertToLeafPointer(head: ExportsFieldPointer, tail: ExportsFieldPointer): ExportsFieldPointer =
     if (head.endsWith(tail)) head else s"$head.$tail"
 }

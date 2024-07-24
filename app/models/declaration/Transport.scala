@@ -22,7 +22,7 @@ import models.ExportsFieldPointer.ExportsFieldPointer
 import models.FieldMapping
 import play.api.libs.json.{Format, Json}
 import services.DiffTools
-import services.DiffTools.{combinePointers, compareDifference, compareStringDifference, ExportsDeclarationDiff}
+import services.DiffTools.{ExportsDeclarationDiff, combinePointers, compareDifference, compareStringDifference}
 
 case class Transport(
   expressConsignment: Option[YesNoAnswer] = None,
@@ -105,4 +105,6 @@ object Transport extends FieldMapping {
   val transportOnDepartureIdPointer: ExportsFieldPointer = "meansOfTransportOnDepartureIDNumber"
   val transportCrossingTheBorderPointer: ExportsFieldPointer = "meansOfTransportCrossingTheBorderType"
   val transportCrossingTheBorderIdPointer: ExportsFieldPointer = "meansOfTransportCrossingTheBorderIDNumber"
+
+  type ExpressConsignment = Option[YesNoAnswer]
 }

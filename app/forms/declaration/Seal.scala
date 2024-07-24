@@ -40,7 +40,7 @@ case class Seal(sequenceId: Int = sequenceIdPlaceholder, id: String) extends Dif
 
   override def updateSequenceId(sequenceId: Int): Seal = copy(sequenceId = sequenceId)
 
-  def valueAdded(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
+  def getLeafPointersIfAny(pointer: ExportsFieldPointer): Seq[ExportsFieldPointer] =
     forAddedValue(pointer, messages(keyForAmend), id)
 
   def valueRemoved(pointer: ExportsFieldPointer)(implicit messages: Messages): String =

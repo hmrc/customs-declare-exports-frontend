@@ -33,11 +33,8 @@ case class ConsigneeDetails(details: EntityDetails) extends Details with DiffToo
   override def createDiff(original: ConsigneeDetails, pointerString: ExportsFieldPointer, sequenceId: Option[Int] = None): ExportsDeclarationDiff =
     Seq(details.createDiff(original.details, combinePointers(pointerString, sequenceId))).flatten
 
-  def valueAdded(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
-    details.valueAdded(pointer)
-
-  def valueRemoved(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
-    details.valueRemoved(pointer)
+  def getLeafPointersIfAny(pointer: ExportsFieldPointer): Seq[ExportsFieldPointer] =
+    details.getLeafPointersIfAny(pointer)
 }
 
 object ConsigneeDetails extends DeclarationPage with FieldMapping {

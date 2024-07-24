@@ -44,8 +44,8 @@ case class RoutingCountry(sequenceId: Int = sequenceIdPlaceholder, country: Coun
       )
     ).flatten
 
-  def valueAdded(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
-    country.valueAdded(pointer)
+  def getLeafPointersIfAny(pointer: ExportsFieldPointer): Seq[ExportsFieldPointer] =
+    country.getLeafPointersIfAny(pointer)
 
   def valueRemoved(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
     country.valueRemoved(pointer)

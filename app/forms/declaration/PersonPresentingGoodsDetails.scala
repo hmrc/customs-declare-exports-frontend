@@ -42,8 +42,7 @@ case class PersonPresentingGoodsDetails(eori: Eori) extends DiffTools[PersonPres
 
   def value: String = eori.value
 
-  def valueAdded(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
-    forAddedValue(pointer, messages(keyForAmend), value)
+  def getLeafPointersIfAny(pointer: ExportsFieldPointer): Seq[ExportsFieldPointer] = Seq.empty
 
   def valueAmended(newValue: Amendment, pointer: ExportsFieldPointer)(implicit messages: Messages): String =
     forAmendedValue(pointer, messages(keyForAmend), value, newValue.value)

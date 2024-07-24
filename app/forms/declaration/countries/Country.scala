@@ -36,7 +36,7 @@ case class Country(code: Option[String]) extends Ordered[Country] with Amendment
 
   def value: String = code.getOrElse("")
 
-  def valueAdded(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
+  def getLeafPointersIfAny(pointer: ExportsFieldPointer): Seq[ExportsFieldPointer] =
     code.fold("")(forAddedValue(pointer, messages(mappingsForAmendment(pointer)), _))
 
   def valueAmended(newValue: Amendment, pointer: ExportsFieldPointer)(implicit messages: Messages): String =

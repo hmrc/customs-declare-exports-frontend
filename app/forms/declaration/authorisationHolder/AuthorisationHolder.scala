@@ -52,7 +52,7 @@ case class AuthorisationHolder(authorisationTypeCode: Option[String], eori: Opti
       compareDifference(original.eori, eori, combinePointers(pointerString, AuthorisationHolder.eoriPointer, sequenceId))
     ).flatten
 
-  def valueAdded(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
+  def getLeafPointersIfAny(pointer: ExportsFieldPointer): Seq[ExportsFieldPointer] =
     authorisationTypeCode.fold("")(forAddedValue(pointer, messages(keyForTypeCode), _)) +
       eori.fold("")(eori => forAddedValue(pointer, messages(keyForEori), eori.value))
 

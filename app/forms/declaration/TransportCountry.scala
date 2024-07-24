@@ -44,7 +44,7 @@ case class TransportCountry(countryCode: Option[String]) extends Ordered[Transpo
 
   def value: String = countryCode.getOrElse("")
 
-  def valueAdded(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
+  def getLeafPointersIfAny(pointer: ExportsFieldPointer): Seq[ExportsFieldPointer] =
     countryCode.fold("")(forAddedValue(pointer, messages(keyForAmend), _))
 
   def valueAmended(newValue: Amendment, pointer: ExportsFieldPointer)(implicit messages: Messages): String =
