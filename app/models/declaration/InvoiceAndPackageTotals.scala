@@ -56,7 +56,7 @@ case class InvoiceAndPackageTotals(
       )
     ).flatten
 
-  def valueAdded(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
+  def getLeafPointersIfAny(pointer: ExportsFieldPointer): Seq[ExportsFieldPointer] =
     totalAmountInvoiced.fold("")(forAddedValue(pointer, messages("declaration.summary.transaction.itemAmount"), _)) +
       totalAmountInvoicedCurrency.fold("")(forAddedValue(pointer, messages("declaration.summary.transaction.currencyCode"), _)) +
       exchangeRate.fold("")(forAddedValue(pointer, messages("declaration.summary.transaction.exchangeRate"), _)) +

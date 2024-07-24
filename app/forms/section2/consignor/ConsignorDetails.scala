@@ -34,8 +34,8 @@ case class ConsignorDetails(details: EntityDetails) extends Details with DiffToo
   override def createDiff(original: ConsignorDetails, pointerString: ExportsFieldPointer, sequenceId: Option[Int] = None): ExportsDeclarationDiff =
     Seq(details.createDiff(original.details, combinePointers(pointerString, sequenceId))).flatten
 
-  def valueAdded(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
-    details.valueAdded(pointer)
+  def getLeafPointersIfAny(pointer: ExportsFieldPointer): Seq[ExportsFieldPointer] =
+    details.getLeafPointersIfAny(pointer)
 
   def valueRemoved(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
     details.valueRemoved(pointer)

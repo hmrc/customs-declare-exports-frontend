@@ -37,7 +37,7 @@ case class TransportPayment(paymentMethod: String) extends Ordered[TransportPaym
   private def toUserValue(value: String)(implicit messages: Messages): String =
     safeMessage(s"$keyForAmend.$value", value)
 
-  def valueAdded(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
+  def getLeafPointersIfAny(pointer: ExportsFieldPointer): Seq[ExportsFieldPointer] =
     forAddedValue(pointer, messages(keyForAmend), toUserValue(value))
 
   def valueAmended(newValue: Amendment, pointer: ExportsFieldPointer)(implicit messages: Messages): String =
@@ -53,7 +53,7 @@ object TransportPayment extends DeclarationPage with FieldMapping {
 
   override val pointer: ExportsFieldPointer = "transportPayment.paymentMethod"
 
-  private val keyForAmend = "declaration.summary.transport.payment"
+  val keyForAmend = "declaration.summary.transport.payment"
 
   implicit val formats: OFormat[TransportPayment] = Json.format[TransportPayment]
 

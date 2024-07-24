@@ -40,7 +40,7 @@ case class UNDangerousGoodsCode(dangerousGoodsCode: Option[String]) extends Orde
 
   def value: String = dangerousGoodsCode.getOrElse("")
 
-  def valueAdded(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
+  def getLeafPointersIfAny(pointer: ExportsFieldPointer): Seq[ExportsFieldPointer] =
     dangerousGoodsCode.fold("")(forAddedValue(pointer, messages(keyForAmend), _))
 
   def valueAmended(newValue: Amendment, pointer: ExportsFieldPointer)(implicit messages: Messages): String =

@@ -143,28 +143,28 @@ case class ExportItem(
   def requiresWarehouseId: Boolean =
     procedureCodes.flatMap(_.procedureCode).exists(ProcedureCodesData.isWarehouseRequiredCode)
 
-  def valueAdded(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
-    procedureCodes.fold("")(_.valueAdded(s"$pointer.${ProcedureCodesData.pointer}")) +
+  def getLeafPointersIfAny(pointer: ExportsFieldPointer): Seq[ExportsFieldPointer] =
+    procedureCodes.fold("")(_.getLeafPointersIfAny(s"$pointer.${ProcedureCodesData.pointer}")) +
       additionalFiscalReferencesData.fold("")(_.references.zipWithIndex.map { case (reference, index) =>
-        reference.valueAdded(s"$pointer.${AdditionalFiscalReferencesData.pointer}.${index + 1}")
+        reference.getLeafPointersIfAny(s"$pointer.${AdditionalFiscalReferencesData.pointer}.${index + 1}")
       }.mkString) +
-      statisticalValue.fold("")(_.valueAdded(s"$pointer.${StatisticalValue.pointer}")) +
-      commodityDetails.fold("")(_.valueAdded(s"$pointer.${CommodityDetails.pointer}")) +
-      dangerousGoodsCode.fold("")(_.valueAdded(s"$pointer.${UNDangerousGoodsCode.pointer}")) +
-      cusCode.fold("")(_.valueAdded(s"$pointer.${CusCode.pointer}")) +
+      statisticalValue.fold("")(_.getLeafPointersIfAny(s"$pointer.${StatisticalValue.pointer}")) +
+      commodityDetails.fold("")(_.getLeafPointersIfAny(s"$pointer.${CommodityDetails.pointer}")) +
+      dangerousGoodsCode.fold("")(_.getLeafPointersIfAny(s"$pointer.${UNDangerousGoodsCode.pointer}")) +
+      cusCode.fold("")(_.getLeafPointersIfAny(s"$pointer.${CusCode.pointer}")) +
       nactCodes.fold("")(_.zipWithIndex.map { case (nactCode, index) =>
-        nactCode.valueAdded(s"$pointer.${NactCode.pointer}.${index + 1}")
+        nactCode.getLeafPointersIfAny(s"$pointer.${NactCode.pointer}.${index + 1}")
       }.mkString) +
-      nactExemptionCode.fold("")(_.valueAdded(s"$pointer.${NactCode.exemptionPointer}")) +
+      nactExemptionCode.fold("")(_.getLeafPointersIfAny(s"$pointer.${NactCode.exemptionPointer}")) +
       packageInformation.fold("")(_.zipWithIndex.map { case (packageInfo, index) =>
-        packageInfo.valueAdded(s"$pointer.${PackageInformation.pointer}.${index + 1}")
+        packageInfo.getLeafPointersIfAny(s"$pointer.${PackageInformation.pointer}.${index + 1}")
       }.mkString) +
-      commodityMeasure.fold("")(_.valueAdded(s"$pointer.${CommodityMeasure.pointer}")) +
+      commodityMeasure.fold("")(_.getLeafPointersIfAny(s"$pointer.${CommodityMeasure.pointer}")) +
       additionalInformation.fold("")(_.items.zipWithIndex.map { case (additionalInfo, index) =>
-        additionalInfo.valueAdded(s"$pointer.${AdditionalInformationData.pointer}.${index + 1}")
+        additionalInfo.getLeafPointersIfAny(s"$pointer.${AdditionalInformationData.pointer}.${index + 1}")
       }.mkString) +
       additionalDocuments.fold("")(_.documents.zipWithIndex.map { case (document, index) =>
-        document.valueAdded(s"$pointer.${AdditionalDocuments.pointer}.${index + 1}")
+        document.getLeafPointersIfAny(s"$pointer.${AdditionalDocuments.pointer}.${index + 1}")
       }.mkString) +
       isLicenceRequired.fold("")(ilr => forAddedValue(s"$pointer.licences", messages(keyForIsLicenceRequired), valueForYesNo(ilr)))
 

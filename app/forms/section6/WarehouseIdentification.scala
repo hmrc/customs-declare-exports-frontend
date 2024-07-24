@@ -40,7 +40,7 @@ case class WarehouseIdentification(identificationNumber: Option[String] = None) 
 
   def value: String = identificationNumber.getOrElse("")
 
-  def valueAdded(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
+  def getLeafPointersIfAny(pointer: ExportsFieldPointer): Seq[ExportsFieldPointer] =
     identificationNumber.fold("")(forAddedValue(pointer, messages(keyForAmend), _))
 
   def valueAmended(newValue: Amendment, pointer: ExportsFieldPointer)(implicit messages: Messages): String =

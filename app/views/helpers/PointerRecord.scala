@@ -17,14 +17,16 @@
 package views.helpers
 
 import connectors.CodeListConnector
+import controllers.declaration.routes._
 import controllers.section1.routes._
 import controllers.section2.routes._
 import controllers.section3.routes._
 import controllers.section4.routes._
 import controllers.section5.routes._
 import controllers.section6.routes._
-import forms.section6.ModeOfTransportCode
+import forms.section6.{CusCode, ModeOfTransportCode}
 import models.ExportsDeclaration
+import models.declaration.ExportItem.itemsPrefix
 import models.declaration.{Container, ExportItem}
 import play.api.i18n.Messages
 import play.api.mvc.Call
@@ -39,6 +41,7 @@ trait PointerRecord {
   )(implicit msgs: Messages, countryHelper: CountryHelper, codeListConnector: CodeListConnector): Option[String]
   val pageLink1Param: Option[Call] = None
   val pageLink2Param: Option[String => Call] = None
+  val amendKey: Option[String] // TODO rename and add explanatory comment
 }
 
 abstract class DefaultPointerRecord extends PointerRecord {
@@ -63,25 +66,29 @@ object PointerRecord {
   private val getSeal = (container: Container, idx: Int) => container.seals.lift(idx)
   private val getPreviousDocument = (dec: ExportsDeclaration, idx: Int) => dec.previousDocuments.flatMap(_.documents.lift(idx))
 
-  val defaultPointerRecord: DefaultPointerRecord = new DefaultPointerRecord() {
+  val defaultPointerRecord: DefaultPointerRecord = new DefaultPointerRecord {
     def fetchRawValue(dec: ExportsDeclaration, args: Int*): Some[String] = Some("MISSING") // Option.empty[String]
+    override val amendKey: Option[String] = None
   }
 
-  private val procedureCodePointerRecord: DefaultPointerRecord = new DefaultPointerRecord() {
+  private val procedureCodePointerRecord: DefaultPointerRecord = new DefaultPointerRecord {
     def fetchRawValue(dec: ExportsDeclaration, args: Int*): Option[String] =
       getItem(dec, args(0)).flatMap(_.procedureCodes).flatMap(_.procedureCode)
     override val pageLink2Param: Option[String => Call] = Some(ProcedureCodesController.displayPage)
+    val amendKey: Option[String] = Some(s"$itemsPrefix.procedureCode")
   }
 
   private val cusCodePointerRecord: DefaultPointerRecord = new DefaultPointerRecord() {
     def fetchRawValue(dec: ExportsDeclaration, args: Int*): Option[String] =
       getItem(dec, args(0)).flatMap(_.cusCode).flatMap(_.cusCode)
     override val pageLink2Param: Option[String => Call] = Some(CusCodeController.displayPage)
+    override val amendKey: Option[String] = Some(s"$itemsPrefix.cusCode")
   }
 
   private val officeOfExitRecord: DefaultPointerRecord = new DefaultPointerRecord() {
     def fetchRawValue(dec: ExportsDeclaration, args: Int*): Option[String] = dec.locations.officeOfExit.map(_.officeId)
     override val pageLink1Param: Option[Call] = Some(OfficeOfExitController.displayPage)
+    override val amendKey: Option[String] = Some("declaration.summary.locations.officeOfExit")
   }
 
   val library: Map[String, PointerRecord] = Map(
@@ -92,15 +99,18 @@ object PointerRecord {
         args: Int*
       )(implicit msgs: Messages, countryHelper: CountryHelper, codeListConnector: CodeListConnector): Option[String] =
         fetchRawValue(dec, args: _*).map(raw => msgs(s"declaration.type.${raw.toLowerCase}"))
+      val amendKey: Option[String] = None
     },
     "declaration.items.$.statisticalValue.statisticalValue" -> new DefaultPointerRecord() {
       def fetchRawValue(dec: ExportsDeclaration, args: Int*): Option[String] =
         getItem(dec, args(0)).flatMap(_.statisticalValue.map(_.statisticalValue))
       override val pageLink2Param: Option[String => Call] = Some(StatisticalValueController.displayPage)
+      val amendKey: Option[String] = Some(s"$itemsPrefix.itemValue")
     },
     "declaration.items.$.additionalDocument" -> new DefaultPointerRecord() {
       def fetchRawValue(dec: ExportsDeclaration, args: Int*) = Option.empty[String]
       override val pageLink2Param: Option[String => Call] = Some(AdditionalDocumentsController.displayPage)
+      val amendKey: Option[String] = None
     },
     "declaration.items.$.additionalDocument.documentTypeCode" -> new DefaultPointerRecord() {
       def fetchRawValue(dec: ExportsDeclaration, args: Int*): Option[Nothing] = None
@@ -364,6 +374,11 @@ object PointerRecord {
       )(implicit msgs: Messages, countryHelper: CountryHelper, codeListConnector: CodeListConnector): Option[String] =
         fetchRawValue(dec, args: _*).map(code => msgs(s"declaration.summary.transport.payment.$code"))
     },
+    "declaration.transport.expressConsignment" -> new DefaultPointerRecord {
+      override def fetchRawValue(dec: ExportsDeclaration, args: Int*): Option[String] = dec.transport.expressConsignment.map(_.answer)
+      override val pageLink1Param: Option[Call] = Some(ExpressConsignmentController.displayPage)
+      override val amendKey: String = ???
+    },
     "declaration.locations.destinationCountries.countriesOfRouting" -> new DefaultPointerRecord() {
       def fetchRawValue(dec: ExportsDeclaration, args: Int*): Option[String] = Some(dec.locations.routingCountries.size.toString)
       override val pageLink1Param: Option[Call] = Some(RoutingCountriesController.displayRoutingCountry)
@@ -494,6 +509,10 @@ object PointerRecord {
       def fetchRawValue(dec: ExportsDeclaration, args: Int*): Option[String] = dec.parties.consignorDetails.flatMap(_.details.address.map(_.postCode))
       override val pageLink1Param: Option[Call] = Some(ConsignorDetailsController.displayPage)
     },
+    s"$parties.${PersonPresentingGoodsDetails.pointer}.${Eori.pointer}" -> new DefaultPointerRecord {
+      def fetchRawValue(dec: ExportsDeclaration, args: Int*): Option[String] = dec.parties.personPresentingGoodsDetails.map(_.eori.value)
+      val amendKey: Option[String] = Some(s"$summary.parties.personPresentingGoods")
+    }
     "declaration.departureTransport.meansOfTransportOnDepartureIDNumber" -> new DefaultPointerRecord() {
       def fetchRawValue(dec: ExportsDeclaration, args: Int*): Option[String] = dec.transport.meansOfTransportOnDepartureIDNumber
       override val pageLink1Param: Option[Call] = Some(DepartureTransportController.displayPage)

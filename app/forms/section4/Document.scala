@@ -54,7 +54,7 @@ case class Document(documentType: String, documentReference: String, goodsItemId
       )
     ).flatten
 
-  def valueAdded(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
+  def getLeafPointersIfAny(pointer: ExportsFieldPointer): Seq[ExportsFieldPointer] =
     forAddedValue(pointer, messages(keyForType), documentType) +
       forAddedValue(pointer, messages(keyForReference), documentReference) +
       goodsItemIdentifier.fold("")(forAddedValue(pointer, messages(keyForItemNumber), _))

@@ -51,7 +51,7 @@ case class TransportLeavingTheBorder(code: Option[ModeOfTransportCode] = None) e
   private def toUserValue(value: String)(implicit messages: Messages): String =
     safeMessage(s"declaration.summary.transport.departure.transportCode.$value", value)
 
-  def valueAdded(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
+  def getLeafPointersIfAny(pointer: ExportsFieldPointer): Seq[ExportsFieldPointer] =
     forAddedValue(pointer, messages(keyForAmend), toUserValue(value))
 
   def valueAmended(newValue: Amendment, pointer: ExportsFieldPointer)(implicit messages: Messages): String =

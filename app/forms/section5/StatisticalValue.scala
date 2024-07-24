@@ -36,7 +36,7 @@ case class StatisticalValue(statisticalValue: String) extends Ordered[Statistica
 
   def value: String = statisticalValue
 
-  def valueAdded(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
+  def getLeafPointersIfAny(pointer: ExportsFieldPointer): Seq[ExportsFieldPointer] =
     forAddedValue(pointer, messages(keyForAmend), statisticalValue)
 
   def valueAmended(newValue: Amendment, pointer: ExportsFieldPointer)(implicit messages: Messages): String =

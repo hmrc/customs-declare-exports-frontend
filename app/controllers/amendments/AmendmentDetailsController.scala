@@ -20,6 +20,7 @@ import com.google.inject.Inject
 import config.featureFlags.DeclarationAmendmentsConfig
 import connectors.CustomsDeclareExportsConnector
 import controllers.actions.{AuthAction, VerifiedEmailAction}
+import controllers.helpers.AmendmentHelper
 import controllers.general.ErrorHandler
 import controllers.general.routes.RootController
 import models.ExportsDeclaration
@@ -41,7 +42,8 @@ class AmendmentDetailsController @Inject() (
   connector: CustomsDeclareExportsConnector,
   amendmentDetails: amendment_details,
   unavailableAmendmentDetails: unavailable_amendment_details,
-  declarationAmendmentsConfig: DeclarationAmendmentsConfig
+  declarationAmendmentsConfig: DeclarationAmendmentsConfig,
+  amendmentHelper: AmendmentHelper
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with Logging {
 
@@ -72,9 +74,8 @@ class AmendmentDetailsController @Inject() (
               connector.findDeclaration(_).flatMap {
                 case Some(parentDeclaration) =>
                   val reason = declaration.statementDescription
-                  val differences = declaration.createDiff(parentDeclaration)
-                  logger.debug(s"""\n================\n${differences.map(_.toString).mkString("\n")}\n================""")
-                  Future.successful(Ok(amendmentDetails(submission.uuid, ducr(declaration), reason, action, differences)))
+                  val amendmentRows = amendmentHelper.generateAmendmentRows(parentDeclaration, declaration)
+                  Future.successful(Ok(amendmentDetails(submission.uuid, ducr(declaration), reason, action, amendmentRows)))
 
                 case _ =>
                   errorHandler.internalError(s"No parent Declaration found for Declaration($declarationId) on /amendment-details??")

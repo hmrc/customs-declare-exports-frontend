@@ -32,9 +32,7 @@ case class OfficeOfExit(officeId: String) extends Ordered[OfficeOfExit] with Ame
 
   def value: String = officeId
 
-  import forms.section3.OfficeOfExit.keyForAmend
-
-  def valueAdded(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
+  def getLeafPointersIfAny(pointer: ExportsFieldPointer): Seq[ExportsFieldPointer] =
     forAddedValue(pointer, messages(keyForAmend), officeId)
 
   def valueAmended(newValue: Amendment, pointer: ExportsFieldPointer)(implicit messages: Messages): String =
@@ -54,7 +52,7 @@ object OfficeOfExit extends DeclarationPage with FieldMapping {
   val pointerBase: String = "officeOfExit"
   val pointer: ExportsFieldPointer = s"$pointerBase.officeId"
 
-  private val keyForAmend = "declaration.summary.locations.officeOfExit"
+  val keyForAmend = "declaration.summary.locations.officeOfExit"
 
   def form: Form[OfficeOfExit] = Form(OfficeOfExit.mapping)
 

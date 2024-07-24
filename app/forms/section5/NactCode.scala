@@ -40,7 +40,7 @@ case class NactCode(nactCode: String) extends Ordered[NactCode] with Amendment {
     if (!pointer.endsWith(exemptionPointer)) value
     else safeMessage(s"declaration.summary.item.zeroRatedForVat.$value", value)
 
-  def valueAdded(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
+  def getLeafPointersIfAny(pointer: ExportsFieldPointer): Seq[ExportsFieldPointer] =
     forAddedValue(pointer, messages(keyForAmend(pointer)), toUserValue(pointer, value))
 
   def valueAmended(newValue: Amendment, pointer: ExportsFieldPointer)(implicit messages: Messages): String =

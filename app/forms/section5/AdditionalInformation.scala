@@ -18,7 +18,7 @@ package forms.section5
 
 import forms.DeclarationPage
 import forms.section5.AdditionalInformation.{codePointer, descriptionPointer, keyForCode, keyForDescription}
-import models.AmendmentRow.{forAddedValue, forRemovedValue, pointerToSelector}
+import models.AmendmentRow.{forAddedValue, forRemovedValue, convertToLeafPointer}
 import models.DeclarationType.DeclarationType
 import models.ExportsFieldPointer.ExportsFieldPointer
 import models.declaration.ExportItem.itemsPrefix
@@ -42,13 +42,13 @@ case class AdditionalInformation(code: String, description: String)
       compareStringDifference(original.description, description, combinePointers(pointerString, descriptionPointer, sequenceId))
     ).flatten
 
-  def valueAdded(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
-    forAddedValue(pointerToSelector(pointer, codePointer), messages(keyForCode), code) +
-      forAddedValue(pointerToSelector(pointer, descriptionPointer), messages(keyForDescription), description)
+  def getLeafPointersIfAny(pointer: ExportsFieldPointer): Seq[ExportsFieldPointer] =
+    forAddedValue(convertToLeafPointer(pointer, codePointer), messages(keyForCode), code) +
+      forAddedValue(convertToLeafPointer(pointer, descriptionPointer), messages(keyForDescription), description)
 
   def valueRemoved(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
-    forRemovedValue(pointerToSelector(pointer, codePointer), messages(keyForCode), code) +
-      forRemovedValue(pointerToSelector(pointer, descriptionPointer), messages(keyForDescription), description)
+    forRemovedValue(convertToLeafPointer(pointer, codePointer), messages(keyForCode), code) +
+      forRemovedValue(convertToLeafPointer(pointer, descriptionPointer), messages(keyForDescription), description)
 }
 
 object AdditionalInformation extends DeclarationPage with FieldMapping {

@@ -53,7 +53,7 @@ case class AdditionalActor(eori: Option[Eori], partyType: Option[String])
   private def toUserValue(value: String)(implicit messages: Messages): String =
     safeMessage(s"declaration.summary.parties.actors.$value", value)
 
-  def valueAdded(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
+  def getLeafPointersIfAny(pointer: ExportsFieldPointer): Seq[ExportsFieldPointer] =
     eori.fold("")(eori => forAddedValue(s"$pointer-$eoriPointer", messages(keyForEori), eori.value)) +
       partyType.fold("")(pt => forAddedValue(s"$pointer-$partyTypePointer", messages(keyForPartyType), toUserValue(pt)))
 

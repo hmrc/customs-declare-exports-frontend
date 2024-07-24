@@ -22,7 +22,8 @@ import forms.section5.additionaldocuments.DocumentWriteOff.{
   keyForMeasurementUnit,
   measurementUnitPointer
 }
-import models.AmendmentRow.{forAddedValue, forRemovedValue, pointerToSelector}
+import models.AmendmentRow.{forAddedValue, forRemovedValue, convertToLeafPointer}
+import models.declaration.ExportItem.itemsPrefix
 import models.ExportsFieldPointer.ExportsFieldPointer
 import models.declaration.ExportItem.itemsPrefix
 import models.{AmendmentOp, FieldMapping}
@@ -44,16 +45,16 @@ case class DocumentWriteOff(measurementUnit: Option[String], documentQuantity: O
 
   def measurementUnitDisplay: String = measurementUnit.map(_.replace("#", " ")).getOrElse("")
 
-  def valueAdded(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
-    measurementUnit.fold("")(forAddedValue(pointerToSelector(pointer, measurementUnitPointer), messages(keyForMeasurementUnit), _)) +
+  def getLeafPointersIfAny(pointer: ExportsFieldPointer): Seq[ExportsFieldPointer] =
+    measurementUnit.fold("")(forAddedValue(convertToLeafPointer(pointer, measurementUnitPointer), messages(keyForMeasurementUnit), _)) +
       documentQuantity.fold("")(qty =>
-        forAddedValue(pointerToSelector(pointer, documentQuantityPointer), messages(keyForDocumentQuantity), qty.toString)
+        forAddedValue(convertToLeafPointer(pointer, documentQuantityPointer), messages(keyForDocumentQuantity), qty.toString)
       )
 
   def valueRemoved(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
-    measurementUnit.fold("")(forRemovedValue(pointerToSelector(pointer, measurementUnitPointer), messages(keyForMeasurementUnit), _)) +
+    measurementUnit.fold("")(forRemovedValue(convertToLeafPointer(pointer, measurementUnitPointer), messages(keyForMeasurementUnit), _)) +
       documentQuantity.fold("")(qty =>
-        forRemovedValue(pointerToSelector(pointer, documentQuantityPointer), messages(keyForDocumentQuantity), qty.toString)
+        forRemovedValue(convertToLeafPointer(pointer, documentQuantityPointer), messages(keyForDocumentQuantity), qty.toString)
       )
 }
 

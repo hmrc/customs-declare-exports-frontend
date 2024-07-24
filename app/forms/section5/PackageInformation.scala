@@ -25,7 +25,7 @@ import forms.section5.PackageInformation.{
   shippingMarksPointer,
   typesOfPackagesPointer
 }
-import models.AmendmentRow.{forAddedValue, forRemovedValue, pointerToSelector}
+import models.AmendmentRow.{forAddedValue, forRemovedValue, convertToLeafPointer}
 import models.DeclarationMeta.sequenceIdPlaceholder
 import models.DeclarationType.{CLEARANCE, DeclarationType}
 import models.ExportsFieldPointer.ExportsFieldPointer
@@ -70,19 +70,19 @@ case class PackageInformation(
 
   override def updateSequenceId(sequenceId: Int): PackageInformation = copy(sequenceId = sequenceId)
 
-  def valueAdded(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
-    typesOfPackages.fold("")(forAddedValue(pointerToSelector(pointer, typesOfPackagesPointer), messages(keyForTypesOfPackages), _)) +
+  def getLeafPointersIfAny(pointer: ExportsFieldPointer): Seq[ExportsFieldPointer] =
+    typesOfPackages.fold("")(forAddedValue(convertToLeafPointer(pointer, typesOfPackagesPointer), messages(keyForTypesOfPackages), _)) +
       numberOfPackages.fold("")(np =>
-        forAddedValue(pointerToSelector(pointer, numberOfPackagesPointer), messages(keyForNumberOfPackages), String.valueOf(np))
+        forAddedValue(convertToLeafPointer(pointer, numberOfPackagesPointer), messages(keyForNumberOfPackages), String.valueOf(np))
       ) +
-      shippingMarks.fold("")(forAddedValue(pointerToSelector(pointer, shippingMarksPointer), messages(keyForShippingMarksPointer), _))
+      shippingMarks.fold("")(forAddedValue(convertToLeafPointer(pointer, shippingMarksPointer), messages(keyForShippingMarksPointer), _))
 
   def valueRemoved(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
-    typesOfPackages.fold("")(forRemovedValue(pointerToSelector(pointer, typesOfPackagesPointer), messages(keyForTypesOfPackages), _)) +
+    typesOfPackages.fold("")(forRemovedValue(convertToLeafPointer(pointer, typesOfPackagesPointer), messages(keyForTypesOfPackages), _)) +
       numberOfPackages.fold("")(np =>
-        forRemovedValue(pointerToSelector(pointer, numberOfPackagesPointer), messages(keyForNumberOfPackages), String.valueOf(np))
+        forRemovedValue(convertToLeafPointer(pointer, numberOfPackagesPointer), messages(keyForNumberOfPackages), String.valueOf(np))
       ) +
-      shippingMarks.fold("")(forRemovedValue(pointerToSelector(pointer, shippingMarksPointer), messages(keyForShippingMarksPointer), _))
+      shippingMarks.fold("")(forRemovedValue(convertToLeafPointer(pointer, shippingMarksPointer), messages(keyForShippingMarksPointer), _))
 }
 
 object PackageInformation extends DeclarationPage with FieldMapping {

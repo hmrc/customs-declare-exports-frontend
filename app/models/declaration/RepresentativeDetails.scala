@@ -44,8 +44,8 @@ case class RepresentativeDetails(details: Option[EntityDetails], statusCode: Opt
   private def toUserValue(value: String)(implicit messages: Messages): String =
     safeMessage(s"${partiesPrefix}.representative.type.$value", value)
 
-  def valueAdded(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
-    details.fold("")(_.valueAdded(pointer)) +
+  def getLeafPointersIfAny(pointer: ExportsFieldPointer): Seq[ExportsFieldPointer] =
+    details.fold("")(_.getLeafPointersIfAny(pointer)) +
       statusCode.fold("")(code => forAddedValue(pointer, messages(keyForAmend), toUserValue(code)))
 
   def valueRemoved(pointer: ExportsFieldPointer)(implicit messages: Messages): String =

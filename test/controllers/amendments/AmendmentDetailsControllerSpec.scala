@@ -17,6 +17,7 @@
 package controllers.amendments
 
 import base.ControllerWithoutFormSpec
+import controllers.helpers.AmendmentHelper
 import controllers.general.routes.RootController
 import models.DeclarationMeta
 import models.declaration.DeclarationStatus.COMPLETE
@@ -38,6 +39,7 @@ class AmendmentDetailsControllerSpec extends ControllerWithoutFormSpec with Opti
 
   private val amendmentDetails = mock[amendment_details]
   private val unavailableAmendmentDetails = mock[unavailable_amendment_details]
+  private val amendmentHelper = mock[AmendmentHelper]
 
   val controller = new AmendmentDetailsController(
     mockAuthAction,
@@ -47,7 +49,8 @@ class AmendmentDetailsControllerSpec extends ControllerWithoutFormSpec with Opti
     mockCustomsDeclareExportsConnector,
     amendmentDetails,
     unavailableAmendmentDetails,
-    mockDeclarationAmendmentsConfig
+    mockDeclarationAmendmentsConfig,
+    amendmentHelper
   )(ec)
 
   override protected def beforeEach(): Unit = {

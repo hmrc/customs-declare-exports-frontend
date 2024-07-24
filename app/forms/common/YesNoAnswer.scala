@@ -19,10 +19,10 @@ package forms.common
 import forms.mappings.MappingHelper.requiredRadio
 import forms.common.YesNoAnswer.YesNoAnswers.yes
 import forms.common.YesNoAnswer.{mappingsForAmendment, valueForYesNo}
-import models.{Amendment, ExportsDeclaration}
 import models.AmendmentRow.{forAddedValue, forAmendedValue, forRemovedValue}
 import models.ExportsFieldPointer.ExportsFieldPointer
-import models.declaration.{Parties, Transport}
+import models.declaration.Parties
+import models.{Amendment, ExportsDeclaration}
 import play.api.data.{Form, Forms, Mapping}
 import play.api.i18n.Messages
 import play.api.libs.json.{Json, OFormat}
@@ -36,7 +36,7 @@ case class YesNoAnswer(answer: String) extends Ordered[YesNoAnswer] with Amendme
 
   def value: String = answer
 
-  def valueAdded(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
+  def getLeafPointersIfAny(pointer: ExportsFieldPointer): Seq[ExportsFieldPointer] =
     forAddedValue(pointer, messages(mappingsForAmendment(pointer)), valueForYesNo(answer))
 
   def valueAmended(newValue: Amendment, pointer: ExportsFieldPointer)(implicit messages: Messages): String =
@@ -51,11 +51,9 @@ object YesNoAnswer {
   implicit val format: OFormat[YesNoAnswer] = Json.format[YesNoAnswer]
 
   private lazy val parties = s"${ExportsDeclaration.pointer}.${Parties.pointer}"
-  private lazy val transport = s"${ExportsDeclaration.pointer}.${Transport.pointer}"
 
   lazy val mappingsForAmendment = Map(
-    s"$parties.personPresentingGoodsDetails.eori" -> "declaration.summary.parties.eidr",
-    s"$transport.expressConsignment" -> "declaration.summary.transport.expressConsignment"
+    s"$parties.personPresentingGoodsDetails.eori" -> "declaration.summary.parties.eidr"
   )
 
   def valueForYesNo(isYes: Boolean)(implicit messages: Messages): String =

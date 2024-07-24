@@ -40,7 +40,7 @@ case class CusCode(cusCode: Option[String]) extends Ordered[CusCode] with Amendm
 
   def value: String = cusCode.getOrElse("")
 
-  def valueAdded(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
+  def getLeafPointersIfAny(pointer: ExportsFieldPointer): Seq[ExportsFieldPointer] =
     cusCode.fold("")(forAddedValue(pointer, messages(keyForAmend), _))
 
   def valueAmended(newValue: Amendment, pointer: ExportsFieldPointer)(implicit messages: Messages): String =
@@ -55,7 +55,7 @@ object CusCode extends DeclarationPage with FieldMapping {
 
   val pointer: ExportsFieldPointer = "cusCode"
 
-  private lazy val keyForAmend = s"$itemsPrefix.cusCode"
+  lazy val keyForAmend = s"$itemsPrefix.cusCode"
 
   val hasCusCodeKey = "hasCusCode"
   val cusCodeKey = "cusCode"

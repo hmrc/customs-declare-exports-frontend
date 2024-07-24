@@ -35,7 +35,7 @@ import forms.section5.additionaldocuments.AdditionalDocument.{
 }
 import forms.section5.additionaldocuments.DocumentWriteOff.documentWriteOffKey
 import forms.DeclarationPage
-import models.AmendmentRow.{forAddedValue, forRemovedValue, pointerToSelector}
+import models.AmendmentRow.{forAddedValue, forRemovedValue, convertToLeafPointer}
 import models.DeclarationType.{CLEARANCE, DeclarationType}
 import models.ExportsFieldPointer.ExportsFieldPointer
 import models.declaration.ExportItem.itemsPrefix
@@ -89,27 +89,27 @@ case class AdditionalDocument(
       _.isDefined
     )
 
-  def valueAdded(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
-    documentTypeCode.fold("")(forAddedValue(pointerToSelector(pointer, documentTypeCodePointer), messages(keyForTypeCode), _)) +
-      documentIdentifier.fold("")(forAddedValue(pointerToSelector(pointer, documentIdentifierPointer), messages(keyForIdentifier), _)) +
-      documentStatus.fold("")(forAddedValue(pointerToSelector(pointer, documentStatusPointer), messages(keyForStatus), _)) +
-      documentStatusReason.fold("")(forAddedValue(pointerToSelector(pointer, documentStatusReasonPointer), messages(keyForStatusReason), _)) +
-      issuingAuthorityName.fold("")(forAddedValue(pointerToSelector(pointer, issuingAuthorityNamePointer), messages(keyForIssuingAuthorityName), _)) +
+  def getLeafPointersIfAny(pointer: ExportsFieldPointer): Seq[ExportsFieldPointer] =
+    documentTypeCode.fold("")(forAddedValue(convertToLeafPointer(pointer, documentTypeCodePointer), messages(keyForTypeCode), _)) +
+      documentIdentifier.fold("")(forAddedValue(convertToLeafPointer(pointer, documentIdentifierPointer), messages(keyForIdentifier), _)) +
+      documentStatus.fold("")(forAddedValue(convertToLeafPointer(pointer, documentStatusPointer), messages(keyForStatus), _)) +
+      documentStatusReason.fold("")(forAddedValue(convertToLeafPointer(pointer, documentStatusReasonPointer), messages(keyForStatusReason), _)) +
+      issuingAuthorityName.fold("")(forAddedValue(convertToLeafPointer(pointer, issuingAuthorityNamePointer), messages(keyForIssuingAuthorityName), _)) +
       dateOfValidity.fold("")(date =>
-        forAddedValue(pointerToSelector(pointer, dateOfValidityPointer), messages(keyForDateOfValidity), date.toString)
+        forAddedValue(convertToLeafPointer(pointer, dateOfValidityPointer), messages(keyForDateOfValidity), date.toString)
       ) +
-      documentWriteOff.fold("")(_.valueAdded(pointerToSelector(pointer, documentWriteOffPointer)))
+      documentWriteOff.fold("")(_.getLeafPointersIfAny(convertToLeafPointer(pointer, documentWriteOffPointer)))
 
   def valueRemoved(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
-    documentTypeCode.fold("")(forRemovedValue(pointerToSelector(pointer, documentTypeCodePointer), messages(keyForTypeCode), _)) +
-      documentIdentifier.fold("")(forRemovedValue(pointerToSelector(pointer, documentIdentifierPointer), messages(keyForIdentifier), _)) +
-      documentStatus.fold("")(forRemovedValue(pointerToSelector(pointer, documentStatusPointer), messages(keyForStatus), _)) +
-      documentStatusReason.fold("")(forRemovedValue(pointerToSelector(pointer, documentStatusReasonPointer), messages(keyForStatusReason), _)) +
+    documentTypeCode.fold("")(forRemovedValue(convertToLeafPointer(pointer, documentTypeCodePointer), messages(keyForTypeCode), _)) +
+      documentIdentifier.fold("")(forRemovedValue(convertToLeafPointer(pointer, documentIdentifierPointer), messages(keyForIdentifier), _)) +
+      documentStatus.fold("")(forRemovedValue(convertToLeafPointer(pointer, documentStatusPointer), messages(keyForStatus), _)) +
+      documentStatusReason.fold("")(forRemovedValue(convertToLeafPointer(pointer, documentStatusReasonPointer), messages(keyForStatusReason), _)) +
       issuingAuthorityName.fold("")(
-        forRemovedValue(pointerToSelector(pointer, issuingAuthorityNamePointer), messages(keyForIssuingAuthorityName), _)
+        forRemovedValue(convertToLeafPointer(pointer, issuingAuthorityNamePointer), messages(keyForIssuingAuthorityName), _)
       ) +
-      dateOfValidity.fold("")(dt => forRemovedValue(pointerToSelector(pointer, dateOfValidityPointer), messages(keyForDateOfValidity), dt.toString)) +
-      documentWriteOff.fold("")(_.valueRemoved(pointerToSelector(pointer, documentWriteOffPointer)))
+      dateOfValidity.fold("")(dt => forRemovedValue(convertToLeafPointer(pointer, dateOfValidityPointer), messages(keyForDateOfValidity), dt.toString)) +
+      documentWriteOff.fold("")(_.valueRemoved(convertToLeafPointer(pointer, documentWriteOffPointer)))
 }
 
 object AdditionalDocument extends DeclarationPage with FieldMapping {
