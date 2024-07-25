@@ -62,6 +62,6 @@
     name = field.name,
     value = field.value,
     hint = hintContent,
-    errorMessage = InputTextHelper.getAnyErrorMessages(field),
+    errorMessage = InputTextHelper.fieldErrorMessages(field),
     classes = InputTextHelper.defineInputClasses(defaultInputClasses, inputClasses)
 ))

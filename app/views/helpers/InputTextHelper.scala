@@ -23,9 +23,9 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.errormessage.ErrorMessage
 
 object InputTextHelper {
 
-  def getAnyErrorMessages(field: Field)(implicit messages: Messages): Option[ErrorMessage] =
-    field.error.map(err => ErrorMessage(content = HtmlContent(messages(err.message))))
-
   def defineInputClasses(defaultInputClasses: String, inputClasses: Option[String]): String =
     inputClasses.map(clazz => s" $clazz").getOrElse(defaultInputClasses)
+
+  def fieldErrorMessages(field: Field)(implicit messages: Messages): Option[ErrorMessage] =
+    field.error.map(err => ErrorMessage(content = HtmlContent(messages(err.message))))
 }

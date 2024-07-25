@@ -53,7 +53,7 @@
             hint(hintKey, "govuk-hint"),
             hint(tooltipKey, "govuk-visually-hidden")
         ).flatten)))),
-        errorMessage = InputTextHelper.getAnyErrorMessages(field),
+        errorMessage = InputTextHelper.fieldErrorMessages(field),
         classes = "govuk-input govuk-input--width-10",
         spellcheck = Some(false),
         prefix = Some(PrefixOrSuffix(content = Text(messages(prefixKey))))

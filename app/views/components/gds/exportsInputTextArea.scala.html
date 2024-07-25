@@ -55,7 +55,7 @@
                 value = field.value,
                 hint = hintKey.map(key => Hint(content = Text(messages(key)))),
                 classes = inputClasses.getOrElse(""),
-                errorMessage = InputTextHelper.getAnyErrorMessages(field)
+                errorMessage = InputTextHelper.fieldErrorMessages(field)
             ))
         ))).asHtml
     }
@@ -67,7 +67,7 @@
             label = buildLabel,
             hint = hintKey.map(key => Hint(content = Text(messages(key)))),
             classes = inputClasses.getOrElse(""),
-            errorMessage = InputTextHelper.getAnyErrorMessages(field)
+            errorMessage = InputTextHelper.fieldErrorMessages(field)
         ))
     }
 }

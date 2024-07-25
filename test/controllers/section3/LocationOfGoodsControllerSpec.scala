@@ -42,8 +42,8 @@ import scala.collection.immutable.ListMap
 
 class LocationOfGoodsControllerSpec extends ControllerSpec with AuditedControllerSpec with MockTaggedCodes with OptionValues {
 
-  val mockLocationOfGoods = mock[location_of_goods]
-  val mockCodeListConnector = mock[CodeListConnector]
+  private val mockLocationOfGoods = mock[location_of_goods]
+  private val mockCodeListConnector = mock[CodeListConnector]
 
   val controller =
     new LocationOfGoodsController(mockAuthAction, mockJourneyAction, mcc, mockLocationOfGoods, mockExportsCacheService, navigator, taggedAuthCodes)(
@@ -55,16 +55,12 @@ class LocationOfGoodsControllerSpec extends ControllerSpec with AuditedControlle
   override protected def beforeEach(): Unit = {
     super.beforeEach()
 
+    reset(mockLocationOfGoods, mockCodeListConnector)
+
     authorizedUser()
     withNewCaching(aDeclaration(withType(DeclarationType.SUPPLEMENTARY)))
     when(mockLocationOfGoods.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
     when(mockCodeListConnector.getCountryCodes(any())).thenReturn(ListMap("PL" -> Country("Poland", "PL")))
-  }
-
-  override protected def afterEach(): Unit = {
-    super.afterEach()
-
-    reset(mockLocationOfGoods, mockCodeListConnector)
   }
 
   def theResponseForm: Form[LocationOfGoods] = {

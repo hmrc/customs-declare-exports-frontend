@@ -18,10 +18,10 @@ package controllers.section3
 
 import connectors.CodeListConnector
 import controllers.actions.{AuthAction, JourneyAction}
-import controllers.section3.routes.OfficeOfExitController
+import controllers.general.routes.RootController
 import controllers.general.{ModelCacheable, SubmissionErrors}
 import controllers.navigation.Navigator
-import controllers.general.routes.RootController
+import controllers.section3.routes.OfficeOfExitController
 import forms.section3.LocationOfGoods
 import models.ExportsDeclaration
 import models.requests.JourneyRequest
@@ -33,6 +33,7 @@ import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.WithUnsafeDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.validators.forms.AutoCompleteFieldBinding
+import views.helpers.LocationOfGoodsHelper
 import views.html.section3.location_of_goods
 
 import javax.inject.{Inject, Singleton}
@@ -55,7 +56,8 @@ class LocationOfGoodsController @Inject() (
     if (taggedAuthCodes.skipLocationOfGoods(request.cacheModel)) Redirect(RootController.displayPage)
     else if (request.cacheModel.isAmendmentDraft) nextPage
     else {
-      val form = LocationOfGoods.form.withSubmissionErrors
+      val version = LocationOfGoodsHelper.versionSelection
+      val form = LocationOfGoods.form(version).withSubmissionErrors
       request.cacheModel.locations.goodsLocation match {
         case Some(data) => Ok(locationOfGoods(form.fill(data.toForm)))
         case _          => Ok(locationOfGoods(form))
@@ -67,7 +69,8 @@ class LocationOfGoodsController @Inject() (
     if (taggedAuthCodes.skipLocationOfGoods(request.cacheModel)) Future.successful(Redirect(RootController.displayPage))
     else if (request.cacheModel.isAmendmentDraft) Future.successful(nextPage)
     else
-      LocationOfGoods.form
+      LocationOfGoods
+        .form(LocationOfGoodsHelper.versionSelection)
         .bindFromRequest(formValuesFromRequest(LocationOfGoods.locationId))
         .fold(
           formWithErrors => Future.successful(BadRequest(locationOfGoods(formWithErrors))),

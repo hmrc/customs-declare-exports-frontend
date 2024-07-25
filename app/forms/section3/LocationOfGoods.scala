@@ -18,9 +18,9 @@ package forms.section3
 
 import connectors.CodeListConnector
 import forms.DeclarationPage
-import forms.mappings.MappingHelper.requiredRadio
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
+import forms.mappings.MappingHelper.requiredRadio
 import models.DeclarationType.DeclarationType
 import models.declaration.GoodsLocation
 import models.viewmodels.TariffContentKey
@@ -29,8 +29,8 @@ import play.api.data.{Form, Forms, Mapping}
 import play.api.i18n.Messages
 import play.api.libs.json.{Json, OFormat}
 import services.Countries.isValidCountryCode
-import services.GoodsLocationCodes
-import uk.gov.voa.play.form.ConditionalMappings._
+import services.view.GoodsLocationCodes
+import uk.gov.voa.play.form.ConditionalMappings.mandatoryIfEqual
 import utils.validators.forms.FieldValidator._
 
 case class LocationOfGoods(code: String) {
@@ -69,23 +69,46 @@ object LocationOfGoods extends DeclarationPage {
     input.drop(3).toUpperCase.headOption.map(_.toString).exists(predicate)
   }
 
-  def form(implicit messages: Messages, codeListConnector: CodeListConnector): Form[LocationOfGoods] = Form(mapping)
+  def form(version: Int)(implicit messages: Messages, codeListConnector: CodeListConnector): Form[LocationOfGoods] =
+    version match {
+      case 3 | 5 => Form(mappingForVersion3And5)
+      case _     => Form(mappingForOtherVersions(version == 7))
+    }
 
+  val radioGroupId = "locationOfGoods"
+  val userChoice = "userChoice"
   val locationId = "glc"
 
-  private def mapping(implicit messages: Messages, codeListConnector: CodeListConnector): Mapping[LocationOfGoods] =
+  private val extractor = """.+ - \(([A-Z]+)\)""".r
+
+  def gvmsGoodsLocationsForArrivedDecls(implicit messages: Messages): Seq[String] =
+    (1 to 8).map { ix =>
+      val extractor(code) = messages(s"declaration.locationOfGoods.radio.$ix")
+      code
+    } :+ userChoice
+
+  private def mappingForVersion3And5(implicit messages: Messages, codeListConnector: CodeListConnector): Mapping[LocationOfGoods] =
+    Forms.mapping(
+      radioGroupId -> requiredRadio("declaration.locationOfGoods.error.empty", gvmsGoodsLocationsForArrivedDecls),
+      userChoice -> conditionalFieldMapping(radioGroupId, userChoice)
+    )(form2Data)(model2FormV3AndV5)
+
+  private def mappingForOtherVersions(
+    cseCodesOnly: Boolean
+  )(implicit messages: Messages, codeListConnector: CodeListConnector): Mapping[LocationOfGoods] =
     Forms.mapping(
       "yesNo" -> requiredRadio("error.yesNo.required", YesNoAnswer.allowedValues),
-      locationId -> conditionalFieldMapping(YesNoAnswers.yes),
-      "code" -> conditionalFieldMapping(YesNoAnswers.no)
-    )(form2Data)(model2Form)
+      locationId -> conditionalFieldMapping("yesNo", YesNoAnswers.yes),
+      "code" -> conditionalFieldMapping("yesNo", YesNoAnswers.no)
+    )(form2Data)(model2Form(_, cseCodesOnly))
 
   private def conditionalFieldMapping(
-    yesnoAnswer: String
+    fieldId: String,
+    answer: String
   )(implicit messages: Messages, codeListConnector: CodeListConnector): Mapping[Option[String]] =
     mandatoryIfEqual(
-      "yesNo",
-      yesnoAnswer,
+      fieldId,
+      answer,
       text()
         .transform(_.trim, (s: String) => s)
         .verifying("declaration.locationOfGoods.code.empty", nonEmpty)
@@ -115,12 +138,31 @@ object LocationOfGoods extends DeclarationPage {
       case (YesNoAnswers.no, None, Some(code))  => LocationOfGoods(code.toUpperCase)
     }
 
+  private def form2Data(radioId: String, maybeCode: Option[String]): LocationOfGoods =
+    (radioId, maybeCode) match {
+      case (`userChoice`, Some(code)) => LocationOfGoods(code.toUpperCase)
+      case (code, None)               => LocationOfGoods(code.toUpperCase)
+    }
+
   private def model2Form(
-    locationOfGoods: LocationOfGoods
+    locationOfGoods: LocationOfGoods,
+    cseCodesOnly: Boolean
   )(implicit messages: Messages, codeListConnector: CodeListConnector): Option[(String, Option[String], Option[String])] =
-    GoodsLocationCodes.findByCode(locationOfGoods.code) map (_ => ("Yes", Some(locationOfGoods.code), None)) orElse Some(
-      ("No", None, Some(locationOfGoods.code))
-    )
+    GoodsLocationCodes
+      .findByCode(locationOfGoods.code, cseCodesOnly)
+      .map(_ => ("Yes", Some(locationOfGoods.code), None))
+      .orElse(Some(("No", None, Some(locationOfGoods.code))))
+
+  private def model2FormV3AndV5(
+    locationOfGoods: LocationOfGoods
+  )(implicit messages: Messages, codeListConnector: CodeListConnector): Option[(String, Option[String])] =
+    GoodsLocationCodes
+      .findByCode(locationOfGoods.code)
+      .map { _ =>
+        if (gvmsGoodsLocationsForArrivedDecls.contains(locationOfGoods.code)) (locationOfGoods.code, None)
+        else (userChoice, Some(locationOfGoods.code))
+      }
+      .orElse(Some((userChoice, Some(locationOfGoods.code))))
 
   override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
     Seq(TariffContentKey(s"tariff.declaration.locationOfGoods.${DeclarationPage.getJourneyTypeSpecialisation(decType)}"))

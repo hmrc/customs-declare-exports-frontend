@@ -16,6 +16,7 @@
 
 package services.view
 
+import connectors.CodeListConnector
 import models.codes.GoodsLocationCode
 import play.api.i18n.Messages
 import services.GoodsLocationCodesService
@@ -25,15 +26,20 @@ import javax.inject.{Inject, Singleton}
 @Singleton
 class GoodsLocationCodes @Inject() (goodsLocationCodesService: GoodsLocationCodesService) {
 
-  def asListOfAutoCompleteItems(contentVersion: Int)(implicit messages: Messages): List[AutoCompleteItem] = {
-    val codeList =
-      if (contentVersion equals 7) goodsLocationCodesService.cseCodes
-      else goodsLocationCodesService.all
-
-    codeList
-      .map(h => AutoCompleteItem(description(h), h.code))
-
+  def asListOfAutoCompleteItems(cseCodesOnly: Boolean = false)(implicit messages: Messages): List[AutoCompleteItem] = {
+    val codeList = if (cseCodesOnly) goodsLocationCodesService.cseCodes else goodsLocationCodesService.all
+    codeList.map(h => AutoCompleteItem(description(h), h.code))
   }
 
   private def description(h: GoodsLocationCode): String = s"${h.code} - ${h.description}"
+}
+
+object GoodsLocationCodes {
+
+  def findByCode(
+    code: String,
+    cseCodesOnly: Boolean = false
+  )(implicit messages: Messages, codeListConnector: CodeListConnector): Option[GoodsLocationCode] =
+    if (cseCodesOnly) codeListConnector.getCseCodes(messages.lang.toLocale).get(code)
+    else codeListConnector.allGoodsLocationCodes(messages.lang.toLocale).get(code)
 }

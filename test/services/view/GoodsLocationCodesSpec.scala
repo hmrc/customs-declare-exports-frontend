@@ -31,31 +31,24 @@ class GoodsLocationCodesSpec extends UnitViewSpec with BeforeAndAfterEach with F
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-
     when(glc.all(any())).thenReturn(List(GoodsLocationCode("GBCUADLMNCPDP", "Adlington")))
     when(glc.cseCodes(any())).thenReturn(List(GoodsLocationCode("GBBUABDLEACSE", "Aberdeen")))
-
   }
 
   "GoodsLocationCodes.asListOfAutoCompleteItems" when {
+
     "content version is 7 for cse items" should {
-      "return 'Goods Location Codes' from 'CSE' as AutoCompleteItems" in {
-
-        val autoCompleteItems = goodsLocationCodes.asListOfAutoCompleteItems(7)
-
+      "return a list of 'Goods Location Code' AutoCompleteItems from the 'CSE' list only" in {
+        val autoCompleteItems = goodsLocationCodes.asListOfAutoCompleteItems(cseCodesOnly = true)
         autoCompleteItems.head mustBe AutoCompleteItem("GBBUABDLEACSE - Aberdeen", "GBBUABDLEACSE")
-
       }
     }
+
     "content version is not 7" should {
-      "return 'Goods Location Codes' from 'CSE' as AutoCompleteItems" in {
-
-        val autoCompleteItems = goodsLocationCodes.asListOfAutoCompleteItems(1)
-
+      "return a list of 'Goods Location Code' AutoCompleteItems from a list of all codes" in {
+        val autoCompleteItems = goodsLocationCodes.asListOfAutoCompleteItems()
         autoCompleteItems.head mustBe AutoCompleteItem("GBCUADLMNCPDP - Adlington", "GBCUADLMNCPDP")
-
       }
     }
   }
-
 }

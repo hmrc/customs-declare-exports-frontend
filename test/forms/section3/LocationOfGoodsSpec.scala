@@ -16,31 +16,27 @@
 
 package forms.section3
 
-import base.TestHelper
+import base.{MessageSpec, TestHelper}
 import connectors.CodeListConnector
 import forms.common.DeclarationPageBaseSpec
 import forms.common.YesNoAnswer.YesNoAnswers
+import forms.section3.LocationOfGoods.{gvmsGoodsLocationsForArrivedDecls, radioGroupId, userChoice}
 import models.codes.Country
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.data.Form
-import play.api.i18n.{Lang, Messages}
-import play.api.libs.json.{JsObject, JsString}
-import play.api.test.Helpers.stubMessagesApi
+import play.api.libs.json.Json
 
-import java.util.Locale
 import scala.collection.immutable.ListMap
 
-class LocationOfGoodsSpec extends DeclarationPageBaseSpec with MockitoSugar with BeforeAndAfterEach {
+class LocationOfGoodsSpec extends DeclarationPageBaseSpec with BeforeAndAfterEach with MessageSpec with MockitoSugar {
 
   implicit val mockCodeListConnector: CodeListConnector = mock[CodeListConnector]
-  implicit val messages: Messages = stubMessagesApi().preferred(Seq(Lang(Locale.ENGLISH)))
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-
     when(mockCodeListConnector.getCountryCodes(any())).thenReturn(ListMap("GB" -> Country("United Kingdom", "GB")))
   }
 
@@ -51,98 +47,195 @@ class LocationOfGoodsSpec extends DeclarationPageBaseSpec with MockitoSugar with
 
   private val validCode = "GBAUFXTFXTFXT"
 
-  "GoodsLocation form" should {
+  "LocationOfGoods for version 1, 6 or 7 of the page" should {
 
-    "return form with errors" when {
+    def yesNoForm(yesNo: String, code: String): Form[LocationOfGoods] = {
+      val json = Json.obj("yesNo" -> yesNo, "glc" -> "", "code" -> code)
+      LocationOfGoods.form(version = 1).bind(json, Form.FromJsonMaxChars)
+    }
 
+    "return a form with errors" when {
       "provided with a Code" which {
-
-        def boundedForm(code: String) = getBoundedForm(YesNoAnswers.no, "", code)
+        def boundedForm(code: String): Form[LocationOfGoods] = yesNoForm(YesNoAnswers.no, code)
 
         "is missing" in {
-          val form = LocationOfGoods.form.bind(JsObject(Map("unexpected" -> JsString(""))), Form.FromJsonMaxChars)
+          val form = LocationOfGoods.form(version = 1).bind(Json.obj("unexpected" -> ""), Form.FromJsonMaxChars)
 
-          form.hasErrors must be(true)
-          form.errors.length must equal(1)
-          form.errors.head.message must equal("error.yesNo.required")
+          form.hasErrors mustBe true
+          form.errors.length mustBe 1
+          form.errors.head.message mustBe "error.yesNo.required"
         }
 
         "is empty" in {
           val form = boundedForm("")
 
-          form.hasErrors must be(true)
-          form.errors.length must equal(1)
-          form.errors.head.message must equal("declaration.locationOfGoods.code.empty")
+          form.hasErrors mustBe true
+          form.errors.length mustBe 1
+          form.errors.head.message mustBe "declaration.locationOfGoods.code.empty"
         }
 
         "is longer than 39 characters" in {
           val form = boundedForm(s"GBAU${TestHelper.createRandomAlphanumericString(40)}")
 
-          form.hasErrors must be(true)
-          form.errors.length must equal(1)
-          form.errors.head.message must equal("declaration.locationOfGoods.code.error.length")
+          form.hasErrors mustBe true
+          form.errors.length mustBe 1
+          form.errors.head.message mustBe "declaration.locationOfGoods.code.error.length"
         }
 
         "is shorter than 10 characters" in {
           val form = boundedForm(s"GBAU")
 
-          form.hasErrors must be(true)
-          form.errors.length must equal(1)
-          form.errors.head.message must equal("declaration.locationOfGoods.code.error.length")
+          form.hasErrors mustBe true
+          form.errors.length mustBe 1
+          form.errors.head.message mustBe "declaration.locationOfGoods.code.error.length"
         }
 
         "is alphanumeric" in {
           val form = boundedForm(s"${validCode}*")
 
-          form.hasErrors must be(true)
-          form.errors.length must equal(1)
-          form.errors.head.message must equal("declaration.locationOfGoods.code.error")
+          form.hasErrors mustBe true
+          form.errors.length mustBe 1
+          form.errors.head.message mustBe "declaration.locationOfGoods.code.error"
         }
 
         "does not contain a valid country" in {
           val form = boundedForm(s"XX${validCode}")
 
-          form.hasErrors must be(true)
-          form.errors.length must equal(1)
-          form.errors.head.message must equal("declaration.locationOfGoods.code.error")
+          form.hasErrors mustBe true
+          form.errors.length mustBe 1
+          form.errors.head.message mustBe "declaration.locationOfGoods.code.error"
         }
 
         "does not contain a valid location type" in {
           val form = boundedForm(s"GBX${validCode}")
 
-          form.hasErrors must be(true)
-          form.errors.length must equal(1)
-          form.errors.head.message must equal("declaration.locationOfGoods.code.error")
+          form.hasErrors mustBe true
+          form.errors.length mustBe 1
+          form.errors.head.message mustBe "declaration.locationOfGoods.code.error"
         }
 
         "does not contain a valid qualifier code" in {
           val form = boundedForm(s"GBAX${validCode}")
 
-          form.hasErrors must be(true)
-          form.errors.length must equal(1)
-          form.errors.head.message must equal("declaration.locationOfGoods.code.error")
+          form.hasErrors mustBe true
+          form.errors.length mustBe 1
+          form.errors.head.message mustBe "declaration.locationOfGoods.code.error"
         }
       }
     }
 
     "convert to upper case" in {
-      val form = getBoundedForm(YesNoAnswers.no, "", validCode.toLowerCase)
-
-      form.value.map(_.code) must be(Some(validCode))
+      val form = yesNoForm(YesNoAnswers.no, validCode.toLowerCase)
+      form.value.map(_.code) mustBe Some(validCode)
     }
 
     "trim white spaces" in {
-      val form = getBoundedForm(YesNoAnswers.no, "", s"\n \t${validCode}\t \n")
+      val form = yesNoForm(YesNoAnswers.no, s"\n \t${validCode}\t \n")
+      form.value.map(_.code) mustBe Some(validCode)
+    }
+  }
 
-      form.value.map(_.code) must be(Some(validCode))
+  "LocationOfGoods for version 3, or 5 of the page" should {
+
+    def radioGroupForm(radioId: String, code: Option[String] = Some(validCode)): Form[LocationOfGoods] = {
+      val json = Json.obj(radioGroupId -> radioId, userChoice -> (if (radioId == userChoice) code.fold("")(_.toLowerCase) else ""))
+      LocationOfGoods.form(version = 3).bind(json, Form.FromJsonMaxChars)
+    }
+
+    "return the expected value" in {
+      gvmsGoodsLocationsForArrivedDecls.foreach { radioId =>
+        val form = radioGroupForm(radioId)
+        form.value.map(_.code) mustBe Some(if (radioId == userChoice) validCode else radioId)
+      }
+    }
+
+    "trim white spaces" when {
+      "the 'Enter a code manually' field is provided with a Code containing spaces" in {
+        val form = radioGroupForm(userChoice, Some(s"\n \t${validCode}\t \n"))
+        form.value.map(_.code) mustBe Some(validCode)
+      }
+    }
+
+    "return a form with errors" when {
+
+      "the binding is illegal" in {
+        val form = LocationOfGoods.form(version = 3).bind(Json.obj("unexpected" -> ""), Form.FromJsonMaxChars)
+
+        form.hasErrors mustBe true
+        form.errors.length mustBe 1
+        form.errors.head.message mustBe "declaration.locationOfGoods.error.empty"
+      }
+
+      "nothing is selected" in {
+        val form = radioGroupForm("")
+
+        form.hasErrors mustBe true
+        form.errors.length mustBe 1
+        form.errors.head.message mustBe "declaration.locationOfGoods.error.empty"
+      }
+
+      "the 'Enter a code manually' field is provided with a Code" which {
+
+        "is empty" in {
+          val form = radioGroupForm(userChoice, Some(""))
+
+          form.hasErrors mustBe true
+          form.errors.length mustBe 1
+          form.errors.head.message mustBe "declaration.locationOfGoods.code.empty"
+        }
+
+        "is longer than 39 characters" in {
+          val form = radioGroupForm(userChoice, Some(s"GBAU${TestHelper.createRandomAlphanumericString(40)}"))
+
+          form.hasErrors mustBe true
+          form.errors.length mustBe 1
+          form.errors.head.message mustBe "declaration.locationOfGoods.code.error.length"
+        }
+
+        "is shorter than 10 characters" in {
+          val form = radioGroupForm(userChoice, Some(s"GBAU"))
+
+          form.hasErrors mustBe true
+          form.errors.length mustBe 1
+          form.errors.head.message mustBe "declaration.locationOfGoods.code.error.length"
+        }
+
+        "is alphanumeric" in {
+          val form = radioGroupForm(userChoice, Some(s"${validCode}*"))
+
+          form.hasErrors mustBe true
+          form.errors.length mustBe 1
+          form.errors.head.message mustBe "declaration.locationOfGoods.code.error"
+        }
+
+        "does not contain a valid country" in {
+          val form = radioGroupForm(userChoice, Some(s"XX${validCode}"))
+
+          form.hasErrors mustBe true
+          form.errors.length mustBe 1
+          form.errors.head.message mustBe "declaration.locationOfGoods.code.error"
+        }
+
+        "does not contain a valid location type" in {
+          val form = radioGroupForm(userChoice, Some(s"GBX${validCode}"))
+
+          form.hasErrors mustBe true
+          form.errors.length mustBe 1
+          form.errors.head.message mustBe "declaration.locationOfGoods.code.error"
+        }
+
+        "does not contain a valid qualifier code" in {
+          val form = radioGroupForm(userChoice, Some(s"GBAX${validCode}"))
+
+          form.hasErrors mustBe true
+          form.errors.length mustBe 1
+          form.errors.head.message mustBe "declaration.locationOfGoods.code.error"
+        }
+      }
     }
   }
 
   "LocationOfGoods" when {
     testTariffContentKeys(LocationOfGoods, "tariff.declaration.locationOfGoods")
   }
-
-  private def getBoundedForm(yesNo: String, search: String, code: String) =
-    LocationOfGoods.form
-      .bind(JsObject(Map("yesNo" -> JsString(yesNo), "glc" -> JsString(search), "code" -> JsString(code))), Form.FromJsonMaxChars)
 }
