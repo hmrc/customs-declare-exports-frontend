@@ -65,7 +65,7 @@ class CommodityMeasureController @Inject() (
   }
 
   private def form(implicit request: JourneyRequest[_]): Form[CommodityMeasure] =
-    CommodityMeasure.form.withSubmissionErrors
+    CommodityMeasure.form(request.declarationType).withSubmissionErrors
 
   private def nextPage(itemId: String)(implicit request: JourneyRequest[_]): Call =
     if (request.declarationType == CLEARANCE) AdditionalInformationRequiredController.displayPage(itemId)

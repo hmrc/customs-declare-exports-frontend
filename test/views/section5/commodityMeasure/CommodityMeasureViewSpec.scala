@@ -36,17 +36,17 @@ class CommodityMeasureViewSpec extends PageWithButtonsSpec with Injector with Mo
 
   private val page = instanceOf[commodity_measure]
 
-  override val typeAndViewInstance = (STANDARD, page(itemId, form)(_, _))
+  override val typeAndViewInstance = (STANDARD, page(itemId, form(STANDARD))(_, _))
 
   private val detailsPrefix = "declaration.commodityMeasure.expander.paragraph"
   private val tariffPrefix = "tariff.declaration.item.commodityMeasure"
 
-  def createView(frm: Form[CommodityMeasure] = form)(implicit request: JourneyRequest[_]): Document =
-    page(itemId, frm)(request, messages)
+  def createView(form: Form[CommodityMeasure])(implicit request: JourneyRequest[_]): Document =
+    page(itemId, form)(request, messages)
 
   "Commodity Measure View" should {
     onJourney(STANDARD, SUPPLEMENTARY, CLEARANCE) { implicit request =>
-      val view = createView()
+      val view = createView(form(request.declarationType))
 
       "display section header" in {
         view.getElementById("section-header").text mustBe messages("declaration.section.5")
@@ -83,7 +83,7 @@ class CommodityMeasureViewSpec extends PageWithButtonsSpec with Injector with Mo
       }
 
       "display a details expander" in {
-        val view = createView()
+        val view = createView(form(request.declarationType))
         view.getElementsByClass("govuk-details__summary").first.text mustBe messages("declaration.commodityMeasure.expander.title")
         val details = view.getElementsByClass("govuk-details__text").first
 
@@ -97,10 +97,10 @@ class CommodityMeasureViewSpec extends PageWithButtonsSpec with Injector with Mo
         removeBlanksIfAnyBeforeDot(details.text) mustBe expectedText
       }
 
-      checkAllSaveButtonsAreDisplayed(createView())
+      checkAllSaveButtonsAreDisplayed(createView(form(request.declarationType)))
 
       "display error when net mass is incorrect" in {
-        val view = createView(form.bind(Map("grossMass" -> "20.99", "netMass" -> "10.5345")))
+        val view = createView(form(request.declarationType).bind(Map("grossMass" -> "20.99", "netMass" -> "10.5345")))
 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#netMass")
@@ -108,7 +108,7 @@ class CommodityMeasureViewSpec extends PageWithButtonsSpec with Injector with Mo
       }
 
       "display error when gross mass is incorrect" in {
-        val view = createView(form.bind(Map("grossMass" -> "5.0ff", "netMass" -> "100.100")))
+        val view = createView(form(request.declarationType).bind(Map("grossMass" -> "5.0ff", "netMass" -> "100.100")))
 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#grossMass")
@@ -117,21 +117,21 @@ class CommodityMeasureViewSpec extends PageWithButtonsSpec with Injector with Mo
       }
 
       "display data in net mass input" in {
-        val form = CommodityMeasure.form.fill(CommodityMeasure(Some(""), Some("123")))
+        val form = CommodityMeasure.form(request.declarationType).fill(CommodityMeasure(Some(""), Some("123")))
         val view = createView(form)
 
         view.getElementById("netMass").attr("value") mustBe "123"
       }
 
       "display data in gross mass input" in {
-        val form = CommodityMeasure.form.fill(CommodityMeasure(Some("123"), Some("")))
+        val form = CommodityMeasure.form(request.declarationType).fill(CommodityMeasure(Some("123"), Some("")))
         val view = createView(form)
 
         view.getElementById("grossMass").attr("value") mustBe "123"
       }
 
       "display every input filled" in {
-        val form = CommodityMeasure.form.fill(CommodityMeasure(Some("123"), Some("123")))
+        val form = CommodityMeasure.form(request.declarationType).fill(CommodityMeasure(Some("123"), Some("123")))
         val view = createView(form)
 
         view.getElementById("netMass").attr("value") mustBe "123"
@@ -143,7 +143,7 @@ class CommodityMeasureViewSpec extends PageWithButtonsSpec with Injector with Mo
   "Commodity Measure view" should {
 
     onJourney(STANDARD, SUPPLEMENTARY) { implicit request =>
-      val view = createView()
+      val view = createView(form(request.declarationType))
 
       "display 'Back' button that links to 'Package Information' page" in {
         val backButton = view.getElementById("back-link")
@@ -178,7 +178,7 @@ class CommodityMeasureViewSpec extends PageWithButtonsSpec with Injector with Mo
         val item = anItem(withItemId(itemId), withProcedureCodes(Some(procedureCode)))
         val declaration = aDeclarationAfter(request.cacheModel, withIsExs(IsExs(exsStatus)), withItem(item))
 
-        val backButton = createView()(journeyRequest(declaration)).getElementById("back-link")
+        val backButton = createView(form(request.declarationType))(journeyRequest(declaration)).getElementById("back-link")
 
         backButton must containMessage("site.backToPreviousQuestion")
         backButton must haveHref(call.url)
@@ -203,7 +203,7 @@ class CommodityMeasureViewSpec extends PageWithButtonsSpec with Injector with Mo
       }
 
       "display the expected tariff expander" in {
-        val view = createView()
+        val view = createView(form(request.declarationType))
         view.getElementsByClass("govuk-details__summary").last.text mustBe messages("tariff.expander.title.clearance")
         val tariffText = view.getElementsByClass("govuk-details__text").last
 
