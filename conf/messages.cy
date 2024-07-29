@@ -2492,6 +2492,7 @@ dmsError.CDS12056.title = Ni chaniateir cyfuno 2 werth a nodwyd gennych
 dmsError.CDS12057.title = Mae’n rhaid i arian cyfred yr anfoneb ar gyfer pob eitem fod yr un fath
 dmsError.CDS12058.title = Gwall nifer y pecynnau
 dmsError.CDS12062.title = Mae cyfeirnod DUCR yn ddyblyg neu’n annilys
+dmsError.CDS12068.title = Mae maes gofynnol yn annilys neu mae gwerth ar goll ynddo
 dmsError.CDS12070.title = Mae maes gofynnol yn annilys neu mae gwerth ar goll ynddo
 dmsError.CDS12071.title = Mae maes wedi’i gwblhau ar lefel y pennyn a’r eitem
 dmsError.CDS12072.title = Gwall perthynas

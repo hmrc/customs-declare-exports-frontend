@@ -185,6 +185,11 @@
     "cy": "DUCR a ddefnyddiwyd yn flaenorol yn y 12 mis diwethaf"
   },
   {
+    "code": "CDS12068",
+    "en": "This combination of elements mandates the declaration of a Document Identifier",
+    "cy": "Mae\u2019r cyfuniad hwn o elfennau yn ei gwneud hi\u2019n orfodol i ddatgan Dynodydd Dogfen"
+  },
+  {
     "code": "CDS12070",
     "en": "Relation Error: The value supplied in Data Element 1 mandates the completion of Data Element 2",
     "cy": "Gwall Perthynas: Mae\u2019r gwerth a roddwyd yn Elfen Ddata 1 yn mynnu bod Elfen Ddata 2 yn cael ei chwblhau"

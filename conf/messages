@@ -2514,6 +2514,7 @@ dmsError.CDS12056.title = The combination of 2 values you entered is not allowed
 dmsError.CDS12057.title = Invoice currency for all items must be the same
 dmsError.CDS12058.title = Number of packages error
 dmsError.CDS12062.title = DUCR reference is a duplication or is invalid
+dmsError.CDS12068.title = A required field is missing a value or is invalid
 dmsError.CDS12070.title = A required field is missing a value or is invalid
 dmsError.CDS12071.title = A field has been completed at header and item level
 dmsError.CDS12072.title = Relation error
