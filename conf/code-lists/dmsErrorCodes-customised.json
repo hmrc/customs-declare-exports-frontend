@@ -185,6 +185,11 @@
     "cy": ""
   },
   {
+    "code": "CDS12068",
+    "en": "A document code identifier is required for a specific doc code entered in DE 2/3",
+    "cy": "Mae angen dynodydd cod dogfen ar gyfer cod dogfen penodol a nodir yn DE 2/3"
+  },
+  {
     "code": "CDS12070",
     "en": "For example, a Means of Transport or Registration of Nationality code is missing or has been entered incorrectly",
     "cy": "Er enghraifft, mae cod Cofrestru Cenedligrwydd neu Ddull Cludo ar goll neu wedi\u2019i nodi\u2019n anghywir"
