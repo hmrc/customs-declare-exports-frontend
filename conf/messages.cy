@@ -1773,6 +1773,7 @@ declaration.commodityMeasure.grossMass.hint = Cyfanswm pwysau’r nwyddau hyn, g
 declaration.commodityMeasure.netMass.label = Pwysau net mewn cilogramau
 declaration.commodityMeasure.netMass.hint = Cyfanswm pwysau’r nwyddau hyn, heb gynnwys pwysau’r deunydd pacio ar gyfer allforio.
 declaration.commodityMeasure.netMass.error.biggerThanGrossMass = Ni all y pwysau net fod yn uwch na’r pwysau gros
+declaration.commodityMeasure.empty = Nodwch werth ar gyfer Pwysau net a Phwysau gros
 declaration.commodityMeasure.error = Ni all y ffigur cyfan fod yn fwy na 11 digid, ac ni all gynnwys mwy na 3 digid ar ôl pwynt degol
 declaration.commodityMeasure.units = kg
 declaration.commodityMeasure.units.hint = Nodwch y pwysau mewn cilogramau.

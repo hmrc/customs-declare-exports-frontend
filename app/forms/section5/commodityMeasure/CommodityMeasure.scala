@@ -18,7 +18,7 @@ package forms.section5.commodityMeasure
 
 import forms.DeclarationPage
 import forms.mappings.CrossFieldFormatter
-import models.DeclarationType.{CLEARANCE, DeclarationType}
+import models.DeclarationType.{CLEARANCE, DeclarationType, STANDARD, SUPPLEMENTARY}
 import models.declaration.{CommodityMeasure => CM}
 import models.viewmodels.TariffContentKey
 import play.api.data.Forms.of
@@ -40,26 +40,55 @@ object CommodityMeasure extends DeclarationPage {
   def unapply(commodityMeasure: CommodityMeasure): Option[(String, String)] =
     Some((commodityMeasure.grossMass.getOrElse(""), commodityMeasure.netMass.getOrElse("")))
 
-  def form: Form[CommodityMeasure] = Form(mapping)
+  def form(declarationType: DeclarationType): Form[CommodityMeasure] =
+    declarationType match {
+      case STANDARD | SUPPLEMENTARY => Form(requiredMapping)
+      case _                        => Form(optionalMapping)
+    }
 
   private val massFormatValidation: String => Boolean =
     str => validateDecimalGreaterThanZero(11)(3)(str) and containsNotOnlyZeros(str)
 
-  private val mapping = Forms.mapping(
+  private val requiredMapping = Forms.mapping(
     "grossMass" -> of(
       CrossFieldFormatter(
         secondaryKey = "",
-        constraints = List(("declaration.commodityMeasure.error", (gross: String, _) => isEmpty(gross) or massFormatValidation(gross)))
+        constraints = List(
+          ("declaration.commodityMeasure.empty", (gross, _) => nonEmpty(gross)),
+          ("declaration.commodityMeasure.error", (gross, _) => isEmpty(gross) or massFormatValidation(gross))
+        )
       )
     ),
     "netMass" -> of(
       CrossFieldFormatter(
         secondaryKey = "grossMass",
         constraints = List(
-          ("declaration.commodityMeasure.error", (net: String, _) => isEmpty(net) or massFormatValidation(net)),
+          ("declaration.commodityMeasure.empty", (net, _) => nonEmpty(net)),
+          ("declaration.commodityMeasure.error", (net, _) => isEmpty(net) or massFormatValidation(net)),
           (
             "declaration.commodityMeasure.netMass.error.biggerThanGrossMass",
             (net: String, gross: String) => isEmpty(net) or isEmpty(gross) or !massFormatValidation(net) or isFirstSmallerOrEqual(net, gross)
+          )
+        )
+      )
+    )
+  )(CommodityMeasure.apply)(CommodityMeasure.unapply)
+
+  private val optionalMapping = Forms.mapping(
+    "grossMass" -> of(
+      CrossFieldFormatter(
+        secondaryKey = "",
+        constraints = List(("declaration.commodityMeasure.error", (gross, _) => isEmpty(gross) or massFormatValidation(gross)))
+      )
+    ),
+    "netMass" -> of(
+      CrossFieldFormatter(
+        secondaryKey = "grossMass",
+        constraints = List(
+          ("declaration.commodityMeasure.error", (net, _) => isEmpty(net) or massFormatValidation(net)),
+          (
+            "declaration.commodityMeasure.netMass.error.biggerThanGrossMass",
+            (net, gross) => isEmpty(net) or isEmpty(gross) or !massFormatValidation(net) or isFirstSmallerOrEqual(net, gross)
           )
         )
       )

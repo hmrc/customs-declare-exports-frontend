@@ -1779,6 +1779,7 @@ declaration.commodityMeasure.grossMass.hint = The combined weight of the goods a
 declaration.commodityMeasure.netMass.label = Net weight in kilograms
 declaration.commodityMeasure.netMass.hint = The total weight of the goods without exportation packaging.
 declaration.commodityMeasure.netMass.error.biggerThanGrossMass = Net weight cannot be higher than gross weight
+declaration.commodityMeasure.empty = Enter a value for Net weight and for Gross weight
 declaration.commodityMeasure.error = The total figure cannot exceed 11 digits and can have no more than 3 digits after a decimal point
 declaration.commodityMeasure.units = kg
 declaration.commodityMeasure.units.hint = Enter weight in kilograms.
