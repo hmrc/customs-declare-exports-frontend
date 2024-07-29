@@ -16,37 +16,20 @@
 
 package views.common
 
-import base.{Injector, JourneyTypeTestRunner, UnitWithMocksSpec}
+import base.{MessageSpec, UnitWithMocksSpec}
 import mock.FeatureFlagMocks
-import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import org.jsoup.select.Elements
 import org.scalatest.{Assertion, OptionValues}
-import play.api.i18n.{Lang, Messages, MessagesApi}
-import play.api.mvc.{AnyContent, Call, Request}
-import services.cache.ExportsTestHelper
+import play.api.mvc.Call
 import tools.Stubs
 import views.helpers.CommonMessages
 
 trait UnitViewSpec
-    extends UnitWithMocksSpec with CommonMessages with FeatureFlagMocks with JourneyTypeTestRunner with OptionValues with Stubs with ViewMatchers {
+    extends UnitWithMocksSpec with CommonMessages with FeatureFlagMocks with MessageSpec with OptionValues with Stubs with ViewMatchers {
 
   val itemId = "item1"
   val sequenceId = "1"
-
-  implicit val request: JourneyRequest[AnyContent] = journeyRequest()
-
-  protected implicit def messages(implicit request: Request[_]): Messages =
-    new AllMessageKeysAreMandatoryMessages(realMessagesApi.preferred(request))
-
-  protected def messages(key: String, args: Any*)(implicit request: Request[_]): String = messages(request)(key, args: _*)
-
-  protected def messagesCy: Messages =
-    new AllMessageKeysAreMandatoryMessages(realMessagesApi.preferred(Seq(Lang.apply("cy"))))
-
-  protected def messagesCy(key: String, args: Any*)(implicit request: Request[_]): String = messages(request)(key, args: _*)
-
-  val realMessagesApi = UnitViewSpec.realMessagesApi
 
   def checkMessages(keys: String*): Unit =
     "check messages present including Welsh" in {
@@ -90,34 +73,4 @@ trait UnitViewSpec
       row must haveSummaryActionWithPlaceholder(url)
     }
   }
-}
-
-object UnitViewSpec extends Injector with ExportsTestHelper {
-  val realMessagesApi: MessagesApi = instanceOf[MessagesApi]
-}
-
-private class AllMessageKeysAreMandatoryMessages(msg: Messages) extends Messages {
-
-  override def asJava: play.i18n.Messages = msg.asJava
-
-  override def messages: Messages = msg.messages
-
-  override def lang: Lang = msg.lang
-
-  override def apply(key: String, args: Any*): String =
-    if (msg.isDefinedAt(key))
-      msg.apply(key, args: _*)
-    else {
-      new AssertionError(s"Message Key is not configured for {$key}").printStackTrace()
-      throw new AssertionError(s"Message Key is not configured for {$key}")
-    }
-
-  override def apply(keys: Seq[String], args: Any*): String =
-    if (keys.exists(key => !msg.isDefinedAt(key)))
-      msg.apply(keys, args)
-    else throw new AssertionError(s"Message Key is not configured for {$keys}")
-
-  override def translate(key: String, args: Seq[Any]): Option[String] = msg.translate(key, args)
-
-  override def isDefinedAt(key: String): Boolean = msg.isDefinedAt(key)
 }

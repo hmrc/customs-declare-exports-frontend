@@ -71,33 +71,33 @@
             name = "partyType",
             items = Seq(
                 RadioItem(
-                    id = Some(Consolidator.toString),
-                    value = Some(Consolidator.toString),
+                    id = Some(Consolidator),
+                    value = Some(Consolidator),
                     content = Text(messages(s"declaration.partyType.$Consolidator")),
                     conditionalHtml = inputField(Consolidator),
-                    checked = form("partyType").value.contains(Consolidator.toString)
+                    checked = form("partyType").value.contains(Consolidator)
                 ),
                 RadioItem(
-                    id = Some(Manufacturer.toString),
-                    value = Some(Manufacturer.toString),
+                    id = Some(Manufacturer),
+                    value = Some(Manufacturer),
                     content = Text(messages(s"declaration.partyType.$Manufacturer")),
                     conditionalHtml = inputField(Manufacturer),
-                    checked = form("partyType").value.contains(Manufacturer.toString)
+                    checked = form("partyType").value.contains(Manufacturer)
                 ),
                 RadioItem(
-                    id = Some(FreightForwarder.toString),
-                    value = Some(FreightForwarder.toString),
+                    id = Some(FreightForwarder),
+                    value = Some(FreightForwarder),
                     content = Text(messages(s"declaration.partyType.$FreightForwarder")),
                     conditionalHtml = inputField(FreightForwarder),
-                    checked = form("partyType").value.contains(FreightForwarder.toString)
+                    checked = form("partyType").value.contains(FreightForwarder)
                 ),
                 RadioItem(
-                    id = Some(WarehouseKeeper.toString),
-                    value = Some(WarehouseKeeper.toString),
+                    id = Some(WarehouseKeeper),
+                    value = Some(WarehouseKeeper),
                     content = Text(messages(s"declaration.partyType.$WarehouseKeeper")),
                     hint = Some(Hint(content = Text(messages(s"declaration.partyType.warehouseKeeper.hint")))),
                     conditionalHtml = inputField(WarehouseKeeper),
-                    checked = form("partyType").value.contains(WarehouseKeeper.toString)
+                    checked = form("partyType").value.contains(WarehouseKeeper)
                 ),
                 RadioItem(
                     divider = Some(messages("site.radio.divider"))
