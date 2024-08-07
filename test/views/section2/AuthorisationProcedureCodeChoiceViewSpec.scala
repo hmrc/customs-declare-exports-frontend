@@ -43,25 +43,25 @@ class AuthorisationProcedureCodeChoiceViewSpec extends PageWithButtonsSpec with 
       messages must haveTranslationFor("declaration.authorisations.procedureCodeChoice.radio.1040")
       messages must haveTranslationFor("declaration.authorisations.procedureCodeChoice.radio.1007")
       messages must haveTranslationFor("declaration.authorisations.procedureCodeChoice.radio.other")
-      messages must haveTranslationFor("declaration.authorisations.procedureCodeChoice.inset.paragraph1")
-      messages must haveTranslationFor("declaration.authorisations.procedureCodeChoice.inset.paragraph2")
+      messages must haveTranslationFor("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.1")
+      messages must haveTranslationFor("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.2")
       messages must haveTranslationFor("declaration.authorisations.procedureCodeChoice.readMoreExpander.header")
       messages must haveTranslationFor("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.1")
-      messages must haveTranslationFor("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.1.linkText")
       messages must haveTranslationFor("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.2")
       messages must haveTranslationFor("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.3")
-      messages must haveTranslationFor("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.3.linkText")
       messages must haveTranslationFor("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.4")
       messages must haveTranslationFor("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.4.linkText")
       messages must haveTranslationFor("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.5")
-      messages must haveTranslationFor("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.5.linkText")
       messages must haveTranslationFor("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.6")
       messages must haveTranslationFor("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.6.linkText")
       messages must haveTranslationFor("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.7")
       messages must haveTranslationFor("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.8.linkText")
       messages must haveTranslationFor("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.9.linkText")
       messages must haveTranslationFor("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.10")
-      messages must haveTranslationFor("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.10.linkText")
+      messages must haveTranslationFor("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.11.linkText")
+      messages must haveTranslationFor("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.12.linkText")
+      messages must haveTranslationFor("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.13")
+      messages must haveTranslationFor("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.13.linkText")
     }
 
     onEveryDeclarationJourney() { implicit request =>
@@ -93,15 +93,6 @@ class AuthorisationProcedureCodeChoiceViewSpec extends PageWithButtonsSpec with 
             "declaration.authorisations.procedureCodeChoice.radio.other"
           )
         }
-      }
-
-      "display inset text" in {
-        val inset = view.getElementsByClass("govuk-inset-text")
-        val expected = Seq(
-          messages("declaration.authorisations.procedureCodeChoice.inset.paragraph1"),
-          messages("declaration.authorisations.procedureCodeChoice.inset.paragraph2")
-        ).mkString(" ")
-        inset.get(0) must containText(expected)
       }
 
       "display non-standard procedures expander" in {
