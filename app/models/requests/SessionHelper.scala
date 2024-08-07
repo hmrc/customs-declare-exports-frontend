@@ -18,9 +18,17 @@ package models.requests
 
 import forms.section1.Lrn
 import play.api.Logging
+import play.api.i18n.Messages
 import play.api.mvc.{Request, Session}
+import play.twirl.api.HtmlFormat.Appendable
+import uk.gov.hmrc.govukfrontend.views.html.components.GovukErrorSummary
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{Content, HtmlContent}
+import uk.gov.hmrc.govukfrontend.views.viewmodels.errorsummary.{ErrorLink, ErrorSummary}
 
 object SessionHelper extends Logging {
+
+  val errorKey = "errors-to-notify"
+  val errorSeparator = '|'
 
   val declarationUuid = "declarationUuid"
 
@@ -52,6 +60,12 @@ object SessionHelper extends Logging {
       ducr <- getValue(submissionDucr)
     } yield CancelDeclarationData(submissionId, mrn, lrn, ducr)
 
+  def showErrorsIfAny(implicit request: Request[_], messages: Messages): Option[Appendable] =
+    getValue(errorKey).map { errorMessageKeys =>
+      def content(key: String): Content = HtmlContent(s"""<span class="error-message">${messages(key)}</span>""")
+      val errorLinks = errorMessageKeys.split(errorSeparator).toList.map(key => ErrorLink(content = content(key)))
+      new GovukErrorSummary().apply(ErrorSummary(errorLinks, title = content("error.root.redirect.title")))
+    }
 }
 
 case class CancelDeclarationData(submissionId: String, mrn: String, lrn: Lrn, ducr: String)

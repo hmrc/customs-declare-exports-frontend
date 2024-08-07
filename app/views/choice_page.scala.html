@@ -17,6 +17,7 @@
 @import config.ExternalServicesConfig
 @import controllers.journey.routes.StandardOrOtherJourneyController
 @import controllers.routes.{FileUploadController, SavedDeclarationsController}
+@import models.requests.SessionHelper.showErrorsIfAny
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.dashboard.DashboardHelper.toDashboard
 @import views.helpers.Title
@@ -36,6 +37,7 @@
 @()(implicit request: Request[_], messages: Messages)
 
 @govukLayout(title = Title("declaration.choice.heading"), showDeclarationSummaryLink = false) {
+    @showErrorsIfAny
 
     @pageTitle(messages("declaration.choice.heading"))
 

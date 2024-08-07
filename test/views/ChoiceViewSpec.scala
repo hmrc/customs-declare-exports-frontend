@@ -20,19 +20,23 @@ import base.OverridableInjector
 import config.ExternalServicesConfig
 import controllers.journey.routes.StandardOrOtherJourneyController
 import controllers.routes.{FileUploadController, SavedDeclarationsController}
+import models.requests.SessionHelper.errorKey
 import org.mockito.Mockito.when
 import play.api.inject.bind
+import play.api.mvc.Request
+import play.api.test.FakeRequest
+import views.common.UnitViewSpec
 import views.dashboard.DashboardHelper.toDashboard
 import views.helpers.CommonMessages
 import views.html.choice_page
-import views.common.UnitViewSpec
 import views.tags.ViewTest
 
 @ViewTest
 class ChoiceViewSpec extends UnitViewSpec with CommonMessages {
 
-  val movementsUrl = "customsMovementsFrontendUrl"
-  val externalServicesConfig = mock[ExternalServicesConfig]
+  private val movementsUrl = "customsMovementsFrontendUrl"
+  private val externalServicesConfig = mock[ExternalServicesConfig]
+
   when(externalServicesConfig.customsMovementsFrontendUrl).thenReturn(movementsUrl)
 
   private val injector = new OverridableInjector(bind[ExternalServicesConfig].toInstance(externalServicesConfig))
@@ -47,6 +51,21 @@ class ChoiceViewSpec extends UnitViewSpec with CommonMessages {
       val element = view.getElementsByClass("hmrc-header__service-name").first
       element.tagName mustBe "a"
       element.text mustBe messages("service.name")
+    }
+
+    "display an error summary box" when {
+      "the Session contains errors" in {
+        implicit val request: Request[_] = FakeRequest().withSession(errorKey -> "error.root.redirect.1|error.root.redirect.2")
+        val view = choicePage()(request, messages)
+        val box = view.getElementsByClass("govuk-error-summary").first
+
+        box.getElementsByTag("h2").first.text mustBe messages("error.root.redirect.title")
+
+        val paragraphs = box.getElementsByTag("li")
+        paragraphs.size mustBe 2
+        paragraphs.first.text mustBe messages("error.root.redirect.1")
+        paragraphs.last.text mustBe messages("error.root.redirect.2")
+      }
     }
 
     "display same page title as header" in {

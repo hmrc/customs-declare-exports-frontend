@@ -22,6 +22,7 @@ import controllers.general.routes.RootController
 import forms.section1.AdditionalDeclarationType.AdditionalDeclarationType
 import models.DeclarationType.DeclarationType
 import models.ExportsDeclaration
+import models.requests.SessionHelper.{errorKey, errorSeparator}
 import models.requests.{AuthenticatedRequest, JourneyRequest}
 import play.api.Logging
 import play.api.mvc.{ActionRefiner, Result, Results}
@@ -69,9 +70,11 @@ class JourneyAction @Inject() (cacheService: ExportsCacheService)(implicit val e
         refineOnAdditionalTypes(request, additionalTypes)
     }
 
+  private lazy val errorMessageKeys: String = (1 to 2).map("error.root.redirect." + _).mkString(errorSeparator.toString)
+
   private def redirectToRoot[A](request: AuthenticatedRequest[A], message: String): Either[Result, JourneyRequest[A]] = {
-    logger.warn(s"For eori(${request.user.eori}) and request($request) => $message")
-    Left(Results.Redirect(RootController.displayPage))
+    logger.info(s"For eori(${request.user.eori}) and request($request) => $message")
+    Left(Results.Redirect(RootController.displayPage).addingToSession(errorKey -> errorMessageKeys)(request))
   }
 
   private def verifyDeclaration[A](id: String, request: AuthenticatedRequest[A], onCondition: ExportsDeclaration => Boolean): RefineResult[A] = {

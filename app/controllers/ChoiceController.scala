@@ -17,7 +17,7 @@
 package controllers
 
 import controllers.actions.{AuthAction, VerifiedEmailAction}
-import models.requests.SessionHelper.{declarationUuid, errorFixModeSessionKey}
+import models.requests.SessionHelper.{declarationUuid, errorFixModeSessionKey, errorKey}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.controller.WithUnsafeDefaultFormBinding
@@ -34,6 +34,6 @@ class ChoiceController @Inject() (
 ) extends FrontendController(mcc) with I18nSupport with WithUnsafeDefaultFormBinding {
 
   val displayPage: Action[AnyContent] = (authenticate andThen verifyEmail) { implicit request =>
-    Ok(choicePage()).removingFromSession(declarationUuid, errorFixModeSessionKey)
+    Ok(choicePage()).removingFromSession(declarationUuid, errorFixModeSessionKey, errorKey)
   }
 }
