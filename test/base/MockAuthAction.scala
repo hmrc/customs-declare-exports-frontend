@@ -276,7 +276,7 @@ trait MockAuthAction extends MockitoSugar with Stubs with MetricsMocks with Inje
       exampleUser
     )
 
-  def getRequest(): Request[AnyContentAsEmpty.type] =
+  def getRequest: Request[AnyContentAsEmpty.type] =
     FakeRequest("GET", "").withSession(declarationUuid -> "declarationUuid").withCSRFToken
 
   def getJourneyRequest(declaration: ExportsDeclaration = aDeclaration()): JourneyRequest[AnyContentAsEmpty.type] =

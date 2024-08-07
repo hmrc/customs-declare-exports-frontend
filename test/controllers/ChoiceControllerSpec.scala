@@ -17,17 +17,19 @@
 package controllers
 
 import base.ControllerWithoutFormSpec
+import models.requests.SessionHelper.{declarationUuid, errorFixModeSessionKey, errorKey}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{verify, when}
-import play.api.test.Helpers._
+import play.api.http.Status.OK
+import play.api.test.Helpers.await
 import play.twirl.api.HtmlFormat
 import views.html.choice_page
 
 class ChoiceControllerSpec extends ControllerWithoutFormSpec {
 
-  val choicePage = mock[choice_page]
+  private val choicePage = mock[choice_page]
 
-  val controller = new ChoiceController(mockAuthAction, mockVerifiedEmailAction, mcc, choicePage)
+  private val controller = new ChoiceController(mockAuthAction, mockVerifiedEmailAction, mcc, choicePage)
 
   "ChoiceControllerdisplayPage" should {
 
@@ -35,8 +37,11 @@ class ChoiceControllerSpec extends ControllerWithoutFormSpec {
       authorizedUser()
       when(choicePage.apply()(any(), any())).thenReturn(HtmlFormat.empty)
 
-      val result = controller.displayPage(getRequest())
-      status(result) must be(OK)
+      val result = await(controller.displayPage(getRequestWithSession(errorFixModeSessionKey -> "err1", errorKey -> "err2")))
+      result.header.status mustBe OK
+
+      List(declarationUuid, errorFixModeSessionKey, errorKey).foreach(result.header.headers.get(_) mustBe None)
+
       verify(choicePage).apply()(any(), any())
     }
   }

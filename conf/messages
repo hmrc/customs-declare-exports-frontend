@@ -23,6 +23,10 @@ error.summary.text = Check the following
 error.yesNo.required = Select yes or no
 error.unknown = Unknown error
 
+error.root.redirect.title = There was a problem
+error.root.redirect.1 = Sorry, the action could not be completed and you have been redirected to this page.
+error.root.redirect.2 = Please try the same action again.
+
 site.back = Back
 site.backToPreviousQuestion = Back to previous question
 site.backToSelectionPage = Back to selection page
