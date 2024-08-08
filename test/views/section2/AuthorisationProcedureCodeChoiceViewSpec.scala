@@ -29,7 +29,7 @@ import views.html.section2.authorisation_procedure_code_choice
 
 class AuthorisationProcedureCodeChoiceViewSpec extends PageWithButtonsSpec with Injector {
 
-  val page = instanceOf[authorisation_procedure_code_choice]
+  val page: authorisation_procedure_code_choice = instanceOf[authorisation_procedure_code_choice]
 
   override val typeAndViewInstance = (STANDARD, page(form)(_, _))
 
@@ -154,16 +154,33 @@ class AuthorisationProcedureCodeChoiceViewSpec extends PageWithButtonsSpec with 
       firstParagraph.text mustBe messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.1")
       paragraphs.get(1).text mustBe messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.2")
       paragraphs.get(2).text mustBe messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.3")
-      paragraphs.get(3).text mustBe messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.4", messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.4.linkText"))
+      paragraphs.get(3).text mustBe messages(
+        "declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.4",
+        messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.4.linkText")
+      )
       paragraphs.get(4).text mustBe messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.5")
-      paragraphs.get(5).text mustBe messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.6", messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.6.linkText"))
-      paragraphs.get(6).text mustBe messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.7", messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.7.linkText"))
-      paragraphs.get(7).text mustBe messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.8", messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.8.linkText"))
-      paragraphs.get(8).text mustBe messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.9", messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.9.linkText"))
+      paragraphs.get(5).text mustBe messages(
+        "declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.6",
+        messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.6.linkText")
+      )
+      paragraphs.get(6).text mustBe messages(
+        "declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.7",
+        messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.7.linkText")
+      )
+      paragraphs.get(7).text mustBe messages(
+        "declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.8",
+        messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.8.linkText")
+      )
+      paragraphs.get(8).text mustBe messages(
+        "declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.9",
+        messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.9.linkText")
+      )
       paragraphs.get(9).text mustBe messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.10")
-      paragraphs.get(10).text mustBe messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.13", messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.13.linkText"))
+      paragraphs.get(10).text mustBe messages(
+        "declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.13",
+        messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.13.linkText")
+      )
     }
-
 
   }
 }
