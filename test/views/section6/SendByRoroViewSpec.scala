@@ -56,6 +56,19 @@ class SendByRoroViewSpec extends UnitViewSpec with Stubs with Injector {
     "display the expected paragraphs" in {
       val paragraphs = view.getElementsByClass("govuk-body")
       paragraphs.size mustBe 13
+      paragraphs.get(0).text mustBe messages("guidance.roro.intro")
+      paragraphs.get(1).text mustBe messages("guidance.roro.section.1.paragraph.1")
+      paragraphs.get(2).text mustBe messages("guidance.roro.section.1.paragraph.2", messages("guidance.roro.section.1.paragraph.2.link"))
+      paragraphs.get(3).text mustBe messages("guidance.roro.section.2.paragraph.1")
+      paragraphs.get(4).text mustBe messages("guidance.roro.section.2.paragraph.2", messages("guidance.roro.section.2.paragraph.2.link"))
+      paragraphs.get(5).text mustBe messages("guidance.roro.section.2.paragraph.3")
+      paragraphs.get(6).text mustBe messages("guidance.roro.section.3.paragraph.1")
+      paragraphs.get(7).text mustBe messages("guidance.roro.section.3.paragraph.2")
+      paragraphs.get(8).text mustBe messages("guidance.roro.section.4.paragraph.1")
+      paragraphs.get(9).text mustBe messages("guidance.roro.section.5.paragraph.1")
+      paragraphs.get(10).text mustBe messages("guidance.roro.section.5.paragraph.2")
+      paragraphs.get(11).text mustBe messages("guidance.roro.section.6.paragraph.1")
+      paragraphs.get(12).text mustBe messages("guidance.roro.section.6.paragraph.2")
     }
 
     "display the expected bullet list" in {
