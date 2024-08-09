@@ -2659,9 +2659,8 @@ guidance.roro.section.1.list.1.bullet.1 = cael {0}
 guidance.roro.section.1.list.1.bullet.1.link = Rhif EORI yn y DU
 guidance.roro.section.1.list.1.bullet.2 = penderfynwch {0} a beth yw’r opsiynau ar gyfer y nwyddau rydych am eu hallforio
 guidance.roro.section.1.list.1.bullet.2.link = os oes angen i chi wneud datganiadau allforio
-guidance.roro.section.1.paragraph.2 = Os ydych yn defnyddio asiant neu drefnydd anfon nwyddau, byddant yn gallu nodi’r manylion RoRo hyn ar eich rhan. Os byddwch yn gwneud datganiadau eich hun, byddwch yn gallu gwneud hyn gan ddefnyddio’ch meddalwedd, neu drwy gael at naill neu’r llall o’r systemau tollau presennol yn uniongyrchol - y {0} presennol neu’r system newydd sy’n disodli CHIEF, y {1}.
-guidance.roro.section.1.paragraph.2.link.1 = System Allforio Genedlaethol
-guidance.roro.section.1.paragraph.2.link.2 = Gwasanaeth datganiadau allforio CDS
+guidance.roro.section.1.paragraph.2 = Bydd eich asiant neu drefnydd anfon nwyddau, os oes gennych un, yn gallu nodi’r manylion RoRo hyn ar eich rhan.  Os ydych yn cyflwyno datganiadau eich hun, byddwch yn gallu gwneud hyn gan ddefnyddio’ch meddalwedd, neu drwy’r gwasanaeth datganiadau allforio CDS.
+guidance.roro.section.1.paragraph.2.link = Gwasanaeth datganiadau allforio CDS
 
 guidance.roro.section.2.header = O 22 Ionawr 2022 ymlaen: gofynion penodol ar CDS ar gyfer cludiant RoRo a chynwysyddion
 guidance.roro.section.2.paragraph.1 = RoRo yw pan fydd nwyddau’n cael eu gyrru ymlaen i’r fferi neu’r trên, ac oddi arno, ac mae’n cynnwys nwyddau a ddaw gyda rhywun a nwyddau ar eu pennau eu hunain.
