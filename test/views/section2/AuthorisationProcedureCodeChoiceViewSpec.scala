@@ -23,13 +23,13 @@ import forms.section2.AuthorisationProcedureCodeChoice.form
 import models.DeclarationType._
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
+import views.common.PageWithButtonsSpec
 import views.components.gds.Styles
 import views.html.section2.authorisation_procedure_code_choice
-import views.common.PageWithButtonsSpec
 
 class AuthorisationProcedureCodeChoiceViewSpec extends PageWithButtonsSpec with Injector {
 
-  val page = instanceOf[authorisation_procedure_code_choice]
+  val page: authorisation_procedure_code_choice = instanceOf[authorisation_procedure_code_choice]
 
   override val typeAndViewInstance = (STANDARD, page(form)(_, _))
 
@@ -43,25 +43,25 @@ class AuthorisationProcedureCodeChoiceViewSpec extends PageWithButtonsSpec with 
       messages must haveTranslationFor("declaration.authorisations.procedureCodeChoice.radio.1040")
       messages must haveTranslationFor("declaration.authorisations.procedureCodeChoice.radio.1007")
       messages must haveTranslationFor("declaration.authorisations.procedureCodeChoice.radio.other")
-      messages must haveTranslationFor("declaration.authorisations.procedureCodeChoice.inset.paragraph1")
-      messages must haveTranslationFor("declaration.authorisations.procedureCodeChoice.inset.paragraph2")
+      messages must haveTranslationFor("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.1")
+      messages must haveTranslationFor("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.2")
       messages must haveTranslationFor("declaration.authorisations.procedureCodeChoice.readMoreExpander.header")
       messages must haveTranslationFor("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.1")
-      messages must haveTranslationFor("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.1.linkText")
       messages must haveTranslationFor("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.2")
       messages must haveTranslationFor("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.3")
-      messages must haveTranslationFor("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.3.linkText")
       messages must haveTranslationFor("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.4")
       messages must haveTranslationFor("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.4.linkText")
       messages must haveTranslationFor("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.5")
-      messages must haveTranslationFor("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.5.linkText")
       messages must haveTranslationFor("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.6")
       messages must haveTranslationFor("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.6.linkText")
       messages must haveTranslationFor("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.7")
       messages must haveTranslationFor("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.8.linkText")
       messages must haveTranslationFor("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.9.linkText")
       messages must haveTranslationFor("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.10")
-      messages must haveTranslationFor("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.10.linkText")
+      messages must haveTranslationFor("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.11.linkText")
+      messages must haveTranslationFor("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.12.linkText")
+      messages must haveTranslationFor("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.13")
+      messages must haveTranslationFor("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.13.linkText")
     }
 
     onEveryDeclarationJourney() { implicit request =>
@@ -93,15 +93,6 @@ class AuthorisationProcedureCodeChoiceViewSpec extends PageWithButtonsSpec with 
             "declaration.authorisations.procedureCodeChoice.radio.other"
           )
         }
-      }
-
-      "display inset text" in {
-        val inset = view.getElementsByClass("govuk-inset-text")
-        val expected = Seq(
-          messages("declaration.authorisations.procedureCodeChoice.inset.paragraph1"),
-          messages("declaration.authorisations.procedureCodeChoice.inset.paragraph2")
-        ).mkString(" ")
-        inset.get(0) must containText(expected)
       }
 
       "display non-standard procedures expander" in {
@@ -141,5 +132,55 @@ class AuthorisationProcedureCodeChoiceViewSpec extends PageWithButtonsSpec with 
         }
       }
     }
+
+    "display the expander for Procedure choice" in {
+
+      val expander = createView().getElementById("authorisationProcedureCodeChoice-readMore")
+      expander.children.size mustBe 2
+
+      val title = expander.child(0).text
+      title mustBe messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.header")
+
+      val link1 = expander.getElementById("link1")
+      val link2 = expander.getElementById("link2")
+
+      link1.text mustBe messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.11.linkText")
+      link2.text mustBe messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.12.linkText")
+
+      val paragraphs = expander.child(1).getElementsByClass("govuk-body")
+      paragraphs.size mustBe 11
+
+      val firstParagraph = paragraphs.get(0)
+      firstParagraph.text mustBe messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.1")
+      paragraphs.get(1).text mustBe messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.2")
+      paragraphs.get(2).text mustBe messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.3")
+      paragraphs.get(3).text mustBe messages(
+        "declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.4",
+        messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.4.linkText")
+      )
+      paragraphs.get(4).text mustBe messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.5")
+      paragraphs.get(5).text mustBe messages(
+        "declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.6",
+        messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.6.linkText")
+      )
+      paragraphs.get(6).text mustBe messages(
+        "declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.7",
+        messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.7.linkText")
+      )
+      paragraphs.get(7).text mustBe messages(
+        "declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.8",
+        messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.8.linkText")
+      )
+      paragraphs.get(8).text mustBe messages(
+        "declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.9",
+        messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.9.linkText")
+      )
+      paragraphs.get(9).text mustBe messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.10")
+      paragraphs.get(10).text mustBe messages(
+        "declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.13",
+        messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.13.linkText")
+      )
+    }
+
   }
 }
