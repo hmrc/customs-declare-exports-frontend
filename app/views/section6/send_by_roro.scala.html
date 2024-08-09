@@ -56,10 +56,13 @@
     ))
 
     @paragraphBody(messages("guidance.roro.section.1.paragraph.2", link(
-        text = messages("guidance.roro.section.1.paragraph.2.link"),
+        text = messages("guidance.roro.section.1.paragraph.2.link.1"),
         call = Call("GET", appConfig.nationalExportSystemGuidance)
-    )
-    ))
+    ), link(
+        text = messages("guidance.roro.section.1.paragraph.2.link.2"),
+        call = Call("GET", appConfig.loginContinueUrl)
+    )))
+
 
     @heading(messages("guidance.roro.section.2.header"), "govuk-heading-m", "h3")
 
