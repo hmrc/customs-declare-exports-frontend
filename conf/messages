@@ -2683,9 +2683,8 @@ guidance.roro.section.1.list.1.bullet.1 = get a {0}
 guidance.roro.section.1.list.1.bullet.1.link = UK EORI number
 guidance.roro.section.1.list.1.bullet.2 = decide {0} and what the options are for the goods you want to export
 guidance.roro.section.1.list.1.bullet.2.link = if you need to make export declarations
-guidance.roro.section.1.paragraph.2 = If you use an agent or freight forwarder they will be able to enter these RoRo details for you. If you make declarations yourself, you will be able to do this using your software, or by accessing either of the current customs systems directly - the existing {0} or the new system that is replacing CHIEF, the {1}.
-guidance.roro.section.1.paragraph.2.link.1 = National Export System
-guidance.roro.section.1.paragraph.2.link.2 = CDS export declaration service
+guidance.roro.section.1.paragraph.2 = If you use an agent or freight forwarder they will be able to enter these RoRo details for you. If you make declarations yourself, you will be able to do this using your software or by accessing the {0}(link to same destination as currently).
+guidance.roro.section.1.paragraph.2.link = CDS export declaration service
 
 guidance.roro.section.2.header = From January 22, 2022: specific requirements on CDS for RoRo transport and containers
 guidance.roro.section.2.paragraph.1 = RoRo is when goods are driven on to and off the ferry or train, and includes accompanied and unaccompanied goods.
