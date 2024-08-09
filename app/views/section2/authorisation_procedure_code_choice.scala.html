@@ -46,51 +46,50 @@
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 
-@readMoreExpanderContent = {
-    <h2 class="govuk-heading-s">@messages("declaration.authorisations.procedureCodeChoice.option1")</h2>
-    @paragraphBody(messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.1"))
-    @paragraphBody(messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.2"))
-    <h2 class="govuk-heading-s">@messages("declaration.authorisations.procedureCodeChoice.options2and3")</h2>
+@insetSection = {
+    @paragraphBody(messages("declaration.authorisations.procedureCodeChoice.inset.paragraph1"))
+    @paragraphBody(messages("declaration.authorisations.procedureCodeChoice.inset.paragraph2"))
+}
 
-    @paragraphBody(messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.3"))
+@readMoreExpanderContent = {
+    @paragraphBody(messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.1",
+        externalLink(
+            text = messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.1.linkText"),
+            url = appConfig.procedureCodesRemovalOfGoodsFromExciseWarehouse
+        )))
+    @paragraphBody(messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.2"))
+    @paragraphBody(messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.3",
+        externalLink(
+            text = messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.3.linkText"),
+            url = appConfig.procedureCodesRemovalOfGoodsFromExciseWarehouse
+        )))
     @paragraphBody(messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.4",
         externalLink(
             text = messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.4.linkText"),
-            url = appConfig.procedureCodesRemovalOfGoodsFromExciseWarehouse
+            url = appConfig.procedureCodesOnwardSupplyRelief
         )))
-    @paragraphBody(messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.5"))
+    @paragraphBody(messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.5",
+        externalLink(
+            text = messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.5.linkText"),
+            url = appConfig.procedureCodesEndUseRelief
+        )))
     @paragraphBody(messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.6",
         externalLink(
             text = messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.6.linkText"),
-            url = appConfig.procedureCodesRemovalOfGoodsFromExciseWarehouse
-        )))
-    @paragraphBody(messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.7",
-        externalLink(
-            text = messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.7.linkText"),
-            url = appConfig.procedureCodesOnwardSupplyRelief
-        )))
-    @paragraphBody(messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.8",
-        externalLink(
-            text = messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.8.linkText"),
-            url = appConfig.procedureCodesEndUseRelief
-        )))
-    @paragraphBody(messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.9",
-        externalLink(
-            text = messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.9.linkText"),
             url = appConfig.procedureCodesInwardProcessing
         )))
-    @paragraphBody(messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.10"))
-    <p id="link1">@externalLink(
-        text = messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.11.linkText"),
+    @paragraphBody(messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.7"))
+    <p>@externalLink(
+        text = messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.8.linkText"),
         url = appConfig.procedureCodesOutwardProcessing
     )</p>
-    <p id="link2">@externalLink(
-        text = messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.12.linkText"),
+    <p>@externalLink(
+        text = messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.9.linkText"),
         url = appConfig.procedureCodesTemporaryExport
     )</p>
-    @paragraphBody(messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.13",
+    @paragraphBody(messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.10",
         externalLink(
-            text = messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.13.linkText"),
+            text = messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.10.linkText"),
             url = appConfig.procedureCodesReExportFollowingSpecialProcedure
         )))
 }
@@ -135,6 +134,10 @@
             ),
             errorMessage = form(formFieldName).error.map(err => ErrorMessage(content = Text(messages(err.message, err.args: _*))))
         ))
+
+        @insetText(
+            content = HtmlContent(insetSection)
+        )
 
         @govukDetails(Details(
             id = Some("authorisationProcedureCodeChoice-readMore"),
