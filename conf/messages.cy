@@ -23,6 +23,10 @@ error.summary.text = Gwiriwch y canlynol
 error.yesNo.required = Dewiswch ‘Iawn’ neu ‘Na’
 error.unknown = Gwall anhysbys
 
+error.root.redirect.title = Mae problem wedi codi
+error.root.redirect.1 = Mae’n flin gennym, ond nid oedd modd cwblhau’r weithred ac rydych wedi’ch ailgyfeirio at y dudalen hon.
+error.root.redirect.2 = Rhowch gynnig arall ar yr un weithred.
+
 site.back = Yn ôl
 site.backToPreviousQuestion = Yn ôl i’r cwestiwn blaenorol
 site.backToSelectionPage = Yn ôl i’r dudalen ddewis
