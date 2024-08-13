@@ -18,13 +18,14 @@ package controllers.section1
 
 import controllers.actions.{AmendmentDraftFilter, AuthAction, JourneyAction}
 import controllers.general.{ModelCacheable, SubmissionErrors}
+import controllers.navigation.Navigator
 import controllers.section1.routes.MucrController
 import controllers.summary.routes.SectionSummaryController
-import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
-import forms.common.YesNoAnswer.{form, YesNoAnswers}
+import forms.common.YesNoAnswer.{YesNoAnswers, form}
 import models.ExportsDeclaration
 import models.requests.JourneyRequest
+import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import services.audit.AuditService
@@ -61,8 +62,8 @@ class LinkDucrToMucrController @Inject() (
   }
 
   val submitForm: Action[AnyContent] = actionFilters.async { implicit request =>
-    form()
-      .bindFromRequest()
+    def form: Form[YesNoAnswer] = YesNoAnswer.form(errorKey = "declaration.linkDucrToMucr.error.required")
+    form.bindFromRequest()
       .fold(
         formWithErrors => Future.successful(BadRequest(linkDucrToMucrPage(formWithErrors))),
         yesNoAnswer => updateCache(yesNoAnswer).map(_ => navigator.continueTo(nextPage(yesNoAnswer)))
