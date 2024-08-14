@@ -22,7 +22,7 @@ import controllers.navigation.Navigator
 import controllers.section1.routes.MucrController
 import controllers.summary.routes.SectionSummaryController
 import forms.common.YesNoAnswer
-import forms.common.YesNoAnswer.{YesNoAnswers, form}
+import forms.common.YesNoAnswer.{form, YesNoAnswers}
 import models.ExportsDeclaration
 import models.requests.JourneyRequest
 import play.api.data.Form
@@ -63,7 +63,8 @@ class LinkDucrToMucrController @Inject() (
 
   val submitForm: Action[AnyContent] = actionFilters.async { implicit request =>
     def form: Form[YesNoAnswer] = YesNoAnswer.form(errorKey = "declaration.linkDucrToMucr.error.required")
-    form.bindFromRequest()
+    form
+      .bindFromRequest()
       .fold(
         formWithErrors => Future.successful(BadRequest(linkDucrToMucrPage(formWithErrors))),
         yesNoAnswer => updateCache(yesNoAnswer).map(_ => navigator.continueTo(nextPage(yesNoAnswer)))
