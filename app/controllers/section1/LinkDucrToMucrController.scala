@@ -65,9 +65,9 @@ class LinkDucrToMucrController @Inject() (
     form
       .bindFromRequest()
       .fold(
-    formWithErrors => Future.successful(BadRequest(linkDucrToMucrPage(formWithErrors))),
-    yesNoAnswer => updateCache(yesNoAnswer).map(_ => navigator.continueTo(nextPage(yesNoAnswer)))
-    )
+        formWithErrors => Future.successful(BadRequest(linkDucrToMucrPage(formWithErrors))),
+        yesNoAnswer => updateCache(yesNoAnswer).map(_ => navigator.continueTo(nextPage(yesNoAnswer)))
+      )
   }
 
   private def form: Form[YesNoAnswer] = YesNoAnswer.form(errorKey = "declaration.linkDucrToMucr.error.required")
