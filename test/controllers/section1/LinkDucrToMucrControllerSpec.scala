@@ -123,6 +123,8 @@ class LinkDucrToMucrControllerSpec extends ControllerSpec with AuditedController
         status(result) must be(BAD_REQUEST)
         verifyPageInvoked
         verifyNoAudit()
+        theResponseForm.errors.head.messages.head mustBe "declaration.linkDucrToMucr.error.required"
+
       }
     }
   }

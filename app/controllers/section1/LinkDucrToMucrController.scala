@@ -18,13 +18,14 @@ package controllers.section1
 
 import controllers.actions.{AmendmentDraftFilter, AuthAction, JourneyAction}
 import controllers.general.{ModelCacheable, SubmissionErrors}
+import controllers.navigation.Navigator
 import controllers.section1.routes.MucrController
 import controllers.summary.routes.SectionSummaryController
-import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
-import forms.common.YesNoAnswer.{form, YesNoAnswers}
+import forms.common.YesNoAnswer.YesNoAnswers
 import models.ExportsDeclaration
 import models.requests.JourneyRequest
+import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import services.audit.AuditService
@@ -53,7 +54,7 @@ class LinkDucrToMucrController @Inject() (
   private val actionFilters = authenticate andThen journeyAction andThen nextPageIfAmendmentDraft
 
   val displayPage: Action[AnyContent] = actionFilters { implicit request =>
-    val frm = form().withSubmissionErrors
+    val frm = form.withSubmissionErrors
     request.cacheModel.linkDucrToMucr match {
       case Some(yesNoAnswer) => Ok(linkDucrToMucrPage(frm.fill(yesNoAnswer)))
       case _                 => Ok(linkDucrToMucrPage(frm))
@@ -61,13 +62,15 @@ class LinkDucrToMucrController @Inject() (
   }
 
   val submitForm: Action[AnyContent] = actionFilters.async { implicit request =>
-    form()
+    form
       .bindFromRequest()
       .fold(
         formWithErrors => Future.successful(BadRequest(linkDucrToMucrPage(formWithErrors))),
         yesNoAnswer => updateCache(yesNoAnswer).map(_ => navigator.continueTo(nextPage(yesNoAnswer)))
       )
   }
+
+  private def form: Form[YesNoAnswer] = YesNoAnswer.form(errorKey = "declaration.linkDucrToMucr.error.required")
 
   private def nextPage(yesNoAnswer: YesNoAnswer)(implicit request: JourneyRequest[_]): Call =
     if (yesNoAnswer.answer == YesNoAnswers.yes) MucrController.displayPage else nextPage(request)
