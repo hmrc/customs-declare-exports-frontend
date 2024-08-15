@@ -63,7 +63,7 @@ class LocationOfGoodsSpec extends DeclarationPageBaseSpec with BeforeAndAfterEac
 
           form.hasErrors mustBe true
           form.errors.length mustBe 1
-          form.errors.head.message mustBe "error.yesNo.required"
+          form.errors.head.message mustBe "declaration.locationOfGoods.code.search.empty"
         }
 
         "is empty" in {
