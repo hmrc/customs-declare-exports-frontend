@@ -354,10 +354,8 @@ object PointerRecord {
     "declaration.items.$.additionalFiscalReferences.$.id" -> new DefaultPointerRecord() {
       def fetchRawValue(dec: ExportsDeclaration, args: Int*): Option[String] =
         getItem(dec, args(0)).flatMap(getAdditionalFiscalRefs(_, args(1)).map(_.country))
-      override def fetchReadableValue(
-        dec: ExportsDeclaration,
-        args: Int*
-      )(implicit msgs: Messages, countryHelper: CountryHelper, codeListConnector: CodeListConnector): Option[String] =
+      override def fetchReadableValue(dec: ExportsDeclaration, args: Int*)
+        (implicit msgs: Messages, countryHelper: CountryHelper, codeListConnector: CodeListConnector): Option[String] =
         fetchRawValue(dec, args: _*).flatMap(countryHelper.getShortNameForCountryCode)
       override val pageLink2Param: Option[String => Call] = Some(AdditionalFiscalReferencesController.displayPage)
     },
@@ -365,6 +363,7 @@ object PointerRecord {
       def fetchRawValue(dec: ExportsDeclaration, args: Int*): Option[String] =
         getItem(dec, args(0)).flatMap(getAdditionalFiscalRefs(_, args(1)).map(_.reference))
       override val pageLink2Param: Option[String => Call] = Some(AdditionalFiscalReferencesController.displayPage)
+      override val amendKey: Option[String] = Some("declaration.summary.item.VATdetails")
     },
     "declaration.items.$.procedureCodes.procedureCode.current" -> procedureCodePointerRecord,
     "declaration.items.$.procedureCodes.procedureCode.previous" -> procedureCodePointerRecord,
@@ -706,14 +705,21 @@ object PointerRecord {
       override val pageLink1Param: Option[Call] = Some(ConsigneeDetailsController.displayPage)
       override val amendKey: Option[String] = Some("declaration.summary.parties.consignee.address.postCode")
     },
+    "declaration.parties.consignorDetails.eori" -> new DefaultPointerRecord() {
+      def fetchRawValue(dec: ExportsDeclaration, args: Int*): Option[String] =
+        dec.parties.consignorDetails.flatMap(_.details.eori.map(_.value))
+      override val amendKey: Option[String] = Some("declaration.summary.parties.consignor.eori")
+    },
     "declaration.parties.consignorDetails.details.address.fullName" -> new DefaultPointerRecord() {
       def fetchRawValue(dec: ExportsDeclaration, args: Int*): Option[String] = dec.parties.consignorDetails.flatMap(_.details.address.map(_.fullName))
       override val pageLink1Param: Option[Call] = Some(ConsignorDetailsController.displayPage)
+      override val amendKey: Option[String] = Some("declaration.summary.parties.consignor.address.fullName")
     },
     "declaration.parties.consignorDetails.details.address.townOrCity" -> new DefaultPointerRecord() {
       def fetchRawValue(dec: ExportsDeclaration, args: Int*): Option[String] =
         dec.parties.consignorDetails.flatMap(_.details.address.map(_.townOrCity))
       override val pageLink1Param: Option[Call] = Some(ConsignorDetailsController.displayPage)
+      override val amendKey: Option[String] = Some("declaration.summary.parties.consignor.address.townOrCity")
     },
     "declaration.parties.consignorDetails.details.address.country" -> new DefaultPointerRecord() {
       def fetchRawValue(dec: ExportsDeclaration, args: Int*): Option[String] = dec.parties.consignorDetails.flatMap(_.details.address.map(_.country))
@@ -723,15 +729,18 @@ object PointerRecord {
         args: Int*
       )(implicit msgs: Messages, countryHelper: CountryHelper, codeListConnector: CodeListConnector): Option[String] =
         fetchRawValue(dec, args: _*).flatMap(countryHelper.getShortNameForCountryCode)
+      override val amendKey: Option[String] = Some("declaration.summary.parties.consignor.address.country")
     },
     "declaration.parties.consignorDetails.details.address.addressLine" -> new DefaultPointerRecord() {
       def fetchRawValue(dec: ExportsDeclaration, args: Int*): Option[String] =
         dec.parties.consignorDetails.flatMap(_.details.address.map(_.addressLine))
       override val pageLink1Param: Option[Call] = Some(ConsignorDetailsController.displayPage)
+      override val amendKey: Option[String] = Some("declaration.summary.parties.consignor.address.addressLine")
     },
     "declaration.parties.consignorDetails.details.address.postCode" -> new DefaultPointerRecord() {
       def fetchRawValue(dec: ExportsDeclaration, args: Int*): Option[String] = dec.parties.consignorDetails.flatMap(_.details.address.map(_.postCode))
       override val pageLink1Param: Option[Call] = Some(ConsignorDetailsController.displayPage)
+      override val amendKey: Option[String] = Some("declaration.summary.parties.consignor.address.postCode")
     },
     "declaration.transport.meansOfTransportOnDepartureIDNumber" -> meansOfTransportOnDepartureIDNumber,
     "declaration.departureTransport.meansOfTransportOnDepartureIDNumber" -> meansOfTransportOnDepartureIDNumber,
@@ -804,10 +813,14 @@ object PointerRecord {
 
   private val pointerExpansions: Map[String, (Pointer, ExportsDeclaration, ExportsDeclaration) => Seq[Pointer]] = Map(
     "declaration.parties.additionalActors.actors.$" -> expandAdditionalActors,
+    "declaration.parties.consignorDetails" -> expandConsignorDetails,
+    "declaration.parties.consignorDetails.address" -> expandConsignorAdressDetails,
     "declaration.previousDocuments.documents.$" -> expandPreviousDocuments,
     "declaration.items.$.packageInformation.$" -> expandPackageInformation,
     "declaration.items.$.additionalInformation.items.$" -> expandAdditionalInformation,
     "declaration.items.$.additionalDocument.documents.$" -> expandAdditionalDocument,
+    "declaration.items.$.additionalFiscalReferencesData.references.$" -> expandAdditionalFiscalReferences,
+    "declaration.items.$.cusCode" -> expandCusCode,
     "declaration.items.$" -> expandItem,
     "declaration.transport.containers.$" -> expandContainers
   )
@@ -822,6 +835,26 @@ object PointerPatterns {
 
   val expandAdditionalActors = (p: Pointer, orig: ExportsDeclaration, amend: ExportsDeclaration) =>
     Seq(Pointer(p.sections :+ PointerSection("eori", FIELD)), Pointer(p.sections :+ PointerSection("type", FIELD)))
+
+  val expandCusCode = (p: Pointer, orig: ExportsDeclaration, amend: ExportsDeclaration) =>
+    Seq(Pointer(p.sections :+ PointerSection("cusCode", FIELD)))
+
+  val expandConsignorDetails = (p: Pointer, orig: ExportsDeclaration, amend: ExportsDeclaration) =>
+    addAddressDetails( p.sections ++ Seq(PointerSection("details", FIELD), PointerSection("address", FIELD)) )
+
+  val expandConsignorAdressDetails = (p: Pointer, orig: ExportsDeclaration, amend: ExportsDeclaration) => {
+    val baseSections = p.sections.take(3) ++ Seq(PointerSection("details", FIELD), PointerSection("address", FIELD))
+    addAddressDetails(baseSections)
+  }
+
+  private def addAddressDetails(baseSections: Seq[PointerSection]): Seq[Pointer] =
+    Seq(
+      Pointer(baseSections :+ PointerSection("fullName", FIELD)),
+      Pointer(baseSections :+ PointerSection("addressLine", FIELD)),
+      Pointer(baseSections :+ PointerSection("townOrCity", FIELD)),
+      Pointer(baseSections :+ PointerSection("postCode", FIELD)),
+      Pointer(baseSections :+ PointerSection("country", FIELD))
+    )
 
   val expandPreviousDocuments = (p: Pointer, orig: ExportsDeclaration, amend: ExportsDeclaration) => {
     val baseSections = p.sections.take(2) :+ p.sections.last
@@ -950,5 +983,9 @@ object PointerPatterns {
     }
 
     Seq(Pointer(p.sections :+ PointerSection("id", FIELD))) ++ sealPointers
+  }
+
+  val expandAdditionalFiscalReferences = (p: Pointer, orig: ExportsDeclaration, amend: ExportsDeclaration) => {
+    Seq(Pointer(p.sections.take(3) ++ Seq(PointerSection("additionalFiscalReferences", FIELD), p.sections(5), PointerSection("roleCode", FIELD))))
   }
 }
