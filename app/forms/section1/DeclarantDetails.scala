@@ -20,7 +20,6 @@ import forms.DeclarationPage
 import forms.section2.EntityDetails
 import models.ExportsFieldPointer.ExportsFieldPointer
 import models.{AmendmentOp, FieldMapping}
-import play.api.i18n.Messages
 import play.api.libs.json.{Json, OFormat}
 import services.DiffTools
 import services.DiffTools.{combinePointers, ExportsDeclarationDiff}
@@ -32,9 +31,6 @@ case class DeclarantDetails(details: EntityDetails) extends DiffTools[DeclarantD
 
   def getLeafPointersIfAny(pointer: ExportsFieldPointer): Seq[ExportsFieldPointer] =
     details.getLeafPointersIfAny(pointer)
-
-  def valueRemoved(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
-    details.valueRemoved(pointer)
 }
 
 object DeclarantDetails extends DeclarationPage with FieldMapping {

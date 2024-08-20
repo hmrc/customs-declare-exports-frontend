@@ -19,8 +19,6 @@ package forms.section6
 import forms.DeclarationPage
 import forms.section3.LocationOfGoods
 import forms.section6.ModeOfTransportCode.RoRo
-import forms.section6.TransportLeavingTheBorder.keyForAmend
-import models.AmendmentRow.{forAddedValue, forAmendedValue, forRemovedValue, safeMessage}
 import models.DeclarationType.{CLEARANCE, DeclarationType}
 import models.ExportsFieldPointer.ExportsFieldPointer
 import models.requests.JourneyRequest
@@ -30,7 +28,6 @@ import play.api.data.Forms.{of, optional}
 import play.api.data.format.Formatter
 import play.api.data.validation._
 import play.api.data.{Form, Forms, Mapping}
-import play.api.i18n.Messages
 import play.api.libs.json._
 import utils.validators.forms.FieldValidator._
 
@@ -48,17 +45,8 @@ case class TransportLeavingTheBorder(code: Option[ModeOfTransportCode] = None) e
 
   def value: String = getCodeValue
 
-  private def toUserValue(value: String)(implicit messages: Messages): String =
-    safeMessage(s"declaration.summary.transport.departure.transportCode.$value", value)
-
   def getLeafPointersIfAny(pointer: ExportsFieldPointer): Seq[ExportsFieldPointer] =
-    forAddedValue(pointer, messages(keyForAmend), toUserValue(value))
-
-  def valueAmended(newValue: Amendment, pointer: ExportsFieldPointer)(implicit messages: Messages): String =
-    forAmendedValue(pointer, messages(keyForAmend), toUserValue(value), toUserValue(newValue.value))
-
-  def valueRemoved(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
-    forRemovedValue(pointer, messages(keyForAmend), toUserValue(value))
+    Seq(pointer)
 }
 
 object TransportLeavingTheBorder extends DeclarationPage with FieldMapping {
@@ -66,8 +54,6 @@ object TransportLeavingTheBorder extends DeclarationPage with FieldMapping {
   implicit val format: OFormat[TransportLeavingTheBorder] = Json.format[TransportLeavingTheBorder]
 
   val pointer: String = "borderModeOfTransportCode.code"
-
-  private val keyForAmend = "declaration.summary.transport.departure.transportCode.header"
 
   def form(implicit request: JourneyRequest[_]): Form[TransportLeavingTheBorder] =
     Form(mapping(request.isType(CLEARANCE), request.cacheModel.locations.goodsLocation.map(_.toForm)))

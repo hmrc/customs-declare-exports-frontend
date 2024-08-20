@@ -16,22 +16,13 @@
 
 package models.declaration
 
-import models.AmendmentRow.{forAddedValue, forRemovedValue, convertToLeafPointer}
 import models.ExportsFieldPointer.ExportsFieldPointer
-import models.declaration.CommodityMeasure.{
-  grossMassPointer,
-  keyForGrossMass,
-  keyForNetMass,
-  keyForSupplementaryUnits,
-  netMassPointer,
-  supplementaryUnitsPointer
-}
+import models.declaration.CommodityMeasure.{grossMassPointer, netMassPointer, supplementaryUnitsPointer}
 import models.declaration.ExportItem.itemsPrefix
 import models.{AmendmentOp, FieldMapping}
-import play.api.i18n.Messages
 import play.api.libs.json.{Json, OFormat}
-import services.DiffTools.{combinePointers, compareStringDifference, ExportsDeclarationDiff}
 import services.DiffTools
+import services.DiffTools.{combinePointers, compareStringDifference, ExportsDeclarationDiff}
 
 case class CommodityMeasure(
   supplementaryUnits: Option[String],
@@ -49,14 +40,7 @@ case class CommodityMeasure(
     ).flatten
 
   def getLeafPointersIfAny(pointer: ExportsFieldPointer): Seq[ExportsFieldPointer] =
-    grossMass.fold("")(forAddedValue(convertToLeafPointer(pointer, grossMassPointer), messages(keyForGrossMass), _)) +
-      netMass.fold("")(forAddedValue(convertToLeafPointer(pointer, netMassPointer), messages(keyForNetMass), _)) +
-      supplementaryUnits.fold("")(forAddedValue(convertToLeafPointer(pointer, supplementaryUnitsPointer), messages(keyForSupplementaryUnits), _))
-
-  def valueRemoved(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
-    grossMass.fold("")(forRemovedValue(convertToLeafPointer(pointer, grossMassPointer), messages(keyForGrossMass), _)) +
-      netMass.fold("")(forRemovedValue(convertToLeafPointer(pointer, netMassPointer), messages(keyForNetMass), _)) +
-      supplementaryUnits.fold("")(forRemovedValue(convertToLeafPointer(pointer, supplementaryUnitsPointer), messages(keyForSupplementaryUnits), _))
+    Seq(pointer)
 }
 
 object CommodityMeasure extends FieldMapping {

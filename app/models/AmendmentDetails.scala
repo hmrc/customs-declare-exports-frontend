@@ -25,7 +25,7 @@ trait AmendmentOp {
 
 trait Amendment extends AmendmentOp {
   def value: String
-  def valueAmended(newValue: Amendment, pointer: ExportsFieldPointer): Seq[ExportsFieldPointer]
+  // def valueAmended(newValue: Amendment, pointer: ExportsFieldPointer): Seq[ExportsFieldPointer]
 }
 
 object AmendmentRow {

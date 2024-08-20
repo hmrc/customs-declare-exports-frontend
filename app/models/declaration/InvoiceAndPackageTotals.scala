@@ -16,10 +16,8 @@
 
 package models.declaration
 
-import models.AmendmentRow.{forAddedValue, forRemovedValue}
 import models.ExportsFieldPointer.ExportsFieldPointer
 import models.{AmendmentOp, FieldMapping}
-import play.api.i18n.Messages
 import play.api.libs.json.{Json, OFormat}
 import services.DiffTools
 import services.DiffTools.{combinePointers, compareStringDifference, ExportsDeclarationDiff}
@@ -57,16 +55,7 @@ case class InvoiceAndPackageTotals(
     ).flatten
 
   def getLeafPointersIfAny(pointer: ExportsFieldPointer): Seq[ExportsFieldPointer] =
-    totalAmountInvoiced.fold("")(forAddedValue(pointer, messages("declaration.summary.transaction.itemAmount"), _)) +
-      totalAmountInvoicedCurrency.fold("")(forAddedValue(pointer, messages("declaration.summary.transaction.currencyCode"), _)) +
-      exchangeRate.fold("")(forAddedValue(pointer, messages("declaration.summary.transaction.exchangeRate"), _)) +
-      totalPackage.fold("")(forAddedValue(pointer, messages("declaration.summary.transaction.totalNoOfPackages"), _))
-
-  def valueRemoved(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
-    totalAmountInvoiced.fold("")(forRemovedValue(pointer, messages("declaration.summary.transaction.itemAmount"), _)) +
-      totalAmountInvoicedCurrency.fold("")(forRemovedValue(pointer, messages("declaration.summary.transaction.currencyCode"), _)) +
-      exchangeRate.fold("")(forRemovedValue(pointer, messages("declaration.summary.transaction.exchangeRate"), _)) +
-      totalPackage.fold("")(forRemovedValue(pointer, messages("declaration.summary.transaction.totalNoOfPackages"), _))
+    Seq(pointer)
 }
 
 object InvoiceAndPackageTotals extends FieldMapping {

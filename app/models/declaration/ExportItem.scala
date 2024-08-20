@@ -17,17 +17,13 @@
 package models.declaration
 
 import forms.DeclarationPage
-import forms.common.YesNoAnswer.valueForYesNo
 import forms.section5.FiscalInformation.AllowedFiscalInformationAnswers.yes
 import forms.section5._
-import models.AmendmentRow.{forAddedValue, forRemovedValue}
 import models.DeclarationMeta.sequenceIdPlaceholder
 import models.DeclarationType.DeclarationType
 import models.ExportsFieldPointer.ExportsFieldPointer
-import models.declaration.ExportItem.keyForIsLicenceRequired
 import models.viewmodels.TariffContentKey
 import models.{AmendmentOp, DeclarationType, FieldMapping}
-import play.api.i18n.Messages
 import play.api.libs.json.{Json, OFormat}
 import services.DiffTools
 import services.DiffTools._
@@ -144,54 +140,7 @@ case class ExportItem(
     procedureCodes.flatMap(_.procedureCode).exists(ProcedureCodesData.isWarehouseRequiredCode)
 
   def getLeafPointersIfAny(pointer: ExportsFieldPointer): Seq[ExportsFieldPointer] =
-    procedureCodes.fold("")(_.getLeafPointersIfAny(s"$pointer.${ProcedureCodesData.pointer}")) +
-      additionalFiscalReferencesData.fold("")(_.references.zipWithIndex.map { case (reference, index) =>
-        reference.getLeafPointersIfAny(s"$pointer.${AdditionalFiscalReferencesData.pointer}.${index + 1}")
-      }.mkString) +
-      statisticalValue.fold("")(_.getLeafPointersIfAny(s"$pointer.${StatisticalValue.pointer}")) +
-      commodityDetails.fold("")(_.getLeafPointersIfAny(s"$pointer.${CommodityDetails.pointer}")) +
-      dangerousGoodsCode.fold("")(_.getLeafPointersIfAny(s"$pointer.${UNDangerousGoodsCode.pointer}")) +
-      cusCode.fold("")(_.getLeafPointersIfAny(s"$pointer.${CusCode.pointer}")) +
-      nactCodes.fold("")(_.zipWithIndex.map { case (nactCode, index) =>
-        nactCode.getLeafPointersIfAny(s"$pointer.${NactCode.pointer}.${index + 1}")
-      }.mkString) +
-      nactExemptionCode.fold("")(_.getLeafPointersIfAny(s"$pointer.${NactCode.exemptionPointer}")) +
-      packageInformation.fold("")(_.zipWithIndex.map { case (packageInfo, index) =>
-        packageInfo.getLeafPointersIfAny(s"$pointer.${PackageInformation.pointer}.${index + 1}")
-      }.mkString) +
-      commodityMeasure.fold("")(_.getLeafPointersIfAny(s"$pointer.${CommodityMeasure.pointer}")) +
-      additionalInformation.fold("")(_.items.zipWithIndex.map { case (additionalInfo, index) =>
-        additionalInfo.getLeafPointersIfAny(s"$pointer.${AdditionalInformationData.pointer}.${index + 1}")
-      }.mkString) +
-      additionalDocuments.fold("")(_.documents.zipWithIndex.map { case (document, index) =>
-        document.getLeafPointersIfAny(s"$pointer.${AdditionalDocuments.pointer}.${index + 1}")
-      }.mkString) +
-      isLicenceRequired.fold("")(ilr => forAddedValue(s"$pointer.licences", messages(keyForIsLicenceRequired), valueForYesNo(ilr)))
-
-  def valueRemoved(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
-    procedureCodes.fold("")(_.valueRemoved(s"$pointer.${ProcedureCodesData.pointer}")) +
-      additionalFiscalReferencesData.fold("")(_.references.zipWithIndex.map { case (reference, index) =>
-        reference.valueRemoved(s"$pointer.${AdditionalFiscalReferencesData.pointer}.${index + 1}")
-      }.mkString) +
-      statisticalValue.fold("")(_.valueRemoved(s"$pointer.${StatisticalValue.pointer}")) +
-      commodityDetails.fold("")(_.valueRemoved(s"$pointer.${CommodityDetails.pointer}")) +
-      dangerousGoodsCode.fold("")(_.valueRemoved(s"$pointer.${UNDangerousGoodsCode.pointer}")) +
-      cusCode.fold("")(_.valueRemoved(s"$pointer.${CusCode.pointer}")) +
-      nactCodes.fold("")(_.zipWithIndex.map { case (nactCode, index) =>
-        nactCode.valueRemoved(s"$pointer.${NactCode.pointer}.${index + 1}")
-      }.mkString) +
-      nactExemptionCode.fold("")(_.valueRemoved(s"$pointer.${NactCode.exemptionPointer}")) +
-      packageInformation.fold("")(_.zipWithIndex.map { case (packageInfo, index) =>
-        packageInfo.valueRemoved(s"$pointer.${PackageInformation.pointer}.${index + 1}")
-      }.mkString) +
-      commodityMeasure.fold("")(_.valueRemoved(s"$pointer.${CommodityMeasure.pointer}")) +
-      additionalInformation.fold("")(_.items.zipWithIndex.map { case (additionalInfo, index) =>
-        additionalInfo.valueRemoved(s"$pointer.${AdditionalInformationData.pointer}.${index + 1}")
-      }.mkString) +
-      additionalDocuments.fold("")(_.documents.zipWithIndex.map { case (document, index) =>
-        document.valueRemoved(s"$pointer.${AdditionalDocuments.pointer}.${index + 1}")
-      }.mkString) +
-      isLicenceRequired.fold("")(ilr => forRemovedValue(s"$pointer.licences", messages(keyForIsLicenceRequired), valueForYesNo(ilr)))
+    Seq(pointer)
 }
 
 object ExportItem extends DeclarationPage with FieldMapping {
@@ -202,8 +151,6 @@ object ExportItem extends DeclarationPage with FieldMapping {
 
   // prefix of the message keys used for the 'Amendment details' page
   val itemsPrefix = "declaration.summary.item"
-
-  private lazy val keyForIsLicenceRequired = s"${itemsPrefix}.licences"
 
   def containsAnswers(item: ExportItem): Boolean = item != ExportItem(id = item.id, sequenceId = item.sequenceId)
 

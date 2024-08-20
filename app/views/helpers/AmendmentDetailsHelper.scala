@@ -17,26 +17,9 @@
 package views.helpers
 
 import controllers.helpers.AmendmentInstance
-import connectors.CodeListConnector
-import forms.common.{Address, Country, Eori}
-import forms.section1.DeclarantDetails
-import forms.section2.authorisationHolder.AuthorisationHolder
-import forms.section2.carrier.CarrierDetails
-import forms.section2.consignor.ConsignorDetails
-import forms.section2.exporter.ExporterDetails
-import forms.section2.{AdditionalActor, ConsigneeDetails, Details, EntityDetails, PersonPresentingGoodsDetails}
-import forms.section3.OfficeOfExit
-import forms.section4.Document.documentTypePointer
-import forms.section4.{Document, NatureOfTransaction, PreviousDocumentsData}
-import forms.section5.CommodityDetails.{combinedNomenclatureCodePointer, descriptionOfGoodsPointer}
-import forms.section5.PackageInformation._
-import forms.section5.additionaldocuments.{AdditionalDocument, DocumentWriteOff}
-import forms.section5.{AdditionalInformation, CommodityDetails, PackageInformation}
+import forms.section4.{NatureOfTransaction, PreviousDocumentsData}
 import forms.section6._
-import models.AmendmentRow._
 import models.ExportsDeclaration
-import models.ExportsFieldPointer.ExportsFieldPointer
-import models.declaration.Locations.{destinationCountryPointer, routingCountriesPointer}
 import models.declaration._
 import play.api.Logging
 import play.api.i18n.Messages
@@ -83,35 +66,34 @@ class AmendmentDetailsHelper extends Logging {
     )
 
   private def section(sectionId: String, amendmentRows: Seq[AmendmentInstance]): Seq[Section] =
-    List(Section(sectionId, amendmentRows.filter(_.pointer.startsWith(sectionId))))
+    List(Section(sectionId, amendmentRows.filter(_.pointer.pattern.startsWith(sectionId))))
 
   private def sectionParties(amendmentRows: Seq[AmendmentInstance]): Seq[Section] =
     section(parties, amendmentRows)
 
-  private def sectionItems(amendmentRows: Seq[AmendmentInstance]): Seq[Section] = {
-    def reducePointers(amendmentInstances: Seq[AmendmentInstance]): Seq[AmendmentInstance] =
-      amendmentInstances.map(ai => ai.copy(pointer = ai.pointer.replace(items, "item")))
-
-    val itemSections = amendmentRows
-      .filter(_.pointer.startsWith(items))
-      .groupBy(_.pointer.split("\\.#?")(2))
+  private def sectionItems(amendmentRows: Seq[AmendmentInstance]): Seq[Section] =
+    amendmentRows
+      .filter(_.pointer.pattern.startsWith(items))
+      .groupBy(_.pointer.sequenceArgs(0))
       .toList
       .sortBy(_._1)
       .map { itemDiffs =>
-        Section(items, reducePointers(itemDiffs._2), itemDiffs._1.split('.').head)
+        Section(items, itemDiffs._2, itemDiffs._1.split('.').head)
       }
-    itemSections
-  }
 
-  private lazy val routesAndLocationsIds = List(destinationCountryPointer, routingCountriesPointer, GoodsLocation.pointer, OfficeOfExit.pointerBase)
+  // private lazy val routesAndLocationsIds = List(destinationCountryPointer, routingCountriesPointer, GoodsLocation.pointer, OfficeOfExit.pointerBase)
 
   private def sectionRoutesAndLocations(amendmentRows: Seq[AmendmentInstance]): Seq[Section] = {
+    amendmentRows.foreach(println)
+
     val alteredFields =
       amendmentRows
-        .filter(_.pointer.startsWith(locations))
+        .filter{ai =>
+          val pattern = ai.pointer.pattern
+          pattern.startsWith(locations) && !(pattern.contains("inlandModeOfTransportCode") || pattern.contains("warehouseIdentification"))
+        }
         .filter { instance =>
-          val parts = instance.pointer.split('.')
-          parts.length > 2 && routesAndLocationsIds.contains(parts(2))
+          instance.originalValue.isDefined || instance.amendedValue.isDefined
         }
 
     List(Section(locations, alteredFields))
@@ -122,7 +104,7 @@ class AmendmentDetailsHelper extends Logging {
   private def sectionTransaction(amendmentRows: Seq[AmendmentInstance]): Seq[Section] = {
     val alteredFields =
       amendmentRows.filter { instance =>
-        val parts = instance.pointer.split('.')
+        val parts = instance.pointer.pattern.split('.')
         parts.length > 1 && transactionIds.contains(parts(1))
       }
 
@@ -134,7 +116,7 @@ class AmendmentDetailsHelper extends Logging {
   private def sectionTransport(amendmentRows: Seq[AmendmentInstance]): Seq[Section] = {
     val alteredFields =
       amendmentRows
-        .filter(af => af.pointer.startsWith(transport) || transportIds.exists(af.pointer.startsWith))
+        .filter(af => af.pointer.pattern.startsWith(transport) || transportIds.exists(af.pointer.pattern.startsWith))
 
     List(Section(transport, alteredFields))
   }
@@ -170,10 +152,10 @@ class AmendmentDetailsHelper extends Logging {
        |""".stripMargin
 
   private def getIndividualRow(amendmentInstance: AmendmentInstance)(implicit messages: Messages): String =
-    s"""<tr class="govuk-table__row ${amendmentInstance.pointer.replaceAll("\\.#?", "-")}">
+    s"""<tr class="govuk-table__row ${amendmentInstance.pointer.pattern.replaceAll("\\.#?", "-")}">
        |  <td class="govuk-table__cell govuk-table__cell_break-word">${messages(amendmentInstance.fieldId)}</th>
-       |  <td class="govuk-table__cell govuk-table__cell_break-word">${amendmentInstance.originalValue}</td>
-       |  <td class="govuk-table__cell govuk-table__cell_break-word">${amendmentInstance.amendedValue}</td>
+       |  <td class="govuk-table__cell govuk-table__cell_break-word">${amendmentInstance.originalValue.getOrElse("-")}</td>
+       |  <td class="govuk-table__cell govuk-table__cell_break-word">${amendmentInstance.amendedValue.getOrElse("-")}</td>
        |</tr>""".stripMargin
 }
 
@@ -191,7 +173,6 @@ object AmendmentDetailsHelper {
   private val inlandModeOfTransport = s"$locations.${InlandModeOfTransportCode.pointer}"
   private val supervisingCustomsOffice = s"$locations.${SupervisingCustomsOffice.pointer}"
   private val warehouseIdentification = s"$locations.${WarehouseIdentification.pointer}"
-
 
   private val h2Mappings = Map(
     parties -> s"$summary.section.2",
@@ -245,7 +226,7 @@ object AmendmentDetailsHelper {
 //    AdditionalActors.partyTypePointerForAmend -> AdditionalActor.keyForPartyType,
 //    AuthorisationHolders.eoriPointerForAmend -> AuthorisationHolder.keyForEori,
 //    AuthorisationHolders.typeCodePointerForAmend -> AuthorisationHolder.keyForTypeCode,
-  s"$parties.${PersonPresentingGoodsDetails.pointer}.${Eori.pointer}" -> s"$summary.parties.personPresentingGoods",
+  // ****s"$parties.${PersonPresentingGoodsDetails.pointer}.${Eori.pointer}" -> s"$summary.parties.personPresentingGoods",
 //    s"$totals.$totalAmountInvoicedPointer" -> s"$summary.transaction.itemAmount",
 //    s"$totals.$totalAmountInvoicedCurrencyPointer" -> s"$summary.transaction.currencyCode",
 //    s"$totals.$exchangeRatePointer" -> s"$summary.transaction.exchangeRate",
@@ -284,7 +265,7 @@ object AmendmentDetailsHelper {
 //    AdditionalDocuments.typeCodePointerForAmend -> AdditionalDocument.keyForTypeCode
 //  )
 
-  private val valueMappings: Map[String, (Any, Messages) => String] = Map(
+  /*private val valueMappings: Map[String, (Any, Messages) => String] = Map(
     DeclarationAdditionalActorsData.partyTypePointerForAmend -> ((v: Any, messages: Messages) =>
       safeMessage(s"$summary.parties.actors.$v", v)(messages)
       ),
@@ -297,5 +278,5 @@ object AmendmentDetailsHelper {
     s"$transport.${Transport.transportCrossingTheBorderPointer}" -> ((v: Any, messages: Messages) =>
       safeMessage(s"$summary.transport.border.meansOfTransport.$v", v)(messages)
       )
-  )
+  )*/
 }

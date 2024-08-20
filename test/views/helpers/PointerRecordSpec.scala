@@ -40,8 +40,6 @@ import services.DocumentType
 import services.cache.ExportsTestHelper
 import services.model.PackageType
 import views.common.UnitViewSpec
-import views.helpers.PointerPatterns.pointerToAdditionalProcedureCodes
-
 import scala.collection.immutable.ListMap
 
 class PointerRecordSpec extends UnitViewSpec with ExportsTestHelper with Injector {
@@ -84,7 +82,7 @@ class PointerRecordSpec extends UnitViewSpec with ExportsTestHelper with Injecto
       validatePointerValues("declaration.items.$.additionalFiscalReferences.$.roleCode", roleCode, 0, 0)
       validatePointerValues("declaration.items.$.procedureCodes.procedureCode.current", procedureCode, 0)
       validatePointerValues("declaration.items.$.procedureCodes.procedureCode.previous", procedureCode, 0)
-      validatePointerValues(pointerToAdditionalProcedureCodes, additionalProcedureCode, 0, 0)
+      validatePointerValues("declaration.items.$.procedureCodes.additionalProcedureCodes.$", additionalProcedureCode, 0, 0)
       validatePointerValues("declaration.items.$.packageInformation.$.shippingMarks", shippingMarks, 0, 0)
       validatePointerValues("declaration.items.$.packageInformation.$.numberOfPackages", numberOfPackages.toString, 0, 0)
       validatePointerValues("declaration.items.$.packageInformation.$.typesOfPackages", typeOfPackage.code, typeOfPackage.asText, 0, 0)
@@ -255,7 +253,7 @@ class PointerRecordSpec extends UnitViewSpec with ExportsTestHelper with Injecto
 
   def validatePointerValues(pointer: String, rawValue: Option[String], readableValue: Option[String], args: Int*): Assertion =
     withClue(s"pointer is '$pointer'") {
-      val maybePointerRecord = PointerRecord.library.get(pointer)
+      val maybePointerRecord = PointerRecord.pointersToPointerRecords.get(pointer)
       val displayValue = if (readableValue.isDefined) readableValue else rawValue
 
       maybePointerRecord.isDefined mustBe true

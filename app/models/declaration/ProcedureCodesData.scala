@@ -16,17 +16,14 @@
 
 package models.declaration
 
-import controllers.helpers.AmendmentInstance
 import forms.section5.procedurecodes.ProcedureCode
-import models.AmendmentRow.{forAddedValue, forRemovedValue, pointerToSelector}
 import models.ExportsFieldPointer.ExportsFieldPointer
 import models.declaration.ExportItem.itemsPrefix
-import models.declaration.ProcedureCodesData.{additionalProcedureCodesPointer, keyForAPCs, keyForPC, osrProcedureCode, procedureCodesPointer}
+import models.declaration.ProcedureCodesData.{additionalProcedureCodesPointer, osrProcedureCode, procedureCodesPointer}
 import models.{AmendmentOp, FieldMapping}
-import play.api.i18n.Messages
 import play.api.libs.json.{Json, OFormat}
 import services.DiffTools
-import services.DiffTools.{ExportsDeclarationDiff, combinePointers, compareStringDifference}
+import services.DiffTools.{combinePointers, compareStringDifference, ExportsDeclarationDiff}
 
 case class ProcedureCodesData(procedureCode: Option[ProcedureCodesData.ProcedureCode], additionalProcedureCodes: Seq[String])
     extends DiffTools[ProcedureCodesData] with AmendmentOp {
@@ -48,13 +45,7 @@ case class ProcedureCodesData(procedureCode: Option[ProcedureCodesData.Procedure
   def containsAPC(code: String): Boolean = additionalProcedureCodes.contains(code)
 
   def getLeafPointersIfAny(pointer: ExportsFieldPointer): Seq[ExportsFieldPointer] =
-    Seq(
-      Option.when(procedureCode.nonEmpty)(convertToLeafPointer(pointer, procedureCodesPointer)),
-      Option.when(additionalProcedureCodes.nonEmpty)(convertToLeafPointer(pointer, additionalProcedureCodesPointer))
-    ).flatten
-
-  def valueRemoved(pointer: ExportsFieldPointer): Seq[ExportsFieldPointer] =
-    Seq(convertToLeafPointer(pointer, procedureCodesPointer), convertToLeafPointer(pointer, additionalProcedureCodesPointer))
+    Seq(pointer)
 }
 
 object ProcedureCodesData extends FieldMapping {
@@ -64,7 +55,7 @@ object ProcedureCodesData extends FieldMapping {
 
   val pointer: ExportsFieldPointer = "procedureCodes"
   val procedureCodesPointer: ExportsFieldPointer = "procedure.code"
-  val additionalProcedureCodesPointer: ExportsFieldPointer = "additionalProcedureCodes"
+  val additionalProcedureCodesPointer: ExportsFieldPointer = "additionalPcs"
 
   lazy val keyForPC = s"$itemsPrefix.procedureCode"
   lazy val keyForAPC = s"$itemsPrefix.additionalProcedureCode"

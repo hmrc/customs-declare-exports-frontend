@@ -18,15 +18,12 @@ package forms.section5
 
 import forms.DeclarationPage
 import forms.mappings.MappingHelper.requiredRadio
-import forms.section5.NactCode.{exemptionPointer, keyForAmend}
-import models.AmendmentRow.{forAddedValue, forAmendedValue, forRemovedValue, safeMessage}
 import models.DeclarationType.DeclarationType
 import models.ExportsFieldPointer.ExportsFieldPointer
 import models.viewmodels.TariffContentKey
 import models.{Amendment, FieldMapping}
 import play.api.data.Forms.text
 import play.api.data.{Form, Forms, Mapping}
-import play.api.i18n.Messages
 import play.api.libs.json.{Json, OFormat}
 import utils.validators.forms.FieldValidator._
 
@@ -36,18 +33,8 @@ case class NactCode(nactCode: String) extends Ordered[NactCode] with Amendment {
 
   def value: String = nactCode
 
-  private def toUserValue(pointer: ExportsFieldPointer, value: String)(implicit messages: Messages): String =
-    if (!pointer.endsWith(exemptionPointer)) value
-    else safeMessage(s"declaration.summary.item.zeroRatedForVat.$value", value)
-
   def getLeafPointersIfAny(pointer: ExportsFieldPointer): Seq[ExportsFieldPointer] =
-    forAddedValue(pointer, messages(keyForAmend(pointer)), toUserValue(pointer, value))
-
-  def valueAmended(newValue: Amendment, pointer: ExportsFieldPointer)(implicit messages: Messages): String =
-    forAmendedValue(pointer, messages(keyForAmend(pointer)), toUserValue(pointer, value), toUserValue(pointer, newValue.value))
-
-  def valueRemoved(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
-    forRemovedValue(pointer, messages(keyForAmend(pointer)), toUserValue(pointer, value))
+    Seq(pointer)
 }
 
 object NactCode extends DeclarationPage with FieldMapping {

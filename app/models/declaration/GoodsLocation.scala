@@ -17,11 +17,8 @@
 package models.declaration
 
 import forms.section3.LocationOfGoods
-import models.AmendmentRow.{forAddedValue, forAmendedValue, forRemovedValue}
 import models.ExportsFieldPointer.ExportsFieldPointer
-import models.declaration.GoodsLocation.keyForAmend
 import models.{Amendment, FieldMapping}
-import play.api.i18n.Messages
 import play.api.libs.json.{Json, OFormat}
 import services.DiffTools.{combinePointers, ExportsDeclarationDiff}
 import services.{AlteredField, DiffTools, OriginalAndNewValues}
@@ -43,13 +40,7 @@ case class GoodsLocation(country: String, typeOfLocation: String, qualifierOfIde
   def value: String = country + typeOfLocation + qualifierOfIdentification + identificationOfLocation
 
   def getLeafPointersIfAny(pointer: ExportsFieldPointer): Seq[ExportsFieldPointer] =
-    forAddedValue(pointer, messages(keyForAmend), value)
-
-  def valueAmended(newValue: Amendment, pointer: ExportsFieldPointer)(implicit messages: Messages): String =
-    forAmendedValue(pointer, messages(keyForAmend), value, newValue.value)
-
-  def valueRemoved(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
-    forRemovedValue(pointer, messages(keyForAmend), value)
+    Seq(pointer)
 
   def toForm: LocationOfGoods = LocationOfGoods(value)
 }

@@ -17,12 +17,8 @@
 package models.declaration
 
 import forms.section2.EntityDetails
-import models.AmendmentRow.{forAddedValue, forRemovedValue, safeMessage}
 import models.ExportsFieldPointer.ExportsFieldPointer
-import models.declaration.Parties.partiesPrefix
-import models.declaration.RepresentativeDetails.keyForAmend
 import models.{AmendmentOp, FieldMapping}
-import play.api.i18n.Messages
 import play.api.libs.json.{Json, OFormat}
 import services.DiffTools
 import services.DiffTools.{combinePointers, compareStringDifference, ExportsDeclarationDiff}
@@ -41,16 +37,8 @@ case class RepresentativeDetails(details: Option[EntityDetails], statusCode: Opt
       compareStringDifference(original.statusCode, statusCode, combinePointers(pointerString, RepresentativeDetails.statusCodePointer, sequenceId))
     ).flatten
 
-  private def toUserValue(value: String)(implicit messages: Messages): String =
-    safeMessage(s"${partiesPrefix}.representative.type.$value", value)
-
   def getLeafPointersIfAny(pointer: ExportsFieldPointer): Seq[ExportsFieldPointer] =
-    details.fold("")(_.getLeafPointersIfAny(pointer)) +
-      statusCode.fold("")(code => forAddedValue(pointer, messages(keyForAmend), toUserValue(code)))
-
-  def valueRemoved(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
-    details.fold("")(_.valueRemoved(pointer)) +
-      statusCode.fold("")(code => forRemovedValue(pointer, messages(keyForAmend), toUserValue(code)))
+    Seq(pointer)
 }
 
 object RepresentativeDetails extends FieldMapping {
@@ -58,8 +46,6 @@ object RepresentativeDetails extends FieldMapping {
 
   val pointer: ExportsFieldPointer = "representativeDetails"
   val statusCodePointer: ExportsFieldPointer = "statusCode"
-
-  private lazy val keyForAmend = s"${partiesPrefix}.representative.type"
 
   def apply(): RepresentativeDetails = new RepresentativeDetails(None, None, None)
 }

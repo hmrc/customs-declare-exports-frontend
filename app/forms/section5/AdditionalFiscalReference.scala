@@ -18,8 +18,6 @@ package forms.section5
 
 import connectors.CodeListConnector
 import forms.DeclarationPage
-import forms.section5.AdditionalFiscalReference.keyForAmend
-import models.AmendmentRow.{forAddedValue, forAmendedValue, forRemovedValue}
 import models.DeclarationType.DeclarationType
 import models.ExportsFieldPointer.ExportsFieldPointer
 import models.declaration.ExportItem.itemsPrefix
@@ -53,13 +51,7 @@ case class AdditionalFiscalReference(country: String, reference: String)
   def value: String = country + reference
 
   def getLeafPointersIfAny(pointer: ExportsFieldPointer): Seq[ExportsFieldPointer] =
-    forAddedValue(pointer, messages(keyForAmend), value)
-
-  override def valueAmended(newValue: Amendment, pointer: ExportsFieldPointer)(implicit messages: Messages): ExportsFieldPointer =
-    forAmendedValue(pointer, messages(keyForAmend), value, newValue.value)
-
-  def valueRemoved(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
-    forRemovedValue(pointer, messages(keyForAmend), value)
+    Seq(pointer)
 }
 
 object AdditionalFiscalReference extends DeclarationPage with FieldMapping {

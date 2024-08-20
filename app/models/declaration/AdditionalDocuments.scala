@@ -37,7 +37,7 @@ case class AdditionalDocuments(isRequired: Option[YesNoAnswer], documents: Seq[A
 
 object AdditionalDocuments extends FieldMapping {
 
-  val pointer: ExportsFieldPointer = "additionalDocuments"
+  val pointer: ExportsFieldPointer = "additionalDocument"
 
   val dateOfValidityPointerForAmend = s"item.$pointer.${AdditionalDocument.pointer}.${AdditionalDocument.dateOfValidityPointer}"
   val identifierPointerForAmend = s"item.$pointer.${AdditionalDocument.pointer}.${AdditionalDocument.documentIdentifierPointer}"

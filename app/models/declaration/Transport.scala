@@ -22,7 +22,7 @@ import models.ExportsFieldPointer.ExportsFieldPointer
 import models.FieldMapping
 import play.api.libs.json.{Format, Json}
 import services.DiffTools
-import services.DiffTools.{ExportsDeclarationDiff, combinePointers, compareDifference, compareStringDifference}
+import services.DiffTools.{combinePointers, compareDifference, compareStringDifference, ExportsDeclarationDiff}
 
 case class Transport(
   expressConsignment: Option[YesNoAnswer] = None,

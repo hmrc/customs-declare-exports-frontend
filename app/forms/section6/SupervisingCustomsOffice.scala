@@ -17,15 +17,12 @@
 package forms.section6
 
 import forms.DeclarationPage
-import forms.section6.SupervisingCustomsOffice.keyForAmend
-import models.AmendmentRow.{forAddedValue, forAmendedValue, forRemovedValue}
 import models.DeclarationType.DeclarationType
 import models.ExportsFieldPointer.ExportsFieldPointer
 import models.viewmodels.TariffContentKey
 import models.{Amendment, FieldMapping}
 import play.api.data.Forms.{optional, text}
 import play.api.data.{Form, Forms}
-import play.api.i18n.Messages
 import play.api.libs.json.{Json, OFormat}
 import services.DiffTools.compareOptionalString
 import utils.validators.forms.FieldValidator._
@@ -38,13 +35,7 @@ case class SupervisingCustomsOffice(supervisingCustomsOffice: Option[String] = N
   def value: String = supervisingCustomsOffice.getOrElse("")
 
   def getLeafPointersIfAny(pointer: ExportsFieldPointer): Seq[ExportsFieldPointer] =
-    supervisingCustomsOffice.fold("")(forAddedValue(pointer, messages(keyForAmend), _))
-
-  def valueAmended(newValue: Amendment, pointer: ExportsFieldPointer)(implicit messages: Messages): String =
-    forAmendedValue(pointer, messages(keyForAmend), value, newValue.value)
-
-  def valueRemoved(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
-    supervisingCustomsOffice.fold("")(forRemovedValue(pointer, messages(keyForAmend), _))
+    Seq(pointer)
 }
 
 object SupervisingCustomsOffice extends DeclarationPage with FieldMapping {

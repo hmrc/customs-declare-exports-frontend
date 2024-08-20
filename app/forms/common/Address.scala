@@ -17,8 +17,7 @@
 package forms.common
 
 import connectors.CodeListConnector
-import forms.common.Address.mappingsForAmendment
-import models.AmendmentRow.{forAddedValue, forRemovedValue, convertToLeafPointer}
+import models.AmendmentRow.convertToLeafPointer
 import models.ExportsFieldPointer.ExportsFieldPointer
 import models.declaration.Parties
 import models.declaration.Parties.partiesPrefix
@@ -49,15 +48,8 @@ case class Address(
       compareStringDifference(original.country, country, combinePointers(pointerString, Address.countryPointer, sequenceId))
     ).flatten
 
-  def getLeafPointersIfAny(pointer: ExportsFieldPointer): Seq[ExportsFieldPointer] = {
-    val address = s"$fullName<br/>$addressLine<br/>$townOrCity<br/>$postCode<br/>$country"
-    forAddedValue(convertToLeafPointer(pointer, "address"), messages(mappingsForAmendment(pointer)), address)
-  }
-
-  def valueRemoved(pointer: ExportsFieldPointer)(implicit messages: Messages): String = {
-    val address = s"$fullName<br/>$addressLine<br/>$townOrCity<br/>$postCode<br/>$country"
-    forRemovedValue(convertToLeafPointer(pointer, "address"), messages(mappingsForAmendment(pointer)), address)
-  }
+  def getLeafPointersIfAny(pointer: ExportsFieldPointer): Seq[ExportsFieldPointer] =
+    Seq(convertToLeafPointer(pointer, "address"))
 }
 
 object Address extends FieldMapping {

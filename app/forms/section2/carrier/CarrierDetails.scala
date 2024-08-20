@@ -37,15 +37,12 @@ case class CarrierDetails(details: EntityDetails) extends Details with DiffTools
 
   def getLeafPointersIfAny(pointer: ExportsFieldPointer): Seq[ExportsFieldPointer] =
     details.getLeafPointersIfAny(pointer)
-
-  def valueRemoved(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
-    details.valueRemoved(pointer)
 }
 
 object CarrierDetails extends DeclarationPage with FieldMapping {
   implicit val format: OFormat[CarrierDetails] = Json.format[CarrierDetails]
 
-  val pointer: ExportsFieldPointer = "carrierDetails"
+  val pointer: ExportsFieldPointer = "carrierDetails.details"
 
   val id = "CarrierDetails"
 

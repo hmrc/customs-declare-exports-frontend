@@ -17,15 +17,7 @@
 package forms.section5
 
 import forms.DeclarationPage
-import forms.section5.PackageInformation.{
-  keyForNumberOfPackages,
-  keyForShippingMarksPointer,
-  keyForTypesOfPackages,
-  numberOfPackagesPointer,
-  shippingMarksPointer,
-  typesOfPackagesPointer
-}
-import models.AmendmentRow.{forAddedValue, forRemovedValue, convertToLeafPointer}
+import forms.section5.PackageInformation.{numberOfPackagesPointer, shippingMarksPointer, typesOfPackagesPointer}
 import models.DeclarationMeta.sequenceIdPlaceholder
 import models.DeclarationType.{CLEARANCE, DeclarationType}
 import models.ExportsFieldPointer.ExportsFieldPointer
@@ -71,18 +63,7 @@ case class PackageInformation(
   override def updateSequenceId(sequenceId: Int): PackageInformation = copy(sequenceId = sequenceId)
 
   def getLeafPointersIfAny(pointer: ExportsFieldPointer): Seq[ExportsFieldPointer] =
-    typesOfPackages.fold("")(forAddedValue(convertToLeafPointer(pointer, typesOfPackagesPointer), messages(keyForTypesOfPackages), _)) +
-      numberOfPackages.fold("")(np =>
-        forAddedValue(convertToLeafPointer(pointer, numberOfPackagesPointer), messages(keyForNumberOfPackages), String.valueOf(np))
-      ) +
-      shippingMarks.fold("")(forAddedValue(convertToLeafPointer(pointer, shippingMarksPointer), messages(keyForShippingMarksPointer), _))
-
-  def valueRemoved(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
-    typesOfPackages.fold("")(forRemovedValue(convertToLeafPointer(pointer, typesOfPackagesPointer), messages(keyForTypesOfPackages), _)) +
-      numberOfPackages.fold("")(np =>
-        forRemovedValue(convertToLeafPointer(pointer, numberOfPackagesPointer), messages(keyForNumberOfPackages), String.valueOf(np))
-      ) +
-      shippingMarks.fold("")(forRemovedValue(convertToLeafPointer(pointer, shippingMarksPointer), messages(keyForShippingMarksPointer), _))
+    Seq(pointer)
 }
 
 object PackageInformation extends DeclarationPage with FieldMapping {

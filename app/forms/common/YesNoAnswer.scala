@@ -16,10 +16,8 @@
 
 package forms.common
 
-import forms.mappings.MappingHelper.requiredRadio
 import forms.common.YesNoAnswer.YesNoAnswers.yes
-import forms.common.YesNoAnswer.{mappingsForAmendment, valueForYesNo}
-import models.AmendmentRow.{forAddedValue, forAmendedValue, forRemovedValue}
+import forms.mappings.MappingHelper.requiredRadio
 import models.ExportsFieldPointer.ExportsFieldPointer
 import models.declaration.Parties
 import models.{Amendment, ExportsDeclaration}
@@ -37,13 +35,7 @@ case class YesNoAnswer(answer: String) extends Ordered[YesNoAnswer] with Amendme
   def value: String = answer
 
   def getLeafPointersIfAny(pointer: ExportsFieldPointer): Seq[ExportsFieldPointer] =
-    forAddedValue(pointer, messages(mappingsForAmendment(pointer)), valueForYesNo(answer))
-
-  def valueAmended(newValue: Amendment, pointer: ExportsFieldPointer)(implicit messages: Messages): String =
-    forAmendedValue(pointer, messages(mappingsForAmendment(pointer)), valueForYesNo(answer), valueForYesNo(newValue.value))
-
-  def valueRemoved(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
-    forRemovedValue(pointer, messages(mappingsForAmendment(pointer)), valueForYesNo(answer))
+    Seq(pointer)
 }
 
 object YesNoAnswer {
@@ -52,9 +44,7 @@ object YesNoAnswer {
 
   private lazy val parties = s"${ExportsDeclaration.pointer}.${Parties.pointer}"
 
-  lazy val mappingsForAmendment = Map(
-    s"$parties.personPresentingGoodsDetails.eori" -> "declaration.summary.parties.eidr"
-  )
+  lazy val mappingsForAmendment = Map(s"$parties.personPresentingGoodsDetails.eori" -> "declaration.summary.parties.eidr")
 
   def valueForYesNo(isYes: Boolean)(implicit messages: Messages): String =
     messages(if (isYes) "site.yes" else "site.no")

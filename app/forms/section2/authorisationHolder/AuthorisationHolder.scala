@@ -17,12 +17,10 @@
 package forms.section2.authorisationHolder
 
 import forms.DeclarationPage
-import forms.mappings.MappingHelper.requiredRadio
 import forms.common.Eori
+import forms.mappings.MappingHelper.requiredRadio
 import forms.section1.AdditionalDeclarationType._
-import forms.section2.authorisationHolder.AuthorisationHolder.{keyForEori, keyForTypeCode}
 import forms.section2.authorisationHolder.AuthorizationTypeCodes.EXRR
-import models.AmendmentRow.{forAddedValue, forRemovedValue}
 import models.DeclarationType.{CLEARANCE, DeclarationType}
 import models.ExportsFieldPointer.ExportsFieldPointer
 import models.declaration.EoriSource.UserEori
@@ -32,7 +30,6 @@ import models.viewmodels.TariffContentKey
 import models.{AmendmentOp, FieldMapping}
 import play.api.data.Forms.{optional, text}
 import play.api.data.{Form, Forms, Mapping}
-import play.api.i18n.Messages
 import play.api.libs.json.{Json, OFormat}
 import services.DiffTools
 import services.DiffTools.{combinePointers, compareDifference, compareStringDifference, ExportsDeclarationDiff}
@@ -53,12 +50,7 @@ case class AuthorisationHolder(authorisationTypeCode: Option[String], eori: Opti
     ).flatten
 
   def getLeafPointersIfAny(pointer: ExportsFieldPointer): Seq[ExportsFieldPointer] =
-    authorisationTypeCode.fold("")(forAddedValue(pointer, messages(keyForTypeCode), _)) +
-      eori.fold("")(eori => forAddedValue(pointer, messages(keyForEori), eori.value))
-
-  def valueRemoved(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
-    authorisationTypeCode.fold("")(forRemovedValue(pointer, messages(keyForTypeCode), _)) +
-      eori.fold("")(eori => forRemovedValue(pointer, messages(keyForEori), eori.value))
+    Seq(pointer)
 
   def id: String = s"${authorisationTypeCode.getOrElse("")}-${eori.getOrElse("")}"
   def isEmpty: Boolean = authorisationTypeCode.isEmpty && eori.isEmpty

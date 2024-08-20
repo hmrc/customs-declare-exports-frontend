@@ -17,8 +17,6 @@
 package forms.section6
 
 import forms.DeclarationPage
-import forms.section6.Seal.keyForAmend
-import models.AmendmentRow.{forAddedValue, forRemovedValue}
 import models.DeclarationMeta.sequenceIdPlaceholder
 import models.DeclarationType.DeclarationType
 import models.ExportsFieldPointer.ExportsFieldPointer
@@ -27,7 +25,6 @@ import models.viewmodels.TariffContentKey
 import models.{AmendmentOp, DeclarationMeta, FieldMapping}
 import play.api.data.Forms.text
 import play.api.data.{Form, Forms, Mapping}
-import play.api.i18n.Messages
 import play.api.libs.json.{Json, OFormat}
 import services.DiffTools
 import services.DiffTools.{combinePointers, compareStringDifference, ExportsDeclarationDiff}
@@ -41,10 +38,7 @@ case class Seal(sequenceId: Int = sequenceIdPlaceholder, id: String) extends Dif
   override def updateSequenceId(sequenceId: Int): Seal = copy(sequenceId = sequenceId)
 
   def getLeafPointersIfAny(pointer: ExportsFieldPointer): Seq[ExportsFieldPointer] =
-    forAddedValue(pointer, messages(keyForAmend), id)
-
-  def valueRemoved(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
-    forRemovedValue(pointer, messages(keyForAmend), id)
+    Seq(pointer)
 }
 
 object Seal extends DeclarationPage with FieldMapping {

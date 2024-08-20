@@ -41,7 +41,7 @@ object ConsigneeDetails extends DeclarationPage with FieldMapping {
 
   implicit val format: OFormat[ConsigneeDetails] = Json.format[ConsigneeDetails]
 
-  val pointer: ExportsFieldPointer = "consigneeDetails"
+  val pointer: ExportsFieldPointer = "consigneeDetails.details"
 
   val id = "ConsigneeDetails"
 

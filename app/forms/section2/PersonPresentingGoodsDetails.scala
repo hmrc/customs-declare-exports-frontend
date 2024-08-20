@@ -18,15 +18,12 @@ package forms.section2
 
 import forms.DeclarationPage
 import forms.common.Eori
-import forms.section2.PersonPresentingGoodsDetails.keyForAmend
-import models.AmendmentRow.{forAddedValue, forAmendedValue, forRemovedValue}
 import models.DeclarationType.DeclarationType
 import models.ExportsFieldPointer.ExportsFieldPointer
 import models.declaration.Parties.partiesPrefix
 import models.viewmodels.TariffContentKey
 import models.{Amendment, FieldMapping}
 import play.api.data.{Form, Forms}
-import play.api.i18n.Messages
 import play.api.libs.json.{Json, OFormat}
 import services.DiffTools
 import services.DiffTools.{combinePointers, compareDifference, ExportsDeclarationDiff}
@@ -43,12 +40,6 @@ case class PersonPresentingGoodsDetails(eori: Eori) extends DiffTools[PersonPres
   def value: String = eori.value
 
   def getLeafPointersIfAny(pointer: ExportsFieldPointer): Seq[ExportsFieldPointer] = Seq.empty
-
-  def valueAmended(newValue: Amendment, pointer: ExportsFieldPointer)(implicit messages: Messages): String =
-    forAmendedValue(pointer, messages(keyForAmend), value, newValue.value)
-
-  def valueRemoved(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
-    forRemovedValue(pointer, messages(keyForAmend), value)
 }
 
 object PersonPresentingGoodsDetails extends DeclarationPage with FieldMapping {

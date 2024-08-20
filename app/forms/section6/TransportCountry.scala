@@ -18,8 +18,6 @@ package forms.section6
 
 import connectors.CodeListConnector
 import forms.DeclarationPage
-import forms.section6.TransportCountry.keyForAmend
-import models.AmendmentRow.{forAddedValue, forAmendedValue, forRemovedValue}
 import models.DeclarationType.DeclarationType
 import models.ExportsFieldPointer.ExportsFieldPointer
 import models.viewmodels.TariffContentKey
@@ -45,21 +43,13 @@ case class TransportCountry(countryCode: Option[String]) extends Ordered[Transpo
   def value: String = countryCode.getOrElse("")
 
   def getLeafPointersIfAny(pointer: ExportsFieldPointer): Seq[ExportsFieldPointer] =
-    countryCode.fold("")(forAddedValue(pointer, messages(keyForAmend), _))
-
-  def valueAmended(newValue: Amendment, pointer: ExportsFieldPointer)(implicit messages: Messages): String =
-    forAmendedValue(pointer, messages(keyForAmend), value, newValue.value)
-
-  def valueRemoved(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
-    countryCode.fold("")(forRemovedValue(pointer, messages(keyForAmend), _))
+    Seq(pointer)
 }
 
 object TransportCountry extends DeclarationPage with FieldMapping {
   implicit val format: OFormat[TransportCountry] = Json.format[TransportCountry]
 
   val pointer: String = "meansOfTransportCrossingTheBorderNationality"
-
-  private val keyForAmend = "declaration.summary.transport.registrationCountry"
 
   val transportCountry = "transport-country"
 

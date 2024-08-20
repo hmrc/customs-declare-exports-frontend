@@ -16,20 +16,12 @@
 
 package forms.section5.additionaldocuments
 
-import forms.section5.additionaldocuments.DocumentWriteOff.{
-  documentQuantityPointer,
-  keyForDocumentQuantity,
-  keyForMeasurementUnit,
-  measurementUnitPointer
-}
-import models.AmendmentRow.{forAddedValue, forRemovedValue, convertToLeafPointer}
-import models.declaration.ExportItem.itemsPrefix
+import forms.section5.additionaldocuments.DocumentWriteOff.{documentQuantityPointer, measurementUnitPointer}
 import models.ExportsFieldPointer.ExportsFieldPointer
 import models.declaration.ExportItem.itemsPrefix
 import models.{AmendmentOp, FieldMapping}
 import play.api.data.Forms.{optional, text}
 import play.api.data.{Form, FormError, Forms}
-import play.api.i18n.Messages
 import play.api.libs.json.{Json, OFormat}
 import services.DiffTools
 import services.DiffTools.{combinePointers, compareBigDecimalDifference, compareStringDifference, ExportsDeclarationDiff}
@@ -46,16 +38,7 @@ case class DocumentWriteOff(measurementUnit: Option[String], documentQuantity: O
   def measurementUnitDisplay: String = measurementUnit.map(_.replace("#", " ")).getOrElse("")
 
   def getLeafPointersIfAny(pointer: ExportsFieldPointer): Seq[ExportsFieldPointer] =
-    measurementUnit.fold("")(forAddedValue(convertToLeafPointer(pointer, measurementUnitPointer), messages(keyForMeasurementUnit), _)) +
-      documentQuantity.fold("")(qty =>
-        forAddedValue(convertToLeafPointer(pointer, documentQuantityPointer), messages(keyForDocumentQuantity), qty.toString)
-      )
-
-  def valueRemoved(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
-    measurementUnit.fold("")(forRemovedValue(convertToLeafPointer(pointer, measurementUnitPointer), messages(keyForMeasurementUnit), _)) +
-      documentQuantity.fold("")(qty =>
-        forRemovedValue(convertToLeafPointer(pointer, documentQuantityPointer), messages(keyForDocumentQuantity), qty.toString)
-      )
+    Seq(pointer)
 }
 
 object DocumentWriteOff extends FieldMapping {

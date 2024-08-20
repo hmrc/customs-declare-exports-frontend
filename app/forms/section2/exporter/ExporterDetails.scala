@@ -36,9 +36,6 @@ case class ExporterDetails(details: EntityDetails) extends Details with DiffTool
 
   def getLeafPointersIfAny(pointer: ExportsFieldPointer): Seq[ExportsFieldPointer] =
     details.getLeafPointersIfAny(pointer)
-
-  def valueRemoved(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
-    details.valueRemoved(pointer)
 }
 
 object ExporterDetails extends DeclarationPage with FieldMapping {

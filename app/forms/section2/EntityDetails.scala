@@ -18,7 +18,7 @@ package forms.section2
 
 import connectors.CodeListConnector
 import forms.common.{Address, Eori}
-import models.AmendmentRow.{forAddedValue, forRemovedValue}
+import models.AmendmentRow.convertToLeafPointer
 import models.ExportsFieldPointer.ExportsFieldPointer
 import models.declaration.Parties
 import models.declaration.Parties.partiesPrefix
@@ -42,12 +42,7 @@ case class EntityDetails(
     ).flatten
 
   def getLeafPointersIfAny(pointer: ExportsFieldPointer): Seq[ExportsFieldPointer] =
-    eori.fold("")(eori => forAddedValue(pointer, messages(EntityDetails.mappingsForAmendment(pointer)), eori.value)) +
-      address.fold("")(_.getLeafPointersIfAny(pointer))
-
-  def valueRemoved(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
-    eori.fold("")(eori => forRemovedValue(pointer, messages(EntityDetails.mappingsForAmendment(pointer)), eori.value)) +
-      address.fold("")(_.valueRemoved(pointer))
+    Seq(convertToLeafPointer(pointer, "code"))
 
   lazy val isEmpty: Boolean = eori.isEmpty && address.isEmpty
   lazy val nonEmpty: Boolean = !isEmpty

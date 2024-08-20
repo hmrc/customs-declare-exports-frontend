@@ -17,14 +17,12 @@
 package forms.section3
 
 import forms.DeclarationPage
-import models.AmendmentRow.{forAddedValue, forAmendedValue, forRemovedValue}
 import models.DeclarationType.DeclarationType
 import models.ExportsFieldPointer.ExportsFieldPointer
 import models.viewmodels.TariffContentKey
 import models.{Amendment, FieldMapping}
 import play.api.data.Forms.text
 import play.api.data.{Form, Forms, Mapping}
-import play.api.i18n.Messages
 import play.api.libs.json.{Json, OFormat}
 import utils.validators.forms.FieldValidator.{hasSpecificLength, nonEmpty, _}
 
@@ -33,13 +31,7 @@ case class OfficeOfExit(officeId: String) extends Ordered[OfficeOfExit] with Ame
   def value: String = officeId
 
   def getLeafPointersIfAny(pointer: ExportsFieldPointer): Seq[ExportsFieldPointer] =
-    forAddedValue(pointer, messages(keyForAmend), officeId)
-
-  def valueAmended(newValue: Amendment, pointer: ExportsFieldPointer)(implicit messages: Messages): String =
-    forAmendedValue(pointer, messages(keyForAmend), officeId, newValue.value)
-
-  def valueRemoved(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
-    forRemovedValue(pointer, messages(keyForAmend), officeId)
+    Seq(pointer)
 
   override def compare(that: OfficeOfExit): Int =
     officeId.compareTo(that.officeId)

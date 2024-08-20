@@ -17,8 +17,7 @@
 package forms.section5
 
 import forms.DeclarationPage
-import forms.section5.AdditionalInformation.{codePointer, descriptionPointer, keyForCode, keyForDescription}
-import models.AmendmentRow.{forAddedValue, forRemovedValue, convertToLeafPointer}
+import forms.section5.AdditionalInformation.{codePointer, descriptionPointer}
 import models.DeclarationType.DeclarationType
 import models.ExportsFieldPointer.ExportsFieldPointer
 import models.declaration.ExportItem.itemsPrefix
@@ -27,7 +26,6 @@ import models.viewmodels.TariffContentKey
 import models.{AmendmentOp, FieldMapping}
 import play.api.data.Forms._
 import play.api.data.{Form, Forms}
-import play.api.i18n.Messages
 import play.api.libs.json.{Json, OFormat}
 import services.DiffTools
 import services.DiffTools.{combinePointers, compareStringDifference, ExportsDeclarationDiff}
@@ -43,12 +41,7 @@ case class AdditionalInformation(code: String, description: String)
     ).flatten
 
   def getLeafPointersIfAny(pointer: ExportsFieldPointer): Seq[ExportsFieldPointer] =
-    forAddedValue(convertToLeafPointer(pointer, codePointer), messages(keyForCode), code) +
-      forAddedValue(convertToLeafPointer(pointer, descriptionPointer), messages(keyForDescription), description)
-
-  def valueRemoved(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
-    forRemovedValue(convertToLeafPointer(pointer, codePointer), messages(keyForCode), code) +
-      forRemovedValue(convertToLeafPointer(pointer, descriptionPointer), messages(keyForDescription), description)
+    Seq(pointer)
 }
 
 object AdditionalInformation extends DeclarationPage with FieldMapping {

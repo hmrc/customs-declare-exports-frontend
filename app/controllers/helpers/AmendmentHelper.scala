@@ -17,16 +17,14 @@
 package controllers.helpers
 
 import connectors.CodeListConnector
-import models.{AmendmentOp, ExportsDeclaration}
-import models.ExportsFieldPointer.ExportsFieldPointer
+import models.{ExportsDeclaration, Pointer}
 import play.api.Logging
 import play.api.i18n.Messages
-import services.OriginalAndNewValues
 import views.helpers.{CountryHelper, PointerRecord}
 
 import javax.inject.{Inject, Singleton}
 
-case class AmendmentInstance(pointer: ExportsFieldPointer, fieldId: String, originalValue: Option[String], amendedValue: Option[String])
+case class AmendmentInstance(pointer: Pointer, fieldId: String, originalValue: Option[String], amendedValue: Option[String])
 
 //TODO add logic that fetches all leaf (only) pointer records when a parent level pointer comes through
 // capture any logic from valueAdded et al methods on case classes#
@@ -38,25 +36,32 @@ class AmendmentHelper @Inject() (implicit codeListConnector: CodeListConnector, 
     val amendedPointers = {
       val diff = amendedDeclaration.createDiff(originalDeclaration)
 
-      diff.flatMap(af => af.values.newVal.orElse(af.values.originalVal).map {
-        case Some(a: AmendmentOp) =>
-          val convertedPointer = af.fieldPointer.replaceAll("\\.#[0-9]+\\.?", ".")
-          val finalPointer = if (convertedPointer.endsWith(".")) convertedPointer.dropRight(1) else convertedPointer
-          a.getLeafPointersIfAny(finalPointer)
-        case _ =>
-          logger.warn(s"'AlteredField(${af.fieldPointer}) with no value difference??")
-          Seq.empty
-      }).flatten
+      println(">>>>>>>>>>>>>>>>>>>")
+      println(diff)
+
+      val kk = diff.flatMap { alteredField =>
+        PointerRecord.expandPointer(Pointer.apply(alteredField.fieldPointer), originalDeclaration, amendedDeclaration)
+      }
+
+      println(kk)
+
+      kk
     }
 
-    val pointersAndRecords = amendedPointers.map(pointer => (pointer, PointerRecord.library(pointer)))
+    val pointersAndRecords = amendedPointers.map(pointer => (pointer, PointerRecord.pointersToPointerRecords(pointer.pattern)))
 
     pointersAndRecords.flatMap { case (pointer, record) =>
       record.amendKey.fold {
         logger.warn(s"No amend key found for pointer [$pointer]")
         Option.empty[AmendmentInstance]
-      } {
-        key => Some(AmendmentInstance(pointer, key, record.fetchReadableValue(originalDeclaration), record.fetchReadableValue(amendedDeclaration)))
+      } { key =>
+        val origVal = record.fetchReadableValue(originalDeclaration, pointer.sequenceIndexes: _*)
+        val amendedVal = record.fetchReadableValue(amendedDeclaration, pointer.sequenceIndexes: _*)
+
+        if (origVal.isEmpty && amendedVal.isEmpty)
+          Option.empty[AmendmentInstance]
+        else
+          Some(AmendmentInstance(pointer, key, origVal, amendedVal))
       }
     }
   }

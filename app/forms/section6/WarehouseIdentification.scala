@@ -17,17 +17,14 @@
 package forms.section6
 
 import forms.DeclarationPage
-import forms.mappings.MappingHelper.requiredRadio
 import forms.common.YesNoAnswer.YesNoAnswers
-import forms.section6.WarehouseIdentification.keyForAmend
-import models.AmendmentRow.{forAddedValue, forAmendedValue, forRemovedValue}
+import forms.mappings.MappingHelper.requiredRadio
 import models.DeclarationType.DeclarationType
 import models.ExportsFieldPointer.ExportsFieldPointer
 import models.viewmodels.TariffContentKey
 import models.{Amendment, FieldMapping}
 import play.api.data.Forms.text
 import play.api.data.{Form, Forms}
-import play.api.i18n.Messages
 import play.api.libs.json.{Json, OFormat}
 import services.DiffTools.compareOptionalString
 import uk.gov.voa.play.form.ConditionalMappings.mandatoryIfEqual
@@ -41,13 +38,7 @@ case class WarehouseIdentification(identificationNumber: Option[String] = None) 
   def value: String = identificationNumber.getOrElse("")
 
   def getLeafPointersIfAny(pointer: ExportsFieldPointer): Seq[ExportsFieldPointer] =
-    identificationNumber.fold("")(forAddedValue(pointer, messages(keyForAmend), _))
-
-  def valueAmended(newValue: Amendment, pointer: ExportsFieldPointer)(implicit messages: Messages): String =
-    forAmendedValue(pointer, messages(keyForAmend), value, newValue.value)
-
-  def valueRemoved(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
-    identificationNumber.fold("")(forRemovedValue(pointer, messages(keyForAmend), _))
+    Seq(pointer)
 }
 
 object WarehouseIdentification extends DeclarationPage with FieldMapping {

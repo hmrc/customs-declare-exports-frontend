@@ -16,6 +16,7 @@
 
 package forms.section5.additionaldocuments
 
+import forms.DeclarationPage
 import forms.common.Date
 import forms.mappings.{AdditionalConstraintsMapping, ConditionalConstraint}
 import forms.section5.additionaldocuments.AdditionalDocument.{
@@ -25,17 +26,9 @@ import forms.section5.additionaldocuments.AdditionalDocument.{
   documentStatusReasonPointer,
   documentTypeCodePointer,
   documentWriteOffPointer,
-  issuingAuthorityNamePointer,
-  keyForDateOfValidity,
-  keyForIdentifier,
-  keyForIssuingAuthorityName,
-  keyForStatus,
-  keyForStatusReason,
-  keyForTypeCode
+  issuingAuthorityNamePointer
 }
 import forms.section5.additionaldocuments.DocumentWriteOff.documentWriteOffKey
-import forms.DeclarationPage
-import models.AmendmentRow.{forAddedValue, forRemovedValue, convertToLeafPointer}
 import models.DeclarationType.{CLEARANCE, DeclarationType}
 import models.ExportsFieldPointer.ExportsFieldPointer
 import models.declaration.ExportItem.itemsPrefix
@@ -44,7 +37,6 @@ import models.viewmodels.TariffContentKey
 import models.{AmendmentOp, ExportsDeclaration, FieldMapping}
 import play.api.data.Forms._
 import play.api.data.{Form, FormError, Forms, Mapping}
-import play.api.i18n.Messages
 import play.api.libs.json.{JsValue, Json, OFormat, OWrites}
 import services.DiffTools.{combinePointers, compareStringDifference, ExportsDeclarationDiff}
 import services.{DiffTools, TaggedAdditionalDocumentCodes, TaggedAuthCodes}
@@ -90,26 +82,7 @@ case class AdditionalDocument(
     )
 
   def getLeafPointersIfAny(pointer: ExportsFieldPointer): Seq[ExportsFieldPointer] =
-    documentTypeCode.fold("")(forAddedValue(convertToLeafPointer(pointer, documentTypeCodePointer), messages(keyForTypeCode), _)) +
-      documentIdentifier.fold("")(forAddedValue(convertToLeafPointer(pointer, documentIdentifierPointer), messages(keyForIdentifier), _)) +
-      documentStatus.fold("")(forAddedValue(convertToLeafPointer(pointer, documentStatusPointer), messages(keyForStatus), _)) +
-      documentStatusReason.fold("")(forAddedValue(convertToLeafPointer(pointer, documentStatusReasonPointer), messages(keyForStatusReason), _)) +
-      issuingAuthorityName.fold("")(forAddedValue(convertToLeafPointer(pointer, issuingAuthorityNamePointer), messages(keyForIssuingAuthorityName), _)) +
-      dateOfValidity.fold("")(date =>
-        forAddedValue(convertToLeafPointer(pointer, dateOfValidityPointer), messages(keyForDateOfValidity), date.toString)
-      ) +
-      documentWriteOff.fold("")(_.getLeafPointersIfAny(convertToLeafPointer(pointer, documentWriteOffPointer)))
-
-  def valueRemoved(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
-    documentTypeCode.fold("")(forRemovedValue(convertToLeafPointer(pointer, documentTypeCodePointer), messages(keyForTypeCode), _)) +
-      documentIdentifier.fold("")(forRemovedValue(convertToLeafPointer(pointer, documentIdentifierPointer), messages(keyForIdentifier), _)) +
-      documentStatus.fold("")(forRemovedValue(convertToLeafPointer(pointer, documentStatusPointer), messages(keyForStatus), _)) +
-      documentStatusReason.fold("")(forRemovedValue(convertToLeafPointer(pointer, documentStatusReasonPointer), messages(keyForStatusReason), _)) +
-      issuingAuthorityName.fold("")(
-        forRemovedValue(convertToLeafPointer(pointer, issuingAuthorityNamePointer), messages(keyForIssuingAuthorityName), _)
-      ) +
-      dateOfValidity.fold("")(dt => forRemovedValue(convertToLeafPointer(pointer, dateOfValidityPointer), messages(keyForDateOfValidity), dt.toString)) +
-      documentWriteOff.fold("")(_.valueRemoved(convertToLeafPointer(pointer, documentWriteOffPointer)))
+    Seq(pointer)
 }
 
 object AdditionalDocument extends DeclarationPage with FieldMapping {

@@ -36,9 +36,6 @@ case class ConsignorDetails(details: EntityDetails) extends Details with DiffToo
 
   def getLeafPointersIfAny(pointer: ExportsFieldPointer): Seq[ExportsFieldPointer] =
     details.getLeafPointersIfAny(pointer)
-
-  def valueRemoved(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
-    details.valueRemoved(pointer)
 }
 
 object ConsignorDetails extends DeclarationPage with FieldMapping {

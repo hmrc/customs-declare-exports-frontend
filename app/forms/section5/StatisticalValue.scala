@@ -17,8 +17,6 @@
 package forms.section5
 
 import forms.DeclarationPage
-import forms.section5.StatisticalValue.keyForAmend
-import models.AmendmentRow.{forAddedValue, forAmendedValue, forRemovedValue}
 import models.DeclarationType.DeclarationType
 import models.ExportsFieldPointer.ExportsFieldPointer
 import models.declaration.ExportItem.itemsPrefix
@@ -26,7 +24,6 @@ import models.viewmodels.TariffContentKey
 import models.{Amendment, FieldMapping}
 import play.api.data.Forms.text
 import play.api.data.{Form, Forms, Mapping}
-import play.api.i18n.Messages
 import play.api.libs.json.{Json, OFormat}
 import utils.validators.forms.FieldValidator._
 
@@ -37,13 +34,7 @@ case class StatisticalValue(statisticalValue: String) extends Ordered[Statistica
   def value: String = statisticalValue
 
   def getLeafPointersIfAny(pointer: ExportsFieldPointer): Seq[ExportsFieldPointer] =
-    forAddedValue(pointer, messages(keyForAmend), statisticalValue)
-
-  def valueAmended(newValue: Amendment, pointer: ExportsFieldPointer)(implicit messages: Messages): String =
-    forAmendedValue(pointer, messages(keyForAmend), statisticalValue, newValue.value)
-
-  def valueRemoved(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
-    forRemovedValue(pointer, messages(keyForAmend), statisticalValue)
+    Seq(pointer)
 }
 
 object StatisticalValue extends DeclarationPage with FieldMapping {

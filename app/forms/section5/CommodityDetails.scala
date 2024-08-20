@@ -18,8 +18,7 @@ package forms.section5
 
 import forms.DeclarationPage
 import forms.section1.AdditionalDeclarationType.SUPPLEMENTARY_EIDR
-import forms.section5.CommodityDetails.{combinedNomenclatureCodePointer, descriptionOfGoodsPointer, keyForCode, keyForDescription}
-import models.AmendmentRow.{forAddedValue, forRemovedValue, convertToLeafPointer}
+import forms.section5.CommodityDetails.{combinedNomenclatureCodePointer, descriptionOfGoodsPointer}
 import models.DeclarationType._
 import models.ExportsFieldPointer.ExportsFieldPointer
 import models.declaration.ExportItem.itemsPrefix
@@ -28,7 +27,6 @@ import models.viewmodels.TariffContentKey
 import models.{AmendmentOp, FieldMapping}
 import play.api.data.Forms.{mapping, optional, text}
 import play.api.data.{Form, Mapping}
-import play.api.i18n.Messages
 import play.api.libs.json.{Json, OFormat}
 import services.DiffTools
 import services.DiffTools.{combinePointers, compareStringDifference, ExportsDeclarationDiff}
@@ -48,12 +46,7 @@ case class CommodityDetails(combinedNomenclatureCode: Option[String], descriptio
     ).flatten
 
   def getLeafPointersIfAny(pointer: ExportsFieldPointer): Seq[ExportsFieldPointer] =
-    combinedNomenclatureCode.fold("")(forAddedValue(convertToLeafPointer(pointer, combinedNomenclatureCodePointer), messages(keyForCode), _)) +
-      descriptionOfGoods.fold("")(forAddedValue(convertToLeafPointer(pointer, descriptionOfGoodsPointer), messages(keyForDescription), _))
-
-  def valueRemoved(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
-    combinedNomenclatureCode.fold("")(forRemovedValue(convertToLeafPointer(pointer, combinedNomenclatureCodePointer), messages(keyForCode), _)) +
-      descriptionOfGoods.fold("")(forRemovedValue(convertToLeafPointer(pointer, descriptionOfGoodsPointer), messages(keyForDescription), _))
+    Seq(pointer)
 }
 
 object CommodityDetails extends DeclarationPage with FieldMapping {
