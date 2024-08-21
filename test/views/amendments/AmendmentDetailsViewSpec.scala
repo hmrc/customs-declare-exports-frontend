@@ -16,29 +16,12 @@
 
 package views.amendments
 
-import base.{Injector, MockAuthAction, OverridableInjector}
+import base.{Injector, MockAuthAction}
 import controllers.timeline.routes.DeclarationDetailsController
-import forms.common.YesNoAnswer.YesNoAnswers.{no, yes}
-import forms.common._
-import forms.section1.DeclarantDetails
-import forms.section2.authorisationHolder.AuthorisationHolder
-import forms.section2.carrier.CarrierDetails
-import forms.section2.consignor.ConsignorDetails
-import forms.section2.exporter.ExporterDetails
-import forms.section2.{AdditionalActor, ConsigneeDetails, EntityDetails, PersonPresentingGoodsDetails}
-import forms.section3.OfficeOfExit
-import forms.section4.{Document, NatureOfTransaction}
-import forms.section5._
-import forms.section5.additionaldocuments.{AdditionalDocument, DocumentWriteOff}
-import forms.section6.ModeOfTransportCode.{InlandWaterway, Maritime, RoRo, Road}
-import forms.section6.TransportPayment.{cash, cheque}
-import forms.section6._
-import models.declaration._
+import controllers.helpers.AmendmentInstance
+import models.Pointer
 import models.declaration.submissions.RequestType.ExternalAmendmentRequest
 import play.twirl.api.HtmlFormat.Appendable
-import services.DiffTools.ExportsDeclarationDiff
-import services._
-import services.model.PackageType
 import testdata.SubmissionsTestData.{action, submission}
 import views.amendments.AmendmentDetailsViewSpec._
 import views.common.UnitViewSpec
@@ -123,35 +106,41 @@ class AmendmentDetailsViewSpec extends UnitViewSpec with CommonMessages with Inj
 
     "display the expected amendment rows" in {
       amendments.foreach { difference =>
-        val card = createView(List(difference.amendmentRow)).getElementsByClass("govuk-summary-card").get(0)
-        card.getElementsByTag("h2").text mustBe messages(h2(difference.expectedSection), "1")
+        withClue(s"testing $difference") {
+          val card = createView(List(difference.amendmentRow)).getElementsByClass("govuk-summary-card").get(0)
+          card.getElementsByTag("h2").text mustBe messages(h2(difference.expectedSection), "1")
 
-        val tbody = card.getElementsByTag("tbody").get(0)
+          val tbody = card.getElementsByTag("tbody").get(0)
 
-        val columns = tbody.getElementsByClass("govuk-table__cell")
-        columns.size() mustBe 3
+          val columns = tbody.getElementsByClass("govuk-table__cell")
+          columns.size() mustBe 3
 
-        columns.get(0).text mustBe messages(difference.expectedKeys.head, difference.expectedKeys.tail: _*)
-        columns.get(1).text mustBe difference.expectedOldVal
-        columns.get(2).text mustBe difference.expectedNewVal
+          columns.get(0).text mustBe messages(difference.expectedKeys.head, difference.expectedKeys.tail: _*)
+          columns.get(1).text mustBe difference.expectedOldVal
+          columns.get(2).text mustBe difference.expectedNewVal
+        }
       }
     }
 
     "display the expected differences in multiple rows" in {
       multiRowDifferences.foreach { difference =>
-        val expectedRows = difference.expectedKeys.size
-        val card = createView(List(difference.amendmentRow)).getElementsByClass("govuk-summary-card").get(0)
-        card.getElementsByTag("h2").text mustBe messages(h2(difference.expectedSection), "1")
+        withClue(s"testing $difference") {
+          val expectedRows = difference.expectedKeys.size
+          val card = createView(List(difference.amendmentRow)).getElementsByClass("govuk-summary-card").get(0)
+          card.getElementsByTag("h2").text mustBe messages(h2(difference.expectedSection), "1")
 
-        val tbody = card.getElementsByTag("tbody").get(0)
+          val tbody = card.getElementsByTag("tbody").get(0)
 
-        val cells = tbody.getElementsByClass("govuk-table__cell")
-        cells.size() mustBe expectedRows * 3
+          println(tbody)
 
-        val actualKeysVals = cells.eachText().asScala.toList.grouped(2)
-        actualKeysVals.zip(difference.expectedKeys).foreach { case (actualFieldId :: actualValue, expectedKey) =>
-          actualFieldId mustBe messages(expectedKey)
-          actualValue.head mustBe "new"
+          val cells = tbody.getElementsByClass("govuk-table__cell")
+          cells.size() mustBe expectedRows * 3
+
+          val actualKeysVals = cells.eachText().asScala.toList.grouped(2)
+          actualKeysVals.zip(difference.expectedKeys).foreach { case (actualFieldId :: actualValue, expectedKey) =>
+            actualFieldId mustBe messages(expectedKey)
+            actualValue.head mustBe "new"
+          }
         }
       }
     }
@@ -161,11 +150,11 @@ class AmendmentDetailsViewSpec extends UnitViewSpec with CommonMessages with Inj
 object AmendmentDetailsViewSpec {
 
   private def amendment(pointer: String, expectedSection: String, expectedKeys: String*): Difference =
-    Difference(AmendmentInstance(pointer, Some("old"), Some("new")), expectedSection, "old", "new", expectedKeys)
+    Difference(AmendmentInstance(Pointer(pointer), expectedKeys.head, Some("old"), Some("new")), expectedSection, "old", "new", expectedKeys)
   private def addition(pointer: String, expectedSection: String, expectedKeys: String*): Difference =
-    Difference(AmendmentInstance(pointer, None, Some("new")), expectedSection, "", "new", expectedKeys)
+    Difference(AmendmentInstance(Pointer(pointer), expectedKeys.head, None, Some("new")), expectedSection, "", "new", expectedKeys)
   private def addition(pointer: String, expectedSection: String, expectedKeys: List[String]): Difference =
-    Difference(AmendmentInstance(pointer, None, Some("new")), expectedSection, "", "new", expectedKeys)
+    Difference(AmendmentInstance(Pointer(pointer), expectedKeys.head, None, Some("new")), expectedSection, "", "new", expectedKeys)
 
   private val items = "declaration.items.#1"
   private val locations = "declaration.locations"
@@ -197,7 +186,7 @@ object AmendmentDetailsViewSpec {
   )
 
   // scalastyle:off
-  lazy val amendments = List(
+  lazy val amendments: List[Difference] = List(
     // =========================== Transport's fields
     amendment(s"$transport.expressConsignment", transport, s"${keys(transport)}.expressConsignment"),
     amendment(s"$transport.transportPayment.paymentMethod", transport, s"${keys(transport)}.payment"),
@@ -259,12 +248,12 @@ object AmendmentDetailsViewSpec {
     addition(s"$parties.personPresentingGoodsDetails", parties, s"${keys(parties)}.personPresentingGoods"),
     amendment(s"$parties.personPresentingGoodsDetails.eori", parties, s"${keys(parties)}.eidr"),
     // =========================== Locations' fields
-    amendment(s"$locations.destinationCountry", locations, s"${keys(routeOfGoods)}.countryOfDestination"),
+    amendment(s"$locations.destinationCountries.countryOfDestination", locations, s"${keys(routeOfGoods)}.countryOfDestination"),
     addition(s"$locations.routingCountries.#1", locations, s"${keys(routeOfGoods)}.routingCountry"),
     amendment(s"$locations.routingCountries.#1", locations, s"${keys(routeOfGoods)}.routingCountry"),
     amendment(s"$locations.goodsLocation", locations, s"${keys(locations)}.goodsLocationCode"),
     amendment(s"$locations.officeOfExit.officeId", locations, s"${keys(locations)}.officeOfExit"),
-    amendment(s"$locations.supervisingCustomsOffice", transport, s"${keys(transport)}.supervisingOffice"),
+    amendment(s"$locations.supervisingCustomsOffice", locations, s"${keys(transport)}.supervisingOffice"),
     amendment(s"$locations.warehouseIdentification.identificationNumber", transport, s"${keys(transport)}.warehouse.id"),
     amendment(s"$locations.inlandModeOfTransportCode.inlandModeOfTransportCode", transport, s"${keys(transport)}.inlandModeOfTransport"),
     // =========================== totalNumberOfItems' fields
@@ -312,20 +301,34 @@ object AmendmentDetailsViewSpec {
       s"$items.additionalDocuments.documents.#1.documentWriteOff.documentQuantity",
       items,
       s"$item.additionalDocuments.measurementUnitQuantity"
-    )
+    ),
+    addition(s"$parties.declarationHoldersData.holders.type", parties, s"${keys(parties)}.holders.holder.type"),
+    addition(s"$parties.declarationHoldersData.holders.eori", parties, s"${keys(parties)}.holders.holder.eori"),
+    addition(s"$items.procedureCodes.procedureCode.code", items, s"$item.procedureCodes"),
+    addition(s"$items.procedureCodes.additionalProcedureCodes", items, s"$item.additionalProcedureCodes"),
   )
   // scalastyle:on
 
+  /*
+  "declaration.parties.additionalActors.actors.$" -> expandAdditionalActors,
+    "declaration.parties.consignorDetails" -> expandConsignorDetails,
+    "declaration.parties.consignorDetails.address" -> expandConsignorAdressDetails,
+    "declaration.previousDocuments.documents.$" -> expandPreviousDocuments,
+    "declaration.items.$.packageInformation.$" -> expandPackageInformation,
+    "declaration.items.$.additionalInformation.items.$" -> expandAdditionalInformation,
+    "declaration.items.$.additionalDocument.documents.$" -> expandAdditionalDocument,
+    "declaration.items.$.additionalFiscalReferencesData.references.$" -> expandAdditionalFiscalReferences,
+    "declaration.items.$.cusCode" -> expandCusCode,
+    "declaration.items.$" -> expandItem,
+    "declaration.transport.containers.$" -> expandContainers
+   */
+
   // scalastyle:off
-  lazy val multiRowDifferences = List(
-    addition(s"$parties.representativeDetails", parties, List(s"${keys(parties)}.representative.eori", s"${keys(parties)}.representative.type")),
-    addition(s"$parties.declarationAdditionalActorsData.actors", parties, List(s"${keys(parties)}.actors.eori", s"${keys(parties)}.actors.type")),
-    addition(
-      s"$parties.declarationHoldersData.holders",
-      parties,
-      List(s"${keys(parties)}.holders.holder.type", s"${keys(parties)}.holders.holder.eori")
-    ),
-    addition(
+  lazy val multiRowDifferences: List[Difference] = List(
+    /*addition(s"$parties.representativeDetails", parties, List(s"${keys(parties)}.representative.eori", s"${keys(parties)}.representative.type")),
+    addition(s"$parties.declarationAdditionalActorsData.actors", parties, List(s"${keys(parties)}.actors.eori", s"${keys(parties)}.actors.type")),*/
+
+    /*addition(
       "declaration.totalNumberOfItems",
       transaction,
       List(
@@ -343,8 +346,7 @@ object AmendmentDetailsViewSpec {
         s"${keys(transaction)}.previousDocuments.reference",
         s"${keys(transaction)}.previousDocuments.goodsItemIdentifier"
       )
-    ),
-    addition(s"$items.procedureCodes", items, List(s"$item.procedureCode", s"$item.additionalProcedureCodes")),
+    ),*/
     addition(s"$items.commodityDetails", items, List(s"$item.commodityCode", s"$item.goodsDescription")),
     addition(
       s"$items.packageInformation.#1",

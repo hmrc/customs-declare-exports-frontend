@@ -84,8 +84,6 @@ class AmendmentDetailsHelper extends Logging {
   // private lazy val routesAndLocationsIds = List(destinationCountryPointer, routingCountriesPointer, GoodsLocation.pointer, OfficeOfExit.pointerBase)
 
   private def sectionRoutesAndLocations(amendmentRows: Seq[AmendmentInstance]): Seq[Section] = {
-    amendmentRows.foreach(println)
-
     val alteredFields =
       amendmentRows
         .filter{ai =>
@@ -116,7 +114,7 @@ class AmendmentDetailsHelper extends Logging {
   private def sectionTransport(amendmentRows: Seq[AmendmentInstance]): Seq[Section] = {
     val alteredFields =
       amendmentRows
-        .filter(af => af.pointer.pattern.startsWith(transport) || transportIds.exists(af.pointer.pattern.startsWith))
+        .filter(ai => ai.pointer.pattern.startsWith(transport) || transportIds.exists(ai.pointer.pattern.startsWith))
 
     List(Section(transport, alteredFields))
   }
@@ -154,8 +152,8 @@ class AmendmentDetailsHelper extends Logging {
   private def getIndividualRow(amendmentInstance: AmendmentInstance)(implicit messages: Messages): String =
     s"""<tr class="govuk-table__row ${amendmentInstance.pointer.pattern.replaceAll("\\.#?", "-")}">
        |  <td class="govuk-table__cell govuk-table__cell_break-word">${messages(amendmentInstance.fieldId)}</th>
-       |  <td class="govuk-table__cell govuk-table__cell_break-word">${amendmentInstance.originalValue.getOrElse("-")}</td>
-       |  <td class="govuk-table__cell govuk-table__cell_break-word">${amendmentInstance.amendedValue.getOrElse("-")}</td>
+       |  <td class="govuk-table__cell govuk-table__cell_break-word">${amendmentInstance.originalValue.getOrElse("")}</td>
+       |  <td class="govuk-table__cell govuk-table__cell_break-word">${amendmentInstance.amendedValue.getOrElse("")}</td>
        |</tr>""".stripMargin
 }
 

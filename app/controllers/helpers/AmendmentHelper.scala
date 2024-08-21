@@ -26,8 +26,6 @@ import javax.inject.{Inject, Singleton}
 
 case class AmendmentInstance(pointer: Pointer, fieldId: String, originalValue: Option[String], amendedValue: Option[String])
 
-//TODO add logic that fetches all leaf (only) pointer records when a parent level pointer comes through
-// capture any logic from valueAdded et al methods on case classes#
 @Singleton
 class AmendmentHelper @Inject() (implicit codeListConnector: CodeListConnector, countryHelper: CountryHelper) extends Logging {
   def generateAmendmentRows(originalDeclaration: ExportsDeclaration, amendedDeclaration: ExportsDeclaration)(
@@ -35,8 +33,11 @@ class AmendmentHelper @Inject() (implicit codeListConnector: CodeListConnector, 
   ): Seq[AmendmentInstance] = {
     val amendedPointers = {
       val diff = amendedDeclaration.createDiff(originalDeclaration)
+      diff.flatMap { alteredField =>
+        PointerRecord.expandPointer(Pointer.apply(alteredField.fieldPointer), originalDeclaration, amendedDeclaration)
+      }
 
-      println(">>>>>>>>>>>>>>>>>>>")
+      /*println(">>>>>>>>>>>>>>>>>>>")
       println(diff)
 
       val kk = diff.flatMap { alteredField =>
@@ -45,7 +46,7 @@ class AmendmentHelper @Inject() (implicit codeListConnector: CodeListConnector, 
 
       println(kk)
 
-      kk
+      kk*/
     }
 
     val pointersAndRecords = amendedPointers.map(pointer => (pointer, PointerRecord.pointersToPointerRecords(pointer.pattern)))

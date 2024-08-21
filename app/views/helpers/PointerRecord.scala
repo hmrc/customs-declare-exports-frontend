@@ -808,6 +808,7 @@ object PointerRecord {
       def fetchRawValue(dec: ExportsDeclaration, args: Int*): Option[String] =
         dec.locations.supervisingCustomsOffice.flatMap(_.supervisingCustomsOffice)
       override val pageLink1Param: Option[Call] = Some(SupervisingCustomsOfficeController.displayPage)
+      override val amendKey: Option[String] = Some("declaration.summary.transport.supervisingOffice")
     }
   )
 

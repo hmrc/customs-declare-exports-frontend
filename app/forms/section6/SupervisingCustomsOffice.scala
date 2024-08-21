@@ -40,7 +40,7 @@ case class SupervisingCustomsOffice(supervisingCustomsOffice: Option[String] = N
 
 object SupervisingCustomsOffice extends DeclarationPage with FieldMapping {
 
-  val pointer: ExportsFieldPointer = "supervisingCustomsOffice"
+  val pointer: ExportsFieldPointer = "warehouseIdentification.supervisingCustomsOffice"
 
   val keyForAmend = "declaration.summary.transport.supervisingOffice"
 
