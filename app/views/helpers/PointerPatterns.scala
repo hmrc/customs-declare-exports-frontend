@@ -39,6 +39,17 @@ object PointerPatterns {
     addAddressDetails(baseSections)
   }
 
+  val expandCarrierDetails = (p: Pointer, orig: ExportsDeclaration, amend: ExportsDeclaration) => {
+    val baseSections = p.sections :+ PointerSection("address", FIELD)
+    addAddressDetails(baseSections)
+  }
+
+  val expandRepresentativeDetails = (p: Pointer, orig: ExportsDeclaration, amend: ExportsDeclaration) =>
+  Seq(
+    Pointer(p.sections ++ Seq(PointerSection("details", FIELD), PointerSection("eori", FIELD))),
+    Pointer(p.sections :+ PointerSection("statusCode", FIELD))
+  )
+
   private def addAddressDetails(baseSections: Seq[PointerSection]): Seq[Pointer] =
     Seq(
       Pointer(baseSections :+ PointerSection("fullName", FIELD)),
@@ -192,6 +203,8 @@ object PointerPatterns {
     "declaration.parties.consignorDetails.address" -> expandAddressDetails,
     "declaration.parties.declarationHolders.holders.$" -> expandDeclarationHolders,
     "declaration.parties.exporterDetails.address" -> expandAddressDetails,
+    "declaration.parties.representativeDetails" -> expandRepresentativeDetails,
+    "declaration.parties.carrierDetails.details" -> expandCarrierDetails,
     "declaration.previousDocuments.documents.$" -> expandPreviousDocuments,
     "declaration.items.$.packageInformation.$" -> expandPackageInformation,
     "declaration.items.$.additionalInformation.items.$" -> expandAdditionalInformation,

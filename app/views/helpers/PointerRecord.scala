@@ -476,6 +476,7 @@ object PointerRecord {
       def fetchRawValue(dec: ExportsDeclaration, args: Int*): Option[String] =
         dec.parties.representativeDetails.flatMap(_.details.flatMap(_.eori.map(_.value)))
       override val pageLink1Param: Option[Call] = Some(RepresentativeEntityController.displayPage)
+      override val amendKey: Option[String] = Some("declaration.summary.parties.representative.eori")
     },
     "declaration.parties.representativeDetails.statusCode" -> new DefaultPointerRecord() {
       def fetchRawValue(dec: ExportsDeclaration, args: Int*): Option[String] = dec.parties.representativeDetails.flatMap(_.statusCode)
@@ -485,6 +486,7 @@ object PointerRecord {
         args: Int*
       )(implicit msgs: Messages, countryHelper: CountryHelper, codeListConnector: CodeListConnector): Option[String] =
         fetchRawValue(dec, args: _*).map(code => msgs(s"declaration.summary.parties.representative.type.$code"))
+      override val amendKey: Option[String] = Some("declaration.summary.parties.representative.type")
     },
     "declaration.parties.declarationHolders.$.eori" -> declarationHoldersEori,
     "declaration.parties.declarationHolders.holders.$.eori" -> declarationHoldersEori,
@@ -536,15 +538,18 @@ object PointerRecord {
     "declaration.parties.carrierDetails.details.address.fullName" -> new DefaultPointerRecord() {
       def fetchRawValue(dec: ExportsDeclaration, args: Int*): Option[String] = dec.parties.carrierDetails.flatMap(_.details.address.map(_.fullName))
       override val pageLink1Param: Option[Call] = Some(CarrierDetailsController.displayPage)
+      override val amendKey = Some("declaration.summary.parties.carrier.address.fullName")
     },
     "declaration.parties.carrierDetails.details.address.addressLine" -> new DefaultPointerRecord() {
       def fetchRawValue(dec: ExportsDeclaration, args: Int*): Option[String] =
         dec.parties.carrierDetails.flatMap(_.details.address.map(_.addressLine))
       override val pageLink1Param: Option[Call] = Some(CarrierDetailsController.displayPage)
+      override val amendKey: Option[String] = Some("declaration.summary.parties.carrier.address.addressLine")
     },
     "declaration.parties.carrierDetails.details.address.townOrCity" -> new DefaultPointerRecord() {
       def fetchRawValue(dec: ExportsDeclaration, args: Int*): Option[String] = dec.parties.carrierDetails.flatMap(_.details.address.map(_.townOrCity))
       override val pageLink1Param: Option[Call] = Some(CarrierDetailsController.displayPage)
+      override val amendKey: Option[String] = Some("declaration.summary.parties.carrier.address.townOrCity")
     },
     "declaration.parties.carrierDetails.details.address.country" -> new DefaultPointerRecord() {
       def fetchRawValue(dec: ExportsDeclaration, args: Int*): Option[String] = dec.parties.carrierDetails.flatMap(_.details.address.map(_.country))
@@ -554,10 +559,12 @@ object PointerRecord {
         args: Int*
       )(implicit msgs: Messages, countryHelper: CountryHelper, codeListConnector: CodeListConnector): Option[String] =
         fetchRawValue(dec, args: _*).flatMap(countryHelper.getShortNameForCountryCode)
+      override val amendKey: Option[String] = Some("declaration.summary.parties.carrier.address.country")
     },
     "declaration.parties.carrierDetails.details.address.postCode" -> new DefaultPointerRecord() {
       def fetchRawValue(dec: ExportsDeclaration, args: Int*): Option[String] = dec.parties.carrierDetails.flatMap(_.details.address.map(_.postCode))
       override val pageLink1Param: Option[Call] = Some(CarrierDetailsController.displayPage)
+      override val amendKey: Option[String] = Some("declaration.summary.parties.carrier.address.postCode")
     },
     "declaration.transport.transportPayment.paymentMethod" -> new DefaultPointerRecord() {
       def fetchRawValue(dec: ExportsDeclaration, args: Int*): Option[String] = dec.transport.transportPayment.map(_.paymentMethod)
