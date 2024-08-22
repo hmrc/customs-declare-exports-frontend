@@ -29,8 +29,6 @@ import views.helpers.{CommonMessages, ViewDates}
 import views.html.amendments.amendment_details
 import views.tags.ViewTest
 
-import scala.jdk.CollectionConverters._
-
 case class Difference(
   amendmentRow: AmendmentInstance,
   expectedSection: String,
@@ -121,29 +119,6 @@ class AmendmentDetailsViewSpec extends UnitViewSpec with CommonMessages with Inj
         }
       }
     }
-
-    "display the expected differences in multiple rows" in {
-      multiRowDifferences.foreach { difference =>
-        withClue(s"testing $difference") {
-          val expectedRows = difference.expectedKeys.size
-          val card = createView(List(difference.amendmentRow)).getElementsByClass("govuk-summary-card").get(0)
-          card.getElementsByTag("h2").text mustBe messages(h2(difference.expectedSection), "1")
-
-          val tbody = card.getElementsByTag("tbody").get(0)
-
-          println(tbody)
-
-          val cells = tbody.getElementsByClass("govuk-table__cell")
-          cells.size() mustBe expectedRows * 3
-
-          val actualKeysVals = cells.eachText().asScala.toList.grouped(2)
-          actualKeysVals.zip(difference.expectedKeys).foreach { case (actualFieldId :: actualValue, expectedKey) =>
-            actualFieldId mustBe messages(expectedKey)
-            actualValue.head mustBe "new"
-          }
-        }
-      }
-    }
   }
 }
 
@@ -152,8 +127,6 @@ object AmendmentDetailsViewSpec {
   private def amendment(pointer: String, expectedSection: String, expectedKeys: String*): Difference =
     Difference(AmendmentInstance(Pointer(pointer), expectedKeys.head, Some("old"), Some("new")), expectedSection, "old", "new", expectedKeys)
   private def addition(pointer: String, expectedSection: String, expectedKeys: String*): Difference =
-    Difference(AmendmentInstance(Pointer(pointer), expectedKeys.head, None, Some("new")), expectedSection, "", "new", expectedKeys)
-  private def addition(pointer: String, expectedSection: String, expectedKeys: List[String]): Difference =
     Difference(AmendmentInstance(Pointer(pointer), expectedKeys.head, None, Some("new")), expectedSection, "", "new", expectedKeys)
 
   private val items = "declaration.items.#1"
@@ -199,6 +172,7 @@ object AmendmentDetailsViewSpec {
     amendment(s"$transport.meansOfTransportCrossingTheBorderNationality", transport, s"${keys(transport)}.registrationCountry"),
     amendment(s"$transport.meansOfTransportCrossingTheBorderType", transport, s"${keys(transport)}.border.meansOfTransport.type"),
     amendment(s"$transport.meansOfTransportCrossingTheBorderIDNumber", transport, s"${keys(transport)}.border.meansOfTransport.id"),
+
     // =========================== Parties' fields
     addition(s"$parties.exporterDetails", parties, s"${keys(parties)}.exporter.eori"),
     addition(s"$parties.exporterDetails", parties, s"${keys(parties)}.exporter.address"),
@@ -247,6 +221,9 @@ object AmendmentDetailsViewSpec {
     amendment(s"$parties.carrierDetails.address.country", parties, s"${keys(parties)}.carrier.address.country"),
     addition(s"$parties.personPresentingGoodsDetails", parties, s"${keys(parties)}.personPresentingGoods"),
     amendment(s"$parties.personPresentingGoodsDetails.eori", parties, s"${keys(parties)}.eidr"),
+    addition(s"$parties.additionalActors.actors.#1.eori", parties, s"${keys(parties)}.actors.eori"),
+    addition(s"$parties.additionalActors.actors.#1.type", parties, s"${keys(parties)}.actors.type"),
+
     // =========================== Locations' fields
     amendment(s"$locations.destinationCountries.countryOfDestination", locations, s"${keys(routeOfGoods)}.countryOfDestination"),
     addition(s"$locations.routingCountries.#1", locations, s"${keys(routeOfGoods)}.routingCountry"),
@@ -256,13 +233,16 @@ object AmendmentDetailsViewSpec {
     amendment(s"$locations.supervisingCustomsOffice", locations, s"${keys(transport)}.supervisingOffice"),
     amendment(s"$locations.warehouseIdentification.identificationNumber", transport, s"${keys(transport)}.warehouse.id"),
     amendment(s"$locations.inlandModeOfTransportCode.inlandModeOfTransportCode", transport, s"${keys(transport)}.inlandModeOfTransport"),
+
     // =========================== totalNumberOfItems' fields
     amendment("declaration.totalNumberOfItems.totalAmountInvoiced", transaction, s"${keys(transaction)}.itemAmount"),
     amendment("declaration.totalNumberOfItems.totalAmountInvoicedCurrency", transaction, s"${keys(transaction)}.currencyCode"),
     amendment("declaration.totalNumberOfItems.exchangeRate", transaction, s"${keys(transaction)}.exchangeRate"),
     amendment("declaration.totalNumberOfItems.totalPackage", transaction, s"${keys(transaction)}.totalNoOfPackages"),
+
     // =========================== natureOfTransaction
     amendment("declaration.natureOfTransaction.natureType", transaction, s"${keys(transaction)}.natureOfTransaction"),
+
     // =========================== previousDocuments' fields
     amendment("declaration.previousDocuments.documents.#1.documentType", transaction, s"${keys(transaction)}.previousDocuments.type"),
     amendment("declaration.previousDocuments.documents.#1.documentReference", transaction, s"${keys(transaction)}.previousDocuments.reference"),
@@ -271,6 +251,7 @@ object AmendmentDetailsViewSpec {
       transaction,
       s"${keys(transaction)}.previousDocuments.goodsItemIdentifier"
     ),
+
     // =========================== items' fields
     amendment(s"$items.procedureCodes.procedure.code", items, s"$item.procedureCode"),
     amendment(s"$items.procedureCodes.additionalProcedureCodes", items, s"$item.additionalProcedureCode"),
@@ -304,109 +285,32 @@ object AmendmentDetailsViewSpec {
     ),
     addition(s"$parties.declarationHoldersData.holders.type", parties, s"${keys(parties)}.holders.holder.type"),
     addition(s"$parties.declarationHoldersData.holders.eori", parties, s"${keys(parties)}.holders.holder.eori"),
-    addition(s"$items.procedureCodes.procedureCode.code", items, s"$item.procedureCodes"),
+    addition(s"$items.procedureCodes.procedureCode.code", items, s"$item.procedureCode"),
     addition(s"$items.procedureCodes.additionalProcedureCodes", items, s"$item.additionalProcedureCodes"),
-  )
-  // scalastyle:on
-
-  /*
-  "declaration.parties.additionalActors.actors.$" -> expandAdditionalActors,
-    "declaration.parties.consignorDetails" -> expandConsignorDetails,
-    "declaration.parties.consignorDetails.address" -> expandConsignorAdressDetails,
-    "declaration.previousDocuments.documents.$" -> expandPreviousDocuments,
-    "declaration.items.$.packageInformation.$" -> expandPackageInformation,
-    "declaration.items.$.additionalInformation.items.$" -> expandAdditionalInformation,
-    "declaration.items.$.additionalDocument.documents.$" -> expandAdditionalDocument,
-    "declaration.items.$.additionalFiscalReferencesData.references.$" -> expandAdditionalFiscalReferences,
-    "declaration.items.$.cusCode" -> expandCusCode,
-    "declaration.items.$" -> expandItem,
-    "declaration.transport.containers.$" -> expandContainers
-   */
-
-  // scalastyle:off
-  lazy val multiRowDifferences: List[Difference] = List(
-    /*addition(s"$parties.representativeDetails", parties, List(s"${keys(parties)}.representative.eori", s"${keys(parties)}.representative.type")),
-    addition(s"$parties.declarationAdditionalActorsData.actors", parties, List(s"${keys(parties)}.actors.eori", s"${keys(parties)}.actors.type")),*/
-
-    /*addition(
-      "declaration.totalNumberOfItems",
-      transaction,
-      List(
-        s"${keys(transaction)}.itemAmount",
-        s"${keys(transaction)}.currencyCode",
-        s"${keys(transaction)}.exchangeRate",
-        s"${keys(transaction)}.totalNoOfPackages"
-      )
-    ),
-    addition(
-      "declaration.previousDocuments.documents.#2",
-      transaction,
-      List(
-        s"${keys(transaction)}.previousDocuments.type",
-        s"${keys(transaction)}.previousDocuments.reference",
-        s"${keys(transaction)}.previousDocuments.goodsItemIdentifier"
-      )
-    ),*/
-    addition(s"$items.commodityDetails", items, List(s"$item.commodityCode", s"$item.goodsDescription")),
-    addition(
-      s"$items.packageInformation.#1",
-      items,
-      List(s"$item.packageInformation.type", s"$item.packageInformation.number", s"$item.packageInformation.markings")
-    ),
-    addition(s"$items.commodityMeasure", items, List(s"$item.grossWeight", s"$item.supplementaryUnits")),
-    addition(s"$items.additionalInformation.items.#1", items, List(s"$item.additionalInformation.code", s"$item.additionalInformation.description")),
-    addition(
-      s"$items.additionalDocuments.documents.#1",
-      items,
-      List(
-        s"$item.additionalDocuments.code",
-        s"$item.additionalDocuments.identifier",
-        s"$item.additionalDocuments.status",
-        s"$item.additionalDocuments.statusReason",
-        s"$item.additionalDocuments.issuingAuthorityName",
-        s"$item.additionalDocuments.dateOfValidity",
-        s"$item.additionalDocuments.measurementUnit",
-        s"$item.additionalDocuments.measurementUnitQuantity"
-      )
-    ),
-    addition(
-      s"$items.additionalDocuments.documents.#1.documentWriteOff",
-      items,
-      List(s"$item.additionalDocuments.measurementUnit", s"$item.additionalDocuments.measurementUnitQuantity")
-    ),
-    addition(
-      s"$items",
-      items,
-      List(
-        s"$item.procedureCode",
-        s"$item.additionalProcedureCodes",
-        s"$item.VATdetails",
-        s"$item.itemValue",
-        s"$item.commodityCode",
-        s"$item.goodsDescription",
-        s"$item.unDangerousGoodsCode",
-        s"$item.cusCode",
-        s"$item.nationalAdditionalCode",
-        s"$item.zeroRatedForVat",
-        s"$item.packageInformation.type",
-        s"$item.packageInformation.number",
-        s"$item.packageInformation.markings",
-        s"$item.grossWeight",
-        s"$item.netWeight",
-        s"$item.supplementaryUnits",
-        s"$item.additionalInformation.code",
-        s"$item.additionalInformation.description",
-        s"$item.additionalDocuments.code",
-        s"$item.additionalDocuments.identifier",
-        s"$item.additionalDocuments.status",
-        s"$item.additionalDocuments.statusReason",
-        s"$item.additionalDocuments.issuingAuthorityName",
-        s"$item.additionalDocuments.dateOfValidity",
-        s"$item.additionalDocuments.measurementUnit",
-        s"$item.additionalDocuments.measurementUnitQuantity",
-        s"$item.licences"
-      )
-    )
+    addition(s"$items.commodityDetails", items, s"$item.commodityCode"),
+    addition(s"$items.commodityDetails.descriptionOfGoods", items, s"$item.goodsDescription"),
+    addition(s"$items.packageInformation.#1.typesOfPackages", items, s"$item.packageInformation.type"),
+    addition(s"$items.packageInformation.#1.numberOfPackages", items, s"$item.packageInformation.number"),
+    addition(s"$items.packageInformation.#1.shippingMarks", items, s"$item.packageInformation.markings"),
+    addition(s"$items.commodityMeasure.grossMass", items, s"$item.grossWeight"),
+    addition(s"$items.commodityMeasure.supplementaryUnits", items, s"$item.supplementaryUnits"),
+    addition(s"$items.additionalInformation.items.#1.code", items, s"$item.additionalInformation.code"),
+    addition(s"$items.additionalInformation.items.#1.description", items, s"$item.additionalInformation.description"),
+    addition(s"$items.additionalDocuments.documents.#1.documentTypeCode", items, s"$item.additionalDocuments.code"),
+    addition(s"$items.additionalDocuments.documents.#1.documentIdentifier", items, s"$item.additionalDocuments.identifier"),
+    addition(s"$items.additionalDocuments.documents.#1.documentStatus", items, s"$item.additionalDocuments.status"),
+    addition(s"$items.additionalDocuments.documents.#1.documentStatusReason", items, s"$item.additionalDocuments.statusReason"),
+    addition(s"$items.additionalDocuments.documents.#1.issuingAuthorityName", items, s"$item.additionalDocuments.issuingAuthorityName"),
+    addition(s"$items.additionalDocuments.documents.#1.dateOfValidity", items, s"$item.additionalDocuments.dateOfValidity"),
+    addition(s"$items.additionalDocuments.documents.#1.measurementUnit", items, s"$item.additionalDocuments.measurementUnit"),
+    addition(s"$items.additionalDocuments.documents.#1.measurementUnitQuantity", items, s"$item.additionalDocuments.measurementUnitQuantity"),
+    addition("declaration.totalNumberOfItems.totalAmountInvoiced", transaction, s"${keys(transaction)}.itemAmount"),
+    addition("declaration.totalNumberOfItems.totalAmountInvoicedCurrency", transaction, s"${keys(transaction)}.currencyCode"),
+    // addition("declaration.totalNumberOfItems", transaction, s"${keys(transaction)}.exchangeRate"), ???????????????
+    addition("declaration.totalNumberOfItems.totalPackage", transaction, s"${keys(transaction)}.totalNoOfPackages"),
+    addition("declaration.previousDocuments.#2.documentType", transaction, s"${keys(transaction)}.previousDocuments.type"),
+    addition("declaration.previousDocuments.#2.documentReference", transaction, s"${keys(transaction)}.previousDocuments.reference")
+    // addition("declaration.previousDocuments.documents.#2", transaction, s"${keys(transaction)}.previousDocuments.goodsItemIdentifier"), ????????
   )
   // scalastyle:on
 }

@@ -85,14 +85,12 @@ class AmendmentDetailsHelper extends Logging {
 
   private def sectionRoutesAndLocations(amendmentRows: Seq[AmendmentInstance]): Seq[Section] = {
     val alteredFields =
-      amendmentRows
-        .filter{ai =>
-          val pattern = ai.pointer.pattern
-          pattern.startsWith(locations) && !(pattern.contains("inlandModeOfTransportCode") || pattern.contains("warehouseIdentification"))
-        }
-        .filter { instance =>
-          instance.originalValue.isDefined || instance.amendedValue.isDefined
-        }
+      amendmentRows.filter { ai =>
+        val pattern = ai.pointer.pattern
+        pattern.startsWith(locations) && !(pattern.contains("inlandModeOfTransportCode") || pattern.contains("warehouseIdentification"))
+      }.filter { instance =>
+        instance.originalValue.isDefined || instance.amendedValue.isDefined
+      }
 
     List(Section(locations, alteredFields))
   }

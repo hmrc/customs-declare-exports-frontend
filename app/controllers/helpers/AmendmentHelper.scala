@@ -20,7 +20,7 @@ import connectors.CodeListConnector
 import models.{ExportsDeclaration, Pointer}
 import play.api.Logging
 import play.api.i18n.Messages
-import views.helpers.{CountryHelper, PointerRecord}
+import views.helpers.{CountryHelper, PointerPatterns, PointerRecord}
 
 import javax.inject.{Inject, Singleton}
 
@@ -33,20 +33,20 @@ class AmendmentHelper @Inject() (implicit codeListConnector: CodeListConnector, 
   ): Seq[AmendmentInstance] = {
     val amendedPointers = {
       val diff = amendedDeclaration.createDiff(originalDeclaration)
-      diff.flatMap { alteredField =>
-        PointerRecord.expandPointer(Pointer.apply(alteredField.fieldPointer), originalDeclaration, amendedDeclaration)
-      }
+      /*diff.flatMap { alteredField =>
+        PointerPatterns.expandPointer(Pointer.apply(alteredField.fieldPointer), originalDeclaration, amendedDeclaration)
+      }*/
 
-      /*println(">>>>>>>>>>>>>>>>>>>")
+      println(">>>>>>>>>>>>>>>>>>>")
       println(diff)
 
       val kk = diff.flatMap { alteredField =>
-        PointerRecord.expandPointer(Pointer.apply(alteredField.fieldPointer), originalDeclaration, amendedDeclaration)
+        PointerPatterns.expandPointer(Pointer.apply(alteredField.fieldPointer), originalDeclaration, amendedDeclaration)
       }
 
       println(kk)
 
-      kk*/
+      kk
     }
 
     val pointersAndRecords = amendedPointers.map(pointer => (pointer, PointerRecord.pointersToPointerRecords(pointer.pattern)))
