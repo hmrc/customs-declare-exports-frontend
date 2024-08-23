@@ -18,13 +18,13 @@ package models.declaration
 
 import forms.section2.EntityDetails
 import models.ExportsFieldPointer.ExportsFieldPointer
-import models.{AmendmentOp, FieldMapping}
+import models.FieldMapping
 import play.api.libs.json.{Json, OFormat}
 import services.DiffTools
-import services.DiffTools.{combinePointers, compareStringDifference, ExportsDeclarationDiff}
+import services.DiffTools.{ExportsDeclarationDiff, combinePointers, compareStringDifference}
 
 case class RepresentativeDetails(details: Option[EntityDetails], statusCode: Option[String], representingOtherAgent: Option[String])
-    extends DiffTools[RepresentativeDetails] with AmendmentOp {
+    extends DiffTools[RepresentativeDetails] {
 
   // representingOtherAgent field is not used to generate WCO XML
   override def createDiff(
@@ -36,9 +36,6 @@ case class RepresentativeDetails(details: Option[EntityDetails], statusCode: Opt
       createDiffOfOptions(original.details, details, combinePointers(pointerString, sequenceId)),
       compareStringDifference(original.statusCode, statusCode, combinePointers(pointerString, RepresentativeDetails.statusCodePointer, sequenceId))
     ).flatten
-
-  def getLeafPointersIfAny(pointer: ExportsFieldPointer): Seq[ExportsFieldPointer] =
-    Seq(pointer)
 }
 
 object RepresentativeDetails extends FieldMapping {

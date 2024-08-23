@@ -20,21 +20,21 @@ import connectors.CodeListConnector
 import forms.DeclarationPage
 import models.DeclarationType.DeclarationType
 import models.ExportsFieldPointer.ExportsFieldPointer
+import models.FieldMapping
 import models.declaration.ExportItem.itemsPrefix
 import models.declaration.{ImplicitlySequencedObject, IsoData}
 import models.viewmodels.TariffContentKey
-import models.{Amendment, FieldMapping}
 import play.api.data.Forms.text
 import play.api.data.{Form, Forms, Mapping}
 import play.api.i18n.Messages
 import play.api.libs.json.{Json, OFormat}
 import services.Countries._
-import services.DiffTools.{combinePointers, ExportsDeclarationDiff}
+import services.DiffTools.{ExportsDeclarationDiff, combinePointers}
 import services.{AlteredField, DiffTools, OriginalAndNewValues}
 import utils.validators.forms.FieldValidator._
 
 case class AdditionalFiscalReference(country: String, reference: String)
-    extends DiffTools[AdditionalFiscalReference] with ImplicitlySequencedObject with Amendment {
+    extends DiffTools[AdditionalFiscalReference] with ImplicitlySequencedObject {
 
   override def createDiff(
     original: AdditionalFiscalReference,
@@ -49,9 +49,6 @@ case class AdditionalFiscalReference(country: String, reference: String)
     ).flatten
 
   def value: String = country + reference
-
-  def getLeafPointersIfAny(pointer: ExportsFieldPointer): Seq[ExportsFieldPointer] =
-    Seq(pointer)
 }
 
 object AdditionalFiscalReference extends DeclarationPage with FieldMapping {

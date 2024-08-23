@@ -22,20 +22,17 @@ import forms.section2.{Details, EntityDetails}
 import models.DeclarationType.{CLEARANCE, DeclarationType}
 import models.ExportsFieldPointer.ExportsFieldPointer
 import models.viewmodels.TariffContentKey
-import models.{AmendmentOp, ExportsDeclaration, FieldMapping}
+import models.{ExportsDeclaration, FieldMapping}
 import play.api.data.{Form, Forms, Mapping}
 import play.api.i18n.Messages
 import play.api.libs.json.{Json, OFormat}
 import services.DiffTools
-import services.DiffTools.{combinePointers, ExportsDeclarationDiff}
+import services.DiffTools.{ExportsDeclarationDiff, combinePointers}
 
-case class ExporterDetails(details: EntityDetails) extends Details with DiffTools[ExporterDetails] with AmendmentOp {
+case class ExporterDetails(details: EntityDetails) extends Details with DiffTools[ExporterDetails] {
 
   override def createDiff(original: ExporterDetails, pointerString: ExportsFieldPointer, sequenceId: Option[Int] = None): ExportsDeclarationDiff =
     Seq(details.createDiff(original.details, combinePointers(pointerString, sequenceId))).flatten
-
-  def getLeafPointersIfAny(pointer: ExportsFieldPointer): Seq[ExportsFieldPointer] =
-    details.getLeafPointersIfAny(pointer)
 }
 
 object ExporterDetails extends DeclarationPage with FieldMapping {

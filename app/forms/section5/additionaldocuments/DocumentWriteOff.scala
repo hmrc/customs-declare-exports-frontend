@@ -18,17 +18,17 @@ package forms.section5.additionaldocuments
 
 import forms.section5.additionaldocuments.DocumentWriteOff.{documentQuantityPointer, measurementUnitPointer}
 import models.ExportsFieldPointer.ExportsFieldPointer
+import models.FieldMapping
 import models.declaration.ExportItem.itemsPrefix
-import models.{AmendmentOp, FieldMapping}
 import play.api.data.Forms.{optional, text}
 import play.api.data.{Form, FormError, Forms}
 import play.api.libs.json.{Json, OFormat}
 import services.DiffTools
-import services.DiffTools.{combinePointers, compareBigDecimalDifference, compareStringDifference, ExportsDeclarationDiff}
+import services.DiffTools.{ExportsDeclarationDiff, combinePointers, compareBigDecimalDifference, compareStringDifference}
 import utils.validators.forms.FieldValidator._
 
 case class DocumentWriteOff(measurementUnit: Option[String], documentQuantity: Option[BigDecimal])
-    extends DiffTools[DocumentWriteOff] with AmendmentOp {
+    extends DiffTools[DocumentWriteOff] {
   def createDiff(original: DocumentWriteOff, pointerString: ExportsFieldPointer, sequenceId: Option[Int] = None): ExportsDeclarationDiff =
     Seq(
       compareStringDifference(original.measurementUnit, measurementUnit, combinePointers(pointerString, measurementUnitPointer, sequenceId)),
@@ -36,9 +36,6 @@ case class DocumentWriteOff(measurementUnit: Option[String], documentQuantity: O
     ).flatten
 
   def measurementUnitDisplay: String = measurementUnit.map(_.replace("#", " ")).getOrElse("")
-
-  def getLeafPointersIfAny(pointer: ExportsFieldPointer): Seq[ExportsFieldPointer] =
-    Seq(pointer)
 }
 
 object DocumentWriteOff extends FieldMapping {

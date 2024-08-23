@@ -19,22 +19,19 @@ package models.declaration
 import forms.section6.Seal
 import models.DeclarationMeta.sequenceIdPlaceholder
 import models.ExportsFieldPointer.ExportsFieldPointer
-import models.{AmendmentOp, FieldMapping}
+import models.FieldMapping
 import play.api.libs.json.{Json, OFormat}
 import services.DiffTools
-import services.DiffTools.{combinePointers, compareStringDifference, ExportsDeclarationDiff}
+import services.DiffTools.{ExportsDeclarationDiff, combinePointers, compareStringDifference}
 
 case class Container(sequenceId: Int = sequenceIdPlaceholder, id: String, seals: Seq[Seal])
-    extends DiffTools[Container] with ExplicitlySequencedObject[Container] with AmendmentOp {
+    extends DiffTools[Container] with ExplicitlySequencedObject[Container] {
 
   override def createDiff(original: Container, pointerString: ExportsFieldPointer, sequenceId: Option[Int]): ExportsDeclarationDiff =
     Seq(compareStringDifference(original.id, id, combinePointers(pointerString, Container.idPointer, sequenceId))).flatten ++
       createDiff(original.seals, seals, combinePointers(pointerString, Seal.pointer, sequenceId))
 
   override def updateSequenceId(sequenceId: Int): Container = copy(sequenceId = sequenceId)
-
-  def getLeafPointersIfAny(pointer: ExportsFieldPointer): Seq[ExportsFieldPointer] =
-    Seq(pointer)
 }
 
 object Container extends FieldMapping {

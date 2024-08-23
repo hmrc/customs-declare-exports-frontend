@@ -23,20 +23,20 @@ import forms.section1.AdditionalDeclarationType._
 import forms.section2.authorisationHolder.AuthorizationTypeCodes.EXRR
 import models.DeclarationType.{CLEARANCE, DeclarationType}
 import models.ExportsFieldPointer.ExportsFieldPointer
+import models.FieldMapping
 import models.declaration.EoriSource.UserEori
 import models.declaration.Parties.partiesPrefix
 import models.declaration.{EoriSource, ImplicitlySequencedObject}
 import models.viewmodels.TariffContentKey
-import models.{AmendmentOp, FieldMapping}
 import play.api.data.Forms.{optional, text}
 import play.api.data.{Form, Forms, Mapping}
 import play.api.libs.json.{Json, OFormat}
 import services.DiffTools
-import services.DiffTools.{combinePointers, compareDifference, compareStringDifference, ExportsDeclarationDiff}
+import services.DiffTools.{ExportsDeclarationDiff, combinePointers, compareDifference, compareStringDifference}
 import uk.gov.voa.play.form.ConditionalMappings.mandatoryIfEqual
 
 case class AuthorisationHolder(authorisationTypeCode: Option[String], eori: Option[Eori], eoriSource: Option[EoriSource])
-    extends DiffTools[AuthorisationHolder] with ImplicitlySequencedObject with AmendmentOp {
+    extends DiffTools[AuthorisationHolder] with ImplicitlySequencedObject {
 
   // eoriSource is not used to generate the WCO XML
   def createDiff(original: AuthorisationHolder, pointerString: ExportsFieldPointer, sequenceId: Option[Int] = None): ExportsDeclarationDiff =
@@ -48,9 +48,6 @@ case class AuthorisationHolder(authorisationTypeCode: Option[String], eori: Opti
       ),
       compareDifference(original.eori, eori, combinePointers(pointerString, AuthorisationHolder.eoriPointer, sequenceId))
     ).flatten
-
-  def getLeafPointersIfAny(pointer: ExportsFieldPointer): Seq[ExportsFieldPointer] =
-    Seq(pointer)
 
   def id: String = s"${authorisationTypeCode.getOrElse("")}-${eori.getOrElse("")}"
   def isEmpty: Boolean = authorisationTypeCode.isEmpty && eori.isEmpty

@@ -21,19 +21,19 @@ import forms.section1.AdditionalDeclarationType.SUPPLEMENTARY_EIDR
 import forms.section5.CommodityDetails.{combinedNomenclatureCodePointer, descriptionOfGoodsPointer}
 import models.DeclarationType._
 import models.ExportsFieldPointer.ExportsFieldPointer
+import models.FieldMapping
 import models.declaration.ExportItem.itemsPrefix
 import models.requests.JourneyRequest
 import models.viewmodels.TariffContentKey
-import models.{AmendmentOp, FieldMapping}
 import play.api.data.Forms.{mapping, optional, text}
 import play.api.data.{Form, Mapping}
 import play.api.libs.json.{Json, OFormat}
 import services.DiffTools
-import services.DiffTools.{combinePointers, compareStringDifference, ExportsDeclarationDiff}
+import services.DiffTools.{ExportsDeclarationDiff, combinePointers, compareStringDifference}
 import utils.validators.forms.FieldValidator._
 
 case class CommodityDetails(combinedNomenclatureCode: Option[String], descriptionOfGoods: Option[String])
-    extends DiffTools[CommodityDetails] with AmendmentOp {
+    extends DiffTools[CommodityDetails] {
 
   def createDiff(original: CommodityDetails, pointerString: ExportsFieldPointer, sequenceId: Option[Int] = None): ExportsDeclarationDiff =
     List(
@@ -44,9 +44,6 @@ case class CommodityDetails(combinedNomenclatureCode: Option[String], descriptio
       ),
       compareStringDifference(original.descriptionOfGoods, descriptionOfGoods, combinePointers(pointerString, descriptionOfGoodsPointer, sequenceId))
     ).flatten
-
-  def getLeafPointersIfAny(pointer: ExportsFieldPointer): Seq[ExportsFieldPointer] =
-    Seq(pointer)
 }
 
 object CommodityDetails extends DeclarationPage with FieldMapping {

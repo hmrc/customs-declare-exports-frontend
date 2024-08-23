@@ -19,11 +19,7 @@ package models
 import models.ExportsFieldPointer.ExportsFieldPointer
 import play.api.i18n.Messages
 
-trait AmendmentOp {
-  def getLeafPointersIfAny(pointer: ExportsFieldPointer): Seq[ExportsFieldPointer]
-}
-
-trait Amendment extends AmendmentOp {
+trait Amendment {
   def value: String
   // def valueAmended(newValue: Amendment, pointer: ExportsFieldPointer): Seq[ExportsFieldPointer]
 }

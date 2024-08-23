@@ -21,18 +21,18 @@ import forms.common.Eori
 import forms.mappings.MappingHelper._
 import models.DeclarationType.DeclarationType
 import models.ExportsFieldPointer.ExportsFieldPointer
+import models.FieldMapping
 import models.declaration.ImplicitlySequencedObject
 import models.declaration.Parties.partiesPrefix
 import models.viewmodels.TariffContentKey
-import models.{AmendmentOp, FieldMapping}
 import play.api.data.{Form, Forms, Mapping}
 import play.api.libs.json.{Format, JsValue, Json}
 import services.DiffTools
-import services.DiffTools.{combinePointers, compareDifference, compareStringDifference, ExportsDeclarationDiff}
+import services.DiffTools.{ExportsDeclarationDiff, combinePointers, compareDifference, compareStringDifference}
 import uk.gov.voa.play.form.ConditionalMappings._
 
 case class AdditionalActor(eori: Option[Eori], partyType: Option[String])
-    extends DiffTools[AdditionalActor] with ImplicitlySequencedObject with AmendmentOp {
+    extends DiffTools[AdditionalActor] with ImplicitlySequencedObject {
 
   import AdditionalActor._
 
@@ -47,9 +47,6 @@ case class AdditionalActor(eori: Option[Eori], partyType: Option[String])
   def isDefined: Boolean = eori.isDefined && partyType.isDefined
 
   def toJson: JsValue = Json.toJson(this)(format)
-
-  def getLeafPointersIfAny(pointer: ExportsFieldPointer): Seq[ExportsFieldPointer] =
-    Seq(pointer)
 }
 
 object AdditionalActor extends DeclarationPage with FieldMapping {

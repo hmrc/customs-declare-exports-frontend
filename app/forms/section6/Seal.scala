@@ -22,23 +22,20 @@ import models.DeclarationType.DeclarationType
 import models.ExportsFieldPointer.ExportsFieldPointer
 import models.declaration.ExplicitlySequencedObject
 import models.viewmodels.TariffContentKey
-import models.{AmendmentOp, DeclarationMeta, FieldMapping}
+import models.{DeclarationMeta, FieldMapping}
 import play.api.data.Forms.text
 import play.api.data.{Form, Forms, Mapping}
 import play.api.libs.json.{Json, OFormat}
 import services.DiffTools
-import services.DiffTools.{combinePointers, compareStringDifference, ExportsDeclarationDiff}
+import services.DiffTools.{ExportsDeclarationDiff, combinePointers, compareStringDifference}
 import utils.validators.forms.FieldValidator._
 
-case class Seal(sequenceId: Int = sequenceIdPlaceholder, id: String) extends DiffTools[Seal] with ExplicitlySequencedObject[Seal] with AmendmentOp {
+case class Seal(sequenceId: Int = sequenceIdPlaceholder, id: String) extends DiffTools[Seal] with ExplicitlySequencedObject[Seal] {
 
   override def createDiff(original: Seal, pointerString: ExportsFieldPointer, sequenceId: Option[Int]): ExportsDeclarationDiff =
     Seq(compareStringDifference(original.id, id, combinePointers(pointerString, sequenceId))).flatten
 
   override def updateSequenceId(sequenceId: Int): Seal = copy(sequenceId = sequenceId)
-
-  def getLeafPointersIfAny(pointer: ExportsFieldPointer): Seq[ExportsFieldPointer] =
-    Seq(pointer)
 }
 
 object Seal extends DeclarationPage with FieldMapping {

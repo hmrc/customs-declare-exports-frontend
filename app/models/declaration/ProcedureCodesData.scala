@@ -18,15 +18,15 @@ package models.declaration
 
 import forms.section5.procedurecodes.ProcedureCode
 import models.ExportsFieldPointer.ExportsFieldPointer
+import models.FieldMapping
 import models.declaration.ExportItem.itemsPrefix
 import models.declaration.ProcedureCodesData.{additionalProcedureCodesPointer, osrProcedureCode, procedureCodesPointer}
-import models.{AmendmentOp, FieldMapping}
 import play.api.libs.json.{Json, OFormat}
 import services.DiffTools
-import services.DiffTools.{combinePointers, compareStringDifference, ExportsDeclarationDiff}
+import services.DiffTools.{ExportsDeclarationDiff, combinePointers, compareStringDifference}
 
 case class ProcedureCodesData(procedureCode: Option[ProcedureCodesData.ProcedureCode], additionalProcedureCodes: Seq[String])
-    extends DiffTools[ProcedureCodesData] with AmendmentOp {
+    extends DiffTools[ProcedureCodesData] {
 
   override def createDiff(original: ProcedureCodesData, pointerString: ExportsFieldPointer, sequenceId: Option[Int] = None): ExportsDeclarationDiff =
     Seq(
@@ -43,9 +43,6 @@ case class ProcedureCodesData(procedureCode: Option[ProcedureCodesData.Procedure
   lazy val toProcedureCode: ProcedureCode = ProcedureCode(procedureCode.getOrElse(""))
 
   def containsAPC(code: String): Boolean = additionalProcedureCodes.contains(code)
-
-  def getLeafPointersIfAny(pointer: ExportsFieldPointer): Seq[ExportsFieldPointer] =
-    Seq(pointer)
 }
 
 object ProcedureCodesData extends FieldMapping {

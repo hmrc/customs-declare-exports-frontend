@@ -17,18 +17,17 @@
 package forms.common
 
 import connectors.CodeListConnector
-import models.AmendmentRow.convertToLeafPointer
 import models.ExportsFieldPointer.ExportsFieldPointer
 import models.declaration.Parties
 import models.declaration.Parties.partiesPrefix
-import models.{AmendmentOp, ExportsDeclaration, FieldMapping}
+import models.{ExportsDeclaration, FieldMapping}
 import play.api.data.Forms.text
 import play.api.data.{Form, Forms, Mapping}
 import play.api.i18n.Messages
 import play.api.libs.json.{Json, OFormat}
 import services.Countries._
 import services.DiffTools
-import services.DiffTools.{combinePointers, compareStringDifference, ExportsDeclarationDiff}
+import services.DiffTools.{ExportsDeclarationDiff, combinePointers, compareStringDifference}
 import utils.validators.forms.FieldValidator._
 
 case class Address(
@@ -37,7 +36,7 @@ case class Address(
   townOrCity: String, // alphanumeric length 1 - 35
   postCode: String, // alphanumeric length 1 - 9
   country: String // full country name, convert to 2 upper case alphabetic characters for backend
-) extends DiffTools[Address] with AmendmentOp {
+) extends DiffTools[Address] {
 
   override def createDiff(original: Address, pointerString: ExportsFieldPointer, sequenceId: Option[Int] = None): ExportsDeclarationDiff =
     Seq(
@@ -47,9 +46,6 @@ case class Address(
       compareStringDifference(original.postCode, postCode, combinePointers(pointerString, Address.postCodePointer, sequenceId)),
       compareStringDifference(original.country, country, combinePointers(pointerString, Address.countryPointer, sequenceId))
     ).flatten
-
-  def getLeafPointersIfAny(pointer: ExportsFieldPointer): Seq[ExportsFieldPointer] =
-    Seq(convertToLeafPointer(pointer, "address"))
 }
 
 object Address extends FieldMapping {

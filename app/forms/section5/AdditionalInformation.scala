@@ -20,28 +20,25 @@ import forms.DeclarationPage
 import forms.section5.AdditionalInformation.{codePointer, descriptionPointer}
 import models.DeclarationType.DeclarationType
 import models.ExportsFieldPointer.ExportsFieldPointer
+import models.FieldMapping
 import models.declaration.ExportItem.itemsPrefix
 import models.declaration.ImplicitlySequencedObject
 import models.viewmodels.TariffContentKey
-import models.{AmendmentOp, FieldMapping}
 import play.api.data.Forms._
 import play.api.data.{Form, Forms}
 import play.api.libs.json.{Json, OFormat}
 import services.DiffTools
-import services.DiffTools.{combinePointers, compareStringDifference, ExportsDeclarationDiff}
+import services.DiffTools.{ExportsDeclarationDiff, combinePointers, compareStringDifference}
 import utils.validators.forms.FieldValidator._
 
 case class AdditionalInformation(code: String, description: String)
-    extends DiffTools[AdditionalInformation] with ImplicitlySequencedObject with AmendmentOp {
+    extends DiffTools[AdditionalInformation] with ImplicitlySequencedObject {
 
   def createDiff(original: AdditionalInformation, pointerString: ExportsFieldPointer, sequenceId: Option[Int] = None): ExportsDeclarationDiff =
     Seq(
       compareStringDifference(original.code, code, combinePointers(pointerString, codePointer, sequenceId)),
       compareStringDifference(original.description, description, combinePointers(pointerString, descriptionPointer, sequenceId))
     ).flatten
-
-  def getLeafPointersIfAny(pointer: ExportsFieldPointer): Seq[ExportsFieldPointer] =
-    Seq(pointer)
 }
 
 object AdditionalInformation extends DeclarationPage with FieldMapping {

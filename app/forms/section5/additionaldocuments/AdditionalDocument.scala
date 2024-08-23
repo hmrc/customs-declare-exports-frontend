@@ -19,26 +19,18 @@ package forms.section5.additionaldocuments
 import forms.DeclarationPage
 import forms.common.Date
 import forms.mappings.{AdditionalConstraintsMapping, ConditionalConstraint}
-import forms.section5.additionaldocuments.AdditionalDocument.{
-  dateOfValidityPointer,
-  documentIdentifierPointer,
-  documentStatusPointer,
-  documentStatusReasonPointer,
-  documentTypeCodePointer,
-  documentWriteOffPointer,
-  issuingAuthorityNamePointer
-}
+import forms.section5.additionaldocuments.AdditionalDocument.{dateOfValidityPointer, documentIdentifierPointer, documentStatusPointer, documentStatusReasonPointer, documentTypeCodePointer, documentWriteOffPointer, issuingAuthorityNamePointer}
 import forms.section5.additionaldocuments.DocumentWriteOff.documentWriteOffKey
 import models.DeclarationType.{CLEARANCE, DeclarationType}
 import models.ExportsFieldPointer.ExportsFieldPointer
 import models.declaration.ExportItem.itemsPrefix
 import models.declaration.ImplicitlySequencedObject
 import models.viewmodels.TariffContentKey
-import models.{AmendmentOp, ExportsDeclaration, FieldMapping}
+import models.{ExportsDeclaration, FieldMapping}
 import play.api.data.Forms._
 import play.api.data.{Form, FormError, Forms, Mapping}
 import play.api.libs.json.{JsValue, Json, OFormat, OWrites}
-import services.DiffTools.{combinePointers, compareStringDifference, ExportsDeclarationDiff}
+import services.DiffTools.{ExportsDeclarationDiff, combinePointers, compareStringDifference}
 import services.{DiffTools, TaggedAdditionalDocumentCodes, TaggedAuthCodes}
 import uk.gov.voa.play.form.ConditionalMappings.isAnyOf
 import utils.validators.forms.FieldValidator._
@@ -51,7 +43,7 @@ case class AdditionalDocument(
   issuingAuthorityName: Option[String],
   dateOfValidity: Option[Date],
   documentWriteOff: Option[DocumentWriteOff]
-) extends DiffTools[AdditionalDocument] with ImplicitlySequencedObject with AmendmentOp {
+) extends DiffTools[AdditionalDocument] with ImplicitlySequencedObject {
 
   def createDiff(original: AdditionalDocument, pointerString: ExportsFieldPointer, sequenceId: Option[Int] = None): ExportsDeclarationDiff =
     Seq(
@@ -80,9 +72,6 @@ case class AdditionalDocument(
     List(documentTypeCode, documentIdentifier, documentStatus, documentStatusReason, issuingAuthorityName, dateOfValidity, documentWriteOff).exists(
       _.isDefined
     )
-
-  def getLeafPointersIfAny(pointer: ExportsFieldPointer): Seq[ExportsFieldPointer] =
-    Seq(pointer)
 }
 
 object AdditionalDocument extends DeclarationPage with FieldMapping {

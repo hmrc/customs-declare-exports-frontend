@@ -32,7 +32,10 @@ object PointerPatterns {
     Seq(Pointer(p.sections :+ PointerSection("cusCode", FIELD)))
 
   val expandConsignorDetails = (p: Pointer, orig: ExportsDeclaration, amend: ExportsDeclaration) =>
-    addAddressDetails(p.sections ++ Seq(PointerSection("details", FIELD), PointerSection("address", FIELD)))
+    Seq(Pointer(p.sections :+ PointerSection("eori", FIELD)))
+
+  val expandDetails = (p: Pointer, orig: ExportsDeclaration, amend: ExportsDeclaration) =>
+    Seq(Pointer(p.sections :+ PointerSection("eori", FIELD)))
 
   val expandAddressDetails = (p: Pointer, orig: ExportsDeclaration, amend: ExportsDeclaration) => {
     val baseSections = p.sections.take(3) ++ Seq(PointerSection("details", FIELD), PointerSection("address", FIELD))
@@ -61,7 +64,10 @@ object PointerPatterns {
 
   val expandPreviousDocuments = (p: Pointer, orig: ExportsDeclaration, amend: ExportsDeclaration) => {
     val baseSections = p.sections.take(2) :+ p.sections.last
-    Seq(Pointer(baseSections ++ Seq(PointerSection("documentReference", FIELD))), Pointer(baseSections ++ Seq(PointerSection("documentType", FIELD))))
+    Seq(
+      Pointer(baseSections ++ Seq(PointerSection("documentReference", FIELD))),
+      Pointer(baseSections ++ Seq(PointerSection("documentType", FIELD)))
+    )
   }
 
   val expandPackageInformation = (p: Pointer, orig: ExportsDeclaration, amend: ExportsDeclaration) =>
@@ -73,7 +79,10 @@ object PointerPatterns {
 
   val expandAdditionalInformation = (p: Pointer, orig: ExportsDeclaration, amend: ExportsDeclaration) => {
     val baseSections = p.sections.take(4) :+ p.sections(5)
-    Seq(Pointer(baseSections ++ Seq(PointerSection("code", FIELD))), Pointer(baseSections ++ Seq(PointerSection("description", FIELD))))
+    Seq(
+      Pointer(baseSections ++ Seq(PointerSection("code", FIELD))),
+      Pointer(baseSections ++ Seq(PointerSection("description", FIELD)))
+    )
   }
 
   val expandAdditionalDocument = (p: Pointer, orig: ExportsDeclaration, amend: ExportsDeclaration) => {
@@ -94,10 +103,12 @@ object PointerPatterns {
     val maybeItemIdx = Try(p.sections(2).value.drop(0).toInt).toOption.map(_ - 1)
 
     def getMaxNumberOfElement(elementSelector: ExportItem => Option[Int]) =
-      maybeItemIdx.map { itemIdx =>
+      maybeItemIdx.flatMap { itemIdx =>
         val origSize = orig.items.lift(itemIdx).flatMap(elementSelector)
         val amendSize = amend.items.lift(itemIdx).flatMap(elementSelector)
-        Seq(origSize, amendSize).flatten.max
+
+        val maxSizes: Seq[Int] = Seq(origSize, amendSize).flatten
+        if (maxSizes.length < 1) None else Some(maxSizes.max)
       }
 
     def getPackagePointers() = {
@@ -119,9 +130,9 @@ object PointerPatterns {
 
     def getAdditionalInfoPointers() = {
       val baseSections = p.sections ++ Seq(PointerSection("additionalInformation", FIELD))
-      val maybeMaxNoOfPackages = getMaxNumberOfElement((ei: ExportItem) => ei.additionalInformation.map(_.items.size))
+      val maybeMaxAdditionalInfo = getMaxNumberOfElement((ei: ExportItem) => ei.additionalInformation.map(_.items.size))
 
-      maybeMaxNoOfPackages.fold(Seq.empty[Pointer]) { max =>
+      maybeMaxAdditionalInfo.fold(Seq.empty[Pointer]) { max =>
         (1 to max).flatMap { idx =>
           val pointerSequence = PointerSection(idx.toString, SEQUENCE)
 
@@ -135,9 +146,9 @@ object PointerPatterns {
 
     def getAdditionalDocumentPointers() = {
       val baseSections = p.sections ++ Seq(PointerSection("additionalDocument", FIELD), PointerSection("documents", FIELD))
-      val maybeMaxNoOfPackages = getMaxNumberOfElement((ei: ExportItem) => ei.additionalDocuments.map(_.documents.size))
+      val maybeMaxAdditionalDocs = getMaxNumberOfElement((ei: ExportItem) => ei.additionalDocuments.map(_.documents.size))
 
-      maybeMaxNoOfPackages.fold(Seq.empty[Pointer]) { max =>
+      maybeMaxAdditionalDocs.fold(Seq.empty[Pointer]) { max =>
         (1 to max).flatMap { idx =>
           val pointerSequence = PointerSection(idx.toString, SEQUENCE)
 
@@ -155,6 +166,10 @@ object PointerPatterns {
       }
     }
 
+    val packagePointers = getPackagePointers()
+    val additionalInfoPointers = getAdditionalInfoPointers()
+    val additionalDocumentPointers = getAdditionalDocumentPointers()
+
     Seq(
       Pointer(p.sections ++ Seq(PointerSection("procedureCodes", FIELD), PointerSection("procedure", FIELD), PointerSection("code", FIELD))),
       Pointer(p.sections ++ Seq(PointerSection("procedureCodes", FIELD), PointerSection("additionalProcedureCodes", FIELD))),
@@ -162,20 +177,22 @@ object PointerPatterns {
       Pointer(p.sections ++ Seq(PointerSection("commodityDetails", FIELD))),
       Pointer(p.sections ++ Seq(PointerSection("commodityDetails", FIELD), PointerSection("descriptionOfGoods", FIELD))),
       Pointer(p.sections ++ Seq(PointerSection("nactExemptionCode", FIELD)))
-    ) ++ getPackagePointers() ++ Seq(
+    ) ++ packagePointers ++ Seq(
       Pointer(p.sections ++ Seq(PointerSection("commodityMeasure", FIELD), PointerSection("grossMass", FIELD))),
       Pointer(p.sections ++ Seq(PointerSection("commodityMeasure", FIELD), PointerSection("netMass", FIELD))),
       Pointer(p.sections ++ Seq(PointerSection("commodityMeasure", FIELD), PointerSection("supplementaryUnits", FIELD)))
-    ) ++ getAdditionalInfoPointers() ++ getAdditionalDocumentPointers()
+    ) ++ additionalInfoPointers ++ additionalDocumentPointers
   }
 
   val expandContainers = (p: Pointer, orig: ExportsDeclaration, amend: ExportsDeclaration) => {
     val maybeContainerIdx = Try(p.sections(3).value.drop(0).toInt).toOption.map(_ - 1)
 
-    val maybeMaxNoOfSeals = maybeContainerIdx.flatMap { itemIdx =>
-      val origSize = orig.containers.lift(itemIdx).map(_.seals.size)
-      val amendSize = amend.containers.lift(itemIdx).map(_.seals.size)
-      Seq(origSize, amendSize).max
+    val maybeMaxNoOfSeals = maybeContainerIdx.flatMap { containerIdx =>
+      val origSize = orig.containers.lift(containerIdx).map(_.seals.size)
+      val amendSize = amend.containers.lift(containerIdx).map(_.seals.size)
+
+      val maxSizes: Seq[Int] = Seq(origSize, amendSize).flatten
+      if (maxSizes.length < 1) None else Some(maxSizes.max)
     }
 
     val sealPointers = maybeMaxNoOfSeals.fold(Seq.empty[Pointer]) { max =>
@@ -202,6 +219,7 @@ object PointerPatterns {
     "declaration.parties.consignorDetails" -> expandConsignorDetails,
     "declaration.parties.consignorDetails.address" -> expandAddressDetails,
     "declaration.parties.declarationHolders.holders.$" -> expandDeclarationHolders,
+    "declaration.parties.exporterDetails" -> expandDetails,
     "declaration.parties.exporterDetails.address" -> expandAddressDetails,
     "declaration.parties.representativeDetails" -> expandRepresentativeDetails,
     "declaration.parties.carrierDetails.details" -> expandCarrierDetails,

@@ -18,31 +18,27 @@ package forms.section2
 
 import connectors.CodeListConnector
 import forms.common.{Address, Eori}
-import models.AmendmentRow.convertToLeafPointer
 import models.ExportsFieldPointer.ExportsFieldPointer
 import models.declaration.Parties
 import models.declaration.Parties.partiesPrefix
-import models.{AmendmentOp, ExportsDeclaration, FieldMapping}
+import models.{ExportsDeclaration, FieldMapping}
 import play.api.data.Forms.optional
 import play.api.data.{Forms, Mapping}
 import play.api.i18n.Messages
 import play.api.libs.json.{Json, OFormat}
 import services.DiffTools
-import services.DiffTools.{combinePointers, compareDifference, ExportsDeclarationDiff}
+import services.DiffTools.{ExportsDeclarationDiff, combinePointers, compareDifference}
 
 case class EntityDetails(
   eori: Option[Eori], // alphanumeric, max length 17 characters
   address: Option[Address]
-) extends DiffTools[EntityDetails] with AmendmentOp {
+) extends DiffTools[EntityDetails] {
 
   override def createDiff(original: EntityDetails, pointerString: ExportsFieldPointer, sequenceId: Option[Int] = None): ExportsDeclarationDiff =
     Seq(
       compareDifference(original.eori, eori, combinePointers(pointerString, EntityDetails.eoriPointer, sequenceId)),
       createDiffOfOptions(original.address, address, combinePointers(pointerString, Address.pointer, sequenceId))
     ).flatten
-
-  def getLeafPointersIfAny(pointer: ExportsFieldPointer): Seq[ExportsFieldPointer] =
-    Seq(convertToLeafPointer(pointer, "code"))
 
   lazy val isEmpty: Boolean = eori.isEmpty && address.isEmpty
   lazy val nonEmpty: Boolean = !isEmpty

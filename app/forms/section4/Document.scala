@@ -19,19 +19,19 @@ package forms.section4
 import forms.DeclarationPage
 import models.DeclarationType.DeclarationType
 import models.ExportsFieldPointer.ExportsFieldPointer
+import models.FieldMapping
 import models.declaration.{ImplicitlySequencedObject, IsoData}
 import models.viewmodels.TariffContentKey
-import models.{AmendmentOp, FieldMapping}
 import play.api.data.Forms.{optional, text}
 import play.api.data.{Form, Forms, Mapping}
 import play.api.i18n.Messages
 import play.api.libs.json.{Json, OFormat}
-import services.DiffTools.{combinePointers, compareStringDifference, ExportsDeclarationDiff}
+import services.DiffTools.{ExportsDeclarationDiff, combinePointers, compareStringDifference}
 import services.{DiffTools, DocumentTypeService}
 import utils.validators.forms.FieldValidator._
 
 case class Document(documentType: String, documentReference: String, goodsItemIdentifier: Option[String])
-    extends DiffTools[Document] with ImplicitlySequencedObject with AmendmentOp {
+    extends DiffTools[Document] with ImplicitlySequencedObject {
 
   import forms.section4.Document.{documentReferencePointer, documentTypePointer, goodsItemIdentifierPointer}
 
@@ -45,9 +45,6 @@ case class Document(documentType: String, documentReference: String, goodsItemId
         combinePointers(pointerString, goodsItemIdentifierPointer, sequenceId)
       )
     ).flatten
-
-  def getLeafPointersIfAny(pointer: ExportsFieldPointer): Seq[ExportsFieldPointer] =
-    Seq(pointer)
 }
 
 object Document extends DeclarationPage with FieldMapping {

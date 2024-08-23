@@ -23,7 +23,7 @@ import models.DeclarationMeta.sequenceIdPlaceholder
 import models.DeclarationType.DeclarationType
 import models.ExportsFieldPointer.ExportsFieldPointer
 import models.viewmodels.TariffContentKey
-import models.{AmendmentOp, DeclarationType, FieldMapping}
+import models.{DeclarationType, FieldMapping}
 import play.api.libs.json.{Json, OFormat}
 import services.DiffTools
 import services.DiffTools._
@@ -46,7 +46,7 @@ case class ExportItem(
   additionalInformation: Option[AdditionalInformationData] = None,
   additionalDocuments: Option[AdditionalDocuments] = None,
   isLicenceRequired: Option[Boolean] = None
-) extends DiffTools[ExportItem] with ExplicitlySequencedObject[ExportItem] with AmendmentOp {
+) extends DiffTools[ExportItem] with ExplicitlySequencedObject[ExportItem] {
 
   val totalPackages: Int = packageInformation.map(_.flatMap(_.numberOfPackages).sum).getOrElse(0)
 
@@ -138,9 +138,6 @@ case class ExportItem(
 
   def requiresWarehouseId: Boolean =
     procedureCodes.flatMap(_.procedureCode).exists(ProcedureCodesData.isWarehouseRequiredCode)
-
-  def getLeafPointersIfAny(pointer: ExportsFieldPointer): Seq[ExportsFieldPointer] =
-    Seq(pointer)
 }
 
 object ExportItem extends DeclarationPage with FieldMapping {

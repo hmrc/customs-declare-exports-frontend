@@ -17,10 +17,10 @@
 package models.declaration
 
 import models.ExportsFieldPointer.ExportsFieldPointer
-import models.{AmendmentOp, FieldMapping}
+import models.FieldMapping
 import play.api.libs.json.{Json, OFormat}
 import services.DiffTools
-import services.DiffTools.{combinePointers, compareStringDifference, ExportsDeclarationDiff}
+import services.DiffTools.{ExportsDeclarationDiff, combinePointers, compareStringDifference}
 
 case class InvoiceAndPackageTotals(
   totalAmountInvoiced: Option[String] = None,
@@ -28,7 +28,7 @@ case class InvoiceAndPackageTotals(
   agreedExchangeRate: Option[String] = None,
   exchangeRate: Option[String] = None,
   totalPackage: Option[String] = None
-) extends DiffTools[InvoiceAndPackageTotals] with AmendmentOp {
+) extends DiffTools[InvoiceAndPackageTotals] {
 
   def createDiff(original: InvoiceAndPackageTotals, pointerString: ExportsFieldPointer, sequenceId: Option[Int] = None): ExportsDeclarationDiff =
     Seq(
@@ -53,9 +53,6 @@ case class InvoiceAndPackageTotals(
         combinePointers(pointerString, InvoiceAndPackageTotals.totalPackagePointer, sequenceId)
       )
     ).flatten
-
-  def getLeafPointersIfAny(pointer: ExportsFieldPointer): Seq[ExportsFieldPointer] =
-    Seq(pointer)
 }
 
 object InvoiceAndPackageTotals extends FieldMapping {

@@ -20,21 +20,17 @@ import connectors.CodeListConnector
 import forms.DeclarationPage
 import models.DeclarationType.{CLEARANCE, DeclarationType}
 import models.ExportsFieldPointer.ExportsFieldPointer
+import models.FieldMapping
 import models.viewmodels.TariffContentKey
-import models.{AmendmentOp, FieldMapping}
 import play.api.data.{Form, Forms, Mapping}
 import play.api.i18n.Messages
 import play.api.libs.json.{Json, OFormat}
 import services.DiffTools
-import services.DiffTools.{combinePointers, ExportsDeclarationDiff}
+import services.DiffTools.{ExportsDeclarationDiff, combinePointers}
 
-case class ConsigneeDetails(details: EntityDetails) extends Details with DiffTools[ConsigneeDetails] with AmendmentOp {
-
+case class ConsigneeDetails(details: EntityDetails) extends Details with DiffTools[ConsigneeDetails] {
   override def createDiff(original: ConsigneeDetails, pointerString: ExportsFieldPointer, sequenceId: Option[Int] = None): ExportsDeclarationDiff =
     Seq(details.createDiff(original.details, combinePointers(pointerString, sequenceId))).flatten
-
-  def getLeafPointersIfAny(pointer: ExportsFieldPointer): Seq[ExportsFieldPointer] =
-    details.getLeafPointersIfAny(pointer)
 }
 
 object ConsigneeDetails extends DeclarationPage with FieldMapping {

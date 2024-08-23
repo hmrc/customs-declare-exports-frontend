@@ -21,13 +21,13 @@ import forms.section3.OfficeOfExit
 import forms.section6.{InlandModeOfTransportCode, InlandOrBorder, SupervisingCustomsOffice, WarehouseIdentification}
 import models.DeclarationMeta.sequenceIdPlaceholder
 import models.ExportsFieldPointer.ExportsFieldPointer
-import models.{AmendmentOp, ExportsDeclaration, FieldMapping}
+import models.{ExportsDeclaration, FieldMapping}
 import play.api.libs.json.{Json, OFormat}
-import services.DiffTools.{combinePointers, compareDifference, ExportsDeclarationDiff}
+import services.DiffTools.{ExportsDeclarationDiff, combinePointers, compareDifference}
 import services.{AlteredField, DiffTools, OriginalAndNewValues}
 
 case class RoutingCountry(sequenceId: Int = sequenceIdPlaceholder, country: Country)
-    extends DiffTools[RoutingCountry] with ExplicitlySequencedObject[RoutingCountry] with AmendmentOp {
+    extends DiffTools[RoutingCountry] with ExplicitlySequencedObject[RoutingCountry] {
 
   override def updateSequenceId(sequenceId: Int): RoutingCountry = copy(sequenceId = sequenceId)
 
@@ -42,9 +42,6 @@ case class RoutingCountry(sequenceId: Int = sequenceIdPlaceholder, country: Coun
         AlteredField(combinePointers(pointerString, sequenceId), OriginalAndNewValues(Some(original.country), Some(this.country)))
       )
     ).flatten
-
-  def getLeafPointersIfAny(pointer: ExportsFieldPointer): Seq[ExportsFieldPointer] =
-    Seq(pointer)
 }
 
 object RoutingCountry {
