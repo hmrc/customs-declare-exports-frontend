@@ -39,9 +39,6 @@ case class GoodsLocation(country: String, typeOfLocation: String, qualifierOfIde
 
   def value: String = country + typeOfLocation + qualifierOfIdentification + identificationOfLocation
 
-  def getLeafPointersIfAny(pointer: ExportsFieldPointer): Seq[ExportsFieldPointer] =
-    Seq(pointer)
-
   def toForm: LocationOfGoods = LocationOfGoods(value)
 }
 

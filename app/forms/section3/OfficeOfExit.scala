@@ -30,9 +30,6 @@ case class OfficeOfExit(officeId: String) extends Ordered[OfficeOfExit] with Ame
 
   def value: String = officeId
 
-  def getLeafPointersIfAny(pointer: ExportsFieldPointer): Seq[ExportsFieldPointer] =
-    Seq(pointer)
-
   override def compare(that: OfficeOfExit): Int =
     officeId.compareTo(that.officeId)
 }

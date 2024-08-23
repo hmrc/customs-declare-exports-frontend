@@ -19,7 +19,6 @@ package forms.section6
 import connectors.CodeListConnector
 import forms.DeclarationPage
 import models.DeclarationType.DeclarationType
-import models.ExportsFieldPointer.ExportsFieldPointer
 import models.viewmodels.TariffContentKey
 import models.{Amendment, FieldMapping}
 import play.api.data.Forms.text
@@ -41,9 +40,6 @@ case class TransportCountry(countryCode: Option[String]) extends Ordered[Transpo
     }
 
   def value: String = countryCode.getOrElse("")
-
-  def getLeafPointersIfAny(pointer: ExportsFieldPointer): Seq[ExportsFieldPointer] =
-    Seq(pointer)
 }
 
 object TransportCountry extends DeclarationPage with FieldMapping {

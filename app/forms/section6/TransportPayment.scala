@@ -31,9 +31,6 @@ case class TransportPayment(paymentMethod: String) extends Ordered[TransportPaym
 
   def value: String = paymentMethod
 
-  def getLeafPointersIfAny(pointer: ExportsFieldPointer): Seq[ExportsFieldPointer] =
-    Seq(pointer)
-
   override def compare(that: TransportPayment): Int = paymentMethod.compare(that.paymentMethod)
 }
 

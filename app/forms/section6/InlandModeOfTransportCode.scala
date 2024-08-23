@@ -36,9 +36,6 @@ case class InlandModeOfTransportCode(inlandModeOfTransportCode: Option[ModeOfTra
     }
 
   def value: String = inlandModeOfTransportCode.fold("")(_.toString)
-
-  def getLeafPointersIfAny(pointer: ExportsFieldPointer): Seq[ExportsFieldPointer] =
-    Seq(pointer)
 }
 
 object InlandModeOfTransportCode extends DeclarationPage with FieldMapping {

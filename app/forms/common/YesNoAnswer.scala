@@ -33,9 +33,6 @@ case class YesNoAnswer(answer: String) extends Ordered[YesNoAnswer] with Amendme
   override def compare(that: YesNoAnswer): Int = answer.compare(that.answer)
 
   def value: String = answer
-
-  def getLeafPointersIfAny(pointer: ExportsFieldPointer): Seq[ExportsFieldPointer] =
-    Seq(pointer)
 }
 
 object YesNoAnswer {

@@ -33,9 +33,6 @@ case class SupervisingCustomsOffice(supervisingCustomsOffice: Option[String] = N
     compareOptionalString(supervisingCustomsOffice, that.supervisingCustomsOffice)
 
   def value: String = supervisingCustomsOffice.getOrElse("")
-
-  def getLeafPointersIfAny(pointer: ExportsFieldPointer): Seq[ExportsFieldPointer] =
-    Seq(pointer)
 }
 
 object SupervisingCustomsOffice extends DeclarationPage with FieldMapping {

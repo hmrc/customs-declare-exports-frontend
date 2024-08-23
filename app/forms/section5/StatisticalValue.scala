@@ -32,9 +32,6 @@ case class StatisticalValue(statisticalValue: String) extends Ordered[Statistica
   override def compare(y: StatisticalValue): Int = statisticalValue.compareTo(y.statisticalValue)
 
   def value: String = statisticalValue
-
-  def getLeafPointersIfAny(pointer: ExportsFieldPointer): Seq[ExportsFieldPointer] =
-    Seq(pointer)
 }
 
 object StatisticalValue extends DeclarationPage with FieldMapping {

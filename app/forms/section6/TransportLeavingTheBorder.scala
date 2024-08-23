@@ -20,7 +20,6 @@ import forms.DeclarationPage
 import forms.section3.LocationOfGoods
 import forms.section6.ModeOfTransportCode.RoRo
 import models.DeclarationType.{CLEARANCE, DeclarationType}
-import models.ExportsFieldPointer.ExportsFieldPointer
 import models.requests.JourneyRequest
 import models.viewmodels.TariffContentKey
 import models.{Amendment, FieldMapping}
@@ -44,9 +43,6 @@ case class TransportLeavingTheBorder(code: Option[ModeOfTransportCode] = None) e
   def getCodeValue: String = code.getOrElse(ModeOfTransportCode.Empty).value
 
   def value: String = getCodeValue
-
-  def getLeafPointersIfAny(pointer: ExportsFieldPointer): Seq[ExportsFieldPointer] =
-    Seq(pointer)
 }
 
 object TransportLeavingTheBorder extends DeclarationPage with FieldMapping {

@@ -36,9 +36,6 @@ case class CusCode(cusCode: Option[String]) extends Ordered[CusCode] with Amendm
     compareOptionalString(cusCode, that.cusCode)
 
   def value: String = cusCode.getOrElse("")
-
-  def getLeafPointersIfAny(pointer: ExportsFieldPointer): Seq[ExportsFieldPointer] =
-    Seq(pointer)
 }
 
 object CusCode extends DeclarationPage with FieldMapping {

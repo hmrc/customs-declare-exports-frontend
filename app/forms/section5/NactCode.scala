@@ -32,9 +32,6 @@ case class NactCode(nactCode: String) extends Ordered[NactCode] with Amendment {
   override def compare(y: NactCode): Int = nactCode.compareTo(y.nactCode)
 
   def value: String = nactCode
-
-  def getLeafPointersIfAny(pointer: ExportsFieldPointer): Seq[ExportsFieldPointer] =
-    Seq(pointer)
 }
 
 object NactCode extends DeclarationPage with FieldMapping {

@@ -36,9 +36,6 @@ case class WarehouseIdentification(identificationNumber: Option[String] = None) 
     compareOptionalString(identificationNumber, that.identificationNumber)
 
   def value: String = identificationNumber.getOrElse("")
-
-  def getLeafPointersIfAny(pointer: ExportsFieldPointer): Seq[ExportsFieldPointer] =
-    Seq(pointer)
 }
 
 object WarehouseIdentification extends DeclarationPage with FieldMapping {

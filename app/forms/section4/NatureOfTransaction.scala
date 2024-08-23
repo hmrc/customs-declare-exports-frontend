@@ -30,9 +30,6 @@ case class NatureOfTransaction(natureType: String) extends Ordered[NatureOfTrans
 
   def value: String = natureType
 
-  def getLeafPointersIfAny(pointer: ExportsFieldPointer): Seq[ExportsFieldPointer] =
-    Seq(pointer)
-
   override def compare(y: NatureOfTransaction): Int = natureType.compareTo(y.natureType)
 }
 

@@ -35,9 +35,6 @@ case class UNDangerousGoodsCode(dangerousGoodsCode: Option[String]) extends Orde
     compareOptionalString(dangerousGoodsCode, that.dangerousGoodsCode)
 
   def value: String = dangerousGoodsCode.getOrElse("")
-
-  def getLeafPointersIfAny(pointer: ExportsFieldPointer): Seq[ExportsFieldPointer] =
-    Seq(pointer)
 }
 
 object UNDangerousGoodsCode extends DeclarationPage with FieldMapping {

@@ -38,8 +38,6 @@ case class PersonPresentingGoodsDetails(eori: Eori) extends DiffTools[PersonPres
     Seq(compareDifference(original.eori, eori, combinePointers(pointerString, Eori.pointer, sequenceId))).flatten
 
   def value: String = eori.value
-
-  def getLeafPointersIfAny(pointer: ExportsFieldPointer): Seq[ExportsFieldPointer] = Seq.empty
 }
 
 object PersonPresentingGoodsDetails extends DeclarationPage with FieldMapping {
