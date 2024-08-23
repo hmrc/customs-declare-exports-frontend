@@ -287,7 +287,6 @@ object PointerRecord {
       override val pageLink2Param: Option[String => Call] = Some(AdditionalDocumentsController.displayPage)
       override val amendKey: Option[String] = None
     },
-//    "declaration.items.$.additionalDocument.documentTypeCode" -> documentTypeCode,
     "declaration.items.$.additionalDocument.documents.$.documentTypeCode" -> documentTypeCode,
     "declaration.items.$.additionalDocument.$.documentTypeCode" -> new DefaultPointerRecord() {
       def fetchRawValue(dec: ExportsDeclaration, args: Int*): Option[String] =

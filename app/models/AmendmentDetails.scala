@@ -16,18 +16,6 @@
 
 package models
 
-import models.ExportsFieldPointer.ExportsFieldPointer
-import play.api.i18n.Messages
-
 trait Amendment {
   def value: String
-  // def valueAmended(newValue: Amendment, pointer: ExportsFieldPointer): Seq[ExportsFieldPointer]
-}
-
-object AmendmentRow {
-  def safeMessage(key: String, default: Any)(implicit messages: Messages): String =
-    if (messages.isDefinedAt(key)) messages(key) else default.toString
-
-  def convertToLeafPointer(head: ExportsFieldPointer, tail: ExportsFieldPointer): ExportsFieldPointer =
-    if (head.endsWith(tail)) head else s"$head.$tail"
 }
