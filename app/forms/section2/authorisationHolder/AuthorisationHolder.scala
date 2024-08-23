@@ -32,7 +32,7 @@ import play.api.data.Forms.{optional, text}
 import play.api.data.{Form, Forms, Mapping}
 import play.api.libs.json.{Json, OFormat}
 import services.DiffTools
-import services.DiffTools.{ExportsDeclarationDiff, combinePointers, compareDifference, compareStringDifference}
+import services.DiffTools.{combinePointers, compareDifference, compareStringDifference, ExportsDeclarationDiff}
 import uk.gov.voa.play.form.ConditionalMappings.mandatoryIfEqual
 
 case class AuthorisationHolder(authorisationTypeCode: Option[String], eori: Option[Eori], eoriSource: Option[EoriSource])

@@ -27,7 +27,7 @@ import play.api.i18n.Messages
 import play.api.libs.json.{Json, OFormat}
 import services.Countries._
 import services.DiffTools
-import services.DiffTools.{ExportsDeclarationDiff, combinePointers, compareStringDifference}
+import services.DiffTools.{combinePointers, compareStringDifference, ExportsDeclarationDiff}
 import utils.validators.forms.FieldValidator._
 
 case class Address(

@@ -22,7 +22,7 @@ import models.declaration.CommodityMeasure.{grossMassPointer, netMassPointer, su
 import models.declaration.ExportItem.itemsPrefix
 import play.api.libs.json.{Json, OFormat}
 import services.DiffTools
-import services.DiffTools.{ExportsDeclarationDiff, combinePointers, compareStringDifference}
+import services.DiffTools.{combinePointers, compareStringDifference, ExportsDeclarationDiff}
 
 case class CommodityMeasure(
   supplementaryUnits: Option[String],

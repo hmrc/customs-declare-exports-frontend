@@ -29,12 +29,11 @@ import play.api.data.{Form, Forms, Mapping}
 import play.api.i18n.Messages
 import play.api.libs.json.{Json, OFormat}
 import services.Countries._
-import services.DiffTools.{ExportsDeclarationDiff, combinePointers}
+import services.DiffTools.{combinePointers, ExportsDeclarationDiff}
 import services.{AlteredField, DiffTools, OriginalAndNewValues}
 import utils.validators.forms.FieldValidator._
 
-case class AdditionalFiscalReference(country: String, reference: String)
-    extends DiffTools[AdditionalFiscalReference] with ImplicitlySequencedObject {
+case class AdditionalFiscalReference(country: String, reference: String) extends DiffTools[AdditionalFiscalReference] with ImplicitlySequencedObject {
 
   override def createDiff(
     original: AdditionalFiscalReference,

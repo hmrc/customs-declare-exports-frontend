@@ -23,7 +23,7 @@ import models.declaration.ExportItem.itemsPrefix
 import models.declaration.ProcedureCodesData.{additionalProcedureCodesPointer, osrProcedureCode, procedureCodesPointer}
 import play.api.libs.json.{Json, OFormat}
 import services.DiffTools
-import services.DiffTools.{ExportsDeclarationDiff, combinePointers, compareStringDifference}
+import services.DiffTools.{combinePointers, compareStringDifference, ExportsDeclarationDiff}
 
 case class ProcedureCodesData(procedureCode: Option[ProcedureCodesData.ProcedureCode], additionalProcedureCodes: Seq[String])
     extends DiffTools[ProcedureCodesData] {

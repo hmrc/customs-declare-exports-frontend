@@ -28,11 +28,10 @@ import models.viewmodels.TariffContentKey
 import play.api.data.{Form, Forms, Mapping}
 import play.api.libs.json.{Format, JsValue, Json}
 import services.DiffTools
-import services.DiffTools.{ExportsDeclarationDiff, combinePointers, compareDifference, compareStringDifference}
+import services.DiffTools.{combinePointers, compareDifference, compareStringDifference, ExportsDeclarationDiff}
 import uk.gov.voa.play.form.ConditionalMappings._
 
-case class AdditionalActor(eori: Option[Eori], partyType: Option[String])
-    extends DiffTools[AdditionalActor] with ImplicitlySequencedObject {
+case class AdditionalActor(eori: Option[Eori], partyType: Option[String]) extends DiffTools[AdditionalActor] with ImplicitlySequencedObject {
 
   import AdditionalActor._
 

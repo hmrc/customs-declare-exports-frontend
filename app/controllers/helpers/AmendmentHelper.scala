@@ -33,20 +33,9 @@ class AmendmentHelper @Inject() (implicit codeListConnector: CodeListConnector, 
   ): Seq[AmendmentInstance] = {
     val amendedPointers = {
       val diff = amendedDeclaration.createDiff(originalDeclaration)
-      /*diff.flatMap { alteredField =>
-        PointerPatterns.expandPointer(Pointer.apply(alteredField.fieldPointer), originalDeclaration, amendedDeclaration)
-      }*/
-
-      println(">>>>>>>>>>>>>>>>>>>")
-      println(diff)
-
-      val kk = diff.flatMap { alteredField =>
+      diff.flatMap { alteredField =>
         PointerPatterns.expandPointer(Pointer.apply(alteredField.fieldPointer), originalDeclaration, amendedDeclaration)
       }
-
-      println(kk)
-
-      kk
     }
 
     val pointersAndRecords = amendedPointers.map(pointer => (pointer, PointerRecord.pointersToPointerRecords(pointer.pattern)))

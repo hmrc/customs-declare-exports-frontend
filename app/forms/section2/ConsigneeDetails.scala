@@ -26,7 +26,7 @@ import play.api.data.{Form, Forms, Mapping}
 import play.api.i18n.Messages
 import play.api.libs.json.{Json, OFormat}
 import services.DiffTools
-import services.DiffTools.{ExportsDeclarationDiff, combinePointers}
+import services.DiffTools.{combinePointers, ExportsDeclarationDiff}
 
 case class ConsigneeDetails(details: EntityDetails) extends Details with DiffTools[ConsigneeDetails] {
   override def createDiff(original: ConsigneeDetails, pointerString: ExportsFieldPointer, sequenceId: Option[Int] = None): ExportsDeclarationDiff =

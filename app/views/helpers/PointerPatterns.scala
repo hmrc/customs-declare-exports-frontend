@@ -34,8 +34,7 @@ object PointerPatterns {
   val expandConsignorDetails = (p: Pointer, orig: ExportsDeclaration, amend: ExportsDeclaration) =>
     Seq(Pointer(p.sections :+ PointerSection("eori", FIELD)))
 
-  val expandDetails = (p: Pointer, orig: ExportsDeclaration, amend: ExportsDeclaration) =>
-    Seq(Pointer(p.sections :+ PointerSection("eori", FIELD)))
+  val expandDetails = (p: Pointer, orig: ExportsDeclaration, amend: ExportsDeclaration) => Seq(Pointer(p.sections :+ PointerSection("eori", FIELD)))
 
   val expandAddressDetails = (p: Pointer, orig: ExportsDeclaration, amend: ExportsDeclaration) => {
     val baseSections = p.sections.take(3) ++ Seq(PointerSection("details", FIELD), PointerSection("address", FIELD))
@@ -48,10 +47,10 @@ object PointerPatterns {
   }
 
   val expandRepresentativeDetails = (p: Pointer, orig: ExportsDeclaration, amend: ExportsDeclaration) =>
-  Seq(
-    Pointer(p.sections ++ Seq(PointerSection("details", FIELD), PointerSection("eori", FIELD))),
-    Pointer(p.sections :+ PointerSection("statusCode", FIELD))
-  )
+    Seq(
+      Pointer(p.sections ++ Seq(PointerSection("details", FIELD), PointerSection("eori", FIELD))),
+      Pointer(p.sections :+ PointerSection("statusCode", FIELD))
+    )
 
   private def addAddressDetails(baseSections: Seq[PointerSection]): Seq[Pointer] =
     Seq(
@@ -64,10 +63,7 @@ object PointerPatterns {
 
   val expandPreviousDocuments = (p: Pointer, orig: ExportsDeclaration, amend: ExportsDeclaration) => {
     val baseSections = p.sections.take(2) :+ p.sections.last
-    Seq(
-      Pointer(baseSections ++ Seq(PointerSection("documentReference", FIELD))),
-      Pointer(baseSections ++ Seq(PointerSection("documentType", FIELD)))
-    )
+    Seq(Pointer(baseSections ++ Seq(PointerSection("documentReference", FIELD))), Pointer(baseSections ++ Seq(PointerSection("documentType", FIELD))))
   }
 
   val expandPackageInformation = (p: Pointer, orig: ExportsDeclaration, amend: ExportsDeclaration) =>
@@ -79,10 +75,7 @@ object PointerPatterns {
 
   val expandAdditionalInformation = (p: Pointer, orig: ExportsDeclaration, amend: ExportsDeclaration) => {
     val baseSections = p.sections.take(4) :+ p.sections(5)
-    Seq(
-      Pointer(baseSections ++ Seq(PointerSection("code", FIELD))),
-      Pointer(baseSections ++ Seq(PointerSection("description", FIELD)))
-    )
+    Seq(Pointer(baseSections ++ Seq(PointerSection("code", FIELD))), Pointer(baseSections ++ Seq(PointerSection("description", FIELD))))
   }
 
   val expandAdditionalDocument = (p: Pointer, orig: ExportsDeclaration, amend: ExportsDeclaration) => {
@@ -206,10 +199,7 @@ object PointerPatterns {
   }
 
   private val expandDeclarationHolders = (p: Pointer, orig: ExportsDeclaration, amend: ExportsDeclaration) =>
-    Seq(
-      Pointer(p.sections :+ PointerSection("eori", FIELD)),
-      Pointer(p.sections :+ PointerSection("authorisationTypeCode", FIELD))
-    )
+    Seq(Pointer(p.sections :+ PointerSection("eori", FIELD)), Pointer(p.sections :+ PointerSection("authorisationTypeCode", FIELD)))
 
   val expandAdditionalFiscalReferences = (p: Pointer, orig: ExportsDeclaration, amend: ExportsDeclaration) =>
     Seq(Pointer(p.sections.take(3) ++ Seq(PointerSection("additionalFiscalReferences", FIELD), p.sections(5), PointerSection("roleCode", FIELD))))

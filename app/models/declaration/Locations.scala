@@ -23,7 +23,7 @@ import models.DeclarationMeta.sequenceIdPlaceholder
 import models.ExportsFieldPointer.ExportsFieldPointer
 import models.{ExportsDeclaration, FieldMapping}
 import play.api.libs.json.{Json, OFormat}
-import services.DiffTools.{ExportsDeclarationDiff, combinePointers, compareDifference}
+import services.DiffTools.{combinePointers, compareDifference, ExportsDeclarationDiff}
 import services.{AlteredField, DiffTools, OriginalAndNewValues}
 
 case class RoutingCountry(sequenceId: Int = sequenceIdPlaceholder, country: Country)

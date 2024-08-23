@@ -22,7 +22,7 @@ import models.ExportsFieldPointer.ExportsFieldPointer
 import models.FieldMapping
 import play.api.libs.json.{Json, OFormat}
 import services.DiffTools
-import services.DiffTools.{ExportsDeclarationDiff, combinePointers}
+import services.DiffTools.{combinePointers, ExportsDeclarationDiff}
 
 case class DeclarantDetails(details: EntityDetails) extends DiffTools[DeclarantDetails] {
   override def createDiff(original: DeclarantDetails, pointerString: ExportsFieldPointer, sequenceId: Option[Int] = None): ExportsDeclarationDiff =

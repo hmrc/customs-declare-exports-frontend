@@ -27,7 +27,7 @@ import play.api.data.Forms.text
 import play.api.data.{Form, Forms, Mapping}
 import play.api.libs.json.{Json, OFormat}
 import services.DiffTools
-import services.DiffTools.{ExportsDeclarationDiff, combinePointers, compareStringDifference}
+import services.DiffTools.{combinePointers, compareStringDifference, ExportsDeclarationDiff}
 import utils.validators.forms.FieldValidator._
 
 case class Seal(sequenceId: Int = sequenceIdPlaceholder, id: String) extends DiffTools[Seal] with ExplicitlySequencedObject[Seal] {

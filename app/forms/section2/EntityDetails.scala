@@ -27,7 +27,7 @@ import play.api.data.{Forms, Mapping}
 import play.api.i18n.Messages
 import play.api.libs.json.{Json, OFormat}
 import services.DiffTools
-import services.DiffTools.{ExportsDeclarationDiff, combinePointers, compareDifference}
+import services.DiffTools.{combinePointers, compareDifference, ExportsDeclarationDiff}
 
 case class EntityDetails(
   eori: Option[Eori], // alphanumeric, max length 17 characters

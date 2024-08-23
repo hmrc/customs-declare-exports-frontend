@@ -28,11 +28,10 @@ import play.api.data.Forms._
 import play.api.data.{Form, Forms}
 import play.api.libs.json.{Json, OFormat}
 import services.DiffTools
-import services.DiffTools.{ExportsDeclarationDiff, combinePointers, compareStringDifference}
+import services.DiffTools.{combinePointers, compareStringDifference, ExportsDeclarationDiff}
 import utils.validators.forms.FieldValidator._
 
-case class AdditionalInformation(code: String, description: String)
-    extends DiffTools[AdditionalInformation] with ImplicitlySequencedObject {
+case class AdditionalInformation(code: String, description: String) extends DiffTools[AdditionalInformation] with ImplicitlySequencedObject {
 
   def createDiff(original: AdditionalInformation, pointerString: ExportsFieldPointer, sequenceId: Option[Int] = None): ExportsDeclarationDiff =
     Seq(

@@ -20,7 +20,7 @@ import models.ExportsFieldPointer.ExportsFieldPointer
 import models.FieldMapping
 import play.api.libs.json.{Json, OFormat}
 import services.DiffTools
-import services.DiffTools.{ExportsDeclarationDiff, combinePointers, compareStringDifference}
+import services.DiffTools.{combinePointers, compareStringDifference, ExportsDeclarationDiff}
 
 case class InvoiceAndPackageTotals(
   totalAmountInvoiced: Option[String] = None,
