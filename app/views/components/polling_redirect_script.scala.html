@@ -18,21 +18,21 @@
 @import controllers.routes.Assets
 
 @(
-        redirectToUrl: String,
-        urlOnJavaScriptDisabled: String,
-        urlOnJavaScriptEnabled: String,
-        pollingEveryMillisecs: Int
+    redirectToUrl: String,
+    urlOnJavaScriptDisabled: String,
+    urlOnJavaScriptEnabled: String,
+    pollingEveryMillisecs: Int
 )(implicit request: Request[_])
 
-<script @CSPNonce.attr src='@Assets.versioned("javascripts/jquery-3.6.0.min.js")'></script>
+<script @CSPNonce.attr src='@Assets.versioned("javascripts/jquery-3.7.0.min.js")'></script>
 
 <script @CSPNonce.attr type="text/javascript">
   function redirect() { window.location.href = "@{redirectToUrl}"; }
 
   function hasNotifications() {
       $.ajax({ cache: false, timeout: @pollingEveryMillisecs, url: "@urlOnJavaScriptEnabled" })
-              .done(function() { redirect(); })
-              .fail(function() { setTimeout(redirect(), @pollingEveryMillisecs); });
+          .done(function() { redirect(); })
+          .fail(function() { setTimeout(redirect(), @pollingEveryMillisecs); });
   }
 
   document.addEventListener('DOMContentLoaded', function() {

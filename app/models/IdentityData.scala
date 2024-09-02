@@ -17,7 +17,7 @@
 package models
 
 import play.api.libs.json._
-import uk.gov.hmrc.auth.core.retrieve.{Credentials, LoginTimes, Name, _}
+import uk.gov.hmrc.auth.core.retrieve._
 import uk.gov.hmrc.auth.core.{AffinityGroup, ConfidenceLevel}
 
 import java.time.LocalDate
@@ -30,7 +30,6 @@ case class IdentityData(
   confidenceLevel: Option[ConfidenceLevel] = None,
   nino: Option[String] = None,
   saUtr: Option[String] = None,
-  name: Option[Name] = None,
   dateOfBirth: Option[LocalDate] = None,
   email: Option[String] = None,
   agentInformation: Option[AgentInformation] = None,
@@ -47,7 +46,6 @@ case class IdentityData(
 
 object IdentityData {
   implicit val credentialsFormat: OFormat[Credentials] = Json.format[Credentials]
-  implicit val nameFormat: OFormat[Name] = Json.format[Name]
   implicit val agentInformationFormat: OFormat[AgentInformation] = Json.format[AgentInformation]
   implicit val mdtpInformationFormat: OFormat[MdtpInformation] = Json.format[MdtpInformation]
   implicit val itmpNameFormat: OFormat[ItmpName] = Json.format[ItmpName]

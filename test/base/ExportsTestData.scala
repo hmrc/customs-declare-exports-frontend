@@ -103,7 +103,6 @@ object ExportsTestData extends ExportsDeclarationBuilder with ExportsItemBuilder
         Some(L50),
         None,
         None,
-        Some(Name(Some("Aldo"), Some("Rain"))),
         Some(LocalDate.now().minusYears(25)),
         Some("amina@hmrc.co.uk"),
         Some(AgentInformation(Some("agentId"), Some("agentCode"), Some("agentFriendlyName"))),

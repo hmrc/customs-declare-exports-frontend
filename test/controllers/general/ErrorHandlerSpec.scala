@@ -22,6 +22,7 @@ import controllers.general.routes.UnauthorisedController
 import models.AuthKey.enrolment
 import models.UnauthorisedReason.{UserIsAgent, UserIsNotEnrolled}
 import org.scalatest.OptionValues
+import org.scalatest.concurrent.ScalaFutures.convertScalaFuture
 import play.api.Configuration
 import play.api.http.Status
 import play.api.test.FakeRequest
@@ -31,7 +32,7 @@ import uk.gov.hmrc.auth.core.{InsufficientEnrolments, NoActiveSession, Unsupport
 import views.html.general.error_template
 
 import java.net.URLEncoder
-import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.global
 
 class ErrorHandlerSpec extends UnitWithMocksSpec with Stubs with OptionValues with Injector {
 
@@ -44,13 +45,13 @@ class ErrorHandlerSpec extends UnitWithMocksSpec with Stubs with OptionValues wi
   val appConfig = instanceOf[AppConfig]
   val request = FakeRequest("GET", "/foo")
 
-  val errorHandler = new ErrorHandler(stubMessagesApi(), errorPage)(appConfig)
+  val errorHandler = new ErrorHandler(stubMessagesApi(), errorPage)(appConfig, global)
 
   def urlEncode(value: String): String = URLEncoder.encode(value, "UTF-8")
 
   "ErrorHandler.standardErrorTemplate" should {
     "include title, heading and message" in {
-      val result = errorHandler.standardErrorTemplate("title", "heading", "message")(request).body
+      val result = errorHandler.standardErrorTemplate("title", "heading", "message")(request).futureValue.body
 
       result must include("title")
       result must include("heading")
@@ -62,11 +63,11 @@ class ErrorHandlerSpec extends UnitWithMocksSpec with Stubs with OptionValues wi
 
     "handle no active session authorisation exception" in {
       val error = new NoActiveSession("A user is not logged in") {}
-      val result = Future.successful(errorHandler.resolveError(request, error))
-      val choice = "http://localhost:6791/customs-declare-exports/choice"
+      val result = errorHandler.resolveError(request, error)
 
       status(result) mustBe Status.SEE_OTHER
 
+      val choice = "http://localhost:6791/customs-declare-exports/choice"
       val expectedLocation =
         s"http://localhost:9949/auth-login-stub/gg-sign-in?continue=${urlEncode(choice)}"
 
@@ -75,7 +76,7 @@ class ErrorHandlerSpec extends UnitWithMocksSpec with Stubs with OptionValues wi
 
     "handle insufficient enrolments authorisation exception" in {
       val error = InsufficientEnrolments(enrolment)
-      val result = Future.successful(errorHandler.resolveError(request, error))
+      val result = errorHandler.resolveError(request, error)
 
       status(result) mustBe Status.SEE_OTHER
       redirectLocation(result) mustBe Some(UnauthorisedController.onPageLoad(UserIsNotEnrolled).url)
@@ -83,7 +84,7 @@ class ErrorHandlerSpec extends UnitWithMocksSpec with Stubs with OptionValues wi
 
     "handle unsupported affinity group exception" in {
       val error = UnsupportedAffinityGroup()
-      val result = Future.successful(errorHandler.resolveError(request, error))
+      val result = errorHandler.resolveError(request, error)
 
       status(result) mustBe Status.SEE_OTHER
       redirectLocation(result) mustBe Some(UnauthorisedController.onAgentKickOut(UserIsAgent).url)

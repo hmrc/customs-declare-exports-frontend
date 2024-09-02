@@ -49,7 +49,7 @@ class RejectedNotificationsControllerSpec extends ControllerWithoutFormSpec with
   private val controller = new RejectedNotificationsController(
     mockAuthAction,
     mockVerifiedEmailAction,
-    new ErrorHandler(mcc.messagesApi, instanceOf[error_template])(instanceOf[AppConfig]),
+    new ErrorHandler(mcc.messagesApi, instanceOf[error_template])(instanceOf[AppConfig], global),
     mockCustomsDeclareExportsConnector,
     codeListConnector,
     mcc,

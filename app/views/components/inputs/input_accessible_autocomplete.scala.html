@@ -65,8 +65,8 @@ To avoid problems, we need to remove [] from field.
     }
 </div>
 
+<script @CSPNonce.attr src='@Assets.versioned("javascripts/jquery-3.7.0.slim.min.js")'></script>
 <script @CSPNonce.attr src='@Assets.versioned("lib/accessible-autocomplete/dist/accessible-autocomplete.min.js")'></script>
-<script @CSPNonce.attr src='@Assets.versioned("javascripts/jquery-3.6.0.slim.min.js")'></script>
 <script @CSPNonce.attr src='@Assets.versioned("javascripts/auto-complete-fix.js")'></script>
 <script @CSPNonce.attr>
     var selectedElement = document.querySelector("#@(fieldNameWithoutBrackets)")

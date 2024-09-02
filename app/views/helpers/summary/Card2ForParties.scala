@@ -59,8 +59,11 @@ class Card2ForParties @Inject() (
     if (hasData) content(declaration, actionsEnabled) else HtmlFormat.empty
   }
 
-  def content(declaration: ExportsDeclaration, actionsEnabled: Boolean)(implicit messages: Messages): Html =
-    govukSummaryList(SummaryList(rows(declaration.parties, actionsEnabled), card(2)))
+  def content(declaration: ExportsDeclaration, actionsEnabled: Boolean)(implicit messages: Messages): Html = {
+    val summaryList = SummaryList(rows(declaration.parties, actionsEnabled), card(2))
+    val html = govukSummaryList(summaryList)
+    html
+  }
 
   def backLink(implicit request: JourneyRequest[_]): Call = navigator.backLink(Card2ForParties)
 

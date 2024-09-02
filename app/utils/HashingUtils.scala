@@ -20,9 +20,9 @@ import org.apache.commons.codec.digest.HmacAlgorithms
 
 import javax.crypto.Mac
 import javax.crypto.spec.SecretKeySpec
-import javax.xml.bind.DatatypeConverter
 
 object HashingUtils {
+
   private val algorithm = HmacAlgorithms.HMAC_SHA_256.toString
 
   def generateHashOfValue(value: String, hiddenSalt: String): String = {
@@ -32,6 +32,17 @@ object HashingUtils {
     hmac.init(secretSpec)
 
     val sig = hmac.doFinal(value.getBytes("UTF-8"))
-    DatatypeConverter.printHexBinary(sig)
+    printHexBinary(sig)
+  }
+
+  private val hexCode = "0123456789ABCDEF".toCharArray
+
+  private def printHexBinary(data: Array[Byte]): String = {
+    val r = new StringBuilder(data.length * 2)
+    for (b <- data) {
+      r.append(hexCode((b >> 4) & 0xF))
+      r.append(hexCode(b & 0xF))
+    }
+    r.toString
   }
 }

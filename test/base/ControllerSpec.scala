@@ -34,6 +34,7 @@ import services.cache.ExportsItemBuilder
 import utils.FakeRequestCSRFSupport._
 import views.html.general.error_template
 
+import scala.concurrent.ExecutionContext.global
 import scala.concurrent.{ExecutionContext, Future}
 
 trait ControllerWithoutFormSpec extends ControllerSpec {
@@ -49,7 +50,7 @@ trait ControllerSpec
 
   protected val mcc = stubMessagesControllerComponents()
 
-  protected val errorHandler = new ErrorHandler(mcc.messagesApi, instanceOf[error_template])(instanceOf[AppConfig])
+  protected val errorHandler = new ErrorHandler(mcc.messagesApi, instanceOf[error_template])(instanceOf[AppConfig], global)
 
   protected def addActionUrlEncoded(field: String = ""): (String, String) =
     if (field.isEmpty) (Add.toString, field) else (AddField.toString, field)

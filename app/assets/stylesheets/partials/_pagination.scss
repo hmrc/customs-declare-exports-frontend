@@ -26,7 +26,7 @@
   }
 
   &__item {
-    @extend .govuk-body;
+    @extend .govuk-body !optional;
   }
 
   &__item--prev, &__item--next {
@@ -34,11 +34,11 @@
   }
 
   &__item--dots {
-    @extend .govuk-\!-font-weight-bold;
+    font-weight: 700 !important;
   }
 
   &__item--active {
-    @extend .govuk-\!-font-weight-bold;
+    font-weight: 700 !important;
   }
 
   &__link {

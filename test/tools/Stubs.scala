@@ -16,24 +16,18 @@
 
 package tools
 
-import scala.concurrent.ExecutionContext
-import org.apache.pekko.stream.testkit.NoMaterializer
 import com.typesafe.config.{Config, ConfigFactory}
-import config.featureFlags.{BetaBannerConfig, FeatureSwitchConfig}
 import config.{AppConfig, AppConfigSpec}
+import org.apache.pekko.stream.testkit.NoMaterializer
 import play.api.http.{DefaultFileMimeTypes, FileMimeTypes, FileMimeTypesConfiguration}
 import play.api.i18n.{Lang, Langs, MessagesApi}
 import play.api.mvc._
 import play.api.test.Helpers._
 import play.api.{Configuration, Environment}
-import uk.gov.hmrc.govukfrontend.views.html.components.{Footer => _, _}
-import uk.gov.hmrc.hmrcfrontend.config._
-import uk.gov.hmrc.hmrcfrontend.views.config.HmrcFooterItems
-import uk.gov.hmrc.hmrcfrontend.views.html.components._
-import uk.gov.hmrc.hmrcfrontend.views.html.helpers._
+import uk.gov.hmrc.govukfrontend.views.html.components.{Footer => _}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
-import views.html.components.gds._
-import views.html.components.viewDeclarationSummaryLink
+
+import scala.concurrent.ExecutionContext
 
 trait Stubs {
 
@@ -79,67 +73,11 @@ trait Stubs {
     """.stripMargin)
 
   private val minimalConfiguration = Configuration(minimalConfig)
-  private val tudorCrownConfig = TudorCrownConfig(minimalConfiguration)
-
-  private def govukHeader: GovukHeader = new GovukHeader(tudorCrownConfig)
 
   private val environment = Environment.simple()
 
   private val servicesConfig = new ServicesConfig(minimalConfiguration)
   private val appConfig = new AppConfig(minimalConfiguration, environment, servicesConfig, "AppName")
-  private val timeoutDialogConfig = new config.TimeoutDialogConfig(servicesConfig)
-  private val betaBannerConfig = new BetaBannerConfig(new FeatureSwitchConfig(minimalConfiguration))
 
-  val minimalAppConfig = appConfig
-
-  val gdsGovukLayout = new GovukLayout(
-    new GovukTemplate(govukHeader = govukHeader, govukFooter = new GovukFooter(), new GovukSkipLink(), new FixedWidthPageLayout()),
-    govukHeader,
-    new GovukFooter(),
-    new GovukBackLink(),
-    new TwoThirdsMainContent(),
-    new FixedWidthPageLayout()
-  )
-
-  val gdsGovukFlexibleLayout = new govukFlexibleLayout(
-    new GovukTemplate(govukHeader = govukHeader, govukFooter = new GovukFooter(), new GovukSkipLink(), new FixedWidthPageLayout()),
-    govukHeader,
-    new GovukFooter(),
-    new GovukBackLink()
-  )
-
-  val hmrcFooter = new HmrcStandardFooter(new HmrcFooter(), new HmrcFooterItems(new AccessibilityStatementConfig(minimalConfiguration)))
-
-  val hmrcTrackingConsentSnippet = new HmrcTrackingConsentSnippet(new TrackingConsentConfig(minimalConfiguration))
-  val hmrcReportTechnicalIssue = new HmrcReportTechnicalIssue()
-
-  val viewDeclarationSummaryLink = new viewDeclarationSummaryLink(new link(), new paragraph())
-
-  val pBanner = new phaseBanner(new GovukPhaseBanner(new GovukTag()), minimalAppConfig)
-
-  val sHeader = new siteHeader(
-    new HmrcHeader(new HmrcBanner(tudorCrownConfig), new HmrcUserResearchBanner(), new GovukPhaseBanner(new GovukTag()), tudorCrownConfig)
-  )
-
-  val hmrcTimeoutDialogHelper = new HmrcTimeoutDialogHelper(new HmrcTimeoutDialog, new TimeoutDialogConfig(minimalConfiguration))
-  val hmrcLanguageSelectHelper = new HmrcLanguageSelectHelper(new HmrcLanguageSelect, new LanguageConfig(minimalConfiguration))
-
-  val gdsMainTemplate = new gdsMainTemplate(
-    govukHeader = govukHeader,
-    govukLayout = gdsGovukLayout,
-    govukFlexibleLayout = gdsGovukFlexibleLayout,
-    govukBackLink = new GovukBackLink(),
-    siteHeader = sHeader,
-    phaseBanner = pBanner,
-    timeoutDialogConfig = timeoutDialogConfig,
-    betaBannerConfig = betaBannerConfig,
-    hmrcHead = new HmrcHead(hmrcTrackingConsentSnippet, new AssetsConfig),
-    hmrcLanguageSelectHelper = hmrcLanguageSelectHelper,
-    hmrcTimeoutDialogHelper = hmrcTimeoutDialogHelper,
-    hmrcTrackingConsentSnippet = hmrcTrackingConsentSnippet,
-    hmrcReportTechnicalIssue = hmrcReportTechnicalIssue,
-    hmrcFooter = hmrcFooter,
-    viewDeclarationSummaryLink = viewDeclarationSummaryLink,
-    appConfig = minimalAppConfig
-  )
+  val minimalAppConfig: AppConfig = appConfig
 }
