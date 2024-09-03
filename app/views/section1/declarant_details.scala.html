@@ -32,6 +32,7 @@
     errorSummary: errorSummary,
     sectionHeader: sectionHeader,
     heading: heading,
+    notificationBanner: notificationBanner,
     paragraphBody: paragraphBody,
     saveButtons: saveButtons,
     saveAndContinue: saveAndContinue,
@@ -68,6 +69,12 @@
     @formHelper(action = routes.DeclarantDetailsController.submitForm, 'autoComplete -> "off") {
         @errorSummary(radioGroupErrors(isEoriKey, "code_yes", form.errors))
 
+        @notificationBanner(
+            title = messages("declaration.declarant.eori.banner.title"),
+            content = paragraphBody(messages("declaration.declarant.eori.banner.content"
+        )))
+
+
         @sectionHeader(messages(sectionMessagesKey))
 
         @heading(messages("declaration.declarant.title", request.eori))
@@ -99,8 +106,6 @@
             ),
             errorMessage = form(isEoriKey).error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
         ))
-
-        @tariffExpander(DeclarantEoriConfirmation, request.declarationType)(messages, appConfig)
 
         @buttons
     }

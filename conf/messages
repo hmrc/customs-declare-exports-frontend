@@ -521,6 +521,8 @@ declaration.exs.title = Do you need to give us safety and security information?
 declaration.exs.hint = This is also known as an exit summary declaration (EXS).
 declaration.exs.error = Select yes if you need to give us safety and security information
 
+declaration.declarant.eori.banner.title = Important: about the EORI number
+declaration.declarant.eori.banner.content = The Economic Operators Registration and Identification (EORI) is a registration number that identifies an import or export business.
 declaration.declarant.title = Is your EORI number {0}?
 declaration.declarant.paragraph = By selecting yes you are confirming that this EORI number belongs to the declarant of this export declaration.
 declaration.declarant.error = Select yes if this is your EORI number
