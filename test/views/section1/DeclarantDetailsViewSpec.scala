@@ -66,9 +66,7 @@ class DeclarantDetailsViewSpec extends UnitViewSpec with ExportsTestHelper with 
         title mustBe messages("declaration.declarant.eori.banner.title")
 
         val content = banner.getElementsByClass("govuk-notification-banner__content").get(0)
-        content.text mustBe messages(
-          "declaration.declarant.eori.banner.content"
-        )
+        content.text mustBe messages("declaration.declarant.eori.banner.content")
       }
 
       checkSaveAndContinueButtonIsDisplayed(view)
