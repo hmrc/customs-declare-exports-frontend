@@ -31,9 +31,6 @@ object PointerPatterns {
   val expandCusCode = (p: Pointer, orig: ExportsDeclaration, amend: ExportsDeclaration) =>
     Seq(Pointer(p.sections :+ PointerSection("cusCode", FIELD)))
 
-  val expandConsignorDetails = (p: Pointer, orig: ExportsDeclaration, amend: ExportsDeclaration) =>
-    Seq(Pointer(p.sections :+ PointerSection("eori", FIELD)))
-
   val expandDetails = (p: Pointer, orig: ExportsDeclaration, amend: ExportsDeclaration) => Seq(Pointer(p.sections :+ PointerSection("eori", FIELD)))
 
   val expandAddressDetails = (p: Pointer, orig: ExportsDeclaration, amend: ExportsDeclaration) => {
@@ -206,7 +203,7 @@ object PointerPatterns {
 
   private val pointerExpansions: Map[String, (Pointer, ExportsDeclaration, ExportsDeclaration) => Seq[Pointer]] = Map(
     "declaration.parties.additionalActors.actors.$" -> expandAdditionalActors,
-    "declaration.parties.consignorDetails" -> expandConsignorDetails,
+    "declaration.parties.consignorDetails" -> expandDetails,
     "declaration.parties.consignorDetails.address" -> expandAddressDetails,
     "declaration.parties.declarationHolders.holders.$" -> expandDeclarationHolders,
     "declaration.parties.exporterDetails" -> expandDetails,

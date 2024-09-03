@@ -38,9 +38,9 @@ class AmendmentHelper @Inject() (implicit codeListConnector: CodeListConnector, 
       }
     }
 
-    val pointersAndRecords = amendedPointers.map(pointer => (pointer, PointerRecord.pointersToPointerRecords(pointer.pattern)))
+    amendedPointers.flatMap { pointer =>
+      val record = PointerRecord.pointersToPointerRecords(pointer.pattern)
 
-    pointersAndRecords.flatMap { case (pointer, record) =>
       record.amendKey.fold {
         logger.warn(s"No amend key found for pointer [$pointer]")
         Option.empty[AmendmentInstance]

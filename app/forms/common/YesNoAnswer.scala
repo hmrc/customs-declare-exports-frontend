@@ -18,9 +18,8 @@ package forms.common
 
 import forms.common.YesNoAnswer.YesNoAnswers.yes
 import forms.mappings.MappingHelper.requiredRadio
+import models.Amendment
 import models.ExportsFieldPointer.ExportsFieldPointer
-import models.declaration.Parties
-import models.{Amendment, ExportsDeclaration}
 import play.api.data.{Form, Forms, Mapping}
 import play.api.i18n.Messages
 import play.api.libs.json.{Json, OFormat}
@@ -38,10 +37,6 @@ case class YesNoAnswer(answer: String) extends Ordered[YesNoAnswer] with Amendme
 object YesNoAnswer {
 
   implicit val format: OFormat[YesNoAnswer] = Json.format[YesNoAnswer]
-
-  private lazy val parties = s"${ExportsDeclaration.pointer}.${Parties.pointer}"
-
-  lazy val mappingsForAmendment = Map(s"$parties.personPresentingGoodsDetails.eori" -> "declaration.summary.parties.eidr")
 
   def valueForYesNo(isYes: Boolean)(implicit messages: Messages): String =
     messages(if (isYes) "site.yes" else "site.no")
