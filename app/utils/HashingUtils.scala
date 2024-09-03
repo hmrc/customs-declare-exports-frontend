@@ -40,8 +40,8 @@ object HashingUtils {
   private def printHexBinary(data: Array[Byte]): String = {
     val r = new StringBuilder(data.length * 2)
     for (b <- data) {
-      r.append(hexCode((b >> 4) & 0xF))
-      r.append(hexCode(b & 0xF))
+      r.append(hexCode((b >> 4) & 0xf))
+      r.append(hexCode(b & 0xf))
     }
     r.toString
   }

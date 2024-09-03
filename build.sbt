@@ -59,4 +59,4 @@ lazy val scoverageSettings = List(
 )
 
 addCommandAlias("ucomp", "Test/compile")
-addCommandAlias("precommit", ";clean;scalafmt;Test/scalafmtcoverage;test;scalafmtCheckAll;coverageReport")
+addCommandAlias("precommit", ";clean;scalafmt;Test/scalafmt;coverage;test;scalafmtCheckAll;coverageReport")

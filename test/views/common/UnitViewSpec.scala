@@ -65,11 +65,13 @@ trait UnitViewSpec
   def checkSummaryRow(row: Elements, labelKey: String, value: String, maybeUrl: Option[Call] = None, hint: String = ""): Assertion = {
     row must haveSummaryKey(messages(s"declaration.summary.$labelKey"))
     row must haveSummaryValue(value)
-    maybeUrl.fold {
-      val action = row.first.getElementsByClass(summaryActionsClassName)
-      if (hint.isEmpty) action.size mustBe 0 else action.text mustBe ""
-    } { url =>
-      row must haveSummaryActionsTexts("site.change", s"declaration.summary.$hint.change", sequenceId)
+
+    val action = row.first.getElementsByClass(summaryActionsClassName)
+
+    maybeUrl.fold(if (hint.isEmpty) action.size mustBe 0 else action.text mustBe "") { url =>
+      val expectedText = s"""${messages("site.change")} ${messages(s"declaration.summary.$hint.change", sequenceId)}"""
+      action.text must startWith(expectedText)
+
       row must haveSummaryActionWithPlaceholder(url)
     }
   }

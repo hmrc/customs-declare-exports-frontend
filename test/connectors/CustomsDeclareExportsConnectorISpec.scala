@@ -312,10 +312,10 @@ class CustomsDeclareExportsConnectorISpec extends ConnectorISpec with ExportsDec
           )
       )
 
-      val response =
-        await(connector.findOrCreateDraftForAmendment(parentId, enhancedStatus, "eori", aDeclaration(withConsignmentReferences("DUCR", "LRN"))))
+      val declaration = aDeclaration(withConsignmentReferences("DUCR", "LRN"))
+      val response = connector.findOrCreateDraftForAmendment(parentId, enhancedStatus, "eori", declaration)
 
-      response mustBe draftId
+      response.futureValue mustBe draftId
 
       verify(mockAuditService).auditDraftDecCreated(any(), any())(any())
     }

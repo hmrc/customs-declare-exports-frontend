@@ -64,18 +64,17 @@ class CustomsDeclareExportsConnector @Inject() (appConfig: AppConfig, httpClient
     logPayload("Create Declaration Request", declaration)
     val createStopwatch = createTimer.time
 
-    post[ExportsDeclaration, ExportsDeclaration](getUrl(s"${appConfig.declarationsPath}"), declaration)
-      .andThen {
-        case Success(newDeclaration) =>
-          logPayload("Create Declaration Response", newDeclaration)
-          createStopwatch.stop()
-          // this will exclude draft decs created from scratch that have no DUCR defined yet
-          if (declaration.ducr.isDefined)
-            audit(eori, newDeclaration, auditService)
+    post[ExportsDeclaration, ExportsDeclaration](getUrl(s"${appConfig.declarationsPath}"), declaration).andThen {
+      case Success(newDeclaration) =>
+        logPayload("Create Declaration Response", newDeclaration)
+        createStopwatch.stop()
+        // this will exclude draft decs created from scratch that have no DUCR defined yet
+        if (declaration.ducr.isDefined)
+          audit(eori, newDeclaration, auditService)
 
-        case Failure(_) =>
-          createStopwatch.stop()
-      }
+      case Failure(_) =>
+        createStopwatch.stop()
+    }
   }
 
   def deleteDraftDeclaration(id: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Unit] =
@@ -90,20 +89,18 @@ class CustomsDeclareExportsConnector @Inject() (appConfig: AppConfig, httpClient
 
       val url = getUrl(s"${appConfig.declarationsPath}/$id")
 
-      get[HttpResponse](url, hc.headers(HeaderNames.explicitlyIncludedHeaders))
-        .map { httpResponse =>
-          if (httpResponse.status == NOT_FOUND) None
-          else
-            Json.parse(httpResponse.body).validate[ExportsDeclaration] match {
-              case JsSuccess(declaration, _) => Some(declaration)
-              case JsError(error) =>
-                logger.error(s"Illegal Json body while retrieving Draft Declaration with id($id):\n${httpResponse.body}\n")
-                throw new JsValidationException("GET", url, classOf[ExportsDeclaration], error.toString())
-            }
-        }
-        .andThen { case _ =>
-          fetchStopwatch.stop
-        }
+      get[HttpResponse](url, List.empty, hc.headers(HeaderNames.explicitlyIncludedHeaders)).map { httpResponse =>
+        if (httpResponse.status == NOT_FOUND) None
+        else
+          Json.parse(httpResponse.body).validate[ExportsDeclaration] match {
+            case JsSuccess(declaration, _) => Some(declaration)
+            case JsError(error) =>
+              logger.error(s"Illegal Json body while retrieving Draft Declaration with id($id):\n${httpResponse.body}\n")
+              throw new JsValidationException("GET", url, classOf[ExportsDeclaration], error.toString())
+          }
+      }.andThen { case _ =>
+        fetchStopwatch.stop
+      }
     }
 
   def fetchDraftDeclarations(page: models.Page)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Paginated[DraftDeclarationData]] = {
@@ -120,26 +117,24 @@ class CustomsDeclareExportsConnector @Inject() (appConfig: AppConfig, httpClient
     val url = getUrl(s"${appConfig.draftAmendmentPath}/$parentId/${enhancedStatus.toString}")
     val fetchStopwatch = fetchTimer.time
 
-    get[HttpResponse](url, hc.headers(HeaderNames.explicitlyIncludedHeaders))
-      .map { httpResponse =>
-        val newDecId = parseTextResponse(httpResponse.body)
-        // this will exclude draft decs created from scratch that have no DUCR defined yet
-        if (httpResponse.status == CREATED && draftDec.ducr.isDefined)
-          audit(
-            eori,
-            newDecId,
-            draftDec.additionalDeclarationType,
-            draftDec.ducr,
-            AMENDMENT_DRAFT,
-            Some(draftDec.id),
-            draftDec.declarationMeta.parentDeclarationEnhancedStatus,
-            auditService
-          )
-        newDecId
-      }
-      .andThen { case _ =>
-        fetchStopwatch.stop
-      }
+    get[HttpResponse](url, List.empty, hc.headers(HeaderNames.explicitlyIncludedHeaders)).map { httpResponse =>
+      val newDecId = parseTextResponse(httpResponse.body)
+      // this will exclude draft decs created from scratch that have no DUCR defined yet
+      if (httpResponse.status == CREATED && draftDec.ducr.isDefined)
+        audit(
+          eori,
+          newDecId,
+          draftDec.additionalDeclarationType,
+          draftDec.ducr,
+          AMENDMENT_DRAFT,
+          Some(draftDec.id),
+          draftDec.declarationMeta.parentDeclarationEnhancedStatus,
+          auditService
+        )
+      newDecId
+    }.andThen { case _ =>
+      fetchStopwatch.stop
+    }
   }
 
   def findOrCreateDraftForRejection(rejectedParentId: String, eori: String, draftDec: ExportsDeclaration)(
@@ -149,16 +144,14 @@ class CustomsDeclareExportsConnector @Inject() (appConfig: AppConfig, httpClient
     val url = getUrl(s"${appConfig.draftRejectionPath}/$rejectedParentId")
     val fetchStopwatch = fetchTimer.time
 
-    get[HttpResponse](url, hc.headers(HeaderNames.explicitlyIncludedHeaders))
-      .map { httpResponse =>
-        val newDecId = parseTextResponse(httpResponse.body)
-        if (httpResponse.status == CREATED)
-          audit(eori, newDecId, draftDec.additionalDeclarationType, draftDec.ducr, DRAFT, Some(draftDec.id), Some(ERRORS), auditService)
-        newDecId
-      }
-      .andThen { case _ =>
-        fetchStopwatch.stop
-      }
+    get[HttpResponse](url, List.empty, hc.headers(HeaderNames.explicitlyIncludedHeaders)).map { httpResponse =>
+      val newDecId = parseTextResponse(httpResponse.body)
+      if (httpResponse.status == CREATED)
+        audit(eori, newDecId, draftDec.additionalDeclarationType, draftDec.ducr, DRAFT, Some(draftDec.id), Some(ERRORS), auditService)
+      newDecId
+    }.andThen { case _ =>
+      fetchStopwatch.stop
+    }
   }
 
   def findDraftByParent(parentId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[ExportsDeclaration]] = {
@@ -184,17 +177,16 @@ class CustomsDeclareExportsConnector @Inject() (appConfig: AppConfig, httpClient
     logPayload("Update Declaration Request", decl)
     val updateStopwatch = updateTimer.time()
 
-    put[ExportsDeclaration, ExportsDeclaration](getUrl(s"${appConfig.declarationsPath}"), decl)
-      .andThen {
-        case Success(declaration) =>
-          logPayload("Update Declaration Response", declaration)
-          updateStopwatch.stop()
-          if (decl.declarationMeta.status == INITIAL && decl.ducr.isDefined)
-            audit(eori, decl.id, decl.additionalDeclarationType, decl.ducr, DRAFT, None, None, auditService)
+    put[ExportsDeclaration, ExportsDeclaration](getUrl(s"${appConfig.declarationsPath}"), decl).andThen {
+      case Success(declaration) =>
+        logPayload("Update Declaration Response", declaration)
+        updateStopwatch.stop()
+        if (decl.declarationMeta.status == INITIAL && decl.ducr.isDefined)
+          audit(eori, decl.id, decl.additionalDeclarationType, decl.ducr, DRAFT, None, None, auditService)
 
-        case Failure(_) =>
-          updateStopwatch.stop()
-      }
+      case Failure(_) =>
+        updateStopwatch.stop()
+    }
   }
 
   def fetchSubmissionPage(queryString: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[PageOfSubmissions] =
@@ -221,10 +213,9 @@ class CustomsDeclareExportsConnector @Inject() (appConfig: AppConfig, httpClient
   def fetchMrnStatus(mrn: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[MrnStatus] = {
     val fetchStopwatch = fetchTimer.time
 
-    get[MrnStatus](getUrl(s"${appConfig.fetchMrnStatusPath}/$mrn"))
-      .andThen { case _ =>
-        fetchStopwatch.stop
-      }
+    get[MrnStatus](getUrl(s"${appConfig.fetchMrnStatusPath}/$mrn")).andThen { case _ =>
+      fetchStopwatch.stop
+    }
   }
 
   def createCancellation(cancellation: CancelDeclaration)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[CancellationResult] = {
@@ -233,14 +224,13 @@ class CustomsDeclareExportsConnector @Inject() (appConfig: AppConfig, httpClient
   }
 
   def getVerifiedEmailAddress(eori: EORI)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[Email]] =
-    get[Option[Email]](getUrl(s"${appConfig.fetchVerifiedEmailPath}/${eori.value}"))
-      .map { maybeVerifiedEmail =>
-        maybeVerifiedEmail match {
-          case Some(Email(_, true))  => logger.debug(s"Found verified email for eori: $eori")
-          case Some(Email(_, false)) => logger.debug(s"Undeliverable email for eori: $eori")
-          case None                  => logger.info(s"Unverified email for eori: $eori")
-        }
-
-        maybeVerifiedEmail
+    get[Option[Email]](getUrl(s"${appConfig.fetchVerifiedEmailPath}/${eori.value}")).map { maybeVerifiedEmail =>
+      maybeVerifiedEmail match {
+        case Some(Email(_, true))  => logger.debug(s"Found verified email for eori: $eori")
+        case Some(Email(_, false)) => logger.debug(s"Undeliverable email for eori: $eori")
+        case None                  => logger.info(s"Unverified email for eori: $eori")
       }
+
+      maybeVerifiedEmail
+    }
 }

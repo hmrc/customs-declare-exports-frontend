@@ -105,10 +105,6 @@ trait ViewMatchers {
 
   def haveSummaryKey(value: String) = new ElementsHasElementsContainingTextMatcher(summaryKeyClassName, value)
   def haveSummaryValue(value: String) = new ElementsHasElementsContainingTextMatcher(summaryValueClassName, value)
-  def haveSummaryActionsText(value: String) = new ElementsHasElementsContainingTextMatcher(summaryActionsClassName, value)
-
-  def haveSummaryActionsTexts(label: String, hint: String, hintArgs: String*)(implicit messages: Messages) =
-    haveSummaryActionsText(s"${messages(label)} ${messages(hint, hintArgs: _*)}")
 
   def haveSummaryActionsHref(value: Call) =
     new ElementsHasSummaryActionMatcher(value)

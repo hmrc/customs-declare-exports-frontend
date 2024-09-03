@@ -33,10 +33,10 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class ErrorHandler @Inject() (
-  override val messagesApi: MessagesApi,
-  errorTemplate: error_template
-)(implicit appConfig: AppConfig, executionContext: ExecutionContext)  extends FrontendErrorHandler with Logging {
+class ErrorHandler @Inject() (override val messagesApi: MessagesApi, errorTemplate: error_template)(
+  implicit appConfig: AppConfig,
+  executionContext: ExecutionContext
+) extends FrontendErrorHandler with Logging {
 
   implicit val ec: ExecutionContext = executionContext
 

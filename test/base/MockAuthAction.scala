@@ -88,10 +88,7 @@ trait MockAuthAction extends MockitoSugar with Stubs with MetricsMocks with Inje
                                     new ~(
                                       new ~(
                                         new ~(
-                                          new ~(
-                                            new ~(user.identityData.credentials, user.identityData.email),
-                                            user.identityData.externalId
-                                          ),
+                                          new ~(new ~(user.identityData.credentials, user.identityData.email), user.identityData.externalId),
                                           user.identityData.internalId
                                         ),
                                         user.identityData.affinityGroup
@@ -158,10 +155,7 @@ trait MockAuthAction extends MockitoSugar with Stubs with MetricsMocks with Inje
                                     new ~(
                                       new ~(
                                         new ~(
-                                          new ~(
-                                            new ~(user.identityData.credentials, user.identityData.email),
-                                            user.identityData.externalId
-                                          ),
+                                          new ~(new ~(user.identityData.credentials, user.identityData.email), user.identityData.externalId),
                                           user.identityData.internalId
                                         ),
                                         user.identityData.affinityGroup
@@ -204,7 +198,7 @@ trait MockAuthAction extends MockitoSugar with Stubs with MetricsMocks with Inje
       mockAuthConnector.authorise(
         any(),
         ArgumentMatchers.eq(
-          credentials  and email and externalId and internalId and affinityGroup and allEnrolments
+          credentials and email and externalId and internalId and affinityGroup and allEnrolments
             and agentCode and confidenceLevel and nino and saUtr and dateOfBirth and agentInformation and groupIdentifier and
             credentialRole and mdtpInformation and itmpName and itmpDateOfBirth and itmpAddress and credentialStrength and loginTimes
         )
