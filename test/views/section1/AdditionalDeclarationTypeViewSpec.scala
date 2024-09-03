@@ -16,8 +16,8 @@
 
 package views.section1
 
-import base.Injector
 import config.AppConfig
+import base.Injector
 import controllers.journey.routes.{OtherJourneyController, StandardOrOtherJourneyController}
 import forms.section1.AdditionalDeclarationType._
 import forms.section1.AdditionalDeclarationTypePage.{form, radioButtonGroupId}
@@ -31,7 +31,6 @@ import views.tags.ViewTest
 @ViewTest
 class AdditionalDeclarationTypeViewSpec extends UnitViewSpec with CommonMessages with Injector {
 
-  private val appConfig = instanceOf[AppConfig]
   private val additionalTypePage = instanceOf[additional_declaration_type]
 
   private def createView(declarationType: DeclarationType): Html =
@@ -58,7 +57,7 @@ class AdditionalDeclarationTypeViewSpec extends UnitViewSpec with CommonMessages
 
         "display the expected page title" in {
           val title = view.getElementsByTag("h1").text
-          title mustBe messages(s"declaration.declarationType.header.${declarationType}")
+          title mustBe messages(s"declaration.declarationType.header.$declarationType")
         }
 
         "display the expected tariff details" in {
@@ -142,12 +141,7 @@ class AdditionalDeclarationTypeViewSpec extends UnitViewSpec with CommonMessages
           title mustBe messages("declaration.declarationType.notification.title")
 
           val content = banner.getElementsByClass("govuk-notification-banner__content").get(0)
-          content.text mustBe messages(
-            "declaration.declarationType.notification.content",
-            messages("declaration.declarationType.notification.content.link")
-          )
-          val link = content.getElementsByClass("govuk-link").first
-          link must haveHref(appConfig.guidance.january2022locations)
+          content.text mustBe messages("declaration.declarationType.notification.content")
         }
 
         "display the expander for Arrived declarations" in {
@@ -158,12 +152,18 @@ class AdditionalDeclarationTypeViewSpec extends UnitViewSpec with CommonMessages
           title mustBe messages("declaration.declarationType.expander.title")
 
           val paragraphs = expander.child(1).getElementsByClass("govuk-body")
-          paragraphs.size mustBe 3
+          paragraphs.size mustBe 6
 
+          val appConfig = instanceOf[AppConfig]
           val firstParagraph = paragraphs.get(0)
           firstParagraph.text mustBe messages("declaration.declarationType.expander.paragraph.1")
           paragraphs.get(1).text mustBe messages("declaration.declarationType.expander.paragraph.2")
           paragraphs.get(2).text mustBe messages("declaration.declarationType.expander.paragraph.3")
+          paragraphs.get(3).text mustBe messages("declaration.declarationType.expander.paragraph.4")
+          paragraphs.get(4).text mustBe messages("declaration.declarationType.expander.paragraph.5")
+          paragraphs.get(5).text mustBe messages("declaration.declarationType.expander.link.content")
+          val link = paragraphs.get(5).getElementsByClass("govuk-link").first
+          link must haveHref(appConfig.guidance.january2022locations)
         }
       }
     }
