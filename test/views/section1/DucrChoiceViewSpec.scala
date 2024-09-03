@@ -50,9 +50,7 @@ class DucrChoiceViewSpec extends PageWithButtonsSpec with Injector {
         title mustBe messages("declaration.ducr.banner.title")
 
         val content = banner.getElementsByClass("govuk-notification-banner__content").get(0)
-        content.text mustBe messages(
-          "declaration.ducr.banner.content"
-        )
+        content.text mustBe messages("declaration.ducr.banner.content")
       }
 
       "display 'Back' button to the /type page" in {
