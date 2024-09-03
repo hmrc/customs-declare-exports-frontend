@@ -43,6 +43,18 @@ class DucrChoiceViewSpec extends PageWithButtonsSpec with Injector {
     onClearance { implicit request =>
       val view = createView()
 
+      "display the expected notification banner" in {
+        val banner = view.getElementsByClass("govuk-notification-banner").get(0)
+
+        val title = banner.getElementsByClass("govuk-notification-banner__title").text
+        title mustBe messages("declaration.ducr.banner.title")
+
+        val content = banner.getElementsByClass("govuk-notification-banner__content").get(0)
+        content.text mustBe messages(
+          "declaration.ducr.banner.content"
+        )
+      }
+
       "display 'Back' button to the /type page" in {
         val backButton = view.getElementById("back-link")
         backButton must containMessage(backToPreviousQuestionCaption)
