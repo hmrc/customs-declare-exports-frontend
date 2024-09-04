@@ -45,12 +45,12 @@ class DucrEntryViewSpec extends PageWithButtonsSpec with Injector {
     "have correct message keys" in {
       messages must haveTranslationFor("declaration.ducrEntry.header")
       messages must haveTranslationFor("declaration.consignmentReferences.ducr.info")
-      messages must haveTranslationFor("declaration.ducrEntry.ducr.paragraph")
-      messages must haveTranslationFor("declaration.ducrEntry.ducr.paragraph.bullet1")
-      messages must haveTranslationFor("declaration.ducrEntry.ducr.paragraph.bullet2")
-      messages must haveTranslationFor("declaration.ducrEntry.ducr.paragraph.bullet3")
-      messages must haveTranslationFor("declaration.ducrEntry.ducr.paragraph.bullet4")
-      messages must haveTranslationFor("declaration.ducrEntry.ducr.paragraph.bullet5")
+      messages must haveTranslationFor("declaration.ducrEntry.ducr.expander.paragraph")
+      messages must haveTranslationFor("declaration.ducrEntry.ducr.expander.bullet1")
+      messages must haveTranslationFor("declaration.ducrEntry.ducr.expander.bullet2")
+      messages must haveTranslationFor("declaration.ducrEntry.ducr.expander.bullet3")
+      messages must haveTranslationFor("declaration.ducrEntry.ducr.expander.bullet4")
+      messages must haveTranslationFor("declaration.ducrEntry.ducr.expander.bullet5")
       messages must haveTranslationFor("declaration.ducrEntry.ducr.hint")
       messages must haveTranslationFor("declaration.ducrEntry.ducr.inset.1")
       messages must haveTranslationFor("declaration.consignmentReferences.ducr.error.empty")
@@ -142,15 +142,27 @@ class DucrEntryViewSpec extends PageWithButtonsSpec with Injector {
         val key = "common"
 
         val view = createView()
-        val tariffTitle = view.getElementsByClass("govuk-details__summary-text")
-        tariffTitle.text mustBe messages(s"tariff.expander.title.$key")
-
-        val tariffDetails = view.getElementsByClass("govuk-details__text").first
+        val tariffTitle1 = view.getElementsByClass("govuk-details__summary-text").first()
+        val tariffTitle2 = view.getElementsByClass("govuk-details__summary-text").get(1)
+        tariffTitle1.text mustBe messages("declaration.ducrEntry.ducr.expander.title")
+        tariffTitle2.text mustBe messages(s"tariff.expander.title.$key")
 
         val prefix = "tariff.declaration.ducr"
-        val expectedText = messages("tariff.declaration.text", messages(s"$prefix.$key.linkText.0"))
-        val actualText = removeBlanksIfAnyBeforeDot(tariffDetails.text)
-        actualText mustBe removeLineBreakIfAny(expectedText)
+        val tariffDetails2 = view.getElementsByClass("govuk-details__text").get(1)
+        val expectedText2 = messages("tariff.declaration.text", messages(s"$prefix.$key.linkText.0"))
+        val actualText2 = removeBlanksIfAnyBeforeDot(tariffDetails2.text)
+        actualText2 mustBe removeLineBreakIfAny(expectedText2)
+
+        val tariffDetails1 = view.getElementsByClass("govuk-details__text").first
+        val expanderParagraph = messages("declaration.ducrEntry.ducr.expander.paragraph")
+        val expanderBullet1: String = messages("declaration.ducrEntry.ducr.expander.bullet1")
+        val expanderBullet2 = messages("declaration.ducrEntry.ducr.expander.bullet2")
+        val expanderBullet3 = messages("declaration.ducrEntry.ducr.expander.bullet3")
+        val expanderBullet4 = messages("declaration.ducrEntry.ducr.expander.bullet4")
+        val expanderBullet5 = messages("declaration.ducrEntry.ducr.expander.bullet5")
+        val expectedText = s"$expanderParagraph $expanderBullet1 $expanderBullet2 $expanderBullet3 $expanderBullet4 $expanderBullet5"
+        val actualText1 = removeBlanksIfAnyBeforeDot(tariffDetails1.text)
+        actualText1 mustBe removeLineBreakIfAny(expectedText)
       }
     }
   }
