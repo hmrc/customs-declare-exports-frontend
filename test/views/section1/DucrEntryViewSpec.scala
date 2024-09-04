@@ -76,10 +76,7 @@ class DucrEntryViewSpec extends PageWithButtonsSpec with Injector {
     }
 
     "display page title" in {
-      val h1 = view.getElementById("title")
-      h1.text mustBe messages("declaration.ducrEntry.header")
-      h1.getElementsByTag("label").first.attr("for") mustBe Ducr.form("ducr").name
-      view.getElementsByClass("govuk-label").size mustBe 1
+      view.getElementsByTag("h1").first() must containMessage("declaration.ducrEntry.header")
     }
 
     "display section header" in {
@@ -115,11 +112,11 @@ class DucrEntryViewSpec extends PageWithButtonsSpec with Injector {
     "display empty input with label for DUCR" in {
 
       val expectedBodyTextListMessageKeys = Seq(
-        "declaration.ducrEntry.ducr.paragraph.bullet1",
-        "declaration.ducrEntry.ducr.paragraph.bullet2",
-        "declaration.ducrEntry.ducr.paragraph.bullet3",
-        "declaration.ducrEntry.ducr.paragraph.bullet4",
-        "declaration.ducrEntry.ducr.paragraph.bullet5"
+        "declaration.ducrEntry.ducr.expander.bullet1",
+        "declaration.ducrEntry.ducr.expander.bullet2",
+        "declaration.ducrEntry.ducr.expander.bullet3",
+        "declaration.ducrEntry.ducr.expander.bullet4",
+        "declaration.ducrEntry.ducr.expander.bullet5"
       )
 
       expectedBodyTextListMessageKeys.foreach { messageKey =>
