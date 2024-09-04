@@ -16,10 +16,8 @@
 
 package models.declaration
 
-import models.AmendmentRow.{forAddedValue, forRemovedValue}
 import models.ExportsFieldPointer.ExportsFieldPointer
-import models.{AmendmentOp, FieldMapping}
-import play.api.i18n.Messages
+import models.FieldMapping
 import play.api.libs.json.{Json, OFormat}
 import services.DiffTools
 import services.DiffTools.{combinePointers, compareStringDifference, ExportsDeclarationDiff}
@@ -30,7 +28,7 @@ case class InvoiceAndPackageTotals(
   agreedExchangeRate: Option[String] = None,
   exchangeRate: Option[String] = None,
   totalPackage: Option[String] = None
-) extends DiffTools[InvoiceAndPackageTotals] with AmendmentOp {
+) extends DiffTools[InvoiceAndPackageTotals] {
 
   def createDiff(original: InvoiceAndPackageTotals, pointerString: ExportsFieldPointer, sequenceId: Option[Int] = None): ExportsDeclarationDiff =
     Seq(
@@ -55,18 +53,6 @@ case class InvoiceAndPackageTotals(
         combinePointers(pointerString, InvoiceAndPackageTotals.totalPackagePointer, sequenceId)
       )
     ).flatten
-
-  def valueAdded(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
-    totalAmountInvoiced.fold("")(forAddedValue(pointer, messages("declaration.summary.transaction.itemAmount"), _)) +
-      totalAmountInvoicedCurrency.fold("")(forAddedValue(pointer, messages("declaration.summary.transaction.currencyCode"), _)) +
-      exchangeRate.fold("")(forAddedValue(pointer, messages("declaration.summary.transaction.exchangeRate"), _)) +
-      totalPackage.fold("")(forAddedValue(pointer, messages("declaration.summary.transaction.totalNoOfPackages"), _))
-
-  def valueRemoved(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
-    totalAmountInvoiced.fold("")(forRemovedValue(pointer, messages("declaration.summary.transaction.itemAmount"), _)) +
-      totalAmountInvoicedCurrency.fold("")(forRemovedValue(pointer, messages("declaration.summary.transaction.currencyCode"), _)) +
-      exchangeRate.fold("")(forRemovedValue(pointer, messages("declaration.summary.transaction.exchangeRate"), _)) +
-      totalPackage.fold("")(forRemovedValue(pointer, messages("declaration.summary.transaction.totalNoOfPackages"), _))
 }
 
 object InvoiceAndPackageTotals extends FieldMapping {

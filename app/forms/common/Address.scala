@@ -17,12 +17,10 @@
 package forms.common
 
 import connectors.CodeListConnector
-import forms.common.Address.mappingsForAmendment
-import models.AmendmentRow.{forAddedValue, forRemovedValue, pointerToSelector}
 import models.ExportsFieldPointer.ExportsFieldPointer
 import models.declaration.Parties
 import models.declaration.Parties.partiesPrefix
-import models.{AmendmentOp, ExportsDeclaration, FieldMapping}
+import models.{ExportsDeclaration, FieldMapping}
 import play.api.data.Forms.text
 import play.api.data.{Form, Forms, Mapping}
 import play.api.i18n.Messages
@@ -38,7 +36,7 @@ case class Address(
   townOrCity: String, // alphanumeric length 1 - 35
   postCode: String, // alphanumeric length 1 - 9
   country: String // full country name, convert to 2 upper case alphabetic characters for backend
-) extends DiffTools[Address] with AmendmentOp {
+) extends DiffTools[Address] {
 
   override def createDiff(original: Address, pointerString: ExportsFieldPointer, sequenceId: Option[Int] = None): ExportsDeclarationDiff =
     Seq(
@@ -48,16 +46,6 @@ case class Address(
       compareStringDifference(original.postCode, postCode, combinePointers(pointerString, Address.postCodePointer, sequenceId)),
       compareStringDifference(original.country, country, combinePointers(pointerString, Address.countryPointer, sequenceId))
     ).flatten
-
-  def valueAdded(pointer: ExportsFieldPointer)(implicit messages: Messages): String = {
-    val address = s"$fullName<br/>$addressLine<br/>$townOrCity<br/>$postCode<br/>$country"
-    forAddedValue(pointerToSelector(pointer, "address"), messages(mappingsForAmendment(pointer)), address)
-  }
-
-  def valueRemoved(pointer: ExportsFieldPointer)(implicit messages: Messages): String = {
-    val address = s"$fullName<br/>$addressLine<br/>$townOrCity<br/>$postCode<br/>$country"
-    forRemovedValue(pointerToSelector(pointer, "address"), messages(mappingsForAmendment(pointer)), address)
-  }
 }
 
 object Address extends FieldMapping {

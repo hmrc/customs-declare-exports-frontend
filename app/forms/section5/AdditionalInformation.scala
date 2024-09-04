@@ -17,38 +17,27 @@
 package forms.section5
 
 import forms.DeclarationPage
-import forms.section5.AdditionalInformation.{codePointer, descriptionPointer, keyForCode, keyForDescription}
-import models.AmendmentRow.{forAddedValue, forRemovedValue, pointerToSelector}
+import forms.section5.AdditionalInformation.{codePointer, descriptionPointer}
 import models.DeclarationType.DeclarationType
 import models.ExportsFieldPointer.ExportsFieldPointer
+import models.FieldMapping
 import models.declaration.ExportItem.itemsPrefix
 import models.declaration.ImplicitlySequencedObject
 import models.viewmodels.TariffContentKey
-import models.{AmendmentOp, FieldMapping}
 import play.api.data.Forms._
 import play.api.data.{Form, Forms}
-import play.api.i18n.Messages
 import play.api.libs.json.{Json, OFormat}
 import services.DiffTools
 import services.DiffTools.{combinePointers, compareStringDifference, ExportsDeclarationDiff}
 import utils.validators.forms.FieldValidator._
 
-case class AdditionalInformation(code: String, description: String)
-    extends DiffTools[AdditionalInformation] with ImplicitlySequencedObject with AmendmentOp {
+case class AdditionalInformation(code: String, description: String) extends DiffTools[AdditionalInformation] with ImplicitlySequencedObject {
 
   def createDiff(original: AdditionalInformation, pointerString: ExportsFieldPointer, sequenceId: Option[Int] = None): ExportsDeclarationDiff =
     Seq(
       compareStringDifference(original.code, code, combinePointers(pointerString, codePointer, sequenceId)),
       compareStringDifference(original.description, description, combinePointers(pointerString, descriptionPointer, sequenceId))
     ).flatten
-
-  def valueAdded(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
-    forAddedValue(pointerToSelector(pointer, codePointer), messages(keyForCode), code) +
-      forAddedValue(pointerToSelector(pointer, descriptionPointer), messages(keyForDescription), description)
-
-  def valueRemoved(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
-    forRemovedValue(pointerToSelector(pointer, codePointer), messages(keyForCode), code) +
-      forRemovedValue(pointerToSelector(pointer, descriptionPointer), messages(keyForDescription), description)
 }
 
 object AdditionalInformation extends DeclarationPage with FieldMapping {

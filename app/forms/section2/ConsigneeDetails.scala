@@ -20,31 +20,24 @@ import connectors.CodeListConnector
 import forms.DeclarationPage
 import models.DeclarationType.{CLEARANCE, DeclarationType}
 import models.ExportsFieldPointer.ExportsFieldPointer
+import models.FieldMapping
 import models.viewmodels.TariffContentKey
-import models.{AmendmentOp, FieldMapping}
 import play.api.data.{Form, Forms, Mapping}
 import play.api.i18n.Messages
 import play.api.libs.json.{Json, OFormat}
 import services.DiffTools
 import services.DiffTools.{combinePointers, ExportsDeclarationDiff}
 
-case class ConsigneeDetails(details: EntityDetails) extends Details with DiffTools[ConsigneeDetails] with AmendmentOp {
-
+case class ConsigneeDetails(details: EntityDetails) extends Details with DiffTools[ConsigneeDetails] {
   override def createDiff(original: ConsigneeDetails, pointerString: ExportsFieldPointer, sequenceId: Option[Int] = None): ExportsDeclarationDiff =
     Seq(details.createDiff(original.details, combinePointers(pointerString, sequenceId))).flatten
-
-  def valueAdded(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
-    details.valueAdded(pointer)
-
-  def valueRemoved(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
-    details.valueRemoved(pointer)
 }
 
 object ConsigneeDetails extends DeclarationPage with FieldMapping {
 
   implicit val format: OFormat[ConsigneeDetails] = Json.format[ConsigneeDetails]
 
-  val pointer: ExportsFieldPointer = "consigneeDetails"
+  val pointer: ExportsFieldPointer = "consigneeDetails.details"
 
   val id = "ConsigneeDetails"
 

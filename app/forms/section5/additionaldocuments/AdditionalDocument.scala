@@ -16,6 +16,7 @@
 
 package forms.section5.additionaldocuments
 
+import forms.DeclarationPage
 import forms.common.Date
 import forms.mappings.{AdditionalConstraintsMapping, ConditionalConstraint}
 import forms.section5.additionaldocuments.AdditionalDocument.{
@@ -25,26 +26,17 @@ import forms.section5.additionaldocuments.AdditionalDocument.{
   documentStatusReasonPointer,
   documentTypeCodePointer,
   documentWriteOffPointer,
-  issuingAuthorityNamePointer,
-  keyForDateOfValidity,
-  keyForIdentifier,
-  keyForIssuingAuthorityName,
-  keyForStatus,
-  keyForStatusReason,
-  keyForTypeCode
+  issuingAuthorityNamePointer
 }
 import forms.section5.additionaldocuments.DocumentWriteOff.documentWriteOffKey
-import forms.DeclarationPage
-import models.AmendmentRow.{forAddedValue, forRemovedValue, pointerToSelector}
 import models.DeclarationType.{CLEARANCE, DeclarationType}
 import models.ExportsFieldPointer.ExportsFieldPointer
 import models.declaration.ExportItem.itemsPrefix
 import models.declaration.ImplicitlySequencedObject
 import models.viewmodels.TariffContentKey
-import models.{AmendmentOp, ExportsDeclaration, FieldMapping}
+import models.{ExportsDeclaration, FieldMapping}
 import play.api.data.Forms._
 import play.api.data.{Form, FormError, Forms, Mapping}
-import play.api.i18n.Messages
 import play.api.libs.json.{JsValue, Json, OFormat, OWrites}
 import services.DiffTools.{combinePointers, compareStringDifference, ExportsDeclarationDiff}
 import services.{DiffTools, TaggedAdditionalDocumentCodes, TaggedAuthCodes}
@@ -59,7 +51,7 @@ case class AdditionalDocument(
   issuingAuthorityName: Option[String],
   dateOfValidity: Option[Date],
   documentWriteOff: Option[DocumentWriteOff]
-) extends DiffTools[AdditionalDocument] with ImplicitlySequencedObject with AmendmentOp {
+) extends DiffTools[AdditionalDocument] with ImplicitlySequencedObject {
 
   def createDiff(original: AdditionalDocument, pointerString: ExportsFieldPointer, sequenceId: Option[Int] = None): ExportsDeclarationDiff =
     Seq(
@@ -88,28 +80,6 @@ case class AdditionalDocument(
     List(documentTypeCode, documentIdentifier, documentStatus, documentStatusReason, issuingAuthorityName, dateOfValidity, documentWriteOff).exists(
       _.isDefined
     )
-
-  def valueAdded(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
-    documentTypeCode.fold("")(forAddedValue(pointerToSelector(pointer, documentTypeCodePointer), messages(keyForTypeCode), _)) +
-      documentIdentifier.fold("")(forAddedValue(pointerToSelector(pointer, documentIdentifierPointer), messages(keyForIdentifier), _)) +
-      documentStatus.fold("")(forAddedValue(pointerToSelector(pointer, documentStatusPointer), messages(keyForStatus), _)) +
-      documentStatusReason.fold("")(forAddedValue(pointerToSelector(pointer, documentStatusReasonPointer), messages(keyForStatusReason), _)) +
-      issuingAuthorityName.fold("")(forAddedValue(pointerToSelector(pointer, issuingAuthorityNamePointer), messages(keyForIssuingAuthorityName), _)) +
-      dateOfValidity.fold("")(date =>
-        forAddedValue(pointerToSelector(pointer, dateOfValidityPointer), messages(keyForDateOfValidity), date.toString)
-      ) +
-      documentWriteOff.fold("")(_.valueAdded(pointerToSelector(pointer, documentWriteOffPointer)))
-
-  def valueRemoved(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
-    documentTypeCode.fold("")(forRemovedValue(pointerToSelector(pointer, documentTypeCodePointer), messages(keyForTypeCode), _)) +
-      documentIdentifier.fold("")(forRemovedValue(pointerToSelector(pointer, documentIdentifierPointer), messages(keyForIdentifier), _)) +
-      documentStatus.fold("")(forRemovedValue(pointerToSelector(pointer, documentStatusPointer), messages(keyForStatus), _)) +
-      documentStatusReason.fold("")(forRemovedValue(pointerToSelector(pointer, documentStatusReasonPointer), messages(keyForStatusReason), _)) +
-      issuingAuthorityName.fold("")(
-        forRemovedValue(pointerToSelector(pointer, issuingAuthorityNamePointer), messages(keyForIssuingAuthorityName), _)
-      ) +
-      dateOfValidity.fold("")(dt => forRemovedValue(pointerToSelector(pointer, dateOfValidityPointer), messages(keyForDateOfValidity), dt.toString)) +
-      documentWriteOff.fold("")(_.valueRemoved(pointerToSelector(pointer, documentWriteOffPointer)))
 }
 
 object AdditionalDocument extends DeclarationPage with FieldMapping {

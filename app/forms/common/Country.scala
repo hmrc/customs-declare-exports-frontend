@@ -16,12 +16,9 @@
 
 package forms.common
 
-import forms.common.Country.mappingsForAmendment
-import models.AmendmentRow.{forAddedValue, forAmendedValue, forRemovedValue}
 import models.ExportsFieldPointer.ExportsFieldPointer
 import models.declaration.Locations.destinationCountryPointer
 import models.{Amendment, FieldMapping}
-import play.api.i18n.Messages
 import play.api.libs.json.{Json, OFormat}
 
 case class Country(code: Option[String]) extends Ordered[Country] with Amendment {
@@ -35,15 +32,6 @@ case class Country(code: Option[String]) extends Ordered[Country] with Amendment
     }
 
   def value: String = code.getOrElse("")
-
-  def valueAdded(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
-    code.fold("")(forAddedValue(pointer, messages(mappingsForAmendment(pointer)), _))
-
-  def valueAmended(newValue: Amendment, pointer: ExportsFieldPointer)(implicit messages: Messages): String =
-    forAmendedValue(pointer, messages(mappingsForAmendment(pointer)), value, newValue.value)
-
-  def valueRemoved(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
-    code.fold("")(forRemovedValue(pointer, messages(mappingsForAmendment(pointer)), _))
 }
 
 object Country extends FieldMapping {

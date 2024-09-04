@@ -99,7 +99,7 @@ class ErrorsReportedHelper @Inject() (link: link, codeListConnector: CodeListCon
     isAmendment: Boolean
   )(implicit messages: Messages): Option[FieldInvolved] =
     notificationError.pointer.map { errorPointer =>
-      val record = PointerRecord.library.getOrElse(
+      val record = PointerRecord.pointersToPointerRecords.getOrElse(
         errorPointer.pattern, {
           logger.warn(s"PointerRecords MISSING for '${errorPointer.pattern}''")
           PointerRecord.defaultPointerRecord

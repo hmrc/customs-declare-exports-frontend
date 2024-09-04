@@ -34,7 +34,7 @@ case class AdditionalActors(actors: Seq[AdditionalActor]) extends DiffTools[Addi
 
 object AdditionalActors extends FieldMapping {
 
-  val pointer: ExportsFieldPointer = "declarationAdditionalActorsData"
+  val pointer: ExportsFieldPointer = "additionalActors"
 
   private lazy val parties = s"${ExportsDeclaration.pointer}.${Parties.pointer}"
 

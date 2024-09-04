@@ -17,12 +17,11 @@
 package forms.section4
 
 import forms.DeclarationPage
-import models.AmendmentRow.{forAddedValue, forRemovedValue}
 import models.DeclarationType.DeclarationType
 import models.ExportsFieldPointer.ExportsFieldPointer
+import models.FieldMapping
 import models.declaration.{ImplicitlySequencedObject, IsoData}
 import models.viewmodels.TariffContentKey
-import models.{AmendmentOp, FieldMapping}
 import play.api.data.Forms.{optional, text}
 import play.api.data.{Form, Forms, Mapping}
 import play.api.i18n.Messages
@@ -32,16 +31,9 @@ import services.{DiffTools, DocumentTypeService}
 import utils.validators.forms.FieldValidator._
 
 case class Document(documentType: String, documentReference: String, goodsItemIdentifier: Option[String])
-    extends DiffTools[Document] with ImplicitlySequencedObject with AmendmentOp {
+    extends DiffTools[Document] with ImplicitlySequencedObject {
 
-  import forms.section4.Document.{
-    documentReferencePointer,
-    documentTypePointer,
-    goodsItemIdentifierPointer,
-    keyForItemNumber,
-    keyForReference,
-    keyForType
-  }
+  import forms.section4.Document.{documentReferencePointer, documentTypePointer, goodsItemIdentifierPointer}
 
   def createDiff(original: Document, pointerString: ExportsFieldPointer, sequenceId: Option[Int] = None): ExportsDeclarationDiff =
     Seq(
@@ -53,16 +45,6 @@ case class Document(documentType: String, documentReference: String, goodsItemId
         combinePointers(pointerString, goodsItemIdentifierPointer, sequenceId)
       )
     ).flatten
-
-  def valueAdded(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
-    forAddedValue(pointer, messages(keyForType), documentType) +
-      forAddedValue(pointer, messages(keyForReference), documentReference) +
-      goodsItemIdentifier.fold("")(forAddedValue(pointer, messages(keyForItemNumber), _))
-
-  def valueRemoved(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
-    forRemovedValue(pointer, messages(keyForType), documentType) +
-      forRemovedValue(pointer, messages(keyForReference), documentReference) +
-      goodsItemIdentifier.fold("")(forRemovedValue(pointer, messages(keyForItemNumber), _))
 }
 
 object Document extends DeclarationPage with FieldMapping {

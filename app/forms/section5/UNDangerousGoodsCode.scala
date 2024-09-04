@@ -18,16 +18,12 @@ package forms.section5
 
 import forms.DeclarationPage
 import forms.mappings.MappingHelper.requiredRadio
-import forms.section5.UNDangerousGoodsCode.keyForAmend
-import models.AmendmentRow.{forAddedValue, forAmendedValue, forRemovedValue}
 import models.DeclarationType.DeclarationType
 import models.ExportsFieldPointer.ExportsFieldPointer
-import models.declaration.ExportItem.itemsPrefix
 import models.viewmodels.TariffContentKey
 import models.{Amendment, FieldMapping}
 import play.api.data.Forms.text
 import play.api.data.{Form, Forms}
-import play.api.i18n.Messages
 import play.api.libs.json.{Json, OFormat}
 import services.DiffTools.compareOptionalString
 import uk.gov.voa.play.form.ConditionalMappings.mandatoryIfEqual
@@ -39,23 +35,12 @@ case class UNDangerousGoodsCode(dangerousGoodsCode: Option[String]) extends Orde
     compareOptionalString(dangerousGoodsCode, that.dangerousGoodsCode)
 
   def value: String = dangerousGoodsCode.getOrElse("")
-
-  def valueAdded(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
-    dangerousGoodsCode.fold("")(forAddedValue(pointer, messages(keyForAmend), _))
-
-  def valueAmended(newValue: Amendment, pointer: ExportsFieldPointer)(implicit messages: Messages): String =
-    forAmendedValue(pointer, messages(keyForAmend), value, newValue.value)
-
-  def valueRemoved(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
-    dangerousGoodsCode.fold("")(forRemovedValue(pointer, messages(keyForAmend), _))
 }
 
 object UNDangerousGoodsCode extends DeclarationPage with FieldMapping {
   implicit val format: OFormat[UNDangerousGoodsCode] = Json.format[UNDangerousGoodsCode]
 
   val pointer: ExportsFieldPointer = "dangerousGoodsCode.dangerousGoodsCode"
-
-  private lazy val keyForAmend = s"$itemsPrefix.unDangerousGoodsCode"
 
   val hasDangerousGoodsCodeKey = "hasDangerousGoodsCode"
   val dangerousGoodsCodeKey = "dangerousGoodsCode"

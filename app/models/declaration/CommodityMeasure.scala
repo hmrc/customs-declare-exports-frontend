@@ -16,29 +16,20 @@
 
 package models.declaration
 
-import models.AmendmentRow.{forAddedValue, forRemovedValue, pointerToSelector}
 import models.ExportsFieldPointer.ExportsFieldPointer
-import models.declaration.CommodityMeasure.{
-  grossMassPointer,
-  keyForGrossMass,
-  keyForNetMass,
-  keyForSupplementaryUnits,
-  netMassPointer,
-  supplementaryUnitsPointer
-}
+import models.FieldMapping
+import models.declaration.CommodityMeasure.{grossMassPointer, netMassPointer, supplementaryUnitsPointer}
 import models.declaration.ExportItem.itemsPrefix
-import models.{AmendmentOp, FieldMapping}
-import play.api.i18n.Messages
 import play.api.libs.json.{Json, OFormat}
-import services.DiffTools.{combinePointers, compareStringDifference, ExportsDeclarationDiff}
 import services.DiffTools
+import services.DiffTools.{combinePointers, compareStringDifference, ExportsDeclarationDiff}
 
 case class CommodityMeasure(
   supplementaryUnits: Option[String],
   supplementaryUnitsNotRequired: Option[Boolean],
   grossMass: Option[String],
   netMass: Option[String]
-) extends DiffTools[CommodityMeasure] with AmendmentOp {
+) extends DiffTools[CommodityMeasure] {
 
   // supplementaryUnitsNotRequired is not used to build WCO XML payload
   def createDiff(original: CommodityMeasure, pointerString: ExportsFieldPointer, sequenceId: Option[Int] = None): ExportsDeclarationDiff =
@@ -47,16 +38,6 @@ case class CommodityMeasure(
       compareStringDifference(original.netMass, netMass, combinePointers(pointerString, netMassPointer, sequenceId)),
       compareStringDifference(original.grossMass, grossMass, combinePointers(pointerString, grossMassPointer, sequenceId))
     ).flatten
-
-  def valueAdded(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
-    grossMass.fold("")(forAddedValue(pointerToSelector(pointer, grossMassPointer), messages(keyForGrossMass), _)) +
-      netMass.fold("")(forAddedValue(pointerToSelector(pointer, netMassPointer), messages(keyForNetMass), _)) +
-      supplementaryUnits.fold("")(forAddedValue(pointerToSelector(pointer, supplementaryUnitsPointer), messages(keyForSupplementaryUnits), _))
-
-  def valueRemoved(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
-    grossMass.fold("")(forRemovedValue(pointerToSelector(pointer, grossMassPointer), messages(keyForGrossMass), _)) +
-      netMass.fold("")(forRemovedValue(pointerToSelector(pointer, netMassPointer), messages(keyForNetMass), _)) +
-      supplementaryUnits.fold("")(forRemovedValue(pointerToSelector(pointer, supplementaryUnitsPointer), messages(keyForSupplementaryUnits), _))
 }
 
 object CommodityMeasure extends FieldMapping {

@@ -18,11 +18,10 @@ package forms.section2
 
 import connectors.CodeListConnector
 import forms.common.{Address, Eori}
-import models.AmendmentRow.{forAddedValue, forRemovedValue}
 import models.ExportsFieldPointer.ExportsFieldPointer
 import models.declaration.Parties
 import models.declaration.Parties.partiesPrefix
-import models.{AmendmentOp, ExportsDeclaration, FieldMapping}
+import models.{ExportsDeclaration, FieldMapping}
 import play.api.data.Forms.optional
 import play.api.data.{Forms, Mapping}
 import play.api.i18n.Messages
@@ -33,21 +32,13 @@ import services.DiffTools.{combinePointers, compareDifference, ExportsDeclaratio
 case class EntityDetails(
   eori: Option[Eori], // alphanumeric, max length 17 characters
   address: Option[Address]
-) extends DiffTools[EntityDetails] with AmendmentOp {
+) extends DiffTools[EntityDetails] {
 
   override def createDiff(original: EntityDetails, pointerString: ExportsFieldPointer, sequenceId: Option[Int] = None): ExportsDeclarationDiff =
     Seq(
       compareDifference(original.eori, eori, combinePointers(pointerString, EntityDetails.eoriPointer, sequenceId)),
       createDiffOfOptions(original.address, address, combinePointers(pointerString, Address.pointer, sequenceId))
     ).flatten
-
-  def valueAdded(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
-    eori.fold("")(eori => forAddedValue(pointer, messages(EntityDetails.mappingsForAmendment(pointer)), eori.value)) +
-      address.fold("")(_.valueAdded(pointer))
-
-  def valueRemoved(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
-    eori.fold("")(eori => forRemovedValue(pointer, messages(EntityDetails.mappingsForAmendment(pointer)), eori.value)) +
-      address.fold("")(_.valueRemoved(pointer))
 
   lazy val isEmpty: Boolean = eori.isEmpty && address.isEmpty
   lazy val nonEmpty: Boolean = !isEmpty

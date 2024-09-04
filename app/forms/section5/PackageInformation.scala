@@ -17,22 +17,14 @@
 package forms.section5
 
 import forms.DeclarationPage
-import forms.section5.PackageInformation.{
-  keyForNumberOfPackages,
-  keyForShippingMarksPointer,
-  keyForTypesOfPackages,
-  numberOfPackagesPointer,
-  shippingMarksPointer,
-  typesOfPackagesPointer
-}
-import models.AmendmentRow.{forAddedValue, forRemovedValue, pointerToSelector}
+import forms.section5.PackageInformation.{numberOfPackagesPointer, shippingMarksPointer, typesOfPackagesPointer}
 import models.DeclarationMeta.sequenceIdPlaceholder
 import models.DeclarationType.{CLEARANCE, DeclarationType}
 import models.ExportsFieldPointer.ExportsFieldPointer
+import models.FieldMapping
 import models.declaration.ExplicitlySequencedObject
 import models.declaration.ExportItem.itemsPrefix
 import models.viewmodels.TariffContentKey
-import models.{AmendmentOp, FieldMapping}
 import play.api.data.Forms.{number, optional, text}
 import play.api.data.{Form, Forms, Mapping}
 import play.api.i18n.Messages
@@ -47,7 +39,7 @@ case class PackageInformation(
   typesOfPackages: Option[String],
   numberOfPackages: Option[Int],
   shippingMarks: Option[String]
-) extends DiffTools[PackageInformation] with ExplicitlySequencedObject[PackageInformation] with AmendmentOp {
+) extends DiffTools[PackageInformation] with ExplicitlySequencedObject[PackageInformation] {
 
   def createDiff(original: PackageInformation, pointerString: ExportsFieldPointer, sequenceId: Option[Int] = None): ExportsDeclarationDiff =
     Seq(
@@ -69,20 +61,6 @@ case class PackageInformation(
   def nonEmpty: Boolean = !isEmpty
 
   override def updateSequenceId(sequenceId: Int): PackageInformation = copy(sequenceId = sequenceId)
-
-  def valueAdded(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
-    typesOfPackages.fold("")(forAddedValue(pointerToSelector(pointer, typesOfPackagesPointer), messages(keyForTypesOfPackages), _)) +
-      numberOfPackages.fold("")(np =>
-        forAddedValue(pointerToSelector(pointer, numberOfPackagesPointer), messages(keyForNumberOfPackages), String.valueOf(np))
-      ) +
-      shippingMarks.fold("")(forAddedValue(pointerToSelector(pointer, shippingMarksPointer), messages(keyForShippingMarksPointer), _))
-
-  def valueRemoved(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
-    typesOfPackages.fold("")(forRemovedValue(pointerToSelector(pointer, typesOfPackagesPointer), messages(keyForTypesOfPackages), _)) +
-      numberOfPackages.fold("")(np =>
-        forRemovedValue(pointerToSelector(pointer, numberOfPackagesPointer), messages(keyForNumberOfPackages), String.valueOf(np))
-      ) +
-      shippingMarks.fold("")(forRemovedValue(pointerToSelector(pointer, shippingMarksPointer), messages(keyForShippingMarksPointer), _))
 }
 
 object PackageInformation extends DeclarationPage with FieldMapping {

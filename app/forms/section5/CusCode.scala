@@ -18,8 +18,6 @@ package forms.section5
 
 import forms.DeclarationPage
 import forms.mappings.MappingHelper.requiredRadio
-import forms.section5.CusCode.keyForAmend
-import models.AmendmentRow.{forAddedValue, forAmendedValue, forRemovedValue}
 import models.DeclarationType.DeclarationType
 import models.ExportsFieldPointer.ExportsFieldPointer
 import models.declaration.ExportItem.itemsPrefix
@@ -27,7 +25,6 @@ import models.viewmodels.TariffContentKey
 import models.{Amendment, FieldMapping}
 import play.api.data.Forms.text
 import play.api.data.{Form, Forms}
-import play.api.i18n.Messages
 import play.api.libs.json.{Json, OFormat}
 import services.DiffTools.compareOptionalString
 import uk.gov.voa.play.form.ConditionalMappings.mandatoryIfEqual
@@ -39,15 +36,6 @@ case class CusCode(cusCode: Option[String]) extends Ordered[CusCode] with Amendm
     compareOptionalString(cusCode, that.cusCode)
 
   def value: String = cusCode.getOrElse("")
-
-  def valueAdded(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
-    cusCode.fold("")(forAddedValue(pointer, messages(keyForAmend), _))
-
-  def valueAmended(newValue: Amendment, pointer: ExportsFieldPointer)(implicit messages: Messages): String =
-    forAmendedValue(pointer, messages(keyForAmend), value, newValue.value)
-
-  def valueRemoved(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
-    cusCode.fold("")(forRemovedValue(pointer, messages(keyForAmend), _))
 }
 
 object CusCode extends DeclarationPage with FieldMapping {
@@ -55,7 +43,7 @@ object CusCode extends DeclarationPage with FieldMapping {
 
   val pointer: ExportsFieldPointer = "cusCode"
 
-  private lazy val keyForAmend = s"$itemsPrefix.cusCode"
+  lazy val keyForAmend = s"$itemsPrefix.cusCode"
 
   val hasCusCodeKey = "hasCusCode"
   val cusCodeKey = "cusCode"

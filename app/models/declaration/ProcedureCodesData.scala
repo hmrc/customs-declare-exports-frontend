@@ -17,18 +17,16 @@
 package models.declaration
 
 import forms.section5.procedurecodes.ProcedureCode
-import models.AmendmentRow.{forAddedValue, forRemovedValue, pointerToSelector}
 import models.ExportsFieldPointer.ExportsFieldPointer
+import models.FieldMapping
 import models.declaration.ExportItem.itemsPrefix
-import models.declaration.ProcedureCodesData.{additionalProcedureCodesPointer, keyForAPCs, keyForPC, osrProcedureCode, procedureCodesPointer}
-import models.{AmendmentOp, FieldMapping}
-import play.api.i18n.Messages
+import models.declaration.ProcedureCodesData.{additionalProcedureCodesPointer, osrProcedureCode, procedureCodesPointer}
 import play.api.libs.json.{Json, OFormat}
 import services.DiffTools
 import services.DiffTools.{combinePointers, compareStringDifference, ExportsDeclarationDiff}
 
-case class ProcedureCodesData(procedureCode: Option[String], additionalProcedureCodes: Seq[String])
-    extends DiffTools[ProcedureCodesData] with AmendmentOp {
+case class ProcedureCodesData(procedureCode: Option[ProcedureCodesData.ProcedureCode], additionalProcedureCodes: Seq[String])
+    extends DiffTools[ProcedureCodesData] {
 
   override def createDiff(original: ProcedureCodesData, pointerString: ExportsFieldPointer, sequenceId: Option[Int] = None): ExportsDeclarationDiff =
     Seq(
@@ -45,26 +43,16 @@ case class ProcedureCodesData(procedureCode: Option[String], additionalProcedure
   lazy val toProcedureCode: ProcedureCode = ProcedureCode(procedureCode.getOrElse(""))
 
   def containsAPC(code: String): Boolean = additionalProcedureCodes.contains(code)
-
-  def valueAdded(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
-    procedureCode.fold("")(forAddedValue(pointerToSelector(pointer, procedureCodesPointer), messages(keyForPC), _)) +
-      Option
-        .when(additionalProcedureCodes.nonEmpty)(additionalProcedureCodes.mkString(" "))
-        .fold("")(forAddedValue(pointerToSelector(pointer, additionalProcedureCodesPointer), messages(keyForAPCs), _))
-
-  def valueRemoved(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
-    procedureCode.fold("")(forRemovedValue(pointerToSelector(pointer, procedureCodesPointer), messages(keyForPC), _)) +
-      Option
-        .when(additionalProcedureCodes.nonEmpty)(additionalProcedureCodes.mkString(" "))
-        .fold("")(forRemovedValue(pointerToSelector(pointer, additionalProcedureCodesPointer), messages(keyForAPCs), _))
 }
 
 object ProcedureCodesData extends FieldMapping {
   implicit val format: OFormat[ProcedureCodesData] = Json.format[ProcedureCodesData]
 
+  type ProcedureCode = String
+
   val pointer: ExportsFieldPointer = "procedureCodes"
   val procedureCodesPointer: ExportsFieldPointer = "procedure.code"
-  val additionalProcedureCodesPointer: ExportsFieldPointer = "additionalProcedureCodes"
+  val additionalProcedureCodesPointer: ExportsFieldPointer = "additionalPcs"
 
   lazy val keyForPC = s"$itemsPrefix.procedureCode"
   lazy val keyForAPC = s"$itemsPrefix.additionalProcedureCode"

@@ -105,4 +105,6 @@ object Transport extends FieldMapping {
   val transportOnDepartureIdPointer: ExportsFieldPointer = "meansOfTransportOnDepartureIDNumber"
   val transportCrossingTheBorderPointer: ExportsFieldPointer = "meansOfTransportCrossingTheBorderType"
   val transportCrossingTheBorderIdPointer: ExportsFieldPointer = "meansOfTransportCrossingTheBorderIDNumber"
+
+  type ExpressConsignment = Option[YesNoAnswer]
 }

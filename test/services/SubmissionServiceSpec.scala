@@ -171,7 +171,7 @@ class SubmissionServiceSpec
       result.futureValue mustBe Some(expectedActionId)
 
       val expectedFieldPointers = List(
-        "declaration.locations.destinationCountry",
+        "declaration.locations.destinationCountries.countryOfDestination",
         "declaration.totalNumberOfItems.totalAmountInvoiced",
         "declaration.totalNumberOfItems.exchangeRate"
       )
@@ -193,7 +193,7 @@ class SubmissionServiceSpec
       result.futureValue mustBe Some(expectedActionId)
 
       val expectedFieldPointers = List(
-        "declaration.locations.destinationCountry",
+        "declaration.locations.destinationCountries.countryOfDestination",
         "declaration.totalNumberOfItems.totalAmountInvoiced",
         "declaration.totalNumberOfItems.exchangeRate"
       )

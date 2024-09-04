@@ -18,24 +18,21 @@ package forms.section5
 
 import forms.DeclarationPage
 import forms.section1.AdditionalDeclarationType.SUPPLEMENTARY_EIDR
-import forms.section5.CommodityDetails.{combinedNomenclatureCodePointer, descriptionOfGoodsPointer, keyForCode, keyForDescription}
-import models.AmendmentRow.{forAddedValue, forRemovedValue, pointerToSelector}
+import forms.section5.CommodityDetails.{combinedNomenclatureCodePointer, descriptionOfGoodsPointer}
 import models.DeclarationType._
 import models.ExportsFieldPointer.ExportsFieldPointer
+import models.FieldMapping
 import models.declaration.ExportItem.itemsPrefix
 import models.requests.JourneyRequest
 import models.viewmodels.TariffContentKey
-import models.{AmendmentOp, FieldMapping}
 import play.api.data.Forms.{mapping, optional, text}
 import play.api.data.{Form, Mapping}
-import play.api.i18n.Messages
 import play.api.libs.json.{Json, OFormat}
 import services.DiffTools
 import services.DiffTools.{combinePointers, compareStringDifference, ExportsDeclarationDiff}
 import utils.validators.forms.FieldValidator._
 
-case class CommodityDetails(combinedNomenclatureCode: Option[String], descriptionOfGoods: Option[String])
-    extends DiffTools[CommodityDetails] with AmendmentOp {
+case class CommodityDetails(combinedNomenclatureCode: Option[String], descriptionOfGoods: Option[String]) extends DiffTools[CommodityDetails] {
 
   def createDiff(original: CommodityDetails, pointerString: ExportsFieldPointer, sequenceId: Option[Int] = None): ExportsDeclarationDiff =
     List(
@@ -46,14 +43,6 @@ case class CommodityDetails(combinedNomenclatureCode: Option[String], descriptio
       ),
       compareStringDifference(original.descriptionOfGoods, descriptionOfGoods, combinePointers(pointerString, descriptionOfGoodsPointer, sequenceId))
     ).flatten
-
-  def valueAdded(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
-    combinedNomenclatureCode.fold("")(forAddedValue(pointerToSelector(pointer, combinedNomenclatureCodePointer), messages(keyForCode), _)) +
-      descriptionOfGoods.fold("")(forAddedValue(pointerToSelector(pointer, descriptionOfGoodsPointer), messages(keyForDescription), _))
-
-  def valueRemoved(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
-    combinedNomenclatureCode.fold("")(forRemovedValue(pointerToSelector(pointer, combinedNomenclatureCodePointer), messages(keyForCode), _)) +
-      descriptionOfGoods.fold("")(forRemovedValue(pointerToSelector(pointer, descriptionOfGoodsPointer), messages(keyForDescription), _))
 }
 
 object CommodityDetails extends DeclarationPage with FieldMapping {

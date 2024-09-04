@@ -21,14 +21,13 @@ import forms.section3.OfficeOfExit
 import forms.section6.{InlandModeOfTransportCode, InlandOrBorder, SupervisingCustomsOffice, WarehouseIdentification}
 import models.DeclarationMeta.sequenceIdPlaceholder
 import models.ExportsFieldPointer.ExportsFieldPointer
-import models.{AmendmentOp, ExportsDeclaration, FieldMapping}
-import play.api.i18n.Messages
+import models.{ExportsDeclaration, FieldMapping}
 import play.api.libs.json.{Json, OFormat}
 import services.DiffTools.{combinePointers, compareDifference, ExportsDeclarationDiff}
 import services.{AlteredField, DiffTools, OriginalAndNewValues}
 
 case class RoutingCountry(sequenceId: Int = sequenceIdPlaceholder, country: Country)
-    extends DiffTools[RoutingCountry] with ExplicitlySequencedObject[RoutingCountry] with AmendmentOp {
+    extends DiffTools[RoutingCountry] with ExplicitlySequencedObject[RoutingCountry] {
 
   override def updateSequenceId(sequenceId: Int): RoutingCountry = copy(sequenceId = sequenceId)
 
@@ -43,12 +42,6 @@ case class RoutingCountry(sequenceId: Int = sequenceIdPlaceholder, country: Coun
         AlteredField(combinePointers(pointerString, sequenceId), OriginalAndNewValues(Some(original.country), Some(this.country)))
       )
     ).flatten
-
-  def valueAdded(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
-    country.valueAdded(pointer)
-
-  def valueRemoved(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
-    country.valueRemoved(pointer)
 }
 
 object RoutingCountry {
@@ -112,9 +105,9 @@ object Locations extends FieldMapping {
   implicit val format: OFormat[Locations] = Json.format[Locations]
 
   val pointer: ExportsFieldPointer = "locations"
-  val originationCountryPointer: ExportsFieldPointer = "originationCountry"
-  val destinationCountryPointer: ExportsFieldPointer = "destinationCountry"
-  val routingCountriesPointer: ExportsFieldPointer = "routingCountries"
+  val originationCountryPointer: ExportsFieldPointer = "originationCountries"
+  val destinationCountryPointer: ExportsFieldPointer = "destinationCountries.countryOfDestination"
+  val routingCountriesPointer: ExportsFieldPointer = "destinationCountries.countriesOfRouting"
 
   def apply(cacheData: ExportsDeclaration): Locations = Locations(
     destinationCountry = cacheData.locations.destinationCountry,

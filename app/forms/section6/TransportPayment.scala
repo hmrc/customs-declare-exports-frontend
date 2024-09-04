@@ -18,15 +18,12 @@ package forms.section6
 
 import forms.DeclarationPage
 import forms.mappings.MappingHelper.requiredRadio
-import forms.section6.TransportPayment.keyForAmend
-import models.AmendmentRow.{forAddedValue, forAmendedValue, forRemovedValue, safeMessage}
 import models.DeclarationType.DeclarationType
 import models.ExportsFieldPointer.ExportsFieldPointer
 import models.viewmodels.TariffContentKey
 import models.{Amendment, FieldMapping}
 import play.api.data.Forms.mapping
 import play.api.data.{Form, Mapping}
-import play.api.i18n.Messages
 import play.api.libs.json.{Json, OFormat}
 import utils.validators.forms.FieldValidator.isContainedIn
 
@@ -34,26 +31,12 @@ case class TransportPayment(paymentMethod: String) extends Ordered[TransportPaym
 
   def value: String = paymentMethod
 
-  private def toUserValue(value: String)(implicit messages: Messages): String =
-    safeMessage(s"$keyForAmend.$value", value)
-
-  def valueAdded(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
-    forAddedValue(pointer, messages(keyForAmend), toUserValue(value))
-
-  def valueAmended(newValue: Amendment, pointer: ExportsFieldPointer)(implicit messages: Messages): String =
-    forAmendedValue(pointer, messages(keyForAmend), toUserValue(value), toUserValue(newValue.value))
-
-  def valueRemoved(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
-    forRemovedValue(pointer, messages(keyForAmend), toUserValue(value))
-
   override def compare(that: TransportPayment): Int = paymentMethod.compare(that.paymentMethod)
 }
 
 object TransportPayment extends DeclarationPage with FieldMapping {
 
   override val pointer: ExportsFieldPointer = "transportPayment.paymentMethod"
-
-  private val keyForAmend = "declaration.summary.transport.payment"
 
   implicit val formats: OFormat[TransportPayment] = Json.format[TransportPayment]
 

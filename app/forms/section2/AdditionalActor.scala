@@ -17,24 +17,21 @@
 package forms.section2
 
 import forms.DeclarationPage
-import forms.mappings.MappingHelper._
 import forms.common.Eori
-import models.AmendmentRow.{forAddedValue, forRemovedValue, safeMessage}
+import forms.mappings.MappingHelper._
 import models.DeclarationType.DeclarationType
 import models.ExportsFieldPointer.ExportsFieldPointer
+import models.FieldMapping
 import models.declaration.ImplicitlySequencedObject
 import models.declaration.Parties.partiesPrefix
 import models.viewmodels.TariffContentKey
-import models.{AmendmentOp, FieldMapping}
 import play.api.data.{Form, Forms, Mapping}
-import play.api.i18n.Messages
 import play.api.libs.json.{Format, JsValue, Json}
 import services.DiffTools
 import services.DiffTools.{combinePointers, compareDifference, compareStringDifference, ExportsDeclarationDiff}
 import uk.gov.voa.play.form.ConditionalMappings._
 
-case class AdditionalActor(eori: Option[Eori], partyType: Option[String])
-    extends DiffTools[AdditionalActor] with ImplicitlySequencedObject with AmendmentOp {
+case class AdditionalActor(eori: Option[Eori], partyType: Option[String]) extends DiffTools[AdditionalActor] with ImplicitlySequencedObject {
 
   import AdditionalActor._
 
@@ -49,17 +46,6 @@ case class AdditionalActor(eori: Option[Eori], partyType: Option[String])
   def isDefined: Boolean = eori.isDefined && partyType.isDefined
 
   def toJson: JsValue = Json.toJson(this)(format)
-
-  private def toUserValue(value: String)(implicit messages: Messages): String =
-    safeMessage(s"declaration.summary.parties.actors.$value", value)
-
-  def valueAdded(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
-    eori.fold("")(eori => forAddedValue(s"$pointer-$eoriPointer", messages(keyForEori), eori.value)) +
-      partyType.fold("")(pt => forAddedValue(s"$pointer-$partyTypePointer", messages(keyForPartyType), toUserValue(pt)))
-
-  def valueRemoved(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
-    eori.fold("")(eori => forRemovedValue(s"$pointer-$eoriPointer", messages(keyForEori), eori.value)) +
-      partyType.fold("")(pt => forRemovedValue(s"$pointer-$partyTypePointer", messages(keyForPartyType), toUserValue(pt)))
 }
 
 object AdditionalActor extends DeclarationPage with FieldMapping {

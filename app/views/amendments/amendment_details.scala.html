@@ -14,6 +14,7 @@
  * limitations under the License.
  *@
 
+@import controllers.helpers.AmendmentInstance
 @import controllers.timeline.routes.DeclarationDetailsController
 @import models.declaration.submissions.{Action, Submission}
 @import models.declaration.submissions.RequestType.ExternalAmendmentRequest
@@ -29,7 +30,7 @@
   ducr: String,
   maybeReason: Option[String],
   action: Action,
-  differences: ExportsDeclarationDiff
+  amendmentRows: Seq[AmendmentInstance]
 )(implicit request: VerifiedEmailRequest[_], messages: Messages)
 
 @h1 = @{
@@ -54,7 +55,7 @@
 
     @helper.headingOfAmendments
 
-    @helper.amendments(differences)
+    @helper.amendments(amendmentRows)
 
     <div class="govuk-!-margin-top-6"></div>
 }

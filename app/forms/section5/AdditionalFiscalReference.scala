@@ -18,14 +18,12 @@ package forms.section5
 
 import connectors.CodeListConnector
 import forms.DeclarationPage
-import forms.section5.AdditionalFiscalReference.keyForAmend
-import models.AmendmentRow.{forAddedValue, forAmendedValue, forRemovedValue}
 import models.DeclarationType.DeclarationType
 import models.ExportsFieldPointer.ExportsFieldPointer
+import models.FieldMapping
 import models.declaration.ExportItem.itemsPrefix
 import models.declaration.{ImplicitlySequencedObject, IsoData}
 import models.viewmodels.TariffContentKey
-import models.{Amendment, FieldMapping}
 import play.api.data.Forms.text
 import play.api.data.{Form, Forms, Mapping}
 import play.api.i18n.Messages
@@ -35,8 +33,7 @@ import services.DiffTools.{combinePointers, ExportsDeclarationDiff}
 import services.{AlteredField, DiffTools, OriginalAndNewValues}
 import utils.validators.forms.FieldValidator._
 
-case class AdditionalFiscalReference(country: String, reference: String)
-    extends DiffTools[AdditionalFiscalReference] with ImplicitlySequencedObject with Amendment {
+case class AdditionalFiscalReference(country: String, reference: String) extends DiffTools[AdditionalFiscalReference] with ImplicitlySequencedObject {
 
   override def createDiff(
     original: AdditionalFiscalReference,
@@ -51,15 +48,6 @@ case class AdditionalFiscalReference(country: String, reference: String)
     ).flatten
 
   def value: String = country + reference
-
-  def valueAdded(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
-    forAddedValue(pointer, messages(keyForAmend), value)
-
-  override def valueAmended(newValue: Amendment, pointer: ExportsFieldPointer)(implicit messages: Messages): ExportsFieldPointer =
-    forAmendedValue(pointer, messages(keyForAmend), value, newValue.value)
-
-  def valueRemoved(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
-    forRemovedValue(pointer, messages(keyForAmend), value)
 }
 
 object AdditionalFiscalReference extends DeclarationPage with FieldMapping {

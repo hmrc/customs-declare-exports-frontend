@@ -17,14 +17,11 @@
 package forms.section6
 
 import forms.DeclarationPage
-import forms.section6.InlandModeOfTransportCode.keyForAmend
-import models.AmendmentRow.{forAddedValue, forAmendedValue, forRemovedValue, safeMessage}
 import models.DeclarationType.DeclarationType
 import models.ExportsFieldPointer.ExportsFieldPointer
 import models.viewmodels.TariffContentKey
 import models.{Amendment, FieldMapping}
 import play.api.data.{Form, Forms}
-import play.api.i18n.Messages
 import play.api.libs.json.{Json, OFormat}
 
 case class InlandModeOfTransportCode(inlandModeOfTransportCode: Option[ModeOfTransportCode] = None)
@@ -39,25 +36,11 @@ case class InlandModeOfTransportCode(inlandModeOfTransportCode: Option[ModeOfTra
     }
 
   def value: String = inlandModeOfTransportCode.fold("")(_.toString)
-
-  private def toUserValue(value: String)(implicit messages: Messages): String =
-    safeMessage(s"declaration.summary.transport.inlandModeOfTransport.$value", value)
-
-  def valueAdded(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
-    inlandModeOfTransportCode.fold("")(code => forAddedValue(pointer, messages(keyForAmend), toUserValue(code.toString)))
-
-  def valueAmended(newValue: Amendment, pointer: ExportsFieldPointer)(implicit messages: Messages): String =
-    forAmendedValue(pointer, messages(keyForAmend), toUserValue(value), toUserValue(newValue.value))
-
-  def valueRemoved(pointer: ExportsFieldPointer)(implicit messages: Messages): String =
-    inlandModeOfTransportCode.fold("")(code => forRemovedValue(pointer, messages(keyForAmend), toUserValue(code.toString)))
 }
 
 object InlandModeOfTransportCode extends DeclarationPage with FieldMapping {
 
   val pointer: ExportsFieldPointer = "inlandModeOfTransportCode.inlandModeOfTransportCode"
-
-  private val keyForAmend = "declaration.summary.transport.inlandModeOfTransport"
 
   implicit val format: OFormat[InlandModeOfTransportCode] = Json.format[InlandModeOfTransportCode]
 

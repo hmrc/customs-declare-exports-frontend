@@ -38,7 +38,7 @@ case class AuthorisationHolders(holders: Seq[AuthorisationHolder], isRequired: O
 object AuthorisationHolders extends FieldMapping {
   implicit val format: OFormat[AuthorisationHolders] = Json.format[AuthorisationHolders]
 
-  val pointer: ExportsFieldPointer = "declarationHoldersData"
+  val pointer: ExportsFieldPointer = "declarationHolders"
 
   private lazy val parties = s"${ExportsDeclaration.pointer}.${Parties.pointer}"
 
