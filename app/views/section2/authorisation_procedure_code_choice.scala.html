@@ -28,124 +28,119 @@
 @import config.AppConfig
 
 @this(
-    govukLayout: gdsMainTemplate,
-    govukDetails : GovukDetails,
-    govukRadios: GovukRadios,
-    insetText: exportsInsetText,
-    paragraphBody: paragraphBody,
-    navigator: Navigator,
-    externalLink: externalLink,
-    errorSummary: errorSummary,
-    sectionHeader: sectionHeader,
-    saveButtons: saveButtons,
-    formHelper: FormWithCSRF,
-    appConfig: AppConfig
+govukLayout: gdsMainTemplate,
+govukDetails : GovukDetails,
+govukRadios: GovukRadios,
+insetText: exportsInsetText,
+paragraphBody: paragraphBody,
+navigator: Navigator,
+externalLink: externalLink,
+errorSummary: errorSummary,
+sectionHeader: sectionHeader,
+saveButtons: saveButtons,
+formHelper: FormWithCSRF,
+appConfig: AppConfig
 )
 
 @(form: Form[AuthorisationProcedureCodeChoice])(implicit request: JourneyRequest[_], messages: Messages)
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 
-@insetSection = {
-    @paragraphBody(messages("declaration.authorisations.procedureCodeChoice.inset.paragraph1"))
-    @paragraphBody(messages("declaration.authorisations.procedureCodeChoice.inset.paragraph2"))
-}
-
 @readMoreExpanderContent = {
-    @paragraphBody(messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.1",
-        externalLink(
-            text = messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.1.linkText"),
-            url = appConfig.procedureCodesRemovalOfGoodsFromExciseWarehouse
-        )))
-    @paragraphBody(messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.2"))
-    @paragraphBody(messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.3",
-        externalLink(
-            text = messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.3.linkText"),
-            url = appConfig.procedureCodesRemovalOfGoodsFromExciseWarehouse
-        )))
-    @paragraphBody(messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.4",
+    <h2 class="govuk-heading-s">@messages("declaration.authorisations.procedureCodeChoice.option1")</h2>
+        @paragraphBody(messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.1"))
+        @paragraphBody(messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.2"))
+        <h2 class="govuk-heading-s">@messages("declaration.authorisations.procedureCodeChoice.options2and3")</h2>
+        @paragraphBody(messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.3"))
+        @paragraphBody(messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.4",
         externalLink(
             text = messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.4.linkText"),
-            url = appConfig.procedureCodesOnwardSupplyRelief
-        )))
-    @paragraphBody(messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.5",
-        externalLink(
-            text = messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.5.linkText"),
-            url = appConfig.procedureCodesEndUseRelief
-        )))
-    @paragraphBody(messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.6",
+            url = appConfig.procedureCodesRemovalOfGoodsFromExciseWarehouse
+    )))
+        @paragraphBody(messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.5"))
+        @paragraphBody(messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.6",
         externalLink(
             text = messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.6.linkText"),
-            url = appConfig.procedureCodesInwardProcessing
-        )))
-    @paragraphBody(messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.7"))
-    <p>@externalLink(
+            url = appConfig.procedureCodesRemovalOfGoodsFromExciseWarehouse
+    )))
+    @paragraphBody(messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.7",
+    externalLink(
+        text = messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.7.linkText"),
+        url = appConfig.procedureCodesOnwardSupplyRelief
+    )))
+    @paragraphBody(messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.8",
+    externalLink(
         text = messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.8.linkText"),
-        url = appConfig.procedureCodesOutwardProcessing
-    )</p>
-    <p>@externalLink(
+        url = appConfig.procedureCodesEndUseRelief
+    )))
+    @paragraphBody(messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.9",
+    externalLink(
         text = messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.9.linkText"),
+        url = appConfig.procedureCodesInwardProcessing
+    )))
+    @paragraphBody(messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.10"))
+    <p id="link1">@externalLink(
+        text = messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.11.linkText"),
+        url = appConfig.procedureCodesOutwardProcessing
+        )</p>
+    <p id="link2">@externalLink(
+        text = messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.12.linkText"),
         url = appConfig.procedureCodesTemporaryExport
-    )</p>
-    @paragraphBody(messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.10",
+        )</p>
+    @paragraphBody(messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.13",
         externalLink(
-            text = messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.10.linkText"),
+            text = messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.13.linkText"),
             url = appConfig.procedureCodesReExportFollowingSpecialProcedure
         )))
-}
+    }
 
-@govukLayout(
-    title = Title("declaration.authorisations.procedureCodeChoice.title", "declaration.section.2", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(AuthorisationProcedureCodeChoice)))) {
-    @formHelper(action = AuthorisationProcedureCodeChoiceController.submitForm, 'autoComplete -> "off") {
+    @govukLayout(
+        title = Title("declaration.authorisations.procedureCodeChoice.title", "declaration.section.2", hasErrors = hasErrors),
+        backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(AuthorisationProcedureCodeChoice)))) {
+        @formHelper(action = AuthorisationProcedureCodeChoiceController.submitForm, 'autoComplete -> "off") {
         @errorSummary(radioGroupErrors(formFieldName, Code1040.toString, form.errors))
 
-        @sectionHeader(messages("declaration.section.2"))
+    @sectionHeader(messages("declaration.section.2"))
 
-        @govukRadios(Radios(
-            name = formFieldName,
+    @govukRadios(Radios(
+        name = formFieldName,
             fieldset = Some(Fieldset(
-                legend = Some(Legend(
-                    content = Text(messages("declaration.authorisations.procedureCodeChoice.title")),
-                    isPageHeading = true,
-                    classes = gdsPageLegend
-                ))
-            )),
-
-            items = Seq(
-                RadioItem(
-                    id = Some(Code1040.toString),
-                    value = Some(Code1040.toString),
-                    content = Text(messages("declaration.authorisations.procedureCodeChoice.radio.1040")),
-                    checked = form(formFieldName).value.contains(Code1040.toString)
-                ),
-                RadioItem(
-                    id = Some(Code1007.toString),
-                    value = Some(Code1007.toString),
-                    content = Text(messages("declaration.authorisations.procedureCodeChoice.radio.1007")),
-                    checked = form(formFieldName).value.contains(Code1007.toString)
-                ),
-                RadioItem(
-                    id = Some(CodeOther.toString),
-                    value = Some(CodeOther.toString),
-                    content = Text(messages("declaration.authorisations.procedureCodeChoice.radio.other")),
-                    checked = form(formFieldName).value.contains(CodeOther.toString)
-                )
-            ),
-            errorMessage = form(formFieldName).error.map(err => ErrorMessage(content = Text(messages(err.message, err.args: _*))))
+            legend = Some(Legend(
+            content = Text(messages("declaration.authorisations.procedureCodeChoice.title")),
+            isPageHeading = true,
+            classes = gdsPageLegend
         ))
+    )),
 
-        @insetText(
-            content = HtmlContent(insetSection)
+    items = Seq(
+    RadioItem(
+        id = Some(Code1040.toString),
+        value = Some(Code1040.toString),
+        content = Text(messages("declaration.authorisations.procedureCodeChoice.radio.1040")),
+        checked = form(formFieldName).value.contains(Code1040.toString)
+    ),
+    RadioItem(
+        id = Some(Code1007.toString),
+        value = Some(Code1007.toString),
+        content = Text(messages("declaration.authorisations.procedureCodeChoice.radio.1007")),
+        checked = form(formFieldName).value.contains(Code1007.toString)
+    ),
+    RadioItem(
+        id = Some(CodeOther.toString),
+        value = Some(CodeOther.toString),
+        content = Text(messages("declaration.authorisations.procedureCodeChoice.radio.other")),
+        checked = form(formFieldName).value.contains(CodeOther.toString)
         )
+    ),
+        errorMessage = form(formFieldName).error.map(err => ErrorMessage(content = Text(messages(err.message, err.args: _*))))
+    ))
 
-        @govukDetails(Details(
-            id = Some("authorisationProcedureCodeChoice-readMore"),
-            summary = Text(messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.header")),
-            content = HtmlContent(readMoreExpanderContent)
-        ))
+    @govukDetails(Details(
+        id = Some("authorisationProcedureCodeChoice-readMore"),
+        summary = Text(messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.header")),
+        content = HtmlContent(readMoreExpanderContent)
+    ))
 
-        @saveButtons()
+    @saveButtons()
     }
 }
-
