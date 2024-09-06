@@ -20,7 +20,11 @@ import base.{Injector, MockAuthAction}
 import controllers.section1.routes.DucrChoiceController
 import forms.section1.TraderReference.form
 import forms.section1.TraderReference
-import models.DeclarationType.{CLEARANCE, STANDARD}
+import models.DeclarationType.{CLEARANCE, DeclarationType, STANDARD}
+import models.requests.JourneyRequest
+import play.api.i18n.Messages
+import play.api.mvc.AnyContent
+import play.twirl.api.HtmlFormat
 import views.html.section1.trader_reference
 import views.common.PageWithButtonsSpec
 import views.tags.ViewTest
@@ -30,7 +34,7 @@ class TraderReferenceViewSpec extends PageWithButtonsSpec with Injector with Moc
 
   private val page = instanceOf[trader_reference]
 
-  override val typeAndViewInstance = (STANDARD, page(form)(_, _))
+  override val typeAndViewInstance: (DeclarationType, (JourneyRequest[_], Messages) => HtmlFormat.Appendable) = (STANDARD, page(form)(_, _))
 
   private val dummyTraderReference = "dummyTraderRef"
   private val view = page(form)(request, messages)
@@ -62,22 +66,51 @@ class TraderReferenceViewSpec extends PageWithButtonsSpec with Injector with Moc
       view.getElementById(TraderReference.traderReferenceKey).attr("value") mustBe empty
     }
 
-    "display the correct tariff expander" should {
+    "display the first tariff expander" should {
       "in non-Clearance journeys" in {
 
-        val tariffText = view.getElementsByClass("govuk-details__text").first
-
-        removeBlanksIfAnyBeforeDot(tariffText.text) mustBe messages(
-          "tariff.declaration.text",
-          messages("tariff.declaration.traderReference.common.linkText.0")
+        val expectedBodyTextListMessageKeys = Seq(
+          "declaration.ducr.expander.bullet1",
+          "declaration.ducr.expander.bullet2",
+          "declaration.ducr.expander.bullet3",
+          "declaration.ducr.expander.bullet4",
+          "declaration.ducr.expander.bullet5"
         )
-        tariffText.child(0) must haveHref(appConfig.tariffGuideUrl("urls.tariff.declaration.traderReference.common.0"))
-      }
 
+        expectedBodyTextListMessageKeys.foreach { messageKey =>
+          view.getElementsByClass("govuk-list").get(0) must containMessage(messageKey)
+        }
+      }
       "in a Clearance journey" in {
-        implicit val request = withRequestOfType(CLEARANCE)
+        val expectedBodyTextListMessageKeys = Seq(
+          "declaration.ducr.expander.bullet1",
+          "declaration.ducr.expander.bullet2",
+          "declaration.ducr.expander.bullet3",
+          "declaration.ducr.expander.bullet4",
+          "declaration.ducr.expander.bullet5"
+        )
+
+        expectedBodyTextListMessageKeys.foreach { messageKey =>
+          view.getElementsByClass("govuk-list").get(0) must containMessage(messageKey)
+        }
+      }
+    }
+    "display the second tariff expander" should {
+      "in non-Clearance journeys" in {
+
+          val tariffText = view.getElementsByClass("govuk-details__text").get(1)
+
+          removeBlanksIfAnyBeforeDot(tariffText.text) mustBe messages(
+            "tariff.declaration.text",
+            messages("tariff.declaration.traderReference.common.linkText.0")
+          )
+          tariffText.child(0) must haveHref(appConfig.tariffGuideUrl("urls.tariff.declaration.traderReference.common.0"))
+
+      }
+      "in a Clearance journey" in {
+        implicit val request: JourneyRequest[AnyContent] = withRequestOfType(CLEARANCE)
         val view = page(form)(request, messages)
-        val tariffText = view.getElementsByClass("govuk-details__text").get(0)
+        val tariffText = view.getElementsByClass("govuk-details__text").get(1)
 
         removeBlanksIfAnyBeforeDot(tariffText.text) mustBe messages(
           "tariff.declaration.text",
