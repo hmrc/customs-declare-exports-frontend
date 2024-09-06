@@ -415,6 +415,8 @@ notDeclarent.reference.support = Os ydych yn cael problemau wrth wneud datganiad
 notDeclarent.reference.openingHours = Ar agor rhwng 08:30 a 17:00, o ddydd Llun i ddydd Gwener (ar gau ar wyliau banc).
 
 declaration.ducr.choice.title = A oes gennych Gyfeirnod Unigryw y Llwyth ar gyfer Datganiad (DUCR)?
+declaration.ducr.banner.title = Pwysig: ynglŷn â’r DUCR
+declaration.ducr.banner.content = Mae Cyfeirnod Unigryw y Llwyth ar gyfer Datganiad (DUCR) yn gyfeiriad unigryw a ddefnyddir gan y tollau i nodi eitem nwyddau benodol y bwriedir ei mewnforio neu ei allforio.
 declaration.ducr.choice.answer.no = Na, hoffwn greu DUCR
 declaration.ducr.choice.answer.empty = Dewiswch a hoffech greu DUCR
 
