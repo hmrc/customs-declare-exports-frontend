@@ -98,13 +98,13 @@ class TraderReferenceViewSpec extends PageWithButtonsSpec with Injector with Moc
     "display the second tariff expander" should {
       "in non-Clearance journeys" in {
 
-          val tariffText = view.getElementsByClass("govuk-details__text").get(1)
+        val tariffText = view.getElementsByClass("govuk-details__text").get(1)
 
-          removeBlanksIfAnyBeforeDot(tariffText.text) mustBe messages(
-            "tariff.declaration.text",
-            messages("tariff.declaration.traderReference.common.linkText.0")
-          )
-          tariffText.child(0) must haveHref(appConfig.tariffGuideUrl("urls.tariff.declaration.traderReference.common.0"))
+        removeBlanksIfAnyBeforeDot(tariffText.text) mustBe messages(
+          "tariff.declaration.text",
+          messages("tariff.declaration.traderReference.common.linkText.0")
+        )
+        tariffText.child(0) must haveHref(appConfig.tariffGuideUrl("urls.tariff.declaration.traderReference.common.0"))
 
       }
       "in a Clearance journey" in {
