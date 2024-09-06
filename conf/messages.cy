@@ -419,8 +419,8 @@ declaration.ducr.choice.answer.no = Na, hoffwn greu DUCR
 declaration.ducr.choice.answer.empty = Dewiswch a hoffech greu DUCR
 
 declaration.ducrEntry.header = Nodwch eich Cyfeirnod Unigryw y Llwyth ar gyfer Datganiad (DUCR)
-declaration.ducrEntry.ducr.expander.title  = Cwblhewch eich DUCR gan ddefnyddio’r fformat canlynol:
-declaration.ducrEntry.ducr.expander.pargrapgh  = A DUCR is made up of these parts:
+declaration.ducrEntry.ducr.expander.title  = Deall fformat DUCR
+declaration.ducrEntry.ducr.expander.paragraph = Mae DUCR yn cynnwys y rhannau hyn:
 declaration.ducrEntry.ducr.expander.bullet1 = rhif olaf y flwyddyn bresennol
 declaration.ducrEntry.ducr.expander.bullet2 = GB
 declaration.ducrEntry.ducr.expander.bullet3 = rhif EORI (12 rhif yn unig)
