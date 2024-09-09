@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -224,7 +224,7 @@ class Card5ForItemsSpec extends UnitViewSpec with ExportsTestHelper with Injecto
     view.getElementsByTag("h2").text mustBe messages("declaration.summary.section.5")
 
     val link = view.getElementsByTag("a").first
-    link.text mustBe messages("declaration.summary.items.add")
+    link.text must startWith(messages("declaration.summary.items.add"))
 
     val expectedCall = if (withItems) ItemsSummaryController.addAdditionalItem else ItemsSummaryController.displayAddItemPage
     link.attr("href") mustBe expectedCall.url
@@ -248,7 +248,9 @@ class Card5ForItemsSpec extends UnitViewSpec with ExportsTestHelper with Injecto
       } { id =>
         ("site.change", s"declaration.summary.item.$id.change", List(index))
       }
-      row must haveSummaryActionsTexts(args._1, args._2, args._3: _*)
+      val expectedText = s"""${messages(args._1)} ${messages(args._2, args._3)}"""
+      row.first.getElementsByClass(summaryActionsClassName).text must startWith(expectedText)
+
       row must haveSummaryActionsHref(maybeUrl.get)
     }
 

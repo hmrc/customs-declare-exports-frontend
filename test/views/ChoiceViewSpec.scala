@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,7 +48,7 @@ class ChoiceViewSpec extends UnitViewSpec with CommonMessages {
   "Choice page" should {
 
     "display on banner the expected 'service name' (common to all pages)" in {
-      val element = view.getElementsByClass("hmrc-header__service-name").first
+      val element = view.getElementsByClass("govuk-header__service-name").first
       element.tagName mustBe "a"
       element.text mustBe messages("service.name")
     }

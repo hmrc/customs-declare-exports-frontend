@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -51,7 +51,7 @@ trait MockAuthAction extends MockitoSugar with Stubs with MetricsMocks with Inje
       mockAuthConnector.authorise(
         any(),
         ArgumentMatchers.eq(
-          credentials and name and email and externalId and internalId and affinityGroup and allEnrolments
+          credentials and email and externalId and internalId and affinityGroup and allEnrolments
             and agentCode and confidenceLevel and nino and saUtr and dateOfBirth and agentInformation and groupIdentifier and
             credentialRole and mdtpInformation and itmpName and itmpDateOfBirth and itmpAddress and credentialStrength and loginTimes
         )
@@ -64,7 +64,7 @@ trait MockAuthAction extends MockitoSugar with Stubs with MetricsMocks with Inje
       mockAuthConnector.authorise(
         any(),
         ArgumentMatchers.eq(
-          credentials and name and email and externalId and internalId and affinityGroup and allEnrolments
+          credentials and email and externalId and internalId and affinityGroup and allEnrolments
             and agentCode and confidenceLevel and nino and saUtr and dateOfBirth and agentInformation and groupIdentifier and
             credentialRole and mdtpInformation and itmpName and itmpDateOfBirth and itmpAddress and credentialStrength and loginTimes
         )
@@ -88,10 +88,7 @@ trait MockAuthAction extends MockitoSugar with Stubs with MetricsMocks with Inje
                                     new ~(
                                       new ~(
                                         new ~(
-                                          new ~(
-                                            new ~(new ~(user.identityData.credentials, user.identityData.name), user.identityData.email),
-                                            user.identityData.externalId
-                                          ),
+                                          new ~(new ~(user.identityData.credentials, user.identityData.email), user.identityData.externalId),
                                           user.identityData.internalId
                                         ),
                                         user.identityData.affinityGroup
@@ -134,7 +131,7 @@ trait MockAuthAction extends MockitoSugar with Stubs with MetricsMocks with Inje
       mockAuthConnector.authorise(
         any(),
         ArgumentMatchers.eq(
-          credentials and name and email and externalId and internalId and affinityGroup and allEnrolments
+          credentials and email and externalId and internalId and affinityGroup and allEnrolments
             and agentCode and confidenceLevel and nino and saUtr and dateOfBirth and agentInformation and groupIdentifier and
             credentialRole and mdtpInformation and itmpName and itmpDateOfBirth and itmpAddress and credentialStrength and loginTimes
         )
@@ -158,10 +155,7 @@ trait MockAuthAction extends MockitoSugar with Stubs with MetricsMocks with Inje
                                     new ~(
                                       new ~(
                                         new ~(
-                                          new ~(
-                                            new ~(new ~(user.identityData.credentials, user.identityData.name), user.identityData.email),
-                                            user.identityData.externalId
-                                          ),
+                                          new ~(new ~(user.identityData.credentials, user.identityData.email), user.identityData.externalId),
                                           user.identityData.internalId
                                         ),
                                         user.identityData.affinityGroup
@@ -204,7 +198,7 @@ trait MockAuthAction extends MockitoSugar with Stubs with MetricsMocks with Inje
       mockAuthConnector.authorise(
         any(),
         ArgumentMatchers.eq(
-          credentials and name and email and externalId and internalId and affinityGroup and allEnrolments
+          credentials and email and externalId and internalId and affinityGroup and allEnrolments
             and agentCode and confidenceLevel and nino and saUtr and dateOfBirth and agentInformation and groupIdentifier and
             credentialRole and mdtpInformation and itmpName and itmpDateOfBirth and itmpAddress and credentialStrength and loginTimes
         )
@@ -228,7 +222,7 @@ trait MockAuthAction extends MockitoSugar with Stubs with MetricsMocks with Inje
                                     new ~(
                                       new ~(
                                         new ~(
-                                          new ~(new ~(new ~(user.identityData.credentials, user.identityData.name), user.identityData.email), None),
+                                          new ~(new ~(user.identityData.credentials, user.identityData.email), None),
                                           user.identityData.internalId
                                         ),
                                         user.identityData.affinityGroup

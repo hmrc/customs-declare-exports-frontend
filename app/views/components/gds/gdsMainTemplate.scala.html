@@ -1,5 +1,5 @@
 @*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,9 +23,6 @@
 @import play.twirl.api.HtmlFormat
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers._
-@import uk.gov.hmrc.hmrcfrontend.views.html.components.HmrcReportTechnicalIssue
-@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.reporttechnicalissue.ReportTechnicalIssue
-@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.language.{En, Cy}
 @import views.helpers.{BackButton, Title}
 @import views.html.components.gds.{phaseBanner, siteHeader}
 @import views.html.components._
@@ -37,14 +34,14 @@
     govukFlexibleLayout: govukFlexibleLayout,
     govukBackLink: GovukBackLink,
     siteHeader: siteHeader,
+    hmrcHead: HmrcHead,
+    hmrcScripts: HmrcScripts,
+    hmrcLanguageSelectHelper: HmrcLanguageSelectHelper,
+    hmrcTimeoutDialogHelper: HmrcTimeoutDialogHelper,
     phaseBanner: phaseBanner,
     timeoutDialogConfig: TimeoutDialogConfig,
     betaBannerConfig: BetaBannerConfig,
-    hmrcHead: HmrcHead,
-    hmrcLanguageSelectHelper: HmrcLanguageSelectHelper,
-    hmrcTimeoutDialogHelper: HmrcTimeoutDialogHelper,
-    hmrcTrackingConsentSnippet: HmrcTrackingConsentSnippet,
-    hmrcReportTechnicalIssue: HmrcReportTechnicalIssue,
+    hmrcReportTechnicalIssue: HmrcReportTechnicalIssueHelper,
     hmrcFooter: HmrcStandardFooter,
     viewDeclarationSummaryLink: viewDeclarationSummaryLink,
     appConfig: AppConfig
@@ -73,37 +70,28 @@
             ))
         )
     } else {
-        @hmrcTrackingConsentSnippet()
+        @hmrcHead()
     }
 
-    <link rel="shortcut icon" href='@Assets.versioned("/lib/govuk-frontend/govuk/assets/images/favicon.ico")' type="image/x-icon" />
-    <link rel="shortcut icon" href='@Assets.versioned("lib/accessible-autocomplete/dist/accessible-autocomplete.min.css")' rel="stylesheet" type="text/css" />
     <meta name="format-detection" content="telephone=no" />
-    <!--[if lte IE 8]><link href='@Assets.versioned("stylesheets/application-ie-8.css")' rel="stylesheet" type="text/css" /><![endif]-->
-    <!--[if gt IE 8]><!--><link href='@Assets.versioned("stylesheets/customsdecexfrontend-app.css")' media="all" rel="stylesheet" type="text/css" /><!--<![endif]-->
+    <link rel="shortcut icon" href='@Assets.versioned("/lib/govuk-frontend/govuk/assets/images/favicon.ico")' type="image/x-icon" />
+    <link href='@Assets.versioned("stylesheets/exports-app.css")' media="all" rel="stylesheet" type="text/css" />
 
     @headContentOnJavaScriptDisabled.map { headContent => <noscript>@headContent</noscript> }
 }
 
 @scripts = {
+    @hmrcScripts()
+
     <script @CSPNonce.attr src='@Assets.versioned("javascripts/show-hide-content.js")'></script>
-
-    <script @CSPNonce.attr src='@Assets.versioned("lib/govuk-frontend/govuk/all.js")'></script>
-    <script @CSPNonce.attr src='@Assets.versioned("lib/hmrc-frontend/hmrc/all.js")'></script>
-
-    <script @CSPNonce.attr >window.HMRCFrontend.initAll();</script>
-    <script @CSPNonce.attr >window.GOVUKFrontend.initAll();</script>
-
     <script @CSPNonce.attr src='@Assets.versioned("javascripts/preventMultipleFormSubmissions.js")'></script>
-
     <script @CSPNonce.attr src='@Assets.versioned("javascripts/print-page-button.js")'></script>
-
     <script @CSPNonce.attr src="https://cdn.optimizely.com/js/29334340673.js"></script>
 }
 
 @beforeContentBlock = {
     @if(betaBannerConfig.isBetaBannerEnabled) {
-      @phaseBanner("beta")
+      @phaseBanner("BETA")
     }
 
     @if(showLanguageSwitch && appConfig.languages.contains("cy")) {
@@ -130,12 +118,7 @@
 
 @content = {
     @contentBlock
-
-    @hmrcReportTechnicalIssue(
-        ReportTechnicalIssue(
-            serviceCode = appConfig.appName,
-            language = if(messages.lang.code == "en") En else Cy)
-    )
+    @hmrcReportTechnicalIssue()
 }
 
 @if(useCustomContentWidth) {
@@ -159,5 +142,4 @@
         footerBlock = Some(hmrcFooter())
     )(content)
 }
-
 

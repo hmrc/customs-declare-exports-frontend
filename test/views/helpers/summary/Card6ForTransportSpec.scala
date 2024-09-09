@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -298,6 +298,7 @@ class Card6ForTransportSpec extends UnitViewSpec with ExportsTestHelper with Inj
       "one or more containers have been entered" in {
         val id1 = "container1"
         val id2 = "container2"
+        val expectedText = s"""${messages("site.change")} ${messages("declaration.summary.container.change")}"""
 
         val container1 = Container(1, id1, List(Seal(1, "seal1"), Seal(2, "seal2")))
         val container2 = Container(2, id2, List.empty)
@@ -317,8 +318,8 @@ class Card6ForTransportSpec extends UnitViewSpec with ExportsTestHelper with Inj
         val container1Id = containersSummaryListRows.first.getElementsByClass("container-1")
         container1Id must haveSummaryKey(messages("declaration.summary.container.id"))
         container1Id must haveSummaryValue(id1)
-        container1Id must haveSummaryActionsTexts("site.change", "declaration.summary.container.change")
         container1Id must haveSummaryActionWithPlaceholder(ContainerController.displayContainerSummary)
+        container1Id.first.getElementsByClass(summaryActionsClassName).text must startWith(expectedText)
 
         val container1Seals = sealsSummaryListRows.first.getElementsByClass("container-1-seals")
         container1Seals must haveSummaryKey(messages("declaration.summary.container.securitySeals"))
@@ -328,8 +329,8 @@ class Card6ForTransportSpec extends UnitViewSpec with ExportsTestHelper with Inj
         val container2Id = containersSummaryListRows.get(1).getElementsByClass("container-2")
         container2Id must haveSummaryKey(messages("declaration.summary.container.id"))
         container2Id must haveSummaryValue(id2)
-        container2Id must haveSummaryActionsTexts("site.change", "declaration.summary.container.change")
         container2Id must haveSummaryActionWithPlaceholder(ContainerController.displayContainerSummary)
+        container2Id.first.getElementsByClass(summaryActionsClassName).text must startWith(expectedText)
 
         val container2Seals = sealsSummaryListRows.get(1).getElementsByClass("container-2-seals")
         container2Seals must haveSummaryKey(messages("declaration.summary.container.securitySeals"))
@@ -343,8 +344,10 @@ class Card6ForTransportSpec extends UnitViewSpec with ExportsTestHelper with Inj
         val row = view.getElementsByClass("containers-heading")
         row must haveSummaryKey(messages("declaration.summary.containers"))
         row must haveSummaryValue(messages("site.none"))
-        row must haveSummaryActionsTexts("site.change", "declaration.summary.container.change")
         row must haveSummaryActionWithPlaceholder(ContainerController.displayContainerSummary)
+
+        val expectedText = s"""${messages("site.change")} ${messages("declaration.summary.container.change")}"""
+        row.first.getElementsByClass(summaryActionsClassName).text must startWith(expectedText)
       }
     }
 

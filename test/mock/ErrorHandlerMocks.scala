@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,8 +18,7 @@ package mock
 
 import controllers.general.ErrorHandler
 import org.mockito.ArgumentMatchers.{any, anyString}
-import org.mockito.Mockito
-import org.mockito.Mockito.when
+import org.mockito.Mockito.{reset, when}
 import org.mockito.invocation.InvocationOnMock
 import org.scalatest.{BeforeAndAfterEach, Suite}
 import org.scalatestplus.mockito.MockitoSugar
@@ -33,7 +32,8 @@ trait ErrorHandlerMocks extends BeforeAndAfterEach { self: MockitoSugar with Sui
   val mockErrorHandler: ErrorHandler = mock[ErrorHandler]
 
   def setupErrorHandler(): Unit = {
-    when(mockErrorHandler.standardErrorTemplate(anyString, anyString, anyString)(any())).thenReturn(HtmlFormat.empty)
+    when(mockErrorHandler.standardErrorTemplate(anyString, anyString, anyString)(any()))
+      .thenReturn(Future.successful(HtmlFormat.empty))
 
     when(mockErrorHandler.badRequest(any())).thenReturn(BadRequest(HtmlFormat.empty))
 
@@ -47,7 +47,7 @@ trait ErrorHandlerMocks extends BeforeAndAfterEach { self: MockitoSugar with Sui
   }
 
   override protected def afterEach(): Unit = {
-    Mockito.reset(mockErrorHandler)
+    reset(mockErrorHandler)
     super.afterEach()
   }
 }

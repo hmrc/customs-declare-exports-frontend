@@ -1,5 +1,5 @@
 @*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -68,8 +68,8 @@ To avoid problems, we need to remove [] from field.
     }
 </div>
 
+<script @CSPNonce.attr src='@Assets.versioned("javascripts/jquery-3.7.0.slim.min.js")'></script>
 <script @CSPNonce.attr src='@Assets.versioned("lib/accessible-autocomplete/dist/accessible-autocomplete.min.js")'></script>
-<script @CSPNonce.attr src='@Assets.versioned("javascripts/jquery-3.6.0.slim.min.js")'></script>
 <script @CSPNonce.attr src='@Assets.versioned("javascripts/auto-complete-fix.js")'></script>
 <script @CSPNonce.attr type="text/javascript">
         var selectElementId = '@(fieldNameWithoutBrackets)'

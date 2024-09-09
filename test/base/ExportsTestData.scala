@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -103,7 +103,6 @@ object ExportsTestData extends ExportsDeclarationBuilder with ExportsItemBuilder
         Some(L50),
         None,
         None,
-        Some(Name(Some("Aldo"), Some("Rain"))),
         Some(LocalDate.now().minusYears(25)),
         Some("amina@hmrc.co.uk"),
         Some(AgentInformation(Some("agentId"), Some("agentCode"), Some("agentFriendlyName"))),

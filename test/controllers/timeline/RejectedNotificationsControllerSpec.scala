@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,7 +49,7 @@ class RejectedNotificationsControllerSpec extends ControllerWithoutFormSpec with
   private val controller = new RejectedNotificationsController(
     mockAuthAction,
     mockVerifiedEmailAction,
-    new ErrorHandler(mcc.messagesApi, instanceOf[error_template])(instanceOf[AppConfig]),
+    new ErrorHandler(mcc.messagesApi, instanceOf[error_template])(instanceOf[AppConfig], global),
     mockCustomsDeclareExportsConnector,
     codeListConnector,
     mcc,

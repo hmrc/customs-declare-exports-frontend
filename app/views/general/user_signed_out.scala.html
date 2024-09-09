@@ -1,5 +1,5 @@
 @*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@
 @import views.html.components.exit_survey
 
 @this(
-    gdsTemplate: gdsMainTemplate,
+    govukLayout: gdsMainTemplate,
     pageTitle: pageTitle,
     linkButton: linkButton,
     link: link,
@@ -28,17 +28,13 @@
 
 @()(implicit request: Request[_], messages: Messages)
 
-@govukLink = {
-    <p class="govuk-body govuk-!-margin-top-9">
-        <a class="govuk-link govuk-link--no-visited-state" href="https://www.gov.uk/">@messages("site.backToGovUk")</a>
-    </p>
-}
-
-@gdsTemplate(title = Title("userSignedOut.title")) {
+@govukLayout(title = Title("userSignedOut.title")) {
 
   @pageTitle(messages("userSignedOut.title"))
 
   @exitSurvey()
 
-  @govukLink
+  <p class="govuk-body govuk-!-margin-top-9">
+    <a class="govuk-link govuk-link--no-visited-state" href="https://www.gov.uk/">@messages("site.backToGovUk")</a>
+  </p>
 }

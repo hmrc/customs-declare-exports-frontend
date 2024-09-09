@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -312,10 +312,10 @@ class CustomsDeclareExportsConnectorISpec extends ConnectorISpec with ExportsDec
           )
       )
 
-      val response =
-        await(connector.findOrCreateDraftForAmendment(parentId, enhancedStatus, "eori", aDeclaration(withConsignmentReferences("DUCR", "LRN"))))
+      val declaration = aDeclaration(withConsignmentReferences("DUCR", "LRN"))
+      val response = connector.findOrCreateDraftForAmendment(parentId, enhancedStatus, "eori", declaration)
 
-      response mustBe draftId
+      response.futureValue mustBe draftId
 
       verify(mockAuditService).auditDraftDecCreated(any(), any())(any())
     }

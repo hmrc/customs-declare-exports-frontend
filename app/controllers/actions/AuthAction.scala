@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -50,7 +50,7 @@ class AuthActionImpl @Inject() (
 
   private val authTimer = metrics.defaultRegistry.timer("upstream.auth.timer")
 
-  private val authData = credentials and name and email and externalId and internalId and affinityGroup and allEnrolments and
+  private val authData = credentials and email and externalId and internalId and affinityGroup and allEnrolments and
     agentCode and confidenceLevel and nino and saUtr and dateOfBirth and agentInformation and groupIdentifier and
     credentialRole and mdtpInformation and itmpName and itmpDateOfBirth and itmpAddress and credentialStrength and loginTimes
 
@@ -61,7 +61,7 @@ class AuthActionImpl @Inject() (
     val authorisation = authTimer.time()
 
     val result = authorised((Individual or Organisation) and Enrolment(enrolment)).retrieve(authData) {
-      case credentials ~ name ~ email ~ externalId ~ internalId ~ affinityGroup ~ allEnrolments ~ agentCode ~
+      case credentials ~ email ~ externalId ~ internalId ~ affinityGroup ~ allEnrolments ~ agentCode ~
           confidenceLevel ~ authNino ~ saUtr ~ dateOfBirth ~ agentInformation ~ groupIdentifier ~
           credentialRole ~ mdtpInformation ~ itmpName ~ itmpDateOfBirth ~ itmpAddress ~ credentialStrength ~ loginTimes =>
         authorisation.stop()
@@ -77,7 +77,6 @@ class AuthActionImpl @Inject() (
           Some(confidenceLevel),
           authNino,
           saUtr,
-          name,
           dateOfBirth,
           email,
           Some(agentInformation),
