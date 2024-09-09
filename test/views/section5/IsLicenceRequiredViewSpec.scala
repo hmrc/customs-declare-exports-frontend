@@ -47,12 +47,10 @@ class IsLicenceRequiredViewSpec extends UnitViewSpec with ExportsTestHelper with
 
     onEveryDeclarationJourney() { implicit request =>
       "display page title" in {
-
         createView().getElementsByClass(Styles.gdsPageLegend) must containMessageForElements("declaration.item.isLicenceRequired.title")
       }
 
       "display section header" in {
-
         createView().getElementById("section-header") must containMessage("declaration.section.5")
       }
 
@@ -71,21 +69,17 @@ class IsLicenceRequiredViewSpec extends UnitViewSpec with ExportsTestHelper with
       checkAllSaveButtonsAreDisplayed(createView())
 
       "display 'Back' button that links to 'AdditionalInfo' page" in {
-
         val backButton = createView().getElementById("back-link")
 
         backButton must containMessage(backToPreviousQuestionCaption)
         backButton must haveHref(AdditionalInformationRequiredController.displayPage("itemId").url)
       }
     }
-
   }
 
   "invalid input" should {
-
     onEveryDeclarationJourney() { implicit request =>
       "display error when answer is empty" in {
-
         val view = createView(IsLicenceRequired.form.fillAndValidate(YesNoAnswer("")))
 
         view must haveGovukGlobalErrorSummary
@@ -93,13 +87,10 @@ class IsLicenceRequiredViewSpec extends UnitViewSpec with ExportsTestHelper with
 
         view must containErrorElementWithMessageKey("declaration.item.isLicenceRequired.error")
       }
-
     }
-
   }
 
   "IsLicenceRequired View when filled" should {
-
     onEveryDeclarationJourney() { implicit request =>
       "display answer input" in {
 
@@ -111,32 +102,24 @@ class IsLicenceRequiredViewSpec extends UnitViewSpec with ExportsTestHelper with
   }
 
   "tariffLink should display" when {
-
     val code = "0987654321"
 
     onEveryDeclarationJourney(withItem(anItem(withItemId("itemId"), withCommodityDetails(CommodityDetails(Some(code), None))))) { implicit request =>
       "commodity code exists" in {
-
         val view = createView()
         val inset = view.getElementsByClass("govuk-inset-text").get(0).children.get(1)
 
         inset.child(0) must haveHref(s"${appConfig.tariffGuideUrl("urls.tariff.declaration.item.isLicenceRequired.inset.1.0")}$code#export")
-
       }
     }
 
     onEveryDeclarationJourney() { implicit request =>
       "commodity does not exist" in {
-
         val view = createView()
         val inset = view.getElementsByClass("govuk-inset-text").get(0).children.get(1)
 
         inset.child(0) must haveHref(appConfig.tariffBrowseUrl)
-
       }
-
     }
-
   }
-
 }

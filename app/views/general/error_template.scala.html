@@ -14,7 +14,8 @@
  * limitations under the License.
  *@
 
-@import views.helpers.Title
+@import controllers.routes.ChoiceController
+@import views.helpers.{BackButton, Title}
 @import views.html.components.gds._
 
 @this(govukLayout: gdsMainTemplate)
@@ -22,13 +23,15 @@
 @(pageTitle: String, heading: String, message: String)(implicit request: Request[_], messages: Messages)
 
 @govukLayout(
-  title = Title(pageTitle),
-  useCustomContentWidth = true
+    title = Title(pageTitle),
+    backButton = Some(BackButton(messages("site.backToSelectionPage"), ChoiceController.displayPage)),
+    useCustomContentWidth = true,
+    showDeclarationSummaryLink = false,
 ) {
-  <div class="govuk-grid-row">
-    <div class="govuk-grid-column-full">
-      <h1 class="govuk-heading-xl" >@heading</h1>
-      <p class="govuk-body">@message</p>
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
+            <h1 class="govuk-heading-xl" >@heading</h1>
+            <p class="govuk-body">@message</p>
+        </div>
     </div>
-  </div>
 }
