@@ -529,6 +529,8 @@ declaration.linkDucrToMucr.banner.content = Defnyddir MUCR i gysylltu mwy nag un
 declaration.linkDucrToMucr.paragraph = Gallwch gysylltu mwy nag un DUCR â MUCR os yw’ch llwythwr neu gludwr wedi rhoi MUCR i chi.<br><br>Ni allwch gysylltu â MUCR os yw’ch cludwr yn defnyddio’r Gwasanaeth Symud Cerbydau Nwyddau (GVMS). Bydd y cludwr yn cysylltu’r DUCRau ar gyfer yr holl nwyddau y maent yn eu cludo gan ddefnyddio Cyfeirnod Symud Nwyddau (GMR).
 declaration.linkDucrToMucr.error.required = Dewiswch ‘Iawn’ os ydych am gysylltu DUCR y datganiad hwn gyda MUCR
 
+declaration.declarant.eori.banner.title = Pwysig: ynglŷn â’r rhif EORI
+declaration.declarant.eori.banner.content = Mae’r Rhif Cofrestru ac Adnabod Gweithredwyr Economaidd (EORI) yn rhif cofrestru sy’n nodi busnes mewnforio neu allforio.
 declaration.mucr.title = Nodwch yr MUCR
 declaration.mucr.paragraph = I wirio’r fformat cywir, gweler yr adran ‘Nodiadau’ ar {0}.
 declaration.mucr.paragraph.link = Elfen Ddata 2/1 Dogfennau Blaenorol (yn agor tab newydd)
