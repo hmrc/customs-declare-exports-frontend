@@ -49,6 +49,12 @@
     @paragraphBody(messages("declaration.declarationType.expander.paragraph.1"))
     @paragraphBody(messages("declaration.declarationType.expander.paragraph.2"))
     @paragraphBody(messages("declaration.declarationType.expander.paragraph.3"))
+    @paragraphBody(messages("declaration.declarationType.expander.paragraph.4"))
+    @paragraphBody(messages("declaration.declarationType.expander.paragraph.5"))
+    @paragraphBody(messages("declaration.declarationType.expander.link", externalLink(
+    text = messages("declaration.declarationType.expander.link.content"),
+    url = appConfig.guidance.january2022locations
+    )))
 }
 
 @classes = @{
@@ -71,10 +77,8 @@
         @if(!request.isType(SUPPLEMENTARY)) {
             @notificationBanner(
                 title = messages("declaration.declarationType.notification.title"),
-                content = paragraphBody(messages("declaration.declarationType.notification.content", externalLink(
-                    text = messages("declaration.declarationType.notification.content.link"),
-                    url = appConfig.guidance.january2022locations
-                )))
+                content = paragraphBody(messages("declaration.declarationType.notification.content"
+                ))
             )
         }
 
