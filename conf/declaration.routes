@@ -573,8 +573,6 @@ GET         /holding                             controllers.summary.Confirmatio
 
 GET         /confirmation                        controllers.summary.ConfirmationController.displayConfirmationPage
 
-GET         /confirmation-results                controllers.summary.ConfirmationController.displayConfirmationResultsPage
-
 # Amendments
 
 GET         /amend-declaration/:parentId         controllers.amendments.AmendDeclarationController.initAmendment(parentId: String)

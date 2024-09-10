@@ -17,8 +17,6 @@
 package views.summary
 
 import base.{Injector, MockAuthAction}
-import config.ExternalServicesConfig
-import controllers.routes.FileUploadController
 import controllers.timeline.routes.DeclarationDetailsController
 import forms.section1.AdditionalDeclarationType._
 import models.declaration.submissions.EnhancedStatus._
@@ -27,23 +25,43 @@ import org.jsoup.nodes.Document
 import org.scalatest.GivenWhenThen
 import testdata.SubmissionsTestData._
 import views.common.UnitViewSpec
-import views.dashboard.DashboardHelper.toDashboard
 import views.helpers.Confirmation
-import views.helpers.ViewDates.formatTimeDate
+import views.helpers.ConfirmationHelper.getConfirmationPageMessageKey
 import views.html.summary.confirmation_page
 import views.tags.ViewTest
-
-import java.time.{ZoneOffset, ZonedDateTime}
 
 @ViewTest
 class ConfirmationViewSpec extends UnitViewSpec with GivenWhenThen with Injector with MockAuthAction {
 
   private val page = instanceOf[confirmation_page]
-  private val externalServicesConfig = instanceOf[ExternalServicesConfig]
   private val submissionId = uuid
 
   private val declarationDetailsRoute = DeclarationDetailsController.displayPage(submissionId).url
-  private def filedUploadRoute(mrn: String): String = FileUploadController.startFileUpload(mrn).url
+
+  checkMessages(
+    "declaration.confirmation.submitted.title",
+    "declaration.confirmation.additionalType",
+    "declaration.confirmation.ducr",
+    "declaration.confirmation.lrn",
+    "declaration.confirmation.mrn",
+    "declaration.confirmation.whatHappensNext",
+    "declaration.confirmation.submitted.whatHappensNext.paragraph",
+    "declaration.confirmation.checkDetails.title",
+    "declaration.confirmation.submitted.checkDetails.paragraph",
+    "declaration.confirmation.submitted.checkDetails.link",
+    "declaration.confirmation.checkDetails.link",
+    "declaration.confirmation.actionRequired.title",
+    "declaration.confirmation.actionRequired.warning",
+    "declaration.confirmation.actionRequired.paragraph1",
+    "declaration.confirmation.actionRequired.paragraph2",
+    "declaration.confirmation.pendingNotification.title",
+    "declaration.confirmation.pendingNotification.paragraph1",
+    "declaration.confirmation.pendingNotification.paragraph2",
+    "declaration.confirmation.prelodged",
+    "declaration.confirmation.arrived",
+    "declaration.confirmation.simplified",
+    "declaration.confirmation.eidr"
+  )
 
   private def createView(
     submission: Submission,
@@ -55,11 +73,10 @@ class ConfirmationViewSpec extends UnitViewSpec with GivenWhenThen with Injector
     page(confirmation)(req, messages)
   }
 
-  "Confirmation View" when {
-
-    "status of last received notification is 'RECEIVED'" should {
-      val submission = createSubmission(statuses = Seq(RECEIVED))
-      val view = createView(submission)
+  private def checkSubmittedPageIsCorrect(status: EnhancedStatus, declarationType: AdditionalDeclarationType): Unit =
+    s"status of last received notification is '$status' and dec type is '$declarationType''" should {
+      val submission = createSubmission(statuses = Seq(status))
+      val view = createView(submission, declarationType)
 
       "display the expected panel" in {
         val panels = view.getElementsByClass("govuk-panel")
@@ -69,47 +86,27 @@ class ConfirmationViewSpec extends UnitViewSpec with GivenWhenThen with Injector
 
         And("which should include the expected title")
         children.get(0).tagName mustBe "h1"
-        children.get(0).text mustBe messages("declaration.confirmation.received.title")
+        children.get(0).text mustBe messages("declaration.confirmation.submitted.title")
       }
 
-      displayExpectedTableWithDucrLrnAndMrn(view)
+      displayExpectedTable(view, declarationType, submission.mrn)
 
       "display the expected 'What happens next' section" in {
-        view.getElementsByTag("h2").get(0).text mustBe messages("declaration.confirmation.what.happens.next")
+        view.getElementsByTag("h2").get(0).text mustBe messages("declaration.confirmation.whatHappensNext")
 
-        val paragraph1 = view.getElementsByClass("govuk-body").get(0)
-        paragraph1.text must include("example@example.com")
-        paragraph1.text must include(messages("declaration.confirmation.declaration.details.link"))
-        paragraph1.child(1) must haveHref(declarationDetailsRoute)
-
-        val paragraph2 = view.getElementsByClass("govuk-body").get(1)
-        paragraph2.text mustBe messages("declaration.confirmation.received.next.2", messages("declaration.confirmation.next.2.link"))
-        paragraph2.child(0) must haveHref(appConfig.nationalClearanceHub)
+        val paragraph = view.getElementsByClass("govuk-body").get(0)
+        paragraph.text mustBe messages("declaration.confirmation.submitted.whatHappensNext.paragraph")
       }
 
-      "display the expected 'What can you do now' section" in {
-        view.getElementsByTag("h2").get(1).text mustBe messages("declaration.confirmation.whatYouCanDoNow.heading")
+      "display the expected 'Now check the declaration details page' section" in {
+        view.getElementsByTag("h2").get(1) must containMessage("declaration.confirmation.checkDetails.title")
 
-        And("display paragraph with link to movements on non-GVMS declarations")
-        val paragraph = view.getElementById("non-gvms-paragraph")
-        paragraph must containMessage(
-          "declaration.confirmation.whatYouCanDoNow.nonGvms.paragraph",
-          messages("declaration.confirmation.whatYouCanDoNow.nonGvms.paragraph.link.1"),
-          messages("declaration.confirmation.whatYouCanDoNow.nonGvms.paragraph.link.2")
-        )
-        paragraph.child(0) must haveHref(externalServicesConfig.customsMovementsFrontendUrl)
-        paragraph.child(1) must haveHref(externalServicesConfig.customsMovementsFrontendUrl)
+        view.getElementsByClass("govuk-body").get(1) must containMessage("declaration.confirmation.submitted.checkDetails.paragraph")
 
-        val paragraph1 = view.getElementsByClass("govuk-body").get(3)
-        paragraph1.text mustBe messages("declaration.confirmation.body.2", messages("declaration.confirmation.declaration.details.link"))
-        paragraph1.child(0) must haveHref(declarationDetailsRoute)
-
-        val paragraph2 = view.getElementsByClass("govuk-body").get(4)
-        paragraph2.text mustBe messages(
-          "declaration.confirmation.whatYouCanDoNow.paragraph.2",
-          messages("declaration.confirmation.whatYouCanDoNow.paragraph.2.link")
-        )
-        paragraph2.child(0) must haveHref(filedUploadRoute(notification.mrn))
+        And("display link to declaration details")
+        val link = view.getElementsByClass("govuk-link").get(3)
+        link must containMessage("declaration.confirmation.submitted.checkDetails.link")
+        link must haveHref(declarationDetailsRoute)
       }
 
       displayPrintButton(view)
@@ -119,223 +116,135 @@ class ConfirmationViewSpec extends UnitViewSpec with GivenWhenThen with Injector
       }
     }
 
-    Seq(GOODS_ARRIVED, GOODS_ARRIVED_MESSAGE).foreach { enhancedStatus =>
-      s"status of last received notification is '${enhancedStatus}'" should {
+  "Confirmation View" when {
 
-        val submission = createSubmission(statuses = Seq(enhancedStatus))
+    for {
+      status <- Seq(RECEIVED, GOODS_ARRIVED_MESSAGE, GOODS_ARRIVED)
+      declarationType <- allAdditionalDeclarationTypes
+    } checkSubmittedPageIsCorrect(status, declarationType)
+
+    List(STANDARD_FRONTIER, SIMPLIFIED_FRONTIER, OCCASIONAL_FRONTIER, CLEARANCE_FRONTIER).foreach { declarationType =>
+      checkSubmittedPageIsCorrect(CLEARED, declarationType)
+    }
+
+    Seq(UNDERGOING_PHYSICAL_CHECK, ADDITIONAL_DOCUMENTS_REQUIRED).foreach { enhancedStatus =>
+      s"status of last received notification is '${enhancedStatus}'" should {
+        val submission = createSubmission(statuses = Seq(enhancedStatus), specifiedMrn = None)
         val view = createView(submission)
 
         "display the expected panel" in {
           val panels = view.getElementsByClass("govuk-panel")
           panels.size mustBe 1
 
+          panels.attr("style") mustBe "background: #f3f2f1; color: #0b0c0c;"
+
           val children = panels.get(0).children
 
           And("which should include the expected title")
           children.get(0).tagName mustBe "h1"
-          children.get(0).text mustBe messages("declaration.confirmation.accepted.title")
+          children.get(0).text mustBe messages("declaration.confirmation.actionRequired.title")
         }
 
-        displayExpectedTableWithDucrLrnAndMrn(view)
+        displayExpectedTable(view, STANDARD_FRONTIER, submission.mrn)
 
-        "display the expected paragraph" in {
-          val paragraph = view.getElementsByClass("govuk-body").get(0)
-          paragraph.text mustBe messages("declaration.confirmation.body.2", messages("declaration.confirmation.declaration.details.link"))
-          paragraph.child(0) must haveHref(declarationDetailsRoute)
+        "display the 'WHat happens next' heading" in {
+          view.getElementsByTag("h2").get(0).text mustBe messages("declaration.confirmation.whatHappensNext")
         }
 
-        "display the expected 'What happens next' section" in {
-          view.getElementsByTag("h2").get(0).text mustBe messages("declaration.confirmation.what.happens.next")
-
-          val paragraph1 = view.getElementsByClass("govuk-body").get(1)
-          paragraph1.text must include("example@example.com")
-          paragraph1.text must include(messages("declaration.confirmation.declaration.details.link"))
-          paragraph1.child(1) must haveHref(declarationDetailsRoute)
-
-          val paragraph2 = view.getElementsByClass("govuk-body").get(2)
-          paragraph2.text mustBe messages(
-            "declaration.confirmation.accepted.next.2",
-            formatTimeDate(submission.enhancedStatusLastUpdated.getOrElse(ZonedDateTime.now(ZoneOffset.UTC))),
-            messages("declaration.confirmation.next.2.link")
-          )
-          paragraph2.child(0) must haveHref(appConfig.nationalClearanceHub)
+        "display the expected warning paragraph" in {
+          val expectedText = s"! ${messages("site.warning")} ${messages("declaration.confirmation.actionRequired.warning")}"
+          view.getElementsByClass("govuk-warning-text").get(0).text mustBe expectedText
         }
 
-        "display the expected 'What can you do now' section" in {
-          view.getElementsByTag("h2").get(1).text mustBe messages("declaration.confirmation.whatYouCanDoNow.heading")
+        "display the expected first and second body paragraphs" in {
+          val para1 = view.getElementsByClass("govuk-body").get(0).text
+          val para2 = view.getElementsByClass("govuk-body").get(1).text
+          para1 mustBe messages("declaration.confirmation.actionRequired.paragraph1")
+          para2 mustBe messages("declaration.confirmation.actionRequired.paragraph2")
+        }
 
-          And("display paragraph with link to movements on non-GVMS declarations")
-          val paragraph = view.getElementById("non-gvms-paragraph")
-          paragraph must containMessage(
-            "declaration.confirmation.whatYouCanDoNow.nonGvms.paragraph",
-            messages("declaration.confirmation.whatYouCanDoNow.nonGvms.paragraph.link.1"),
-            messages("declaration.confirmation.whatYouCanDoNow.nonGvms.paragraph.link.2")
-          )
-          paragraph.child(0) must haveHref(externalServicesConfig.customsMovementsFrontendUrl)
-          paragraph.child(1) must haveHref(externalServicesConfig.customsMovementsFrontendUrl)
+        "display the expected link" in {
+          val link = view.getElementsByClass("govuk-link").get(3)
+          link must containMessage("declaration.confirmation.checkDetails.link")
+          link must haveHref(declarationDetailsRoute)
         }
 
         displayPrintButton(view)
 
         "display the expected 'Tell us what you think' section" in {
-          view.getElementsByTag("h2").get(2).text mustBe messages("declaration.exitSurvey.header")
-        }
-      }
-    }
-
-    Seq(UNDERGOING_PHYSICAL_CHECK, ADDITIONAL_DOCUMENTS_REQUIRED).foreach { enhancedStatus =>
-      s"status of last received notification is '${enhancedStatus}'" should {
-        val submission = createSubmission(statuses = Seq(enhancedStatus))
-        val view = createView(submission)
-
-        "display the expected title" in {
-          view.getElementsByTag("h1").text mustBe messages("declaration.confirmation.needsDocument.title")
-        }
-
-        "display the expected warning paragraph" in {
-          val expectedText = s"! ${messages("site.warning")} ${messages("declaration.confirmation.needsDocument.warning")}"
-          view.getElementsByClass("govuk-warning-text").get(0).text mustBe expectedText
-        }
-
-        "display the expected first body paragraph when DUCR and LRN have been defined" in {
-          val text = view.getElementsByClass("govuk-body").get(0).text
-          text mustBe messages(
-            "declaration.confirmation.body.1",
-            s" ${messages("declaration.confirmation.body.1.ducr", ducr)}",
-            s" ${messages("declaration.confirmation.body.1.lrn", lrn)}",
-            mrn
-          )
-        }
-
-        "display the expected first body paragraph when DUCR have NOT been defined" in {
-          val view = createView(submission.copy(ducr = None))
-          val text = view.getElementsByClass("govuk-body").get(0).text
-          text mustBe messages("declaration.confirmation.body.1", "", s" ${messages("declaration.confirmation.body.1.lrn", lrn)}", mrn)
-        }
-
-        "display the expected second body paragraph" in {
-          val paragraph = view.getElementsByClass("govuk-body").get(1)
-          paragraph.text mustBe messages(
-            "declaration.confirmation.needsDocument.body.2",
-            messages("declaration.confirmation.declaration.details.link")
-          )
-          paragraph.child(0) must haveHref(declarationDetailsRoute)
-        }
-      }
-    }
-
-    "status of last received notification is 'CLEARED' and" when {
-      List(STANDARD_FRONTIER, SIMPLIFIED_FRONTIER, OCCASIONAL_FRONTIER, CLEARANCE_FRONTIER).foreach { declarationType =>
-        s"the additional declaration type is $declarationType" should {
-          val submission = createSubmission(statuses = Seq(CLEARED))
-          val view = createView(submission, declarationType)
-
-          "display the expected panel" in {
-            val panels = view.getElementsByClass("govuk-panel")
-            panels.size mustBe 1
-
-            val children = panels.get(0).children
-
-            And("which should include the expected title")
-            children.get(0).tagName mustBe "h1"
-            children.get(0).text mustBe messages("declaration.confirmation.cleared.title")
-          }
-
-          displayExpectedTableWithDucrLrnAndMrn(view)
-
-          "display the expected 'What you can do now' section" in {
-            view.getElementsByTag("h2").get(0).text mustBe messages("declaration.confirmation.whatYouCanDoNow.heading")
-
-            And("display paragraph with link to movements on non-GVMS declarations")
-            val paragraph = view.getElementById("non-gvms-paragraph")
-            paragraph must containMessage(
-              "declaration.confirmation.whatYouCanDoNow.nonGvms.paragraph",
-              messages("declaration.confirmation.whatYouCanDoNow.nonGvms.paragraph.link.1"),
-              messages("declaration.confirmation.whatYouCanDoNow.nonGvms.paragraph.link.2")
-            )
-            paragraph.child(0) must haveHref(externalServicesConfig.customsMovementsFrontendUrl)
-            paragraph.child(1) must haveHref(externalServicesConfig.customsMovementsFrontendUrl)
-
-            val paragraph1 = view.getElementsByClass("govuk-body").get(1)
-            paragraph1 must containMessage("declaration.confirmation.cleared.body.1", messages("declaration.confirmation.declaration.details.link"))
-            paragraph1.child(0) must haveHref(declarationDetailsRoute)
-
-            val paragraph2 = view.getElementsByClass("govuk-body").get(2)
-            paragraph2.text mustBe messages("declaration.confirmation.cleared.body.2")
-          }
-
-          displayPrintButton(view)
-
-          "display the expected 'Tell us what you think' section" in {
-            view.getElementsByTag("h2").get(1).text mustBe messages("declaration.exitSurvey.header")
-          }
+          view.getElementsByTag("h2").get(1).text mustBe messages("declaration.exitSurvey.header")
         }
       }
     }
 
     "no notification has been received yet" should {
-      val view = createView(createSubmission(statuses = Seq.empty[EnhancedStatus]))
+      val view = createView(createSubmission(statuses = Seq.empty[EnhancedStatus], specifiedMrn = None))
 
       "display the expected title" in {
-        view.getElementsByTag("h1").text mustBe messages("declaration.confirmation.other.title")
+        view.getElementsByTag("h1").text mustBe messages("declaration.confirmation.pendingNotification.title")
       }
 
-      "display the expected first body paragraph when DUCR and LRN have been defined" in {
-        val paragraph = view.getElementsByClass("govuk-body").get(0)
-        paragraph.text mustBe messages(
-          "declaration.confirmation.other.body.1",
-          s" ${messages("declaration.confirmation.body.1.ducr", ducr)}",
-          s" ${messages("declaration.confirmation.body.1.lrn", lrn)}",
-          messages("declaration.confirmation.other.body.1.link")
-        )
-        paragraph.child(2) must haveHref(toDashboard.url)
+      "display the expected panel" in {
+        val panels = view.getElementsByClass("govuk-panel")
+        panels.size mustBe 1
+
+        panels.attr("style") mustBe "background: #f3f2f1; color: #0b0c0c;"
+
+        val children = panels.get(0).children
+
+        And("which should include the expected title")
+        children.get(0).tagName mustBe "h1"
+        children.get(0).text mustBe messages("declaration.confirmation.pendingNotification.title")
       }
 
-      "display the expected first body paragraph when DUCR have NOT been defined" in {
-        val view = createView(submission.copy(ducr = None))
-        val paragraph = view.getElementsByClass("govuk-body").get(0)
-        paragraph.text mustBe messages(
-          "declaration.confirmation.other.body.1",
-          "",
-          s" ${messages("declaration.confirmation.body.1.lrn", lrn)}",
-          messages("declaration.confirmation.other.body.1.link")
-        )
-        paragraph.child(1) must haveHref(toDashboard.url)
+      displayExpectedTable(view, STANDARD_FRONTIER, None)
+
+      "display the 'WHat happens next' heading" in {
+        view.getElementsByTag("h2").get(0).text mustBe messages("declaration.confirmation.whatHappensNext")
       }
 
-      "display the expected second body paragraph" in {
-        val text = view.getElementsByClass("govuk-body").get(1).text
-        text mustBe messages("declaration.confirmation.other.body.2")
+      "display the expected first and second body paragraphs" in {
+        val para1 = view.getElementsByClass("govuk-body").get(0).text
+        val para2 = view.getElementsByClass("govuk-body").get(1).text
+        para1 mustBe messages("declaration.confirmation.pendingNotification.paragraph1")
+        para2 mustBe messages("declaration.confirmation.pendingNotification.paragraph2")
       }
-    }
 
-    "Goods location code indicates a GVMS declaration" should {
-      Seq(GOODS_ARRIVED, GOODS_ARRIVED_MESSAGE, RECEIVED, CLEARED).foreach { status =>
-        val submission = createSubmission(statuses = Seq(status))
-        val view = createView(submission, goodsLocationCode = Some("goodsLocationCodeGVM"))
+      "display the expected link" in {
+        val link = view.getElementsByClass("govuk-link").get(3)
+        link must containMessage("declaration.confirmation.checkDetails.link")
+        link must haveHref(declarationDetailsRoute)
+      }
 
-        s"not display the non GVMS paragraph on status $status" in {
-          Option(view.getElementById("non-gvms-paragraph")) mustBe empty
-        }
+      displayPrintButton(view)
+
+      "display the expected 'Tell us what you think' section" in {
+        view.getElementsByTag("h2").get(1).text mustBe messages("declaration.exitSurvey.header")
       }
     }
   }
 
-  private def displayExpectedTableWithDucrLrnAndMrn(view: Document): Unit =
-    "display expected table when MRN, LRN and DUCR are defined" in {
+  private def displayExpectedTable(view: Document, declarationType: AdditionalDeclarationType, maybeMrn: Option[String]): Unit =
+    "display expected table when dec type, MRN, LRN and DUCR are defined" in {
       val table = view.getElementsByClass("govuk-table").first()
 
       val rows = table.getElementsByClass("govuk-table__row")
-      rows.size mustBe 3
+      if (maybeMrn.isDefined) rows.size mustBe 4
+      else rows.size mustBe 3
 
-      rows.get(0).children().get(0) must containMessage("declaration.confirmation.ducr")
-      rows.get(0).children().get(1) must containText(ducr)
+      rows.get(0).children().get(0) must containMessage("declaration.confirmation.additionalType")
+      rows.get(0).children().get(1) must containMessage(s"${getConfirmationPageMessageKey(declarationType.toString)}")
 
-      rows.get(1).children().get(0) must containMessage("declaration.confirmation.lrn")
-      rows.get(1).children().get(1) must containText(lrn)
+      rows.get(1).children().get(0) must containMessage("declaration.confirmation.ducr")
+      rows.get(1).children().get(1) must containText(ducr)
 
-      rows.get(2).children().get(0) must containMessage("declaration.confirmation.mrn")
-      rows.get(2).children().get(1) must containText(mrn)
+      rows.get(2).children().get(0) must containMessage("declaration.confirmation.lrn")
+      rows.get(2).children().get(1) must containText(lrn)
+
+      if (maybeMrn.isDefined) {
+        rows.get(3).children().get(0) must containMessage("declaration.confirmation.mrn")
+        rows.get(3).children().get(1) must containText(mrn)
+      }
     }
 
   private def displayPrintButton(view: Document): Unit =
