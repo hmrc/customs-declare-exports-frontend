@@ -418,6 +418,8 @@ notDeclarent.reference.support = If you are having problems making a declaration
 notDeclarent.reference.openingHours = Open 8am to 6pm, Monday to Friday (closed bank holidays).
 
 declaration.ducr.choice.title = Do you have a Declaration Unique Consignment Reference Number (DUCR)?
+declaration.ducr.banner.title =Important: about the DUCR
+declaration.ducr.banner.content = A Declaration Unique Consignment Reference (DUCR) is a unique reference used by customs to identify a specific goods item intended for import or export.
 declaration.ducr.choice.answer.no = No, I would like to create a DUCR
 declaration.ducr.choice.answer.empty = Select if you would like to create a DUCR
 

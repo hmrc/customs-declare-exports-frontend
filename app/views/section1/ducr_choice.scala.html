@@ -31,6 +31,7 @@
     sectionHeader: sectionHeader,
     heading: heading,
     paragraphBody: paragraphBody,
+    notificationBanner: notificationBanner,
     yesNoRadios: yesNoRadios,
     saveButtons: saveButtons,
     tariffExpander: tariffExpander,
@@ -50,6 +51,12 @@
 ) {
     @formHelper(action = routes.DucrChoiceController.submitForm, 'autoComplete -> "off") {
         @errorSummary(yesNoErrors(form.errors))
+
+    @notificationBanner(
+        title = messages("declaration.ducr.banner.title"),
+        content = paragraphBody(messages("declaration.ducr.banner.content"
+    )))
+
 
         @sectionHeader(messages("declaration.section.1"))
 
