@@ -434,6 +434,8 @@ declaration.ducrEntry.ducr.inset.1 = Peidiwch â defnyddio’r un DUCR ar gyfer 
 declaration.ducrEntry.ducr.error.empty = Nodwch Ddatganiad o Gyfeirnod Unigryw y Llwyth (DUCR)
 declaration.ducrEntry.ducr.error.invalid = Mae’n rhaid i’r Datganiad o Gyfeirnod Unigryw y Llwyth (DUCR) fod yn y fformat cywir
 
+declaration.lrn.banner.title = Pwysig: ynglŷn â’r Cyfeirnod Lleol (LRN)
+declaration.lrn.banner.content = Mae’r LRN yn gyfeirnod unigryw a grëwyd gennych chi.  Mae pob datganiad yn gofyn am LRN.  Fe’i defnyddir gan CThEF i nodi eich llwyth.
 declaration.lrn.header = Creu Cyfeirnod Lleol (LRN)
 declaration.lrn.body = Gall hwn fod hyd at 22 o lythrennau a rhifau a gall fod yn unrhyw beth a hoffech. Diben y cyfeirnod yw ei gwneud hi’n hawdd adnabod y datganiad hwn, er enghraifft drwy ddefnyddio enw derbynnydd neu gleient.
 declaration.lrn.hint = Er enghraifft, SMITH 8FED ION ALLWEDD.

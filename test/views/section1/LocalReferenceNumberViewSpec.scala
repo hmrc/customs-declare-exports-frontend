@@ -83,6 +83,16 @@ class LocalReferenceNumberViewSpec extends PageWithButtonsSpec with Injector {
       }
     }
 
+    "display the expected notification banner" in {
+      val banner = view.getElementsByClass("govuk-notification-banner").get(0)
+
+      val title = banner.getElementsByClass("govuk-notification-banner__title").text
+      title mustBe messages("declaration.lrn.banner.title")
+
+      val content = banner.getElementsByClass("govuk-notification-banner__content").get(0)
+      content.text mustBe messages("declaration.lrn.banner.content")
+    }
+
     "display page title" in {
       val h1 = view.getElementById("title")
       h1.text mustBe messages("declaration.lrn.header")

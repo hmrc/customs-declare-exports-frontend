@@ -439,6 +439,8 @@ declaration.ducrEntry.ducr.inset.1 = Do not use the same DUCR for different decl
 declaration.ducrEntry.ducr.error.empty = Enter a Declaration Unique Consignment Reference (DUCR)
 declaration.ducrEntry.ducr.error.invalid = Declaration Unique Consignment Reference (DUCR) must be in the correct format
 
+declaration.lrn.banner.title = Important: about the Local Reference Number (LRN)
+declaration.lrn.banner.content = The LRN is a unique reference number created by you. Each declaration requires a separate LRN. It is used by HMRC to identify your consignment.
 declaration.lrn.header = Create a Local Reference Number (LRN)
 declaration.lrn.body = This can be up to 22 letters and numbers and can be anything you like. Its purpose is to make this declaration easy to recognize, for example by using the name of a consignee or client.
 declaration.lrn.hint = For example, SMITH 8TH JAN KEYRINGS.

@@ -33,6 +33,7 @@
     saveButtons: saveButtons,
     tariffExpander: tariffExpander,
     paragraphBody: paragraphBody,
+    notificationBanner: notificationBanner,
     insetText: exportsInsetText,
     inputWithTitleAsLabel: inputWithTitleAsLabel,
     formHelper: FormWithCSRF,
@@ -56,14 +57,18 @@
     @formHelper(action = LocalReferenceNumberController.submitForm, 'autoComplete -> "off") {
         @errorSummary(form.errors)
 
+        @notificationBanner(
+        title = messages("declaration.lrn.banner.title"),
+        content = paragraphBody(messages("declaration.lrn.banner.content"
+        )))
+
+
         @sectionHeader(messages("declaration.section.1"))
 
         @inputWithTitleAsLabel(
           h1 = "declaration.lrn.header", body, field = form("lrn"),
           hint = Some(paragraphBody(messages("declaration.lrn.hint"), "govuk-hint"))
         )
-
-        @tariffExpander(Lrn, request.declarationType)(messages, appConfig)
 
         @saveButtons(showExitButton = false)
     }
