@@ -484,13 +484,20 @@ declaration.consignmentReferences.supplementary.eidr.hint1 = Enter the date the 
 declaration.consignmentReferences.supplementary.eidr.error.empty = Enter the date of the EIDR
 declaration.consignmentReferences.supplementary.eidr.error.invalid = Enter the yyyymmdd code in the correct format
 
-declaration.traderReference.title = Enter a reference
-declaration.traderReference.body = This part of the DUCR is limited to 19 numbers, upper case letters, brackets and forward slashes. You can use whatever you like as a reference and this will provide an audit trail in your commercial records.
+declaration.traderReference.title = Enter a trader reference
+declaration.traderReference.body = This component of the DUCR is restricted to 19 numbers, upper case letters, brackets and forward slashes. You can use whatever you like as a reference and this will provide an audit trail in your commercial records.
 declaration.traderReference.hintText = For example, INVOICE123/4
 declaration.traderReference.expander.content = For details about the DUCR number, go to {0} (opens in a new tab).
 declaration.traderReference.expander.content.link = Data Element 2/4 - Reference Number / UCR
 declaration.traderReference.error.invalid = Your reference must be in the correct format.
 declaration.traderReference.error.empty = Enter a trader reference.
+declaration.ducr.expander.title = Understand the format of a DUCR
+declaration.ducr.expander.paragraph = A DUCR is made up of these parts
+declaration.ducr.expander.bullet1 = last number of the current year
+declaration.ducr.expander.bullet2 = GB
+declaration.ducr.expander.bullet3 = a EORI number(12 numbers only)
+declaration.ducr.expander.bullet4 = a hyphen(after the EORI number)
+declaration.ducr.expander.bullet5 = a trader reference of up to 19 character(with numbers and letters all in capitals)
 
 declaration.confirmDucr.title = Do you want to use this DUCR?
 declaration.confirmDucr.row.ducr = DUCR

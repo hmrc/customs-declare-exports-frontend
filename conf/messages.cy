@@ -479,13 +479,21 @@ declaration.consignmentReferences.supplementary.eidr.hint1 = Nodwch ddyddiad rhy
 declaration.consignmentReferences.supplementary.eidr.error.empty = Nodwch ddyddiad yr EIDR
 declaration.consignmentReferences.supplementary.eidr.error.invalid = Nodwch y cod bbbbmmdd yn y fformat cywir
 
-declaration.traderReference.title = Nodwch gyfeirnod
-declaration.traderReference.body = Mae’r rhan hon o’r DUCR wedi’i chyfyngu i hyd at 19 o rifau, priflythrennau, cromfachau a blaenslaesys. Gallwch ddefnyddio unrhyw beth a hoffech fel cyfeirnod, a bydd hyn yn rhoi llwybr archwilio yn eich cofnodion masnachol.
+declaration.traderReference.title = Nodwch gyfeirnod masnachwr
+declaration.traderReference.body = Mae’r elfen hon o’r DUCR wedi’i chyfyngu i 19 o rifau, priflythrennau, cromfachau a blaenslaesys. Gallwch ddefnyddio unrhyw beth a hoffech fel cyfeirnod, a bydd hyn yn rhoi llwybr archwilio yn eich cofnodion masnachol.
 declaration.traderReference.hintText = Er enghraifft, INVOICE123/4
 declaration.traderReference.expander.content = I gael manylion am y DUCR, ewch i {0} (yn agor tab newydd).
 declaration.traderReference.expander.content.link = Elfen Ddata 2/4 - Cyfeirnod / UCR
 declaration.traderReference.error.invalid = Mae’n rhaid i’ch cyfeirnod fod yn y fformat cywir.
 declaration.traderReference.error.empty = Nodwch gyfeirnod masnachwr.
+
+declaration.ducr.expander.title  = Deall fformat DUCR:
+declaration.ducr.expander.paragraph  = Mae DUCR yn cynnwys y rhannau hyn:
+declaration.ducr.expander.bullet1 = rhif olaf y flwyddyn bresennol
+declaration.ducr.expander.bullet2 = GB
+declaration.ducr.expander.bullet3 = rhif EORI (12 rhif yn unig)
+declaration.ducr.expander.bullet4 = cysylltnod (ar ôl y rhif EORI)
+declaration.ducr.expander.bullet5 = cyfeirnod masnachwr hyd at 19 o gymeriadau (gan gynnwys rhifau a phriflythrennau)
 
 declaration.confirmDucr.title = A ydych am ddefnyddio’r DUCR hwn?
 declaration.confirmDucr.row.ducr = DUCR
