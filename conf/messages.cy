@@ -2246,7 +2246,6 @@ declaration.confirmation.checkDetails.title = Nawr gwiriwch dudalen statws y dat
 declaration.confirmation.checkDetails.link = Gwiriwch y dudalen sy’n dangos manylion y datganiad
 
 declaration.confirmation.submitted.checkDetails.paragraph = Mae’n bosibl y bydd yn dal i fod angen i chi gywiro unrhyw wallau neu uwchlwytho dogfen sydd ar goll.
-declaration.confirmation.submitted.checkDetails.link = Gwiriwch y dudalen sy’n dangos manylion y datganiad
 
 declaration.confirmation.pendingNotification.title = Mae’ch datganiad sydd wedi ei gyflwyno yn dal i gael ei wirio
 declaration.confirmation.pendingNotification.paragraph1 = Mae’n cymryd mwy o amser nag arfer i wirio’ch datganiad. Caniatewch ychydig o funudau i’r gwiriad gael ei gwblhau.
