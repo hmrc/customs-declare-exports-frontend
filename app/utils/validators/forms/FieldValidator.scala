@@ -46,7 +46,6 @@ object FieldValidator {
 
   private val allowedSpecialChars = Set(',', '.', '-', '\'', '/', ' ')
   private val allowedNewLineChars = Set('\r', '\n')
-  private val allowedHyphenChar = Set('-')
 
   val isSome: Option[_] => Boolean = _.nonEmpty
 
@@ -66,8 +65,6 @@ object FieldValidator {
 
   val hasSpecificLength: Int => String => Boolean = (length: Int) => (input: String) => input.length == length
 
-  val hasSpecificLengths: Seq[Int] => String => Boolean = (lengths: Seq[Int]) => (input: String) => lengths.contains(input.length)
-
   val lengthInRange: Int => Int => String => Boolean = (min: Int) => (max: Int) => (input: String) => input.length >= min && input.length <= max
 
   val isInRange: (Int, Int) => Int => Boolean = (min: Int, max: Int) => (input: Int) => input >= min && input <= max
@@ -82,8 +79,6 @@ object FieldValidator {
 
   val isNotAlphanumericWithSpace: String => Boolean = (input: String) => !isAlphanumericWithSpace(input)
 
-  val isNotAlphanumeric: String => Boolean = (input: String) => !isAlphanumeric(input)
-
   val isAlphanumericWithSpace: String => Boolean = (input: String) => isAlphanumericWithSpecialCharacters(Set(' '))(input)
 
   val isAlphanumericWithSpaceAndHyphen: String => Boolean = (input: String) => isAlphanumericWithSpecialCharacters(Set(' ', '-'))(input)
@@ -92,8 +87,6 @@ object FieldValidator {
     isAlphanumericWithSpecialCharacters(Set(' ', '\'', ',', '-', '&', '.', ',', '/', '(', ')'))(input)
 
   val isValidFieldForAddresses: String => Boolean = (input: String) => isAlphanumericWithSpecialCharacters(Set(' ', '\'', ',', '-', '&'))(input)
-
-  val isValidMucr: String => Boolean = (input: String) => isAlphanumericWithSpecialCharacters(Set('/', '-', ':'))(input)
 
   val isAlphanumericWithSpecialCharacters: Set[Char] => String => Boolean = (allowedChars: Set[Char]) =>
     (input: String) => input.filter(!_.isLetterOrDigit).forall(allowedChars)
@@ -110,8 +103,6 @@ object FieldValidator {
     input
       .filter(!_.isLetterOrDigit)
       .forall(allowedSpecialChars ++ allowedNewLineChars)
-
-  val isAlphanumericWithAllowedHyphenCharacter: String => Boolean = (input: String) => input.filter(!_.isLetterOrDigit).forall(allowedHyphenChar)
 
   val startsWithCapitalLetter: String => Boolean = (input: String) => input.headOption.exists(_.isUpper)
 

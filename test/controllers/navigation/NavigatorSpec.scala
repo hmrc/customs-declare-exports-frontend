@@ -190,7 +190,7 @@ class NavigatorSpec
 
     "preserve any Flash Data" when {
       "continueTo method is invoked when in error-fix mode" in {
-        val flash = Map(FlashKeys.fieldName -> "Some name", FlashKeys.errorMessage -> "Some message")
+        val flash = Map(FlashKeys.errorMessage -> "Some message")
         val request = requestWithFormAction(Some(Unknown), true).withFlash(flash.toList: _*)
         val result = navigator.continueTo(call)(decoratedRequest(request)(aDeclaration()))
         result.newFlash mustBe Some(Flash(flash))

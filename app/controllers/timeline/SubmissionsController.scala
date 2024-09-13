@@ -31,7 +31,6 @@ import play.api.Logging
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import services.cache.ExportsCacheService
-import services.model.FieldNamePointer
 import uk.gov.hmrc.play.bootstrap.binders.RedirectUrl._
 import uk.gov.hmrc.play.bootstrap.binders.{OnlyRelative, RedirectUrl}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
@@ -61,14 +60,9 @@ class SubmissionsController @Inject() (
 
   def amendErrors(rejectedParentId: String, pattern: String, message: String, isAmendment: Boolean, redirectUrl: RedirectUrl): Action[AnyContent] =
     authAndEmailActions.async { implicit request =>
-      val flashData = FieldNamePointer.getFieldName(pattern) match {
-        case Some(name) if message.nonEmpty => Map(FlashKeys.fieldName -> name, FlashKeys.errorMessage -> message)
-        case Some(name)                     => Map(FlashKeys.fieldName -> name)
-        case None if message.nonEmpty       => Map(FlashKeys.errorMessage -> message)
-        case _                              => Map.empty[String, String]
-      }
-
+      val flashData = if (message.nonEmpty) Map(FlashKeys.errorMessage -> message) else Map.empty[String, String]
       val redirect = setErrorFixMode(Redirect(redirectUrl.get(OnlyRelative).url).flashing(Flash(flashData)))
+
       if (isAmendment) findOrCreateDraftForAmendment(rejectedParentId, redirect)
       else findOrCreateDraftForRejection(rejectedParentId, redirect)
     }

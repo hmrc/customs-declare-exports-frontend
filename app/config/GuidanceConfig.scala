@@ -19,7 +19,7 @@ package config
 import javax.inject.Singleton
 
 @Singleton
-class Guidance(
+class GuidanceConfig(
   val addATeamMember: String,
   val additionalDocumentsReferenceCodes: String,
   val additionalDocumentsUnionCodes: String,
@@ -45,9 +45,9 @@ class Guidance(
   val january2022locations: String
 )
 
-object Guidance {
-  def apply(loadConfig: String => String): Guidance =
-    new Guidance(
+object GuidanceConfig {
+  def apply(loadConfig: String => String): GuidanceConfig =
+    new GuidanceConfig(
       addATeamMember = loadConfig("guidance.addATeamMember"),
       additionalDocumentsReferenceCodes = loadConfig("guidance.additionalDocumentsReferenceCodes"),
       additionalDocumentsUnionCodes = loadConfig("guidance.additionalDocumentsUnionCodes"),

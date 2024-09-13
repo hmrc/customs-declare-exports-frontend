@@ -34,12 +34,11 @@ class JourneyRequest[+A](val authenticatedRequest: AuthenticatedRequest[A], val 
   def eori: String = authenticatedRequest.user.eori
 
   def submissionErrors: Seq[FormError] = {
-    val fieldName = flash.get(FlashKeys.fieldName)
     val errorMessage = flash.get(FlashKeys.errorMessage)
 
-    (fieldName, errorMessage) match {
-      case (nameOpt, Some(messageKey)) => Seq(FormError(nameOpt.getOrElse(""), messageKey))
-      case _                           => Seq.empty
+    errorMessage match {
+      case Some(messageKey) => Seq(FormError("", messageKey))
+      case _                => Seq.empty
     }
   }
 }

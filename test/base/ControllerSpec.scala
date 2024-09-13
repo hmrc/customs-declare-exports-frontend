@@ -88,7 +88,7 @@ trait ControllerSpec
 
   protected def postRequestWithSubmissionError: Request[AnyContentAsEmpty.type] =
     FakeRequest("POST", "")
-      .withFlash((FlashKeys.fieldName, submissionField), (FlashKeys.errorMessage, submissionError))
+      .withFlash((FlashKeys.errorMessage, submissionError))
       .withSession(SessionHelper.declarationUuid -> "declaration-id")
       .withCSRFToken
 
@@ -98,13 +98,13 @@ trait ControllerSpec
       .withJsonBody(body)
       .withCSRFToken
 
-  private val submissionField = "some-fieldName"
+  private val submissionField = ""
   private val submissionError = "some error"
   protected val submissionFormError = FormError(submissionField, submissionError)
 
   protected def getRequestWithSubmissionErrors: Request[AnyContentAsEmpty.type] =
     FakeRequest("GET", "")
-      .withFlash((FlashKeys.fieldName, submissionField), (FlashKeys.errorMessage, submissionError))
+      .withFlash((FlashKeys.errorMessage, submissionError))
       .withSession((SessionHelper.declarationUuid -> "declaration-id"))
       .withCSRFToken
 

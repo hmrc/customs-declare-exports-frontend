@@ -100,7 +100,6 @@ class CancellationResultController @Inject() (
       f(submissionId, mrn)
     }
 
-  // TODO: need to refactor to get notificationSummary for submissionUuid
   private def getLatestCancellationNotificationSummary(
     submissionId: String
   )(implicit request: AuthenticatedRequest[_]): Future[Option[NotificationSummary]] =

@@ -22,7 +22,6 @@ import controllers.section5.routes.{AdditionalFiscalReferencesController, Commod
 import forms.section5.AdditionalFiscalReference.countryId
 import forms.section5.FiscalInformation.AllowedFiscalInformationAnswers
 import forms.section5.{AdditionalFiscalReference, AdditionalFiscalReferencesData, FiscalInformation}
-import mock.ItemActionMocks
 import models.DeclarationType.SUPPLEMENTARY
 import models.codes.Country
 import org.mockito.ArgumentCaptor
@@ -38,7 +37,7 @@ import views.html.section5.fiscalInformation.additional_fiscal_reference_add
 import scala.collection.immutable.ListMap
 import scala.concurrent.Future
 
-class AdditionalFiscalReferencesAddControllerSpec extends ControllerSpec with AuditedControllerSpec with ItemActionMocks {
+class AdditionalFiscalReferencesAddControllerSpec extends ControllerSpec with AuditedControllerSpec {
 
   val mockAddPage = mock[additional_fiscal_reference_add]
   val mockCodeListConnector = mock[CodeListConnector]

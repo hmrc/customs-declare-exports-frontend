@@ -138,7 +138,7 @@ class AppConfig @Inject() (
     s"$contactFrontendUrl?service=$contactFrontendServiceId"
   }
 
-  val guidance = Guidance(loadConfig)
+  val guidance = GuidanceConfig(loadConfig)
 
   lazy val declarationsPath = servicesConfig.getConfString(
     "customs-declare-exports.declarations",
