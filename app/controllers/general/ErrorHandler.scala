@@ -40,11 +40,9 @@ class ErrorHandler @Inject() (override val messagesApi: MessagesApi, errorTempla
 
   implicit val ec: ExecutionContext = executionContext
 
-  override def standardErrorTemplate(titleKey: String, headingKey: String, messageKey: String)(
-    implicit requestHeader: RequestHeader
-  ): Future[Html] = {
+  override def standardErrorTemplate(titleKey: String, heading: String, message: String)(implicit requestHeader: RequestHeader): Future[Html] = {
     implicit val request: Request[_] = Request(requestHeader, "")
-    Future.successful(defaultErrorTemplate(titleKey, headingKey, messageKey))
+    Future.successful(defaultErrorTemplate(titleKey, heading, message))
   }
 
   override def resolveError(rh: RequestHeader, ex: Throwable): Future[Result] = {
@@ -57,11 +55,14 @@ class ErrorHandler @Inject() (override val messagesApi: MessagesApi, errorTempla
     Future.successful(result)
   }
 
-  def defaultErrorTemplate(
-    titleKey: String = "global.error.title",
-    headingKey: String = "global.error.heading",
-    messageKey: String = "global.error.message"
-  )(implicit request: Request[_]): Html = errorTemplate(titleKey, headingKey, messageKey)
+  def defaultErrorTemplate(titleKey: String = "global.error.title", heading: String = "", message: String = "")(
+    implicit request: Request[_]
+  ): Html = {
+    lazy val messages = messagesApi.preferred(request).messages
+    val headingText = if (heading.isEmpty) messages("global.error.heading") else heading
+    val messageText = if (message.isEmpty) messages("global.error.message") else message
+    errorTemplate(titleKey, headingText, messageText)
+  }
 
   def badRequest(implicit request: Request[_]): Result =
     BadRequest(defaultErrorTemplate()).withHeaders(CACHE_CONTROL -> "no-cache")

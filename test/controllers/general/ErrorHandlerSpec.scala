@@ -21,12 +21,14 @@ import config.AppConfig
 import controllers.general.routes.UnauthorisedController
 import models.AuthKey.enrolment
 import models.UnauthorisedReason.{UserIsAgent, UserIsNotEnrolled}
-import org.scalatest.OptionValues
-import org.scalatest.concurrent.ScalaFutures.convertScalaFuture
+import org.jsoup.Jsoup
+import org.scalatest.{Assertion, OptionValues}
 import play.api.Configuration
 import play.api.http.Status
+import play.api.i18n.MessagesApi
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import play.twirl.api.Html
 import tools.Stubs
 import uk.gov.hmrc.auth.core.{InsufficientEnrolments, NoActiveSession, UnsupportedAffinityGroup}
 import views.html.general.error_template
@@ -41,21 +43,36 @@ class ErrorHandlerSpec extends UnitWithMocksSpec with Stubs with OptionValues wi
     "urls.loginContinue" -> "http://localhost:6791/customs-declare-exports/choice"
   )
 
-  val errorPage = instanceOf[error_template]
-  val appConfig = instanceOf[AppConfig]
-  val request = FakeRequest("GET", "/foo")
+  private val errorPage = instanceOf[error_template]
+  private val appConfig = instanceOf[AppConfig]
+  private val messagesApi = instanceOf[MessagesApi]
 
-  val errorHandler = new ErrorHandler(stubMessagesApi(), errorPage)(appConfig, global)
+  private val request = FakeRequest("GET", "/foo")
+
+  val errorHandler = new ErrorHandler(messagesApi, errorPage)(appConfig, global)
 
   def urlEncode(value: String): String = URLEncoder.encode(value, "UTF-8")
 
   "ErrorHandler.standardErrorTemplate" should {
-    "include title, heading and message" in {
-      val result = errorHandler.standardErrorTemplate("title", "heading", "message")(request).futureValue.body
 
-      result must include("title")
-      result must include("heading")
-      result must include("message")
+    "include default title, heading and message" in {
+      val html = errorHandler.defaultErrorTemplate()(request)
+      checkView(html, "There is a problem", "There is a problem with a service", "Try again later")
+    }
+
+    "include expected title, heading and message" in {
+      val heading = "Error Title"
+      val message = "Error Message"
+      val html = errorHandler.defaultErrorTemplate("error.unknown", heading, message)(request)
+      checkView(html, "Unknown error", heading, message)
+    }
+
+    def checkView(html: Html, expectedTitle: String, expectedHeading: String, expectedMessage: String): Assertion = {
+      val view = Jsoup.parse(html.body)
+
+      view.getElementsByTag("title").first.text must startWith(expectedTitle)
+      view.getElementsByTag("h1").first.text mustBe expectedHeading
+      view.getElementsByClass("govuk-body").first.text mustBe expectedMessage
     }
   }
 
