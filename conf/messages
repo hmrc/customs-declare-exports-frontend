@@ -2263,7 +2263,6 @@ declaration.confirmation.whatYouCanDoNow.paragraph.2.link = upload the documents
 declaration.confirmation.submitted.title = Your declaration has been submitted
 declaration.confirmation.submitted.whatHappensNext.paragraph = The declaration request is now pending until a check has been carried out. This will take a few minutes.
 declaration.confirmation.submitted.checkDetails.paragraph = You may still need to correct errors or upload a missing document.
-declaration.confirmation.submitted.checkDetails.link = Check the updated declaration details page
 
 declaration.confirmation.checkDetails.title = Now check the declaration status page
 declaration.confirmation.checkDetails.link = Check the declaration details page

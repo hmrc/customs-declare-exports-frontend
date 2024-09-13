@@ -77,11 +77,8 @@ class ConfirmationHelper @Inject() (
     def checkDetails(implicit confirmation: Confirmation, messages: Messages): List[Html] = {
       val title = heading(messages("declaration.confirmation.checkDetails.title"), "govuk-heading-m", "h2")
       val paragraph0 = paragraph(messages("declaration.confirmation.submitted.checkDetails.paragraph"))
-      val link1 = link(
-        text = messages("declaration.confirmation.submitted.checkDetails.link"),
-        call = declarationDetailsRoute,
-        classes = Some("govuk-link govuk-body")
-      )
+      val link1 =
+        link(text = messages("declaration.confirmation.checkDetails.link"), call = declarationDetailsRoute, classes = Some("govuk-link govuk-body"))
 
       List(Some(title), Some(paragraph0), Some(link1)).flatten
     }

@@ -48,7 +48,6 @@ class ConfirmationViewSpec extends UnitViewSpec with GivenWhenThen with Injector
     "declaration.confirmation.submitted.whatHappensNext.paragraph",
     "declaration.confirmation.checkDetails.title",
     "declaration.confirmation.submitted.checkDetails.paragraph",
-    "declaration.confirmation.submitted.checkDetails.link",
     "declaration.confirmation.checkDetails.link",
     "declaration.confirmation.actionRequired.title",
     "declaration.confirmation.actionRequired.warning",
@@ -105,7 +104,7 @@ class ConfirmationViewSpec extends UnitViewSpec with GivenWhenThen with Injector
 
         And("display link to declaration details")
         val link = view.getElementsByClass("govuk-link").get(3)
-        link must containMessage("declaration.confirmation.submitted.checkDetails.link")
+        link must containMessage("declaration.confirmation.checkDetails.link")
         link must haveHref(declarationDetailsRoute)
       }
 
