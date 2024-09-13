@@ -977,6 +977,7 @@ declaration.locationOfGoods.title.v7 = Nodwch y cod ar gyfer y safle CSE
 declaration.locationOfGoods.notification.title = Pwysig: ynglŷn â chod lleoliad y nwyddau
 declaration.locationOfGoods.notification.content = Mae ‘cod lleoliad y nwyddau’ yn nodi union leoliad lle mae nwyddau’n mynd i mewn i’r Tollau. Mae’n galluogi’r Tollau i adnabod nwyddau sydd wedi’u datgan, a chynnal gwiriadau ffisegol arnynt.
 declaration.locationOfGoods.yesNo.header = A ydych am chwilio am god lleoliad y nwyddau?
+declaration.locationOfGdeclaration.locationOfGoods.code.search.empty = Dewiswch ‘Iawn’ os ydych am chwilio am god lleoliad y nwyddau
 declaration.locationOfGoods.yesNo.yesKey = Iawn, chwilio yn ôl lleoliad neu god lleoliad y nwyddau
 declaration.locationOfGoods.yesNo.yesHint = Iawn, chwilio yn ôl lleoliad neu god lleoliad y nwyddau
 declaration.locationOfGoods.yesNo.yes.hint = Er enghraifft, bydd chwilio am ‘Grimsby’ yn dangos pob cod lleoliad ar gyfer y nwyddau sy’n gysylltiedig â’r ardal honno.
