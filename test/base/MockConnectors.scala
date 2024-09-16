@@ -33,7 +33,6 @@ import uk.gov.hmrc.http.HeaderCarrier
 import java.time.Instant
 import scala.concurrent.{ExecutionContext, Future}
 
-// TODO This mock should extends BeforeAndAfterEach trait and has methods beforeEach and afterEach
 trait MockConnectors {
   lazy val mockCustomsDeclareExportsConnector: CustomsDeclareExportsConnector = mock[CustomsDeclareExportsConnector]
 

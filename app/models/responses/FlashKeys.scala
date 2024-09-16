@@ -20,5 +20,4 @@ object FlashKeys {
 
   val expiryDate: String = "ExpiryDate"
   val errorMessage: String = "ErrorMessage"
-  val fieldName: String = "FieldName"
 }

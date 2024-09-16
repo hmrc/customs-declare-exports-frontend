@@ -113,8 +113,6 @@ object DiffTools {
 
   type ExportsDeclarationDiff = Seq[AlteredField]
 
-  def toStringForAudit(diff: ExportsDeclarationDiff): String = diff.map(_.toString).mkString("\n")
-
   def compareBooleanDifference(original: Boolean, current: Boolean, pointerString: ExportsFieldPointer): Option[AlteredField] =
     Option.when(!current.compare(original).equals(0))(AlteredField(pointerString, OriginalAndNewValues(Some(original), Some(current))))
 
@@ -211,16 +209,6 @@ object DiffTools {
 
   def combinePointers(parent: ExportsFieldPointer, child: ExportsFieldPointer, childIndex: Option[Int] = None): ExportsFieldPointer =
     s"${combinePointers(parent, childIndex)}.$child"
-
-  def compareSequences[A](seq1: Seq[A], seq2: Seq[A]): Boolean =
-    seq1.size == seq2.size && seq1.zip(seq2).forall { case (x, y) => x == y }
-
-  def removeTrailingSequenceNbr(field: AlteredField): AlteredField =
-    if (field.fieldPointer.nonEmpty && field.fieldPointer.takeRight(1).charAt(0).isDigit) {
-      val lastPeriodIndex = field.fieldPointer.lastIndexOf('.')
-      val dropCount = field.fieldPointer.length - lastPeriodIndex
-      field.copy(fieldPointer = field.fieldPointer.dropRight(dropCount))
-    } else field
 
   def compareOptionalString(optionOne: Option[String], optionTwo: Option[String]): Int =
     (optionOne, optionTwo) match {

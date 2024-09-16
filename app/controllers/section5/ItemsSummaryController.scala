@@ -71,7 +71,6 @@ class ItemsSummaryController @Inject() (
     }
   }
 
-  // TODO Should we add validation for POST without items?
   val submit: Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     request.declarationType match {
       case CLEARANCE =>

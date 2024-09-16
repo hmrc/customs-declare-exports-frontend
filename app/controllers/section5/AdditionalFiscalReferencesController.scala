@@ -16,7 +16,7 @@
 
 package controllers.section5
 
-import controllers.actions.ItemActionBuilder
+import controllers.actions.{AuthAction, JourneyAction}
 import controllers.general.{ModelCacheable, SubmissionErrors}
 import controllers.navigation.Navigator
 import controllers.section5.routes._
@@ -35,14 +35,15 @@ import views.html.section5.fiscalInformation.additional_fiscal_references
 import javax.inject.Inject
 
 class AdditionalFiscalReferencesController @Inject() (
-  itemAction: ItemActionBuilder,
+  authenticate: AuthAction,
+  journeyType: JourneyAction,
   override val exportsCacheService: ExportsCacheService,
   navigator: Navigator,
   mcc: MessagesControllerComponents,
   additionalFiscalReferencesPage: additional_fiscal_references
 ) extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithUnsafeDefaultFormBinding {
 
-  def displayPage(itemId: String): Action[AnyContent] = itemAction(itemId) { implicit request =>
+  def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     if (request.cacheModel.hasFiscalInformation(itemId)) {
       cachedAdditionalReferencesData(itemId, request) match {
         case Some(data) if data.references.nonEmpty =>
@@ -55,7 +56,7 @@ class AdditionalFiscalReferencesController @Inject() (
     } else navigator.continueTo(CommodityDetailsController.displayPage(itemId))
   }
 
-  def submitForm(itemId: String): Action[AnyContent] = itemAction(itemId) { implicit request =>
+  def submitForm(itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     yesNoForm
       .bindFromRequest()
       .fold(
