@@ -171,7 +171,7 @@ class LocationOfGoodsControllerSpec extends ControllerSpec with AuditedControlle
         status(result) mustBe BAD_REQUEST
         verifyNoAudit()
 
-        theResponseForm.errors.head.messages.head mustBe "error.yesNo.required"
+        theResponseForm.errors.head.messages.head mustBe "declaration.locationOfGoods.code.required"
       }
 
       "no location code is entered" in {

@@ -63,7 +63,7 @@ class LocationOfGoodsSpec extends DeclarationPageBaseSpec with BeforeAndAfterEac
 
           form.hasErrors mustBe true
           form.errors.length mustBe 1
-          form.errors.head.message mustBe "error.yesNo.required"
+          form.errors.head.message mustBe "declaration.locationOfGoods.code.required"
         }
 
         "is empty" in {
@@ -91,7 +91,7 @@ class LocationOfGoodsSpec extends DeclarationPageBaseSpec with BeforeAndAfterEac
         }
 
         "is alphanumeric" in {
-          val form = boundedForm(s"${validCode}*")
+          val form = boundedForm(s"$validCode*")
 
           form.hasErrors mustBe true
           form.errors.length mustBe 1
@@ -99,7 +99,7 @@ class LocationOfGoodsSpec extends DeclarationPageBaseSpec with BeforeAndAfterEac
         }
 
         "does not contain a valid country" in {
-          val form = boundedForm(s"XX${validCode}")
+          val form = boundedForm(s"XX$validCode")
 
           form.hasErrors mustBe true
           form.errors.length mustBe 1
@@ -107,7 +107,7 @@ class LocationOfGoodsSpec extends DeclarationPageBaseSpec with BeforeAndAfterEac
         }
 
         "does not contain a valid location type" in {
-          val form = boundedForm(s"GBX${validCode}")
+          val form = boundedForm(s"GBX$validCode")
 
           form.hasErrors mustBe true
           form.errors.length mustBe 1
@@ -115,7 +115,7 @@ class LocationOfGoodsSpec extends DeclarationPageBaseSpec with BeforeAndAfterEac
         }
 
         "does not contain a valid qualifier code" in {
-          val form = boundedForm(s"GBAX${validCode}")
+          val form = boundedForm(s"GBAX$validCode")
 
           form.hasErrors mustBe true
           form.errors.length mustBe 1
@@ -130,7 +130,7 @@ class LocationOfGoodsSpec extends DeclarationPageBaseSpec with BeforeAndAfterEac
     }
 
     "trim white spaces" in {
-      val form = yesNoForm(YesNoAnswers.no, s"\n \t${validCode}\t \n")
+      val form = yesNoForm(YesNoAnswers.no, s"\n \t$validCode\t \n")
       form.value.map(_.code) mustBe Some(validCode)
     }
   }
@@ -151,7 +151,7 @@ class LocationOfGoodsSpec extends DeclarationPageBaseSpec with BeforeAndAfterEac
 
     "trim white spaces" when {
       "the 'Enter a code manually' field is provided with a Code containing spaces" in {
-        val form = radioGroupForm(userChoice, Some(s"\n \t${validCode}\t \n"))
+        val form = radioGroupForm(userChoice, Some(s"\n \t$validCode\t \n"))
         form.value.map(_.code) mustBe Some(validCode)
       }
     }
@@ -201,7 +201,7 @@ class LocationOfGoodsSpec extends DeclarationPageBaseSpec with BeforeAndAfterEac
         }
 
         "is alphanumeric" in {
-          val form = radioGroupForm(userChoice, Some(s"${validCode}*"))
+          val form = radioGroupForm(userChoice, Some(s"$validCode*"))
 
           form.hasErrors mustBe true
           form.errors.length mustBe 1
@@ -209,7 +209,7 @@ class LocationOfGoodsSpec extends DeclarationPageBaseSpec with BeforeAndAfterEac
         }
 
         "does not contain a valid country" in {
-          val form = radioGroupForm(userChoice, Some(s"XX${validCode}"))
+          val form = radioGroupForm(userChoice, Some(s"XX$validCode"))
 
           form.hasErrors mustBe true
           form.errors.length mustBe 1
@@ -217,7 +217,7 @@ class LocationOfGoodsSpec extends DeclarationPageBaseSpec with BeforeAndAfterEac
         }
 
         "does not contain a valid location type" in {
-          val form = radioGroupForm(userChoice, Some(s"GBX${validCode}"))
+          val form = radioGroupForm(userChoice, Some(s"GBX$validCode"))
 
           form.hasErrors mustBe true
           form.errors.length mustBe 1
@@ -225,7 +225,7 @@ class LocationOfGoodsSpec extends DeclarationPageBaseSpec with BeforeAndAfterEac
         }
 
         "does not contain a valid qualifier code" in {
-          val form = radioGroupForm(userChoice, Some(s"GBAX${validCode}"))
+          val form = radioGroupForm(userChoice, Some(s"GBAX$validCode"))
 
           form.hasErrors mustBe true
           form.errors.length mustBe 1
