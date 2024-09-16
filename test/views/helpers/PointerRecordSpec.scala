@@ -62,6 +62,7 @@ class PointerRecordSpec extends UnitViewSpec with ExportsTestHelper with Injecto
       validatePointerValues("declaration.goodsItemQuantity", "1", "1")
       validatePointerValues("declaration.items.$.statisticalValue.statisticalValue", statisticalValue, 0)
       validatePointerValues("declaration.items.$.additionalDocument", None, None, 0)
+      validatePointerValues("declaration.items.$.additionalDocument.documentTypeCode", "1", 0)
       validatePointerValues("declaration.items.$.additionalDocument.$.documentTypeCode", documentTypeCode, 0, 0)
       validatePointerValues("declaration.items.$.additionalDocument.documents.$.documentTypeCode", documentTypeCode, 0, 0)
       validatePointerValues("declaration.items.$.additionalDocument.$.documentIdentifier", documentIdentifier, 0, 0)
