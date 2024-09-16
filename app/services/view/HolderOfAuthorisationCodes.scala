@@ -16,23 +16,20 @@
 
 package services.view
 
-import config.featureFlags.MerchandiseInBagConfig
 import connectors.CodeListConnector
 import forms.section2.authorisationHolder.AuthorisationHolder
-import forms.section2.authorisationHolder.AuthorizationTypeCodes.codesFilteredFromView
 import models.codes.HolderOfAuthorisationCode
 
 import java.util.Locale
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class HolderOfAuthorisationCodes @Inject() (codeListConnector: CodeListConnector, merchandiseInBagConfig: MerchandiseInBagConfig) {
+class HolderOfAuthorisationCodes @Inject() (codeListConnector: CodeListConnector) {
 
   def asListOfAutoCompleteItems(locale: Locale): List[AutoCompleteItem] =
     codeListConnector
       .getHolderOfAuthorisationCodes(locale)
       .values
-      .filterNot(authCode => codesFilteredFromView(merchandiseInBagConfig).contains(authCode.code))
       .map(h => AutoCompleteItem(description(h), h.code))
       .toList
 

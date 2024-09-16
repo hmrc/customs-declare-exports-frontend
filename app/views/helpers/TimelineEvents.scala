@@ -16,7 +16,7 @@
 
 package views.helpers
 
-import config.featureFlags.{DeclarationAmendmentsConfig, SfusConfig}
+import config.SfusConfig
 import controllers.amendments.routes.AmendmentDetailsController
 import controllers.summary.routes.SubmissionController
 import controllers.timeline.routes.RejectedNotificationsController
@@ -58,7 +58,6 @@ class TimelineEvents @Inject() (
   linkButton: linkButton,
   paragraphBody: paragraphBody,
   sfusConfig: SfusConfig,
-  declarationAmendmentsConfig: DeclarationAmendmentsConfig,
   uploadFilesPartialForTimeline: upload_files_partial_for_timeline
 ) extends Logging {
   def apply(submission: Submission, declarationType: AdditionalDeclarationType)(implicit messages: Messages): Seq[TimelineEvent] = {
@@ -91,7 +90,7 @@ class TimelineEvents @Inject() (
             ).toString + viewAmendmentDetails(notificationEvent.actionId, true).toString
           )
 
-        case IndexToMatchForUploadFilesContent if sfusConfig.isSfusUploadEnabled && IndexToMatchForFixResubmitContent < 0 =>
+        case IndexToMatchForUploadFilesContent if IndexToMatchForFixResubmitContent < 0 =>
           uploadFilesContent(submission.mrn, isIndex1Primary(IndexToMatchForUploadFilesContent, IndexToMatchForViewQueriesContent))
 
         case IndexToMatchForViewQueriesContent =>
@@ -152,12 +151,10 @@ class TimelineEvents @Inject() (
     }.sorted
 
     val notificationEvents =
-      if (declarationAmendmentsConfig.isEnabled) {
-        // Filtering out "AMENDED" notifications generated after "external amendments" (not "user amendments"!).
-        allEvents.filterNot { event =>
-          event.requestType == SubmissionRequest && event.notificationSummary.enhancedStatus == AMENDED
-        }
-      } else allEvents.filterNot(_.requestType == ExternalAmendmentRequest)
+      // Filtering out "AMENDED" notifications generated after "external amendments" (not "user amendments"!).
+      allEvents.filterNot { event =>
+        event.requestType == SubmissionRequest && event.notificationSummary.enhancedStatus == AMENDED
+      }
 
     clearedMustBeAfterArrivedOnTimeline(notificationEvents)
   }

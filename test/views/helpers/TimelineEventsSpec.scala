@@ -17,6 +17,7 @@
 package views.helpers
 
 import base.Injector
+import config.SfusConfig
 import controllers.amendments.routes.AmendmentDetailsController
 import controllers.summary.routes.SubmissionController
 import controllers.timeline.routes.RejectedNotificationsController
@@ -43,16 +44,16 @@ class TimelineEventsSpec extends UnitViewSpec with BeforeAndAfterEach with Injec
   private val submission = Submission("id", "eori", "lrn", Some("mrn"), Some("ducr"), None, None, Seq.empty, latestDecId = Some("id"))
   private val uploadFilesPartialForTimeline = instanceOf[upload_files_partial_for_timeline]
 
+  private val mockSfusConfig: SfusConfig = mock[SfusConfig]
+
   override def beforeEach(): Unit = {
     super.beforeEach()
-    when(mockSfusConfig.isSfusUploadEnabled).thenReturn(true)
     when(mockSfusConfig.sfusInboxLink).thenReturn("dummyInboxLink")
   }
 
   private def issued(days: Long = 0): ZonedDateTime = ZonedDateTime.now.plusDays(days)
 
-  private val timelineEvents =
-    new TimelineEvents(new link, new linkButton, new paragraphBody, mockSfusConfig, mockDeclarationAmendmentsConfig, uploadFilesPartialForTimeline)
+  private val timelineEvents = new TimelineEvents(new link, new linkButton, new paragraphBody, mockSfusConfig, uploadFilesPartialForTimeline)
 
   private def genTimelineEvents(
     notificationSummaries: Seq[NotificationSummary],
@@ -274,42 +275,25 @@ class TimelineEventsSpec extends UnitViewSpec with BeforeAndAfterEach with Injec
     }
 
     "generate the expected sequence of TimelineEvent instances" when {
-      "the amendment is external and" when {
-        "the mockDeclarationAmendmentsConfig flag is enabled" in {
-          when(mockDeclarationAmendmentsConfig.isEnabled).thenReturn(true)
-          val timelineEvents = createTimelineFromActions(externalAmendment)
+      "the amendment is external" in {
+        val timelineEvents = createTimelineFromActions(externalAmendment)
 
-          timelineEvents.size mustBe 2
+        timelineEvents.size mustBe 2
 
-          timelineEvents(0).title mustBe messages(s"submission.enhancedStatus.timeline.title.amendment.external")
-          timelineEvents(0).dateTime mustBe externalAmendment(1).requestTimestamp.truncatedTo(SECONDS)
+        timelineEvents(0).title mustBe messages(s"submission.enhancedStatus.timeline.title.amendment.external")
+        timelineEvents(0).dateTime mustBe externalAmendment(1).requestTimestamp.truncatedTo(SECONDS)
 
-          val body = Jsoup.parse(timelineEvents(0).content.value.body).body
+        val body = Jsoup.parse(timelineEvents(0).content.value.body).body
 
-          val paragraph = body.getElementsByTag("p")
-          paragraph.text mustBe messages("submission.enhancedStatus.timeline.content.external.amendment")
+        val paragraph = body.getElementsByTag("p")
+        paragraph.text mustBe messages("submission.enhancedStatus.timeline.content.external.amendment")
 
-          val link = body.getElementsByTag("a")
-          link.text mustBe messages("declaration.details.view.external.amendment.details")
-          link.first.attr("href") mustBe AmendmentDetailsController.displayPage(externalAmendment.last.id).url
+        val link = body.getElementsByTag("a")
+        link.text mustBe messages("declaration.details.view.external.amendment.details")
+        link.first.attr("href") mustBe AmendmentDetailsController.displayPage(externalAmendment.last.id).url
 
-          timelineEvents(1).title mustBe messages(s"submission.enhancedStatus.$RECEIVED")
-          timelineEvents(1).dateTime mustBe externalAmendment(0).requestTimestamp
-        }
-
-        "the mockDeclarationAmendmentsConfig flag is disabled" in {
-          when(mockDeclarationAmendmentsConfig.isEnabled).thenReturn(false)
-          val timelineEvents = createTimelineFromActions(externalAmendment)
-
-          timelineEvents.size mustBe 2
-
-          timelineEvents(0).title mustBe messages(s"submission.enhancedStatus.$AMENDED")
-          timelineEvents(0).dateTime mustBe externalAmendment(0).notifications.get(0).dateTimeIssued
-          timelineEvents(0).content mustBe None
-
-          timelineEvents(1).title mustBe messages(s"submission.enhancedStatus.$RECEIVED")
-          timelineEvents(1).dateTime mustBe externalAmendment(0).requestTimestamp
-        }
+        timelineEvents(1).title mustBe messages(s"submission.enhancedStatus.$RECEIVED")
+        timelineEvents(1).dateTime mustBe externalAmendment(0).requestTimestamp
       }
     }
 
@@ -439,16 +423,6 @@ class TimelineEventsSpec extends UnitViewSpec with BeforeAndAfterEach with Injec
             assert(timelineEvents(0).content.isDefined)
             assert(timelineEvents(1).content.isEmpty)
           }
-        }
-      }
-
-      // Test to remove once the sfus feature flag is gone
-      "do not have 'Documents required' Html content" when {
-        "the 'Sfus' feature flag is disabled" in {
-          when(mockSfusConfig.isSfusUploadEnabled).thenReturn(false)
-          val notification = NotificationSummary(UUID.randomUUID, issued(1), ADDITIONAL_DOCUMENTS_REQUIRED)
-          val timelineEvents = genTimelineEvents(List(notification))
-          assert(timelineEvents(0).content.isEmpty)
         }
       }
     }

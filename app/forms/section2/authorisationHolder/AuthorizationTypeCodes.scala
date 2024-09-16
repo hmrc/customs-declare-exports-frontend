@@ -16,7 +16,6 @@
 
 package forms.section2.authorisationHolder
 
-import config.featureFlags.MerchandiseInBagConfig
 import controllers.helpers.AuthorisationHolderHelper.authorisationHolders
 import models.ExportsDeclaration
 import models.requests.JourneyRequest
@@ -28,10 +27,6 @@ object AuthorizationTypeCodes {
   val FP = "FP"
   val MIB = "MIB"
   val MOU = "MOU"
-
-  def codesFilteredFromView(merchandiseInBagConfig: MerchandiseInBagConfig): List[String] =
-    if (merchandiseInBagConfig.isMerchandiseInBagEnabled) List.empty
-    else List("EORI", MIB)
 
   def isAuthCode(code: String)(implicit request: JourneyRequest[_]): Boolean =
     authorisationHolders.exists(_.authorisationTypeCode.exists(_ == code))

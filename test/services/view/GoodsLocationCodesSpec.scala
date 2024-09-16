@@ -16,7 +16,6 @@
 
 package services.view
 
-import mock.FeatureFlagMocks
 import models.codes.GoodsLocationCode
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -24,7 +23,7 @@ import org.scalatest.BeforeAndAfterEach
 import services.GoodsLocationCodesService
 import views.common.UnitViewSpec
 
-class GoodsLocationCodesSpec extends UnitViewSpec with BeforeAndAfterEach with FeatureFlagMocks {
+class GoodsLocationCodesSpec extends UnitViewSpec with BeforeAndAfterEach {
 
   private lazy val glc = mock[GoodsLocationCodesService]
   private lazy val goodsLocationCodes = new GoodsLocationCodes(glc)

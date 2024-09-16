@@ -17,12 +17,10 @@
 package views.drafts
 
 import base.Injector
-import config.featureFlags.DeclarationAmendmentsConfig
 import controllers.routes.ChoiceController
 import models.declaration.DeclarationStatus.{AMENDMENT_DRAFT, DRAFT}
 import models.{DraftDeclarationData, Page, Paginated}
 import org.jsoup.nodes.Element
-import org.mockito.Mockito.when
 import play.twirl.api.Html
 import play.twirl.api.HtmlFormat.Appendable
 import views.common.UnitViewSpec
@@ -42,8 +40,6 @@ class SavedDeclarationsViewSpec extends UnitViewSpec with Injector {
   val dateSaved: String = "draft.declarations.dateSaved"
 
   val page = instanceOf[saved_declarations]
-
-  val mockAmendmentFlag = mock[DeclarationAmendmentsConfig]
 
   val year = LocalDate.now.getYear
 
@@ -115,8 +111,7 @@ class SavedDeclarationsViewSpec extends UnitViewSpec with Injector {
       view.getElementsByClass("ceds-pagination") mustNot be(empty)
     }
 
-    "display created with Amendment and feature flag on" in {
-      when(mockAmendmentFlag.isEnabled).thenReturn(true)
+    "display created with Amendment" in {
       val view = createView(declarations = List(draftWithoutDucr.copy(status = AMENDMENT_DRAFT)), total = 1)
 
       numberOfTableRows(view) mustBe 1

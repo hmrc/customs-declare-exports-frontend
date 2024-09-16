@@ -19,10 +19,11 @@ package views.common
 import models.DeclarationType.DeclarationType
 import models.requests.JourneyRequest
 import models.requests.SessionHelper.errorFixModeSessionKey
+import org.scalatest.BeforeAndAfterEach
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat.Appendable
 
-trait PageWithButtonsSpec extends UnitViewSpec {
+trait PageWithButtonsSpec extends UnitViewSpec with BeforeAndAfterEach {
 
   val typeAndViewInstance: (DeclarationType, (JourneyRequest[_], Messages) => Appendable)
 

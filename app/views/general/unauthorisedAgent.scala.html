@@ -23,7 +23,7 @@
   paragraphBody: paragraphBody,
 )
 
-@(displaySignOut: Boolean = false)(implicit request: Request[_], messages: Messages)
+@(displaySignOut: Boolean)(implicit request: Request[_], messages: Messages)
 
 @govukLayout(title = Title("unauthorisedAgent.heading"), displaySignOut = displaySignOut) {
 

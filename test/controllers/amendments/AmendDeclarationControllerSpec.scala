@@ -17,7 +17,6 @@
 package controllers.amendments
 
 import base.{ControllerWithoutFormSpec, MockExportCacheService}
-import controllers.general.routes.RootController
 import controllers.summary.routes.SummaryController
 import models.ExportsDeclaration
 import models.declaration.submissions.EnhancedStatus.{EnhancedStatus, PENDING}
@@ -33,41 +32,23 @@ import scala.concurrent.Future
 
 class AmendDeclarationControllerSpec extends ControllerWithoutFormSpec with MockExportCacheService with OptionValues {
 
-  val controller = new AmendDeclarationController(
-    mockAuthAction,
-    mockVerifiedEmailAction,
-    mcc,
-    mockCustomsDeclareExportsConnector,
-    mockExportsCacheService,
-    mockDeclarationAmendmentsConfig
-  )(ec)
+  val controller =
+    new AmendDeclarationController(mockAuthAction, mockVerifiedEmailAction, mcc, mockCustomsDeclareExportsConnector, mockExportsCacheService)(ec)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
 
     authorizedUser()
-    when(mockDeclarationAmendmentsConfig.isEnabled).thenReturn(true)
   }
 
   override protected def afterEach(): Unit = {
     super.afterEach()
-    reset(mockDeclarationAmendmentsConfig, mockCustomsDeclareExportsConnector)
+    reset(mockCustomsDeclareExportsConnector)
   }
 
-  val request = FakeRequest()
+  private val request = FakeRequest()
 
   "AmendDeclarationController.initAmendment" should {
-
-    "redirect to /" when {
-      "the amend flag is disabled" in {
-        when(mockDeclarationAmendmentsConfig.isEnabled).thenReturn(false)
-
-        val result = controller.initAmendment("parentId")(request)
-
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(RootController.displayPage.url)
-      }
-    }
 
     "redirect to /saved-summary" when {
       "a declaration-id is returned by the connector" in {

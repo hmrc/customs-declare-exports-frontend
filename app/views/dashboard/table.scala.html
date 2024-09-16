@@ -14,7 +14,6 @@
  * limitations under the License.
  *@
 
-@import config.featureFlags.DeclarationAmendmentsConfig
 @import models.PageOfSubmissions
 @import models.declaration.submissions.RequestType.SubmissionRequest
 @import models.declaration.submissions.StatusGroup.{StatusGroup, SubmittedStatuses}
@@ -25,7 +24,7 @@
 @import views.helpers.{EnhancedStatusHelper, ViewDates}
 @import views.html.components.gds._
 
-@this(amendmentsConfig: DeclarationAmendmentsConfig, dashboardHelper: DashboardHelper)
+@this(dashboardHelper: DashboardHelper)
 
 @(statusGroup: StatusGroup,
   pageOfSubmissions: PageOfSubmissions,

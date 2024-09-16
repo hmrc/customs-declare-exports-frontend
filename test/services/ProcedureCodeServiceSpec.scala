@@ -18,7 +18,6 @@ package services
 
 import base.UnitWithMocksSpec
 import connectors.{CodeLinkConnector, CodeListConnector}
-import mock.FeatureFlagMocks
 import models.DeclarationType
 import models.codes.{AdditionalProcedureCode, ProcedureCode}
 import org.mockito.ArgumentMatchers.{any, eq => meq}
@@ -30,12 +29,12 @@ import java.util.Locale
 import java.util.Locale.ENGLISH
 import scala.collection.immutable.ListMap
 
-class ProcedureCodeServiceSpec extends UnitWithMocksSpec with BeforeAndAfterEach with FeatureFlagMocks {
+class ProcedureCodeServiceSpec extends UnitWithMocksSpec with BeforeAndAfterEach {
 
   private val codeListConnector = mock[CodeListConnector]
   private val codeLinkConnector = mock[CodeLinkConnector]
 
-  private val service = new ProcedureCodeService(codeListConnector, codeLinkConnector, mockMerchandiseInBagConfig)
+  private val service = new ProcedureCodeService(codeListConnector, codeLinkConnector)
 
   private val nonC21Journeys = DeclarationType.values.filter(_ != DeclarationType.CLEARANCE)
 
@@ -116,23 +115,11 @@ class ProcedureCodeServiceSpec extends UnitWithMocksSpec with BeforeAndAfterEach
   }
 
   "ProcedureCodeService getAdditionalProcedureCodesFor" should {
-    "return list of all valid additional procedure codes for a given procedure code" when {
-      "merchandiseInBag is turned on" in {
 
-        when(mockMerchandiseInBagConfig.isMerchandiseInBagEnabled).thenReturn(true)
-
-        service.getAdditionalProcedureCodesFor(sampleProcedureCode1.code, ENGLISH) must equal(
-          Seq(sampleAdditionalProcedureCode1, sampleAdditionalProcedureCode2, sampleAdditionalProcedureCode1MB)
-        )
-      }
-      "merchandiseInBag is turned off" in {
-
-        when(mockMerchandiseInBagConfig.isMerchandiseInBagEnabled).thenReturn(false)
-
-        service.getAdditionalProcedureCodesFor(sampleProcedureCode1.code, ENGLISH) must equal(
-          Seq(sampleAdditionalProcedureCode1, sampleAdditionalProcedureCode2)
-        )
-      }
+    "return list of all valid additional procedure codes for a given procedure code" in {
+      service.getAdditionalProcedureCodesFor(sampleProcedureCode1.code, ENGLISH) must equal(
+        Seq(sampleAdditionalProcedureCode1, sampleAdditionalProcedureCode2, sampleAdditionalProcedureCode1MB)
+      )
     }
 
     "return list of all valid C21 additional procedure codes for a given C21 procedure code" in {

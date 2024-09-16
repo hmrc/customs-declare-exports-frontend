@@ -20,7 +20,6 @@ import base.ControllerWithoutFormSpec
 import config.AppConfig
 import connectors.CodeListConnector
 import controllers.general.ErrorHandler
-import mock.FeatureFlagMocks
 import models.declaration.notifications.Notification
 import models.declaration.submissions.Action
 import models.requests.SessionHelper.submissionUuid
@@ -40,7 +39,7 @@ import views.html.timeline.errors_reported
 import scala.concurrent.ExecutionContext.global
 import scala.concurrent.Future
 
-class RejectedNotificationsControllerSpec extends ControllerWithoutFormSpec with OptionValues with FeatureFlagMocks {
+class RejectedNotificationsControllerSpec extends ControllerWithoutFormSpec with OptionValues {
 
   private val mockErrorsReportedPage = mock[errors_reported]
   private val mockErrorsReportedHelper = mock[ErrorsReportedHelper]

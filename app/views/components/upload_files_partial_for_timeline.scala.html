@@ -14,11 +14,10 @@
  * limitations under the License.
  *@
 
-@import config.featureFlags.SfusConfig
 @import uk.gov.hmrc.govukfrontend.views.html.components.{Details, GovukDetails, Text}
 @import views.html.components.gds.linkButton
 
-@this(govukDetails : GovukDetails, linkButton: linkButton, sfusConfig: SfusConfig)
+@this(govukDetails : GovukDetails, linkButton: linkButton)
 
 @(mrn: Option[String], isPrimary: Boolean = true)(implicit messages: Messages)
 

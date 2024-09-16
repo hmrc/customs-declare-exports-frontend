@@ -16,7 +16,7 @@
 
 package controllers
 
-import config.featureFlags.SfusConfig
+import config.SfusConfig
 import controllers.actions.AuthAction
 import models.requests.SessionHelper.{getValue, submissionLrn}
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}

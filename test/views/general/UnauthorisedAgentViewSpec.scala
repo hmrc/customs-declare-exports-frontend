@@ -26,7 +26,7 @@ class UnauthorisedAgentViewSpec extends UnitViewSpec with Injector {
 
   val page = instanceOf[unauthorisedAgent]
 
-  val view = page()(request, messages)
+  val view = page(displaySignOut = false)(request, messages)
 
   "UnauthorisedAgent Page view" should {
 

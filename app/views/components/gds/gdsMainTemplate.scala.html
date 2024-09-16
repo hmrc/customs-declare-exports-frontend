@@ -15,7 +15,6 @@
  *@
 
 @import config.{AppConfig, TimeoutDialogConfig}
-@import config.featureFlags.BetaBannerConfig
 @import controllers.general.routes.SignOutController
 @import controllers.routes.Assets
 @import models.requests.AuthenticatedRequest
@@ -40,7 +39,6 @@
     hmrcTimeoutDialogHelper: HmrcTimeoutDialogHelper,
     phaseBanner: phaseBanner,
     timeoutDialogConfig: TimeoutDialogConfig,
-    betaBannerConfig: BetaBannerConfig,
     hmrcReportTechnicalIssue: HmrcReportTechnicalIssueHelper,
     hmrcFooter: HmrcStandardFooter,
     viewDeclarationSummaryLink: viewDeclarationSummaryLink,
@@ -90,7 +88,7 @@
 }
 
 @beforeContentBlock = {
-    @if(betaBannerConfig.isBetaBannerEnabled) {
+    @if(appConfig.isBetaBannerEnabled) {
       @phaseBanner("BETA")
     }
 

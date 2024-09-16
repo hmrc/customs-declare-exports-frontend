@@ -22,7 +22,6 @@ import controllers.section5.routes._
 import controllers.summary.routes.SummaryController
 import controllers.timeline.routes.RejectedNotificationsController
 import forms.section5.{AdditionalInformationRequired, AdditionalInformationSummary}
-import mock.FeatureFlagMocks
 import models.DeclarationType.{STANDARD, SUPPLEMENTARY}
 import models.requests.JourneyRequest
 import models.requests.SessionHelper.{declarationUuid, errorFixModeSessionKey, submissionActionId}
@@ -39,8 +38,8 @@ import java.time.LocalDate
 import scala.concurrent.Future
 
 class NavigatorSpec
-    extends UnitWithMocksSpec with ExportsDeclarationBuilder with FeatureFlagMocks with JourneyTypeTestRunner with MockExportCacheService
-    with MockTaggedCodes with RequestBuilder with ScalaFutures {
+    extends UnitWithMocksSpec with ExportsDeclarationBuilder with JourneyTypeTestRunner with MockExportCacheService with MockTaggedCodes
+    with RequestBuilder with ScalaFutures {
 
   private val url = "url"
   private val call: Call = Call("GET", url)

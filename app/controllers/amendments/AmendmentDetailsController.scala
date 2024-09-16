@@ -17,12 +17,10 @@
 package controllers.amendments
 
 import com.google.inject.Inject
-import config.featureFlags.DeclarationAmendmentsConfig
 import connectors.CustomsDeclareExportsConnector
 import controllers.actions.{AuthAction, VerifiedEmailAction}
-import controllers.helpers.AmendmentHelper
 import controllers.general.ErrorHandler
-import controllers.general.routes.RootController
+import controllers.helpers.AmendmentHelper
 import models.ExportsDeclaration
 import models.declaration.submissions.{Action => ActionOfSubmission, Submission}
 import models.requests.VerifiedEmailRequest
@@ -42,25 +40,22 @@ class AmendmentDetailsController @Inject() (
   connector: CustomsDeclareExportsConnector,
   amendmentDetails: amendment_details,
   unavailableAmendmentDetails: unavailable_amendment_details,
-  declarationAmendmentsConfig: DeclarationAmendmentsConfig,
   amendmentHelper: AmendmentHelper
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with Logging {
 
   def displayPage(actionId: String): Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
-    if (!declarationAmendmentsConfig.isEnabled) Future.successful(Redirect(RootController.displayPage))
-    else
-      connector.findSubmissionByAction(actionId).flatMap {
-        case Some(submission) =>
-          submission.action(actionId).map(displayPage(submission, _)).getOrElse {
-            val msg = s"For the given actionId($actionId) on /amendment-details, the related Submission has not such action??"
-            errorHandler.internalError(msg)
-          }
-
-        case _ =>
-          val msg = s"For the given actionId($actionId) on /amendment-details, the related Submission was not found??"
+    connector.findSubmissionByAction(actionId).flatMap {
+      case Some(submission) =>
+        submission.action(actionId).map(displayPage(submission, _)).getOrElse {
+          val msg = s"For the given actionId($actionId) on /amendment-details, the related Submission has not such action??"
           errorHandler.internalError(msg)
-      }
+        }
+
+      case _ =>
+        val msg = s"For the given actionId($actionId) on /amendment-details, the related Submission was not found??"
+        errorHandler.internalError(msg)
+    }
   }
 
   private def displayPage(submission: Submission, action: ActionOfSubmission)(implicit request: VerifiedEmailRequest[_]): Future[Result] =

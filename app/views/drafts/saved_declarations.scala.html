@@ -14,7 +14,6 @@
  * limitations under the License.
  *@
 
-@import config.featureFlags.DeclarationAmendmentsConfig
 @import controllers.drafts.routes.RemoveDraftDeclarationController
 @import controllers.routes.{ChoiceController, SavedDeclarationsController}
 @import models.declaration.DeclarationStatus.{DeclarationStatus, AMENDMENT_DRAFT}
@@ -24,7 +23,6 @@
 @import views.html.components.gds.{gdsMainTemplate, link, pageTitle, spanVisuallyHidden, paragraphBody}
 
 @this(
-  amendmentFlag: DeclarationAmendmentsConfig,
   govukLayout: gdsMainTemplate,
   pageTitle: pageTitle,
   link: link,
@@ -36,13 +34,13 @@
 @(pageOfDraftDeclarationData: Paginated[DraftDeclarationData])(implicit request: Request[_], messages: Messages)
 
 @amendmentRowContent(status: DeclarationStatus) = @{
-    if (status == AMENDMENT_DRAFT && amendmentFlag.isEnabled) HtmlContent(messages("draft.declarations.amendment"))
+    if (status == AMENDMENT_DRAFT) HtmlContent(messages("draft.declarations.amendment"))
     else HtmlContent(messages("draft.declarations.draft"))
 }
 
 @titleCheck = @{
     val isAmendment = pageOfDraftDeclarationData.currentPageElements.exists(_.status == AMENDMENT_DRAFT)
-    if (isAmendment && amendmentFlag.isEnabled) "draft.declarations.title.amendments" else "draft.declarations.title"
+    if (isAmendment) "draft.declarations.title.amendments" else "draft.declarations.title"
 }
 
 @ducr(data: DraftDeclarationData) = @{ data.ducr.getOrElse(messages("draft.declarations.noDucr")) }

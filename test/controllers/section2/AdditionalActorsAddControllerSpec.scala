@@ -33,7 +33,7 @@ import views.html.section2.additionalActors.additional_actors_add
 
 class AdditionalActorsAddControllerSpec extends ControllerSpec with AuditedControllerSpec with Injector {
 
-  val declarationAdditionalActorsPage = mock[additional_actors_add]
+  private val declarationAdditionalActorsPage = mock[additional_actors_add]
 
   val controller =
     new AdditionalActorsAddController(mockAuthAction, mockJourneyAction, mockExportsCacheService, navigator, mcc, declarationAdditionalActorsPage)(

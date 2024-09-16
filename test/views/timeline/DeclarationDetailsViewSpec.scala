@@ -18,8 +18,7 @@ package views.timeline
 
 import base.ExportsTestData.{eori, newUser}
 import base.{Injector, OverridableInjector, RequestBuilder}
-import config.ExternalServicesConfig
-import config.featureFlags._
+import config.{ExternalServicesConfig, SfusConfig}
 import controllers.amendments.routes.AmendDeclarationController
 import controllers.routes.FileUploadController
 import controllers.summary.routes.SubmissionController
@@ -126,56 +125,42 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
 
   "Declaration details page" should {
 
-    implicit val injector = new OverridableInjector(bind[DeclarationAmendmentsConfig].toInstance(mockDeclarationAmendmentsConfig))
+    implicit val injector = new OverridableInjector()
 
     "contain the 'Amend declaration' link" when {
-      "the 'declarationAmendments' feature flag is enabled and" when {
-        "the declaration has NOT been externally amended" in {
-          when(mockDeclarationAmendmentsConfig.isEnabled).thenReturn(true)
-          val submission = submissionWithStatus(RECEIVED)
-          val view = createView(submission)
+      "the declaration has NOT been externally amended" in {
+        val submission = submissionWithStatus(RECEIVED)
+        val view = createView(submission)
 
-          val amendDeclarationLink = view.getElementById("amend-declaration")
-          amendDeclarationLink must containMessage("declaration.details.amend.declaration")
+        val amendDeclarationLink = view.getElementById("amend-declaration")
+        amendDeclarationLink must containMessage("declaration.details.amend.declaration")
 
-          val parentId = submission.latestDecId.value
-          amendDeclarationLink must haveHref(AmendDeclarationController.initAmendment(parentId))
-        }
+        val parentId = submission.latestDecId.value
+        amendDeclarationLink must haveHref(AmendDeclarationController.initAmendment(parentId))
       }
     }
 
     "contain the 'Amend declaration' link pointing to '/unavailable-actions'" when {
-      "the 'declarationAmendments' feature flag is enabled and" when {
-        "the declaration has been externally amended" in {
-          when(mockDeclarationAmendmentsConfig.isEnabled).thenReturn(true)
+      "the declaration has been externally amended" in {
+        val action = Action("id", ExternalAmendmentRequest, now, None, None, 2)
+        val submission = submissionWithStatus(RECEIVED).copy(actions = Seq(action))
+        val view = createView(submission)
 
-          val action = Action("id", ExternalAmendmentRequest, now, None, None, 2)
-          val submission = submissionWithStatus(RECEIVED).copy(actions = Seq(action))
-          val view = createView(submission)
-
-          val amendDeclarationLink = view.getElementById("amend-declaration")
-          amendDeclarationLink must containMessage("declaration.details.amend.declaration")
-          amendDeclarationLink must haveHref(DeclarationDetailsController.unavailableActions(submission.uuid))
-        }
+        val amendDeclarationLink = view.getElementById("amend-declaration")
+        amendDeclarationLink must containMessage("declaration.details.amend.declaration")
+        amendDeclarationLink must haveHref(DeclarationDetailsController.unavailableActions(submission.uuid))
       }
     }
 
     "NOT contain the 'Amend declaration' link" when {
-      "the 'declarationAmendments' feature flag is disabled" in {
-        when(mockDeclarationAmendmentsConfig.isEnabled).thenReturn(false)
-        val view = createView(submission)
-        Option(view.getElementById("amend-declaration")) mustBe None
-      }
 
       "submission has no latestDecId" in {
-        when(mockDeclarationAmendmentsConfig.isEnabled).thenReturn(true)
         val view = createView(subWithoutLatestDecId)
         Option(view.getElementById("amend-declaration")) mustBe None
       }
 
       amendmentBlockingStatuses.foreach { status =>
         s"submission has one of the enhanced status of $status" in {
-          when(mockDeclarationAmendmentsConfig.isEnabled).thenReturn(true)
           val view = createView(submissionWithStatus(status))
           Option(view.getElementById("amend-declaration")) mustBe None
         }
@@ -298,7 +283,8 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
     val dummyInboxLink = "dummyInboxLink"
     val dummyUploadLink = "dummyUploadLink"
 
-    when(mockSfusConfig.isSfusUploadEnabled).thenReturn(true)
+    val mockSfusConfig: SfusConfig = mock[SfusConfig]
+
     when(mockSfusConfig.sfusInboxLink).thenReturn(dummyInboxLink)
     when(mockSfusConfig.sfusUploadLink).thenReturn(dummyUploadLink)
 

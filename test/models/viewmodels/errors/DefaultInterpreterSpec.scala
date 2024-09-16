@@ -18,20 +18,20 @@ package models.viewmodels.errors
 
 import base.UnitSpec
 import connectors.CodeListConnector
+import models.Pointer
 import models.codes.DmsErrorCode
 import models.declaration.errors.{ErrorInstance, FieldInvolved}
-import models.Pointer
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
-import org.scalatestplus.mockito.MockitoSugar
+import org.scalatest.BeforeAndAfterEach
 import play.twirl.api.Html
 import services.cache.{ExportsDeclarationBuilder, ExportsItemBuilder}
-import views.html.components.gds.link
 import views.common.UnitViewSpec
+import views.html.components.gds.link
 
 import scala.collection.immutable.ListMap
 
-class DefaultInterpreterSpec extends UnitSpec with UnitViewSpec with ExportsDeclarationBuilder with ExportsItemBuilder with MockitoSugar {
+class DefaultInterpreterSpec extends UnitSpec with UnitViewSpec with BeforeAndAfterEach with ExportsDeclarationBuilder with ExportsItemBuilder {
 
   implicit val codeListConnector: CodeListConnector = mock[CodeListConnector]
   implicit val linkRef: link = new link()

@@ -18,7 +18,6 @@ package views.dashboard
 
 import base.OverridableInjector
 import config.PaginationConfig
-import config.featureFlags.DeclarationAmendmentsConfig
 import controllers.routes.{ChoiceController, DashboardController}
 import controllers.timeline.routes.DeclarationDetailsController
 import models.PageOfSubmissions
@@ -29,7 +28,7 @@ import models.declaration.submissions.{Action, EnhancedStatus, Submission}
 import org.jsoup.nodes.Element
 import org.jsoup.select.Elements
 import org.mockito.Mockito.when
-import org.scalatest.Assertion
+import org.scalatest.{Assertion, BeforeAndAfterEach}
 import play.api.i18n.Lang
 import play.api.inject.bind
 import play.api.mvc.AnyContentAsEmpty
@@ -46,21 +45,17 @@ import views.tags.ViewTest
 import java.time.{ZoneId, ZonedDateTime}
 
 @ViewTest
-class DashboardViewSpec extends UnitViewSpec with ExportsTestHelper {
+class DashboardViewSpec extends UnitViewSpec with BeforeAndAfterEach with ExportsTestHelper {
 
   private val mockPaginationConfig = mock[PaginationConfig]
 
-  private val injector = new OverridableInjector(
-    bind[PaginationConfig].toInstance(mockPaginationConfig),
-    bind[DeclarationAmendmentsConfig].toInstance(mockDeclarationAmendmentsConfig)
-  )
+  private val injector = new OverridableInjector(bind[PaginationConfig].toInstance(mockPaginationConfig))
 
   private val itemsPerPage = 4
 
   override def beforeEach(): Unit = {
     super.beforeEach()
     when(mockPaginationConfig.itemsPerPage).thenReturn(itemsPerPage)
-    when(mockDeclarationAmendmentsConfig.isEnabled).thenReturn(false)
   }
 
   private val uuid = "id"
