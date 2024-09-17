@@ -52,7 +52,7 @@ object PointerSection {
 case class Pointer(sections: Seq[PointerSection]) {
   //  Converts a pointer into it's pattern form
   // e.g. ABC.DEF.*.GHI (if the pointer contains a sequence index)
-  // e.g. ABC.DEF.GHI (if the pointer doesnt contain a sequence)
+  // e.g. ABC.DEF.GHI (if the pointer doesn't contain a sequence)
   lazy val pattern: String = sections.map(_.pattern).mkString(".")
 
   lazy val sequenceArgs: Seq[String] = sections.filter(_.`type` == PointerSectionType.SEQUENCE).map(_.value)

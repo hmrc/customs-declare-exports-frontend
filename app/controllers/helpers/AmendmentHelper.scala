@@ -28,6 +28,7 @@ case class AmendmentInstance(pointer: Pointer, fieldId: String, originalValue: O
 
 @Singleton
 class AmendmentHelper @Inject() (implicit codeListConnector: CodeListConnector, countryHelper: CountryHelper) extends Logging {
+
   def generateAmendmentRows(originalDeclaration: ExportsDeclaration, amendedDeclaration: ExportsDeclaration)(
     implicit messages: Messages
   ): Seq[AmendmentInstance] = {

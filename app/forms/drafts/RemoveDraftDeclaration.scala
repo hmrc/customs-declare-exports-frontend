@@ -17,7 +17,7 @@
 package forms.drafts
 
 import play.api.data.Forms.{boolean, optional}
-import play.api.data.{Form, Forms}
+import play.api.data.{Form, Forms, Mapping}
 import play.api.libs.json.{Json, OFormat}
 
 case class RemoveDraftDeclaration(remove: Boolean)
@@ -25,7 +25,7 @@ case class RemoveDraftDeclaration(remove: Boolean)
 object RemoveDraftDeclaration {
   implicit val format: OFormat[RemoveDraftDeclaration] = Json.format[RemoveDraftDeclaration]
 
-  val formMapping = Forms.mapping(
+  val formMapping: Mapping[RemoveDraftDeclaration] = Forms.mapping(
     "remove" -> optional(boolean)
       .verifying("draft.declarations.remove.option.error.empty", _.isDefined)
       .transform(_.get, (b: Boolean) => Some(b))

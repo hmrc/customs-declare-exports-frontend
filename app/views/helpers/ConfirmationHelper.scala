@@ -31,7 +31,7 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.panel.Panel
 import uk.gov.hmrc.govukfrontend.views.viewmodels.table.Table
 import uk.gov.hmrc.govukfrontend.views.viewmodels.warningtext.WarningText
 import views.helpers.ConfirmationHelper.getConfirmationPageMessageKey
-import views.html.components.buttons.print_page_button
+import views.html.components.print_page_button
 import views.html.components.exit_survey
 import views.html.components.gds._
 

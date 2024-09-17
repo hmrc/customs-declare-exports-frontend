@@ -31,7 +31,7 @@ class ChoiceControllerSpec extends ControllerWithoutFormSpec {
 
   private val controller = new ChoiceController(mockAuthAction, mockVerifiedEmailAction, mcc, choicePage)
 
-  "ChoiceControllerdisplayPage" should {
+  "ChoiceController.displayPage" should {
 
     "return 200 (OK)" in {
       authorizedUser()
