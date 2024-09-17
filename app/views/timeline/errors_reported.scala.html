@@ -15,7 +15,6 @@
  *@
 
 @import config.AppConfig
-@import config.featureFlags.TdrFeatureFlags
 @import controllers.timeline.routes.{DeclarationDetailsController, SubmissionsController}
 @import models.declaration.notifications.NotificationError
 @import views.helpers.{BackButton, PointerHelper, Title}
@@ -36,8 +35,7 @@
     paragraphBody: paragraphBody,
     externalLink: externalLink,
     link: link,
-    appConfig: AppConfig,
-    tdrFeatureFlags: TdrFeatureFlags
+    appConfig: AppConfig
 )
 
 @(submissionId: Option[String],
@@ -126,7 +124,7 @@
             @* Section 3 *@
             @heading(messages("rejected.notification.guidance.section.3.header"), "govuk-heading-s", "h2")
 
-            @if(tdrFeatureFlags.showErrorPageVersionForTdr) {
+            @if(appConfig.isTdrVersion) {
                 @paragraphBody(messages("rejected.notification.tdr.guidance.section.3.paragraph.1"))
 
                 @paragraphBody(messages("rejected.notification.tdr.guidance.section.3.paragraph.2",

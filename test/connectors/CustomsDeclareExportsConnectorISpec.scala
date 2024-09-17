@@ -20,17 +20,15 @@ import base.TestHelper._
 import com.codahale.metrics.SharedMetricRegistries
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.client.WireMock._
-import config.featureFlags.DeclarationAmendmentsConfig
 import forms.section1.Lrn
-import mock.FeatureFlagMocks
 import models.CancellationStatus.CancellationResult
+import models._
 import models.declaration.DeclarationStatus.DRAFT
 import models.declaration.notifications.Notification
 import models.declaration.submissions.EnhancedStatus.GOODS_ARRIVED
 import models.declaration.submissions.RequestType.SubmissionRequest
 import models.declaration.submissions.StatusGroup.ActionRequiredStatuses
 import models.declaration.submissions.{Action, Submission, SubmissionStatus}
-import models._
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito
 import org.mockito.Mockito.{verify, verifyNoInteractions}
@@ -48,7 +46,7 @@ import views.dashboard.DashboardHelper.{Groups, Page}
 import java.time.{Instant, ZoneOffset, ZonedDateTime}
 import java.util.UUID
 
-class CustomsDeclareExportsConnectorISpec extends ConnectorISpec with ExportsDeclarationBuilder with ScalaFutures with FeatureFlagMocks {
+class CustomsDeclareExportsConnectorISpec extends ConnectorISpec with ExportsDeclarationBuilder with ScalaFutures {
 
   private val id = "id"
   private val eori = "eori"
@@ -63,7 +61,6 @@ class CustomsDeclareExportsConnectorISpec extends ConnectorISpec with ExportsDec
   private val injector = {
     SharedMetricRegistries.clear()
     new GuiceApplicationBuilder()
-      .overrides(bind[DeclarationAmendmentsConfig].toInstance(mockDeclarationAmendmentsConfig))
       .overrides(bind[AuditService].toInstance(mockAuditService))
       .configure(overrideConfig)
       .injector()
@@ -86,7 +83,7 @@ class CustomsDeclareExportsConnectorISpec extends ConnectorISpec with ExportsDec
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
-    Mockito.reset(mockDeclarationAmendmentsConfig, mockAuditService)
+    Mockito.reset(mockAuditService)
   }
 
   "Create Declaration" should {

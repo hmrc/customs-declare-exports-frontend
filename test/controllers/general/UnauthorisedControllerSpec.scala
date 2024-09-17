@@ -17,6 +17,7 @@
 package controllers.general
 
 import base.ControllerWithoutFormSpec
+import config.AppConfig
 import models.UnauthorisedReason.{UrlDirect, UserEoriNotAllowed, UserIsAgent, UserIsNotEnrolled}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
@@ -26,17 +27,17 @@ import views.html.general.{unauthorised, unauthorisedAgent, unauthorisedEoriInTd
 
 class UnauthorisedControllerSpec extends ControllerWithoutFormSpec {
 
-  val unauthorisedPage = mock[unauthorised]
-  val unauthorisedEoriInTdrPage = mock[unauthorisedEoriInTdr]
-  val unauthorisedAgentPage = mock[unauthorisedAgent]
+  private val mockAppConfig = mock[AppConfig]
+  private val unauthorisedPage = mock[unauthorised]
+  private val unauthorisedEoriInTdrPage = mock[unauthorisedEoriInTdr]
+  private val unauthorisedAgentPage = mock[unauthorisedAgent]
 
-  val controller =
-    new UnauthorisedController(mockTdrFeatureFlags, mcc, unauthorisedPage, unauthorisedEoriInTdrPage, unauthorisedAgentPage)
+  val controller = new UnauthorisedController(mcc, unauthorisedPage, unauthorisedEoriInTdrPage, unauthorisedAgentPage, mockAppConfig)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
 
-    when(mockTdrFeatureFlags.isTdrUnauthorisedMessageEnabled).thenReturn(false)
+    when(mockAppConfig.isTdrVersion).thenReturn(false)
     when(unauthorisedPage(any())(any(), any())).thenReturn(HtmlFormat.empty)
     when(unauthorisedEoriInTdrPage()(any(), any())).thenReturn(HtmlFormat.empty)
     when(unauthorisedAgentPage(any())(any(), any())).thenReturn(HtmlFormat.empty)
@@ -45,7 +46,7 @@ class UnauthorisedControllerSpec extends ControllerWithoutFormSpec {
   override protected def afterEach(): Unit = {
     super.afterEach()
 
-    reset(mockTdrFeatureFlags, unauthorisedPage, unauthorisedEoriInTdrPage, unauthorisedAgentPage)
+    reset(unauthorisedPage, unauthorisedEoriInTdrPage, unauthorisedAgentPage, mockAppConfig)
   }
 
   "Unauthorised controller" should {
@@ -69,7 +70,7 @@ class UnauthorisedControllerSpec extends ControllerWithoutFormSpec {
         }
 
         "user has sufficient enrollments but the EORI is not in the allow list (TDR enabled)" in {
-          when(mockTdrFeatureFlags.isTdrUnauthorisedMessageEnabled).thenReturn(true)
+          when(mockAppConfig.isTdrVersion).thenReturn(true)
 
           val result = controller.onPageLoad(UrlDirect)(getRequest())
           status(result) must be(OK)

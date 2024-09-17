@@ -16,12 +16,9 @@
 
 package controllers.amendments
 
-import config.featureFlags.DeclarationAmendmentsConfig
 import connectors.CustomsDeclareExportsConnector
 import controllers.actions.{AuthAction, VerifiedEmailAction}
-import controllers.amendments.routes
 import controllers.general.ErrorHandler
-import controllers.general.routes.RootController
 import models.declaration.submissions.EnhancedStatus.{CUSTOMS_POSITION_DENIED, CUSTOMS_POSITION_GRANTED, ERRORS}
 import models.declaration.submissions.RequestType.AmendmentCancellationRequest
 import models.declaration.submissions.{Action => Actn, Submission}
@@ -50,8 +47,7 @@ class AmendmentOutcomeController @Inject() (
   amendment_cancelled: amendment_cancelled,
   amendment_rejection: amendment_rejection,
   amendment_failed: amendment_failed,
-  amendment_pending: amendment_pending,
-  declarationAmendmentsConfig: DeclarationAmendmentsConfig
+  amendment_pending: amendment_pending
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport with Logging {
 
@@ -88,11 +84,6 @@ class AmendmentOutcomeController @Inject() (
   }
 
   val displayOutcomePage: Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
-    if (!declarationAmendmentsConfig.isEnabled) Future.successful(Redirect(RootController.displayPage))
-    else retrieveIdsFromSessionAndDisplayOutcomePage
-  }
-
-  private def retrieveIdsFromSessionAndDisplayOutcomePage(implicit request: VerifiedEmailRequest[AnyContent]): Future[Result] =
     (getValue(submissionUuid), getValue(submissionActionId)) match {
       case (Some(submissionId), Some(actionId)) =>
         retrieveSubmissionAndDisplayOutcomePage(submissionId, actionId)
@@ -101,6 +92,7 @@ class AmendmentOutcomeController @Inject() (
         val msg = "Session on /amendment-outcome does not include the submissionUuid and/or the actionId!?"
         errorHandler.internalError(msg)
     }
+  }
 
   private def retrieveSubmissionAndDisplayOutcomePage(submissionId: String, actionId: String)(
     implicit request: VerifiedEmailRequest[_]

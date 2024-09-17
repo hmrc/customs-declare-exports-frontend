@@ -38,7 +38,8 @@ class JsonFile @Inject() (environment: Environment) {
   }
 
   def getJsonArrayFromFile[T](file: String, reader: Reads[T]): List[T] = {
-    val jsonInputStream = environment.resourceAsStream(file).getOrElse(throw new Exception(s"$file could not be read!"))
+    val maybeInputStream = environment.resourceAsStream(file)
+    val jsonInputStream = maybeInputStream.getOrElse(throw new Exception(s"$file could not be read!"))
 
     Try(Json.parse(jsonInputStream)) match {
       case Success(JsArray(jsValues)) =>

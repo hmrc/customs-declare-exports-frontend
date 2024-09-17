@@ -225,8 +225,9 @@ class AppConfig @Inject() (
     throw new IllegalStateException("Missing configuration for CDS Exports fetch verified email URI")
   )
 
-  lazy val isUsingImprovedErrorMessages =
-    runModeConfiguration.getOptional[Boolean]("microservice.services.features.use-improved-error-messages").getOrElse(false)
+  // Feature flags
+  val isBetaBannerEnabled: Boolean = servicesConfig.getBoolean("features.betaBanner")
+  val isTdrVersion: Boolean = servicesConfig.getBoolean("features.tdrVersion")
 
   lazy val languages: Seq[String] = runModeConfiguration.get[Seq[String]]("play.i18n.langs")
 

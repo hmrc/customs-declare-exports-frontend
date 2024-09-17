@@ -17,8 +17,6 @@
 package controllers.amendments
 
 import base.ControllerWithoutFormSpec
-import controllers.amendments.routes
-import controllers.general.routes.RootController
 import models.declaration.submissions.EnhancedStatus._
 import models.declaration.submissions.RequestType.{AmendmentCancellationRequest, AmendmentRequest}
 import models.declaration.submissions.{Action, NotificationSummary, Submission}
@@ -69,8 +67,7 @@ class AmendmentOutcomeControllerSpec extends ControllerWithoutFormSpec with Give
       amendment_cancelled,
       amendment_rejection,
       amendment_failed,
-      amendment_pending,
-      mockDeclarationAmendmentsConfig
+      amendment_pending
     )
 
     authorizedUser()
@@ -110,9 +107,8 @@ class AmendmentOutcomeControllerSpec extends ControllerWithoutFormSpec with Give
   override def beforeEach(): Unit = {
     super.beforeEach()
 
-    reset(mockCustomsDeclareExportsConnector, mockDeclarationAmendmentsConfig)
+    reset(mockCustomsDeclareExportsConnector)
 
-    when(mockDeclarationAmendmentsConfig.isEnabled).thenReturn(true)
     when(mockCustomsDeclareExportsConnector.findDeclaration(any())(any(), any())).thenReturn(Future.successful(None))
   }
 
@@ -214,16 +210,6 @@ class AmendmentOutcomeControllerSpec extends ControllerWithoutFormSpec with Give
   }
 
   "AmendmentOutcomeController on displayOutcomePage" should {
-
-    "redirect to the RootController" when {
-      "the 'declarationAmendmentsConfig' flag is disabled" in new SetUp {
-        when(mockDeclarationAmendmentsConfig.isEnabled).thenReturn(false)
-
-        val result = controller.displayOutcomePage(buildRequest())
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(RootController.displayPage.url)
-      }
-    }
 
     "return 500(INTERNAL_SERVER_ERROR) status code" when {
 

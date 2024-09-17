@@ -14,50 +14,22 @@
  * limitations under the License.
  */
 
-package config.featureFlags
+package config
 
 import base.UnitWithMocksSpec
 import com.typesafe.config.ConfigFactory
-import features.Feature
 import play.api.Configuration
 
 class SfusConfigSpec extends UnitWithMocksSpec {
 
-  private def buildSfusConfig(
-    sfusEnabled: Boolean = false,
-    sfusKey: String = Feature.sfus.toString,
-    sfusInboxLink: String = "sfusInbox",
-    sfusUploadKey: String = "sfusUpload"
-  ) = {
+  private def buildSfusConfig(sfusInboxLink: String = "sfusInbox", sfusUploadKey: String = "sfusUpload") = {
     val config = Configuration(ConfigFactory.parseString(s"""
         |microservice.services.features.default=disabled
-        |microservice.services.features.$sfusKey=${asConfigVal(sfusEnabled)}
         |urls.$sfusInboxLink=sfusInbox
         |urls.$sfusUploadKey=sfusUpload
-        |      """.stripMargin))
+        |""".stripMargin))
 
-    new SfusConfig(new FeatureSwitchConfig(config), config)
-  }
-
-  private def asConfigVal(bool: Boolean): String = if (bool) "enabled" else "disabled"
-
-  "SfusConfig.isSfusUploadEnabled" should {
-
-    "return true" when {
-      "sfus feature is enabled" in {
-        buildSfusConfig(sfusEnabled = true).isSfusUploadEnabled mustBe true
-      }
-    }
-
-    "return false" when {
-      "sfus feature is disabled" in {
-        buildSfusConfig().isSfusUploadEnabled mustBe false
-      }
-
-      "sfus feature config key doesn't exist" in {
-        buildSfusConfig(sfusEnabled = true, sfusKey = "WRONG").isSfusUploadEnabled mustBe false
-      }
-    }
+    new SfusConfig(config)
   }
 
   "SfusConfig.sfusInboxLink" should {

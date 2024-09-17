@@ -17,7 +17,6 @@
 package controllers.amendments
 
 import com.google.inject.Inject
-import config.featureFlags.DeclarationAmendmentsConfig
 import connectors.CustomsDeclareExportsConnector
 import controllers.actions.{AuthAction, VerifiedEmailAction}
 import controllers.general.routes.RootController
@@ -37,24 +36,20 @@ class AmendDeclarationController @Inject() (
   verifyEmail: VerifiedEmailAction,
   mcc: MessagesControllerComponents,
   connector: CustomsDeclareExportsConnector,
-  cacheService: ExportsCacheService,
-  declarationAmendmentsConfig: DeclarationAmendmentsConfig
+  cacheService: ExportsCacheService
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with Logging {
 
   def initAmendment(parentId: String): Action[AnyContent] = (authenticate andThen verifyEmail).async { implicit request =>
-    if (!declarationAmendmentsConfig.isEnabled) Future.successful(Redirect(RootController.displayPage))
-    else {
-      cacheService.get(parentId).flatMap {
-        case Some(srcDec) =>
-          connector.findOrCreateDraftForAmendment(parentId, ERRORS, request.user.eori, srcDec).map { id =>
-            Redirect(SummaryController.displayPage).addingToSession(declarationUuid -> id)
-          }
+    cacheService.get(parentId).flatMap {
+      case Some(srcDec) =>
+        connector.findOrCreateDraftForAmendment(parentId, ERRORS, request.user.eori, srcDec).map { id =>
+          Redirect(SummaryController.displayPage).addingToSession(declarationUuid -> id)
+        }
 
-        case None =>
-          logger.warn(s"Could not retrieve from cache, for eori ${request.user.eori}, the declaration with id $parentId")
-          Future.successful(Results.Redirect(RootController.displayPage))
-      }
+      case None =>
+        logger.warn(s"Could not retrieve from cache, for eori ${request.user.eori}, the declaration with id $parentId")
+        Future.successful(Results.Redirect(RootController.displayPage))
     }
   }
 }

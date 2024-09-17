@@ -29,7 +29,7 @@
     config: ExternalServicesConfig
 )
 
-@(displaySignOut: Boolean = false)(implicit request: Request[_], messages: Messages)
+@(displaySignOut: Boolean)(implicit request: Request[_], messages: Messages)
 
 @govukLayout(title = Title("unauthorised.heading"), displaySignOut = displaySignOut) {
     @pageTitle(messages("unauthorised.heading"))

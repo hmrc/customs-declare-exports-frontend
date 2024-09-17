@@ -16,14 +16,14 @@
 
 package connectors
 
-import org.apache.pekko.util.Helpers.Requiring
 import com.google.inject.ImplementedBy
 import config.AppConfig
 import models.codes._
-import play.api.libs.json.{Json, OFormat}
+import org.apache.pekko.util.Helpers.Requiring
 import play.api.Logging
-import services.model.{CustomsOffice, OfficeOfExit, PackageType}
+import play.api.libs.json.{Json, OFormat}
 import services.DocumentType
+import services.model.{CustomsOffice, OfficeOfExit, PackageType}
 import utils.JsonFile
 
 import java.util.Locale
@@ -86,18 +86,6 @@ class FileBasedCodeListConnector @Inject() (
   val jsonFileReader: JsonFile
 ) extends CodeListConnector with FileBasedCodeListFunctions {
 
-  private lazy val standardOrCustomErrorDefinitionFile =
-    if (appConfig.isUsingImprovedErrorMessages) {
-      val pathParts = appConfig.dmsErrorCodes.split('.')
-
-      val customFilePath = for {
-        start <- pathParts.headOption
-        end <- pathParts.lastOption
-      } yield s"${start}-customised.${end}"
-
-      customFilePath.getOrElse(appConfig.dmsErrorCodes)
-    } else appConfig.dmsErrorCodes
-
   private val additionalProcedureCodeMapsByLang = loadCommonCodesAsOrderedMap(
     appConfig.additionalProcedureCodes,
     (codeItem: CodeItem, locale: Locale) => AdditionalProcedureCode(codeItem.code, codeItem.getDescriptionByLocale(locale))
@@ -111,7 +99,7 @@ class FileBasedCodeListConnector @Inject() (
     (codeItem: CodeItem, locale: Locale) => Country(codeItem.getDescriptionByLocale(locale), codeItem.code)
   )
   private val dmsErrorCodeMapsByLang = loadCommonCodesAsOrderedMap(
-    standardOrCustomErrorDefinitionFile,
+    appConfig.dmsErrorCodes,
     (codeItem: CodeItem, locale: Locale) => DmsErrorCode(codeItem.code, codeItem.getDescriptionByLocale(locale))
   )
   private val holderOfAuthorisationCodeListsByLang = loadCommonCodesAsOrderedMap(

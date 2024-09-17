@@ -18,7 +18,6 @@ package controllers.amendments
 
 import base.ControllerWithoutFormSpec
 import controllers.helpers.AmendmentHelper
-import controllers.general.routes.RootController
 import models.DeclarationMeta
 import models.declaration.DeclarationStatus.COMPLETE
 import models.declaration.submissions.Action
@@ -49,7 +48,6 @@ class AmendmentDetailsControllerSpec extends ControllerWithoutFormSpec with Opti
     mockCustomsDeclareExportsConnector,
     amendmentDetails,
     unavailableAmendmentDetails,
-    mockDeclarationAmendmentsConfig,
     amendmentHelper
   )(ec)
 
@@ -59,31 +57,19 @@ class AmendmentDetailsControllerSpec extends ControllerWithoutFormSpec with Opti
     authorizedUser()
     setupErrorHandler()
 
-    when(mockDeclarationAmendmentsConfig.isEnabled).thenReturn(true)
     when(amendmentDetails.apply(any(), any(), any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
     when(unavailableAmendmentDetails.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
     super.afterEach()
-    reset(amendmentDetails, mockCustomsDeclareExportsConnector, mockDeclarationAmendmentsConfig, mockErrorHandler, unavailableAmendmentDetails)
+    reset(amendmentDetails, mockCustomsDeclareExportsConnector, mockErrorHandler, unavailableAmendmentDetails)
   }
 
   private val request = FakeRequest()
   private val declarationMeta = DeclarationMeta(Some("parentDeclId"), None, COMPLETE, Instant.now(), Instant.now())
 
   "AmendmentDetailsController.displayPage" should {
-
-    "redirect to /" when {
-      "the amend flag is disabled" in {
-        when(mockDeclarationAmendmentsConfig.isEnabled).thenReturn(false)
-
-        val result = controller.displayPage("actionId")(request)
-
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result) mustBe Some(RootController.displayPage.url)
-      }
-    }
 
     "return 500 (INTERNAL_SERVER-ERROR)" when {
 

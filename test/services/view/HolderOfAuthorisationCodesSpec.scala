@@ -21,7 +21,6 @@ import config.AppConfig
 import connectors.{FileBasedCodeListConnector, GoodsLocationCodesConnector}
 import forms.section2.authorisationHolder.AuthorisationHolder
 import forms.section2.authorisationHolder.AuthorizationTypeCodes.{EXRR, MIB}
-import mock.FeatureFlagMocks
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.BeforeAndAfterEach
 import play.api.{Environment, Mode}
@@ -29,7 +28,7 @@ import utils.JsonFile
 
 import java.util.Locale.ENGLISH
 
-class HolderOfAuthorisationCodesSpec extends UnitWithMocksSpec with BeforeAndAfterEach with FeatureFlagMocks {
+class HolderOfAuthorisationCodesSpec extends UnitWithMocksSpec with BeforeAndAfterEach {
 
   private val appConfig = mock[AppConfig]
 
@@ -54,44 +53,30 @@ class HolderOfAuthorisationCodesSpec extends UnitWithMocksSpec with BeforeAndAft
   private lazy val glc = mock[GoodsLocationCodesConnector]
   private lazy val jsonFile = new JsonFile(Environment.simple(mode = Mode.Test))
   private lazy val codeListConnector = new FileBasedCodeListConnector(appConfig, glc, jsonFile)
-  private lazy val holderOfAuthorisationCodes = new HolderOfAuthorisationCodes(codeListConnector, mockMerchandiseInBagConfig)
+  private lazy val holderOfAuthorisationCodes = new HolderOfAuthorisationCodes(codeListConnector)
 
   "HolderOfAuthorisationCodes.asListOfAutoCompleteItems" should {
-    "return 'Holder of Authorisation' codes as AutoCompleteItems" when {
-      "merchandiseInBag feature is enabled" in {
+    "return 'Holder of Authorisation' codes as AutoCompleteItems" in {
+      val autoCompleteItems = holderOfAuthorisationCodes.asListOfAutoCompleteItems(ENGLISH)
+      autoCompleteItems.size mustBe 57
 
-        when(mockMerchandiseInBagConfig.isMerchandiseInBagEnabled).thenReturn(true)
+      val item0 = "EXRR - Submission of an arrived export declaration for RoRo movements (where CSE Authorisation is not used)"
+      autoCompleteItems(28) mustBe AutoCompleteItem(item0, EXRR)
 
-        val autoCompleteItems = holderOfAuthorisationCodes.asListOfAutoCompleteItems(ENGLISH)
-        autoCompleteItems.size mustBe 57
+      autoCompleteItems(38) mustBe AutoCompleteItem("MIB - Merchandise in Baggage", MIB)
 
-        val item0 = "EXRR - Submission of an arrived export declaration for RoRo movements (where CSE Authorisation is not used)"
-        autoCompleteItems(28) mustBe AutoCompleteItem(item0, EXRR)
+      val item24 = "TEAH - Temporary Admission authorisation – Auction Houses (no guarantee for VAT required)"
+      autoCompleteItems(51) mustBe AutoCompleteItem(item24, "TEAH")
 
-        autoCompleteItems(38) mustBe AutoCompleteItem("MIB - Merchandise in Baggage", MIB)
+      val item25 = "TST - Authorisation to operate storage facilities for the temporary storage of goods"
+      autoCompleteItems(53) mustBe AutoCompleteItem(item25, "TST")
 
-        val item24 = "TEAH - Temporary Admission authorisation – Auction Houses (no guarantee for VAT required)"
-        autoCompleteItems(51) mustBe AutoCompleteItem(item24, "TEAH")
+      autoCompleteItems(23) mustBe AutoCompleteItem("EPSS - Excise Payment Security System", "EPSS")
 
-        val item25 = "TST - Authorisation to operate storage facilities for the temporary storage of goods"
-        autoCompleteItems(53) mustBe AutoCompleteItem(item25, "TST")
+      val item40 = "ETD - Electronic Transport Document (authorised for use as a customs declaration)"
+      autoCompleteItems(24) mustBe AutoCompleteItem(item40, "ETD")
 
-        autoCompleteItems(23) mustBe AutoCompleteItem("EPSS - Excise Payment Security System", "EPSS")
-
-        val item40 = "ETD - Electronic Transport Document (authorised for use as a customs declaration)"
-        autoCompleteItems(24) mustBe AutoCompleteItem(item40, "ETD")
-
-        autoCompleteItems(41) mustBe AutoCompleteItem("REM - Remission of the amounts of import or export duty", "REM")
-      }
-      "merchandiseInBag feature is disabled" in {
-
-        when(mockMerchandiseInBagConfig.isMerchandiseInBagEnabled).thenReturn(false)
-
-        val autoCompleteItems = holderOfAuthorisationCodes.asListOfAutoCompleteItems(ENGLISH)
-        autoCompleteItems.size mustBe 55
-
-        autoCompleteItems must not contain AutoCompleteItem("MIB - Merchandise in Baggage", MIB)
-      }
+      autoCompleteItems(41) mustBe AutoCompleteItem("REM - Remission of the amounts of import or export duty", "REM")
     }
   }
 

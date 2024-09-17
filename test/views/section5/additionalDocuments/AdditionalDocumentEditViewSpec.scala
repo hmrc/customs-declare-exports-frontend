@@ -156,7 +156,7 @@ class AdditionalDocumentEditViewSpec extends UnitViewSpec with Injector with Moc
     val clearanceJourneys = List(CLEARANCE_FRONTIER, CLEARANCE_PRE_LODGED)
     val holders = List(AuthorisationHolder(Some("OPO"), None, None), AuthorisationHolder(Some("FZ"), None, None))
 
-    val authCodeHelper = new HolderOfAuthorisationCodes(new FileBasedCodeListConnector(appConfig, glc, jsonFile), mockMerchandiseInBagConfig)
+    val authCodeHelper = new HolderOfAuthorisationCodes(new FileBasedCodeListConnector(appConfig, glc, jsonFile))
 
     allAdditionalDeclarationTypes.foreach { declarationType =>
       val item = anItem(withItemId(itemId))

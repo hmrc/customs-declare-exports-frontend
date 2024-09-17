@@ -14,16 +14,22 @@
  * limitations under the License.
  */
 
-package config.featureFlags
+package config
 
-import features.Feature
+import play.api.Configuration
 
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class TdrFeatureFlags @Inject() (featureSwitchConfig: FeatureSwitchConfig) {
+class SfusConfig @Inject() (config: Configuration) {
 
-  val isTdrUnauthorisedMessageEnabled: Boolean = featureSwitchConfig.isFeatureOn(Feature.tdrUnauthorisedMessage)
+  val sfusInboxLink: String =
+    config
+      .getOptional[String]("urls.sfusInbox")
+      .getOrElse(throw new IllegalStateException("Missing configuration for CDS File Upload frontend inbox page url"))
 
-  val showErrorPageVersionForTdr: Boolean = featureSwitchConfig.isFeatureOn(Feature.showErrorPageVersionForTdr)
+  val sfusUploadLink: String =
+    config
+      .getOptional[String]("urls.sfusUpload")
+      .getOrElse(throw new IllegalStateException("Missing configuration for CDS File Upload frontend mrn page url"))
 }

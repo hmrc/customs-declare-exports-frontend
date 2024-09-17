@@ -19,7 +19,7 @@ package base
 import config.AppConfig
 import controllers.general.ErrorHandler
 import controllers.helpers.{Add, AddField, SaveAndContinue}
-import mock.{ErrorHandlerMocks, FeatureFlagMocks, JourneyActionMocks, VerifiedEmailMocks}
+import mock.{ErrorHandlerMocks, JourneyActionMocks, VerifiedEmailMocks}
 import models.ExportsDeclaration
 import models.requests.{JourneyRequest, SessionHelper}
 import models.responses.FlashKeys
@@ -44,8 +44,8 @@ trait ControllerWithoutFormSpec extends ControllerSpec {
 }
 
 trait ControllerSpec
-    extends UnitSpec with DefaultAwaitTimeout with ErrorHandlerMocks with ExportsItemBuilder with FeatureFlagMocks with JourneyTypeTestRunner
-    with JourneyActionMocks with MockAuthAction with MockConnectors with MockExportCacheService with MockNavigator with VerifiedEmailMocks {
+    extends UnitSpec with DefaultAwaitTimeout with ErrorHandlerMocks with ExportsItemBuilder with JourneyTypeTestRunner with JourneyActionMocks
+    with MockAuthAction with MockConnectors with MockExportCacheService with MockNavigator with VerifiedEmailMocks {
   implicit val ec: ExecutionContext = ExecutionContext.global
 
   protected val mcc = stubMessagesControllerComponents()
@@ -57,7 +57,7 @@ trait ControllerSpec
 
   protected val saveAndContinueActionUrlEncoded: (String, String) = (SaveAndContinue.toString, "")
 
-  protected def viewOf(result: Future[Result]) = Html(contentAsString(result))
+  protected def viewOf(result: Future[Result]): Html = Html(contentAsString(result))
 
   protected def getRequest(declaration: ExportsDeclaration): JourneyRequest[AnyContentAsEmpty.type] =
     getJourneyRequest(declaration)
@@ -100,7 +100,7 @@ trait ControllerSpec
 
   private val submissionField = ""
   private val submissionError = "some error"
-  protected val submissionFormError = FormError(submissionField, submissionError)
+  protected val submissionFormError: FormError = FormError(submissionField, submissionError)
 
   protected def getRequestWithSubmissionErrors: Request[AnyContentAsEmpty.type] =
     FakeRequest("GET", "")

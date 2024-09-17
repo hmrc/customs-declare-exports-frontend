@@ -16,7 +16,7 @@
 
 package controllers.general
 
-import config.featureFlags.TdrFeatureFlags
+import config.AppConfig
 import models.UnauthorisedReason
 import models.UnauthorisedReason._
 import play.api.i18n.I18nSupport
@@ -27,21 +27,19 @@ import views.html.general.{unauthorised, unauthorisedAgent, unauthorisedEoriInTd
 import javax.inject.Inject
 
 class UnauthorisedController @Inject() (
-  tdrFeatureFlags: TdrFeatureFlags,
   mcc: MessagesControllerComponents,
   unauthorisedPage: unauthorised,
   unauthorisedEoriInTdrPage: unauthorisedEoriInTdr,
-  unauthorisedAgent: unauthorisedAgent
+  unauthorisedAgent: unauthorisedAgent,
+  appConfig: AppConfig
 ) extends FrontendController(mcc) with I18nSupport {
 
   def onPageLoad(unauthorisedReason: UnauthorisedReason): Action[AnyContent] = Action { implicit request =>
-    val tdrFlagEnabled = tdrFeatureFlags.isTdrUnauthorisedMessageEnabled
-
     unauthorisedReason match {
-      case _ if tdrFlagEnabled => Ok(unauthorisedEoriInTdrPage())
-      case UserEoriNotAllowed  => Ok(unauthorisedPage(displaySignOut = true))
-      case UserIsNotEnrolled   => Ok(unauthorisedPage(displaySignOut = true))
-      case UrlDirect           => Ok(unauthorisedPage(displaySignOut = false))
+      case _ if appConfig.isTdrVersion => Ok(unauthorisedEoriInTdrPage())
+      case UserEoriNotAllowed          => Ok(unauthorisedPage(displaySignOut = true))
+      case UserIsNotEnrolled           => Ok(unauthorisedPage(displaySignOut = true))
+      case UrlDirect                   => Ok(unauthorisedPage(displaySignOut = false))
     }
   }
 

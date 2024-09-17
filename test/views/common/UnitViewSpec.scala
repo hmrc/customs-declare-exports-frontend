@@ -17,7 +17,6 @@
 package views.common
 
 import base.{MessageSpec, UnitWithMocksSpec}
-import mock.FeatureFlagMocks
 import org.jsoup.nodes.Document
 import org.jsoup.select.Elements
 import org.scalatest.{Assertion, OptionValues}
@@ -25,8 +24,7 @@ import play.api.mvc.Call
 import tools.Stubs
 import views.helpers.CommonMessages
 
-trait UnitViewSpec
-    extends UnitWithMocksSpec with CommonMessages with FeatureFlagMocks with MessageSpec with OptionValues with Stubs with ViewMatchers {
+trait UnitViewSpec extends UnitWithMocksSpec with CommonMessages with MessageSpec with OptionValues with Stubs with ViewMatchers {
 
   val itemId = "item1"
   val sequenceId = "1"
