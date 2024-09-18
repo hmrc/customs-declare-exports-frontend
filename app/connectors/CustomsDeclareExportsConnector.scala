@@ -33,7 +33,7 @@ import services.AuditCreateDraftDec
 import services.audit.AuditService
 import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.http.client.HttpClientV2
-import uk.gov.hmrc.http.{HeaderCarrier, HeaderNames, HttpResponse, JsValidationException}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, JsValidationException}
 import uk.gov.hmrc.play.bootstrap.metrics.Metrics
 
 import javax.inject.{Inject, Singleton}
@@ -89,7 +89,7 @@ class CustomsDeclareExportsConnector @Inject() (appConfig: AppConfig, httpClient
 
       val url = getUrl(s"${appConfig.declarationsPath}/$id")
 
-      get[HttpResponse](url, List.empty, hc.headers(HeaderNames.explicitlyIncludedHeaders)).map { httpResponse =>
+      get[HttpResponse](url, List.empty).map { httpResponse =>
         if (httpResponse.status == NOT_FOUND) None
         else
           Json.parse(httpResponse.body).validate[ExportsDeclaration] match {
@@ -117,7 +117,7 @@ class CustomsDeclareExportsConnector @Inject() (appConfig: AppConfig, httpClient
     val url = getUrl(s"${appConfig.draftAmendmentPath}/$parentId/${enhancedStatus.toString}")
     val fetchStopwatch = fetchTimer.time
 
-    get[HttpResponse](url, List.empty, hc.headers(HeaderNames.explicitlyIncludedHeaders)).map { httpResponse =>
+    get[HttpResponse](url, List.empty).map { httpResponse =>
       val newDecId = parseTextResponse(httpResponse.body)
       // this will exclude draft decs created from scratch that have no DUCR defined yet
       if (httpResponse.status == CREATED && draftDec.ducr.isDefined)
@@ -144,7 +144,7 @@ class CustomsDeclareExportsConnector @Inject() (appConfig: AppConfig, httpClient
     val url = getUrl(s"${appConfig.draftRejectionPath}/$rejectedParentId")
     val fetchStopwatch = fetchTimer.time
 
-    get[HttpResponse](url, List.empty, hc.headers(HeaderNames.explicitlyIncludedHeaders)).map { httpResponse =>
+    get[HttpResponse](url, List.empty).map { httpResponse =>
       val newDecId = parseTextResponse(httpResponse.body)
       if (httpResponse.status == CREATED)
         audit(eori, newDecId, draftDec.additionalDeclarationType, draftDec.ducr, DRAFT, Some(draftDec.id), Some(ERRORS), auditService)
