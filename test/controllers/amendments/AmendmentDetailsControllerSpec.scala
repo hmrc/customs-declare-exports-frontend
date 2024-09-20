@@ -94,7 +94,7 @@ class AmendmentDetailsControllerSpec extends ControllerWithoutFormSpec with Opti
         when(mockCustomsDeclareExportsConnector.findDeclaration(anyString())(any(), any()))
           .thenReturn(Future.successful(None))
 
-        val actionId = submission.actions(0).id
+        val actionId = submission.actions.head.id
         val message = s"No Declaration found for Action($actionId) on /amendment-details"
         verifyError(message, actionId)
       }
@@ -107,7 +107,7 @@ class AmendmentDetailsControllerSpec extends ControllerWithoutFormSpec with Opti
         when(mockCustomsDeclareExportsConnector.findDeclaration(anyString())(any(), any()))
           .thenReturn(Future.successful(Some(declaration)))
 
-        val action = submission.actions(0)
+        val action = submission.actions.head
         val message = s"No parentDeclarationId for Declaration(${action.decId.value}) on /amendment-details"
         verifyError(message, action.id)
       }
@@ -116,7 +116,7 @@ class AmendmentDetailsControllerSpec extends ControllerWithoutFormSpec with Opti
         when(mockCustomsDeclareExportsConnector.findSubmissionByAction(anyString())(any(), any()))
           .thenReturn(Future.successful(Some(submission)))
 
-        val action = submission.actions(0)
+        val action = submission.actions.head
         val declaration = aDeclaration().copy(declarationMeta = declarationMeta)
 
         when(mockCustomsDeclareExportsConnector.findDeclaration(refEq(action.decId.value))(any(), any()))
@@ -144,7 +144,7 @@ class AmendmentDetailsControllerSpec extends ControllerWithoutFormSpec with Opti
       when(mockCustomsDeclareExportsConnector.findSubmissionByAction(anyString())(any(), any()))
         .thenReturn(Future.successful(Some(fetchedSubmission)))
 
-      val result = controller.displayPage(submission.actions(0).id)(request)
+      val result = controller.displayPage(submission.actions.head.id)(request)
       status(result) mustBe OK
 
       val captor: ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
@@ -160,7 +160,7 @@ class AmendmentDetailsControllerSpec extends ControllerWithoutFormSpec with Opti
       when(mockCustomsDeclareExportsConnector.findDeclaration(any())(any(), any()))
         .thenReturn(Future.successful(Some(declaration)))
 
-      val result = controller.displayPage(submission.actions(0).id)(request)
+      val result = controller.displayPage(submission.actions.head.id)(request)
       status(result) mustBe OK
 
       val submissionCaptor: ArgumentCaptor[String] = ArgumentCaptor.forClass(classOf[String])
@@ -169,7 +169,7 @@ class AmendmentDetailsControllerSpec extends ControllerWithoutFormSpec with Opti
       verify(amendmentDetails).apply(submissionCaptor.capture(), ducrCaptor.capture(), any(), actionCaptor.capture(), any())(any(), any())
       submissionCaptor.getValue mustBe submission.uuid
       ducrCaptor.getValue mustBe DUCR
-      actionCaptor.getValue.id mustBe submission.actions(0).id
+      actionCaptor.getValue.id mustBe submission.actions.head.id
     }
   }
 }

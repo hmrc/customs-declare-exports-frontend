@@ -49,7 +49,8 @@ trait MockConnectors {
   def deleteDraftDeclaration(): OngoingStubbing[Future[Unit]] =
     when(mockCustomsDeclareExportsConnector.deleteDraftDeclaration(anyString())(any(), any())).thenReturn(Future.successful((): Unit))
 
-  private lazy val listOfDraftDeclarationData = List(DraftDeclarationData("draftId", Some("ducrId"), DeclarationStatus.DRAFT, Instant.now))
+  lazy val listOfDraftDeclarationData: Seq[DraftDeclarationData] =
+    List(DraftDeclarationData("draftId", Some("ducrId"), DeclarationStatus.DRAFT, Instant.now))
 
   def pageOfDraftDeclarationData(): OngoingStubbing[Future[Paginated[DraftDeclarationData]]] =
     when(mockCustomsDeclareExportsConnector.fetchDraftDeclarations(any[Page])(any(), any()))

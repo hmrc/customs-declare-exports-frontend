@@ -52,7 +52,7 @@ lazy val scoverageSettings = List(
     ".*(BuildInfo|Routes|Options|TestingUtilitiesController).*",
     "logger.*\\(.*\\)"
   ).mkString(";"),
-  coverageMinimumStmtTotal := 86,
+  coverageMinimumStmtTotal := 90,
   coverageFailOnMinimum := true,
   coverageHighlighting := true,
   Test / parallelExecution := false

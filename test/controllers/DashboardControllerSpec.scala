@@ -26,7 +26,6 @@ import models.declaration.submissions.{Action, Submission}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito.{reset, verify, when}
-import org.scalatest.BeforeAndAfterEach
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
 import views.html.dashboard.dashboard
@@ -35,11 +34,11 @@ import java.time.{ZoneOffset, ZonedDateTime}
 import java.util.UUID
 import scala.concurrent.Future
 
-class DashboardControllerSpec extends ControllerWithoutFormSpec with BeforeAndAfterEach {
+class DashboardControllerSpec extends ControllerWithoutFormSpec {
 
   val dateTime = ZonedDateTime.now(ZoneOffset.UTC)
 
-  val uuid = UUID.randomUUID.toString
+  private val uuid = UUID.randomUUID.toString
 
   private val action = Action("conversationID", SubmissionRequest, dateTime, None, Some(uuid), versionNo = 1)
 
