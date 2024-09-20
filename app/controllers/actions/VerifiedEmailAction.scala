@@ -19,8 +19,8 @@ package controllers.actions
 import com.google.inject.ImplementedBy
 import connectors.CustomsDeclareExportsConnector
 import controllers.general.routes.UnverifiedEmailController
+import models.Email
 import models.requests.{AuthenticatedRequest, VerifiedEmailRequest}
-import models.{EORI, Email}
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{ActionRefiner, MessagesControllerComponents, Result}
 import uk.gov.hmrc.http.HeaderCarrier
@@ -44,7 +44,7 @@ class VerifiedEmailActionImpl @Inject() (backendConnector: CustomsDeclareExports
 
     val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
-    backendConnector.getVerifiedEmailAddress(EORI(request.user.eori))(hc, executionContext).map {
+    backendConnector.getVerifiedEmailAddress(hc, executionContext).map {
       case Some(Email(address, true)) => Right(VerifiedEmailRequest(request, address))
       case Some(Email(_, false))      => Left(onUndeliverable)
       case _                          => Left(onUnverified)

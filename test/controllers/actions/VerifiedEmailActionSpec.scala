@@ -21,7 +21,7 @@ import connectors.CustomsDeclareExportsConnector
 import controllers.general.routes.UnverifiedEmailController
 import models.requests.{AuthenticatedRequest, VerifiedEmailRequest}
 import models.{EORI, Email}
-import org.mockito.ArgumentMatchers.{eq => meq, _}
+import org.mockito.ArgumentMatchers._
 import org.mockito.Mockito.{reset, when}
 import org.scalatest.concurrent.ScalaFutures
 import play.api.mvc.Results.Redirect
@@ -55,7 +55,7 @@ class VerifiedEmailActionSpec extends ControllerWithoutFormSpec with Injector wi
   "VerifiedEmailAction" should {
     "return a VerifiedEmailRequest" when {
       "user has a verified email address" in {
-        when(backendConnector.getVerifiedEmailAddress(meq(sampleEori))(any(), any())).thenReturn(Future.successful(Some(verifiedEmail)))
+        when(backendConnector.getVerifiedEmailAddress(any(), any())).thenReturn(Future.successful(Some(verifiedEmail)))
 
         val request = new AuthenticatedRequest(authenticatedRequest, user)
 
@@ -67,7 +67,7 @@ class VerifiedEmailActionSpec extends ControllerWithoutFormSpec with Injector wi
 
     "return a redirection Result" when {
       "user has no verified email address" in {
-        when(backendConnector.getVerifiedEmailAddress(meq(sampleEori))(any(), any())).thenReturn(Future.successful(None))
+        when(backendConnector.getVerifiedEmailAddress(any(), any())).thenReturn(Future.successful(None))
 
         val request = new AuthenticatedRequest(authenticatedRequest, user)
 
@@ -77,7 +77,7 @@ class VerifiedEmailActionSpec extends ControllerWithoutFormSpec with Injector wi
       }
 
       "user has no deliverable email address" in {
-        when(backendConnector.getVerifiedEmailAddress(meq(sampleEori))(any(), any())).thenReturn(Future.successful(Some(undeliverableEmail)))
+        when(backendConnector.getVerifiedEmailAddress(any(), any())).thenReturn(Future.successful(Some(undeliverableEmail)))
 
         val request = new AuthenticatedRequest(authenticatedRequest, user)
 
@@ -89,7 +89,7 @@ class VerifiedEmailActionSpec extends ControllerWithoutFormSpec with Injector wi
 
     "propagate exception" when {
       "connector fails" in {
-        when(backendConnector.getVerifiedEmailAddress(meq(sampleEori))(any(), any()))
+        when(backendConnector.getVerifiedEmailAddress(any(), any()))
           .thenReturn(Future.failed(new Exception("Some unhappy response")))
 
         val request = new AuthenticatedRequest(authenticatedRequest, user)
