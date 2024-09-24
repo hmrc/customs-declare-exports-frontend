@@ -223,14 +223,6 @@ class CustomsDeclareExportsConnector @Inject() (appConfig: AppConfig, httpClient
     post[CancelDeclaration, CancellationResult](getUrl(s"${appConfig.cancelDeclarationPath}"), cancellation)
   }
 
-  def getVerifiedEmailAddress(eori: EORI)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[Email]] =
-    get[Option[Email]](getUrl(s"${appConfig.fetchVerifiedEmailPath}/${eori.value}")).map { maybeVerifiedEmail =>
-      maybeVerifiedEmail match {
-        case Some(Email(_, true))  => logger.debug(s"Found verified email for eori: $eori")
-        case Some(Email(_, false)) => logger.debug(s"Undeliverable email for eori: $eori")
-        case None                  => logger.info(s"Unverified email for eori: $eori")
-      }
-
-      maybeVerifiedEmail
-    }
+  def getVerifiedEmailAddress(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[Email]] =
+    get[Option[Email]](getUrl(s"${appConfig.fetchVerifiedEmailPath}"))
 }
