@@ -261,6 +261,33 @@ object PointerRecord {
     override val amendKey: Option[String] = Some("declaration.summary.parties.actors.eori")
   }
 
+  private val previousDocumentsCategory = new DefaultPointerRecord() {
+    def fetchRawValue(dec: ExportsDeclaration, args: Int*): Option[String] = Option.empty[String]
+    override val pageLink1Param: Option[Call] = Some(PreviousDocumentsSummaryController.displayPage)
+  }
+
+  private val previousDocumentsReference = new DefaultPointerRecord() {
+    def fetchRawValue(dec: ExportsDeclaration, args: Int*): Option[String] = getPreviousDocument(dec, args(0)).map(_.documentReference)
+    override val pageLink1Param: Option[Call] = Some(PreviousDocumentsSummaryController.displayPage)
+    override val amendKey: Option[String] = Some("declaration.summary.transaction.previousDocuments.reference")
+  }
+
+  private val previousDocumentsDocumentType = new DefaultPointerRecord() {
+    def fetchRawValue(dec: ExportsDeclaration, args: Int*): Option[String] = getPreviousDocument(dec, args(0)).map(_.documentType)
+    override val pageLink1Param: Option[Call] = Some(PreviousDocumentsSummaryController.displayPage)
+    override def fetchReadableValue(
+      dec: ExportsDeclaration,
+      args: Int*
+    )(implicit msgs: Messages, countryHelper: CountryHelper, codeListConnector: CodeListConnector): Option[String] =
+      fetchRawValue(dec, args: _*).map(code => DocumentTypeService.findByCode(codeListConnector, code).asText)
+    override val amendKey: Option[String] = Some("declaration.summary.transaction.previousDocuments.type")
+  }
+
+  private val previousDocumentsGoodsItemIdentifier = new DefaultPointerRecord() {
+    def fetchRawValue(dec: ExportsDeclaration, args: Int*): Option[String] = getPreviousDocument(dec, args(0)).flatMap(_.goodsItemIdentifier)
+    override val pageLink1Param: Option[Call] = Some(PreviousDocumentsSummaryController.displayPage)
+  }
+
   val pointersToPointerRecords: Map[String, PointerRecord] = Map(
     "declaration.typeCode" -> new DefaultPointerRecord() {
       def fetchRawValue(dec: ExportsDeclaration, args: Int*): Option[String] = Option(dec.`type`.toString)
@@ -794,29 +821,14 @@ object PointerRecord {
       def fetchRawValue(dec: ExportsDeclaration, args: Int*): Option[String] = dec.containers.lift(args(0)).map(_.seals.map(_.id).mkString(", "))
       override val amendKey: Option[String] = Some("declaration.summary.container.securitySeals")
     },
-    "declaration.previousDocuments.$.documentCategory" -> new DefaultPointerRecord() {
-      def fetchRawValue(dec: ExportsDeclaration, args: Int*): Option[String] = Option.empty[String]
-      override val pageLink1Param: Option[Call] = Some(PreviousDocumentsSummaryController.displayPage)
-    },
-    "declaration.previousDocuments.$.documentReference" -> new DefaultPointerRecord() {
-      def fetchRawValue(dec: ExportsDeclaration, args: Int*): Option[String] = getPreviousDocument(dec, args(0)).map(_.documentReference)
-      override val pageLink1Param: Option[Call] = Some(PreviousDocumentsSummaryController.displayPage)
-      override val amendKey: Option[String] = Some("declaration.summary.transaction.previousDocuments.reference")
-    },
-    "declaration.previousDocuments.$.documentType" -> new DefaultPointerRecord() {
-      def fetchRawValue(dec: ExportsDeclaration, args: Int*): Option[String] = getPreviousDocument(dec, args(0)).map(_.documentType)
-      override val pageLink1Param: Option[Call] = Some(PreviousDocumentsSummaryController.displayPage)
-      override def fetchReadableValue(
-        dec: ExportsDeclaration,
-        args: Int*
-      )(implicit msgs: Messages, countryHelper: CountryHelper, codeListConnector: CodeListConnector): Option[String] =
-        fetchRawValue(dec, args: _*).map(code => DocumentTypeService.findByCode(codeListConnector, code).asText)
-      override val amendKey: Option[String] = Some("declaration.summary.transaction.previousDocuments.type")
-    },
-    "declaration.previousDocuments.$.goodsItemIdentifier" -> new DefaultPointerRecord() {
-      def fetchRawValue(dec: ExportsDeclaration, args: Int*): Option[String] = getPreviousDocument(dec, args(0)).flatMap(_.goodsItemIdentifier)
-      override val pageLink1Param: Option[Call] = Some(PreviousDocumentsSummaryController.displayPage)
-    },
+    "declaration.previousDocuments.$.documentCategory" -> previousDocumentsCategory,
+    "declaration.previousDocuments.documents.$.documentCategory" -> previousDocumentsCategory,
+    "declaration.previousDocuments.$.documentReference" -> previousDocumentsReference,
+    "declaration.previousDocuments.documents.$.documentReference" -> previousDocumentsReference,
+    "declaration.previousDocuments.$.documentType" -> previousDocumentsDocumentType,
+    "declaration.previousDocuments.documents.$.documentType" -> previousDocumentsDocumentType,
+    "declaration.previousDocuments.$.goodsItemIdentifier" -> previousDocumentsGoodsItemIdentifier,
+    "declaration.previousDocuments.documents.$.goodsItemIdentifier" -> previousDocumentsGoodsItemIdentifier,
     "declaration.locations.warehouseIdentification.identificationNumber" -> new DefaultPointerRecord() {
       def fetchRawValue(dec: ExportsDeclaration, args: Int*): Option[String] = dec.locations.warehouseIdentification.flatMap(_.identificationNumber)
       override val pageLink1Param: Option[Call] = Some(WarehouseIdentificationController.displayPage)
