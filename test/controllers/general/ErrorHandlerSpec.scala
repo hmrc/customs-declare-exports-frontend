@@ -72,7 +72,7 @@ class ErrorHandlerSpec extends UnitWithMocksSpec with Stubs with OptionValues wi
 
       view.getElementsByTag("title").first.text must startWith(expectedTitle)
       view.getElementsByTag("h1").first.text mustBe expectedHeading
-      view.getElementsByClass("govuk-body").first.text mustBe expectedMessage
+      view.getElementsByClass("govuk-body-m").first.text mustBe expectedMessage
     }
   }
 

@@ -19,11 +19,9 @@
 @import controllers.routes.Assets
 @import models.requests.AuthenticatedRequest
 @import models.requests.SessionHelper.{declarationUuid, getValue}
-@import play.twirl.api.HtmlFormat
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers._
 @import views.helpers.{BackButton, Title}
-@import views.html.components.gds.{phaseBanner, siteHeader}
 @import views.html.components._
 @import views.html.helper.CSPNonce
 
@@ -32,15 +30,15 @@
     govukLayout: GovukLayout,
     govukFlexibleLayout: govukFlexibleLayout,
     govukBackLink: GovukBackLink,
-    siteHeader: siteHeader,
     hmrcHead: HmrcHead,
     hmrcScripts: HmrcScripts,
     hmrcLanguageSelectHelper: HmrcLanguageSelectHelper,
-    hmrcTimeoutDialogHelper: HmrcTimeoutDialogHelper,
-    phaseBanner: phaseBanner,
-    timeoutDialogConfig: TimeoutDialogConfig,
     hmrcReportTechnicalIssue: HmrcReportTechnicalIssueHelper,
     hmrcFooter: HmrcStandardFooter,
+    hmrcTimeoutDialogHelper: HmrcTimeoutDialogHelper,
+    timeoutDialogConfig: TimeoutDialogConfig,
+    phaseBanner: phaseBanner,
+    siteHeader: siteHeader,
     viewDeclarationSummaryLink: viewDeclarationSummaryLink,
     appConfig: AppConfig
 )

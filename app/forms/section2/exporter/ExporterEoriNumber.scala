@@ -44,9 +44,8 @@ object ExporterEoriNumber extends DeclarationPage {
   def form: Form[ExporterEoriNumber] = Form(ExporterEoriNumber.mapping)
 
   def apply(exporterDetails: ExporterDetails): ExporterEoriNumber =
-    exporterDetails.details.eori match {
-      case Some(eori) => ExporterEoriNumber(Some(eori), YesNoAnswers.yes)
-      case _          => ExporterEoriNumber(None, YesNoAnswers.no)
+    exporterDetails.details.eori.fold(ExporterEoriNumber(None, YesNoAnswers.no)) { eori =>
+      ExporterEoriNumber(Some(eori), YesNoAnswers.yes)
     }
 
   override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =

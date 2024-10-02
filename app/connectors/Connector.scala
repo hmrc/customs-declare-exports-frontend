@@ -48,7 +48,7 @@ trait Connector {
     else if (queryParams.nonEmpty) op(httpClient.get(url"${urlWithQuery(url, queryParams)}"), additionalHeaders)
     else op(httpClient.get(url"$url"), additionalHeaders)
 
-  def post[T, R](
+  def postJson[T, R](
     url: String,
     body: T,
     additionalHeaders: Seq[(String, String)] = List.empty
@@ -61,7 +61,7 @@ trait Connector {
   )(implicit ec: ExecutionContext, hc: HeaderCarrier, reads: HttpReads[R]): Future[R] =
     transform(httpClient.post(url"$url"), additionalHeaders).execute[R]
 
-  def put[T, R](
+  def putJson[T, R](
     url: String,
     body: T,
     additionalHeaders: Seq[(String, String)] = List.empty

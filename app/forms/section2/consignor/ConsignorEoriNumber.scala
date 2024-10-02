@@ -44,9 +44,8 @@ object ConsignorEoriNumber extends DeclarationPage {
   def form: Form[ConsignorEoriNumber] = Form(ConsignorEoriNumber.mapping)
 
   def apply(consignorDetails: ConsignorDetails): ConsignorEoriNumber =
-    consignorDetails.details.eori match {
-      case Some(eori) => ConsignorEoriNumber(Some(eori), YesNoAnswers.yes)
-      case _          => ConsignorEoriNumber(None, YesNoAnswers.no)
+    consignorDetails.details.eori.fold(ConsignorEoriNumber(None, YesNoAnswers.no)) { eori =>
+      ConsignorEoriNumber(Some(eori), YesNoAnswers.yes)
     }
 
   override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =

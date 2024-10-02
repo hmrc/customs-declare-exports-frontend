@@ -22,7 +22,7 @@ import models.ExportsFieldPointer.ExportsFieldPointer
 import models.FieldMapping
 import models.viewmodels.TariffContentKey
 import play.api.data.Forms.text
-import play.api.data.{Form, Forms}
+import play.api.data.{Form, Forms, Mapping}
 import play.api.libs.json.{Json, OFormat}
 import utils.validators.forms.FieldValidator._
 
@@ -39,7 +39,7 @@ object Mucr extends DeclarationPage with FieldMapping {
 
   def form2Data(mucr: String): Mucr = Mucr(mucr.toUpperCase)
 
-  val mapping = Forms.mapping(
+  val mapping: Mapping[Mucr] = Forms.mapping(
     MUCR -> text()
       .verifying("declaration.mucr.error.empty", nonEmpty)
       .verifying("declaration.mucr.error.invalid", isEmpty or validMucrIgnoreCase)

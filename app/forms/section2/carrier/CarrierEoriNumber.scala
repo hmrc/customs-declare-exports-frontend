@@ -45,9 +45,8 @@ object CarrierEoriNumber extends DeclarationPage {
   def form: Form[CarrierEoriNumber] = Form(mapping)
 
   def apply(carrierDetails: CarrierDetails): CarrierEoriNumber =
-    carrierDetails.details.eori match {
-      case Some(eori) => CarrierEoriNumber(Some(eori), YesNoAnswers.yes)
-      case _          => CarrierEoriNumber(None, YesNoAnswers.no)
+    carrierDetails.details.eori.fold(CarrierEoriNumber(None, YesNoAnswers.no)) { eori =>
+      CarrierEoriNumber(Some(eori), YesNoAnswers.yes)
     }
 
   override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =

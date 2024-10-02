@@ -32,9 +32,8 @@ case class SupplementaryUnits(supplementaryUnits: Option[String])
 object SupplementaryUnits extends DeclarationPage {
 
   def apply(commodityMeasure: CommodityMeasureModel): SupplementaryUnits =
-    commodityMeasure.supplementaryUnits match {
-      case Some(supplementaryUnits) => SupplementaryUnits(Some(supplementaryUnits))
-      case _                        => SupplementaryUnits(None)
+    commodityMeasure.supplementaryUnits.fold(SupplementaryUnits(None)) { supplementaryUnits =>
+      SupplementaryUnits(Some(supplementaryUnits))
     }
 
   val hasSupplementaryUnits = "hasSupplementaryUnits"

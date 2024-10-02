@@ -27,14 +27,15 @@
 @this(
     govukLayout: gdsMainTemplate,
     errorSummary: errorSummary,
+    sectionHeader: sectionHeader,
+    pageTitle: pageTitle,
+    label: label,
     exportsInputText: exportsInputText,
-    heading: heading,
     body: paragraphBody,
     externalLink: externalLink,
     tariffExpander: tariffExpander,
     saveButtons: saveButtons,
     formHelper: FormWithCSRF,
-    sectionHeader: sectionHeader,
     navigator: Navigator,
     appConfig: AppConfig
 )
@@ -45,28 +46,20 @@
 
 @govukLayout(
     title = Title("declaration.mucr.title", "declaration.section.1", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(Mucr)))) {
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(Mucr))),
+    showDeclarationSummaryLink = false
+) {
 
     @formHelper(action = MucrController.submitForm, 'autoComplete -> "off") {
         @errorSummary(form.errors)
 
         @sectionHeader(messages("declaration.section.1"))
 
-        @heading(messages("declaration.mucr.title"))
+        @pageTitle(content = Some(HtmlContent(label("declaration.mucr.title", Mucr.MUCR, labelClasses = "govuk-label--xl"))))
 
-        @body(
-            messages("declaration.mucr.paragraph", externalLink(
-                text = messages("declaration.mucr.paragraph.link"),
-                url = appConfig.notesForMucrConsolidationUrl
-        )))
+        @exportsInputText(field = form(Mucr.MUCR))
 
-        @exportsInputText(
-            field = form(Mucr.MUCR),
-            labelKey = "declaration.mucr.title",
-            labelClasses = "govuk-visually-hidden"
-        )
-
-        @tariffExpander(Mucr, request.declarationType)(messages, appConfig)
+        @tariffExpander(Mucr, request.declarationType, Some("declaration.mucr.expander.title"))(messages, appConfig)
 
         @saveButtons()
     }

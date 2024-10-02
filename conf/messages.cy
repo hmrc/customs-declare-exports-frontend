@@ -216,8 +216,8 @@ tariff.declaration.consignmentReferences.common.text = Am fanylion, ewch i {0} a
 tariff.declaration.consignmentReferences.common.linkText.0 = Elfen Ddata 2/4 - Cyfeirnod Unigryw y Llwyth (UCR) (yn agor tab newydd)
 tariff.declaration.consignmentReferences.common.linkText.1 = Elfen Ddata 2/5 - Cyfeirnod Lleol (LRN), dim cyfeirnod blaenorol (yn agor tab newydd)
 tariff.declaration.consignmentReferences.supplementary.linkText.0 = Elfen Ddata 2/1 - Datganiadau atodol (yn agor tab newydd)
-tariff.declaration.mucr.common.text = Mae’r cofnod ar y dudalen hon yn nodi’r categori datganiad ‘Z’ a chod dogfen ‘MCR’ yn awtomatig.<br><br>Am fanylion, ewch i {0}.
-tariff.declaration.mucr.common.linkText.0 = Elfen Ddata 2/1 - Datganiad Symlach, Dogfennau Blaenorol (yn agor tab newydd)
+tariff.declaration.mucr.common.text = Mae yna 3 fformat MUCR. Cymerwch ofal i sicrhau eich bod yn defnyddio’r un cywir.<br><br>Gellir dod o hyd i wybodaeth fformat yn yr adran ‘Fformat y MUCR’ o arweiniad ar {0}.
+tariff.declaration.mucr.common.linkText.0 = Gyfeiriadau Negeseuon, Dogfennau, Tystysgrifau a Awdurdodiadau (yn agor tab newydd)
 tariff.declaration.declarantDetails.common.linkText.0 = Elfen Ddata 3/18 - Rhif Adnabod y Datganydd (yn agor tab newydd)
 tariff.declaration.areYouTheExporter.common.linkText.0 = Elfen Ddata 3/2 - Rhif Adnabod yr Allforiwr (yn agor tab newydd)
 tariff.declaration.areYouTheExporter.common.1.text = Bydd ateb ‘Iawn’ yn anfon 00400 ALLFORWR ar gyfer Elfen Ddata 2/2, sy’n ofynnol os mai chi yw’r allforiwr.
@@ -546,11 +546,11 @@ declaration.linkDucrToMucr.error.required = Dewiswch ‘Iawn’ os ydych am gysy
 
 declaration.declarant.eori.banner.title = Pwysig: ynglŷn â’r rhif EORI
 declaration.declarant.eori.banner.content = Mae’r Rhif Cofrestru ac Adnabod Gweithredwyr Economaidd (EORI) yn rhif cofrestru sy’n nodi busnes mewnforio neu allforio.
+
 declaration.mucr.title = Nodwch yr MUCR
-declaration.mucr.paragraph = I wirio’r fformat cywir, gweler yr adran ‘Nodiadau’ ar {0}.
-declaration.mucr.paragraph.link = Elfen Ddata 2/1 Dogfennau Blaenorol (yn agor tab newydd)
 declaration.mucr.error.empty = Nodwch MUCR
 declaration.mucr.error.invalid = Mae’n rhaid i Brif Gyfeirnod Unigryw y Llwyth (MUCR) gynnwys llythrennau, rhifau, comas, cysylltnodau a blaenslaesys yn unig
+declaration.mucr.expander.title = Ynglŷn â’r fformat MUCR
 
 declaration.declarant.exporter.title = Ai chi yw’r allforiwr?
 declaration.declarant.exporter.answer.yes = Iawn
