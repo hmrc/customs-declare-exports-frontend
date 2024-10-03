@@ -28,6 +28,7 @@
     govukLayout: gdsMainTemplate,
     govukButton: GovukButton,
     pageTitle: pageTitle,
+    heading: heading,
     exportsInputText: exportsInputText,
     errorSummary: errorSummary,
     sectionHeader: sectionHeader,
@@ -53,13 +54,13 @@
 
         @pageTitle(messages("declaration.copy.title"))
 
-        @paragraphBody(messages("declaration.copy.ducr.label"), "govuk-label govuk-label--m")
+        @heading(messages("declaration.copy.ducr.label"), "govuk-label--m", "h2", Some(form(ducrId).id))
 
         @paragraphBody(messages("declaration.copy.ducr.hint"), "govuk-hint")
 
         @exportsInputText(field = form(ducrId), inputClasses = Some("govuk-input"))
 
-        @paragraphBody(messages("declaration.copy.lrn.label"), "govuk-label govuk-label--m")
+        @heading(messages("declaration.copy.lrn.label"), "govuk-label--m", "h2", Some(form("lrn").id))
 
         @paragraphBody(messages("declaration.copy.lrn.paragraph"))
 

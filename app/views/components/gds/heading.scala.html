@@ -16,6 +16,12 @@
 
 @this()
 
-@(message: String, classes: String = "govuk-heading-xl", tier: String = "h1")
+@(message: String, classes: String = "govuk-heading-xl", tier: String = "h1", labelFor: Option[String] = None)
 
-<@tier class="@classes">@message</@tier>
+@labelFor.fold {
+  <@tier class="@classes">@message</@tier>
+} { labelFor =>
+  <@tier class="govuk-label-wrapper">
+    <label class="govuk-label @classes" for="@labelFor">@message</label>
+  </@tier>
+}

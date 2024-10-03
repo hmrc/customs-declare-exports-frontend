@@ -50,7 +50,7 @@ class LocationOfGoodsSpec extends DeclarationPageBaseSpec with BeforeAndAfterEac
   "LocationOfGoods for version 1, 6 or 7 of the page" should {
 
     def yesNoForm(yesNo: String, code: String): Form[LocationOfGoods] = {
-      val json = Json.obj("yesNo" -> yesNo, "glc" -> "", "code" -> code)
+      val json = Json.obj(radioGroupId -> yesNo, "glc" -> "", "code" -> code)
       LocationOfGoods.form(version = 1).bind(json, Form.FromJsonMaxChars)
     }
 

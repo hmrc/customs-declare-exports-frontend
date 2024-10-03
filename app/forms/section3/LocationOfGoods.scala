@@ -97,9 +97,9 @@ object LocationOfGoods extends DeclarationPage {
     cseCodesOnly: Boolean
   )(implicit messages: Messages, codeListConnector: CodeListConnector): Mapping[LocationOfGoods] =
     Forms.mapping(
-      "yesNo" -> requiredRadio("declaration.locationOfGoods.code.required", YesNoAnswer.allowedValues),
-      locationId -> conditionalFieldMapping("yesNo", YesNoAnswers.yes),
-      "code" -> conditionalFieldMapping("yesNo", YesNoAnswers.no)
+      radioGroupId -> requiredRadio("declaration.locationOfGoods.code.required", YesNoAnswer.allowedValues),
+      locationId -> conditionalFieldMapping(radioGroupId, YesNoAnswers.yes),
+      "code" -> conditionalFieldMapping(radioGroupId, YesNoAnswers.no)
     )(form2Data)(model2Form(_, cseCodesOnly))
 
   private def conditionalFieldMapping(

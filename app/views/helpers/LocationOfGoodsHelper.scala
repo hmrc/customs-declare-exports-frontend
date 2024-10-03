@@ -35,6 +35,7 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.errormessage.ErrorMessage
 import uk.gov.hmrc.govukfrontend.views.viewmodels.fieldset.{Fieldset, Legend}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.hint.Hint
 import uk.gov.hmrc.govukfrontend.views.viewmodels.input.Input
+import uk.gov.hmrc.govukfrontend.views.viewmodels.label.Label
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.{RadioItem, Radios}
 import views.helpers.ErrorMapper.radioGroupErrors
 import views.html.components.fields.field_accessible_autocomplete
@@ -186,10 +187,11 @@ class LocationOfGoodsHelper @Inject() (
     yesNoRadios(
       form,
       heading = Some(Fieldset(legend = Some(Legend(Text(messages("declaration.locationOfGoods.yesNo.header")), "govuk-fieldset__legend--s")))),
+      answerKey = radioGroupId,
       yesKey = Some("declaration.locationOfGoods.yesNo.yesKey"),
       noKey = Some("declaration.locationOfGoods.yesNo.noKey"),
       yesHint = None,
-      noHint = Some(Seq("declaration.locationOfGoods.yesNo.noHint")),
+      noHint = None,
       yesConditionalHtml = Some(goodsLocationInputYes(form, version)),
       noConditionalHtml = Some(goodsLocationInputNo(form("code")))
     )
@@ -210,6 +212,8 @@ class LocationOfGoodsHelper @Inject() (
         id = field.id,
         name = field.name,
         value = field.value,
+        label =
+          Label(forAttr = Some(field.id), content = HtmlContent(messages("declaration.locationOfGoods.yesNo.noHint")), classes = "govuk-label--s"),
         hint = Some(Hint(content = Text(messages("declaration.locationOfGoods.yesNo.no.hint")))),
         classes = s"govuk-!-width-two-thirds ${if (field.hasErrors) "govuk-input--error"}",
         errorMessage = InputTextHelper.fieldErrorMessages(field)
