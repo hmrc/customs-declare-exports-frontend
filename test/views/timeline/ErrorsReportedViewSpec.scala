@@ -20,33 +20,53 @@ import base.Injector
 import connectors.CodeListConnector
 import controllers.routes.SavedDeclarationsController
 import controllers.timeline.routes.{DeclarationDetailsController, SubmissionsController}
-import models.declaration.errors.ErrorInstance
+import models.Pointer
+import models.codes.DmsErrorCode
+import models.declaration.errors.{ErrorInstance, FieldInvolved}
 import org.jsoup.nodes.Document
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
 import play.api.i18n.Messages
 import services.cache.ExportsTestHelper
 import views.common.UnitViewSpec
 import views.html.timeline.errors_reported
 
+import scala.collection.immutable.ListMap
+
 class ErrorsReportedViewSpec extends UnitViewSpec with ExportsTestHelper with Injector {
 
   private val codeListConnector = mock[CodeListConnector]
-  private val declaration = aDeclaration(withConsignmentReferences("DUCR", "lrn"))
+  private val declaration = aDeclaration(withConsignmentReferences("DUCR", "lrn"), withItems(2))
+
+  private val errorCode = "CDS12056"
+  private val errorMap = {
+    val dmsErrorCode = DmsErrorCode(errorCode, "Relation Error: The combination of elements is not allowed")
+    ListMap(errorCode -> dmsErrorCode)
+  }
+
+  when(codeListConnector.getDmsErrorCodesMap(any())).thenReturn(errorMap)
+
+  private val errorInstances = {
+    val fieldPointer = "declaration.items.#1.additionalDocument.#2.documentStatus"
+    val field = FieldInvolved(Pointer(fieldPointer), Some("ABC"), Some("CBA"), None, None)
+    List(ErrorInstance(declaration, 1, errorCode, List(field)))
+  }
 
   private val page = instanceOf[errors_reported]
 
   private def view(
-    reasons: Seq[ErrorInstance] = Seq.empty,
+    errorInstances: Seq[ErrorInstance] = errorInstances,
     maybeDeclarationId: Option[String] = None,
     testMessages: Messages = messages,
     maybeSubmissionId: Option[String] = None
   ): Document =
-    page(maybeSubmissionId, declaration, MRN.value, maybeDeclarationId, reasons)(request, testMessages, codeListConnector)
+    page(maybeSubmissionId, declaration, MRN.value, maybeDeclarationId, errorInstances)(request, testMessages, codeListConnector)
 
   private val submissionId = "submissionId"
 
   private val defaultView: Document = view()
-  private val amendmentView: Document =
-    view(maybeDeclarationId = Some("declarationId"), maybeSubmissionId = Some(submissionId))
+
+  private val amendmentView: Document = view(maybeDeclarationId = Some("declarationId"), maybeSubmissionId = Some(submissionId))
 
   "Errors Reported page" when {
     "environment is NOT TDR" should {

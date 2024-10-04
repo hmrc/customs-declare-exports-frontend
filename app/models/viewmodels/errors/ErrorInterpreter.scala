@@ -57,7 +57,7 @@ trait ErrorInterpreter {
     }
   }
 
-  def fieldsTableHeader(implicit messages: Messages) = Html(s"""<table class="govuk-table">
+  def fieldsTableHeader(implicit messages: Messages): Html = Html(s"""<table class="govuk-table">
       |  <thead class="govuk-table__head">
       |    <tr class="govuk-table__row">
       |      <th scope="col" class="govuk-table__header"></th>
@@ -81,7 +81,7 @@ trait ErrorInterpreter {
     originalValue: Option[String],
     updatedValue: Option[String],
     call: Option[Html]
-  ) =
+  ): String =
     s"""<tr class="govuk-table__row ${fieldPointer.toString.replaceAll("\\.#?", "-")}">
        |  <td class="govuk-table__cell govuk-table__cell_break-word bold">${fieldName}</td>
        |  <td class="govuk-table__cell govuk-table__cell_break-word">${originalValue.getOrElse("-")}</td>
@@ -90,12 +90,11 @@ trait ErrorInterpreter {
        |</tr>
        |""".stripMargin
 
-  val fieldsTableFooter = Html("""</tbody>
-                            |</table>""".stripMargin)
+  val fieldsTableFooter: Html = Html("</tbody></table>".stripMargin)
 
-  val errorHeader = Html("""<div class="govuk-summary-card govuk-!-margin-bottom-4">""")
-  val contentHeader = Html("""<div class="govuk-summary-card__content"> <dl class="govuk-summary-list govuk-!-margin-bottom-3">""")
-  val errorFooter = Html("</dl></div></div>")
+  val errorHeader: Html = Html("""<div class="govuk-summary-card govuk-!-margin-bottom-4">""")
+  val contentHeader: Html = Html("""<div class="govuk-summary-card__content"> <div class="govuk-summary-list govuk-!-margin-bottom-3">""")
+  val errorFooter: Html = Html("</div></div></div>")
 
   def generateFieldTable(error: ErrorInstance)(implicit messages: Messages): Seq[Html] =
     error.fieldsInvolved.map { field =>
