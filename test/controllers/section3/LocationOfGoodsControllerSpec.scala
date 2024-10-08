@@ -22,7 +22,7 @@ import controllers.general.routes.RootController
 import controllers.section3.routes.OfficeOfExitController
 import forms.section1.AdditionalDeclarationType.SUPPLEMENTARY_EIDR
 import forms.section3.LocationOfGoods
-import forms.section3.LocationOfGoods.locationId
+import forms.section3.LocationOfGoods.{locationId, radioGroupId}
 import models.DeclarationType
 import models.codes.{Country, GoodsLocationCode}
 import models.declaration.DeclarationStatus.AMENDMENT_DRAFT
@@ -150,7 +150,7 @@ class LocationOfGoodsControllerSpec extends ControllerSpec with AuditedControlle
 
     "update the declaration" when {
       "information provided by the user are correct" in {
-        val correctForm = Json.obj("yesNo" -> "Yes", locationId -> "PLAUEMAEMAEMA", "code" -> "")
+        val correctForm = Json.obj(radioGroupId -> "Yes", locationId -> "PLAUEMAEMAEMA", "code" -> "")
         val result = controller.saveLocation(postRequest(correctForm))
 
         await(result) mustBe aRedirectToTheNextPage
@@ -165,7 +165,7 @@ class LocationOfGoodsControllerSpec extends ControllerSpec with AuditedControlle
     "return 400 (BAD_REQUEST)" when {
 
       "no value is entered" in {
-        val incorrectForm = Json.obj("yesNo" -> "", fieldIdOnError(locationId) -> "")
+        val incorrectForm = Json.obj(radioGroupId -> "", fieldIdOnError(locationId) -> "")
         val result = controller.saveLocation(postRequest(incorrectForm))
 
         status(result) mustBe BAD_REQUEST
@@ -175,7 +175,7 @@ class LocationOfGoodsControllerSpec extends ControllerSpec with AuditedControlle
       }
 
       "no location code is entered" in {
-        val incorrectForm = Json.obj("yesNo" -> "Yes", fieldIdOnError(locationId) -> "")
+        val incorrectForm = Json.obj(radioGroupId -> "Yes", fieldIdOnError(locationId) -> "")
         val result = controller.saveLocation(postRequest(incorrectForm))
 
         status(result) mustBe BAD_REQUEST
@@ -185,7 +185,7 @@ class LocationOfGoodsControllerSpec extends ControllerSpec with AuditedControlle
       }
 
       "the entered value is incorrect or not a list's option" in {
-        val incorrectForm = Json.obj("yesNo" -> "Yes", fieldIdOnError(locationId) -> "!@#$")
+        val incorrectForm = Json.obj(radioGroupId -> "Yes", fieldIdOnError(locationId) -> "!@#$")
         val result = controller.saveLocation(postRequest(incorrectForm))
 
         status(result) mustBe BAD_REQUEST

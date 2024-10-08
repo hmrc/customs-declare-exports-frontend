@@ -17,6 +17,7 @@
 @import config.AppConfig
 @import controllers.navigation.Navigator
 @import controllers.section3.routes.LocationOfGoodsController
+@import forms.section3.LocationOfGoods.radioGroupId
 @import forms.section3.LocationOfGoods
 @import models.requests.JourneyRequest
 @import play.api.data.Form
@@ -31,7 +32,7 @@
     errorSummary: errorSummary,
     notificationBanner: notificationBanner,
     sectionHeader: sectionHeader,
-    pageTitle: pageTitle,
+    heading: heading,
     paragraph: paragraphBody,
     externalLink: externalLink,
     saveButtons: saveButtons,
@@ -61,7 +62,7 @@
 
         @sectionHeader(messages("declaration.section.3"))
 
-        @pageTitle(messages(s"declaration.locationOfGoods.title.v$version"))
+        @heading(messages(s"declaration.locationOfGoods.title.v$version"), "govuk-label--xl", "h1", Some(form(radioGroupId).id))
 
         @locationOfGoodsHelper.contentUnderHeading(version)
 
