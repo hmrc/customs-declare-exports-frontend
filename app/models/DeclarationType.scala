@@ -25,13 +25,13 @@ object DeclarationType extends Enumeration {
   implicit val format: Format[DeclarationType.Value] = EnumJson.format(DeclarationType)
 
   val STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL, CLEARANCE = Value
-  val allDeclarationTypes = List(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL, CLEARANCE)
+  val allDeclarationTypes: Seq[Value] = List(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL, CLEARANCE)
 
   def allDeclarationTypesExcluding(types: DeclarationType*): Seq[DeclarationType.Value] = allDeclarationTypes diff types
 
-  val nonClearanceJourneys = allDeclarationTypesExcluding(CLEARANCE)
-  val standardAndSupplementary = List(STANDARD, SUPPLEMENTARY)
-  val occasionalAndSimplified = List(OCCASIONAL, SIMPLIFIED)
+  val nonClearanceJourneys: Seq[Value] = allDeclarationTypesExcluding(CLEARANCE)
+  val standardAndSupplementary: Seq[Value] = List(STANDARD, SUPPLEMENTARY)
+  val occasionalAndSimplified: Seq[Value] = List(OCCASIONAL, SIMPLIFIED)
 
   def isStandardOrSupplementary(declaration: ExportsDeclaration): Boolean = standardAndSupplementary.contains(declaration.`type`)
   def isOccasionalOrSimplified(declaration: ExportsDeclaration): Boolean = occasionalAndSimplified.contains(declaration.`type`)

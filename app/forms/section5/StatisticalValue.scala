@@ -60,6 +60,5 @@ object StatisticalValue extends DeclarationPage with FieldMapping {
   def form: Form[StatisticalValue] = Form(mapping)
 
   override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
-    List(TariffContentKey("tariff.declaration.item.statisticalValue.1.common"), TariffContentKey("tariff.declaration.item.statisticalValue.2.common"))
-
+    List(TariffContentKey("tariff.declaration.item.statisticalValue.common"))
 }

@@ -42,8 +42,7 @@ class StatisticalValueFormSpec extends DeclarationPageBaseSpec {
     }
   }
 
-  override def getCommonTariffKeys(messageKey: String): Seq[TariffContentKey] =
-    Seq(TariffContentKey(s"${messageKey}.1.common"), TariffContentKey(s"${messageKey}.2.common"))
+  override def getCommonTariffKeys(messageKey: String): Seq[TariffContentKey] = List(TariffContentKey(s"${messageKey}.common"))
 
   "StatisticalValue" when {
     testTariffContentKeysNoSpecialisation(StatisticalValue, "tariff.declaration.item.statisticalValue")

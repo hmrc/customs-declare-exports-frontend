@@ -48,7 +48,7 @@ class StatisticalValueController @Inject() (
 )(implicit ec: ExecutionContext, auditService: AuditService)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithUnsafeDefaultFormBinding {
 
-  val validJourneys = standardAndSupplementary ::: occasionalAndSimplified
+  private val validJourneys = nonClearanceJourneys
 
   def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType(validJourneys)) { implicit request =>
     if (redirectToRoot(itemId)) Redirect(RootController.displayPage)
