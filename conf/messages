@@ -425,7 +425,7 @@ declaration.ducr.choice.title = Do you have a Declaration Unique Consignment Ref
 declaration.ducr.banner.title =Important: about the DUCR
 declaration.ducr.banner.content = A Declaration Unique Consignment Reference (DUCR) is a unique reference used by customs to identify a specific goods item intended for import or export.
 declaration.ducr.choice.answer.no = No, I would like to create a DUCR
-declaration.ducr.choice.answer.empty = Select if you would like to create a DUCR
+declaration.ducr.choice.answer.empty = Select yes if you have a DUCR
 
 declaration.ducrEntry.header = Enter your Declaration Unique Consignment Reference (DUCR)
 declaration.ducrEntry.ducr.expander.title = Understand the format of a DUCR
