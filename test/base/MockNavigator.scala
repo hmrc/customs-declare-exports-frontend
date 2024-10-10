@@ -35,14 +35,14 @@ trait MockNavigator extends MockitoSugar with BeforeAndAfterEach { self: Mockito
   protected val hc: HeaderCarrier = HeaderCarrier()
 
   override protected def beforeEach(): Unit = {
-    given(navigator.continueTo(any[Call]())(any[JourneyRequest[AnyContent]]))
-      .willReturn(aRedirectToTheNextPage)
+    super.beforeEach()
+    given(navigator.continueTo(any[Call]())(any[JourneyRequest[AnyContent]])).willReturn(aRedirectToTheNextPage)
     given(aRedirectToTheNextPage.header).willReturn(ResponseHeader(Status.SEE_OTHER))
   }
 
   override protected def afterEach(): Unit = {
-    super.afterEach()
     Mockito.reset(navigator)
+    super.afterEach()
   }
 
   protected def initMockNavigatorForMultipleCallsInTheSameTest(): Unit = {
