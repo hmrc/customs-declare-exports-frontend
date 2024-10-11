@@ -41,12 +41,14 @@ case class Submission(
     } yield notificationSummaries.map(_.enhancedStatus)
   ).getOrElse(Seq.empty[EnhancedStatus])
 
+  // 'latestDecId' can be empty only in legacy declarations.
+  // 'latestDecId' was formerly emptied at reception of a DMSRES notification.
   lazy val blockAmendments: Boolean = latestDecId.isEmpty
 
   lazy val isStatusAcceptedOrReceived: Boolean =
     allSubmissionRequestStatuses.intersect(Seq(GOODS_ARRIVED_MESSAGE, GOODS_ARRIVED, RECEIVED)).nonEmpty
 
-  lazy val hasExternalAmendments = actions.exists(_.requestType == ExternalAmendmentRequest)
+  lazy val hasExternalAmendments: Boolean = actions.exists(_.requestType == ExternalAmendmentRequest)
 
   lazy val latestAction: Option[Action] =
     if (actions.isEmpty) None

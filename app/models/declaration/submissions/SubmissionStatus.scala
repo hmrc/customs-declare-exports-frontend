@@ -33,8 +33,6 @@ object SubmissionStatus extends Enumeration {
   lazy val actionRequiredStatuses: Set[submissions.SubmissionStatus.Value] =
     Set(ADDITIONAL_DOCUMENTS_REQUIRED, UNDERGOING_PHYSICAL_CHECK, QUERY_NOTIFICATION_MESSAGE)
 
-  lazy val otherStatuses: Set[submissions.SubmissionStatus.Value] = values &~ rejectedStatuses &~ actionRequiredStatuses
-
   lazy val eadAcceptableStatuses: Set[submissions.SubmissionStatus.Value] = values &~ Set(PENDING, REJECTED, UNKNOWN)
 }
 

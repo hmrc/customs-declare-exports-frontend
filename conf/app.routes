@@ -49,7 +49,6 @@ GET         /undeliverable-email                           controllers.general.U
 GET         /submissions/:id/view                          controllers.timeline.SubmissionsController.viewDeclaration(id: String)
 
 GET         /submissions/:id/information                   controllers.timeline.DeclarationDetailsController.displayPage(id: String)
-GET         /submissions/:id/unavailable-actions           controllers.timeline.DeclarationDetailsController.unavailableActions(id: String)
 
 GET         /submissions/:id                               controllers.timeline.SubmissionsController.amend(id: String, isAmendment: Boolean)
 
