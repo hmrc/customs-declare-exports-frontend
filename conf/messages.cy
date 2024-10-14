@@ -420,7 +420,7 @@ declaration.ducr.choice.title = A oes gennych Gyfeirnod Unigryw y Llwyth ar gyfe
 declaration.ducr.banner.title = Pwysig: ynglŷn â’r DUCR
 declaration.ducr.banner.content = Mae Cyfeirnod Unigryw y Llwyth ar gyfer Datganiad (DUCR) yn gyfeiriad unigryw a ddefnyddir gan y tollau i nodi eitem nwyddau benodol y bwriedir ei mewnforio neu ei allforio.
 declaration.ducr.choice.answer.no = Na, hoffwn greu DUCR
-declaration.ducr.choice.answer.empty = Dewiswch a hoffech greu DUCR
+declaration.ducr.choice.answer.empty = Dewiswch ‘Iawn’ os oes gennych DUCR
 
 declaration.ducrEntry.header = Nodwch eich Cyfeirnod Unigryw y Llwyth ar gyfer Datganiad (DUCR)
 declaration.ducrEntry.ducr.expander.title  = Deall fformat DUCR
