@@ -56,6 +56,18 @@ abstract class DefaultPointerRecord extends PointerRecord {
 // scalastyle:off
 object PointerRecord {
 
+  private val pointerRecordForPage = (call: Call) =>
+    new DefaultPointerRecord() {
+      def fetchRawValue(dec: ExportsDeclaration, args: Int*) = Option.empty[String]
+      override val pageLink1Param: Option[Call] = Some(call)
+    }
+
+  private val pointerRecordForSummary = (call: String => Call) =>
+    new DefaultPointerRecord() {
+      def fetchRawValue(dec: ExportsDeclaration, args: Int*) = Option.empty[String]
+      override val pageLink2Param: Option[String => Call] = Some(call)
+    }
+
   private val getItem = (dec: ExportsDeclaration, idx: Int) => dec.items.lift(idx)
   private val getAdditionalDocument = (item: ExportItem, idx: Int) => item.additionalDocuments.flatMap(_.documents.lift(idx))
   private val getAdditionalInformation = (item: ExportItem, idx: Int) => item.additionalInformation.flatMap(_.items.lift(idx))
@@ -69,7 +81,6 @@ object PointerRecord {
 
   val defaultPointerRecord: DefaultPointerRecord = new DefaultPointerRecord {
     def fetchRawValue(dec: ExportsDeclaration, args: Int*): Some[String] = Some("MISSING") // Option.empty[String]
-    override val amendKey: Option[String] = None
   }
 
   private val procedureCodePointerRecord = new DefaultPointerRecord {
@@ -261,10 +272,7 @@ object PointerRecord {
     override val amendKey: Option[String] = Some("declaration.summary.parties.actors.eori")
   }
 
-  private val previousDocumentsCategory = new DefaultPointerRecord() {
-    def fetchRawValue(dec: ExportsDeclaration, args: Int*): Option[String] = Option.empty[String]
-    override val pageLink1Param: Option[Call] = Some(PreviousDocumentsSummaryController.displayPage)
-  }
+  private val previousDocumentsCategory = pointerRecordForPage(PreviousDocumentsSummaryController.displayPage)
 
   private val previousDocumentsReference = new DefaultPointerRecord() {
     def fetchRawValue(dec: ExportsDeclaration, args: Int*): Option[String] = getPreviousDocument(dec, args(0)).map(_.documentReference)
@@ -309,11 +317,7 @@ object PointerRecord {
       override val pageLink2Param: Option[String => Call] = Some(StatisticalValueController.displayPage)
       override val amendKey: Option[String] = Some(s"$itemsPrefix.itemValue")
     },
-    "declaration.items.$.additionalDocument" -> new DefaultPointerRecord() {
-      def fetchRawValue(dec: ExportsDeclaration, args: Int*) = Option.empty[String]
-      override val pageLink2Param: Option[String => Call] = Some(AdditionalDocumentsController.displayPage)
-      override val amendKey: Option[String] = None
-    },
+    "declaration.items.$.additionalDocument" -> pointerRecordForSummary(AdditionalDocumentsController.displayPage),
     "declaration.items.$.additionalDocument.documents.$.documentTypeCode" -> documentTypeCode,
     "declaration.items.$.additionalDocument.documentTypeCode" -> new DefaultPointerRecord() {
       def fetchRawValue(dec: ExportsDeclaration, args: Int*): Option[String] =
@@ -445,6 +449,7 @@ object PointerRecord {
         fetchRawValue(dec, args: _*).map(code => msgs(s"declaration.summary.item.zeroRatedForVat.$code"))
       override val amendKey: Option[String] = Some("declaration.summary.item.zeroRatedForVat")
     },
+    "declaration.items.$.packaging" -> pointerRecordForSummary(PackageInformationSummaryController.displayPage),
     "declaration.items.$.packageInformation.$.shippingMarks" -> new DefaultPointerRecord() {
       def fetchRawValue(dec: ExportsDeclaration, args: Int*): Option[String] =
         getItem(dec, args(0)).flatMap(getPackageInformation(_, args(1)).flatMap(_.shippingMarks))
@@ -472,10 +477,7 @@ object PointerRecord {
       def fetchRawValue(dec: ExportsDeclaration, args: Int*): Option[String] = Some(dec.items.size.toString)
       override val pageLink1Param: Option[Call] = Some(ItemsSummaryController.displayItemsSummaryPage)
     },
-    "declaration.items.$" -> new DefaultPointerRecord() {
-      def fetchRawValue(dec: ExportsDeclaration, args: Int*): Option[String] = Option.empty[String]
-      override val pageLink1Param: Option[Call] = Some(ItemsSummaryController.displayItemsSummaryPage)
-    },
+    "declaration.items.$" -> pointerRecordForPage(ItemsSummaryController.displayItemsSummaryPage),
     "declaration.consignmentReferences.lrn" -> new DefaultPointerRecord() {
       def fetchRawValue(dec: ExportsDeclaration, args: Int*): Option[String] = dec.consignmentReferences.flatMap(_.lrn.map(_.lrn))
       override val pageLink1Param: Option[Call] = Some(LocalReferenceNumberController.displayPage)
@@ -504,6 +506,7 @@ object PointerRecord {
       override val pageLink1Param: Option[Call] = Some(TotalPackageQuantityController.displayPage)
       override val amendKey: Option[String] = Some("declaration.summary.transaction.totalNoOfPackages")
     },
+    "declaration.parties.representativeDetails" -> pointerRecordForPage(RepresentativeAgentController.displayPage),
     "declaration.parties.representativeDetails.details.eori" -> new DefaultPointerRecord() {
       def fetchRawValue(dec: ExportsDeclaration, args: Int*): Option[String] =
         dec.parties.representativeDetails.flatMap(_.details.flatMap(_.eori.map(_.value)))
@@ -657,6 +660,7 @@ object PointerRecord {
       def fetchRawValue(dec: ExportsDeclaration, args: Int*): Option[String] = dec.parties.personPresentingGoodsDetails.map(_.eori.value)
       override val amendKey: Option[String] = Some("declaration.summary.parties.exporter.eori")
     },
+    "declaration.parties.exporterDetails" -> pointerRecordForPage(ExporterDetailsController.displayPage),
     "declaration.parties.exporterDetails.eori" -> exporterEori,
     "declaration.parties.exporterDetails.details.eori" -> exporterEori,
     "declaration.parties.exporterDetails.details.address.fullName" -> new DefaultPointerRecord() {
@@ -792,11 +796,12 @@ object PointerRecord {
       override val amendKey: Option[String] = Some("declaration.summary.parties.consignor.address.postCode")
     },
     "declaration.transport.meansOfTransportOnDepartureIDNumber" -> meansOfTransportOnDepartureIDNumber,
-    "declaration.departureTransport.meansOfTransportOnDepartureIDNumber" -> meansOfTransportOnDepartureIDNumber,
-    "declaration.locations.inlandModeOfTransportCode.inlandModeOfTransportCode" -> inlandModeOfTransportCode,
-    "declaration.departureTransport.borderModeOfTransportCode" -> inlandModeOfTransportCode,
     "declaration.transport.meansOfTransportOnDepartureType" -> meansOfTransportOnDepartureType,
+    "declaration.departureTransport" -> pointerRecordForPage(DepartureTransportController.displayPage),
+    "declaration.departureTransport.meansOfTransportOnDepartureIDNumber" -> meansOfTransportOnDepartureIDNumber,
+    "declaration.departureTransport.borderModeOfTransportCode" -> inlandModeOfTransportCode,
     "declaration.departureTransport.meansOfTransportOnDepartureType" -> meansOfTransportOnDepartureType,
+    "declaration.locations.inlandModeOfTransportCode.inlandModeOfTransportCode" -> inlandModeOfTransportCode,
     "declaration.locations.goodsLocation.nameOfLocation" -> new DefaultPointerRecord() {
       def fetchRawValue(dec: ExportsDeclaration, args: Int*): Option[String] = dec.locations.goodsLocation.map(_.value)
       override val pageLink1Param: Option[Call] = Some(LocationOfGoodsController.displayPage)
@@ -829,6 +834,7 @@ object PointerRecord {
     "declaration.previousDocuments.documents.$.documentType" -> previousDocumentsDocumentType,
     "declaration.previousDocuments.$.goodsItemIdentifier" -> previousDocumentsGoodsItemIdentifier,
     "declaration.previousDocuments.documents.$.goodsItemIdentifier" -> previousDocumentsGoodsItemIdentifier,
+    "declaration.locations.warehouseIdentification" -> pointerRecordForPage(WarehouseIdentificationController.displayPage),
     "declaration.locations.warehouseIdentification.identificationNumber" -> new DefaultPointerRecord() {
       def fetchRawValue(dec: ExportsDeclaration, args: Int*): Option[String] = dec.locations.warehouseIdentification.flatMap(_.identificationNumber)
       override val pageLink1Param: Option[Call] = Some(WarehouseIdentificationController.displayPage)
