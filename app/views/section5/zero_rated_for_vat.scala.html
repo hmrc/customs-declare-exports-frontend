@@ -53,10 +53,7 @@
       "declaration.zeroRatedForVat.body.restricted.text",
       link(messages("declaration.zeroRatedForVat.body.restricted.linkText"), Call("GET", appConfig.previousProcedureCodes), Some("_blank"))
     ))
-    else paragraphBody(messages(
-      "declaration.zeroRatedForVat.body.text",
-      link(messages("declaration.zeroRatedForVat.body.linkText"), Call("GET", appConfig.guidance.vatOnGoodsExportedFromUK), Some("_blank"))
-    ))
+    else paragraphBody(messages("declaration.zeroRatedForVat.body.text"))
 }
 
 @radios = {
@@ -65,17 +62,16 @@
             name = NactCode.nactCodeKey,
             items = Seq(
                 RadioItem(
+                    id = Some(VatReportAfterDeclaration.toString),
+                    value = Some(VatReportAfterDeclaration.toString),
+                    content = Text(messages("declaration.zeroRatedForVat.radio.VatReportAfterDeclaration")),
+                    checked = form(NactCode.nactCodeKey).value.contains(VatReportAfterDeclaration.toString)
+                ),
+                RadioItem(
                     id = Some(VatZeroRatedYes.toString),
                     value = Some(VatZeroRatedYes.toString),
                     content = Text(messages("declaration.zeroRatedForVat.radio.VatZeroRatedYes")),
                     checked = form(NactCode.nactCodeKey).value.contains(VatZeroRatedYes.toString)
-                ),
-                RadioItem(
-                    id = Some(VatZeroRatedReduced.toString),
-                    value = Some(VatZeroRatedReduced.toString),
-                    content = Text(messages("declaration.zeroRatedForVat.radio.VatZeroRatedReduced")),
-                    hint = Some(Hint(content = Text(messages("declaration.zeroRatedForVat.radio.VatZeroRatedReduced.hint")))),
-                    checked = form(NactCode.nactCodeKey).value.contains(VatZeroRatedReduced.toString)
                 ),
                 RadioItem(
                     id = Some(VatZeroRatedExempt.toString),
@@ -89,11 +85,28 @@
                     value = Some(VatZeroRatedPaid.toString),
                     content = Text(messages(s"declaration.zeroRatedForVat.radio.VatZeroRatedPaid")),
                     checked = form(NactCode.nactCodeKey).value.contains(VatZeroRatedPaid.toString)
-                )
+                ),
+                RadioItem(
+                    id = Some(VatZeroRatedReduced.toString),
+                    value = Some(VatZeroRatedReduced.toString),
+                    content = Text(messages("declaration.zeroRatedForVat.radio.VatZeroRatedReduced")),
+                    hint = Some(Hint(content = Text(messages("declaration.zeroRatedForVat.radio.VatZeroRatedReduced.hint")))),
+                    checked = form(NactCode.nactCodeKey).value.contains(VatZeroRatedReduced.toString)
+                ),
             ),
             errorMessage = form("zeroRatedForVat").error.map(err => ErrorMessage(content = Text(messages("declaration.zeroRatedForVat.error"))))
         ))
     }
+}
+
+@guidance = {
+  @paragraphBody(
+    message = messages(
+      "declaration.zeroRatedForVat.guidance.text",
+      link(messages("declaration.zeroRatedForVat.guidance.link.text"), Call("GET", appConfig.guidance.vatOnGoodsExportedFromUK), Some("_blank"))
+    ),
+    id = Some("guidance-text")
+  )
 }
 
 @govukLayout(
@@ -113,7 +126,7 @@
                 isPageHeading = true
             )),
             html = HtmlFormat.fill(List(
-              paragraph, radios, tariffExpander(ZeroRatedForVat, request.declarationType)(messages, appConfig), saveButtons()
+              paragraph, radios, guidance, tariffExpander(ZeroRatedForVat, request.declarationType)(messages, appConfig), saveButtons()
             ))
         ))
     }

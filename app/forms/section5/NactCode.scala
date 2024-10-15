@@ -71,8 +71,9 @@ object ZeroRatedForVat extends DeclarationPage {
   val VatZeroRatedReduced = "VATR"
   val VatZeroRatedExempt = "VATE"
   val VatZeroRatedPaid = "VAT_NO"
+  val VatReportAfterDeclaration = "VAT_RAD"
 
-  val allowedValues = Seq(VatZeroRatedYes, VatZeroRatedReduced, VatZeroRatedExempt, VatZeroRatedPaid)
+  val allowedValues = Seq(VatZeroRatedYes, VatZeroRatedReduced, VatZeroRatedExempt, VatZeroRatedPaid, VatReportAfterDeclaration)
 
   val mapping: Mapping[NactCode] = Forms.mapping(
     NactCode.nactCodeKey -> requiredRadio("declaration.zeroRatedForVat.error")

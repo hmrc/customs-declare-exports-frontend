@@ -17,6 +17,7 @@
 package views.section5
 
 import base.Injector
+import config.AppConfig
 import controllers.section5.routes.UNDangerousGoodsCodeController
 import forms.section5.NactCode.form
 import forms.section5.ZeroRatedForVat._
@@ -31,6 +32,8 @@ class ZeroRatedForVatViewSpec extends PageWithButtonsSpec with Injector {
 
   val page = instanceOf[zero_rated_for_vat]
 
+  val appConfig = instanceOf[AppConfig]
+
   override val typeAndViewInstance = (STANDARD, page(itemId, form, false)(_, _))
 
   def createView(restrictedForZeroVat: Boolean = false)(implicit request: JourneyRequest[_]): Document =
@@ -38,21 +41,24 @@ class ZeroRatedForVatViewSpec extends PageWithButtonsSpec with Injector {
 
   "Which export procedure are you using Page" must {
 
-    "have proper messages for labels" in {
-      messages must haveTranslationFor("declaration.zeroRatedForVat.title")
-      messages must haveTranslationFor("declaration.zeroRatedForVat.body.text")
-      messages must haveTranslationFor("declaration.zeroRatedForVat.body.linkText")
-      messages must haveTranslationFor("declaration.zeroRatedForVat.body.restricted.text")
-      messages must haveTranslationFor("declaration.zeroRatedForVat.body.restricted.linkText")
-      messages must haveTranslationFor("declaration.zeroRatedForVat.radio.VatZeroRatedYes")
-      messages must haveTranslationFor("declaration.zeroRatedForVat.radio.VatZeroRatedReduced")
-      messages must haveTranslationFor("declaration.zeroRatedForVat.radio.VatZeroRatedReduced.hint")
-      messages must haveTranslationFor("declaration.zeroRatedForVat.radio.VatZeroRatedExempt")
-      messages must haveTranslationFor("declaration.zeroRatedForVat.radio.VatZeroRatedExempt.hint")
-      messages must haveTranslationFor("declaration.zeroRatedForVat.radio.VatZeroRatedPaid")
-      messages must haveTranslationFor("tariff.declaration.item.zeroRatedForVat.common.text")
-      messages must haveTranslationFor("tariff.declaration.item.zeroRatedForVat.common.linkText.0")
-    }
+    checkMessages(
+      "declaration.zeroRatedForVat.title",
+      "declaration.zeroRatedForVat.body.text",
+      "declaration.zeroRatedForVat.body.linkText",
+      "declaration.zeroRatedForVat.body.restricted.text",
+      "declaration.zeroRatedForVat.body.restricted.linkText",
+      "declaration.zeroRatedForVat.radio.VatReportAfterDeclaration",
+      "declaration.zeroRatedForVat.radio.VatZeroRatedYes",
+      "declaration.zeroRatedForVat.radio.VatZeroRatedReduced",
+      "declaration.zeroRatedForVat.radio.VatZeroRatedReduced.hint",
+      "declaration.zeroRatedForVat.radio.VatZeroRatedExempt",
+      "declaration.zeroRatedForVat.radio.VatZeroRatedExempt.hint",
+      "declaration.zeroRatedForVat.radio.VatZeroRatedPaid",
+      "declaration.zeroRatedForVat.guidance.text",
+      "declaration.zeroRatedForVat.guidance.link.text",
+      "tariff.declaration.item.zeroRatedForVat.common.text",
+      "tariff.declaration.item.zeroRatedForVat.common.linkText.0"
+    )
 
     onJourney(STANDARD) { implicit request =>
       val view = createView()
@@ -66,6 +72,12 @@ class ZeroRatedForVatViewSpec extends PageWithButtonsSpec with Injector {
       }
 
       "display radio buttons" which {
+
+        "have 'VatReportAfterDeclaration' option" in {
+          view.getElementsByAttributeValue("for", VatReportAfterDeclaration) must containMessageForElements(
+            "declaration.zeroRatedForVat.radio.VatReportAfterDeclaration"
+          )
+        }
 
         "have 'VatZeroRatedYes' option" in {
           view.getElementsByAttributeValue("for", VatZeroRatedYes) must containMessageForElements("declaration.zeroRatedForVat.radio.VatZeroRatedYes")
@@ -97,6 +109,14 @@ class ZeroRatedForVatViewSpec extends PageWithButtonsSpec with Injector {
             messages("declaration.zeroRatedForVat.body.linkText")
           )
         }
+      }
+
+      "display guidance paragraph" in {
+        view.getElementById("guidance-text").text() mustBe (messages(
+          "declaration.zeroRatedForVat.guidance.text",
+          messages("declaration.zeroRatedForVat.guidance.link.text")
+        ))
+        view.getElementById("guidance-text").child(0) must haveHref(appConfig.guidance.vatOnGoodsExportedFromUK)
       }
 
       "display 'Back' button that links to the 'UN Dangerous Goods Code' page" in {
