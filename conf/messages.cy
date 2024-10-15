@@ -636,7 +636,7 @@ declaration.address.country.error = Dewiswch wlad o’r rhestr
 declaration.address.country.empty = Dewiswch wlad o’r rhestr
 
 declaration.additionalActors.title = Beth yw rhifau EORI y rhai eraill sy’n rhan o’r allforio?
-declaration.additionalActors.body.text = Ychwanegwch y rhif EORI ar gyfer pob parti sydd heb ei gynnwys eto.
+declaration.additionalActors.body.text = Dewiswch barti dan sylw, neu nodwch nad oes unrhyw bartïon eraill yn cymryd rhan. Os oes sawl parti dan sylw, mae opsiwn i ychwanegu mwy ar y dudalen nesaf.
 declaration.additionalActors.eori = Rhif EORI
 declaration.additionalActors.partyType = Math o barti
 declaration.additionalActors.maximumAmount.error = Uchafswm y partïon wedi’u hychwanegu
