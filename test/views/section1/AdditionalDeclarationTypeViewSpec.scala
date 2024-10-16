@@ -34,7 +34,7 @@ class AdditionalDeclarationTypeViewSpec extends UnitViewSpec with CommonMessages
   private val additionalTypePage = instanceOf[additional_declaration_type]
 
   private def createView(declarationType: DeclarationType): Html =
-    additionalTypePage(form)(journeyRequest(declarationType), messages)
+    additionalTypePage(form(declarationType))(journeyRequest(declarationType), messages)
 
   "Additional Declaration Type View" when {
 
