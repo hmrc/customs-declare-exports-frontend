@@ -27,7 +27,7 @@ import org.mockito.Mockito._
 import org.scalatest.{BeforeAndAfterEach, OptionValues}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
-import views.html.timeline.{declaration_details, unavailable_timeline_actions}
+import views.html.timeline.declaration_details
 
 import java.time.ZonedDateTime
 import java.util.UUID
@@ -42,7 +42,6 @@ class DeclarationDetailsControllerSpec extends ControllerWithoutFormSpec with Be
     Submission(uuid = uuid, eori = "eori", lrn = "lrn", mrn = Some("mrn"), ducr = Some("ducr"), actions = List(action), latestDecId = Some(uuid))
 
   private val declarationDetailsPage = mock[declaration_details]
-  private val unavailableTimelineActionsPage = mock[unavailable_timeline_actions]
 
   val controller = new DeclarationDetailsController(
     mockAuthAction,
@@ -50,8 +49,7 @@ class DeclarationDetailsControllerSpec extends ControllerWithoutFormSpec with Be
     mockErrorHandler,
     mockCustomsDeclareExportsConnector,
     mcc,
-    declarationDetailsPage,
-    unavailableTimelineActionsPage
+    declarationDetailsPage
   )(ec)
 
   override protected def beforeEach(): Unit = {
@@ -60,11 +58,10 @@ class DeclarationDetailsControllerSpec extends ControllerWithoutFormSpec with Be
     authorizedUser()
     setupErrorHandler()
     when(declarationDetailsPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
-    when(unavailableTimelineActionsPage.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit =
-    reset(declarationDetailsPage, mockCustomsDeclareExportsConnector, mockErrorHandler, unavailableTimelineActionsPage)
+    reset(declarationDetailsPage, mockCustomsDeclareExportsConnector, mockErrorHandler)
 
   "DeclarationDetailsController.displayPage" should {
 
@@ -194,13 +191,6 @@ class DeclarationDetailsControllerSpec extends ControllerWithoutFormSpec with Be
         verify(mockErrorHandler).internalServerError(messageCaptor.capture())(any())
         assert(messageCaptor.getValue.contains("has no additionalDeclarationType"))
       }
-    }
-  }
-
-  "DeclarationDetailsController.unavailableActions" should {
-    "return 200 (OK)" in {
-      val result = controller.unavailableActions(submission.uuid)(getAuthenticatedRequest())
-      status(result) mustBe OK
     }
   }
 }

@@ -25,7 +25,7 @@ import controllers.summary.routes.SubmissionController
 import controllers.timeline.routes._
 import forms.section1.AdditionalDeclarationType._
 import models.declaration.submissions.EnhancedStatus._
-import models.declaration.submissions.RequestType.{AmendmentRequest, ExternalAmendmentRequest, SubmissionRequest}
+import models.declaration.submissions.RequestType.{AmendmentRequest, SubmissionRequest}
 import models.declaration.submissions.{EnhancedStatus, _}
 import models.requests.VerifiedEmailRequest
 import org.jsoup.nodes.Element
@@ -125,10 +125,10 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
 
   "Declaration details page" should {
 
-    implicit val injector = new OverridableInjector()
+    implicit val injector: OverridableInjector = new OverridableInjector()
 
     "contain the 'Amend declaration' link" when {
-      "the declaration has NOT been externally amended" in {
+      "the declaration has a latestDecId" in {
         val submission = submissionWithStatus(RECEIVED)
         val view = createView(submission)
 
@@ -137,18 +137,6 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
 
         val parentId = submission.latestDecId.value
         amendDeclarationLink must haveHref(AmendDeclarationController.initAmendment(parentId))
-      }
-    }
-
-    "contain the 'Amend declaration' link pointing to '/unavailable-actions'" when {
-      "the declaration has been externally amended" in {
-        val action = Action("id", ExternalAmendmentRequest, now, None, None, 2)
-        val submission = submissionWithStatus(RECEIVED).copy(actions = Seq(action))
-        val view = createView(submission)
-
-        val amendDeclarationLink = view.getElementById("amend-declaration")
-        amendDeclarationLink must containMessage("declaration.details.amend.declaration")
-        amendDeclarationLink must haveHref(DeclarationDetailsController.unavailableActions(submission.uuid))
       }
     }
 
@@ -169,7 +157,7 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
   }
 
   "Declaration details page" when {
-    implicit val injector = new OverridableInjector()
+    implicit val injector: OverridableInjector = new OverridableInjector()
 
     "contain the EAD link for any accepted notification's status" in {
       EnhancedStatus.values
