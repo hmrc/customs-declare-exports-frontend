@@ -54,6 +54,10 @@ class HoldingViewSpec extends UnitViewSpec with GivenWhenThen with Injector {
         view.getElementsByTag("script").iterator.asScala.toList.filter(_.text.contains("window.location.href"))
       }
 
+      "not include a 'View Declaration Summary' link" in {
+        Option(view.getElementById("view_declaration_summary")) mustBe None
+      }
+
       "include the expected redirection (no)script when javascript is disabled" in {
         val content = s"$expectedPollingTimeInSeconds; url=$holdingPageUrl"
         val meta = s"""<meta http-equiv="refresh" content="$content">"""
