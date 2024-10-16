@@ -18,31 +18,40 @@ package forms.section1
 
 import base.FormSpec
 import forms.common.DeclarationPageBaseSpec
+import forms.section1.AdditionalDeclarationType.declarationType
 import forms.section1.AdditionalDeclarationTypePage.{form, radioButtonGroupId}
+import models.DeclarationType.SUPPLEMENTARY
 
 class AdditionalDeclarationTypePageSpec extends FormSpec with DeclarationPageBaseSpec {
 
   "Form for AdditionalDeclarationType" should {
 
-    "have no errors" when {
-      "provided with one of the expected values" in {
-        val errors = AdditionalDeclarationType.values.toList.flatMap { additionalType =>
-          form.fillAndValidate(additionalType).errors
+    AdditionalDeclarationType.values.toList.foreach { additionalType =>
+      val declType = declarationType(additionalType)
+
+      s"have no errors on $additionalType" when {
+        "provided with one of the expected values" in {
+          val errors = form(declType).fillAndValidate(additionalType).errors
+          errors must be(empty)
         }
-        errors must be(empty)
       }
-    }
 
-    "have errors" when {
-      "not provided with any value" in {
-        val incorrectForm = Map(radioButtonGroupId -> "")
+      s"have errors on $additionalType" when {
+        "not provided with any value" in {
+          val incorrectForm = Map(radioButtonGroupId -> "")
 
-        val result = form.bind(incorrectForm)
-        val errorKeys = result.errors.map(_.key)
-        val errorMessages = result.errors.map(_.message)
+          val result = form(declType).bind(incorrectForm)
+          val errorKeys = result.errors.map(_.key)
+          val errorMessages = result.errors.map(_.message)
 
-        errorKeys must be(List(radioButtonGroupId))
-        errorMessages must be(List(s"declaration.declarationType.radio.error.empty"))
+          errorKeys must be(List(radioButtonGroupId))
+
+          val expectedMessage =
+            if (declType == SUPPLEMENTARY) "declaration.declarationType.supplementary.error.empty"
+            else "declaration.declarationType.others.error.empty"
+
+          errorMessages must be(List(expectedMessage))
+        }
       }
     }
   }

@@ -18,8 +18,8 @@ package controllers.section1
 
 import controllers.actions.{AmendmentDraftFilter, AuthAction, JourneyAction}
 import controllers.general.{ModelCacheable, SubmissionErrors}
-import controllers.section1.routes.{DeclarantDetailsController, DucrChoiceController}
 import controllers.navigation.Navigator
+import controllers.section1.routes.{DeclarantDetailsController, DucrChoiceController}
 import forms.section1.AdditionalDeclarationType.AdditionalDeclarationType
 import forms.section1.AdditionalDeclarationTypePage
 import models.DeclarationType.CLEARANCE
@@ -55,7 +55,7 @@ class AdditionalDeclarationTypeController @Inject() (
   private val actionFilters = authenticate andThen journeyAction andThen nextPageIfAmendmentDraft
 
   val displayPage: Action[AnyContent] = actionFilters { implicit request =>
-    val form = AdditionalDeclarationTypePage.form.withSubmissionErrors
+    val form = AdditionalDeclarationTypePage.form(request.declarationType).withSubmissionErrors
     request.cacheModel.additionalDeclarationType match {
       case Some(data) => Ok(additionalTypePage(form.fill(data)))
       case _          => Ok(additionalTypePage(form))
@@ -63,7 +63,7 @@ class AdditionalDeclarationTypeController @Inject() (
   }
 
   val submitForm: Action[AnyContent] = actionFilters.async { implicit request =>
-    val form = AdditionalDeclarationTypePage.form.bindFromRequest()
+    val form = AdditionalDeclarationTypePage.form(request.declarationType).bindFromRequest()
     form
       .fold(
         formWithErrors => Future.successful(BadRequest(additionalTypePage(formWithErrors))),
