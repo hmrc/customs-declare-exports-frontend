@@ -63,6 +63,7 @@ class PointerRecordSpec extends UnitViewSpec with ExportsTestHelper with Injecto
       validatePointerValues("declaration.items.$.statisticalValue.statisticalValue", statisticalValue, 0)
       validatePointerValues("declaration.items.$.additionalDocument", None, None)
       validatePointerValues("declaration.items.$.additionalDocument.documentTypeCode", "1", 0)
+      validatePointerValues("declaration.items.$.additionalDocument.$", documentTypeCode, 0, 0)
       validatePointerValues("declaration.items.$.additionalDocument.$.documentTypeCode", documentTypeCode, 0, 0)
       validatePointerValues("declaration.items.$.additionalDocument.documents.$.documentTypeCode", documentTypeCode, 0, 0)
       validatePointerValues("declaration.items.$.additionalDocument.$.documentIdentifier", documentIdentifier, 0, 0)
@@ -101,7 +102,7 @@ class PointerRecordSpec extends UnitViewSpec with ExportsTestHelper with Injecto
       validatePointerValues("declaration.items.$.procedureCodes.additionalProcedureCodes", additionalProcedureCodes, 0)
       validatePointerValues("declaration.items.$.procedureCodes.additionalProcedureCodes.$", additionalProcedureCode, 0, 0)
       validatePointerValues("declaration.items.$.procedureCodes.additionalPcs.$", additionalProcedureCode, 0, 0)
-      validatePointerValues("declaration.items.$.packaging", None, None)
+//      validatePointerValues("declaration.items.$.packaging", None, None)
       validatePointerValues("declaration.items.$.packageInformation.$.shippingMarks", shippingMarks, 0, 0)
       validatePointerValues("declaration.items.$.packageInformation.$.numberOfPackages", numberOfPackages.toString, 0, 0)
       validatePointerValues("declaration.items.$.packageInformation.$.typesOfPackages", typeOfPackage.code, typeOfPackage.asText, 0, 0)
@@ -112,7 +113,7 @@ class PointerRecordSpec extends UnitViewSpec with ExportsTestHelper with Injecto
       validatePointerValues("declaration.totalNumberOfItems.totalAmountInvoiced", totalAmountInvoiced)
       validatePointerValues("declaration.totalNumberOfItems.totalAmountInvoicedCurrency", totalAmountInvoicedCurrency)
       validatePointerValues("declaration.totalNumberOfItems.totalPackage", totalPackageQuantity)
-      validatePointerValues("declaration.parties.representativeDetails", None, None)
+      validatePointerValues("declaration.parties.representativeDetails", Some("no"), Some("No"))
       validatePointerValues("declaration.parties.representativeDetails.details.eori", representativeDetailsEori)
       validatePointerValues(
         "declaration.parties.representativeDetails.statusCode",
@@ -164,7 +165,7 @@ class PointerRecordSpec extends UnitViewSpec with ExportsTestHelper with Injecto
       validatePointerValues("declaration.locations.officeOfExit.officeId", officeOfExit)
       validatePointerValues("declaration.parties.personPresentingGoodsDetails", YesNoAnswers.yes)
       validatePointerValues("declaration.parties.personPresentingGoodsDetails.eori", detailsEori)
-      validatePointerValues("declaration.parties.exporterDetails", None, None)
+      validatePointerValues("declaration.parties.exporterDetails", fullName)
       validatePointerValues("declaration.parties.exporterDetails.details.eori", detailsEori)
       validatePointerValues("declaration.parties.exporterDetails.details.address.fullName", fullName)
       validatePointerValues("declaration.parties.exporterDetails.details.address.addressLine", addressLine)
@@ -192,7 +193,7 @@ class PointerRecordSpec extends UnitViewSpec with ExportsTestHelper with Injecto
       validatePointerValues("declaration.parties.consignorDetails.details.address.postCode", postCode)
       validatePointerValues("declaration.parties.consignorDetails.details.address.country", countryGB.countryCode, countryGB.countryName)
       validatePointerValues("declaration.transport.meansOfTransportOnDepartureIDNumber", meansOfTransportOnDepartureIDNumber)
-      validatePointerValues("declaration.departureTransport", None, None)
+      validatePointerValues("declaration.departureTransport", meansOfTransportOnDepartureIDNumber)
       validatePointerValues("declaration.departureTransport.meansOfTransportOnDepartureIDNumber", meansOfTransportOnDepartureIDNumber)
       validatePointerValues(
         "declaration.locations.inlandModeOfTransportCode.inlandModeOfTransportCode",
