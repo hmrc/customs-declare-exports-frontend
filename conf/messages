@@ -1627,7 +1627,6 @@ declaration.statisticalValue.guidance.text.2 = A statistical value is mandatory 
 declaration.statisticalValue.guidance.text.3 = Where a trader is authorised for Simplified Declaration Procedures, the pre-shipment statistical value is not required.
 declaration.statisticalValue.guidance.text.4 = A statistical value is not required where goods being exported use a Customs Clearance Request (C21 procedure).
 declaration.statisticalValue.guidance.text.5 = Where the statistical value is optional or not required, the field can be left blank.
-declaration.statisticalValue.error.empty = Enter the total cost
 declaration.statisticalValue.error.length = Total cost must contain 15 digits or less
 declaration.statisticalValue.error.wrongFormat = Total cost must contain only numbers
 

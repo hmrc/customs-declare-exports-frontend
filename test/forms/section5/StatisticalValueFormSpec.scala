@@ -17,41 +17,52 @@
 package forms.section5
 
 import forms.common.DeclarationPageBaseSpec
-import forms.section5.StatisticalValue._
-import forms.section5.StatisticalValueFormSpec.correctStatisticalValueMap
+import forms.section5.StatisticalValue.statisticalValueKey
 import models.viewmodels.TariffContentKey
 import play.api.data.FormError
 
 class StatisticalValueFormSpec extends DeclarationPageBaseSpec {
 
-  "Item Type form" should {
+  "StatisticalValue form" should {
 
-    "return form without errors" when {
+    "return a form without errors" when {
+
       "provided with valid values" in {
-        val form = StatisticalValue.form.bind(correctStatisticalValueMap)
-        form.hasErrors must be(false)
+        val form = StatisticalValue.form.bind(correctStatisticalValueMap("1234567890123.45"))
+        form.hasErrors mustBe false
+      }
+
+      "not provided with a value" in {
+        val form = StatisticalValue.form.bind(correctStatisticalValueMap(""))
+        form.hasErrors mustBe false
       }
     }
 
-    "return form with errors" when {
-      "statisticalValue is missing" in {
-        val form = StatisticalValue.form.bind(correctStatisticalValueMap - "statisticalValue")
+    "return a form with errors" when {
 
-        form.errors mustBe Seq(FormError("statisticalValue", "error.required"))
+      "the statistical value is too long" in {
+        val form = StatisticalValue.form.bind(correctStatisticalValueMap("1234567890123456"))
+        form.errors mustBe List(FormError(statisticalValueKey, "declaration.statisticalValue.error.length"))
+      }
+
+      "the statistical value contains too many decimals" in {
+        val form = StatisticalValue.form.bind(correctStatisticalValueMap("123.456"))
+        form.errors mustBe List(FormError(statisticalValueKey, "declaration.statisticalValue.error.wrongFormat"))
+      }
+
+      "the statistical value contains non-digit characters" in {
+        val form = StatisticalValue.form.bind(correctStatisticalValueMap("12a.456"))
+        form.errors mustBe List(FormError(statisticalValueKey, "declaration.statisticalValue.error.wrongFormat"))
       }
     }
   }
 
   override def getCommonTariffKeys(messageKey: String): Seq[TariffContentKey] = List(TariffContentKey(s"${messageKey}.common"))
 
-  "StatisticalValue" when {
+  "StatisticalValue form" when {
     testTariffContentKeysNoSpecialisation(StatisticalValue, "tariff.declaration.item.statisticalValue")
   }
-}
 
-object StatisticalValueFormSpec {
-  private val statisticalValue = "1234567890123.45"
-
-  val correctStatisticalValueMap: Map[String, String] =
-    Map(statisticalValueKey -> statisticalValue)
+  private def correctStatisticalValueMap(value: String): Map[String, String] =
+    Map(statisticalValueKey -> value)
 }
