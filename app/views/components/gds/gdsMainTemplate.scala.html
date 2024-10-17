@@ -105,12 +105,6 @@
                 href = back.call.url
             ))
         )
-
-        @if(showDeclarationSummaryLink){
-            @getValue(declarationUuid).map { declarationId =>
-                <p>@viewDeclarationSummaryLink(declarationId)</p>
-            }
-        }
     </div>
 }
 

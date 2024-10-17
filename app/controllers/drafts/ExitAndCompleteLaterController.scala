@@ -18,26 +18,38 @@ package controllers.drafts
 
 import config.AppConfig
 import controllers.actions.{AuthAction, JourneyAction}
+import controllers.general.ModelCacheable
+import models.declaration.DeclarationStatus.DRAFT
 import models.requests.SessionHelper.{declarationUuid, errorFixModeSessionKey}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import services.audit.AuditService
+import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.drafts.exit_and_complete_later
 
 import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
 
 class ExitAndCompleteLaterController @Inject() (
   authenticate: AuthAction,
   appConfig: AppConfig,
   mcc: MessagesControllerComponents,
+  override val exportsCacheService: ExportsCacheService,
   exitAndCompleteLater: exit_and_complete_later,
   journeyType: JourneyAction
-) extends FrontendController(mcc) with I18nSupport {
+)(implicit ec: ExecutionContext, auditService: AuditService) extends FrontendController(mcc) with I18nSupport with ModelCacheable {
 
-  def displayPage: Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
+  def displayPage: Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     val updatedDateTime = request.cacheModel.declarationMeta.updatedDateTime
     val expiry = updatedDateTime.plusSeconds(appConfig.draftTimeToLive.toSeconds).toEpochMilli.toString
 
-    Ok(exitAndCompleteLater(request.declarationId, expiry)).removingFromSession(declarationUuid, errorFixModeSessionKey)
+    val result = Ok(exitAndCompleteLater(request.declarationId, expiry)).removingFromSession(declarationUuid, errorFixModeSessionKey)
+
+    val meta = request.cacheModel.declarationMeta
+    if (meta.status == DRAFT && meta.summaryWasVisited.contains(true)) Future.successful(result)
+    else updateDeclarationFromRequest(declaration =>
+      declaration.copy(declarationMeta = declaration.declarationMeta.copy(summaryWasVisited = Some(true)))
+    ).map(_ => result)
   }
 }
