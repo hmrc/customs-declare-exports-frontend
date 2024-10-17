@@ -63,7 +63,7 @@ class HoldingViewSpec extends UnitViewSpec with GivenWhenThen with Injector {
         val meta = s"""<meta http-equiv="refresh" content="$content">"""
 
         val noscripts = view.getElementsByTag("noscript").iterator.asScala.toList
-        noscripts.filter(_.child(0).toString == meta).size mustBe 1
+        noscripts.count(_.child(0).toString == meta) mustBe 1
       }
 
       "include the expected redirection script when javascript is enabled" in {
