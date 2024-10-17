@@ -43,6 +43,10 @@ class CancellationHoldingViewSpec extends UnitViewSpec with Injector with GivenW
   "Cancel DeclarationView on empty page" should {
     val view = createView()
 
+    "not include a 'View Declaration Summary' link" in {
+      Option(view.getElementById("view_declaration_summary")) mustBe None
+    }
+
     "display page title" in {
       view.getElementById("title").text() mustBe messages("cancellation.holding.title")
     }
