@@ -50,5 +50,5 @@ object DeclarationMeta {
 
   implicit val format: OFormat[DeclarationMeta] = Json.format[DeclarationMeta]
 
-  val sequenceIdPlaceholder = -1
+  val sequenceIdPlaceholder: Int = -1
 }

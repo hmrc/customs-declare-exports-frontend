@@ -33,12 +33,10 @@
 
 @onErrorStatus = @{ request.cacheModel.declarationMeta.parentDeclarationEnhancedStatus.contains(ERRORS) }
 
-@onSummaryVisited = @{ request.cacheModel.declarationMeta.summaryWasVisited.contains(true) }
-
 <div class="govuk-button-group">
     @saveAndContinue()
 
-    @if(showReturnToSummaryButton && (onSummaryVisited || onErrorStatus) && inErrorFixMode == false) {
+    @if(showReturnToSummaryButton && (request.cacheModel.summaryPageWasVisited || onErrorStatus) && !inErrorFixMode) {
       @saveAndReturnToSummary()
     }
 

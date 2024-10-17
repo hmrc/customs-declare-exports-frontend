@@ -251,6 +251,8 @@ case class ExportsDeclaration(
 
   def transform(function: ExportsDeclaration => ExportsDeclaration): ExportsDeclaration = function(this)
 
+  def summaryPageWasVisited: Boolean = declarationMeta.summaryWasVisited.contains(true)
+
   private def additionalDocumentsInformationIfAny(itemId: String): Option[AdditionalDocuments] =
     itemBy(itemId).flatMap(_.additionalDocuments)
 }
