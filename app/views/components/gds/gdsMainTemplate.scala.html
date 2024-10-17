@@ -17,7 +17,7 @@
 @import config.{AppConfig, TimeoutDialogConfig}
 @import controllers.general.routes.SignOutController
 @import controllers.routes.Assets
-@import models.requests.AuthenticatedRequest
+@import models.requests.{AuthenticatedRequest, JourneyRequest}
 @import models.requests.SessionHelper.{declarationUuid, getValue}
 @import play.twirl.api.HtmlFormat
 @import uk.gov.hmrc.govukfrontend.views.html.components._
@@ -55,7 +55,13 @@
     showLanguageSwitch: Boolean = true
 )(contentBlock: Html)(implicit request: Request[_], messages: Messages)
 
-@userIsSignedIn = @{ request.isInstanceOf[AuthenticatedRequest[_]]}
+@userIsSignedIn = @{ request.isInstanceOf[AuthenticatedRequest[_]] }
+
+@displayViewSummaryLink = @{
+  showDeclarationSummaryLink &&
+    request.isInstanceOf[JourneyRequest[_]] &&
+      request.asInstanceOf[JourneyRequest[_]].cacheModel.summaryPageWasVisited
+}
 
 @head = {
     @if(userIsSignedIn) {
@@ -106,7 +112,7 @@
             ))
         )
 
-        @if(showDeclarationSummaryLink){
+        @if(displayViewSummaryLink) {
             @getValue(declarationUuid).map { declarationId =>
                 <p>@viewDeclarationSummaryLink(declarationId)</p>
             }
