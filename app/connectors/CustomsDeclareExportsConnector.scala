@@ -64,7 +64,7 @@ class CustomsDeclareExportsConnector @Inject() (appConfig: AppConfig, httpClient
     logPayload("Create Declaration Request", declaration)
     val createStopwatch = createTimer.time
 
-    post[ExportsDeclaration, ExportsDeclaration](getUrl(s"${appConfig.declarationsPath}"), declaration).andThen {
+    postJson[ExportsDeclaration, ExportsDeclaration](getUrl(s"${appConfig.declarationsPath}"), declaration).andThen {
       case Success(newDeclaration) =>
         logPayload("Create Declaration Response", newDeclaration)
         createStopwatch.stop()
@@ -166,10 +166,10 @@ class CustomsDeclareExportsConnector @Inject() (appConfig: AppConfig, httpClient
     postWithoutBody[Submission](getUrl(s"${appConfig.submissionPath}/$id"))
 
   def submitAmendment(amendment: SubmissionAmendment)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[String] =
-    post[SubmissionAmendment, String](getUrl(s"${appConfig.amendmentsPath}"), amendment)
+    postJson[SubmissionAmendment, String](getUrl(s"${appConfig.amendmentsPath}"), amendment)
 
   def resubmitAmendment(amendment: SubmissionAmendment)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[String] =
-    post[SubmissionAmendment, String](getUrl(s"${appConfig.resubmitAmendmentPath}"), amendment)
+    postJson[SubmissionAmendment, String](getUrl(s"${appConfig.resubmitAmendmentPath}"), amendment)
 
   private val updateTimer: Timer = metrics.defaultRegistry.timer("declaration.update.timer")
 
@@ -177,7 +177,7 @@ class CustomsDeclareExportsConnector @Inject() (appConfig: AppConfig, httpClient
     logPayload("Update Declaration Request", decl)
     val updateStopwatch = updateTimer.time()
 
-    put[ExportsDeclaration, ExportsDeclaration](getUrl(s"${appConfig.declarationsPath}"), decl).andThen {
+    putJson[ExportsDeclaration, ExportsDeclaration](getUrl(s"${appConfig.declarationsPath}"), decl).andThen {
       case Success(declaration) =>
         logPayload("Update Declaration Response", declaration)
         updateStopwatch.stop()
@@ -220,7 +220,7 @@ class CustomsDeclareExportsConnector @Inject() (appConfig: AppConfig, httpClient
 
   def createCancellation(cancellation: CancelDeclaration)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[CancellationResult] = {
     logPayload("Create Cancellation Request", cancellation)
-    post[CancelDeclaration, CancellationResult](getUrl(s"${appConfig.cancelDeclarationPath}"), cancellation)
+    postJson[CancelDeclaration, CancellationResult](getUrl(s"${appConfig.cancelDeclarationPath}"), cancellation)
   }
 
   def getVerifiedEmailAddress(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[Email]] =

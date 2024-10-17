@@ -215,8 +215,8 @@ tariff.declaration.consignmentReferences.common.text = For details, go to {0} an
 tariff.declaration.consignmentReferences.common.linkText.0 = Data Element 2/4 - UCR Reference Number (opens in new tab)
 tariff.declaration.consignmentReferences.common.linkText.1 = Data Element 2/5 - LRN, no previous reference (opens in new tab)
 tariff.declaration.consignmentReferences.supplementary.linkText.0 = Data Element 2/1 - Supplementary declarations (opens in new tab)
-tariff.declaration.mucr.common.text = The entry on this page automatically enters declaration category ‘Z’ and document code ‘MCR’.<br><br>For details, go to {0}.
-tariff.declaration.mucr.common.linkText.0 = Data Element 2/1 Simplified Declaration, Previous Documents (opens in new tab)
+tariff.declaration.mucr.common.text = There are 3 MUCR formats. Take care to ensure you use the correct one.<br><br>Format information can be found in the ‘Format of the MUCR’ section of guidance on {0}.
+tariff.declaration.mucr.common.linkText.0 = References of Messages, Document, Certificates and Authorisations (opens in new tab)
 tariff.declaration.declarantDetails.common.linkText.0 = Data Element 3/18 - Declarant Identification Number (opens in new tab)
 tariff.declaration.areYouTheExporter.common.linkText.0 = Data Element 3/2 - Exporter Identification Number (opens in new tab)
 tariff.declaration.areYouTheExporter.common.1.text = A ‘Yes’ answer will send 00400 EXPORTER for Data Element 2/2, which is required if you are the exporter.
@@ -551,10 +551,9 @@ declaration.linkDucrToMucr.paragraph = You can link one or more DUCRs to a MUCR 
 declaration.linkDucrToMucr.error.required = Select yes if you want to link this declaration’s DUCR to a MUCR
 
 declaration.mucr.title = Enter the MUCR
-declaration.mucr.paragraph = To check the correct format, see the ‘Notes’ section on {0}.
-declaration.mucr.paragraph.link = Data Element 2/1 Previous Documents (opens in new tab)
 declaration.mucr.error.empty = Enter a MUCR
 declaration.mucr.error.invalid = Master Unique Consignment Reference (MUCR) must contain only letters, numbers, commas, hyphens and forward slash
+declaration.mucr.expander.title = About the MUCR format
 
 declaration.declarant.exporter.title = Are you the exporter?
 declaration.declarant.exporter.answer.yes = Yes

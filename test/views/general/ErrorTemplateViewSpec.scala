@@ -43,7 +43,7 @@ class ErrorTemplateViewSpec extends UnitViewSpec with Injector {
     }
 
     "display the expected paragraph" in {
-      view.getElementsByClass("govuk-body").get(0).text mustBe messages("global.error.message")
+      view.getElementsByClass("govuk-body-m").get(0).text mustBe messages("global.error.message")
     }
   }
 }

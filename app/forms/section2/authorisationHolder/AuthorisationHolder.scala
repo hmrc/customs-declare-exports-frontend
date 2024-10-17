@@ -94,7 +94,7 @@ object AuthorisationHolder extends DeclarationPage with FieldMapping {
     val maybeEoriSource = EoriSource.lookupByValue.get(eoriSource)
 
     (eori, maybeEoriSource) match {
-      case (None, Some(eoriSource)) if eoriSource.equals(UserEori) =>
+      case (None, Some(sourceEori)) if sourceEori.equals(UserEori) =>
         AuthorisationHolder(authorisationCode, Some(Eori(userEori)), maybeEoriSource)
 
       case _ =>

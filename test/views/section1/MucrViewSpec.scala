@@ -21,6 +21,7 @@ import base.TestHelper.createRandomAlphanumericString
 import config.AppConfig
 import controllers.section1.routes.LinkDucrToMucrController
 import forms.section1.Mucr
+import models.DeclarationType.CLEARANCE
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import org.scalatest.Assertion
@@ -58,14 +59,7 @@ class MucrViewSpec extends UnitViewSpec with CommonMessages with Injector {
       }
 
       "display page title" in {
-        view.getElementsByTag("h1").first() must containMessage("declaration.mucr.title")
-      }
-
-      "display the body paragraph" in {
-        val para = view.getElementsByClass("govuk-body").first
-        para.child(0) must haveHref(appConfig.notesForMucrConsolidationUrl)
-
-        removeBlanksIfAnyBeforeDot(para.text) mustBe messages("declaration.mucr.paragraph", messages("declaration.mucr.paragraph.link"))
+        view.getElementsByTag("h1").first.getElementsByTag("label").first must containMessage("declaration.mucr.title")
       }
 
       "display the input field where to enter the MUCR" in {
@@ -97,17 +91,21 @@ class MucrViewSpec extends UnitViewSpec with CommonMessages with Injector {
       }
     }
 
-    "display the expected tariff details" in {
+    onEveryDeclarationJourney() { implicit request =>
+      "display the expected tariff details" in {
+        val view = createView()
+        val tariffTitle = view.getElementsByClass("govuk-details__summary-text")
+        tariffTitle.first must containMessage("declaration.mucr.expander.title")
 
-      val view = createView()
-      val tariffTitle = view.getElementsByClass("govuk-details__summary-text")
-      tariffTitle.first must containMessage("tariff.expander.title.common")
+        val tariffDetails = view.getElementsByClass("govuk-details__text").first
+        removeBlanksIfAnyBeforeDot(tariffDetails.text) mustBe messages(
+          "tariff.declaration.mucr.common.text",
+          messages("tariff.declaration.mucr.common.linkText.0")
+        ).replace("<br><br>", " ")
 
-      val tariffDetails = view.getElementsByClass("govuk-details__text").first
-      removeBlanksIfAnyBeforeDot(tariffDetails.text) mustBe messages(
-        "tariff.declaration.mucr.common.text",
-        messages("tariff.declaration.mucr.common.linkText.0")
-      ).replace("<br><br>", " ")
+        val journeyType = if (request.isType(CLEARANCE)) "clearance" else "common"
+        tariffDetails.getElementsByTag("a").first must haveHref(appConfig.tariffGuideUrl(s"urls.tariff.declaration.mucr.$journeyType.0"))
+      }
     }
   }
 }
