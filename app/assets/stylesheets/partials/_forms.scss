@@ -75,9 +75,9 @@ Error styling to bring in line with GDS
 .form-field--error {
     margin-left: -0.84211em;
 }
-    .panel-indent .form-field--error {
-        margin-left: 0;
-    }
+ panel-indent .form-field--error {
+    margin-left: 0;
+ }
 .form-field--error .error-notification {
     font-weight: 700;
 }
@@ -105,7 +105,7 @@ Error styling to bring in line with GDS
 }
 .error-summary .error-summary-list a {
     color: #b10e1e;
-    font-weight: bold;
+    font-weight: 700;
     text-decoration: underline;
 }
 

@@ -28,13 +28,15 @@
 
 @this(
     govukLayout: gdsMainTemplate,
+    govukDetails: GovukDetails,
     hmrcCurrencyInput: HmrcCurrencyInput,
     errorSummary: errorSummary,
+    notificationBanner: notificationBanner,
     sectionHeader: sectionHeader,
     paragraphBody: paragraphBody,
     externalLink: externalLink,
     heading: heading,
-    bulletList: bulletList,
+    label: label,
     insetText: exportsInsetText,
     saveButtons: saveButtons,
     tariffExpander: tariffExpander,
@@ -47,49 +49,57 @@
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 
-@bodySection = {
-    @paragraphBody(messages("declaration.statisticalValue.hint"))
-
-    @bulletList(List(
-        Html(messages("declaration.statisticalValue.hint.bullet.1")),
-        Html(messages("declaration.statisticalValue.hint.bullet.2")),
-    ))
-}
-
-@insetSection = {
-    @paragraphBody(messages("declaration.statisticalValue.inset.text.1"))
-
-    @paragraphBody(messages(
-        "declaration.statisticalValue.inset.text.2", externalLink(
-            text = messages("declaration.statisticalValue.inset.text.2.link"),
-            url = appConfig.hmrcExchangeRatesFor2021
-    )))
+@expanderContent = {
+    @paragraphBody(messages("declaration.statisticalValue.guidance.text.1"))
+    @paragraphBody(messages("declaration.statisticalValue.guidance.text.2"))
+    @paragraphBody(messages("declaration.statisticalValue.guidance.text.3"))
+    @paragraphBody(messages("declaration.statisticalValue.guidance.text.4"))
+    @paragraphBody(messages("declaration.statisticalValue.guidance.text.5"), classes = "govuk-body bold")
 }
 
 @govukLayout(
     title = Title("declaration.statisticalValue.title", "declaration.section.5", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(StatisticalValue, ItemId(itemId))))) {
-
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(StatisticalValue, ItemId(itemId))))
+) {
     @formHelper(action = StatisticalValueController.submitItemType(itemId), 'autoComplete -> "off") {
         @errorSummary(form.errors)
 
+        @notificationBanner(
+            title = messages("declaration.statisticalValue.notification.title"),
+            content = paragraphBody(messages("declaration.statisticalValue.notification.content"))
+        )
+
         @sectionHeader(messages("declaration.section.5"))
+
         @heading(messages("declaration.statisticalValue.title"))
 
-        @bodySection
+        @label("declaration.statisticalValue.label", "statisticalValue", "govuk-label")
 
-        @insetText(content = HtmlContent(insetSection))
+        @insetText(content = Text(messages("declaration.statisticalValue.inset.text")), "govuk-!-margin-top-4")
 
         @hmrcCurrencyInput(CurrencyInput(
             id = "statisticalValue",
             name = "statisticalValue",
             value = form("statisticalValue").value,
             classes = "govuk-input--width-10",
-            label = Label(
-                content = Text(messages("declaration.statisticalValue.label")),
-                classes = "govuk-visually-hidden"
-            ),
             errorMessage = form("statisticalValue").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
+        ))
+
+        @heading(messages("declaration.statisticalValue.section.header"), "govuk-heading-s govuk-!-margin-top-8", "h2")
+
+        @paragraphBody(messages("declaration.statisticalValue.section.text.1"))
+
+        @paragraphBody(messages(
+            "declaration.statisticalValue.section.text.2",
+            externalLink(
+                text = messages("declaration.statisticalValue.section.text.2.link"),
+                url = appConfig.hmrcExchangeRatesFor2021
+            )
+        ), classes = "govuk-body govuk-!-margin-bottom-6")
+
+        @govukDetails(Details(
+            summary = Text(messages("declaration.statisticalValue.guidance.title")),
+            content = HtmlContent(expanderContent)
         ))
 
         @tariffExpander(StatisticalValue, request.declarationType)(messages, appConfig)

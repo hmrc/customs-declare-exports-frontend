@@ -19,7 +19,6 @@ package forms.section5
 import forms.DeclarationPage
 import models.DeclarationType.DeclarationType
 import models.ExportsFieldPointer.ExportsFieldPointer
-import models.declaration.ExportItem.itemsPrefix
 import models.viewmodels.TariffContentKey
 import models.{Amendment, FieldMapping}
 import play.api.data.Forms.text
@@ -39,15 +38,12 @@ object StatisticalValue extends DeclarationPage with FieldMapping {
 
   val pointer: ExportsFieldPointer = "statisticalValue.statisticalValue"
 
-  lazy val keyForAmend = s"$itemsPrefix.itemValue"
-
   val statisticalValueKey = "statisticalValue"
 
   private val statisticalValueMaxLength = 15
   private val statisticalValueDecimalPlaces = 2
 
   private val mappingStatisticalValue = text()
-    .verifying("declaration.statisticalValue.error.empty", nonEmpty)
     .verifying(
       "declaration.statisticalValue.error.length",
       input => input.isEmpty || noLongerThan(statisticalValueMaxLength)(input.replaceAll("\\.", ""))
@@ -60,6 +56,5 @@ object StatisticalValue extends DeclarationPage with FieldMapping {
   def form: Form[StatisticalValue] = Form(mapping)
 
   override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
-    List(TariffContentKey("tariff.declaration.item.statisticalValue.1.common"), TariffContentKey("tariff.declaration.item.statisticalValue.2.common"))
-
+    List(TariffContentKey("tariff.declaration.item.statisticalValue.common"))
 }

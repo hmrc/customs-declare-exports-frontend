@@ -52,11 +52,10 @@
     @formHelper(action = routes.DucrChoiceController.submitForm, 'autoComplete -> "off") {
         @errorSummary(yesNoErrors(form.errors))
 
-    @notificationBanner(
-        title = messages("declaration.ducr.banner.title"),
-        content = paragraphBody(messages("declaration.ducr.banner.content"
-    )))
-
+        @notificationBanner(
+            title = messages("declaration.ducr.banner.title"),
+            content = paragraphBody(messages("declaration.ducr.banner.content"))
+        )
 
         @sectionHeader(messages("declaration.section.1"))
 

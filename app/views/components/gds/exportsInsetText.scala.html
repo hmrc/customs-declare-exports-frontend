@@ -18,6 +18,6 @@
 
 @this(govukInsetText : GovukInsetText)
 
-@(content: Content, id: Option[String] = None)(implicit messages: Messages)
+@(content: Content, classes: String = "")(implicit messages: Messages)
 
-@govukInsetText(InsetText(id, content = content))
+@govukInsetText(InsetText(classes = classes, content = content))
