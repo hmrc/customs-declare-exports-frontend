@@ -25,7 +25,7 @@ import models.requests.SessionHelper._
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import views.html.timeline.{declaration_details, unavailable_timeline_actions}
+import views.html.timeline.declaration_details
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -36,8 +36,7 @@ class DeclarationDetailsController @Inject() (
   errorHandler: ErrorHandler,
   customsDeclareExportsConnector: CustomsDeclareExportsConnector,
   mcc: MessagesControllerComponents,
-  declarationDetailsPage: declaration_details,
-  unavailableTimelineActions: unavailable_timeline_actions
+  declarationDetailsPage: declaration_details
 )(implicit ec: ExecutionContext)
     extends FrontendController(mcc) with I18nSupport {
 
@@ -55,18 +54,12 @@ class DeclarationDetailsController @Inject() (
     }
   }
 
-  def unavailableActions(submissionId: String): Action[AnyContent] = (authenticate andThen verifyEmail) { implicit request =>
-    Ok(unavailableTimelineActions(submissionId))
-  }
-
   private type ErrorOrDecId = Either[String, String]
 
   private def declarationIdOrError(submission: Submission): ErrorOrDecId =
-    if (submission.hasExternalAmendments) Right(submission.uuid) else latestDecIdOrError(submission)
-
-  private def latestDecIdOrError(submission: Submission): ErrorOrDecId =
     submission.latestDecId.fold[ErrorOrDecId] {
-      Left(s"Submission(${submission.uuid}) with undefined latestDecId for the Timeline page??")
+      if (submission.hasExternalAmendments) Right(submission.uuid)
+      else Left(s"Submission(${submission.uuid}) with undefined latestDecId for the Timeline page??")
     } { latestDecId =>
       // Using 'latestDecId', in place of submission.uuid (which is indeed eq to the declaration's id), to retrieve
       // the declaration as in future we could need to retrieve, from the declaration, other data (which might have

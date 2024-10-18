@@ -16,17 +16,10 @@
 
 package views.helpers
 
-import controllers.amendments.AmendDeclarationController
-import controllers.timeline.routes.DeclarationDetailsController
 import models.declaration.submissions.EnhancedStatus._
 import models.declaration.submissions.Submission
-import play.api.mvc.Call
 
 object DeclarationDetailsHelper {
-
-  def callForAmendDeclaration(submission: Submission): Call =
-    if (submission.hasExternalAmendments) DeclarationDetailsController.unavailableActions(submission.uuid)
-    else AmendDeclarationController.initAmendment(submission)
 
   def displayViewDeclarationLink(submission: Submission): Boolean = !(submission.latestEnhancedStatus contains ERRORS)
 

@@ -41,8 +41,6 @@ object EnhancedStatus extends Enumeration {
 
   lazy val amendmentBlockingStatuses = Set(ERRORS, GOODS_HAVE_EXITED, EXPIRED_NO_ARRIVAL, EXPIRED_NO_DEPARTURE, CANCELLED, WITHDRAWN)
 
-  lazy val otherStatuses = values &~ rejectedStatuses &~ cancelledStatuses &~ actionRequiredStatuses
-
   lazy val eadAcceptableStatuses = values &~ Set(CANCELLED, ERRORS, PENDING, UNKNOWN, WITHDRAWN)
 
   lazy val uploadFilesStatuses = Set(ADDITIONAL_DOCUMENTS_REQUIRED, UNDERGOING_PHYSICAL_CHECK)
