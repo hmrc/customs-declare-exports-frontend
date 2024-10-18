@@ -39,6 +39,10 @@ class CancellationResultViewSpec extends UnitViewSpec with Injector with MockAut
     "no notification has been received for the given MRN" should {
       val view = createView(None)
 
+      "not include a 'View Declaration Summary' link" in {
+        Option(view.getElementById("view_declaration_summary")) mustBe None
+      }
+
       "display title" in {
         view.getElementById("title").text mustBe messages("cancellation.result.unprocessed.title")
       }
