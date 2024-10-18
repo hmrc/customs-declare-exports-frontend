@@ -18,7 +18,7 @@
 @import views.helpers.{BackButton, Title}
 @import views.helpers.summary.SummaryCard
 @import views.html.components.gds.{exitAndCompleteLater, gdsMainTemplate, linkButton}
-@import views.html.components.heading
+@import views.html.components.summary_header
 
 @this(
     gdsMainTemplate: gdsMainTemplate,
@@ -33,7 +33,7 @@
     backButton = Some(BackButton(messages("site.back"), summaryCard.backLink)),
     useCustomContentWidth = true
 ) {
-    @heading(messages("declaration.summary.normal-header"))
+    @summary_header(messages("declaration.summary.normal-header"))
 
     @summaryCard.content(request.cacheModel)
 
