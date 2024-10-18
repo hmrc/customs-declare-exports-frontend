@@ -60,7 +60,7 @@ class SummaryController @Inject() (
 
   val displayPage: Action[AnyContent] = (authenticate andThen verifyEmail andThen journeyType).async { implicit request =>
     if (request.cacheModel.isAmendmentDraft) displayAmendmentSummaryPage
-    else if (request.cacheModel.declarationMeta.summaryWasVisited.contains(true)) continueToDisplayPage
+    else if (request.cacheModel.summaryPageWasVisited) continueToDisplayPage
     else
       updateDeclarationFromRequest(declaration =>
         declaration.copy(declarationMeta = declaration.declarationMeta.copy(summaryWasVisited = Some(true)))
