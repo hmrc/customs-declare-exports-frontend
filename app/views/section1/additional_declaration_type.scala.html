@@ -38,7 +38,6 @@
     notificationBanner: notificationBanner,
     paragraphBody: paragraphBody,
     externalLink: externalLink,
-    tariffExpander: tariffExpander,
     formHelper: FormWithCSRF,
     appConfig: AppConfig
 )
@@ -105,8 +104,6 @@
                 content = HtmlContent(expanderContent)
             ))
         }
-
-        @tariffExpander(AdditionalDeclarationTypePage, request.declarationType)(messages, appConfig)
 
         @saveAndContinue("site.continue")
     }

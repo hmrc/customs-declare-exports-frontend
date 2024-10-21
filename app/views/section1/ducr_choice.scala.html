@@ -34,7 +34,6 @@
     notificationBanner: notificationBanner,
     yesNoRadios: yesNoRadios,
     saveButtons: saveButtons,
-    tariffExpander: tariffExpander,
     formHelper: FormWithCSRF,
     navigator: Navigator,
     appConfig: AppConfig
@@ -71,8 +70,6 @@
                ))
             ))
         )
-
-        @tariffExpander(DucrChoice, request.declarationType)(messages, appConfig)
 
         @saveButtons()
     }

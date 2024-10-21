@@ -29,7 +29,6 @@
     heading: heading,
     paragraphBody: paragraphBody,
     govukDetails: GovukDetails,
-    tariffExpander: tariffExpander,
     bulletList: bulletList,
     exportsInputText: exportsInputText,
     saveButtons: saveButtons,
@@ -81,8 +80,6 @@
             summary = Text(messages("declaration.ducr.expander.title")),
             content = HtmlContent(expanderContent)
         ))
-
-        @tariffExpander(TraderReference, request.declarationType)(messages, appConfig)
 
         @saveButtons()
     }

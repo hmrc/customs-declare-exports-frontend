@@ -37,20 +37,16 @@
     externalLink: externalLink,
     saveAndContinue: saveAndContinue,
     formHelper: FormWithCSRF,
-    appConfig: AppConfig
+    appConfig: AppConfig,
+    heading: heading
 )
 
 @(form: Form[_])(implicit request: Request[_], messages: Messages)
 
-@detailsText = @{
-    val detailsLink = externalLink(
+@detailsLink = { @externalLink(
         text = messages("tariff.declaration.type.linkText.2"),
         url = appConfig.standardDeclarationType
     )
-    HtmlContent(HtmlFormat.fill(List(
-        paragraphBody(messages("tariff.declaration.type.text.1")),
-        paragraphBody(messages("tariff.declaration.type.text.2", detailsLink))
-    )))
 }
 
 @govukLayout(
@@ -61,13 +57,18 @@
     @formHelper(action = StandardOrOtherJourneyController.submitChoice, 'autoComplete -> "off") {
         @errorSummary(radioGroupErrors("type", STANDARD.toString, form.errors))
 
+        @heading(messages("declaration.type.description"))
+
+        @paragraphBody(messages("tariff.declaration.type.text.1"))
+        @paragraphBody(messages("tariff.declaration.type.text.2", detailsLink))
+
         @govukRadios(Radios(
             name = "type",
             fieldset = Some(Fieldset(
                 legend = Some(Legend(
                     content = Text(messages("declaration.type.description")),
                     isPageHeading = true,
-                    classes = gdsPageLegend
+                    classes = "govuk-visually-hidden"
                 ))
             )),
             items = Seq(
@@ -95,12 +96,6 @@
         @govukWarningText(WarningText(
             iconFallbackText = Some(messages("site.warning")),
             content = Text(messages("declaration.type.warning"))
-        ))
-
-        @govukDetails(Details(
-            attributes = Map("id" -> "tariffReference"),
-            summary = Text(messages("tariff.declaration.type.title")),
-            content = detailsText
         ))
 
         @saveAndContinue("site.continue")

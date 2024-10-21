@@ -75,7 +75,7 @@
             ))
         )
 
-        @tariffExpander(LinkDucrToMucr, request.declarationType, Some("tariff.declaration.linkDucrToMucr.title"))(messages, appConfig)
+        @insetText(HtmlContent(paragraphBody(messages("declaration.linkDucrToMucr.paragraph2"))))
 
         @saveButtons()
     }

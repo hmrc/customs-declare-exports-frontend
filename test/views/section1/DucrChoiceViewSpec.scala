@@ -108,22 +108,6 @@ class DucrChoiceViewSpec extends PageWithButtonsSpec with Injector {
       }
 
       checkAllSaveButtonsAreDisplayed(createView())
-
-      "display the expected tariff details" in {
-        val expectedKey = if (request.isType(CLEARANCE)) "clearance" else "common"
-
-        val tariffTitle = view.getElementsByClass("govuk-details__summary-text")
-        tariffTitle.text mustBe messages(s"tariff.expander.title.$expectedKey")
-
-        val tariffDetails = view.getElementsByClass("govuk-details__text").first
-
-        val prefix = "tariff.declaration"
-
-        val expectedText = messages(s"$prefix.text", messages(s"$prefix.ducr.common.linkText.0"))
-
-        val actualText = removeBlanksIfAnyBeforeDot(tariffDetails.text)
-        actualText mustBe removeLineBreakIfAny(expectedText)
-      }
     }
   }
 }
