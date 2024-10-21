@@ -34,7 +34,6 @@
     govukDetails: GovukDetails,
     govukTable: GovukTable,
     bulletList: bulletList,
-    tariffExpander: tariffExpander,
     saveButtons: saveButtons,
     yesNoRadios: yesNoRadios,
     sectionHeader: sectionHeader,
@@ -90,9 +89,7 @@
             attributes = Map("id" -> "expander-ducr"),
             summary = Text(messages("declaration.confirmDucr.expander.title")),
             content = HtmlContent(expanderContent)
-        ))
-
-        @tariffExpander(ConfirmDucr, request.declarationType)(messages, appConfig)
+            ))
 
         @saveButtons()
     }

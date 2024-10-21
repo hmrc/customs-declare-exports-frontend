@@ -20,10 +20,9 @@ import base.{Injector, MockAuthAction}
 import controllers.section1.routes.DucrChoiceController
 import forms.section1.TraderReference.form
 import forms.section1.TraderReference
-import models.DeclarationType.{CLEARANCE, DeclarationType, STANDARD}
+import models.DeclarationType.{DeclarationType, STANDARD}
 import models.requests.JourneyRequest
 import play.api.i18n.Messages
-import play.api.mvc.AnyContent
 import play.twirl.api.HtmlFormat
 import views.html.section1.trader_reference
 import views.common.PageWithButtonsSpec
@@ -93,30 +92,6 @@ class TraderReferenceViewSpec extends PageWithButtonsSpec with Injector with Moc
         expectedBodyTextListMessageKeys.foreach { messageKey =>
           view.getElementsByClass("govuk-list").get(0) must containMessage(messageKey)
         }
-      }
-    }
-    "display the second tariff expander" should {
-      "in non-Clearance journeys" in {
-
-        val tariffText = view.getElementsByClass("govuk-details__text").get(1)
-
-        removeBlanksIfAnyBeforeDot(tariffText.text) mustBe messages(
-          "tariff.declaration.text",
-          messages("tariff.declaration.traderReference.common.linkText.0")
-        )
-        tariffText.child(0) must haveHref(appConfig.tariffGuideUrl("urls.tariff.declaration.traderReference.common.0"))
-
-      }
-      "in a Clearance journey" in {
-        implicit val request: JourneyRequest[AnyContent] = withRequestOfType(CLEARANCE)
-        val view = page(form)(request, messages)
-        val tariffText = view.getElementsByClass("govuk-details__text").get(1)
-
-        removeBlanksIfAnyBeforeDot(tariffText.text) mustBe messages(
-          "tariff.declaration.text",
-          messages("tariff.declaration.traderReference.clearance.linkText.0")
-        )
-        tariffText.child(0) must haveHref(appConfig.tariffGuideUrl("urls.tariff.declaration.traderReference.clearance.0"))
       }
     }
 

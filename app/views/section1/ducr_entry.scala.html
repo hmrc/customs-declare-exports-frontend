@@ -31,7 +31,6 @@
     sectionHeader: sectionHeader,
     govukDetails: GovukDetails,
     saveButtons: saveButtons,
-    tariffExpander: tariffExpander,
     paragraphBody: paragraphBody,
     heading: heading,
     bulletList: bulletList,
@@ -82,8 +81,6 @@
             summary = Text(messages("declaration.ducrEntry.ducr.expander.title")),
             content = HtmlContent(expanderContent)
         ))
-
-        @tariffExpander(Ducr, request.declarationType)(messages, appConfig)
 
         @saveButtons(showExitButton = false)
     }

@@ -47,11 +47,11 @@ class StandardOrOtherJourneyViewSpec extends UnitViewSpec with CommonMessages wi
     }
 
     "display same page title as header" in {
-      view.title() must include(view.getElementsByTag("h1").text())
+      view.title() must include(view.getElementsByTag("h1").first.text())
     }
 
     "display the expected page title" in {
-      view.getElementsByTag("h1").text() mustBe messages("declaration.type.description")
+      view.getElementsByTag("h1").first.text() mustBe messages("declaration.type.description")
     }
 
     "display the expected radio buttons" in {
@@ -91,15 +91,11 @@ class StandardOrOtherJourneyViewSpec extends UnitViewSpec with CommonMessages wi
       view.getElementsByClass("govuk-warning-text__text") must containMessageForElements("declaration.type.warning")
     }
 
-    "display the expected tariff details" in {
-      val tariffTitle = view.getElementsByClass("govuk-details__summary-text")
-      tariffTitle.text mustBe messages(s"tariff.declaration.type.title")
+    "Display paragraphs on page" in {
+      val paragraphs = view.getElementsByClass("govuk-body")
 
-      val tariffDetails = view.getElementsByClass("govuk-details__text").get(0).children()
-      tariffDetails.size mustBe 2
-
-      tariffDetails.first.text mustBe messages("tariff.declaration.type.text.1")
-      tariffDetails.last.text mustBe messages("tariff.declaration.type.text.2", messages("tariff.declaration.type.linkText.2"))
+      paragraphs.first.text mustBe messages("tariff.declaration.type.text.1")
+      paragraphs.last.text mustBe messages("tariff.declaration.type.text.2", messages("tariff.declaration.type.linkText.2"))
     }
 
     "display 'Continue' button on page" in {

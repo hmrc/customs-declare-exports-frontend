@@ -47,15 +47,6 @@
     )
 }
 
-@detailsText = @{
-  val detailsLink = externalLink(
-    text = messages("tariff.declaration.others.linkText.0"),
-    url = appConfig.additionalDeclarationType
-  )
-  HtmlContent(HtmlFormat.fill(List(
-    paragraphBody(messages("tariff.declaration.others.text", detailsLink))
-  )))
-}
 
 @govukLayout(
     title = Title("declaration.type.description.other", hasErrors = form.hasErrors || form.hasGlobalErrors),
@@ -112,12 +103,6 @@
             paragraphBody(messages("declaration.type.insetText.p1", insetLink)),
             paragraphBody(messages("declaration.type.insetText.p2"))
         ))))
-
-        @govukDetails(Details(
-            attributes = Map("id" -> "tariffReference"),
-            summary = Text(messages("tariff.expander.title.common")),
-            content = detailsText
-        ))
 
         @saveAndContinue("site.continue")
     }
