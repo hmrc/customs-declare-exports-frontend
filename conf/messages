@@ -200,7 +200,6 @@ tariff.declaration.type.text.1 = A standard declaration (arrived or pre-lodged) 
 tariff.declaration.type.text.2 = Find details about {0}.
 tariff.declaration.type.linkText.2 = making a full export declaration (opens in a new tab)
 tariff.declaration.type.common.linkText.0 = Data Element 1/2 - Additional Declaration Type (opens in new tab)
-
 tariff.declaration.others.text = This answer will complete<br>{0}.
 tariff.declaration.others.linkText.0 = Data Element 1/2 - Additional Declaration Type (opens in new tab)
 
