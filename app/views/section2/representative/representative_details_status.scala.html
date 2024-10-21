@@ -14,29 +14,26 @@
  * limitations under the License.
  *@
 
+@import controllers.navigation.Navigator
 @import controllers.section2.routes._
 @import forms.DeclarationPage
 @import forms.section2.representative.RepresentativeStatus
 @import forms.section2.representative.RepresentativeStatus.StatusCodes._
-@import uk.gov.hmrc.govukfrontend.views.html.components._
 @import models.requests.JourneyRequest
-@import controllers.navigation.Navigator
-@import views.html.components.gds._
+@import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.components.gds.Styles._
 @import views.helpers.{BackButton, Title}
 @import views.helpers.ErrorMapper.radioGroupErrors
-@import config.AppConfig
+@import views.html.components.gds._
 
 @this(
     govukLayout: gdsMainTemplate,
     govukRadios: GovukRadios,
     errorSummary: errorSummary,
     sectionHeader: sectionHeader,
-    tariffExpander: tariffExpander,
     saveButtons: saveButtons,
     formHelper: FormWithCSRF,
-    navigator: Navigator,
-    appConfig: AppConfig
+    navigator: Navigator
 )
 
 @(navigationForm: DeclarationPage, form: Form[RepresentativeStatus])(implicit request: JourneyRequest[_], messages: Messages)
@@ -80,8 +77,6 @@
             ),
             errorMessage = form("statusCode").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
         ))
-
-        @tariffExpander(RepresentativeStatus, request.declarationType)(messages, appConfig)
 
         @saveButtons()
     }

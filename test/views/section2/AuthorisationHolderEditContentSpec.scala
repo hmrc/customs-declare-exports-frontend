@@ -89,7 +89,6 @@ class AuthorisationHolderEditContentSpec extends UnitViewSpec with GivenWhenThen
    */
 
   "'Declaration Holder Edit Content' partial" should {
-
     val authorisationHolderPage = instanceOf[authorisation_holder_edit_content]
 
     def createPartial(implicit request: JourneyRequest[_]): Document = {
@@ -106,20 +105,20 @@ class AuthorisationHolderEditContentSpec extends UnitViewSpec with GivenWhenThen
 
       onSimplified(aDecl1(SIMPLIFIED, Some(SIMPLIFIED_FRONTIER), Some(Choice1040))) { implicit request =>
         And("the declaration is of type C")
-        And("the Procedure Code is 1040")
+        And("the Authorisation Choice is 1040")
         createPartial.getElementById(bodyId).text must include(messages(s"$prefix.body.simplified"))
 
       }
 
       onSimplified(aDecl1(SIMPLIFIED, Some(SIMPLIFIED_FRONTIER), Some(ChoiceOthers))) { implicit request =>
         And("the declaration is of type C")
-        And("the Procedure Code is 'Others'")
+        And("the Authorisation Choice is 'Others'")
         createPartial.getElementById(bodyId).text must include(messages(s"$prefix.body.simplified"))
       }
 
       onSimplified(aDecl1(SIMPLIFIED, Some(SIMPLIFIED_FRONTIER), Some(Choice1007))) { implicit request =>
         And("the declaration is of type C")
-        And("the Procedure Code is 1007")
+        And("the Authorisation Choice is 1007")
         val bodyWithLink = createPartial.getElementById(bodyId)
         bodyWithLink.text mustBe messages(s"$prefix.body.simplified.arrived.1007", messages(s"$prefix.body.1007.link"))
         bodyWithLink.child(0) must haveHref(minimalAppConfig.permanentExportOrDispatch.section)
@@ -131,31 +130,31 @@ class AuthorisationHolderEditContentSpec extends UnitViewSpec with GivenWhenThen
 
       onClearance(aDecl1(CLEARANCE, Some(CLEARANCE_PRE_LODGED), Some(Choice1040), Some(YesNoAnswers.yes))) { implicit request =>
         And("the declaration is of type K and EIDR")
-        And("the Procedure Code is 1040")
+        And("the Authorisation Choice is 1040")
         createPartial.getElementById(bodyId).text must include(messages(s"$prefix.body.clearance.eidr.1040"))
       }
 
       onClearance(aDecl1(CLEARANCE, Some(CLEARANCE_FRONTIER), Some(Choice1040), Some(YesNoAnswers.yes))) { implicit request =>
         And("the declaration is of type J and EIDR")
-        And("the Procedure Code is 1040")
+        And("the Authorisation Choice is 1040")
         createPartial.getElementById(bodyId).text must include(messages(s"$prefix.body.clearance.eidr.1040"))
       }
 
       onClearance(aDecl1(CLEARANCE, Some(CLEARANCE_PRE_LODGED), Some(ChoiceOthers), Some(YesNoAnswers.yes))) { implicit request =>
         And("the declaration is of type K and EIDR")
-        And("the Procedure Code is 'Others'")
+        And("the Authorisation Choice is 'Others'")
         createPartial.getElementById(bodyId).text must include(messages(s"$prefix.body.clearance.eidr.others"))
       }
 
       onClearance(aDecl1(CLEARANCE, Some(CLEARANCE_FRONTIER), Some(ChoiceOthers), Some(YesNoAnswers.yes))) { implicit request =>
         And("the declaration is of type J and EIDR")
-        And("the Procedure Code is 'Others'")
+        And("the Authorisation Choice is 'Others'")
         createPartial.getElementById(bodyId).text must include(messages(s"$prefix.body.clearance.eidr.others"))
       }
 
       onClearance(aDecl1(CLEARANCE, None, Some(Choice1007), Some(YesNoAnswers.yes))) { implicit request =>
         And("the declaration is EIDR")
-        And("the Procedure Code is 1007")
+        And("the Authorisation Choice is 1007")
         val bodyWithLink = createPartial.getElementById(bodyId)
         bodyWithLink.text mustBe messages(s"$prefix.body.clearance.eidr.1007", messages(s"$prefix.body.1007.link"))
         bodyWithLink.child(0) must haveHref(minimalAppConfig.permanentExportOrDispatch.section)
@@ -166,18 +165,18 @@ class AuthorisationHolderEditContentSpec extends UnitViewSpec with GivenWhenThen
 
       onStandard(aDecl1(STANDARD, Some(STANDARD_PRE_LODGED), Some(Choice1007))) { implicit request =>
         And("the declaration is of type D")
-        And("the Procedure Code is 1007")
+        And("the Authorisation Choice is 1007")
         createPartial.getElementById(hintId).text mustBe messages(s"$prefix.authCode.hint.standard.prelodged.1007")
       }
 
       onStandard(aDecl1(STANDARD, Some(STANDARD_PRE_LODGED), Some(ChoiceOthers))) { implicit request =>
         And("the declaration is of type D")
-        And("the Procedure Code is 'Others'")
+        And("the Authorisation Choice is 'Others'")
         createPartial.getElementById(hintId).text mustBe messages(s"$prefix.authCode.hint.standard.prelodged.others")
       }
 
       onStandard(aDecl1(STANDARD, Some(STANDARD_PRE_LODGED), Some(Choice1040))) { implicit request =>
-        And("the Procedure Code is 1040")
+        And("the Authorisation Choice is 1040")
         createPartial.getElementById(hintId).text mustBe messages(s"$prefix.authCode.hint.standard.1040")
       }
 
@@ -187,23 +186,18 @@ class AuthorisationHolderEditContentSpec extends UnitViewSpec with GivenWhenThen
       }
     }
 
-    "display the expected warning and expanders" when {
+    "display the expected inset text" when {
       arrivedTypes.foreach { declarationType =>
         s"the additional declaration type is $declarationType" in {
           val partial = createPartial(withRequest(declarationType))
 
-          val expanders = partial.getElementsByClass("govuk-details")
-          expanders.size mustBe 3
+          val insetText = partial.getElementsByClass("govuk-inset-text")
+          insetText.size mustBe 1
 
-          val expanderCSE = expanders.get(0).children
-          expanderCSE.size mustBe 2
-          expanderCSE.first.text mustBe messages(s"$prefix.body.arrived.expander.cse.title")
-          expanderCSE.last.text mustBe messages(s"$prefix.body.arrived.expander.cse.text")
-
-          val expanderMIB = expanders.get(1).children
-          expanderMIB.size mustBe 2
-          expanderMIB.first.text mustBe messages(s"$prefix.body.arrived.expander.mib.title")
-          expanderMIB.last.text mustBe messages(s"$prefix.body.arrived.expander.mib.text")
+          val paragraphs = insetText.get(0).children
+          paragraphs.size mustBe 2
+          paragraphs.first.text mustBe messages(s"$prefix.body.arrived.expander.cse.text")
+          paragraphs.last.text mustBe messages(s"$prefix.body.arrived.expander.mib.text")
         }
       }
     }
@@ -222,7 +216,7 @@ class AuthorisationHolderEditContentSpec extends UnitViewSpec with GivenWhenThen
       onJourney(STANDARD, SIMPLIFIED, CLEARANCE)(
         aDeclaration(withAuthorisationProcedureCodeChoice(ChoiceOthers), withEntryIntoDeclarantsRecords(YesNoAnswers.yes))
       ) { implicit request =>
-        And("the Procedure Code is 1007")
+        And("the Authorisation Choice is 1007")
 
         val insetText = createPartial.getElementById(insetTextId).children
         insetText.get(0).text mustBe messages(s"$prefix.authCode.inset.special.title")
@@ -243,7 +237,7 @@ class AuthorisationHolderEditContentSpec extends UnitViewSpec with GivenWhenThen
       }
 
       def verifyInsetTextForExciseRemovals(implicit request: JourneyRequest[_]): Assertion = {
-        And("the Procedure Code is 1007")
+        And("the Authorisation Choice is 1007")
 
         val insetText = createPartial.getElementById(insetTextId).children
         insetText.get(0).text mustBe messages(s"$prefix.authCode.inset.excise.title")
@@ -305,7 +299,6 @@ class AuthorisationHolderEditContentSpec extends UnitViewSpec with GivenWhenThen
     }
 
     "not display any help text under the EORI radios' label" when {
-
       onJourney(STANDARD, SIMPLIFIED, OCCASIONAL, CLEARANCE) { implicit request =>
         And("the declaration is not of type FRONTIER")
         Option(createPartial.getElementById(exrrHelpTextId)) mustBe None

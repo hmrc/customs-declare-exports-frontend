@@ -14,7 +14,6 @@
  * limitations under the License.
  *@
 
-@import config.AppConfig
 @import controllers.section2.routes._
 @import controllers.navigation.Navigator
 @import forms.section2.ConsigneeDetails
@@ -39,10 +38,8 @@
     heading: heading,
     body:paragraphBody,
     group_address: group_address,
-    tariffExpander: tariffExpander,
     saveButtons: saveButtons,
-    navigator: Navigator,
-    appConfig: AppConfig
+    navigator: Navigator
 )
 
 @(form: Form[ConsigneeDetails])(implicit request: JourneyRequest[_], messages: Messages)
@@ -78,8 +75,6 @@
             )),
             html = group_address(form)
         ))
-
-        @tariffExpander(ConsigneeDetails, request.declarationType)(messages, appConfig)
 
         @saveButtons()
     }

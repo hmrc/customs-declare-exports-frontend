@@ -107,9 +107,6 @@ object AuthorisationHolder extends DeclarationPage with FieldMapping {
 
     Some((authorisationHolder.authorisationTypeCode, authorisationHolder.eori, maybeEoriSourceValue.getOrElse("")))
   }
-
-  override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
-    Seq(TariffContentKey(s"tariff.declaration.addAuthorisationRequired.${DeclarationPage.getJourneyTypeSpecialisation(decType)}"))
 }
 
 object AuthorisationHolderRequired extends DeclarationPage {

@@ -18,8 +18,6 @@ package forms.section2.representative
 
 import forms.DeclarationPage
 import forms.mappings.MappingHelper.requiredRadio
-import models.DeclarationType.DeclarationType
-import models.viewmodels.TariffContentKey
 import play.api.data.{Form, Forms}
 import play.api.libs.json.{Json, OFormat}
 import utils.validators.forms.FieldValidator._
@@ -48,7 +46,4 @@ object RepresentativeStatus extends DeclarationPage {
     val DirectRepresentative = "2"
     val IndirectRepresentative = "3"
   }
-
-  override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
-    Seq(TariffContentKey(s"tariff.declaration.representationTypeAgreed.${DeclarationPage.getJourneyTypeSpecialisation(decType)}"))
 }

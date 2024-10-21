@@ -215,10 +215,6 @@ class AuthorisationHolderSpec extends DeclarationPageBaseSpec with JourneyTypeTe
     }
   }
 
-  "AuthorisationHolder" when {
-    testTariffContentKeys(AuthorisationHolder, "tariff.declaration.addAuthorisationRequired")
-  }
-
   "AuthorisationHolderRequired" when {
     testTariffContentKeys(AuthorisationHolderRequired, "tariff.declaration.isAuthorisationRequired")
   }

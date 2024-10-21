@@ -14,7 +14,6 @@
  * limitations under the License.
  *@
 
-@import config.AppConfig
 @import controllers.section2.routes._
 @import controllers.navigation.Navigator
 @import forms.section2.AdditionalActor
@@ -36,11 +35,9 @@
     errorSummary: errorSummary,
     sectionHeader: sectionHeader,
     exportsInputText: exportsInputText,
-    tariffExpander: tariffExpander,
     saveButtons: saveButtons,
     formHelper: FormWithCSRF,
-    navigator: Navigator,
-    appConfig: AppConfig
+    navigator: Navigator
 )
 
 
@@ -132,7 +129,6 @@
             html = HtmlFormat.fill(List(
               paragraphBody(messages("declaration.additionalActors.body.text")),
               radios,
-              tariffExpander(AdditionalActor, request.declarationType)(messages, appConfig),
               saveButtons()
             ))
         ))

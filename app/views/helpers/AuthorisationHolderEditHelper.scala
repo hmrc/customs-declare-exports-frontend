@@ -18,17 +18,16 @@ package views.helpers
 
 import config.AppConfig
 import forms.common.YesNoAnswer.{No, Yes}
-import forms.section2.AuthorisationProcedureCodeChoice.{Choice1007, Choice1040, ChoiceOthers}
 import forms.section1.AdditionalDeclarationType._
+import forms.section2.AuthorisationProcedureCodeChoice.{Choice1007, Choice1040, ChoiceOthers}
 import models.DeclarationType._
 import models.ExportsDeclaration
 import models.declaration.Parties
 import models.requests.JourneyRequest
 import play.api.i18n.Messages
 import play.twirl.api.{Html, HtmlFormat}
-import uk.gov.hmrc.govukfrontend.views.html.components.{GovukDetails, GovukInsetText}
-import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{HtmlContent, Text}
-import uk.gov.hmrc.govukfrontend.views.viewmodels.details.Details
+import uk.gov.hmrc.govukfrontend.views.html.components.GovukInsetText
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.insettext.InsetText
 import views.helpers.AuthorisationHolderEditHelper._
 import views.html.components.gds.{bulletList, externalLink, numberedList, paragraphBody}
@@ -38,11 +37,10 @@ import javax.inject.{Inject, Singleton}
 @Singleton
 class AuthorisationHolderEditHelper @Inject() (
   bulletList: bulletList,
-  govukDetails: GovukDetails,
   govukInsetText: GovukInsetText,
   externalLink: externalLink,
   numberedList: numberedList,
-  paragraphBody: paragraphBody
+  paragraph: paragraphBody
 ) {
 
   def body(appConfig: AppConfig)(implicit messages: Messages, request: JourneyRequest[_]): Option[Html] = {
@@ -61,8 +59,7 @@ class AuthorisationHolderEditHelper @Inject() (
   }
 
   def additionalBodyForArrivedDeclarationsOnly(implicit messages: Messages, request: JourneyRequest[_]): Html =
-    if (isArrived(request.cacheModel.additionalDeclarationType))
-      new Html(List(expandersForArrivedDeclarations))
+    if (isArrived(request.cacheModel.additionalDeclarationType)) insetTextForArrivedDeclarations
     else HtmlFormat.empty
 
   def hintForAuthorisationCode(implicit messages: Messages, request: JourneyRequest[_]): List[String] =
@@ -96,23 +93,20 @@ class AuthorisationHolderEditHelper @Inject() (
   private val prefix = "declaration.authorisationHolder"
 
   private def bodyText(messageList: List[String], id: String): Option[Html] =
-    Some(HtmlFormat.fill(messageList.map(message => paragraphBody(message, s"govuk-body", Some(id)))))
+    Some(HtmlFormat.fill(messageList.map(message => paragraph(message, s"govuk-body", id = Some(id)))))
 
-  private def expander(summary: String, content: String)(implicit messages: Messages): Html =
-    govukDetails(Details(summary = Text(messages(summary)), content = HtmlContent(messages(content))))
-
-  private def expandersForArrivedDeclarations(implicit messages: Messages): Html = {
+  private def insetTextForArrivedDeclarations(implicit messages: Messages): Html = {
     val key = "body.arrived.expander"
-    new Html(List(expander(s"$prefix.$key.cse.title", s"$prefix.$key.cse.text"), expander(s"$prefix.$key.mib.title", s"$prefix.$key.mib.text")))
+    val html = new Html(List(paragraph(messages(s"$prefix.$key.cse.text")), paragraph(messages(s"$prefix.$key.mib.text"))))
+    govukInsetText(InsetText(content = HtmlContent(html)))
   }
 
   private def insetText(appendable: Html, key: String)(implicit messages: Messages): Option[Html] = {
-    val html = new Html(List(paragraphBody(messages(s"$prefix.authCode.inset.$key.title"), "govuk-label--s"), appendable))
+    val html = new Html(List(paragraph(messages(s"$prefix.authCode.inset.$key.title"), "govuk-label--s"), appendable))
     Some(govukInsetText(InsetText(id = Some(insetTextId), content = HtmlContent(html))))
   }
 
   private def insetTextForExciseRemovals(appConfig: AppConfig)(implicit messages: Messages): Option[Html] = {
-
     val link1 = externalLink(messages(s"$prefix.authCode.inset.excise.bullet1.link"), appConfig.permanentExportOrDispatch.authHolder)
     val link2 = externalLink(messages(s"$prefix.authCode.inset.excise.bullet2.link"), appConfig.permanentExportOrDispatch.conditions)
     val link3 = externalLink(messages(s"$prefix.authCode.inset.excise.bullet3.link"), appConfig.permanentExportOrDispatch.documents)
@@ -130,7 +124,6 @@ class AuthorisationHolderEditHelper @Inject() (
   }
 
   private def insetTextForNonStandardProcedures(appConfig: AppConfig)(implicit messages: Messages): Option[Html] = {
-
     val link1 = externalLink(messages(s"$prefix.authCode.inset.special.bullet1.link"), appConfig.previousProcedureCodes)
 
     insetText(
@@ -156,17 +149,14 @@ class AuthorisationHolderEditHelper @Inject() (
 
   private def paragraphForEoriRadiosWhenEXRR(parties: Parties)(implicit messages: Messages): Html =
     parties.declarantIsExporter.fold {
-      paragraph(s"$eoriKey.body.exrr.v2", exrrHelpTextId)
+      paragraph(messages(s"$eoriKey.body.exrr.v2"), id = Some(exrrHelpTextId))
     } { declarantIsExporter =>
-      if (declarantIsExporter.isYes) paragraph(s"$eoriKey.body.exrr.v1", exrrHelpTextId)
+      if (declarantIsExporter.isYes) paragraph(messages(s"$eoriKey.body.exrr.v1"), id = Some(exrrHelpTextId))
       else {
         val version = if (parties.exporterDetails.flatMap(_.details.eori).isDefined) "v2" else "v3"
-        paragraph(s"$eoriKey.body.exrr.$version", exrrHelpTextId)
+        paragraph(messages(s"$eoriKey.body.exrr.$version"), id = Some(exrrHelpTextId))
       }
     }
-
-  private def paragraph(key: String, id: String)(implicit messages: Messages): Html =
-    paragraphBody(message = messages(key), id = Some(id))
 }
 
 object AuthorisationHolderEditHelper {
