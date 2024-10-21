@@ -43,12 +43,6 @@
 
 @(form: Form[_])(implicit request: Request[_], messages: Messages)
 
-@detailsLink = { @externalLink(
-        text = messages("tariff.declaration.type.linkText.2"),
-        url = appConfig.standardDeclarationType
-    )
-}
-
 @govukLayout(
     title = Title("declaration.type.description", hasErrors = form.hasErrors || form.hasGlobalErrors),
     backButton = Some(BackButton(messages("site.back"), ChoiceController.displayPage)),
@@ -60,7 +54,10 @@
         @heading(messages("declaration.type.description"))
 
         @paragraphBody(messages("tariff.declaration.type.text.1"))
-        @paragraphBody(messages("tariff.declaration.type.text.2", detailsLink))
+        @paragraphBody(messages("tariff.declaration.type.text.2", externalLink(
+            text = messages("tariff.declaration.type.linkText.2"),
+            url = appConfig.standardDeclarationType
+        )))
 
         @govukRadios(Radios(
             name = "type",
