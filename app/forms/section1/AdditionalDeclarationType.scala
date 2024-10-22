@@ -44,7 +44,7 @@ object AdditionalDeclarationType extends Enumeration {
   val CLEARANCE_FRONTIER = Value("J")
   val CLEARANCE_PRE_LODGED = Value("K")
 
-  val allAdditionalDeclarationTypes = List(
+  val allAdditionalDeclarationTypes: Seq[Value] = List(
     STANDARD_FRONTIER,
     STANDARD_PRE_LODGED,
     SUPPLEMENTARY_EIDR,
