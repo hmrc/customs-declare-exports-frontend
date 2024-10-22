@@ -68,7 +68,6 @@ class CountryOfRoutingViewSpec extends PageWithButtonsSpec with ExportsTestHelpe
       messages must haveTranslationFor("declaration.routingCountry.empty")
       messages must haveTranslationFor("declaration.routingCountries.body.p1")
       messages must haveTranslationFor("declaration.routingCountries.body.p2")
-      messages must haveTranslationFor("tariff.expander.title.clearance")
     }
   }
 

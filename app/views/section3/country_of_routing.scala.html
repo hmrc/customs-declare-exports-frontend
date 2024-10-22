@@ -14,7 +14,6 @@
  * limitations under the License.
  *@
 
-@import config.AppConfig
 @import controllers.navigation.Navigator
 @import controllers.section3.routes.RoutingCountriesController
 @import forms.common.Countries._
@@ -39,10 +38,8 @@
     sectionHeader: sectionHeader,
     saveButtons: saveButtons,
     addButton: addButton,
-    tariffExpander: tariffExpander,
     navigator: Navigator,
-    formHelper: FormWithCSRF,
-    appConfig: AppConfig
+    formHelper: FormWithCSRF
 )(implicit countryHelper: CountryHelper)
 
 @(form: Form[Country])(implicit request: JourneyRequest[_], messages: Messages)
@@ -84,8 +81,6 @@
             msgKey = "routingCountries",
             removeKeys = Some(listOfRoutingCountries.map(_.countryCode))
         ))
-
-        @tariffExpander(RoutingCountryPage, request.declarationType)(messages, appConfig)
 
         @saveButtons()
     }

@@ -17,9 +17,7 @@
 package forms.section3
 
 import forms.DeclarationPage
-import models.DeclarationType.DeclarationType
 import models.ExportsFieldPointer.ExportsFieldPointer
-import models.viewmodels.TariffContentKey
 import models.{Amendment, FieldMapping}
 import play.api.data.Forms.text
 import play.api.data.{Form, Forms, Mapping}
@@ -55,7 +53,4 @@ object OfficeOfExit extends DeclarationPage with FieldMapping {
       .verifying("declaration.officeOfExit.length", isEmpty or hasSpecificLength(8))
       .verifying("declaration.officeOfExit.specialCharacters", isEmpty or isAlphanumeric)
   )(OfficeOfExit.apply)(OfficeOfExit.unapply)
-
-  override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
-    Seq(TariffContentKey(s"tariff.declaration.officeOfExit.${DeclarationPage.getJourneyTypeSpecialisation(decType)}"))
 }

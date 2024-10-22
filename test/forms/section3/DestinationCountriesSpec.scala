@@ -113,10 +113,10 @@ class DestinationCountriesSpec extends DeclarationPageBaseSpec with JourneyTypeT
   }
 
   override def getCommonTariffKeys(messageKey: String): Seq[TariffContentKey] =
-    Seq(TariffContentKey(s"${messageKey}.1.common"), TariffContentKey(s"${messageKey}.2.common"))
+    List(TariffContentKey(s"${messageKey}.1.common"), TariffContentKey(s"${messageKey}.2.common"), TariffContentKey(s"${messageKey}.3.common"))
 
   override def getClearanceTariffKeys(messageKey: String): Seq[TariffContentKey] =
-    Seq(TariffContentKey(s"${messageKey}.1.clearance"), TariffContentKey(s"${messageKey}.2.clearance"))
+    List(TariffContentKey(s"${messageKey}.1.common"), TariffContentKey(s"${messageKey}.2.clearance"), TariffContentKey(s"${messageKey}.3.clearance"))
 
   "DestinationCountryPage" when {
     testTariffContentKeys(DestinationCountryPage, "tariff.declaration.destinationCountry")

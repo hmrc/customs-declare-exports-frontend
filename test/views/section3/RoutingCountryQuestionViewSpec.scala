@@ -28,8 +28,8 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import play.api.mvc.AnyContent
 import play.twirl.api.HtmlFormat.Appendable
-import views.html.section3.routing_country_question
 import views.common.PageWithButtonsSpec
+import views.html.section3.routing_country_question
 import views.tags.ViewTest
 
 import scala.collection.immutable.ListMap
@@ -80,11 +80,6 @@ class RoutingCountryQuestionViewSpec extends PageWithButtonsSpec with Injector {
     "display Yes/No answers" in {
       view.getElementsByAttributeValue("for", "Yes").text.text() mustBe messages("site.yes")
       view.getElementsByAttributeValue("for", "No").text mustBe messages("site.no")
-    }
-
-    "display Tariff section text" in {
-      val tariffText = view.getElementsByClass("govuk-details__summary-text").first.text
-      tariffText.text() mustBe messages("tariff.expander.title.common")
     }
 
     "display back button that links to 'Declaration Holder' page" in {

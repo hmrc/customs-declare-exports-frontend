@@ -26,16 +26,13 @@ class RoutingCountryQuestionYesNoSpec extends UnitWithMocksSpec {
   "Routing Country model" should {
 
     "contains correct list of allowedValues" in {
-
       YesNoAnswer.allowedValues mustBe Seq(YesNoAnswers.yes, YesNoAnswers.no)
     }
 
     "contains errors after form validation" when {
 
       "input is empty for add" in {
-
         val incorrectForm = Map("answer" -> "")
-
         val result = RoutingCountryQuestionYesNo.formAdd().bind(incorrectForm)
 
         result.errors.length mustBe 1
@@ -43,9 +40,7 @@ class RoutingCountryQuestionYesNoSpec extends UnitWithMocksSpec {
       }
 
       "input is empty for remove" in {
-
         val incorrectForm = Map("answer" -> "")
-
         val result = RoutingCountryQuestionYesNo.formRemove().bind(incorrectForm)
 
         result.errors.length mustBe 1
@@ -53,9 +48,7 @@ class RoutingCountryQuestionYesNoSpec extends UnitWithMocksSpec {
       }
 
       "input is empty for first" in {
-
         val incorrectForm = Map("answer" -> "")
-
         val result = RoutingCountryQuestionYesNo.formFirst().bind(incorrectForm)
 
         result.errors.length mustBe 1
@@ -63,9 +56,7 @@ class RoutingCountryQuestionYesNoSpec extends UnitWithMocksSpec {
       }
 
       "input is incorrect" in {
-
         val incorrectForm = Map("answer" -> "incorrect")
-
         val result = RoutingCountryQuestionYesNo.formFirst().bind(incorrectForm)
 
         result.errors.length mustBe 1
@@ -74,9 +65,7 @@ class RoutingCountryQuestionYesNoSpec extends UnitWithMocksSpec {
     }
 
     "doesn't have any errors when value is correct" in {
-
       val correctForm = Map("answer" -> "Yes")
-
       val result = RoutingCountryQuestionYesNo.formRemove().bind(correctForm)
 
       result.errors mustBe empty
