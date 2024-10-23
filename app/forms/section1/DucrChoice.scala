@@ -18,4 +18,4 @@ package forms.section1
 
 import forms.DeclarationPage
 
-object DucrChoice extends DeclarationPage {}
+object DucrChoice extends DeclarationPage
