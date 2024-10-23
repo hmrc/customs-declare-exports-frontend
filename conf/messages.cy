@@ -196,15 +196,12 @@ tariff.expander.title.common = Rhagor o fanylion am yr hyn sydd ei angen ar y du
 tariff.expander.title.clearance = Rhagor o fanylion am yr hyn sydd ei angen ar y dudalen hon
 tariff.declaration.text = Am fanylion, ewch i {0}.
 
-tariff.declaration.type.title = Rhagor o fanylion am ddatganiadau safonol
 tariff.declaration.type.text.1 = Mae datganiad safonol (hynny yw un sydd wedi cyrraedd neu wedi’i gyflwyno ymlaen llaw) yn ddatganiad llawn. Mae hyn yn golygu bod rhaid cwblhau pob adran o’r datganiad.
 tariff.declaration.type.text.2 = Dewch o hyd i fanylion am {0}.
 tariff.declaration.type.linkText.2 = wneud datganiad allforio llawn (yn agor tab newydd)
 tariff.declaration.type.common.linkText.0 = Elfen Ddata 1/2 - Math Ychwanegol o Ddatganiad (yn agor tab newydd)
 
 tariff.declaration.lrn.common.linkText.0 = Elfen Ddata 2/5 - Cyfeirnod Lleol (LRN), dim cyfeirnod blaenorol (yn agor tab newydd)
-tariff.declaration.linkDucrToMucr.caption = Rhagor o fanylion am gyfuno MUCR
-tariff.declaration.linkDucrToMucr.text = Am fanylion, ewch i {0}.<br><br>Bydd angen i’ch llwythwr gau’r MUCR cyn i’r nwyddau ymadael.
 tariff.declaration.consignmentReferences.common.text = Am fanylion, ewch i {0} ac {1}.
 tariff.declaration.consignmentReferences.common.linkText.0 = Elfen Ddata 2/4 - Cyfeirnod Unigryw y Llwyth (UCR) (yn agor tab newydd)
 tariff.declaration.consignmentReferences.common.linkText.1 = Elfen Ddata 2/5 - Cyfeirnod Lleol (LRN), dim cyfeirnod blaenorol (yn agor tab newydd)
