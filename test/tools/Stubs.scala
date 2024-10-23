@@ -152,7 +152,6 @@ object Stubs {
       |urls.currencyCodesForDataElement410=currencyCodesForDataElement410
       |urls.exchangeRatesForCustoms=exchangeRatesForCustoms
       |
-      |urls.additionalDeclarationType = "https://www.gov.uk/government/publications/uk-trade-tariff-cds-volume-3-export-declaration-completion-guide/group-1-message-information-including-procedure-codes#de-12-additional-declaration-type-box-1-declaration-second-subdivision"
       |urls.declareGoodsExported = "https://www.gov.uk/guidance/declare-commercial-goods-youre-taking-out-of-great-britain-in-your-accompanied-baggage-or-small-vehicles"
       |
       |files.codelists.procedureCodes="procedureCodes"
