@@ -19,7 +19,6 @@ package forms.section6
 import base.MockTransportCodeService
 import forms.common.DeclarationPageBaseSpec
 import forms.section6.BorderTransport.{form, radioButtonGroupId}
-import models.viewmodels.TariffContentKey
 import play.api.i18n.{Lang, Messages}
 import play.api.test.Helpers._
 import services.TransportCodeService
@@ -84,12 +83,5 @@ class BorderTransportSpec extends DeclarationPageBaseSpec {
         }
       }
     }
-  }
-
-  override def getCommonTariffKeys(messageKey: String): Seq[TariffContentKey] =
-    Seq(TariffContentKey(s"${messageKey}.common"))
-
-  "BorderTransport" when {
-    testTariffContentKeysNoSpecialisation(BorderTransport, "tariff.declaration.borderTransport")
   }
 }

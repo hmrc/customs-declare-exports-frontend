@@ -17,8 +17,6 @@
 package forms.section6
 
 import forms.DeclarationPage
-import models.DeclarationType.DeclarationType
-import models.viewmodels.TariffContentKey
 import play.api.data.Forms.{mapping, optional, text}
 import play.api.data.{Form, Mapping}
 import play.api.libs.json.{Json, OFormat}
@@ -105,7 +103,4 @@ object DepartureTransport extends DeclarationPage {
         .verifying(s"$prefix.error.length", isEmpty or noLongerThan(35))
         .verifying(s"$prefix.error.invalid", isEmpty or (noLongerThan(35) and isAlphanumericWithAllowedSpecialCharacters))
     )
-
-  override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
-    Seq(TariffContentKey(s"tariff.declaration.departureTransport.${DeclarationPage.getJourneyTypeSpecialisation(decType)}"))
 }

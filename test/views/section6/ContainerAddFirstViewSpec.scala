@@ -31,9 +31,9 @@ import play.api.data.Form
 import play.api.mvc.Call
 import services.cache.ExportsTestHelper
 import tools.Stubs
+import views.common.UnitViewSpec
 import views.helpers.CommonMessages
 import views.html.section6.container_add_first
-import views.common.UnitViewSpec
 import views.tags.ViewTest
 
 @ViewTest
@@ -91,16 +91,6 @@ class ContainerAddFirstViewSpec extends UnitViewSpec with ExportsTestHelper with
       }
     }
 
-    "display the correct tariff expander in non-Clearance journeys" in {
-
-      val tariffText = view.getElementsByClass("govuk-details__text").get(0)
-
-      removeBlanksIfAnyBeforeDot(tariffText.text) mustBe removeLineBreakIfAny(
-        messages("tariff.declaration.text", messages("tariff.declaration.container.common.linkText.0"))
-      )
-      tariffText.child(0) must haveHref(appConfig.tariffGuideUrl("urls.tariff.declaration.container.common.0"))
-    }
-
     checkAllSaveButtonsAreDisplayed(view)
   }
 
@@ -154,23 +144,6 @@ class ContainerAddFirstViewSpec extends UnitViewSpec with ExportsTestHelper with
           }
         }
       }
-    }
-
-    "declaration's type is CLEARANCE" in {
-
-      implicit val request = withRequestOfType(CLEARANCE)
-      val viewClearance = createView()
-      val tariffText = viewClearance.getElementsByClass("govuk-details__text").get(0)
-
-      removeBlanksIfAnyBeforeDot(tariffText.text) mustBe removeLineBreakIfAny(
-        messages(
-          "tariff.declaration.container.clearance.text",
-          messages("tariff.declaration.container.clearance.linkText.0"),
-          messages("tariff.declaration.container.clearance.linkText.1")
-        )
-      )
-      tariffText.child(0) must haveHref(appConfig.tariffGuideUrl("urls.tariff.declaration.container.clearance.0"))
-      tariffText.child(1) must haveHref(appConfig.tariffGuideUrl("urls.tariff.declaration.container.clearance.1"))
     }
   }
 

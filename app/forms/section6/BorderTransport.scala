@@ -18,8 +18,6 @@ package forms.section6
 
 import forms.DeclarationPage
 import forms.mappings.MappingHelper.requiredRadio
-import models.DeclarationType.DeclarationType
-import models.viewmodels.TariffContentKey
 import play.api.data.Forms.{mapping, text}
 import play.api.data.{Form, Mapping}
 import play.api.libs.json.{Json, OFormat}
@@ -125,7 +123,4 @@ object BorderTransport extends DeclarationPage {
   private def model2Ref(transportCode: TransportCode)(implicit model: BorderTransport): Option[String] =
     if (transportCode.value != model.meansOfTransportCrossingTheBorderType) None
     else Some(model.meansOfTransportCrossingTheBorderIDNumber)
-
-  override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
-    Seq(TariffContentKey("tariff.declaration.borderTransport.common"))
 }

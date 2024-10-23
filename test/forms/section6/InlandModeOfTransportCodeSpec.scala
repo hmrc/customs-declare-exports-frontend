@@ -40,10 +40,6 @@ class InlandModeOfTransportCodeSpec extends DeclarationPageBaseSpec with LightFo
       form.bind(incorrectTransportCode, JsonBindMaxChars) mustBe errorless
     }
   }
-
-  "InlandModeOfTransportCode" when {
-    testTariffContentKeysNoSpecialisation(InlandModeOfTransportCode, "tariff.declaration.inlandTransportDetails")
-  }
 }
 
 object InlandModeOfTransportCodeSpec {

@@ -289,17 +289,7 @@ tariff.declaration.transportLeavingTheBorder.common.linkText.0 = Data Element 7/
 tariff.declaration.warehouseIdentification.common.linkText.0 = Data Element 2/7 - Identification of Warehouse (opens in new tab)
 tariff.declaration.supervisingCustomsOffice.common.linkText.0 = Data Element 5/27 - Supervising Customs Office (opens in new tab)
 tariff.declaration.inlandOrBorder.common.linkText.0 = Data Element 5/23 - Customs Declaration Service, Appendix 16, Goods location codes (opens in new tab)
-tariff.declaration.inlandTransportDetails.common.linkText.0 = Data Element 7/5 - Inland Mode of Transport in the UK (opens in new tab)
-tariff.declaration.departureTransport.common.linkText.0 = Data Element 7/7 - Identity of the Means of Transport at Departure in the UK Trade Tariff (opens in new tab)
-tariff.declaration.borderTransport.common.linkText.0 = Data Element 7/14 - Identity of Active Means of Transport Crossing the Border (opens in new tab)
 tariff.declaration.transportCountry.common.linkText.0 = Data Element 7/15 - Nationality of active means of transport crossing the border (opens in new tab)
-tariff.declaration.expressConsignment.common.linkText.0 = Data Element 1/7 - Specific Circumstance Indicator (opens in new tab)
-tariff.declaration.transportPayment.common.linkText.0 = Data Element 4/2 - Transport charges method of payment in the UK Trade Tariff (opens in new tab)
-tariff.declaration.container.common.linkText.0 = Data Element 7/2 - Container (opens in new tab)
-tariff.declaration.container.clearance.text = For details, go to {0} and {1}.
-tariff.declaration.container.clearance.linkText.0 = Data Element 7/2 - Container (opens in new tab)
-tariff.declaration.container.clearance.linkText.1 = Data Element 7/10 - Container Identification Number (opens in new tab)
-tariff.declaration.container.change.common.linkText.0 = Data Element 7/10 - Container Identification Number (opens in new tab)
 tariff.declaration.containers.seals.common.linkText.0 = Data Element 7/18 - Seal Number (opens in new tab)
 tariff.declaration.personPresentingGoods.clearance.linkText.0 = Data Element 3/41 - Presenter Identification Number (opens in new tab)
 
