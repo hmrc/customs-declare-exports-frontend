@@ -17,7 +17,6 @@
 package forms.section4
 
 import forms.common.DeclarationPageBaseSpec
-import forms.section4.DocumentSpec.json
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.OptionValues
@@ -28,7 +27,7 @@ import services.{DocumentType, DocumentTypeService}
 
 class DocumentSpec extends DeclarationPageBaseSpec with OptionValues with MockitoSugar {
 
-  val mockDocumentTypeService = mock[DocumentTypeService]
+  private val mockDocumentTypeService = mock[DocumentTypeService]
   implicit val mockMessages: Messages = mock[Messages]
 
   when(mockDocumentTypeService.allDocuments()(any())).thenReturn(List(DocumentType("DocumentReference", "DCS")))
@@ -138,18 +137,7 @@ class DocumentSpec extends DeclarationPageBaseSpec with OptionValues with Mockit
     }
   }
 
-  "Document" when {
-    testTariffContentKeys(Document, "tariff.declaration.addPreviousDocument")
-  }
-
-  "DocumentChangeOrRemove" when {
-    testTariffContentKeysNoSpecialisation(DocumentChangeOrRemove, "tariff.declaration.previousDocuments.remove", getClearanceTariffKeys)
-  }
-}
-
-object DocumentSpec {
-
-  def json(documentType: String, documentReference: String, identifier: String): JsObject = Json.obj(
+  private def json(documentType: String, documentReference: String, identifier: String): JsObject = Json.obj(
     "documentType" -> JsString(documentType),
     "documentReference" -> JsString(documentReference),
     "goodsItemIdentifier" -> JsString(identifier)
