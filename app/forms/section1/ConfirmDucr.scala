@@ -18,5 +18,4 @@ package forms.section1
 
 import forms.DeclarationPage
 
-object ConfirmDucr extends DeclarationPage {
-}
+object ConfirmDucr extends DeclarationPage {}
