@@ -38,7 +38,6 @@
     authorisationHolderEditHelper: AuthorisationHolderEditHelper,
     exportsInputText: exportsInputText,
     govukRadios: GovukRadios,
-    tariffExpander: tariffExpander,
     addButton: addButton,
     removeButton: removeButton,
     saveButtons: saveButtons,
@@ -107,11 +106,7 @@
         content = Text(messages("declaration.authorisationHolder.eori")),
         classes = "govuk-fieldset__legend--m"
     )),
-    html = HtmlFormat.fill(List(
-        formContent,
-        tariffExpander(AuthorisationHolder, request.declarationType)(messages, appConfig),
-        saveButtons()
-    ))
+    html = HtmlFormat.fill(List(formContent, saveButtons()))
 ))
 
 

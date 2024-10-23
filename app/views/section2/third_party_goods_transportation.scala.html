@@ -14,17 +14,16 @@
  * limitations under the License.
  *@
 
-@import config.AppConfig
-@import forms.common.YesNoAnswer
-@import models.requests.JourneyRequest
 @import controllers.navigation.Navigator
 @import controllers.section2.routes.ThirdPartyGoodsTransportationController
+@import forms.common.YesNoAnswer
 @import forms.section2.ThirdPartyGoodsTransportationPage
+@import models.requests.JourneyRequest
 @import uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF
-@import views.html.components.gds._
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.helpers.ErrorMapper.yesNoErrors
 @import views.helpers.{BackButton, Title}
+@import views.html.components.gds._
 
 @this(
   govukLayout: gdsMainTemplate,
@@ -34,21 +33,13 @@
   paragraphBody: paragraphBody,
   saveButtons: saveButtons,
   yesNoRadios: yesNoRadios,
-  govukDetails : GovukDetails,
-  tariffExpander: tariffExpander,
   formHelper: FormWithCSRF,
-  navigator: Navigator,
-  appConfig: AppConfig
+  navigator: Navigator
 )
 
 @(form: Form[YesNoAnswer])(implicit request: JourneyRequest[_], messages: Messages)
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
-
-@expanderContent = {
-  @paragraphBody(messages("declaration.thirdPartyGoodsTransportation.expander.paragraph.1"))
-  @paragraphBody(messages("declaration.thirdPartyGoodsTransportation.expander.paragraph.2"))
-}
 
 @govukLayout(
   title = Title("declaration.thirdPartyGoodsTransportation.title", "declaration.section.2", hasErrors = hasErrors),
@@ -75,13 +66,6 @@
       ))
     )
 
-    @govukDetails(Details(
-      id = Some("expander"),
-      summary = Text(messages("declaration.thirdPartyGoodsTransportation.expander.title")),
-      content = HtmlContent(expanderContent)
-    ))
-
-    @tariffExpander(ThirdPartyGoodsTransportationPage, request.declarationType)(messages, appConfig)
     @saveButtons()
   }
 }

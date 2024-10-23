@@ -25,51 +25,38 @@ import play.api.data.FormError
 class ExporterEoriNumberSpec extends FormSpec with DeclarationPageBaseSpec {
 
   "Exporter Eori Number form" should {
-
-    "has no errors" when {
+    "have no errors" when {
 
       "the answer is 'No'" in {
-
         val correctModel = ExporterEoriNumber(None, YesNoAnswers.no)
-
         val result = form.fillAndValidate(correctModel)
 
         result.errors mustBe empty
       }
 
       "the answer is 'Yes' and EORI is provided" in {
-
         val correctModel = ExporterEoriNumber(Some(Eori("GB1234567890123")), YesNoAnswers.yes)
-
         val result = form.fillAndValidate(correctModel)
 
         result.errors mustBe empty
       }
     }
 
-    "has errors" when {
+    "have errors" when {
 
       "the answer is 'Yes' and EORI is not provided" in {
-
         val incorrectData = Map("eori" -> "", "hasEori" -> "Yes")
-
         val result = form.bind(incorrectData)
 
         result.errors mustBe Seq(FormError("eori", "declaration.exporterEori.eori.empty"))
       }
 
       "there is no answer on the question" in {
-
         val incorrectData = Map.empty[String, String]
-
         val result = form.bind(incorrectData)
 
         result.errors mustBe Seq(FormError("hasEori", "declaration.exporterEori.hasEori.empty"))
       }
     }
-  }
-
-  "ExporterEoriNumber" when {
-    testTariffContentKeys(ExporterEoriNumber, "tariff.declaration.exporterEoriNumber")
   }
 }

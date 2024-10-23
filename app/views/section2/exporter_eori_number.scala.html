@@ -18,13 +18,12 @@
 @import controllers.section2.routes.ExporterEoriNumberController
 @import forms.common.YesNoAnswer.YesNoAnswers.{no, yes}
 @import forms.section2.exporter.ExporterEoriNumber
-@import uk.gov.hmrc.govukfrontend.views.html.components._
-@import views.html.components.gds._
-@import views.components.gds.Styles._
 @import models.requests.JourneyRequest
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.components.gds.Styles._
 @import views.helpers.{BackButton, Title}
 @import views.helpers.ErrorMapper.radioGroupErrors
-@import config.AppConfig
+@import views.html.components.gds._
 
 @this(
     govukLayout: gdsMainTemplate,
@@ -33,10 +32,8 @@
     errorSummary: errorSummary,
     sectionHeader: sectionHeader,
     saveButtons: saveButtons,
-    tariffExpander: tariffExpander,
     formHelper: FormWithCSRF,
-    navigator: Navigator,
-    appConfig: AppConfig
+    navigator: Navigator
 )
 
 @(form: Form[ExporterEoriNumber])(implicit request: JourneyRequest[_], messages: Messages)
@@ -87,8 +84,6 @@
             attributes = Map("id" -> "hasEori"),
             errorMessage = form("hasEori").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
         ))
-
-        @tariffExpander(ExporterEoriNumber, request.declarationType)(messages, appConfig)
 
         @saveButtons()
     }

@@ -78,10 +78,6 @@ class AdditionalActorsSpec extends DeclarationPageBaseSpec {
       }
     }
   }
-
-  "DeclarationAdditionalActors" when {
-    testTariffContentKeysNoSpecialisation(AdditionalActor, "tariff.declaration.otherPartiesInvolved")
-  }
 }
 
 object AdditionalActorsSpec {

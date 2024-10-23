@@ -21,7 +21,6 @@ import forms.DeclarationPage
 import models.DeclarationType.{CLEARANCE, DeclarationType}
 import models.ExportsFieldPointer.ExportsFieldPointer
 import models.FieldMapping
-import models.viewmodels.TariffContentKey
 import play.api.data.{Form, Forms, Mapping}
 import play.api.i18n.Messages
 import play.api.libs.json.{Json, OFormat}
@@ -51,7 +50,4 @@ object ConsigneeDetails extends DeclarationPage with FieldMapping {
   def form(declarationType: DeclarationType)(implicit messages: Messages, codeListConnector: CodeListConnector): Form[ConsigneeDetails] = Form(
     mapping(declarationType)
   )
-
-  override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
-    Seq(TariffContentKey(s"tariff.declaration.consigneeDetails.${DeclarationPage.getJourneyTypeSpecialisation(decType)}"))
 }

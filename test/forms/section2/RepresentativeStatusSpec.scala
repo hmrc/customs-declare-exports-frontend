@@ -53,10 +53,6 @@ class RepresentativeStatusSpec extends DeclarationPageBaseSpec {
       }
     }
   }
-
-  "RepresentativeStatus" when {
-    testTariffContentKeys(RepresentativeStatus, "tariff.declaration.representationTypeAgreed")
-  }
 }
 
 object RepresentativeStatusSpec {

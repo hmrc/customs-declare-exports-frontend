@@ -14,7 +14,6 @@
  * limitations under the License.
  *@
 
-@import config.AppConfig
 @import controllers.navigation.Navigator
 @import controllers.section2.routes.DeclarantExporterController
 @import forms.common.YesNoAnswer.YesNoAnswers
@@ -35,10 +34,8 @@
     heading: heading,
     saveButtons: saveButtons,
     paragraphBody: paragraphBody,
-    tariffExpander: tariffExpander,
     formHelper: FormWithCSRF,
-    navigator: Navigator,
-    appConfig: AppConfig
+    navigator: Navigator
 )
 
 @(form: Form[DeclarantIsExporter])(implicit request: JourneyRequest[_], messages: Messages)
@@ -73,8 +70,6 @@
                ))
             ))
         )
-
-        @tariffExpander(DeclarantIsExporter, request.declarationType)(messages, appConfig)
 
         @saveButtons()
     }

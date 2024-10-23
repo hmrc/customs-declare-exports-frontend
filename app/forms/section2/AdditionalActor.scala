@@ -19,12 +19,10 @@ package forms.section2
 import forms.DeclarationPage
 import forms.common.Eori
 import forms.mappings.MappingHelper._
-import models.DeclarationType.DeclarationType
 import models.ExportsFieldPointer.ExportsFieldPointer
 import models.FieldMapping
 import models.declaration.ImplicitlySequencedObject
 import models.declaration.Parties.partiesPrefix
-import models.viewmodels.TariffContentKey
 import play.api.data.{Form, Forms, Mapping}
 import play.api.libs.json.{Format, JsValue, Json}
 import services.DiffTools
@@ -102,9 +100,6 @@ object AdditionalActor extends DeclarationPage with FieldMapping {
   }
 
   def form: Form[AdditionalActor] = Form(mapping)
-
-  override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
-    Seq(TariffContentKey("tariff.declaration.otherPartiesInvolved.common"))
 }
 
 object AdditionalActorsSummary extends DeclarationPage

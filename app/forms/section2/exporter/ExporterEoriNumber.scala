@@ -17,11 +17,9 @@
 package forms.section2.exporter
 
 import forms.DeclarationPage
-import forms.mappings.MappingHelper.requiredRadio
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.common.{Eori, YesNoAnswer}
-import models.DeclarationType.DeclarationType
-import models.viewmodels.TariffContentKey
+import forms.mappings.MappingHelper.requiredRadio
 import play.api.data.{Form, Forms, Mapping}
 import play.api.libs.json.{Json, OFormat}
 import uk.gov.voa.play.form.ConditionalMappings.mandatoryIfEqual
@@ -47,7 +45,4 @@ object ExporterEoriNumber extends DeclarationPage {
     exporterDetails.details.eori.fold(ExporterEoriNumber(None, YesNoAnswers.no)) { eori =>
       ExporterEoriNumber(Some(eori), YesNoAnswers.yes)
     }
-
-  override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
-    Seq(TariffContentKey(s"tariff.declaration.exporterEoriNumber.${DeclarationPage.getJourneyTypeSpecialisation(decType)}"))
 }

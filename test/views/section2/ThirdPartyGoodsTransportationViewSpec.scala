@@ -18,7 +18,6 @@ package views.section2
 
 import base.ExportsTestData.eori
 import base.Injector
-import config.AppConfig
 import controllers.section2.routes._
 import forms.common.{Address, Eori, YesNoAnswer}
 import models.DeclarationType._
@@ -26,13 +25,12 @@ import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import play.twirl.api.HtmlFormat.Appendable
-import views.html.section2.third_party_goods_transportation
 import views.common.UnitViewSpec
+import views.html.section2.third_party_goods_transportation
 
 class ThirdPartyGoodsTransportationViewSpec extends UnitViewSpec with Injector {
 
   private val page = instanceOf[third_party_goods_transportation]
-  private val appConfig = instanceOf[AppConfig]
   private val form: Form[YesNoAnswer] = YesNoAnswer.form()
 
   private def createView(form: Form[YesNoAnswer] = form)(implicit request: JourneyRequest[_]): Appendable =
@@ -46,16 +44,7 @@ class ThirdPartyGoodsTransportationViewSpec extends UnitViewSpec with Injector {
       "declaration.thirdPartyGoodsTransportation.radio.yes",
       "declaration.thirdPartyGoodsTransportation.radio.no",
       "declaration.thirdPartyGoodsTransportation.radio.text",
-      "declaration.thirdPartyGoodsTransportation.radio.error",
-      "declaration.thirdPartyGoodsTransportation.expander.title",
-      "declaration.thirdPartyGoodsTransportation.expander.paragraph.1",
-      "declaration.thirdPartyGoodsTransportation.expander.paragraph.2",
-      "tariff.declaration.thirdPartyGoodsTransportation.common.text",
-      "tariff.declaration.thirdPartyGoodsTransportation.common.linkText.0",
-      "tariff.declaration.thirdPartyGoodsTransportation.common.linkText.1",
-      "tariff.declaration.thirdPartyGoodsTransportation.clearance.text",
-      "tariff.declaration.thirdPartyGoodsTransportation.clearance.linkText.0",
-      "tariff.declaration.thirdPartyGoodsTransportation.clearance.linkText.1"
+      "declaration.thirdPartyGoodsTransportation.radio.error"
     )
 
     onJourney(STANDARD, SIMPLIFIED, OCCASIONAL, CLEARANCE) { implicit request =>
@@ -81,40 +70,6 @@ class ThirdPartyGoodsTransportationViewSpec extends UnitViewSpec with Injector {
         view.getElementsByAttributeValue("for", "code_yes") must containMessageForElements("declaration.thirdPartyGoodsTransportation.radio.yes")
         view.getElementsByAttributeValue("for", "code_no") must containMessageForElements("declaration.thirdPartyGoodsTransportation.radio.no")
         view.getElementById("code_no-item-hint") must containMessage("declaration.thirdPartyGoodsTransportation.radio.text", eori)
-      }
-
-      "display expander" in {
-        val expander = view.getElementById("expander")
-        expander must containMessage("declaration.thirdPartyGoodsTransportation.expander.title")
-        expander must containMessage("declaration.thirdPartyGoodsTransportation.expander.paragraph.1")
-        expander must containMessage("declaration.thirdPartyGoodsTransportation.expander.paragraph.2")
-      }
-
-      "display tariff expander" in {
-        Option(view.getElementById("tariffReference")) mustBe defined
-
-        val tariffTitle = view.getElementsByClass("govuk-details__summary-text").last
-        tariffTitle.text mustBe messages(s"tariff.expander.title.common")
-
-        val tariffDetails = view.getElementsByClass("govuk-details__text").last
-
-        val declarationType = if (request.isType(CLEARANCE)) "clearance" else "common"
-        val expectedHref0 = appConfig.tariffGuideUrl(s"urls.tariff.declaration.thirdPartyGoodsTransportation.$declarationType.0")
-        val expectedHref1 = appConfig.tariffGuideUrl(s"urls.tariff.declaration.thirdPartyGoodsTransportation.$declarationType.1")
-
-        tariffDetails.child(0) must haveHref(expectedHref0)
-        tariffDetails.child(1) must haveHref(expectedHref1)
-
-        val expectedText =
-          removeLineBreakIfAny(
-            messages(
-              "tariff.declaration.thirdPartyGoodsTransportation.common.text",
-              messages("tariff.declaration.thirdPartyGoodsTransportation.common.linkText.0"),
-              messages("tariff.declaration.thirdPartyGoodsTransportation.common.linkText.1")
-            )
-          )
-
-        removeBlanksIfAnyBeforeDot(tariffDetails.text()) mustBe expectedText
       }
 
       "display error when all entered input is incorrect" in {
