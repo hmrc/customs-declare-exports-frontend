@@ -21,7 +21,6 @@
 @import models.DeclarationType.STANDARD
 @import play.twirl.api.HtmlFormat
 @import uk.gov.hmrc.govukfrontend.views.html.components._
-@import views.components.gds.Styles.gdsPageLegend
 @import views.components.inputs.RadioOption
 @import views.helpers.{BackButton, Title}
 @import views.helpers.ErrorMapper.radioGroupErrors
@@ -29,7 +28,6 @@
 
 @this(
     govukLayout: gdsMainTemplate,
-    govukDetails : GovukDetails,
     govukRadios: GovukRadios,
     govukWarningText: GovukWarningText,
     errorSummary: errorSummary,

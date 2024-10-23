@@ -20,7 +20,6 @@ import forms.DeclarationPage
 import forms.mappings.MappingHelper.requiredRadio
 import forms.section1.AdditionalDeclarationType.AdditionalDeclarationType
 import models.DeclarationType.{DeclarationType, SUPPLEMENTARY}
-import models.viewmodels.TariffContentKey
 import play.api.data.{Form, Forms, Mapping}
 
 object AdditionalDeclarationTypePage extends DeclarationPage {
@@ -39,7 +38,4 @@ object AdditionalDeclarationTypePage extends DeclarationPage {
 
     Form(mapping)
   }
-
-  override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
-    Seq(TariffContentKey(s"tariff.declaration.type.${DeclarationPage.getJourneyTypeSpecialisation(decType)}"))
 }

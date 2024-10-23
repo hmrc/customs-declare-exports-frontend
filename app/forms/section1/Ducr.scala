@@ -17,9 +17,7 @@
 package forms.section1
 
 import forms.DeclarationPage
-import models.DeclarationType.{CLEARANCE, DeclarationType}
 import models.requests.JourneyRequest
-import models.viewmodels.TariffContentKey
 import play.api.data.Forms.text
 import play.api.data.{Form, Forms, Mapping}
 import play.api.libs.json.{Json, OFormat}
@@ -48,12 +46,6 @@ object Ducr extends DeclarationPage {
 
   def model2Form: Ducr => Option[String] =
     model => Some(model.ducr)
-
-  override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
-    decType match {
-      case CLEARANCE => Seq(TariffContentKey("tariff.declaration.ducr.clearance"))
-      case _         => Seq(TariffContentKey("tariff.declaration.ducr.common"))
-    }
 
   def generateDucrPrefix(implicit request: JourneyRequest[_]): String = {
     val lastDigitOfYear = request.cacheModel.declarationMeta.createdDateTime.atZone(ZoneId.of("Europe/London")).getYear.toString.last

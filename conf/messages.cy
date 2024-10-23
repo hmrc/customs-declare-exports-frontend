@@ -202,16 +202,9 @@ tariff.declaration.type.text.2 = Dewch o hyd i fanylion am {0}.
 tariff.declaration.type.linkText.2 = wneud datganiad allforio llawn (yn agor tab newydd)
 tariff.declaration.type.common.linkText.0 = Elfen Ddata 1/2 - Math Ychwanegol o Ddatganiad (yn agor tab newydd)
 
-tariff.declaration.others.text = I gael manylion, ewch i {0}.
-tariff.declaration.others.linkText.0 = Elfen Ddata 1/2 - Math Ychwanegol o Ddatganiad (yn agor tab newydd)
-
-tariff.declaration.traderReference.common.linkText.0 =  Elfen Ddata 2/4 - Cyfeirnod Unigryw y Llwyth (UCR) (yn agor tab newydd)
-tariff.declaration.traderReference.clearance.linkText.0 = Elfen Ddata 2/1 - Datganiad Symlach, Dogfennau Blaenorol (yn agor tab newydd)
-tariff.declaration.ducr.common.linkText.0 =  Elfen Ddata 2/1 - Datganiad Symlach, Dogfennau Blaenorol (yn agor tab newydd)
 tariff.declaration.lrn.common.linkText.0 = Elfen Ddata 2/5 - Cyfeirnod Lleol (LRN), dim cyfeirnod blaenorol (yn agor tab newydd)
 tariff.declaration.linkDucrToMucr.caption = Rhagor o fanylion am gyfuno MUCR
 tariff.declaration.linkDucrToMucr.text = Am fanylion, ewch i {0}.<br><br>Bydd angen i’ch llwythwr gau’r MUCR cyn i’r nwyddau ymadael.
-tariff.declaration.linkDucrToMucr.linkText.0 = Elfen Ddata 2/1 - Cyfuno Prif Gyfeirnod Unigryw y Llwyth (MUCR) (yn agor tab newydd)
 tariff.declaration.consignmentReferences.common.text = Am fanylion, ewch i {0} ac {1}.
 tariff.declaration.consignmentReferences.common.linkText.0 = Elfen Ddata 2/4 - Cyfeirnod Unigryw y Llwyth (UCR) (yn agor tab newydd)
 tariff.declaration.consignmentReferences.common.linkText.1 = Elfen Ddata 2/5 - Cyfeirnod Lleol (LRN), dim cyfeirnod blaenorol (yn agor tab newydd)

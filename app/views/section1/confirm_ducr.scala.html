@@ -14,7 +14,6 @@
  * limitations under the License.
  *@
 
-@import config.AppConfig
 @import controllers.navigation.Navigator
 @import controllers.section1.routes.ConfirmDucrController
 @import forms.common.YesNoAnswer
@@ -38,8 +37,7 @@
     yesNoRadios: yesNoRadios,
     sectionHeader: sectionHeader,
     formHelper: FormWithCSRF,
-    navigator: Navigator,
-    appConfig: AppConfig
+    navigator: Navigator
 )
 
 @(form: Form[YesNoAnswer], generatedDucr: Ducr)(implicit request: JourneyRequest[_], messages: Messages)
