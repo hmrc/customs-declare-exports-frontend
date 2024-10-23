@@ -17,13 +17,6 @@
 package forms.section1
 
 import forms.DeclarationPage
-import models.DeclarationType.{CLEARANCE, DeclarationType}
-import models.viewmodels.TariffContentKey
 
 object ConfirmDucr extends DeclarationPage {
-  override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
-    decType match {
-      case CLEARANCE => Seq(TariffContentKey("tariff.declaration.traderReference.clearance"))
-      case _         => Seq(TariffContentKey("tariff.declaration.traderReference.common"))
-    }
 }

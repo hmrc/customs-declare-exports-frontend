@@ -14,7 +14,6 @@
  * limitations under the License.
  *@
 
-@import config.AppConfig
 @import controllers.section1.routes
 @import controllers.navigation.Navigator
 @import forms.common.YesNoAnswer
@@ -35,8 +34,7 @@
     yesNoRadios: yesNoRadios,
     saveButtons: saveButtons,
     formHelper: FormWithCSRF,
-    navigator: Navigator,
-    appConfig: AppConfig
+    navigator: Navigator
 )
 
 @(form: Form[YesNoAnswer])(implicit request: JourneyRequest[_], messages: Messages)
