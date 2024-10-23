@@ -41,7 +41,7 @@ class SectionSummaryViewSpec extends SummaryViewSpec {
   private def createView(implicit request: JourneyRequest[_]): Appendable = sectionSummaryPage(summaryCard)
 
   "SectionSummary page" should {
-    val declaration = aDeclaration()
+    val declaration = aDeclaration(withSummaryWasVisited())
     implicit val request = journeyRequest(declaration, (SessionHelper.declarationUuid, declaration.id))
     val view = createView
 
