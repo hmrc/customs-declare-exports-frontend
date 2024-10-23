@@ -18,6 +18,4 @@ package forms.section1
 
 import forms.DeclarationPage
 
-
-object LinkDucrToMucr extends DeclarationPage {
-}
+object LinkDucrToMucr extends DeclarationPage {}
