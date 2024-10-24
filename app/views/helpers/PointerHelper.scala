@@ -158,10 +158,10 @@ object PointerHelper extends Logging {
     "declaration.locations.goodsLocation.typeOfLocation" -> LocationOfGoodsController.displayPage,
     "declaration.containers.container.$.id" -> ContainerController.displayContainerSummary, // ?? SealController.displaySealSummary
     "declaration.containers.container.$.seals.seal.$.id" -> ContainerController.displayContainerSummary, // ?? SealController.displaySealRemove
-    "declaration.previousDocuments.$.documentCategory" -> PreviousDocumentsSummaryController.displayPage, // ?? PreviousDocumentsChangeController.displayOutcomePage
-    "declaration.previousDocuments.$.documentReference" -> PreviousDocumentsSummaryController.displayPage, // ?? PreviousDocumentsChangeController.displayOutcomePage
-    "declaration.previousDocuments.$.documentType" -> PreviousDocumentsSummaryController.displayPage, // ?? PreviousDocumentsChangeController.displayOutcomePage
-    "declaration.previousDocuments.$.goodsItemIdentifier" -> PreviousDocumentsSummaryController.displayPage, // ?? PreviousDocumentsChangeController.displayOutcomePage
+    "declaration.previousDocuments.$.documentCategory" -> PreviousDocumentsSummaryController.displayPage,
+    "declaration.previousDocuments.$.documentReference" -> PreviousDocumentsSummaryController.displayPage,
+    "declaration.previousDocuments.$.documentType" -> PreviousDocumentsSummaryController.displayPage,
+    "declaration.previousDocuments.$.goodsItemIdentifier" -> PreviousDocumentsSummaryController.displayPage,
     "declaration.locations.warehouseIdentification.identificationNumber" -> WarehouseIdentificationController.displayPage,
     "declaration.locations.warehouseIdentification.identificationType" -> WarehouseIdentificationController.displayPage,
     "declaration.locations.warehouseIdentification.supervisingCustomsOffice" -> SupervisingCustomsOfficeController.displayPage

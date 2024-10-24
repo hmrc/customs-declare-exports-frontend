@@ -17,11 +17,9 @@
 package forms.section4
 
 import forms.DeclarationPage
-import models.DeclarationType.DeclarationType
 import models.ExportsFieldPointer.ExportsFieldPointer
 import models.FieldMapping
 import models.declaration.{ImplicitlySequencedObject, IsoData}
-import models.viewmodels.TariffContentKey
 import play.api.data.Forms.{optional, text}
 import play.api.data.{Form, Forms, Mapping}
 import play.api.i18n.Messages
@@ -55,10 +53,6 @@ object Document extends DeclarationPage with FieldMapping {
   val documentReferencePointer: ExportsFieldPointer = "documentReference"
   val goodsItemIdentifierPointer: ExportsFieldPointer = "goodsItemIdentifier"
 
-  lazy val keyForItemNumber = "declaration.summary.transaction.previousDocuments.goodsItemIdentifier"
-  lazy val keyForReference = "declaration.summary.transaction.previousDocuments.reference"
-  lazy val keyForType = "declaration.summary.transaction.previousDocuments.type"
-
   val documentTypeId = "documentType"
   val documentRefId = "documentReference"
 
@@ -86,9 +80,6 @@ object Document extends DeclarationPage with FieldMapping {
   private def goodsIdentifierMapping: (String, Mapping[Option[String]]) =
     "goodsItemIdentifier" ->
       optional(text.verifying("declaration.previousDocuments.goodsItemIdentifier.error", isNumeric and noLongerThan(3)))
-
-  override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
-    Seq(TariffContentKey(s"tariff.declaration.addPreviousDocument.${DeclarationPage.getJourneyTypeSpecialisation(decType)}"))
 }
 
 case class PreviousDocumentsData(documents: Seq[Document]) extends DiffTools[PreviousDocumentsData] with IsoData[Document] {
@@ -108,9 +99,6 @@ object PreviousDocumentsData extends FieldMapping {
   val maxAmountOfItems = 99
 }
 
-object DocumentChangeOrRemove extends DeclarationPage {
-  override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
-    Seq(TariffContentKey("tariff.declaration.previousDocuments.remove.clearance"))
-}
+object DocumentChangeOrRemove extends DeclarationPage
 
 object DocumentSummary extends DeclarationPage

@@ -14,31 +14,73 @@
  * limitations under the License.
  *@
 
+@import config.AppConfig
 @import controllers.navigation.Navigator
 @import controllers.section4.routes.PreviousDocumentsController
+@import controllers.section4.PreviousDocumentsController.PreviousDocumentsFormGroupId
 @import controllers.summary.routes.SectionSummaryController
 @import forms.section4.Document
 @import models.requests.JourneyRequest
-@import uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF
+@import play.twirl.api.HtmlFormat
+@import services.{DocumentType, DocumentTypeService}
+@import services.view.AutoCompleteItem
+@import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.helpers.{BackButton, PreviousDocumentsHelper, Title}
-@import views.html.components.gds.gdsMainTemplate
+@import views.html.components.fields.field_accessible_autocomplete
+@import views.html.components.gds._
 
 @this(
-    templateHelper: PreviousDocumentsHelper,
     govukLayout: gdsMainTemplate,
-    editContent: previous_documents_edit,
+    govukFieldset: GovukFieldset,
+    errorSummary: errorSummary,
+    sectionHeader: sectionHeader,
+    pageTitle: pageTitle,
+    formGroupWrapper: formGroupWrapper,
+    exportsInputText: exportsInputText,
+    saveButtons: saveButtons,
+    templateHelper: PreviousDocumentsHelper,
+    documentTypeService: DocumentTypeService,
+    appConfig: AppConfig,
     navigator: Navigator,
     formHelper: FormWithCSRF
 )
 
 @(form: Form[Document])(implicit request: JourneyRequest[_], messages: Messages)
 
-@hasErrors = @{form.hasErrors || form.hasGlobalErrors}
+@hasErrors = @{ form.hasErrors || form.hasGlobalErrors }
 
-@backLink = @{navigator.backLink(Document)}
+@backLink = @{ navigator.backLink(Document) }
+
 @backButtonText = @{
-    if(backLink == SectionSummaryController.displayPage(3)) { "site.back" }
+    if (backLink == SectionSummaryController.displayPage(3)) "site.back"
     else "site.backToPreviousQuestion"
+}
+
+@referenceClasses = @{
+    if (templateHelper.versionSelection == 1) Some("govuk-!-margin-bottom-4") else None
+}
+@formFields = {
+    @formGroupWrapper(field = form(PreviousDocumentsFormGroupId)) {
+
+        @field_accessible_autocomplete(
+            field = form(Document.documentTypeId),
+            label = messages("declaration.previousDocuments.documentCode"),
+            labelClass = Some("govuk-label--m"),
+            bodyHtml = Some(templateHelper.helpForDocumentCode),
+            emptySelectValue = messages("declaration.previousDocuments.documentCode.empty"),
+            items = AutoCompleteItem.fromDocumentType(documentTypeService.allDocuments())
+        )
+
+        @exportsInputText(
+            field = form(Document.documentRefId),
+            labelKey = "declaration.previousDocuments.documentReference",
+            labelClasses = "govuk-label govuk-label--m",
+            bodyHtml = Some(templateHelper.helpForDocumentReference),
+            inputClasses = referenceClasses
+        )
+
+        @templateHelper.itemNumber(form)
+    }
 }
 
 @govukLayout(
@@ -46,7 +88,16 @@
     backButton = Some(BackButton(messages(backButtonText), backLink))
 ) {
     @formHelper(action = PreviousDocumentsController.submit, 'autoComplete -> "off") {
+        @errorSummary(form.errors)
 
-        @editContent(form)
+        @sectionHeader(messages("declaration.section.4"))
+
+        @pageTitle(messages(templateHelper.title))
+
+        @templateHelper.bodyUnderTitle
+
+        @templateHelper.insetText(appConfig)
+
+        @govukFieldset(Fieldset(html = HtmlFormat.fill(List(formFields, saveButtons()))))
     }
 }

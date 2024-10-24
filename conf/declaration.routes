@@ -271,10 +271,6 @@ GET         /previous-documents/:id/remove       controllers.section4.PreviousDo
 
 POST        /previous-documents/:id/remove       controllers.section4.PreviousDocumentsRemoveController.submit(id: String)
 
-GET         /previous-documents/:id/change       controllers.section4.PreviousDocumentsChangeController.displayPage(id: String)
-
-POST        /previous-documents/:id/change       controllers.section4.PreviousDocumentsChangeController.submit(id: String)
-
 # Transaction type
 
 GET         /nature-of-transaction               controllers.section4.NatureOfTransactionController.displayPage
