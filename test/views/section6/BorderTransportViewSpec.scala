@@ -24,8 +24,8 @@ import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.mvc.AnyContent
 import services.TransportCodeService
-import views.html.section6.border_transport
 import views.common.PageWithButtonsSpec
+import views.html.section6.border_transport
 import views.tags.ViewTest
 
 @ViewTest
@@ -82,18 +82,6 @@ class BorderTransportViewSpec extends PageWithButtonsSpec with Injector {
             val inputHint = view.getElementById(s"${transportCode.id}-hint").text
             inputHint mustBe messages(s"declaration.transportInformation.meansOfTransport.${transportCode.id}.hint")
           }
-        }
-
-        "display the expected tariff details" in {
-          val tariffTitle = view.getElementsByClass("govuk-details__summary-text")
-          tariffTitle.text mustBe messages(s"tariff.expander.title.common")
-
-          val tariffDetails = view.getElementsByClass("govuk-details__text").first
-
-          val prefix = "tariff.declaration.borderTransport"
-          val expectedText = messages("tariff.declaration.text", messages(s"$prefix.common.linkText.0"))
-          val actualText = removeBlanksIfAnyBeforeDot(tariffDetails.text)
-          actualText mustBe removeLineBreakIfAny(expectedText)
         }
 
         checkAllSaveButtonsAreDisplayed(createView())

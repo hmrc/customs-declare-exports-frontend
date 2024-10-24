@@ -17,11 +17,5 @@
 package forms.section6
 
 import forms.DeclarationPage
-import models.DeclarationType.DeclarationType
-import models.viewmodels.TariffContentKey
 
-object ExpressConsignment extends DeclarationPage {
-
-  override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
-    Seq(TariffContentKey(s"tariff.declaration.expressConsignment.${DeclarationPage.getJourneyTypeSpecialisation(decType)}"))
-}
+object ExpressConsignment extends DeclarationPage

@@ -14,7 +14,6 @@
  * limitations under the License.
  *@
 
-@import config.AppConfig
 @import controllers.navigation.Navigator
 @import controllers.section6.routes.DepartureTransportController
 @import forms.section6.DepartureTransport
@@ -32,10 +31,8 @@
     heading: heading,
     sectionHeader: sectionHeader,
     saveButtons: saveButtons,
-    tariffExpander: tariffExpander,
     formHelper: FormWithCSRF,
-    navigator: Navigator,
-    appConfig: AppConfig
+    navigator: Navigator
 )
 
 @(form: Form[DepartureTransport])(implicit request: JourneyRequest[_], messages: Messages)
@@ -49,10 +46,8 @@
 
         @sectionHeader(messages("declaration.section.6"))
         <fieldset class="govuk-fieldset" @if(form.hasErrors) { aria-describedby="departureTransportType-error" }>
-        @departureTransportHelper.dynamicContent(form)
+          @departureTransportHelper.dynamicContent(form)
         </fieldset>
-
-        @tariffExpander(DepartureTransport, request.declarationType)(messages, appConfig)
 
         @saveButtons(showReturnToSummaryButton = false, showReturnToErrorsButton = false, showExitButton = true)
     }

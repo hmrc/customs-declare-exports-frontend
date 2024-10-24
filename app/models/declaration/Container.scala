@@ -36,10 +36,6 @@ case class Container(sequenceId: Int = sequenceIdPlaceholder, id: String, seals:
 
 object Container extends FieldMapping {
 
-  val keyForAmend = "declaration.summary.container.information"
-  val keyForContainerId = "declaration.summary.container.id"
-  val keyForSeals = "declaration.summary.container.securitySeals"
-
   implicit val format: OFormat[Container] = Json.format[Container]
 
   override val pointer: ExportsFieldPointer = "containers"

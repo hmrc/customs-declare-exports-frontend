@@ -18,9 +18,7 @@ package forms.section6
 
 import forms.DeclarationPage
 import forms.mappings.MappingHelper.requiredRadio
-import models.DeclarationType.DeclarationType
 import models.ExportsFieldPointer.ExportsFieldPointer
-import models.viewmodels.TariffContentKey
 import models.{Amendment, FieldMapping}
 import play.api.data.Forms.mapping
 import play.api.data.{Form, Mapping}
@@ -60,7 +58,4 @@ object TransportPayment extends DeclarationPage with FieldMapping {
   )(TransportPayment.apply)(TransportPayment.unapply)
 
   def form: Form[TransportPayment] = Form(formMapping)
-
-  override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
-    Seq(TariffContentKey(s"tariff.declaration.transportPayment.${DeclarationPage.getJourneyTypeSpecialisation(decType)}"))
 }

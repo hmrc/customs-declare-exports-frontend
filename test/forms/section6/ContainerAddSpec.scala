@@ -82,8 +82,4 @@ class ContainerAddSpec extends DeclarationPageBaseSpec {
       }
     }
   }
-
-  "ContainerAdd" when {
-    testTariffContentKeys(ContainerAdd, "tariff.declaration.container.change")
-  }
 }

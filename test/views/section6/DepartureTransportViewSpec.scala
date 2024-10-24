@@ -65,19 +65,6 @@ class DepartureTransportViewSpec extends UnitViewSpec with Injector {
         view.getElementById("section-header") must containMessage("declaration.section.6")
       }
 
-      "display the expected tariff details" in {
-        val expectedKey = "common"
-
-        val tariffTitle = view.getElementsByClass("govuk-details__summary-text")
-        tariffTitle.text mustBe messages(s"tariff.expander.title.$expectedKey")
-
-        val tariffDetails = view.getElementsByClass("govuk-details__text").first.text
-
-        val expectedText =
-          removeLineBreakIfAny(messages(s"tariff.declaration.text", messages(s"tariff.declaration.departureTransport.$expectedKey.linkText.0")))
-        removeBlanksIfAnyBeforeDot(tariffDetails) mustBe expectedText
-      }
-
       checkAllSaveButtonsAreDisplayed(createView())
     }
   }

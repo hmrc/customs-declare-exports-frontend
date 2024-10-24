@@ -14,7 +14,6 @@
  * limitations under the License.
  *@
 
-@import config.AppConfig
 @import controllers.navigation.Navigator
 @import controllers.section6.routes.ContainerController
 @import forms.section6.ContainerFirst
@@ -36,10 +35,8 @@
     exportsInputText: exportsInputText,
     bulletList: bulletList,
     saveButtons: saveButtons,
-    tariffExpander: tariffExpander,
     formHelper: FormWithCSRF,
-    navigator: Navigator,
-    appConfig: AppConfig
+    navigator: Navigator
 )
 
 @(form: Form[ContainerFirst])(implicit request: JourneyRequest[_], messages: Messages)
@@ -95,8 +92,6 @@
             ),
             errorMessage = form(hasContainerKey).error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
         ))
-
-        @tariffExpander(ContainerFirst, request.declarationType)(messages, appConfig)
 
         @saveButtons()
     }

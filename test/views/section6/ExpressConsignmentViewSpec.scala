@@ -28,9 +28,9 @@ import org.jsoup.nodes.Document
 import org.scalatest.Assertion
 import play.api.data.Form
 import play.api.mvc.Call
+import views.common.UnitViewSpec
 import views.helpers.CommonMessages
 import views.html.section6.express_consignment
-import views.common.UnitViewSpec
 import views.tags.ViewTest
 
 @ViewTest
@@ -87,11 +87,6 @@ class ExpressConsignmentViewSpec extends UnitViewSpec with CommonMessages with I
 
     List(STANDARD, OCCASIONAL, SIMPLIFIED).foreach { declarationType =>
       s"DeclarationType is '$declarationType'" should {
-
-        "display the expected tariff details" in {
-          implicit val request = withRequestOfType(declarationType)
-          verifyTariffDetails(createView(), "common")
-        }
 
         "display a 'Back' button linking the 'TransportCountry' page" in {
           implicit val request = withRequestOfType(declarationType)
@@ -164,11 +159,6 @@ class ExpressConsignmentViewSpec extends UnitViewSpec with CommonMessages with I
 
     "DeclarationType is 'CLEARANCE'" should {
 
-      "display the expected tariff details" in {
-        implicit val request = withRequestOfType(CLEARANCE)
-        verifyTariffDetails(createView(), "common")
-      }
-
       "display a 'Back' button linking to the 'Departure Transport' page" when {
         nonPostalOrFTIModeOfTransportCodes.foreach { transportCode =>
           s"TransportLeavingTheBorder is '$transportCode'" in {
@@ -206,15 +196,5 @@ class ExpressConsignmentViewSpec extends UnitViewSpec with CommonMessages with I
     val backButton = view.getElementById("back-link")
     backButton must containMessage(backToPreviousQuestionCaption)
     backButton must haveHref(call)
-  }
-
-  private def verifyTariffDetails(view: Document, key: String): Assertion = {
-    val tariffTitle = view.getElementsByClass("govuk-details__summary-text")
-    tariffTitle.first must containMessage(s"tariff.expander.title.$key")
-
-    val expected = removeLineBreakIfAny(messages("tariff.declaration.text", messages(s"tariff.declaration.expressConsignment.$key.linkText.0")))
-
-    val tariffDetails = view.getElementsByClass("govuk-details__text").first
-    removeBlanksIfAnyBeforeDot(tariffDetails.text) mustBe expected
   }
 }
