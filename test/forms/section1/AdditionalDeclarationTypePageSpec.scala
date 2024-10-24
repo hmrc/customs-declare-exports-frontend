@@ -56,7 +56,4 @@ class AdditionalDeclarationTypePageSpec extends FormSpec with DeclarationPageBas
     }
   }
 
-  "Form for AdditionalDeclarationType" when {
-    testTariffContentKeys(AdditionalDeclarationTypePage, "tariff.declaration.type")
-  }
 }

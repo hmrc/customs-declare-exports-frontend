@@ -14,7 +14,6 @@
  * limitations under the License.
  *@
 
-@import config.AppConfig
 @import controllers.navigation.Navigator
 @import controllers.section1.routes.TraderReferenceController
 @import forms.section1.TraderReference
@@ -29,14 +28,12 @@
     heading: heading,
     paragraphBody: paragraphBody,
     govukDetails: GovukDetails,
-    tariffExpander: tariffExpander,
     bulletList: bulletList,
     exportsInputText: exportsInputText,
     saveButtons: saveButtons,
     sectionHeader: sectionHeader,
     formHelper: FormWithCSRF,
-    navigator: Navigator,
-    appConfig: AppConfig
+    navigator: Navigator
 )
 
 @(form: Form[TraderReference])(implicit request: JourneyRequest[_], messages: Messages)
@@ -81,8 +78,6 @@
             summary = Text(messages("declaration.ducr.expander.title")),
             content = HtmlContent(expanderContent)
         ))
-
-        @tariffExpander(TraderReference, request.declarationType)(messages, appConfig)
 
         @saveButtons()
     }

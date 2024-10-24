@@ -17,11 +17,5 @@
 package forms.section1
 
 import forms.DeclarationPage
-import models.DeclarationType.DeclarationType
-import models.viewmodels.TariffContentKey
 
-object LinkDucrToMucr extends DeclarationPage {
-
-  override def defineTariffContentKeys(declarationType: DeclarationType): Seq[TariffContentKey] =
-    Seq(TariffContentKey(s"tariff.declaration.linkDucrToMucr.${DeclarationPage.getJourneyTypeSpecialisation(declarationType)}"))
-}
+object LinkDucrToMucr extends DeclarationPage

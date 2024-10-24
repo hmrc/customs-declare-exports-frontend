@@ -17,14 +17,5 @@
 package forms.section1
 
 import forms.DeclarationPage
-import models.DeclarationType.{CLEARANCE, DeclarationType}
-import models.viewmodels.TariffContentKey
 
-object DucrChoice extends DeclarationPage {
-
-  override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
-    decType match {
-      case CLEARANCE => List(TariffContentKey("tariff.declaration.ducr.clearance"))
-      case _         => List(TariffContentKey("tariff.declaration.ducr.common"))
-    }
-}
+object DucrChoice extends DeclarationPage

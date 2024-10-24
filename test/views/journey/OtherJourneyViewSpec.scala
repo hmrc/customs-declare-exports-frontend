@@ -75,17 +75,6 @@ class OtherJourneyViewSpec extends UnitViewSpec with CommonMessages with Injecto
       paragraphs.last.text mustBe messages("declaration.type.insetText.p2")
     }
 
-    "display the expected tariff details" in {
-      val tariffTitle = view.getElementsByClass("govuk-details__summary-text")
-      tariffTitle.text mustBe messages(s"tariff.expander.title.common")
-
-      val tariffDetails = view.getElementsByClass("govuk-details__text").first
-
-      val expectedText = messages("tariff.declaration.others.text", messages("tariff.declaration.others.linkText.0"))
-      val actualText = removeBlanksIfAnyBeforeDot(tariffDetails.text)
-      actualText mustBe removeLineBreakIfAny(expectedText)
-    }
-
     "display 'Continue' button on page" in {
       val saveButton = view.select("#submit")
       saveButton.text() mustBe messages(continueCaption)

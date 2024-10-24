@@ -17,8 +17,6 @@
 package forms.section1
 
 import forms.DeclarationPage
-import models.DeclarationType.{CLEARANCE, DeclarationType}
-import models.viewmodels.TariffContentKey
 import play.api.data.Form
 import play.api.data.Forms.{mapping, text}
 import play.api.libs.json.{Json, OFormat}
@@ -43,11 +41,4 @@ object TraderReference extends DeclarationPage {
           .verifying("declaration.traderReference.error.invalid", isEmpty or isValidTraderReference)
       )(form2data)(TraderReference.unapply)
     )
-
-  override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
-    decType match {
-      case CLEARANCE => Seq(TariffContentKey("tariff.declaration.traderReference.clearance"))
-      case _ =>
-        Seq(TariffContentKey("tariff.declaration.traderReference.common"))
-    }
 }
