@@ -14,7 +14,6 @@
  * limitations under the License.
  *@
 
-@import config.AppConfig
 @import controllers.navigation.Navigator
 @import controllers.section3.routes.OfficeOfExitController
 @import forms.section3.OfficeOfExit
@@ -35,10 +34,8 @@
     heading: heading,
     paragraphBody: paragraphBody,
     saveButtons: saveButtons,
-    tariffExpander: tariffExpander,
     formHelper: FormWithCSRF,
     navigator: Navigator,
-    appConfig: AppConfig,
     officeOfExitsService: OfficeOfExitsService
 )
 
@@ -68,7 +65,7 @@
             isPageHeading = false
         )
 
-        @tariffExpander(OfficeOfExit, request.declarationType)(messages, appConfig)
+        <br>
 
         @saveButtons()
     }

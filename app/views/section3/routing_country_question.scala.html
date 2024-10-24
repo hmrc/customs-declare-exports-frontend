@@ -14,7 +14,6 @@
  * limitations under the License.
  *@
 
-@import config.AppConfig
 @import controllers.navigation.Navigator
 @import controllers.section3.routes.RoutingCountriesController
 @import forms.common.YesNoAnswer.YesNoAnswers.{no, yes}
@@ -39,10 +38,8 @@
     heading: heading,
     paragraphBody: paragraphBody,
     saveButtons: saveButtons,
-    tariffExpander: tariffExpander,
     formHelper: FormWithCSRF,
     navigator: Navigator,
-    appConfig: AppConfig,
     countryHelper: CountryHelper
 )
 
@@ -89,8 +86,6 @@
             ),
             errorMessage = form("answer").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
         ))
-
-        @tariffExpander(RoutingCountryPage, request.declarationType)(messages, appConfig)
 
         @saveButtons()
     }

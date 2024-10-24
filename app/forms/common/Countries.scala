@@ -38,16 +38,14 @@ object Countries {
 
     override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
       Seq(
-        TariffContentKey(s"tariff.declaration.destinationCountry.1.${DeclarationPage.getJourneyTypeSpecialisation(decType)}"),
-        TariffContentKey(s"tariff.declaration.destinationCountry.2.${DeclarationPage.getJourneyTypeSpecialisation(decType)}")
+        TariffContentKey(s"tariff.declaration.destinationCountry.1.common"),
+        TariffContentKey(s"tariff.declaration.destinationCountry.2.${DeclarationPage.getJourneyTypeSpecialisation(decType)}"),
+        TariffContentKey(s"tariff.declaration.destinationCountry.3.${DeclarationPage.getJourneyTypeSpecialisation(decType)}")
       )
   }
 
   case object RoutingCountryPage extends CountryPage {
     override val id = "routingCountry"
-
-    override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
-      Seq(TariffContentKey("tariff.declaration.countryOfRouting.common"))
   }
 
   val fieldId = "countryCode"

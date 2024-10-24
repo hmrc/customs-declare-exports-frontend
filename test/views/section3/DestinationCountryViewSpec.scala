@@ -144,7 +144,8 @@ class DestinationCountryViewSpec extends PageWithButtonsSpec with Injector {
       }
 
       "display the expected body text" in {
-        createView()(request).getElementsByClass("govuk-body").get(0).text mustBe messages("declaration.destinationCountry.body")
+        val expectedMessage = messages("declaration.destinationCountry.body")
+        createView()(request).getElementsByClass("govuk-body").get(0).text mustBe expectedMessage
       }
 
       checkAllSaveButtonsAreDisplayed(createView())
