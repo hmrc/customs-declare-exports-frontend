@@ -239,7 +239,6 @@ tariff.declaration.totalNumbersOfItems.common.linkText.0 = Data Element 4/11 - T
 tariff.declaration.totalNumbersOfItems.common.linkText.1 = Data Element 4/15 - Invoice Exchange Rate (opens in new tab)
 tariff.declaration.totalPackageQuantity.common.linkText.0 = Data Element 6/18 - Total Packages (opens in new tab)
 tariff.declaration.natureOfTransaction.common.linkText.0 = Data Element 8/5 - Nature of Transaction (opens in new tab)
-tariff.declaration.addPreviousDocument.common.linkText.0 = Data Element 2/1 - Simplified Declaration, Previous Documents (opens in new tab)
 tariff.declaration.item.procedureCodes.common.linkText.0 = Data Element 1/10 - Procedure Code (opens in new tab)
 tariff.declaration.item.additionalProcedureCodes.1.common.linkText.0 = Data Element 1/11 - Additional Procedure Codes (opens in new tab)
 tariff.declaration.item.additionalProcedureCodes.2.common.text = Find and use 3-digit additional procedure codes
