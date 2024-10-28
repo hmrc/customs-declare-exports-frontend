@@ -369,7 +369,7 @@ declaration.declarationType.header.STANDARD = Do you have to make an arrived exp
 declaration.declarationType.header.SIMPLIFIED = Do you have to make an arrived export declaration?
 declaration.declarationType.header.OCCASIONAL = Do you have to make an arrived export declaration?
 declaration.declarationType.header.CLEARANCE = Do you have to make an arrived export declaration?
-declaration.declarationType.notification.title = Important: about 'arrived' declarations
+declaration.declarationType.notification.title = Important: about making an arrived declaration
 declaration.declarationType.notification.content = You must make an arrived declaration by selecting ‘Yes’ for all exports from Dover, Eurotunnel (Folkestone), Fishguard and Holyhead, and some exports from Liverpool, Heysham, Pembroke.
 declaration.declarationType.notification.content.link = See more details (opens in new tab)
 declaration.declarationType.radio.supplementary.simplified = I am completing a supplementary declaration for goods that have been under a Simplified Declaration procedure (SDP). This is known as a type Y declaration.
@@ -1547,7 +1547,7 @@ declaration.cusCode.error.empty = Enter a CUS code
 declaration.cusCode.error.length = CUS code must be exactly 8 characters
 declaration.cusCode.error.specialCharacters = CUS code must contain only letters and numbers
 
-declaration.nationalAdditionalCode.banner.title = Important: What is a national additional code?
+declaration.nationalAdditionalCode.banner.title = Important: about the national additional code
 declaration.nationalAdditionalCode.banner.content = A national additional code is a classification of, for example, wines, spirits, beer, types of fuel and tobacco products. They are used in conjunction with other information recorded in your declaration to calculate duties and taxes.
 declaration.nationalAdditionalCode.addfirst.header = Do you need to add a national additional code?
 declaration.nationalAdditionalCode.addfirst.body = Add a national additional code from {0} if exemptions or reduced rates of taxes are applicable.
