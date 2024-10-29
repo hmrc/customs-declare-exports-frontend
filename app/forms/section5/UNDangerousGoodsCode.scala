@@ -18,9 +18,7 @@ package forms.section5
 
 import forms.DeclarationPage
 import forms.mappings.MappingHelper.requiredRadio
-import models.DeclarationType.DeclarationType
 import models.ExportsFieldPointer.ExportsFieldPointer
-import models.viewmodels.TariffContentKey
 import models.{Amendment, FieldMapping}
 import play.api.data.Forms.text
 import play.api.data.{Form, Forms}
@@ -67,7 +65,7 @@ object UNDangerousGoodsCode extends DeclarationPage with FieldMapping {
         case None       => Some((no, None))
       }
 
-  val mapping =
+  private val mapping =
     Forms.mapping(
       hasDangerousGoodsCodeKey -> requiredRadio("declaration.unDangerousGoodsCode.answer.empty"),
       dangerousGoodsCodeKey -> mandatoryIfEqual(
@@ -80,7 +78,4 @@ object UNDangerousGoodsCode extends DeclarationPage with FieldMapping {
     )(form2Model)(model2Form)
 
   def form: Form[UNDangerousGoodsCode] = Form(mapping)
-
-  override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
-    Seq(TariffContentKey(s"tariff.declaration.item.unDangerousGoodsCode.${DeclarationPage.getJourneyTypeSpecialisation(decType)}"))
 }

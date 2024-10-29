@@ -36,7 +36,6 @@
     body: paragraphBody,
     externalLink: externalLink,
     saveButtons: saveButtons,
-    tariffExpander: tariffExpander,
     appConfig: AppConfig,
     navigator: Navigator,
     formHelper: FormWithCSRF
@@ -92,8 +91,6 @@
             ),
             errorMessage = form(hasDangerousGoodsCodeKey).error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
         ))
-
-        @tariffExpander(UNDangerousGoodsCode, request.declarationType)(messages, appConfig)
 
         @saveButtons()
     }

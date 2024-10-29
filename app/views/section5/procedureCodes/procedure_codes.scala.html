@@ -36,7 +36,6 @@
   insetText: exportsInsetText,
   heading: heading,
   paragraphBody: paragraphBody,
-  tariffExpander: tariffExpander,
   tariffLink: tariffLink,
   saveButtons: saveButtons,
   formHelper: FormWithCSRF,
@@ -108,7 +107,6 @@
             ))
         }
 
-        @tariffExpander(ProcedureCode, request.declarationType)(messages, appConfig)
         @saveButtons()
     }
 }

@@ -40,16 +40,12 @@ object NactCode extends DeclarationPage with FieldMapping {
   val pointer: ExportsFieldPointer = "nactCode"
   val exemptionPointer: ExportsFieldPointer = "nactExemptionCode"
 
-  def keyForAmend(pointer: ExportsFieldPointer): String =
-    if (pointer.endsWith(exemptionPointer)) "declaration.summary.item.zeroRatedForVat"
-    else "declaration.summary.item.nationalAdditionalCode"
-
   val nactCodeKey = "nactCode"
 
   val nactCodeLength = 4
   val nactCodeLimit = 99
 
-  val mapping =
+  private val mapping =
     Forms.mapping(
       nactCodeKey ->
         text()
@@ -58,9 +54,6 @@ object NactCode extends DeclarationPage with FieldMapping {
     )(NactCode.apply)(NactCode.unapply)
 
   def form: Form[NactCode] = Form(mapping)
-
-  override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
-    Seq(TariffContentKey("tariff.declaration.item.nationalAdditionalCode.common"))
 }
 
 object ZeroRatedForVat extends DeclarationPage {
@@ -73,7 +66,8 @@ object ZeroRatedForVat extends DeclarationPage {
   val VatZeroRatedPaid = "VAT_NO"
   val VatReportAfterDeclaration = "VAT_RAD"
 
-  val allowedValues = Seq(VatZeroRatedYes, VatZeroRatedReduced, VatZeroRatedExempt, VatZeroRatedPaid, VatReportAfterDeclaration)
+  val allowedValues: List[ExportsFieldPointer] =
+    List(VatZeroRatedYes, VatZeroRatedReduced, VatZeroRatedExempt, VatZeroRatedPaid, VatReportAfterDeclaration)
 
   val mapping: Mapping[NactCode] = Forms.mapping(
     NactCode.nactCodeKey -> requiredRadio("declaration.zeroRatedForVat.error")

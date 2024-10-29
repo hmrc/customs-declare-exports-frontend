@@ -22,7 +22,6 @@ import forms.section5._
 import models.DeclarationMeta.sequenceIdPlaceholder
 import models.DeclarationType.DeclarationType
 import models.ExportsFieldPointer.ExportsFieldPointer
-import models.viewmodels.TariffContentKey
 import models.{DeclarationType, FieldMapping}
 import play.api.libs.json.{Json, OFormat}
 import services.DiffTools
@@ -150,7 +149,4 @@ object ExportItem extends DeclarationPage with FieldMapping {
   val itemsPrefix = "declaration.summary.item"
 
   def containsAnswers(item: ExportItem): Boolean = item != ExportItem(id = item.id, sequenceId = item.sequenceId)
-
-  override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
-    Seq(TariffContentKey(s"tariff.declaration.declarationItemsList.${DeclarationPage.getJourneyTypeSpecialisation(decType)}"))
 }

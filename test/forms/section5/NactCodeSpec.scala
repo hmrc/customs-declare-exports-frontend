@@ -50,8 +50,4 @@ class NactCodeSpec extends DeclarationPageBaseSpec {
       }
     }
   }
-
-  "NactCode" when {
-    testTariffContentKeysNoSpecialisation(NactCode, "tariff.declaration.item.nationalAdditionalCode")
-  }
 }

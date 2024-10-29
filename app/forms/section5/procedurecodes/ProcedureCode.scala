@@ -17,8 +17,6 @@
 package forms.section5.procedurecodes
 
 import forms.DeclarationPage
-import models.DeclarationType.{CLEARANCE, DeclarationType}
-import models.viewmodels.TariffContentKey
 import play.api.data.Forms.text
 import play.api.data.{Form, Forms}
 import play.api.libs.json.{Json, OFormat}
@@ -32,7 +30,7 @@ object ProcedureCode extends DeclarationPage {
   val procedureCodeKey = "procedureCode"
   private val procedureCodeLength = 4
 
-  val mapping =
+  private val mapping =
     Forms.mapping(
       procedureCodeKey ->
         text()
@@ -41,12 +39,4 @@ object ProcedureCode extends DeclarationPage {
     )(ProcedureCode.apply)(ProcedureCode.unapply)
 
   def form: Form[ProcedureCode] = Form(mapping)
-
-  override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
-    decType match {
-      case CLEARANCE =>
-        Seq(TariffContentKey("tariff.declaration.item.procedureCodes.clearance"))
-      case _ =>
-        Seq(TariffContentKey("tariff.declaration.item.procedureCodes.common"))
-    }
 }
