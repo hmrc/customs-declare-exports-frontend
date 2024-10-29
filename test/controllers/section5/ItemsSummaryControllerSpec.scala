@@ -240,7 +240,7 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
             thePageNavigatedTo mustBe ProcedureCodesController.displayPage(declaration.items.last.id)
 
             And("max sequence id is updated")
-            valueOfEso[ExportItem](declaration).value mustBe 0
+            valueOfEso[ExportItem](declaration).value mustBe 1
           }
 
           verify(navigator).continueTo(any())(any())

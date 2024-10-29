@@ -27,31 +27,39 @@ object SequenceIdHelper {
     implicit keyProvider: EsoKeyProvider[T]
   ): (Seq[T], DeclarationMeta) = {
 
-    val (updatedElements, updatedMeta) = elements.zipWithIndex.foldLeft((Seq.empty[T], declarationMeta)) {
-      (sequenceAndMeta: (Seq[T], DeclarationMeta), elementAndIdx: (T, Int)) =>
-        val sequenceOfElems = sequenceAndMeta._1
-        val meta = sequenceAndMeta._2
+    val (updatedElements, updatedMeta) =
+      if (elements.isEmpty && preSubmissionStatuses.contains(declarationMeta.status)) {
+        val maxSequenceIds = declarationMeta.maxSequenceIds.updated(keyProvider.seqIdKey, sequenceIdPlaceholder)
+        (List.empty[T], declarationMeta.copy(maxSequenceIds = maxSequenceIds))
+      } else
+        elements.zipWithIndex.foldLeft((Seq.empty[T], declarationMeta)) { (sequenceAndMeta: (Seq[T], DeclarationMeta), elementAndIdx: (T, Int)) =>
+          val sequenceOfElems = sequenceAndMeta._1
+          val meta = sequenceAndMeta._2
 
-        def getUpdatedElementsAndMeta(nextSeqId: Int, element: T): (Seq[T], DeclarationMeta) = {
-          val updatedElement = element.updateSequenceId(nextSeqId)
-          val updatedMeta = meta.copy(maxSequenceIds = meta.maxSequenceIds.updated(keyProvider.seqIdKey, nextSeqId))
-          (sequenceOfElems :+ updatedElement, updatedMeta)
+          def getUpdatedElementsAndMeta(nextSeqId: Int, element: T): (Seq[T], DeclarationMeta) = {
+            val updatedElement = element.updateSequenceId(nextSeqId)
+            val updatedMeta = meta.copy(maxSequenceIds = meta.maxSequenceIds.updated(keyProvider.seqIdKey, nextSeqId))
+            (sequenceOfElems :+ updatedElement, updatedMeta)
+          }
+
+          elementAndIdx match {
+            // Prior to submission we will sequence elems using their index, ensuring no unnecessary gaps on eventual submission.
+            case (element, idx) if preSubmissionStatuses.contains(declarationMeta.status) =>
+              getUpdatedElementsAndMeta(idx + 1, element)
+
+            // After submission we will sequence using sequenceIds to correspond with DMS.
+            case (element, _) =>
+              // Presence of the placeholder means we have a new element.
+              if (element.sequenceId == sequenceIdPlaceholder) {
+                val sequenceId = declarationMeta.maxSequenceIds.get(keyProvider.seqIdKey).fold(0) { seqId =>
+                  if (seqId == sequenceIdPlaceholder) 0 else seqId
+                }
+                getUpdatedElementsAndMeta(sequenceId + 1, element)
+              }
+              // Absence of placeholder means no new elements added and existing seqIds are retained.
+              else (sequenceOfElems :+ element, meta)
+          }
         }
-
-        elementAndIdx match {
-          // Prior to submission we will sequence elems using their index, ensuring no unnecessary gaps on eventual submission.
-          case (element, idx) if preSubmissionStatuses.contains(declarationMeta.status) =>
-            getUpdatedElementsAndMeta(idx + 1, element)
-
-          // After submission we will sequence using sequenceIds to correspond with DMS.
-          case (element, _) =>
-            // Presence of the placeholder means we have a new element.
-            if (element.sequenceId == sequenceIdPlaceholder)
-              getUpdatedElementsAndMeta(declarationMeta.maxSequenceIds.getOrElse(keyProvider.seqIdKey, 0) + 1, element)
-            // Absence of placeholder means no new elements added and existing seqIds are retained.
-            else (sequenceOfElems :+ element, meta)
-        }
-    }
 
     (updatedElements, updatedMeta)
   }

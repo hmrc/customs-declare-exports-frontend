@@ -37,9 +37,9 @@ import views.html.section6.{seal_add, seal_remove, seal_summary}
 
 class SealControllerSpec extends ControllerSpec with AuditedControllerSpec with GivenWhenThen with OptionValues {
 
-  val sealAddPage = mock[seal_add]
-  val sealRemovePage = mock[seal_remove]
-  val sealSummaryPage = mock[seal_summary]
+  private val sealAddPage = mock[seal_add]
+  private val sealRemovePage = mock[seal_remove]
+  private val sealSummaryPage = mock[seal_summary]
 
   val containerId = "3436532313"
   val sealId = "623847987324"
@@ -65,6 +65,7 @@ class SealControllerSpec extends ControllerSpec with AuditedControllerSpec with 
     when(sealAddPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
     when(sealRemovePage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
     when(sealSummaryPage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    reset(auditService)
   }
 
   override protected def afterEach(): Unit = {
@@ -192,7 +193,7 @@ class SealControllerSpec extends ControllerSpec with AuditedControllerSpec with 
     "return 303 (SEE_OTHER)" when {
 
       "add the first seal" in {
-        val container = Container(sequenceId = 0, id = containerId, seals = Seq.empty)
+        val container = Container(sequenceId = 1, id = containerId, seals = Seq.empty)
         withNewCaching(aDeclaration(withContainerData(container)))
         val body = Seq("id" -> "value", (SaveAndContinue.toString, ""))
 
@@ -201,17 +202,17 @@ class SealControllerSpec extends ControllerSpec with AuditedControllerSpec with 
         await(result) mustBe aRedirectToTheNextPage
 
         val declaration = theCacheModelUpdated
-        declaration.containers.toList mustBe Seq(container.copy(seals = Seq(Seal(sequenceId = 0, id = "value"))))
-        valueOfEso[Container](declaration).value mustBe 0
-        valueOfEso[Seal](declaration).value mustBe 0
+        declaration.containers.toList mustBe Seq(container.copy(seals = Seq(Seal(sequenceId = 1, id = "value"))))
+        valueOfEso[Container](declaration).value mustBe 1
+        valueOfEso[Seal](declaration).value mustBe 1
 
         thePageNavigatedTo mustBe SealController.displaySealSummary(containerId)
         verifyAudit()
       }
 
       "add an additional seal" in {
-        val seal1 = Seal(sequenceId = 0, id = "seal1")
-        val container = Container(sequenceId = 0, id = containerId, seals = Seq(seal1))
+        val seal1 = Seal(sequenceId = 1, id = "seal1")
+        val container = Container(sequenceId = 1, id = containerId, seals = Seq(seal1))
         withNewCaching(aDeclaration(withContainerData(container)))
 
         val body = Seq("id" -> "seal2", (SaveAndContinue.toString, ""))
@@ -220,17 +221,17 @@ class SealControllerSpec extends ControllerSpec with AuditedControllerSpec with 
         await(result) mustBe aRedirectToTheNextPage
 
         val declaration = theCacheModelUpdated
-        declaration.containers.toList mustBe Seq(container.copy(seals = Seq(seal1, Seal(sequenceId = 1, id = "seal2"))))
-        valueOfEso[Container](declaration).value mustBe 0
-        valueOfEso[Seal](declaration).value mustBe 1
+        declaration.containers.toList mustBe Seq(container.copy(seals = Seq(seal1, Seal(sequenceId = 2, id = "seal2"))))
+        valueOfEso[Container](declaration).value mustBe 1
+        valueOfEso[Seal](declaration).value mustBe 2
 
         thePageNavigatedTo mustBe SealController.displaySealSummary(containerId)
         verifyAudit()
       }
 
       "add the first seal to an additional container" in {
-        val container1 = Container(sequenceId = 0, id = containerId, seals = Seq(Seal(sequenceId = 0, id = "seal1")))
-        val container2 = Container(sequenceId = 1, id = "container2", seals = Seq.empty)
+        val container1 = Container(sequenceId = 1, id = containerId, seals = Seq(Seal(sequenceId = 1, id = "seal1")))
+        val container2 = Container(sequenceId = 2, id = "container2", seals = Seq.empty)
         withNewCaching(aDeclaration(withContainerData(container1, container2)))
 
         val body = Seq("id" -> "seal2", (SaveAndContinue.toString, ""))
@@ -239,9 +240,9 @@ class SealControllerSpec extends ControllerSpec with AuditedControllerSpec with 
         await(result) mustBe aRedirectToTheNextPage
 
         val declaration = theCacheModelUpdated
-        declaration.containers.toList mustBe Seq(container1, container2.copy(seals = Seq(Seal(sequenceId = 1, id = "seal2"))))
-        valueOfEso[Container](declaration).value mustBe 1
-        valueOfEso[Seal](declaration).value mustBe 1
+        declaration.containers.toList mustBe Seq(container1, container2.copy(seals = Seq(Seal(sequenceId = 2, id = "seal2"))))
+        valueOfEso[Container](declaration).value mustBe 2
+        valueOfEso[Seal](declaration).value mustBe 2
 
         thePageNavigatedTo mustBe SealController.displaySealSummary("container2")
         verifyAudit()
@@ -258,9 +259,9 @@ class SealControllerSpec extends ControllerSpec with AuditedControllerSpec with 
           await(result) mustBe aRedirectToTheNextPage
 
           val declaration = theCacheModelUpdated
-          declaration.containers.toList mustBe Seq(container.copy(seals = Seq(Seal(sequenceId = 0, id = "value"))))
+          declaration.containers.toList mustBe Seq(container.copy(seals = Seq(Seal(sequenceId = 1, id = "value"))))
           valueOfEso[Container](declaration).value mustBe 3
-          valueOfEso[Seal](declaration).value mustBe 0
+          valueOfEso[Seal](declaration).value mustBe 1
 
           thePageNavigatedTo mustBe SealController.displaySealSummary(containerId)
           verifyAudit()
@@ -325,7 +326,7 @@ class SealControllerSpec extends ControllerSpec with AuditedControllerSpec with 
       "remove seal confirmation" when {
 
         "user confirms that they want to remove" in {
-          val container1 = Container(sequenceId = 0, id = containerId, seals = Seq(Seal(sequenceId = 0, id = sealId)))
+          val container1 = Container(sequenceId = 1, id = containerId, seals = Seq(Seal(sequenceId = 1, id = sealId)))
           val container2 = Container(sequenceId = 1, id = "containerB", seals = Seq(Seal(sequenceId = 1, id = "sealB")))
           withNewCaching(aDeclaration(withContainerData(container1, container2)))
 
