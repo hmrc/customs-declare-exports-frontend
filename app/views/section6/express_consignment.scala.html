@@ -14,7 +14,6 @@
  * limitations under the License.
  *@
 
-@import config.AppConfig
 @import controllers.navigation.Navigator
 @import controllers.section6.routes.ExpressConsignmentController
 @import forms.common.YesNoAnswer
@@ -29,16 +28,14 @@
 
 @this(
     govukLayout: gdsMainTemplate,
-    yesNoRadios: yesNoRadios,
     errorSummary: errorSummary,
     sectionHeader: sectionHeader,
     heading: heading,
+    yesNoRadios: yesNoRadios,
     paragraphBody: paragraphBody,
-    tariffExpander: tariffExpander,
     saveButtons: saveButtons,
     formHelper: FormWithCSRF,
-    navigator: Navigator,
-    appConfig: AppConfig
+    navigator: Navigator
 )
 
 @(form: Form[YesNoAnswer])(implicit request: JourneyRequest[_], messages: Messages)
@@ -68,8 +65,6 @@
                 ))
             ))
         )
-
-        @tariffExpander(ExpressConsignment, request.declarationType)(messages, appConfig)
 
         @saveButtons()
     }

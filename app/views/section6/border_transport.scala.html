@@ -14,7 +14,6 @@
  * limitations under the License.
  *@
 
-@import config.AppConfig
 @import controllers.navigation.Navigator
 @import controllers.section6.routes.BorderTransportController
 @import forms.section6.BorderTransport
@@ -28,8 +27,6 @@
 @import views.html.components.gds._
 
 @this(
-    tcs: TransportCodeService,
-    borderTransportHelper: BorderTransportHelper,
     govukLayout: gdsMainTemplate,
     govukRadios: GovukRadios,
     errorSummary: errorSummary,
@@ -37,10 +34,10 @@
     pageTitle: pageTitle,
     paragraphBody: paragraphBody,
     saveButtons: saveButtons,
-    tariffExpander: tariffExpander,
     formHelper: FormWithCSRF,
-    navigator: Navigator,
-    appConfig: AppConfig
+    tcs: TransportCodeService,
+    borderTransportHelper: BorderTransportHelper,
+    navigator: Navigator
 )
 
 @(form: Form[BorderTransport])(implicit request: JourneyRequest[_], messages: Messages)
@@ -69,8 +66,6 @@
             items = borderTransportHelper.radioButtons(form),
             errorMessage = form(radioButtonGroupId).error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
         ))
-
-        @tariffExpander(BorderTransport, request.declarationType)(messages, appConfig)
 
         @saveButtons()
     }

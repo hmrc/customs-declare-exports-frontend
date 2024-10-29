@@ -19,8 +19,6 @@ package forms.section6
 import forms.DeclarationPage
 import forms.mappings.MappingHelper.requiredRadio
 import forms.section6.ContainerAdd.maxContainerIdLength
-import models.DeclarationType.{CLEARANCE, DeclarationType}
-import models.viewmodels.TariffContentKey
 import play.api.data.Forms.text
 import play.api.data.{Form, Forms}
 import play.api.libs.json.{Json, OFormat}
@@ -56,7 +54,7 @@ object ContainerFirst extends DeclarationPage {
         case None     => Some((no, None))
       }
 
-  val mapping = Forms.mapping(
+  private val mapping = Forms.mapping(
     hasContainerKey -> requiredRadio("declaration.transportInformation.container.answer.empty"),
     containerIdKey -> mandatoryIfEqual(
       hasContainerKey,
@@ -69,11 +67,4 @@ object ContainerFirst extends DeclarationPage {
   )(form2Model)(model2Form)
 
   def form: Form[ContainerFirst] = Form(mapping)
-
-  override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
-    decType match {
-      case CLEARANCE => Seq(TariffContentKey("tariff.declaration.container.clearance"))
-      case _         => Seq(TariffContentKey("tariff.declaration.container.common"))
-    }
-
 }

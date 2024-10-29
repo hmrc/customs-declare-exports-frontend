@@ -17,10 +17,9 @@
 package forms.section6
 
 import forms.DeclarationPage
-import models.DeclarationType.DeclarationType
 import models.ExportsFieldPointer.ExportsFieldPointer
-import models.viewmodels.TariffContentKey
 import models.{Amendment, FieldMapping}
+import play.api.data.Forms._
 import play.api.data.{Form, Forms}
 import play.api.libs.json.{Json, OFormat}
 
@@ -46,16 +45,11 @@ object InlandModeOfTransportCode extends DeclarationPage with FieldMapping {
 
   val formId = "InlandModeOfTransportCode"
 
-  import Forms._
-
-  val mapping = Forms
+  private val mapping = Forms
     .mapping(
       "inlandModeOfTransportCode" ->
         optional(of(ModeOfTransportCode.formatter("declaration.warehouse.inlandTransportDetails.error.incorrect")))
     )(InlandModeOfTransportCode.apply)(InlandModeOfTransportCode.unapply)
 
   def form: Form[InlandModeOfTransportCode] = Form(mapping)
-
-  override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
-    Seq(TariffContentKey("tariff.declaration.inlandTransportDetails.common"))
 }

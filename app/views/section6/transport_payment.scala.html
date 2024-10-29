@@ -14,7 +14,6 @@
  * limitations under the License.
  *@
 
-@import config.AppConfig
 @import controllers.navigation.Navigator
 @import controllers.section6.routes.TransportPaymentController
 @import forms.section6.TransportPayment
@@ -31,11 +30,9 @@
     govukRadios: GovukRadios,
     errorSummary: errorSummary,
     sectionHeader: sectionHeader,
-    tariffExpander: tariffExpander,
     saveButtons: saveButtons,
     formHelper: FormWithCSRF,
-    navigator: Navigator,
-    appConfig: AppConfig
+    navigator: Navigator
 )
 
 @(form: Form[TransportPayment])(implicit request: JourneyRequest[_], messages: Messages)
@@ -112,8 +109,6 @@
             ),
             errorMessage = form("paymentMethod").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
         ))
-
-        @tariffExpander(TransportPayment, request.declarationType)(messages, appConfig)
 
         @saveButtons()
     }

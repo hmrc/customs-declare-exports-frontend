@@ -288,17 +288,7 @@ tariff.declaration.transportLeavingTheBorder.common.linkText.0 = Elfen Ddata 7/4
 tariff.declaration.warehouseIdentification.common.linkText.0 = Elfen Ddata 2/7 - Adnabod y Warws (yn agor tab newydd)
 tariff.declaration.supervisingCustomsOffice.common.linkText.0 = Elfen Ddata 5/27 - Swyddfa Goruchwylio’r Tollau (yn agor tab newydd)
 tariff.declaration.inlandOrBorder.common.linkText.0 = Elfen Ddata 5/23 - y Gwasanaeth Datganiadau Tollau, Atodiad 16, Codau lleoliad y nwyddau (yn agor tab newydd)
-tariff.declaration.inlandTransportDetails.common.linkText.0 = Elfen Ddata 7/5 - Dull Cludo Mewndirol wrth y Ffin (yn agor tab newydd)
-tariff.declaration.departureTransport.common.linkText.0 = Elfen Ddata 7/7 - Adnabod y Dull Cludo wrth Ymadael - Tariff Masnach y DU (yn agor tab newydd)
-tariff.declaration.borderTransport.common.linkText.0 = Elfen Ddata 7/14 - Adnabod y Dull Cludo Gweithredol wrth Groesi’r Ffin (yn agor tab newydd)
 tariff.declaration.transportCountry.common.linkText.0 = Elfen Ddata 7/15 - Cenedligrwydd y dull cludo gweithredol wrth groesi’r ffin (yn agor tab newydd)
-tariff.declaration.expressConsignment.common.linkText.0 = Elfen Ddata 1/7 - Dangosydd Amgylchiadau Penodol (yn agor tab newydd)
-tariff.declaration.transportPayment.common.linkText.0 = Elfen Ddata 4/2 - Dull o dalu costau cludo - Tariff Masnach y DU (yn agor tab newydd)
-tariff.declaration.container.common.linkText.0 = Elfen Ddata 7/2 - Cynhwysydd (yn agor tab newydd)
-tariff.declaration.container.clearance.text = Am fanylion, ewch i {0} ac {1}.
-tariff.declaration.container.clearance.linkText.0 = Elfen Ddata 7/2 - Cynhwysydd (yn agor tab newydd)
-tariff.declaration.container.clearance.linkText.1 = Elfen Ddata 7/10 - Rhif Adnabod y Cynhwysydd (yn agor tab newydd)
-tariff.declaration.container.change.common.linkText.0 = Elfen Ddata 7/10 - Rhif Adnabod y Cynhwysydd (yn agor tab newydd)
 tariff.declaration.containers.seals.common.linkText.0 = Elfen Ddata 7/18 - Rhif y sêl (yn agor tab newydd)
 tariff.declaration.personPresentingGoods.clearance.linkText.0 = Elfen Ddata 3/41 - Rhif Adnabod y Cyflwynydd (yn agor tab newydd)
 
