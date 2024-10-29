@@ -1287,7 +1287,7 @@ declaration.item.isLicenceRequired.inset.2.text = Os nad oes gofynion, bydd yn d
 declaration.item.isLicenceRequired.inset.3.text = Os caniateir i chi ddatgan 999L, Y999, Y924, Y923 neu Y903, bydd hyn yn cael ei restru yn y blwch, ‘Amodau’.
 declaration.item.isLicenceRequired.inset.4.text = Mae defnyddio ildiad yn gyfystyr â datganiad cyfreithiol sy’n dweud nad oes angen ar y nwyddau y dystysgrif na’r drwydded a ddangosir. Gweler rhagor o wybodaeth am {0}
 declaration.item.isLicenceRequired.inset.4.linkText = gwaharddiadau a chyfyngiadau ar allforion (yn agor tab newydd).
-declaration.item.isLicenceRequired.inset.5.text = Mae’n rhaid cadw tystiolaeth ddigonol mewn cofnodion i ddangos cymhwystra ar gyfer yr ildiad hwn, ac mae’n rhaid i chi allu ei darparu ar alw.
+declaration.item.isLicenceRequired.inset.5.text = Mae’n rhaid cadw tystiolaeth ddigonol mewn cofnodion i ddangos cymhwystra ar gyfer yr ildiad hwn 999L, ac mae’n rhaid i chi allu ei darparu ar alw.
 
 declaration.totalPackageQuantity.title = Beth yw cyfanswm y pecynnau yn y datganiad hwn?
 declaration.totalPackageQuantity.paragraph = Cyfrifwch y math o becyn allanol lleiaf y mae’r nwyddau wedi’u pacio ynddo er mwyn eu hallforio.
