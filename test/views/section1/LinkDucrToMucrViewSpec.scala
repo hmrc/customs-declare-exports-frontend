@@ -79,11 +79,6 @@ class LinkDucrToMucrViewSpec extends UnitViewSpec with CommonMessages with Injec
         val view = createView(form = form)
         view.getElementById("code_no") must beSelected
       }
-
-      "display paragraph 2" in {
-        view.getElementsByClass("govuk-inset-text").get(1).text mustBe
-          messages("declaration.linkDucrToMucr.paragraph2")
-      }
     }
 
     onJourney(STANDARD, SIMPLIFIED, OCCASIONAL, CLEARANCE) { implicit request =>
