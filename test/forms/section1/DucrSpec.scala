@@ -16,10 +16,11 @@
 
 package forms.section1
 
-import base.UnitWithMocksSpec
+import base.ExportsTestData.aDeclaration
+import base.{MockAuthAction, UnitWithMocksSpec}
 import play.api.data.{Form, FormError}
 
-class DucrSpec extends UnitWithMocksSpec {
+class DucrSpec extends UnitWithMocksSpec with MockAuthAction {
 
   "Ducr" should {
     "correctly convert DUCR to upper case characters" in {
@@ -43,6 +44,20 @@ class DucrSpec extends UnitWithMocksSpec {
       val filledForm = Form(Ducr.mapping).fillAndValidate(correctDucr)
 
       filledForm.errors mustBe empty
+    }
+  }
+
+  "Ducr generateDucrPrefix" should {
+    "return a valid DUCR when supplied a GB EORI" in {
+      val eori = "GB1234567890"
+      implicit val request = getJourneyRequest(eori, aDeclaration())
+      Ducr.generateDucrPrefix mustBe s"9$eori-"
+    }
+
+    "return a valid DUCR when supplied a non-GB EORI" in {
+      val eori = "FR1234567890"
+      implicit val request = getJourneyRequest(eori, aDeclaration())
+      Ducr.generateDucrPrefix mustBe s"9$eori-"
     }
   }
 }
