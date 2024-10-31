@@ -68,8 +68,4 @@ class UnDangerousGoodsCodeSpec extends DeclarationPageBaseSpec {
       }
     }
   }
-
-  "UNDangerousGoodsCode" when {
-    testTariffContentKeys(UNDangerousGoodsCode, "tariff.declaration.item.unDangerousGoodsCode")
-  }
 }

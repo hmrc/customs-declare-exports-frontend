@@ -41,7 +41,6 @@
     externalLink: externalLink,
     exportsInputText: exportsInputText,
     saveButtons: saveButtons,
-    tariffExpander: tariffExpander,
     appConfig: AppConfig,
     navigator: Navigator,
     formHelper: FormWithCSRF
@@ -104,8 +103,6 @@
             errorMessage = form(hasNactCodeKey).error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
         ))
         </fieldset>
-
-        @tariffExpander(NactCodeFirst, request.declarationType)(messages, appConfig)
 
         @saveButtons()
     }

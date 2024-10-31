@@ -14,7 +14,6 @@
  * limitations under the License.
  *@
 
-@import config.AppConfig
 @import controllers.navigation.Navigator
 @import controllers.section5.routes.{ItemsSummaryController, ProcedureCodesController, RemoveItemsSummaryController}
 @import forms.common.YesNoAnswer
@@ -40,9 +39,7 @@
     removeButton: removeButton,
     link: link,
     formHelper: FormWithCSRF,
-    tariffExpander: tariffExpander,
-    navigator: Navigator,
-    appConfig: AppConfig
+    navigator: Navigator
 )
 
 @(form: Form[YesNoAnswer], items: List[ExportItem], itemsErrors: Seq[FormError] = Seq.empty)(implicit request: JourneyRequest[_], messages: Messages)
@@ -146,7 +143,6 @@
                 if (!request.isType(CLEARANCE))
                 addAnotherQuestion("declaration.itemsSummary.addAnotherItem.question", form)
                 else HtmlFormat.empty,
-                tariffExpander(ExportItem, request.declarationType)(messages, appConfig),
                 saveButtons()
             ))
         ))

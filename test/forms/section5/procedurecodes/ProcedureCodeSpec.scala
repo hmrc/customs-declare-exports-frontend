@@ -18,7 +18,6 @@ package forms.section5.procedurecodes
 
 import forms.common.DeclarationPageBaseSpec
 import forms.section5.procedurecodes.ProcedureCode.procedureCodeKey
-import models.viewmodels.TariffContentKey
 import play.api.data.FormError
 
 class ProcedureCodeSpec extends DeclarationPageBaseSpec {
@@ -51,15 +50,5 @@ class ProcedureCodeSpec extends DeclarationPageBaseSpec {
         form.errors mustBe Seq(FormError(procedureCodeKey, "declaration.procedureCodes.error.invalid"))
       }
     }
-  }
-
-  override def getCommonTariffKeys(messageKey: String): Seq[TariffContentKey] =
-    Seq(TariffContentKey(s"${messageKey}.common"))
-
-  override def getClearanceTariffKeys(messageKey: String): Seq[TariffContentKey] =
-    Seq(TariffContentKey(s"${messageKey}.clearance"))
-
-  "ProcedureCodes" when {
-    testTariffContentKeys(ProcedureCode, "tariff.declaration.item.procedureCodes")
   }
 }
