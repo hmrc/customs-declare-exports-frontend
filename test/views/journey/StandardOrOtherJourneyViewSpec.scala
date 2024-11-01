@@ -42,7 +42,7 @@ class StandardOrOtherJourneyViewSpec extends UnitViewSpec with CommonMessages wi
 
     "display 'Back' button that links to 'Choice' page" in {
       val backButton = view.getElementById("back-link")
-      backButton.text() mustBe messages(backToSelectionCaption)
+      backButton.text() mustBe messages(backCaption)
       backButton.getElementById("back-link") must haveHref(ChoiceController.displayPage)
     }
 

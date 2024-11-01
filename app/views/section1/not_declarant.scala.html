@@ -21,7 +21,6 @@
 @import views.html.components.gds._
 @import views.helpers.{BackButton, Title}
 @import views.html.components.gds._
-@import controllers.routes.ChoiceController
 
 @this(
     govukLayout: gdsMainTemplate,
@@ -38,7 +37,7 @@
 
 @govukLayout(
     title = Title("notDeclarent.title"),
-    backButton = Some(BackButton(messages("site.backToSelectionPage"), ChoiceController.displayPage))
+    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), RootController.displayPage))
 ) {
     @pageTitle(messages("notDeclarent.title"))
 

@@ -21,7 +21,6 @@ trait CommonMessages {
   val backCaption: String = "site.back"
   val backToPreviousQuestionCaption = "site.backToPreviousQuestion"
   val backToSelectionCaption: String = "site.backToSelectionPage"
-  val backToPreviousSection = "site.backToPreviousSection"
   val removeCaption: String = "site.remove"
   val addCaption: String = "site.add"
   val continueCaption: String = "site.continue"
