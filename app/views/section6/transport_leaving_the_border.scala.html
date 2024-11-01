@@ -62,7 +62,7 @@
 
 @govukLayout(
     title = Title("declaration.transport.leavingTheBorder.title", "declaration.section.6", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.back"), navigator.backLink(TransportLeavingTheBorder)))
+    backButton = Some(BackButton(messages("site.backToPreviousSection"), navigator.backLink(TransportLeavingTheBorder)))
 ) {
     @formHelper(action = TransportLeavingTheBorderController.submitForm, 'autoComplete -> "off") {
         @errorSummary(radioGroupErrors("transportLeavingTheBorder", "Border_Sea", form.errors))

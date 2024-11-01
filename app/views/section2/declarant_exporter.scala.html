@@ -46,8 +46,7 @@
     title = Title("declaration.declarant.exporter.title", "declaration.section.2", hasErrors = hasErrors),
     backButton =
       if (request.cacheModel.isAmendmentDraft && !request.isType(CLEARANCE)) None
-      else if (request.isType(CLEARANCE)) Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(DeclarantIsExporter)))
-      else Some(BackButton(messages("site.back"), navigator.backLink(DeclarantIsExporter)))
+      else Some(BackButton(messages("site.backToPreviousSection"), navigator.backLink(DeclarantIsExporter)))
 ) {
     @formHelper(action = DeclarantExporterController.submitForm, 'autoComplete -> "off") {
         @errorSummary(yesNoErrors(form.errors, DeclarantIsExporter.answerKey))

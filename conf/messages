@@ -28,6 +28,7 @@ error.root.redirect.1 = Sorry, the action could not be completed and you have be
 error.root.redirect.2 = Please try the same action again.
 
 site.back = Back
+site.backToPreviousSection = Back to previous section
 site.backToPreviousQuestion = Back to previous question
 site.backToSelectionPage = Back to selection page
 site.backToDeclarations = Back to your declarations
