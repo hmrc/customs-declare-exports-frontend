@@ -26,7 +26,6 @@
 @import views.helpers.{BackButton, Title}
 @import views.helpers.ErrorMapper.yesNoErrors
 @import views.html.components.gds._
-@import controllers.summary.routes.SectionSummaryController
 
 @this(
     govukLayout: gdsMainTemplate,
@@ -123,14 +122,10 @@
         ))
     }
 }
-@backLink = @{navigator.backLink(ExportItem)}
-@backButtonText = @{
-if(backLink == SectionSummaryController.displayPage(4)) { "site.backToPreviousSection" }
-else "site.backToPreviousQuestion"
-}
+
 @govukLayout(
     title = Title(titleMessageKey, "declaration.section.5", items.length.toString, hasErrors = hasErrors),
-    backButton = Some(BackButton(messages(backButtonText), backLink)),
+    backButton = Some(BackButton(messages("site.back"), navigator.backLink(ExportItem))),
     useCustomContentWidth = true
 ) {
     @formHelper(action = ItemsSummaryController.submit, 'autoComplete -> "off") {

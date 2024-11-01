@@ -55,7 +55,7 @@
 
 @govukLayout(
     title = Title("declaration.type.description", hasErrors = form.hasErrors || form.hasGlobalErrors),
-    backButton = Some(BackButton(messages("site.backToSelectionPage"), ChoiceController.displayPage)),
+    backButton = Some(BackButton(messages("site.back"), ChoiceController.displayPage)),
     showDeclarationSummaryLink = false
 ) {
     @formHelper(action = StandardOrOtherJourneyController.submitChoice, 'autoComplete -> "off") {

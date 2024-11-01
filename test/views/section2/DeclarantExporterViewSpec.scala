@@ -90,7 +90,7 @@ class DeclarantExporterViewSpec extends PageWithButtonsSpec with Injector {
       "display 'Back' button that links to the /summary-section/1 page" in {
         val backButton = createView().getElementById("back-link")
 
-        backButton must containMessage(backToPreviousSection)
+        backButton must containMessage(backCaption)
         backButton must haveHref(SectionSummaryController.displayPage(1).url)
       }
     }
@@ -99,7 +99,7 @@ class DeclarantExporterViewSpec extends PageWithButtonsSpec with Injector {
       "display 'Back' button that links to the /summary-section/1 page" in {
         val backButton = createView().getElementById("back-link")
 
-        backButton must containMessage(backToPreviousSection)
+        backButton must containMessage(backCaption)
         backButton must haveHref(SectionSummaryController.displayPage(1).url)
       }
     }
@@ -108,7 +108,7 @@ class DeclarantExporterViewSpec extends PageWithButtonsSpec with Injector {
       "display 'Back' button that links to 'Declarant Details' page" in {
         val backButton = createView().getElementById("back-link")
 
-        backButton must containMessage(backToPreviousSection)
+        backButton must containMessage(backToPreviousQuestionCaption)
         backButton must haveHref(DeclarantDetailsController.displayPage.url)
       }
     }
@@ -124,7 +124,7 @@ class DeclarantExporterViewSpec extends PageWithButtonsSpec with Injector {
           implicit val request = withRequestOfType(CLEARANCE, status)
           val backButton = createView().getElementById("back-link")
 
-          backButton must containMessage(backToPreviousSection)
+          backButton must containMessage(backToPreviousQuestionCaption)
           backButton must haveHref(EntryIntoDeclarantsRecordsController.displayPage.url)
         }
       }
