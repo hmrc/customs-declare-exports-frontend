@@ -19,7 +19,7 @@ package controllers.actions
 import com.google.inject.{ImplementedBy, Inject, ProvidedBy}
 import config.AppConfig
 import controllers.general.routes.UnauthorisedController
-import models.AuthKey.{enrolment, hashIdentifierKey, identifierKey}
+import models.AuthKey.{enrolment, identifierKey}
 import models.UnauthorisedReason.{UrlDirect, UserEoriNotAllowed, UserIsAgent, UserIsNotEnrolled}
 import models.requests.AuthenticatedRequest
 import models.{IdentityData, SignedInUser}
@@ -93,16 +93,12 @@ class AuthActionImpl @Inject() (
 
         val cdsLoggedInUser = SignedInUser(eori.get.value, allEnrolments, identityData)
 
-        val userProvidedEoriHash = getTdrSecretFromEnrolments(allEnrolments).map(_.value).getOrElse("NoHashProvided")
-        val maybeHiddenSalt = appConfig.maybeTdrHashSalt
-
         val onAllowList = allowListAuthentication(cdsLoggedInUser.eori)
-        val tdrSecretMatches = tdrSecretAuthentication(cdsLoggedInUser.eori, maybeHiddenSalt, userProvidedEoriHash)
 
-        if (onAllowList && tdrSecretMatches)
+        if (onAllowList)
           block(new AuthenticatedRequest(request, cdsLoggedInUser))
         else {
-          logger.warn(s"User rejected with onAllowList=$onAllowList & tdrSecretMatches=$tdrSecretMatches")
+          logger.warn(s"User rejected with onAllowList=$onAllowList")
           Future.successful(Results.Redirect(UnauthorisedController.onPageLoad(UserEoriNotAllowed)))
         }
     }
@@ -133,9 +129,6 @@ class AuthActionImpl @Inject() (
 
   private def getEoriFromEnrolments(enrolments: Enrolments): Option[EnrolmentIdentifier] =
     enrolments.getEnrolment(enrolment).flatMap(_.getIdentifier(identifierKey))
-
-  private def getTdrSecretFromEnrolments(enrolments: Enrolments): Option[EnrolmentIdentifier] =
-    enrolments.enrolments.filter(_.key.equalsIgnoreCase(enrolment)).flatMap(_.getIdentifier(hashIdentifierKey)).headOption
 
   private def validateEnrolments(eori: Option[EnrolmentIdentifier], externalId: Option[String]): Unit = {
     if (eori.isEmpty) {

@@ -38,8 +38,6 @@ class AppConfig @Inject() (
   private def loadOptionalConfig(key: String): Option[String] =
     runModeConfiguration.getOptional[String](key)
 
-  val maybeTdrHashSalt = loadOptionalConfig("secret.tdrHashSalt")
-
   val analyticsToken = loadConfig(s"google-analytics.token")
   val analyticsHost = loadConfig(s"google-analytics.host")
 
