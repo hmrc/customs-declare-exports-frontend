@@ -34,7 +34,6 @@
     sectionHeader: sectionHeader,
     heading: heading,
     paragraph: paragraphBody,
-    notificationBanner: notificationBanner,
     insetText: exportsInsetText,
     tariffExpander: tariffExpander,
     saveButtons: saveButtons,
@@ -63,11 +62,6 @@
         @errorSummary(radioGroupErrors("hasEori", "Yes", form.errors))
 
         @sectionHeader(messages("declaration.section.2"))
-
-        @notificationBanner(
-            title = messages("declaration.carrierEori.notification.title"),
-            content = paragraph(messages("declaration.carrierEori.notification.body"))
-        )
 
         <fieldset class="govuk-fieldset" @if(form.hasErrors) { aria-describedby="hasEori-error" }>
             <legend class="govuk-fieldset__legend govuk-!-margin-bottom-0">

@@ -356,7 +356,7 @@ declaration.declarationType.header.STANDARD = A oes angen i chi wneud datganiad 
 declaration.declarationType.header.SIMPLIFIED = A oes angen i chi wneud datganiad allforion sydd wedi cyrraedd?
 declaration.declarationType.header.OCCASIONAL = A oes angen i chi wneud datganiad allforion sydd wedi cyrraedd?
 declaration.declarationType.header.CLEARANCE = A oes angen i chi wneud datganiad allforion sydd wedi cyrraedd?
-declaration.declarationType.notification.title = Pwysig: ynglŷn â datganiadau ‘wedi cyrraedd’
+declaration.declarationType.notification.title = Pwysig: ynglŷn â gwneud datganiad ‘wedi cyrraedd’
 declaration.declarationType.notification.content = Mae 8 lleoliad lle mae’n rhaid cyflwyno datganiad ‘wedi cyrraedd’ cyn symud nwyddau. Ar ôl i chi gyflwyno’ch datganiad, mae’n bosibl y byddwch yn cael neges yn rhoi gwybod bod eich nwyddau wedi’u dewis i gael eu gwirio.
 declaration.declarationType.radio.supplementary.simplified = Rwy’n cwblhau datganiad atodol ar gyfer nwyddau sydd wedi bod o dan weithdrefn Datganiad Symlach (SDP). Gelwir hyn yn Ddatganiad math Y.
 declaration.declarationType.radio.supplementary.eidr = Rwy’n cwblhau datganiad atodol ar gyfer nwyddau sydd wedi bod o dan weithdrefnau EIDR. Gelwir hyn yn Ddatganiad math Z.
@@ -1530,7 +1530,7 @@ declaration.cusCode.error.empty = Nodwch god CUS
 declaration.cusCode.error.length = Mae’n rhaid i’r cod CUS fod 8 o gymeriadau yn union
 declaration.cusCode.error.specialCharacters = Mae’n rhaid i’r cod CUS gynnwys llythrennau a rhifau’n unig
 
-declaration.nationalAdditionalCode.banner.title = Pwysig: Beth yw cod ychwanegol cenedlaethol?
+declaration.nationalAdditionalCode.banner.title = Pwysig: Ynglŷn â’r cod ychwanegol cenedlaethol
 declaration.nationalAdditionalCode.banner.content = Mae cod ychwanegol cenedlaethol yn ddosbarthiad, er enghraifft, o gynhyrchion gwin, gwirodydd, cwrw, mathau o danwydd a thybaco. Defnyddir y rhain ynghyd â gwybodaeth arall a gofnodir yn eich datganiad i gyfrifo tollau a threthi.
 declaration.nationalAdditionalCode.addfirst.header = A oes angen ychwanegu cod ychwanegol cenedlaethol?
 declaration.nationalAdditionalCode.addfirst.body = Ychwanegwch god ychwanegol cenedlaethol o {0} os yw eithriadau neu gyfraddau is o drethi yn berthnasol.
