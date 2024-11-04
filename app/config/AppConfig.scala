@@ -120,7 +120,6 @@ class AppConfig @Inject() (
   val simplifiedDeclPreviousDoc = loadConfig("urls.simplifiedDeclPreviousDoc")
   val getGoodsMovementReference = loadConfig("urls.getGoodsMovementReference")
 
-  val additionalDeclarationType = loadConfig("urls.additionalDeclarationType")
   val standardDeclarationType = loadConfig("urls.standardDeclarationType")
   val declareGoodsExported = loadConfig("urls.declareGoodsExported")
 

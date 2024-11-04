@@ -17,7 +17,6 @@
 package views.section1
 
 import base.Injector
-import config.AppConfig
 import controllers.section1.routes.{ConsignmentReferencesController, LocalReferenceNumberController}
 import forms.common.YesNoAnswer
 import models.DeclarationType._
@@ -32,7 +31,6 @@ import views.tags.ViewTest
 @ViewTest
 class LinkDucrToMucrViewSpec extends UnitViewSpec with CommonMessages with Injector {
 
-  private val appConfig = instanceOf[AppConfig]
   private val page = instanceOf[link_ducr_to_mucr]
   private val form: Form[YesNoAnswer] = YesNoAnswer.form()
 
@@ -80,22 +78,6 @@ class LinkDucrToMucrViewSpec extends UnitViewSpec with CommonMessages with Injec
         val form = YesNoAnswer.form().bind(Map("yesNo" -> "No"))
         val view = createView(form = form)
         view.getElementById("code_no") must beSelected
-      }
-
-      "display the 'MUCR consolidation' expander" in {
-        val expanderTitle = view.getElementsByClass("govuk-details__summary-text").first.text
-        expanderTitle mustBe messages("tariff.declaration.linkDucrToMucr.title")
-
-        val declarationType = if (request.isType(CLEARANCE)) "clearance" else "common"
-        val expectedHref = appConfig.tariffGuideUrl(s"urls.tariff.declaration.linkDucrToMucr.$declarationType.0")
-
-        val expanderText = view.getElementsByClass("govuk-details__text").first
-        expanderText.child(0) must haveHref(expectedHref)
-
-        removeBlanksIfAnyBeforeDot(expanderText.text) mustBe messages(
-          "tariff.declaration.linkDucrToMucr.common.text",
-          messages("tariff.declaration.linkDucrToMucr.common.linkText.0")
-        ).replace("<br><br>", " ")
       }
     }
 

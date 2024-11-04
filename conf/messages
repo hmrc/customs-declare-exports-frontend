@@ -68,7 +68,7 @@ site.pagination.showing = Showing
 site.pagination.showing.no = Showing no
 site.pagination.of = of
 
-general.inquiries.help.link = General enquires help
+general.inquiries.help.link = General enquires help (opens in new tab)
 
 mrn.heading = MRN: {0}
 
@@ -195,22 +195,10 @@ tariff.expander.title.common = More details about what is required on this page
 tariff.expander.title.clearance = More details about what is required on this page
 tariff.declaration.text = For details, go to {0}.
 
-tariff.declaration.type.title = More details about standard declarations
 tariff.declaration.type.text.1 = A standard declaration (arrived or pre-lodged) is a full declaration. This means all sections of the declaration must be completed.
 tariff.declaration.type.text.2 = Find details about {0}.
 tariff.declaration.type.linkText.2 = making a full export declaration (opens in a new tab)
-tariff.declaration.type.common.linkText.0 = Data Element 1/2 - Additional Declaration Type (opens in new tab)
-
-tariff.declaration.others.text = This answer will complete<br>{0}.
-tariff.declaration.others.linkText.0 = Data Element 1/2 - Additional Declaration Type (opens in new tab)
-
-tariff.declaration.traderReference.common.linkText.0 = Data Element 2/4 - UCR Reference Number (opens in new tab)
-tariff.declaration.traderReference.clearance.linkText.0 = Data Element 2/1 - Simplified Declaration, Previous Documents (opens in new tab)
-tariff.declaration.ducr.common.linkText.0 = Data Element 2/1 - Simplified Declaration, Previous Documents (opens in new tab)
 tariff.declaration.lrn.common.linkText.0 = Data Element 2/5 - LRN - No previous reference (opens in new tab)
-tariff.declaration.linkDucrToMucr.title = More details about MUCR consolidation
-tariff.declaration.linkDucrToMucr.common.text = For details, go to {0}.<br><br>Your loader will need to shut the MUCR before the departure of the goods.
-tariff.declaration.linkDucrToMucr.common.linkText.0 = Data Element 2/1 - Master Unique Consignment Reference (MUCR) consolidation (opens in new tab)
 tariff.declaration.consignmentReferences.common.text = For details, go to {0} and {1}.
 tariff.declaration.consignmentReferences.common.linkText.0 = Data Element 2/4 - UCR Reference Number (opens in new tab)
 tariff.declaration.consignmentReferences.common.linkText.1 = Data Element 2/5 - LRN, no previous reference (opens in new tab)
@@ -515,7 +503,7 @@ declaration.declarant.change.eori = No, I need to change my EORI
 declaration.linkDucrToMucr.title = Do you want to link this declaration’s DUCR to a Master Unique Consignment Reference (MUCR)?
 declaration.linkDucrToMucr.banner.title = Important: Using a Master Unique Consignment Reference (MUCR)
 declaration.linkDucrToMucr.banner.content = A MUCR is a reference number used to link or associate two or more DUCRs. A MUCR is commonly used to link consignments from different exporters which share space in the same container.
-declaration.linkDucrToMucr.paragraph = You can link one or more DUCRs to a MUCR if your loader or carrier has given you a MUCR.<br><br>You cannot link to a MUCR if your haulier is using the Goods Vehicle Movement Service (GVMS). The haulier will link DUCRs for all goods they are transporting using a Goods Movement Reference (GMR).
+declaration.linkDucrToMucr.paragraph = You can link one or more DUCRs to a MUCR if your loader or carrier has given you a MUCR.<br><br>You cannot link to a MUCR if your haulier is using the Goods Vehicle Movement Service (GVMS). The haulier will link DUCRs for all goods they are transporting using a Goods Movement Reference (GMR).<br><br>Your loader will need to shut the MUCR before the departure of the goods.
 declaration.linkDucrToMucr.error.required = Select yes if you want to link this declaration’s DUCR to a MUCR
 
 declaration.mucr.title = Enter the MUCR

@@ -14,7 +14,6 @@
  * limitations under the License.
  *@
 
-@import config.AppConfig
 @import controllers.navigation.Navigator
 @import controllers.section1.routes.DucrEntryController
 @import forms.section1.Ducr
@@ -31,15 +30,13 @@
     sectionHeader: sectionHeader,
     govukDetails: GovukDetails,
     saveButtons: saveButtons,
-    tariffExpander: tariffExpander,
     paragraphBody: paragraphBody,
     heading: heading,
     bulletList: bulletList,
     insetText: exportsInsetText,
     exportsInputText: exportsInputText,
     formHelper: FormWithCSRF,
-    navigator: Navigator,
-    appConfig: AppConfig
+    navigator: Navigator
 )
 
 
@@ -82,8 +79,6 @@
             summary = Text(messages("declaration.ducrEntry.ducr.expander.title")),
             content = HtmlContent(expanderContent)
         ))
-
-        @tariffExpander(Ducr, request.declarationType)(messages, appConfig)
 
         @saveButtons(showExitButton = false)
     }

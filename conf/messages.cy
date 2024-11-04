@@ -69,7 +69,7 @@ site.pagination.showing = Yn dangos
 site.pagination.showing.no = Yn dangos dim
 site.pagination.of = o
 
-general.inquiries.help.link = Help gydag ymholiadau cyffredinol
+general.inquiries.help.link = Help gydag ymholiadau cyffredinol (yn agor tab newydd)
 
 mrn.heading = MRN: {0}
 
@@ -196,22 +196,12 @@ tariff.expander.title.common = Rhagor o fanylion am yr hyn sydd ei angen ar y du
 tariff.expander.title.clearance = Rhagor o fanylion am yr hyn sydd ei angen ar y dudalen hon
 tariff.declaration.text = Am fanylion, ewch i {0}.
 
-tariff.declaration.type.title = Rhagor o fanylion am ddatganiadau safonol
 tariff.declaration.type.text.1 = Mae datganiad safonol (hynny yw un sydd wedi cyrraedd neu wedi’i gyflwyno ymlaen llaw) yn ddatganiad llawn. Mae hyn yn golygu bod rhaid cwblhau pob adran o’r datganiad.
 tariff.declaration.type.text.2 = Dewch o hyd i fanylion am {0}.
 tariff.declaration.type.linkText.2 = wneud datganiad allforio llawn (yn agor tab newydd)
 tariff.declaration.type.common.linkText.0 = Elfen Ddata 1/2 - Math Ychwanegol o Ddatganiad (yn agor tab newydd)
 
-tariff.declaration.others.text = I gael manylion, ewch i {0}.
-tariff.declaration.others.linkText.0 = Elfen Ddata 1/2 - Math Ychwanegol o Ddatganiad (yn agor tab newydd)
-
-tariff.declaration.traderReference.common.linkText.0 =  Elfen Ddata 2/4 - Cyfeirnod Unigryw y Llwyth (UCR) (yn agor tab newydd)
-tariff.declaration.traderReference.clearance.linkText.0 = Elfen Ddata 2/1 - Datganiad Symlach, Dogfennau Blaenorol (yn agor tab newydd)
-tariff.declaration.ducr.common.linkText.0 =  Elfen Ddata 2/1 - Datganiad Symlach, Dogfennau Blaenorol (yn agor tab newydd)
 tariff.declaration.lrn.common.linkText.0 = Elfen Ddata 2/5 - Cyfeirnod Lleol (LRN), dim cyfeirnod blaenorol (yn agor tab newydd)
-tariff.declaration.linkDucrToMucr.caption = Rhagor o fanylion am gyfuno MUCR
-tariff.declaration.linkDucrToMucr.text = Am fanylion, ewch i {0}.<br><br>Bydd angen i’ch llwythwr gau’r MUCR cyn i’r nwyddau ymadael.
-tariff.declaration.linkDucrToMucr.linkText.0 = Elfen Ddata 2/1 - Cyfuno Prif Gyfeirnod Unigryw y Llwyth (MUCR) (yn agor tab newydd)
 tariff.declaration.consignmentReferences.common.text = Am fanylion, ewch i {0} ac {1}.
 tariff.declaration.consignmentReferences.common.linkText.0 = Elfen Ddata 2/4 - Cyfeirnod Unigryw y Llwyth (UCR) (yn agor tab newydd)
 tariff.declaration.consignmentReferences.common.linkText.1 = Elfen Ddata 2/5 - Cyfeirnod Lleol (LRN), dim cyfeirnod blaenorol (yn agor tab newydd)
@@ -514,7 +504,7 @@ declaration.declarant.change.eori = Na, mae angen i mi newid fy EORI
 declaration.linkDucrToMucr.title = A hoffech gysylltu DUCR y datganiad hwn gyda Phrif Gyfeirnod Unigryw y Llwyth (MUCR)?
 declaration.linkDucrToMucr.banner.title = Pwysig: Defnyddio Prif Gyfeirnod Unigryw y Llwyth (MUCR)
 declaration.linkDucrToMucr.banner.content = Defnyddir MUCR i gysylltu mwy nag un DUCR gyda’i gilydd. Fel arfer, defnyddir MUCR i gysylltu llwythi gan wahanol allforwyr sy’n rhannu lle yn yr un cynhwysydd.
-declaration.linkDucrToMucr.paragraph = Gallwch gysylltu mwy nag un DUCR â MUCR os yw’ch llwythwr neu gludwr wedi rhoi MUCR i chi.<br><br>Ni allwch gysylltu â MUCR os yw’ch cludwr yn defnyddio’r Gwasanaeth Symud Cerbydau Nwyddau (GVMS). Bydd y cludwr yn cysylltu’r DUCRau ar gyfer yr holl nwyddau y maent yn eu cludo gan ddefnyddio Cyfeirnod Symud Nwyddau (GMR).
+declaration.linkDucrToMucr.paragraph = Gallwch gysylltu mwy nag un DUCR â MUCR os yw’ch llwythwr neu gludwr wedi rhoi MUCR i chi.<br><br>Ni allwch gysylltu â MUCR os yw’ch cludwr yn defnyddio’r Gwasanaeth Symud Cerbydau Nwyddau (GVMS). Bydd y cludwr yn cysylltu’r DUCRau ar gyfer yr holl nwyddau y maent yn eu cludo gan ddefnyddio Cyfeirnod Symud Nwyddau (GMR).<br><br>Bydd angen i’ch llwythwr gau’r MUCR cyn i’r nwyddau ymadael.
 declaration.linkDucrToMucr.error.required = Dewiswch ‘Iawn’ os ydych am gysylltu DUCR y datganiad hwn gyda MUCR
 
 declaration.declarant.eori.banner.title = Pwysig: ynglŷn â’r rhif EORI
