@@ -35,12 +35,8 @@
 @dashboardHelper.hint(statusGroup)
 @dashboardHelper.table(pageOfSubmissions, statusGroup)
 
-<div class="govuk-grid-row">
-    @if(pageOfSubmissions.submissions.nonEmpty) {
-        @dashboardHelper.paginationComponent(pageOfSubmissions, baseHref)
-    } else {
-        <div class="ceds-pagination__summary">
-            <p class="govuk-body">@{messages("dashboard.status.group.empty")}</p>
-        </div>
-    }
-</div>
+@if(pageOfSubmissions.submissions.nonEmpty) {
+    @dashboardHelper.paginationComponent(pageOfSubmissions, baseHref)
+} else {
+    <p class="govuk-body page-summary">@{messages("dashboard.status.group.empty")}</p>
+}

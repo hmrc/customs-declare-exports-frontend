@@ -26,7 +26,6 @@ import models.declaration.submissions.RequestType.SubmissionRequest
 import models.declaration.submissions.StatusGroup._
 import models.declaration.submissions.{Action, EnhancedStatus, Submission}
 import org.jsoup.nodes.Element
-import org.jsoup.select.Elements
 import org.mockito.Mockito.when
 import org.scalatest.{Assertion, BeforeAndAfterEach}
 import play.api.i18n.Lang
@@ -43,6 +42,7 @@ import views.html.dashboard.dashboard
 import views.tags.ViewTest
 
 import java.time.{ZoneId, ZonedDateTime}
+import scala.jdk.CollectionConverters.ListHasAsScala
 
 @ViewTest
 class DashboardViewSpec extends UnitViewSpec with BeforeAndAfterEach with ExportsTestHelper {
@@ -186,14 +186,13 @@ class DashboardViewSpec extends UnitViewSpec with BeforeAndAfterEach with Export
   "Dashboard View" when {
 
     "there are NO submissions for the selected status group" should {
-
       "display a 'No declarations' message" in {
         val expectedMessage = messages("dashboard.status.group.empty")
 
         enhancedStatuses.foreach { status =>
           val statusGroup = toStatusGroup(status)
           val element = createView(status).getElementById(s"${statusGroup}-submissions")
-          element.getElementsByClass("ceds-pagination__summary").text mustBe expectedMessage
+          element.getElementsByClass("page-summary").text mustBe expectedMessage
         }
       }
     }
@@ -226,7 +225,7 @@ class DashboardViewSpec extends UnitViewSpec with BeforeAndAfterEach with Export
             val statusGroup = toStatusGroup(status)
             val view = createView(status, totalSubmissionsInPage = 1, totalSubmissionsInGroup = 1)
             val element = view.getElementById(s"${statusGroup}-submissions")
-            element.getElementsByClass("ceds-pagination__summary").text mustBe expectedMessage
+            element.getElementsByClass("page-summary").text mustBe expectedMessage
           }
         }
 
@@ -237,7 +236,7 @@ class DashboardViewSpec extends UnitViewSpec with BeforeAndAfterEach with Export
             val statusGroup = toStatusGroup(status)
             val view = createView(status, itemsPerPage, itemsPerPage)
             val element = view.getElementById(s"${statusGroup}-submissions")
-            element.getElementsByClass("ceds-pagination__summary").text mustBe expectedMessage
+            element.getElementsByClass("page-summary").text mustBe expectedMessage
           }
         }
 
@@ -253,7 +252,7 @@ class DashboardViewSpec extends UnitViewSpec with BeforeAndAfterEach with Export
             val statusGroup = toStatusGroup(status)
             val view = createView(status, itemsPerPage, totalSubmissionInGroup)
             val element = view.getElementById(s"${statusGroup}-submissions")
-            element.getElementsByClass("ceds-pagination__summary").text mustBe expectedMessage
+            element.getElementsByClass("page-summary").text mustBe expectedMessage
           }
         }
       }
@@ -270,27 +269,30 @@ class DashboardViewSpec extends UnitViewSpec with BeforeAndAfterEach with Export
       }
 
       "display the pagination controls" when {
-        val lastPage = 2
-        val path = DashboardController.displayPage
-
-        def page(element: Element, page: String, maybeHref: Option[String] = None): Assertion = {
-          element.text mustBe page
-          maybeHref.fold {
-            assert(element.hasClass("ceds-pagination__item--active"))
-          } { href =>
-            element.child(0).attr("href") mustBe href
-          }
-        }
-
-        def pageControls(submissions: Seq[Submission], totalSubmissionsInGroup: Int, currentPage: Int): Elements = {
-          val view = createView(submissions, totalSubmissionsInGroup, currentPage)
-          val statusGroup = toStatusGroup(submissions.head)
-          val element = view.getElementById(s"${statusGroup}-submissions")
-          val pagination = element.selectFirst("ul.ceds-pagination__items")
-          pagination.children()
-        }
-
         "there are multiple pages of submissions and" when {
+          val lastPage = 2
+          val path = DashboardController.displayPage
+
+          def page(element: Element, page: String, maybeHref: Option[String] = None): Assertion = {
+            element.text mustBe page
+            maybeHref.fold {
+              assert(element.hasClass("govuk-pagination__item--current"))
+            } { href =>
+              element.child(0).attr("href") mustBe href
+            }
+          }
+
+          def pageControls(submissions: Seq[Submission], totalSubmissionsInGroup: Int, currentPage: Int): Seq[Element] = {
+            val view = createView(submissions, totalSubmissionsInGroup, currentPage)
+            val statusGroup = toStatusGroup(submissions.head)
+            val element = view.getElementById(s"${statusGroup}-submissions")
+            val pagination = element.getElementsByClass("govuk-pagination").first
+            pagination.children().asScala.toList.foldLeft(List.empty[Element]) { (list, element) =>
+              if (element.tagName == "div") list :+ element // Previous or Next page
+              else if (element.tagName == "ul") list ++ element.getElementsByClass("govuk-pagination__item").asScala.toList
+              else list
+            }
+          }
 
           "the current page is '1'" in {
             enhancedStatuses.foreach { status =>
@@ -305,11 +307,11 @@ class DashboardViewSpec extends UnitViewSpec with BeforeAndAfterEach with Export
               val expectedLoosePageHref = Some(s"${path}?${Groups}=${statusGroup}&${Page}=3")
               val expectedLastPageHref = Some(s"${path}?${Groups}=${statusGroup}&${Limit}=${lastPage}")
 
-              page(controls.get(0), "1")
-              page(controls.get(1), "2", expectedNextPageHref)
-              page(controls.get(2), "3", expectedLoosePageHref)
-              page(controls.get(3), "4", expectedLastPageHref)
-              page(controls.get(4), "Next", expectedNextPageHref)
+              page(controls(0), "1")
+              page(controls(1), "2", expectedNextPageHref)
+              page(controls(2), "3", expectedLoosePageHref)
+              page(controls(3), "4", expectedLastPageHref)
+              page(controls(4), "Next", expectedNextPageHref)
             }
           }
 
@@ -329,14 +331,14 @@ class DashboardViewSpec extends UnitViewSpec with BeforeAndAfterEach with Export
               val expectedLoosePageHref = Some(s"${path}?${Groups}=${statusGroup}&${Page}=5")
               val expectedLastPageHref = Some(s"${path}?${Groups}=${statusGroup}&${Limit}=${lastPage}")
 
-              page(controls.get(0), "Previous", expectedPreviousPageHref)
-              page(controls.get(1), "1", expectedFirstPageHref)
-              page(controls.get(2), "2", expectedPreviousPageHref)
-              page(controls.get(3), "3")
-              page(controls.get(4), "4", expectedNextPageHref)
-              page(controls.get(5), "5", expectedLoosePageHref)
-              page(controls.get(6), "6", expectedLastPageHref)
-              page(controls.get(7), "Next", expectedNextPageHref)
+              page(controls(0), "Previous", expectedPreviousPageHref)
+              page(controls(1), "1", expectedFirstPageHref)
+              page(controls(2), "2", expectedPreviousPageHref)
+              page(controls(3), "3")
+              page(controls(4), "4", expectedNextPageHref)
+              page(controls(5), "5", expectedLoosePageHref)
+              page(controls(6), "6", expectedLastPageHref)
+              page(controls(7), "Next", expectedNextPageHref)
             }
           }
         }

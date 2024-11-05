@@ -102,13 +102,5 @@
     </div>
   </div>
 
-  <div class="govuk-grid-row">
-    @pagination(
-      singularName = messages("draft.declarations.pagination.singular"),
-      pluralName = messages("draft.declarations.pagination.plural"),
-      pager = pageOfDraftDeclarationData,
-      onChange = page => SavedDeclarationsController.displayDeclarations(page),
-      neighbourPagesAmount = 2
-    )
-  </div>
+  @pagination(pageOfDraftDeclarationData, neighbourPagesAmount = 2)
 }

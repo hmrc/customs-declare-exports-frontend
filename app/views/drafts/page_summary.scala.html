@@ -14,28 +14,29 @@
  * limitations under the License.
  *@
 
-@(
-  singularName: String = "result",
-  pluralName: String = "results",
-  pager: Paginated[_]
-)(implicit messages: Messages)
+@(pager: Paginated[_])(implicit messages: Messages)
 
 @firstElementOnPageIndex = @{(pager.page.index - 1) * pager.page.size + 1}
 @lastElementOnPageIndex = @{(pager.page.index - 1) * pager.page.size + pager.currentPageSize}
 @rangePart = {@firstElementOnPageIndex – @lastElementOnPageIndex}
 
-@singularOrPlural = @{ if (pager.elementsTotal == 1) singularName else pluralName }
+@singularOrPlural = @{
+    messages(s"""draft.declarations.pagination.${if (pager.elementsTotal == 1) "singular" else "plural"}""")
+}
 
-<div class="ceds-pagination__summary">
-  @if(pager.nonEmpty) {
-
+@if(pager.nonEmpty) {
     @if(pager.pagesAmount == 1) {
-      <p class="govuk-body">@{messages("site.pagination.showing")} @{pager.elementsTotal} @singularOrPlural</p>
+      <p class="govuk-body page-summary">
+        @{messages("site.pagination.showing")} @{pager.elementsTotal} @singularOrPlural
+      </p>
     } else {
-      <p class="govuk-body">@{messages("site.pagination.showing")} @{rangePart} @{messages("site.pagination.of")} @{pager.elementsTotal} @singularOrPlural</p>
+      <p class="govuk-body page-summary">
+        @{messages("site.pagination.showing")} @{rangePart} @{messages("site.pagination.of")} @{pager.elementsTotal} @singularOrPlural
+      </p>
     }
+} else {
+    <p class="govuk-body page-summary">
+      @{messages("site.pagination.showing.no")} @{messages("draft.declarations.pagination.plural")}
+    </p>
+}
 
-  } else {
-    <p class="govuk-body">@{messages("site.pagination.showing.no")} @{pluralName}</p>
-  }
-</div>

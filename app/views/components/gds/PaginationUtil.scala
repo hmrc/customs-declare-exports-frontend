@@ -65,10 +65,10 @@ object PaginationUtil {
   }
 
   sealed abstract class PaginationItem(val value: String)
+
   object PaginationItem {
     case class PageNumber(pageNumber: Int) extends PaginationItem(pageNumber.toString)
     case class ActivePageNumber(pageNumber: Int) extends PaginationItem(pageNumber.toString)
     case object Dots extends PaginationItem("...")
   }
-
 }
