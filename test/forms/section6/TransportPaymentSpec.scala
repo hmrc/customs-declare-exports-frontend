@@ -49,8 +49,4 @@ class TransportPaymentSpec extends DeclarationPageBaseSpec {
       }
     }
   }
-
-  "TransportPayment" when {
-    testTariffContentKeys(TransportPayment, "tariff.declaration.transportPayment")
-  }
 }

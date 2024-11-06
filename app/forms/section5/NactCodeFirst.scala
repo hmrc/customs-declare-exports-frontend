@@ -17,11 +17,9 @@
 package forms.section5
 
 import forms.DeclarationPage
-import forms.mappings.MappingHelper.requiredRadio
 import forms.common.YesNoAnswer.YesNoAnswers
+import forms.mappings.MappingHelper.requiredRadio
 import forms.section5.NactCode.{nactCodeKey, nactCodeLength}
-import models.DeclarationType.DeclarationType
-import models.viewmodels.TariffContentKey
 import play.api.data.Forms.text
 import play.api.data.{Form, Forms}
 import play.api.libs.json.{Json, OFormat}
@@ -49,7 +47,7 @@ object NactCodeFirst extends DeclarationPage {
         case None       => Some((YesNoAnswers.no, None))
       }
 
-  val mapping = Forms.mapping(
+  private val mapping = Forms.mapping(
     hasNactCodeKey -> requiredRadio("declaration.nationalAdditionalCode.answer.empty"),
     nactCodeKey -> mandatoryIfEqual(
       hasNactCodeKey,
@@ -61,7 +59,4 @@ object NactCodeFirst extends DeclarationPage {
   )(form2Model)(model2Form)
 
   def form: Form[NactCodeFirst] = Form(mapping)
-
-  override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
-    Seq(TariffContentKey("tariff.declaration.item.nationalAdditionalCode.common"))
 }

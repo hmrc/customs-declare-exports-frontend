@@ -134,8 +134,4 @@ class DepartureTransportSpec extends FormSpec with DeclarationPageBaseSpec {
       }
     }
   }
-
-  "DepartureTransport form" when {
-    testTariffContentKeys(DepartureTransport, "tariff.declaration.departureTransport")
-  }
 }

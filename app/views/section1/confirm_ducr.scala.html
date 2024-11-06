@@ -14,7 +14,6 @@
  * limitations under the License.
  *@
 
-@import config.AppConfig
 @import controllers.navigation.Navigator
 @import controllers.section1.routes.ConfirmDucrController
 @import forms.common.YesNoAnswer
@@ -34,13 +33,11 @@
     govukDetails: GovukDetails,
     govukTable: GovukTable,
     bulletList: bulletList,
-    tariffExpander: tariffExpander,
     saveButtons: saveButtons,
     yesNoRadios: yesNoRadios,
     sectionHeader: sectionHeader,
     formHelper: FormWithCSRF,
-    navigator: Navigator,
-    appConfig: AppConfig
+    navigator: Navigator
 )
 
 @(form: Form[YesNoAnswer], generatedDucr: Ducr)(implicit request: JourneyRequest[_], messages: Messages)
@@ -90,9 +87,7 @@
             attributes = Map("id" -> "expander-ducr"),
             summary = Text(messages("declaration.confirmDucr.expander.title")),
             content = HtmlContent(expanderContent)
-        ))
-
-        @tariffExpander(ConfirmDucr, request.declarationType)(messages, appConfig)
+            ))
 
         @saveButtons()
     }

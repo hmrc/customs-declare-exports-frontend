@@ -18,14 +18,10 @@ package forms.section6
 
 import forms.common.DeclarationPageBaseSpec
 import forms.section6.ContainerFirst._
-import models.viewmodels.TariffContentKey
 import play.api.data.FormError
 import play.api.libs.json.{JsObject, JsString}
 
 class ContainerFirstSpec extends DeclarationPageBaseSpec {
-
-  def formData(hasContainer: String, containerId: Option[String]) =
-    JsObject(Map(hasContainerKey -> JsString(hasContainer), containerIdKey -> JsString(containerId.getOrElse(""))))
 
   "ContainerYesNo mapping" should {
 
@@ -33,25 +29,21 @@ class ContainerFirstSpec extends DeclarationPageBaseSpec {
 
       "provided with non-alphanumeric id" in {
         val form = ContainerFirst.form.bind(formData("Yes", Some("!2345678")), JsonBindMaxChars)
-
         form.errors mustBe Seq(FormError(containerIdKey, "declaration.transportInformation.containerId.error.invalid"))
       }
 
       "provided with id too long" in {
         val form = ContainerFirst.form.bind(formData("Yes", Some("123456789012345678")), JsonBindMaxChars)
-
         form.errors mustBe Seq(FormError(containerIdKey, "declaration.transportInformation.containerId.error.length"))
       }
 
       "provided with no id when user said yes" in {
         val form = ContainerFirst.form.bind(formData("Yes", None), JsonBindMaxChars)
-
         form.errors mustBe Seq(FormError(containerIdKey, "declaration.transportInformation.containerId.empty"))
       }
 
       "no answer for yes/no" in {
         val form = ContainerFirst.form.bind(formData("", None), JsonBindMaxChars)
-
         form.errors mustBe Seq(FormError(hasContainerKey, "declaration.transportInformation.container.answer.empty"))
       }
     }
@@ -59,23 +51,16 @@ class ContainerFirstSpec extends DeclarationPageBaseSpec {
     "return form without errors" when {
       "provided with valid input when user said Yes" in {
         val form = ContainerFirst.form.bind(formData("Yes", Some("1234ABCD")), JsonBindMaxChars)
-
         form.hasErrors must be(false)
       }
 
       "provided with no input when user said No" in {
         val form = ContainerFirst.form.bind(formData("No", None), JsonBindMaxChars)
-
         form.hasErrors must be(false)
       }
-
     }
   }
 
-  override def getClearanceTariffKeys(messageKey: String): Seq[TariffContentKey] =
-    Seq(TariffContentKey(s"${messageKey}.clearance"))
-
-  "ContainerFirst" when {
-    testTariffContentKeys(ContainerFirst, "tariff.declaration.container")
-  }
+  private def formData(hasContainer: String, containerId: Option[String]): JsObject =
+    JsObject(Map(hasContainerKey -> JsString(hasContainer), containerIdKey -> JsString(containerId.getOrElse(""))))
 }

@@ -17,8 +17,6 @@
 package forms.section6
 
 import forms.DeclarationPage
-import models.DeclarationType.DeclarationType
-import models.viewmodels.TariffContentKey
 import play.api.data.Forms.{optional, text}
 import play.api.data.{Form, Forms}
 import play.api.libs.json.{Json, OFormat}
@@ -41,7 +39,4 @@ object ContainerAdd extends DeclarationPage {
   )(ContainerAdd.apply)(ContainerAdd.unapply)
 
   def form: Form[ContainerAdd] = Form(mapping)
-
-  override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
-    Seq(TariffContentKey(s"tariff.declaration.container.change.${DeclarationPage.getJourneyTypeSpecialisation(decType)}"))
 }

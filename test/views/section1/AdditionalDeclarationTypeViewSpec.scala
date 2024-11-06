@@ -60,19 +60,6 @@ class AdditionalDeclarationTypeViewSpec extends UnitViewSpec with CommonMessages
           title mustBe messages(s"declaration.declarationType.header.$declarationType")
         }
 
-        "display the expected tariff details" in {
-          val expectedKey = "common"
-
-          val tariffTitle = view.getElementsByClass("govuk-details__summary-text").last
-          tariffTitle.text mustBe messages(s"tariff.expander.title.$expectedKey")
-
-          val tariffDetails = view.getElementsByClass("govuk-details__text").last.text
-
-          val expectedText =
-            removeLineBreakIfAny(messages("tariff.declaration.text", messages(s"tariff.declaration.type.$expectedKey.linkText.0")))
-          removeBlanksIfAnyBeforeDot(tariffDetails) mustBe expectedText
-        }
-
         "display the expected 'Continue' button" in {
           view.getElementById("submit").text mustBe messages(continueCaption)
         }

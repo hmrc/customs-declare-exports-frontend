@@ -136,19 +136,10 @@ class DucrEntryViewSpec extends PageWithButtonsSpec with Injector {
   "Ducr Entry View" should {
     onJourney(STANDARD, CLEARANCE, OCCASIONAL, SIMPLIFIED) { implicit request =>
       "display the expected tariff details" in {
-        val key = "common"
 
         val view = createView()
         val tariffTitle1 = view.getElementsByClass("govuk-details__summary-text").first()
-        val tariffTitle2 = view.getElementsByClass("govuk-details__summary-text").get(1)
         tariffTitle1.text mustBe messages("declaration.ducrEntry.ducr.expander.title")
-        tariffTitle2.text mustBe messages(s"tariff.expander.title.$key")
-
-        val prefix = "tariff.declaration.ducr"
-        val tariffDetails2 = view.getElementsByClass("govuk-details__text").get(1)
-        val expectedText2 = messages("tariff.declaration.text", messages(s"$prefix.$key.linkText.0"))
-        val actualText2 = removeBlanksIfAnyBeforeDot(tariffDetails2.text)
-        actualText2 mustBe removeLineBreakIfAny(expectedText2)
 
         val tariffDetails1 = view.getElementsByClass("govuk-details__text").first
         val expanderParagraph = messages("declaration.ducrEntry.ducr.expander.paragraph")
