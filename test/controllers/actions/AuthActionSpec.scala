@@ -52,10 +52,7 @@ class AuthActionSpec extends ControllerWithoutFormSpec {
     when(appConfig.loginUrl).thenReturn("/unauthorised")
     when(appConfig.loginContinueUrl).thenReturn("/loginContinueUrl")
     when(choicePage()(any(), any())).thenReturn(HtmlFormat.empty)
-    when(appConfig.maybeTdrHashSalt).thenReturn(None)
   }
-
-  val tdrHashSalt = Some("SomeSuperSecret")
 
   "Auth Action" should {
 
@@ -66,13 +63,6 @@ class AuthActionSpec extends ControllerWithoutFormSpec {
         status(result) mustBe OK
       }
 
-      "TDRSecret enrolment is required and correctly supplied by user" in {
-        authorizedUser()
-        when(appConfig.maybeTdrHashSalt).thenReturn(tdrHashSalt)
-
-        val result = controller.displayPage(getRequest())
-        status(result) mustBe OK
-      }
     }
 
     "redirect to login page when a NoActiveSession type exception is thrown" in {
@@ -102,29 +92,6 @@ class AuthActionSpec extends ControllerWithoutFormSpec {
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(UnauthorisedController.onPageLoad(UserEoriNotAllowed).url)
-      }
-
-      "EORI is on allow list and TDRSecret enrolment is required" when {
-
-        "user does not enter a TDRSecret value" in {
-          when(appConfig.maybeTdrHashSalt).thenReturn(tdrHashSalt)
-          authorizedUser(newUser(eori, "external1", None))
-
-          val result = controller.displayPage(getRequest())
-
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(UnauthorisedController.onPageLoad(UserEoriNotAllowed).url)
-        }
-
-        "user enters a non-matching TDRSecret value" in {
-          when(appConfig.maybeTdrHashSalt).thenReturn(tdrHashSalt)
-          authorizedUser(newUser(eori, "external1", Some("IncorrectValue")))
-
-          val result = controller.displayPage(getRequest())
-
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(UnauthorisedController.onPageLoad(UserEoriNotAllowed).url)
-        }
       }
 
       "on other 'AuthorisationException' errors" in {

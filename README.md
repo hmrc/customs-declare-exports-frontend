@@ -90,18 +90,6 @@ We use the following codes:
  * [Package Type codes](https://www.gov.uk/government/publications/package-type-codes-for-data-element-69-of-the-customs-declaration-service) (6/9 in tariff) *Last published: 1 August 2018*
  * [Customs supervising office codes](https://www.gov.uk/government/publications/supervising-office-codes-for-data-element-527-of-the-customs-declaration-service) (5/27 in tariff) *Last updated 13 March 2023*
 
-## Generating TDRSecret values for a given EORI
-As this service deployed in ExternalTest as part of the CDS Trader Dress Rehearsal, an additional enrolment value of 'TDRSecret' is required for a user to successfully authenticate in this environment.
-
-To generate a valid 'TDRSecret' value for a user you can call the following program replacing the two `<???>` parameters with the appropriate values:
-
-```sbt "runMain utils.GenerateTdrSecret <tdrHashSalt> <eori>"```
-
-Note the `<eori>` parameter can be a comma delimited list of EORIs (if you want to generate multiple 'TDRSecret' values at any one time). 
-
-The output of the program is:
-```<eori>,<newGeneratedTdrSecret>```
-
 ## License
 
 This code is open source software licensed under the [Apache 2.0 License]("http://www.apache.org/licenses/LICENSE-2.0.html")

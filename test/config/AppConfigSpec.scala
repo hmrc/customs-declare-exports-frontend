@@ -50,8 +50,6 @@ class AppConfigSpec extends UnitWithMocksSpec with Stubs {
         |microservice.services.customs-declare-exports-movements.port=9876
         |microservice.services.customs-declare-exports-movements.save-movement-uri=/save-movement-submission
         |play.frontend.host="self/base-url"
-        |
-        |secret.tdrHashSalt="SomeSuperSecret"
       """.stripMargin)
 
   private val validServicesConfiguration = Configuration(validConfig)
@@ -284,14 +282,6 @@ class AppConfigSpec extends UnitWithMocksSpec with Stubs {
 
     "empty selfBaseUrl when the key is missing" in {
       missingAppConfig.selfBaseUrl must be(None)
-    }
-
-    "have tdrHashSalt" in {
-      validAppConfig.maybeTdrHashSalt must be(Some("SomeSuperSecret"))
-    }
-
-    "empty tdrHashSalt when the key is missing" in {
-      missingAppConfig.maybeTdrHashSalt must be(None)
     }
 
     "have additionalProcedureCodesOfCDs URL" in {
