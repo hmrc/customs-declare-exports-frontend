@@ -718,7 +718,6 @@ dashboard.header.lrn = Your reference (LRN)
 dashboard.header.mrn = Movement Reference Number (MRN)
 dashboard.header.updated.on = Updated on
 dashboard.header.status = Status
-dashboard.hidden.text = View consignment {0}
 dashboard.check.status.hint = You can also view declarations with other statuses by selecting one of the buttons below.
 dashboard.mrn.pending = MRN pending
 dashboard.action.button.text = Action needed

@@ -721,7 +721,6 @@ dashboard.header.lrn = Eich cyfeirnod (LRN)
 dashboard.header.mrn = Rhif Cyfeirnod Symud (MRN)
 dashboard.header.updated.on = Diweddarwyd ar
 dashboard.header.status = Statws
-dashboard.hidden.text = Bwrw golwg dros y llwyth {0}
 dashboard.check.status.hint = Gallwch hefyd fwrw golwg dros ddatganiadau gyda statws gwahanol drwy ddewis un o’r botymau isod.
 dashboard.mrn.pending = MRN ar y gweill
 dashboard.action.button.text = Angen gweithredu
