@@ -55,7 +55,7 @@ class RejectedNotificationsController @Inject() (
         val messages = messagesApi.preferred(request).messages
         val mrn = notifications.headOption.map(_.mrn).getOrElse(messages("rejected.notification.mrn.missing"))
 
-        val rejectionNotification = notifications.find(_.isStatusDMSRej).headOption
+        val rejectionNotification = notifications.find(_.isStatusDMSRej)
         val errors = errorsReportedHelper.generateErrorRows(rejectionNotification, declaration, maybeDraftInProgress, false)
 
         Ok(errors_reported(None, declaration, mrn, None, errors)(request, messages, codeListConnector))

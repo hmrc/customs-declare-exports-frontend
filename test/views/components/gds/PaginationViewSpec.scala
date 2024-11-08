@@ -19,23 +19,20 @@ package views.components.gds
 import base.ExportsTestData
 import controllers.routes.SavedDeclarationsController
 import models.{ExportsDeclaration, Page, Paginated}
+import org.jsoup.nodes.Element
+import org.scalatest.Assertion
+import play.twirl.api.HtmlFormat.Appendable
 import views.html.drafts.pagination
 import views.common.UnitViewSpec
 
 class PaginationViewSpec extends UnitViewSpec {
 
   private def paginationComponent(
-    declarations: Seq[ExportsDeclaration] = Seq.empty,
+    declarations: Seq[ExportsDeclaration] = List.empty,
+    elementsTotal: Int = 0,
     currentPage: Int = 1,
-    pageSize: Int = 10,
-    elementsTotal: Int = 0
-  ) = pagination(
-    singularName = messages("draft.declarations.pagination.singular"),
-    pluralName = messages("draft.declarations.pagination.plural"),
-    pager = Paginated(declarations, Page(currentPage, pageSize), elementsTotal),
-    onChange = page => SavedDeclarationsController.displayDeclarations(page),
-    neighbourPagesAmount = 1
-  )
+    pageSize: Int = 10
+  ): Appendable = pagination(Paginated(declarations, Page(currentPage, pageSize), elementsTotal), neighbourPagesAmount = 1)
 
   private val declaration = ExportsTestData.aDeclaration()
 
@@ -44,84 +41,104 @@ class PaginationViewSpec extends UnitViewSpec {
     "contain pagination summary" when {
 
       "there are no elements" in {
-        val summary = paginationComponent().getElementsByClass("ceds-pagination__summary")
+        val summary = paginationComponent().getElementsByClass("page-summary")
 
-        summary.first() must containMessage("site.pagination.showing.no")
-        summary.first() must containMessage("draft.declarations.pagination.plural")
+        summary.first must containMessage("site.pagination.showing.no")
+        summary.first must containMessage("draft.declarations.pagination.plural")
       }
 
       "there is single element" in {
-        val summary = paginationComponent(declarations = Seq(declaration), elementsTotal = 1).getElementsByClass("ceds-pagination__summary")
+        val summary = paginationComponent(List(declaration), elementsTotal = 1).getElementsByClass("page-summary")
 
-        summary.first() must containMessage("site.pagination.showing")
-        summary.first() must containText("1")
-        summary.first() must containMessage("draft.declarations.pagination.singular")
+        summary.first must containMessage("site.pagination.showing")
+        summary.first must containText("1")
+        summary.first must containMessage("draft.declarations.pagination.singular")
       }
 
       "there are multiple elements" in {
-        val summary = paginationComponent(declarations = Seq.fill(10)(declaration), elementsTotal = 30).getElementsByClass("ceds-pagination__summary")
+        val summary = paginationComponent(List.fill(10)(declaration), elementsTotal = 30).getElementsByClass("page-summary")
 
-        summary.first() must containMessage("site.pagination.showing")
-        summary.first() must containText("1 – 10")
-        summary.first() must containMessage("site.pagination.of")
-        summary.first() must containText("30")
-        summary.first() must containMessage("draft.declarations.pagination.plural")
+        summary.first must containMessage("site.pagination.showing")
+        summary.first must containText("1 – 10")
+        summary.first must containMessage("site.pagination.of")
+        summary.first must containText("30")
+        summary.first must containMessage("draft.declarations.pagination.plural")
       }
     }
 
     "contain pagination controls" when {
 
       "there is single page" in {
-        val controls = paginationComponent(declarations = Seq.fill(3)(declaration), elementsTotal = 3)
-
-        controls.getElementsByClass("ceds-pagination__item").size() mustBe 0
+        val appendable = paginationComponent(List.fill(3)(declaration), elementsTotal = 3)
+        appendable.getElementsByClass("govuk-pagination").size mustBe 0
       }
 
       "there are two pages and the current one is 1" in {
-        val controls = paginationComponent(declarations = Seq.fill(10)(declaration), currentPage = 1, elementsTotal = 20)
+        val appendable = paginationComponent(List.fill(10)(declaration), elementsTotal = 20)
+        val pagination = appendable.getElementsByClass("govuk-pagination").first
 
-        controls.getElementsByClass("ceds-pagination__item").size() mustBe 3
-        controls.getElementById("pagination-page_active") must containText("1")
-        controls.getElementById("pagination-page_2") must containText("2")
-        controls.getElementById("pagination-page_2") must haveHref(SavedDeclarationsController.displayDeclarations(2))
+        pagination.childrenSize mustBe 2
 
-        controls.getElementById("pagination-page_next") must containText("Next")
-        controls.getElementById("pagination-page_next") must haveHref(SavedDeclarationsController.displayDeclarations(2))
+        val pages = pagination.getElementsByClass("govuk-pagination__list").first.children
+        pages.size mustBe 2
+
+        pagination.getElementsByClass("govuk-pagination__previous").size mustBe 0
+
+        pagination.getElementsByClass("govuk-pagination__item--current").first.text mustBe "1"
+        verify(pages.get(1).child(0), "2", SavedDeclarationsController.displayDeclarations(2).url)
+
+        val next = pagination.getElementsByClass("govuk-pagination__next").first.child(0)
+        verify(next, messages("pagination.next"), SavedDeclarationsController.displayDeclarations(2).url)
       }
 
       "there are two pages and the current one is 2" in {
-        val controls = paginationComponent(declarations = Seq.fill(10)(declaration), currentPage = 2, elementsTotal = 20)
+        val appendable = paginationComponent(List.fill(10)(declaration), elementsTotal = 20, currentPage = 2)
+        val pagination = appendable.getElementsByClass("govuk-pagination").first
 
-        controls.getElementsByClass("ceds-pagination__item").size() mustBe 3
-        controls.getElementById("pagination-page_previous") must containText("Previous")
-        controls.getElementById("pagination-page_previous") must haveHref(SavedDeclarationsController.displayDeclarations(1))
+        pagination.childrenSize mustBe 2
 
-        controls.getElementById("pagination-page_1") must containText("1")
-        controls.getElementById("pagination-page_1") must haveHref(SavedDeclarationsController.displayDeclarations(1))
-        controls.getElementById("pagination-page_active") must containText("2")
+        val previous = pagination.getElementsByClass("govuk-pagination__prev").first.child(0)
+        verify(previous, messages("pagination.previous"), SavedDeclarationsController.displayDeclarations().url)
+
+        val pages = pagination.getElementsByClass("govuk-pagination__list").first.children
+        pages.size mustBe 2
+
+        verify(pages.get(0).child(0), "1", SavedDeclarationsController.displayDeclarations().url)
+        pagination.getElementsByClass("govuk-pagination__item--current").first.text mustBe "2"
+
+        pagination.getElementsByClass("govuk-pagination__next").size mustBe 0
       }
 
       "there are seven pages and the current one is 4" in {
-        val controls = paginationComponent(declarations = Seq.fill(10)(declaration), currentPage = 4, elementsTotal = 70)
+        val appendable = paginationComponent(List.fill(10)(declaration), elementsTotal = 70, currentPage = 4)
+        val pagination = appendable.getElementsByClass("govuk-pagination").first
 
-        controls.getElementsByClass("ceds-pagination__item").size() mustBe 9
+        pagination.childrenSize mustBe 3
 
-        controls.getElementById("pagination-page_previous") must containText("Previous")
-        controls.getElementById("pagination-page_previous") must haveHref(SavedDeclarationsController.displayDeclarations(3))
+        val previous = pagination.getElementsByClass("govuk-pagination__prev").first.child(0)
+        verify(previous, messages("pagination.previous"), SavedDeclarationsController.displayDeclarations(3).url)
 
-        controls.getElementById("pagination-page_3") must containText("3")
-        controls.getElementById("pagination-page_3") must haveHref(SavedDeclarationsController.displayDeclarations(3))
+        val pages = pagination.getElementsByClass("govuk-pagination__list").first.children
+        pages.size mustBe 7
 
-        controls.getElementById("pagination-page_active") must containText("4")
+        verify(pages.get(0).child(0), "1", SavedDeclarationsController.displayDeclarations().url)
+        verify(pages.get(2).child(0), "3", SavedDeclarationsController.displayDeclarations(3).url)
 
-        controls.getElementById("pagination-page_5") must containText("5")
-        controls.getElementById("pagination-page_5") must haveHref(SavedDeclarationsController.displayDeclarations(5))
+        pagination.getElementsByClass("govuk-pagination__item--current").first.text mustBe "4"
 
-        controls.getElementById("pagination-page_next") must containText("Next")
-        controls.getElementById("pagination-page_next") must haveHref(SavedDeclarationsController.displayDeclarations(5))
+        verify(pages.get(4).child(0), "5", SavedDeclarationsController.displayDeclarations(5).url)
+        verify(pages.get(6).child(0), "7", SavedDeclarationsController.displayDeclarations(7).url)
 
-        controls.getElementsByClass("ceds-pagination__item ceds-pagination__item--dots").size() mustBe 2
+        val next = pagination.getElementsByClass("govuk-pagination__next").first.child(0)
+        verify(next, messages("pagination.next"), SavedDeclarationsController.displayDeclarations(5).url)
+
+        pagination.getElementsByClass("govuk-pagination__item--ellipses").size mustBe 2
       }
     }
+  }
+
+  private def verify(element: Element, expectedText: String, expectedUrl: String): Assertion = {
+    element.text mustBe expectedText
+    element.attr("href") mustBe expectedUrl
   }
 }

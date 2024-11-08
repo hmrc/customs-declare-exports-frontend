@@ -20,6 +20,7 @@ import base.ControllerWithoutFormSpec
 import config.AppConfig
 import connectors.CodeListConnector
 import controllers.general.ErrorHandler
+import controllers.timeline.RejectedNotificationsControllerSpec._
 import models.declaration.notifications.Notification
 import models.declaration.submissions.Action
 import models.requests.SessionHelper.submissionUuid
@@ -77,7 +78,7 @@ class RejectedNotificationsControllerSpec extends ControllerWithoutFormSpec with
 
       "declaration, draft declaration and notifications are found" in {
         fetchDeclaration(declarationId)
-        fetchDraftByParent(declarationId)
+        fetchDraftByParent()
         findNotifications(declarationId)
 
         verifyResult(controller.displayPage(declarationId)(getRequest()), None, None, false)
@@ -124,7 +125,7 @@ class RejectedNotificationsControllerSpec extends ControllerWithoutFormSpec with
       "Action, declaration, draft dec and notification are found" in {
         fetchAction(failedAction)
         fetchDeclaration(failedAction.decId.value)
-        fetchDraftByParent(failedAction.decId.value)
+        fetchDraftByParent()
         fetchLatestNotification(failedNotification)
 
         val result = controller.displayPageOnUnacceptedAmendment(failedAction.id)(request)
@@ -175,6 +176,9 @@ class RejectedNotificationsControllerSpec extends ControllerWithoutFormSpec with
     captorDec.getValue.asInstanceOf[Option[String]] mustBe expectedDec
     captorSub.getValue.asInstanceOf[Option[String]] mustBe expectedSub
   }
+}
+
+object RejectedNotificationsControllerSpec {
 
   val failedAction: Action =
     Json

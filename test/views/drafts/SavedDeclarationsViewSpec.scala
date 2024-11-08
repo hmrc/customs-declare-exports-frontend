@@ -21,6 +21,7 @@ import controllers.routes.ChoiceController
 import models.declaration.DeclarationStatus.{AMENDMENT_DRAFT, DRAFT}
 import models.{DraftDeclarationData, Page, Paginated}
 import org.jsoup.nodes.Element
+import org.scalatest.Assertion
 import play.twirl.api.Html
 import play.twirl.api.HtmlFormat.Appendable
 import views.common.UnitViewSpec
@@ -46,7 +47,7 @@ class SavedDeclarationsViewSpec extends UnitViewSpec with Injector {
   private val draftWithoutDucr =
     DraftDeclarationData("draftId", None, DRAFT, LocalDateTime.of(year, 1, 1, 9, 45, 0).toInstant(ZoneOffset.UTC))
 
-  private def createView(declarations: Seq[DraftDeclarationData] = Seq.empty, pageIx: Int = 1, pageSize: Int = 10, total: Int = 0): Appendable = {
+  private def createView(declarations: Seq[DraftDeclarationData] = List.empty, pageIx: Int = 1, pageSize: Int = 10, total: Int = 0): Appendable = {
     val data = Paginated(declarations, Page(pageIx, pageSize), total)
     page(data)(request, messages)
   }
@@ -69,7 +70,7 @@ class SavedDeclarationsViewSpec extends UnitViewSpec with Injector {
 
       numberOfTableRows(view) mustBe 0
 
-      view.getElementsByClass("ceds-pagination") mustNot be(empty)
+      verifyPagination(view)
     }
 
     "display created declarations before BST" in {
@@ -87,7 +88,7 @@ class SavedDeclarationsViewSpec extends UnitViewSpec with Injector {
       tableCell(view)(1, 3) must containMessage("site.remove")
       tableCell(view)(1, 3) must containMessage("draft.declarations.remove.hidden", noDucrLabel)
 
-      view.getElementsByClass("ceds-pagination") mustNot be(empty)
+      verifyPagination(view)
     }
 
     "display created declarations after BST" in {
@@ -108,7 +109,7 @@ class SavedDeclarationsViewSpec extends UnitViewSpec with Injector {
       tableCell(view)(1, 3) must containMessage("site.remove")
       tableCell(view)(1, 3) must containMessage("draft.declarations.remove.hidden", noDucrLabel)
 
-      view.getElementsByClass("ceds-pagination") mustNot be(empty)
+      verifyPagination(view)
     }
 
     "display created with Amendment" in {
@@ -126,8 +127,7 @@ class SavedDeclarationsViewSpec extends UnitViewSpec with Injector {
       tableCell(view)(1, 3) must containMessage("site.remove")
       tableCell(view)(1, 3) must containMessage("draft.declarations.remove.hidden", noDucrLabel)
 
-      view.getElementsByClass("ceds-pagination") mustNot be(empty)
-
+      verifyPagination(view)
     }
 
     "display 'Back' button that links to 'Choice' page with 'Continue saved declarations' selected" in {
@@ -135,9 +135,14 @@ class SavedDeclarationsViewSpec extends UnitViewSpec with Injector {
       backButton must containMessage("site.back")
       backButton must haveHref(ChoiceController.displayPage)
     }
+
+    def verifyPagination(view: Appendable): Assertion = {
+      view.getElementsByClass("page-summary") mustNot be(empty)
+      view.getElementsByClass("govuk-pagination") must be(empty)
+    }
   }
 
-  private def numberOfTableRows(view: Html) = view.getElementsByClass("govuk-table__row").size() - 1
+  private def numberOfTableRows(view: Html): Int = view.getElementsByClass("govuk-table__row").size() - 1
 
   private def tableHead(view: Html)(column: Int): Element =
     view

@@ -738,8 +738,8 @@ dashboard.submitted.heading = Datganiadau sydd wedi’u cyflwyno
 dashboard.submitted.content.hint = Dewiswch MRN i fwrw golwg dros fanylion ac opsiynau datganiad llawn i argraffu, diwygio neu gopïo ac ailddefnyddio’r datganiad.
 dashboard.pagination.singular = datganiad
 dashboard.pagination.plural = datganiadau
-dashboard.pagination.next = Nesaf
-dashboard.pagination.previous = Flaenorol
+pagination.next = Nesaf
+pagination.previous = Flaenorol
 dashboard.status.group.empty = Dim datganiadau
 dashboard.start.new.declaration = Dechreuwch ddatganiad newydd
 

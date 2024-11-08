@@ -14,55 +14,60 @@
  * limitations under the License.
  *@
 
+@import controllers.routes.SavedDeclarationsController
 @import views.components.gds.PaginationUtil
 @import views.components.gds.PaginationUtil.PaginationItem._
 
-@(id: String = "pagination",
-  singularName: String = "result",
-  pluralName: String = "results",
-  pager: Paginated[_],
-  onChange: Int => Call,
-  neighbourPagesAmount: Int
-)(implicit messages: Messages)
+@(pager: Paginated[_], neighbourPagesAmount: Int)(implicit messages: Messages)
 
-<nav class="ceds-pagination" role="navigation" aria-label="Pagination Navigation">
+@onChange(page: Int) = @{ SavedDeclarationsController.displayDeclarations(page) }
 
-  @pagination_summary(singularName, pluralName, pager)
+@page_summary(pager)
 
-  @if(pager.pagesAmount > 1) {
-    <div id="@id-controls" class="ceds-pagination__controls">
-      <ul class="ceds-pagination__items">
-        @defining(pager.pagesAmount) { pageCount: Int =>
+@if(pager.pagesAmount > 1) {
+  <nav class="govuk-pagination" aria-label="Pagination">
+    @if(pager.page.index > 1) {
+      <div class="govuk-pagination__prev">
+        <a class="govuk-link govuk-pagination__link" href="@onChange(pager.page.index - 1)" rel="prev">
+          <svg class="govuk-pagination__icon govuk-pagination__icon--prev" xmlns="http://www.w3.org/2000/svg" height="13" width="15" aria-hidden="true" focusable="false" viewBox="0 0 15 13">
+            <path d="m6.5938-0.0078125-6.7266 6.7266 6.7441 6.4062 1.377-1.449-4.1856-3.9768h12.896v-2h-12.984l4.2931-4.293-1.414-1.414z"></path>
+          </svg>
+          <span class="govuk-pagination__link-title">@messages("pagination.previous")</span>
+        </a>
+      </div>
+    }
 
-          @if(pager.page.index > 1) {
-            <li class="ceds-pagination__item ceds-pagination__item--prev">
-              <a id="@id-page_previous" class="ceds-pagination__link" href="@onChange(pager.page.index - 1)" aria-label="Go to Previous Page">Previous</a>
+    <ul class="govuk-pagination__list">
+      @for(paginationItem <- PaginationUtil.paginationElements(pager.page.index, pager.pagesAmount, neighbourPagesAmount)) {
+        @paginationItem match {
+          case PageNumber(pageNumber) => {
+            <li class="govuk-pagination__item">
+              <a class="govuk-link govuk-pagination__link" href="@onChange(pageNumber)" aria-label="Page @pageNumber">
+                @{paginationItem.value}
+              </a>
             </li>
           }
-
-          @for(paginationItem <- PaginationUtil.paginationElements(pager.page.index, pager.pagesAmount, neighbourPagesAmount)) {
-            @paginationItem match {
-              case PageNumber(pageNumber) => {
-                <li class="ceds-pagination__item">
-                  <a id="@id-page_@pageNumber" class="ceds-pagination__link" href="@onChange(pageNumber)" aria-label="Go to Page @pageNumber">@{paginationItem.value}</a>
-                </li>
-              }
-              case Dots => {
-                <li class="ceds-pagination__item ceds-pagination__item--dots">@{paginationItem.value}</li>
-              }
-              case ActivePageNumber(pageNumber) => {
-                <li id="@id-page_active" class="ceds-pagination__item ceds-pagination__item--active" aria-label="Current Page, Page @pageNumber" aria-current="true">@{paginationItem.value}</li>
-              }
-            }
+          case Dots => {
+            <li class="govuk-pagination__item govuk-pagination__item--ellipses">@{paginationItem.value}</li>
           }
-
-          @if(pager.page.index < pageCount) {
-            <li class="ceds-pagination__item ceds-pagination__item--next">
-              <a id="@id-page_next" class="ceds-pagination__link" href="@onChange(pager.page.index + 1)" aria-label="Go to Next Page">Next</a>
+          case ActivePageNumber(pageNumber) => {
+            <li class="govuk-pagination__item govuk-pagination__item--current" aria-label="Page @pageNumber" aria-current="page">
+              @{paginationItem.value}
             </li>
           }
         }
-      </ul>
-    </div>
-  }
-</nav>
+      }
+    </ul>
+
+    @if(pager.page.index < pager.pagesAmount) {
+      <div class="govuk-pagination__next">
+        <a class="govuk-link govuk-pagination__link" href="@onChange(pager.page.index + 1)" rel="next">
+          <span class="govuk-pagination__link-title">@messages("pagination.next")</span>
+          <svg class="govuk-pagination__icon govuk-pagination__icon--next" xmlns="http://www.w3.org/2000/svg" height="13" width="15" aria-hidden="true" focusable="false" viewBox="0 0 15 13">
+            <path d="m8.107-0.0078125-1.4136 1.414 4.2926 4.293h-12.986v2h12.896l-4.1855 3.9766 1.377 1.4492 6.7441-6.4062-6.7246-6.7266z"></path>
+          </svg>
+        </a>
+      </div>
+    }
+  </nav>
+}

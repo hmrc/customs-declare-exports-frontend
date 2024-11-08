@@ -29,18 +29,18 @@
     messages(s"""dashboard.pagination.${if (totalSubmissionsInGroup == 1) "singular" else "plural"}""")
 }
 
-<div class="ceds-pagination__summary">
-  @if(totalSubmissionsInGroup > 0) {
-
+@if(totalSubmissionsInGroup > 0) {
     @if(totalSubmissionsInGroup <= paginationConfig.itemsPerPage) {
-      <p class="govuk-body">@{messages("site.pagination.showing")} @{totalSubmissionsInPage} @singularOrPlural</p>
+      <p class="govuk-body page-summary">
+        @{messages("site.pagination.showing")} @{totalSubmissionsInPage} @singularOrPlural
+      </p>
     } else {
-      <p class="govuk-body">
-          @{messages("site.pagination.showing")} @{rangePart} @{messages("site.pagination.of")} @{totalSubmissionsInGroup} @singularOrPlural
+      <p class="govuk-body page-summary">
+        @{messages("site.pagination.showing")} @{rangePart} @{messages("site.pagination.of")} @{totalSubmissionsInGroup} @singularOrPlural
       </p>
     }
-
-  } else {
-    <p class="govuk-body">@{messages("site.pagination.showing.no")} @{messages("dashboard.pagination.plural")}</p>
-  }
-</div>
+} else {
+    <p class="govuk-body page-summary">
+      @{messages("site.pagination.showing.no")} @{messages("dashboard.pagination.plural")}
+    </p>
+}

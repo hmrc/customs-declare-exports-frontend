@@ -65,11 +65,12 @@ trait MockConnectors {
   ): OngoingStubbing[Future[Option[ExportsDeclaration]]] =
     when(mockCustomsDeclareExportsConnector.findDeclaration(refEq(id))(any(), any())).thenReturn(Future.successful(declaration))
 
-  def fetchDraftByParent(id: String): OngoingStubbing[Future[Option[ExportsDeclaration]]] =
-    when(mockCustomsDeclareExportsConnector.findDraftByParent(any())(any(), any())).thenReturn(Future.successful(Some(aDeclaration())))
+  def fetchDraftByParent(draft: ExportsDeclaration = aDeclaration()): OngoingStubbing[Future[Option[ExportsDeclaration]]] =
+    when(mockCustomsDeclareExportsConnector.findDraftByParent(any())(any(), any()))
+      .thenReturn(Future.successful(Some(draft)))
 
   def fetchLatestNotification(notification: Notification): OngoingStubbing[Future[Option[Notification]]] =
-    when(mockCustomsDeclareExportsConnector.findLatestNotification(refEq(notification.actionId))(any(), any()))
+    when(mockCustomsDeclareExportsConnector.findLatestNotification(any())(any(), any()))
       .thenReturn(Future.successful(Some(notification)))
 
   def declarationNotFound: OngoingStubbing[Future[Option[ExportsDeclaration]]] =
