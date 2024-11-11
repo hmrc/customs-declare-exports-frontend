@@ -50,6 +50,6 @@ object Ducr extends DeclarationPage {
   def generateDucrPrefix(implicit request: JourneyRequest[_]): String = {
     val lastDigitOfYear = request.cacheModel.declarationMeta.createdDateTime.atZone(ZoneId.of("Europe/London")).getYear.toString.last
     val eori = request.eori.toUpperCase
-    s"${lastDigitOfYear}GB${eori.dropWhile(_.isLetter)}-"
+    s"${lastDigitOfYear}${eori}-"
   }
 }

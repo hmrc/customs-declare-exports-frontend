@@ -16,7 +16,7 @@
 
 package base
 
-import base.ExportsTestData._
+import base.ExportsTestData.{eori, _}
 import config.AppConfig
 import controllers.actions.{AuthActionImpl, EoriAllowList}
 import models.requests.SessionHelper.declarationUuid
@@ -264,6 +264,11 @@ trait MockAuthAction extends MockitoSugar with Stubs with MetricsMocks with Inje
   def getAuthenticatedRequest(declarationId: String = "declarationUuid"): VerifiedEmailRequest[AnyContentAsEmpty.type] =
     buildVerifiedEmailRequest(FakeRequest("GET", "").withSession(declarationUuid -> declarationId).withCSRFToken, exampleUser)
 
+  def getAuthenticatedRequest(eori: String, declarationId: String): VerifiedEmailRequest[AnyContentAsEmpty.type] = {
+    val user = newUser(eori, "external1", Some("2DE695899BB94DF38DC11D8937A06732A644DFEC29050E84A319A32603B68CE7"))
+    buildVerifiedEmailRequest(FakeRequest("GET", "").withSession(declarationUuid -> declarationId).withCSRFToken, user)
+  }
+
   def getAuthenticatedRequest(declarationId: String, session: (String, String)*): VerifiedEmailRequest[AnyContentAsEmpty.type] =
     buildVerifiedEmailRequest(
       FakeRequest("GET", "").withSession(declarationUuid -> declarationId).withSession(session: _*).withCSRFToken,
@@ -275,6 +280,9 @@ trait MockAuthAction extends MockitoSugar with Stubs with MetricsMocks with Inje
 
   def getJourneyRequest(declaration: ExportsDeclaration = aDeclaration()): JourneyRequest[AnyContentAsEmpty.type] =
     new JourneyRequest[AnyContentAsEmpty.type](getAuthenticatedRequest(), declaration)
+
+  def getJourneyRequest(eori: String, declaration: ExportsDeclaration): JourneyRequest[AnyContentAsEmpty.type] =
+    new JourneyRequest[AnyContentAsEmpty.type](getAuthenticatedRequest(eori, "declarationUuid"), declaration)
 
   def getJourneyRequest(declaration: ExportsDeclaration, session: (String, String)*): JourneyRequest[AnyContentAsEmpty.type] =
     new JourneyRequest[AnyContentAsEmpty.type](getAuthenticatedRequest(declaration.id, session: _*), declaration)
