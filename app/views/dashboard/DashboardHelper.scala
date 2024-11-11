@@ -92,7 +92,11 @@ class DashboardHelper @Inject() (govukTable: GovukTable, link: link, pagination:
 
   private def mrnAsLink(submission: Submission)(implicit messages: Messages) =
     HtmlContent(
-      link(text = submission.mrn.getOrElse(messages("dashboard.mrn.pending")), call = DeclarationDetailsController.displayPage(submission.uuid))
+      link(
+        text = submission.mrn.getOrElse(messages("dashboard.mrn.pending")),
+        call = DeclarationDetailsController.displayPage(submission.uuid),
+        textHidden = Some(messages("dashboard.hidden.text", submission.ducr.getOrElse("")))
+      )
     )
 
   private def updatedOn(submission: Submission)(implicit messages: Messages): String =

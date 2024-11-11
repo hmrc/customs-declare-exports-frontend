@@ -366,7 +366,8 @@ class DashboardViewSpec extends UnitViewSpec with BeforeAndAfterEach with Export
 
           (1 to submissionsInPage).foreach { row =>
             val mrnLink = tableCell(view, row, 0).getElementsByTag("a").first
-            mrnLink.text mustBe mrn
+            mrnLink.child(0).text mustBe mrn
+            mrnLink.child(1).text mustBe messages("dashboard.hidden.text", ducr)
             mrnLink.attr("href") mustBe DeclarationDetailsController.displayPage(uuid).url
 
             tableCell(view, row, 1).text mustBe ducr
@@ -381,7 +382,7 @@ class DashboardViewSpec extends UnitViewSpec with BeforeAndAfterEach with Export
           val view = createView(List(submission(lastStatusUpdate).copy(ducr = None, mrn = None, latestEnhancedStatus = None)), 1, 1)
 
           val mrnLink = tableCell(view, 1, 0).getElementsByTag("a").first
-          mrnLink.text mustBe messages("dashboard.mrn.pending")
+          mrnLink.child(0).text mustBe messages("dashboard.mrn.pending")
           mrnLink.attr("href") mustBe DeclarationDetailsController.displayPage(uuid).url
 
           tableCell(view, 1, 1).text mustBe empty
