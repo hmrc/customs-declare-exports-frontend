@@ -86,7 +86,7 @@
 
         @pageTitle(messages(headerMsgKey))
 
-        @govukFieldset(Fieldset(html = html))
+        @html
 
         @govukButton(Button(id = Some("submit"), content = Text(messages("site.acceptAndSubmitDeclaration"))))
     }
