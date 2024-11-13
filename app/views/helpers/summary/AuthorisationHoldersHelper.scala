@@ -21,34 +21,38 @@ import forms.section2.authorisationHolder.AuthorisationHolder
 import models.declaration.Parties
 import play.api.i18n.Messages
 import services.view.HolderOfAuthorisationCodes
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Actions, SummaryListRow}
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Actions, Key, SummaryListRow}
 
 import javax.inject.{Inject, Singleton}
 
 @Singleton
 class AuthorisationHoldersHelper @Inject() (holderOfAuthorisationCodes: HolderOfAuthorisationCodes) extends SummaryHelper {
 
-  def section(parties: Parties, hasAdditionalActors: Boolean, actionsEnabled: Boolean)(implicit messages: Messages): Seq[Option[SummaryListRow]] =
+  def maybeSummarySection(parties: Parties, hasAdditionalActors: Boolean, actionsEnabled: Boolean)(implicit messages: Messages): Option[SummarySection] =
     parties.declarationHoldersData.map { data =>
       val summaryListRows = data.holders.zipWithIndex.flatMap { case (holder, index) =>
         List(holderTypeCode(holder, index + 1, actionsEnabled), holderEori(holder, index + 1, actionsEnabled))
-      }
-      if (summaryListRows.flatten.isEmpty) headingOnNoHolders(hasAdditionalActors, actionsEnabled)
-      else heading("authorisation-holders", "parties.holders") +: summaryListRows
-    }
-      .getOrElse(List.empty)
+      }.flatten
 
-  private def headingOnNoHolders(hasAdditionalActors: Boolean, actionsEnabled: Boolean)(implicit messages: Messages): Seq[Option[SummaryListRow]] =
-    List(
-      Some(
-        SummaryListRow(
-          key = if (hasAdditionalActors) keyForEmptyAttrAfterAttrWithMultipleRows("parties.holders") else key("parties.holders"),
-          valueKey("site.none"),
-          classes = "authorisation-holders-heading",
-          changeHolders(actionsEnabled)
-        )
-      )
+      if (summaryListRows.isEmpty) headingOnNoHolders(hasAdditionalActors, actionsEnabled)
+      else SummarySection(summaryListRows, Some(SummarySectionHeading("authorisation-holders", "parties.holders")))
+    }
+
+  private def headingOnNoHolders(hasAdditionalActors: Boolean, actionsEnabled: Boolean)(implicit messages: Messages): SummarySection = {
+    lazy val keyOnAdditionalActors = {
+      val text = messages("declaration.summary.parties.holders")
+      Key(HtmlContent(s"""<div class="govuk-!-margin-top-4 govuk-!-margin-bottom-0">$text</div>"""))
+    }
+    SummarySection(
+      List(SummaryListRow(
+        key = if (hasAdditionalActors) keyOnAdditionalActors else key("parties.holders"),
+        valueKey("site.none"),
+        classes = "heading-on-no-data authorisation-holders-heading",
+        changeHolders(actionsEnabled)
+      ))
     )
+  }
 
   private def holderTypeCode(holder: AuthorisationHolder, index: Int, actionsEnabled: Boolean)(implicit messages: Messages): Option[SummaryListRow] =
     holder.authorisationTypeCode.map { typeCode =>

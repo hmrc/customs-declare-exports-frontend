@@ -19,17 +19,17 @@
 @import models.requests.JourneyRequest
 @import uk.gov.hmrc.govukfrontend.views.html.components.{GovukWarningText, HtmlContent, WarningText}
 @import views.helpers.{BackButton, Title}
+@import views.helpers.summary.ItemHelper
 @import views.html.components.gds._
-@import views.html.summary.sections.item_section
 
 @this(
-    govukLayout: gdsMainTemplate,
-    govukWarningText: GovukWarningText,
-    sectionHeader: sectionHeader,
-    heading: heading,
-    item_section: item_section,
-    link: link,
-    cancelButton: cancel
+  govukLayout: gdsMainTemplate,
+  govukWarningText: GovukWarningText,
+  sectionHeader: sectionHeader,
+  heading: heading,
+  itemHelper: ItemHelper,
+  link: link,
+  cancelButton: cancel
 )
 
 @(item: ExportItem, itemIdx: Int, submissionId: String, referrer: Call)(implicit request: JourneyRequest[_], messages: Messages)
@@ -55,7 +55,7 @@
                 )))
     ))
 
-    @item_section(item, itemIdx, request.declarationType)
+    @itemHelper.content(item, itemDisplayNum, request.declarationType),
 
     <div class="govuk-!-margin-top-9">
         @cancelButton(referrer)

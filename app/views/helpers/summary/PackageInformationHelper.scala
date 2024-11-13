@@ -28,29 +28,26 @@ import javax.inject.{Inject, Singleton}
 @Singleton
 class PackageInformationHelper @Inject() (packageTypesService: PackageTypesService) extends SummaryHelper {
 
-  def section(item: ExportItem, actionsEnabled: Boolean, itemIndex: Int)(implicit messages: Messages): Seq[Option[SummaryListRow]] =
+  def maybeSummarySection(item: ExportItem, actionsEnabled: Boolean, itemIndex: Int)(implicit messages: Messages): Option[SummarySection] =
     item.packageInformation.map { listOfPackageInformation =>
       val summaryListRows = listOfPackageInformation.zipWithIndex.flatMap { case (packageInfo, index) =>
         packageInfoRows(item, itemIndex, packageInfo, index + 1, actionsEnabled)
-      }
+      }.flatten
 
-      if (summaryListRows.flatten.isEmpty) headingOnNoPackageInfo(item, actionsEnabled, itemIndex)
-      else heading(s"item-$itemIndex-package-information", "item.packageInformation") +: summaryListRows
+      if (summaryListRows.isEmpty) headingOnNoPackageInfo(item, actionsEnabled, itemIndex)
+      else SummarySection(summaryListRows, Some(SummarySectionHeading(s"item-$itemIndex-package-information", "item.packageInformation")))
     }
-      .getOrElse(List.empty)
 
   private def headingOnNoPackageInfo(item: ExportItem, actionsEnabled: Boolean, itemIndex: Int)(
     implicit messages: Messages
-  ): Seq[Option[SummaryListRow]] =
-    List(
-      Some(
-        SummaryListRow(
-          key("item.packageInformation"),
-          valueKey("site.none"),
-          classes = s"item-$itemIndex-package-information-heading",
-          actions = changePackageInformation(item, actionsEnabled, itemIndex)
-        )
-      )
+  ): SummarySection =
+    SummarySection(
+      List(SummaryListRow(
+        key("item.packageInformation"),
+        valueKey("site.none"),
+        classes = s"summary-row-border-bottom summary-row-border-top item-$itemIndex-package-information-heading",
+        actions = changePackageInformation(item, actionsEnabled, itemIndex)
+      ))
     )
 
   private def packageInfoRows(item: ExportItem, itemIndex: Int, packageInfo: PackageInformation, index: Int, actionsEnabled: Boolean)(
@@ -77,7 +74,7 @@ class PackageInformationHelper @Inject() (packageTypesService: PackageTypesServi
         SummaryListRow(
           key("item.packageInformation.markings"),
           value(shippingMarks),
-          classes = s"item-$itemIndex-package-information-$index-markings", {
+          classes = s"package-info item-$itemIndex-package-information-$index-markings", {
             val changeLinkOnShippingMarks = packageInfo.typesOfPackages.isEmpty && packageInfo.numberOfPackages.isEmpty
             if (changeLinkOnShippingMarks) changePackageInformation(item, actionsEnabled, itemIndex) else None
           }

@@ -20,7 +20,6 @@ import models.ExportsDeclaration
 import play.api.data.FormError
 import play.api.i18n.Messages
 import play.api.mvc.Call
-import play.twirl.api.Html
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{HtmlContent, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist._
 import views.helpers.ActionItemBuilder.actionSummaryItem
@@ -28,10 +27,11 @@ import views.helpers.summary.SummaryHelper.classes
 
 trait SummaryHelper {
 
-  def card(sectionId: Int)(implicit messages: Messages): Option[Card] = {
+  def card(sectionId: Int, hasErrors: Boolean = false)(implicit messages: Messages): Card = {
     require(sectionId >= 1 && sectionId <= classes.length)
     val cardTitle = messages(s"declaration.summary.section.$sectionId")
-    Some(Card(Some(CardTitle(Text(cardTitle), classes = s"${classes(sectionId - 1)}-card"))))
+    val errorClass = if (hasErrors) "govuk-summary-card--error " else ""
+    Card(Some(CardTitle(Text(cardTitle), classes = s"$errorClass${classes(sectionId - 1)}-card")))
   }
 
   def changeLink(call: Call, key: String, actionsEnabled: Boolean, maybeIndex: Option[Int] = None)(implicit messages: Messages): Option[Actions] =
@@ -43,20 +43,17 @@ trait SummaryHelper {
       Some(Actions(items = List(actionItem)))
     }
 
-  def heading(id: String, key: String)(implicit messages: Messages): Option[SummaryListRow] =
-    Some(SummaryListRow(keyForAttrWithMultipleRows(key), classes = s"$id-heading"))
-
   def key(rowKey: String, classes: String = "")(implicit messages: Messages): Key =
     Key(Text(messages(s"declaration.summary.$rowKey")), classes)
 
-  def keyForEmptyAttrAfterAttrWithMultipleRows(rowKey: String)(implicit messages: Messages): Key =
-    keyForAttrWithMultipleRows(rowKey, "div")
-
-  private val target = """class="govuk-summary-card""""
-  private val replacement = """class="govuk-summary-card govuk-summary-card--error""""
-
-  def markCardOnErrors(html: Html, hasErrors: Boolean): Html =
-    if (hasErrors) Html(html.toString.replace(target, replacement)) else html
+  def maybeSummarySection(
+    rowList: Seq[Option[SummaryListRow]],
+    maybeHeading: Option[SummarySectionHeading] = None
+  ): Option[SummarySection] =
+    rowList.flatten match {
+      case Nil  => None
+      case rows => Some(SummarySection(rows, maybeHeading))
+    }
 
   def value(rowValue: String)(implicit messages: Messages): Value =
     Value(Text(if (rowValue.trim.isEmpty) messages("site.none") else rowValue))
@@ -65,16 +62,13 @@ trait SummaryHelper {
     Value(HtmlContent(if (rowValue.trim.isEmpty) messages("site.none") else rowValue))
 
   def valueKey(rowValue: String)(implicit messages: Messages): Value = Value(Text(messages(rowValue)))
-
-  private def keyForAttrWithMultipleRows(rowKey: String, tag: String = "strong")(implicit messages: Messages): Key = {
-    val key = s"declaration.summary.$rowKey"
-    Key(HtmlContent(s"""<$tag class="govuk-heading-s govuk-!-margin-top-4 govuk-!-margin-bottom-0">${messages(key)}</$tag>"""))
-  }
 }
 
 object SummaryHelper {
 
   val addItemLinkId = "add-item"
+
+  val anchorPlaceholder = "#"
 
   val classes = Array("references", "parties", "routes-and-locations", "transaction", "items", "transport")
 

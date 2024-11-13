@@ -35,4 +35,6 @@ object DeclarationType extends Enumeration {
 
   def isStandardOrSupplementary(declaration: ExportsDeclaration): Boolean = standardAndSupplementary.contains(declaration.`type`)
   def isOccasionalOrSimplified(declaration: ExportsDeclaration): Boolean = occasionalAndSimplified.contains(declaration.`type`)
+
+  def isStandardOrSupplementary(declarationType: DeclarationType): Boolean = standardAndSupplementary.contains(declarationType)
 }

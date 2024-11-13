@@ -28,8 +28,7 @@ import models.requests.JourneyRequest
 import play.api.i18n.Messages
 import play.api.mvc.Call
 import play.twirl.api.{Html, HtmlFormat}
-import play.twirl.api.HtmlFormat.Appendable
-import uk.gov.hmrc.govukfrontend.views.html.components.{GovukInsetText, GovukSummaryList, SummaryList}
+import uk.gov.hmrc.govukfrontend.views.html.components.GovukInsetText
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{HtmlContent, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.insettext.InsetText
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Actions, Key, SummaryListRow}
@@ -37,12 +36,13 @@ import views.helpers.EnhancedStatusHelper.asText
 import views.helpers.ViewDates
 import views.helpers.ViewDates.formatDateAtTime
 import views.html.components.gds.{link, paragraphBody}
+import views.html.summary.summary_card
 
 import javax.inject.{Inject, Singleton}
 
 @Singleton
 class Card1ForReferences @Inject() (
-  govukSummaryList: GovukSummaryList,
+  summaryCard: summary_card,
   govukInsetText: GovukInsetText,
   link: link,
   paragraph: paragraphBody,
@@ -75,27 +75,28 @@ class Card1ForReferences @Inject() (
   }
 
   // Called by the Mini CYA page
-  def content(declaration: ExportsDeclaration, actionsEnabled: Boolean)(implicit messages: Messages): Appendable =
+  override def content(declaration: ExportsDeclaration, actionsEnabled: Boolean)(implicit messages: Messages): Html =
     content(declaration, actionsEnabled, false, None)
 
-  private def content(declaration: ExportsDeclaration, actionsEnabled: Boolean, hasErrors: Boolean, maybeSubmission: Option[Submission])(
-    implicit messages: Messages
-  ): Appendable =
-    markCardOnErrors(govukSummaryList(SummaryList(rows(declaration, actionsEnabled, maybeSubmission), card(1))), hasErrors)
-
-  def backLink(implicit request: JourneyRequest[_]): Call =
+  override def backLink(implicit request: JourneyRequest[_]): Call =
     if (request.declarationType == SUPPLEMENTARY) ConsignmentReferencesController.displayPage
     else if (request.cacheModel.mucr.isEmpty) LinkDucrToMucrController.displayPage
     else MucrController.displayPage
 
-  def continueTo(implicit request: JourneyRequest[_]): Call =
+  override def continueTo(implicit request: JourneyRequest[_]): Call =
     if (request.declarationType == CLEARANCE) EntryIntoDeclarantsRecordsController.displayPage
     else DeclarantExporterController.displayPage
 
+  private def content(declaration: ExportsDeclaration, actionsEnabled: Boolean, hasErrors: Boolean, maybeSubmission: Option[Submission])(
+    implicit messages: Messages
+  ): Html =
+    summaryCard(card(1, hasErrors), rows(declaration, actionsEnabled, maybeSubmission))
+
   private def rows(declaration: ExportsDeclaration, actionsEnabled: Boolean, maybeSubmission: Option[Submission])(
     implicit messages: Messages
-  ): Seq[SummaryListRow] =
-    List(creationDate(declaration), expiryDate(declaration), mrnOfSubmission(maybeSubmission)).flatten ++
+  ): Seq[SummarySection] =
+    List(maybeSummarySection(
+      List(creationDate(declaration), expiryDate(declaration), mrnOfSubmission(maybeSubmission)) ++
       notificationStatuses(maybeSubmission).getOrElse(List.empty) ++
       List(
         declarationType(declaration),
@@ -107,7 +108,8 @@ class Card1ForReferences @Inject() (
         lrn(declaration, actionsEnabled),
         linkDucrToMucr(declaration, actionsEnabled),
         mucr(declaration, actionsEnabled)
-      ).flatten
+      )
+    )).flatten
 
   private def creationDate(declaration: ExportsDeclaration)(implicit messages: Messages): Option[SummaryListRow] =
     Some(
@@ -128,17 +130,17 @@ class Card1ForReferences @Inject() (
       submission.mrn.map(mrn => SummaryListRow(key("references.submission.mrn"), value(mrn), classes = "submission-mrn"))
     }
 
-  private def notificationStatuses(maybeSubmission: Option[Submission])(implicit messages: Messages): Option[Seq[SummaryListRow]] =
+  private def notificationStatuses(maybeSubmission: Option[Submission])(implicit messages: Messages): Option[Seq[Option[SummaryListRow]]] =
     for {
       submission <- maybeSubmission
       action <- submission.actions.find(_.requestType == SubmissionRequest)
       notifications <- action.notifications
     } yield notifications.map { notification =>
-      SummaryListRow(
+      Some(SummaryListRow(
         Key(Text(asText(notification.enhancedStatus))),
         valueHtml(ViewDates.formatDateAtTime(notification.dateTimeIssued)),
         classes = "notification-status"
-      )
+      ))
     }
 
   private def declarationType(declaration: ExportsDeclaration)(implicit messages: Messages): Option[SummaryListRow] =

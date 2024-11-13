@@ -24,34 +24,35 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Actions, SummaryL
 
 object AdditionalDocumentsHelper extends SummaryHelper {
 
-  def section(item: ExportItem, hasAdditionalInformation: Boolean, actionsEnabled: Boolean, itemIndex: Int)(
+  def maybeSummarySection(item: ExportItem, hasAdditionalInformation: Boolean, actionsEnabled: Boolean, itemIndex: Int)(
     implicit messages: Messages
-  ): Seq[Option[SummaryListRow]] = {
+  ): Option[SummarySection] = {
     val hasDocuments = item.additionalDocuments.exists(_.documents.nonEmpty)
-    if (hasDocuments || item.isLicenceRequired.isDefined) showSection(item, hasAdditionalInformation, hasDocuments, actionsEnabled, itemIndex)
-    else List.empty
+    if (!hasDocuments && item.isLicenceRequired.isEmpty) None
+    else buildSummarySection(item, hasAdditionalInformation, hasDocuments, actionsEnabled, itemIndex)
   }
 
-  private def showSection(item: ExportItem, hasAdditionalInformation: Boolean, hasDocuments: Boolean, actionsEnabled: Boolean, itemIndex: Int)(
+  private def buildSummarySection(item: ExportItem, hasAdditionalInformation: Boolean, hasDocuments: Boolean, actionsEnabled: Boolean, itemIndex: Int)(
     implicit messages: Messages
-  ): Seq[Option[SummaryListRow]] = {
-    lazy val documentRows = item.additionalDocuments.fold(Seq.empty[Option[SummaryListRow]]) { additionalDocuments =>
-      additionalDocuments.documents.zipWithIndex.flatMap { case (document, index) =>
-        documentCodeAndIdRows(item, document, index + 1, actionsEnabled, itemIndex)
+  ): Option[SummarySection] =
+    if (hasDocuments) {
+      val documentRows = item.additionalDocuments.fold(Seq.empty[Option[SummaryListRow]]) { additionalDocuments =>
+        additionalDocuments.documents.zipWithIndex.flatMap { case (document, index) =>
+          documentCodeAndIdRows(item, document, index + 1, actionsEnabled, itemIndex)
+        }
       }
+      val summaryListRows = (licenseRow(item, false, actionsEnabled, itemIndex) +: documentRows).flatten
+      val sectionTitle = Some(SummarySectionHeading(s"item-$itemIndex-additional-documents", "item.additionalDocuments"))
+      Some(SummarySection(summaryListRows, sectionTitle))
     }
-    lazy val headingAndRows = List(
-      heading(s"item-$itemIndex-additional-documents", "item.additionalDocuments"),
-      licenseRow(item, false, actionsEnabled, itemIndex)
-    ) ++ documentRows
+    else maybeSummarySection(List(
+      licenseRow(item, hasAdditionalInformation, actionsEnabled, itemIndex, " summary-row-border-top"),
+      headingOnNoDocuments(item, actionsEnabled, itemIndex)
+    ))
 
-    lazy val licenseAndNoDocuments =
-      List(licenseRow(item, hasAdditionalInformation, actionsEnabled, itemIndex), headingOnNoDocuments(item, actionsEnabled, itemIndex))
-
-    if (hasDocuments) headingAndRows else licenseAndNoDocuments
-  }
-
-  private def headingOnNoDocuments(item: ExportItem, actionsEnabled: Boolean, itemIndex: Int)(implicit messages: Messages): Option[SummaryListRow] =
+  private def headingOnNoDocuments(
+    item: ExportItem, actionsEnabled: Boolean, itemIndex: Int
+  )(implicit messages: Messages): Option[SummaryListRow] =
     // When 'headingOnNoDocuments' is called we know that 'item.additionalDocuments.documents' is NOT defined.
     // However, to verify if the user has already landed, or not, on the section's pages we also have to check
     // 'item.additionalDocuments'. If defined, and only if defined, we need then to show the 'No documents' row.
@@ -59,19 +60,19 @@ object AdditionalDocumentsHelper extends SummaryHelper {
       SummaryListRow(
         key("item.additionalDocuments"),
         valueKey("site.none"),
-        classes = s"item-$itemIndex-additional-documents-heading",
+        classes = s"heading-on-no-data item-$itemIndex-additional-documents-heading",
         changeDocuments(item, actionsEnabled, itemIndex)
       )
     }
 
-  private def licenseRow(item: ExportItem, hasAdditionalInformation: Boolean, actionsEnabled: Boolean, itemIndex: Int)(
-    implicit messages: Messages
-  ): Option[SummaryListRow] =
+  private def licenseRow(
+    item: ExportItem, hasAdditionalInformation: Boolean, actionsEnabled: Boolean, itemIndex: Int, additionalClasses: String = ""
+  )(implicit messages: Messages): Option[SummaryListRow] =
     item.isLicenceRequired.map { isLicenceRequired =>
       SummaryListRow(
-        key("item.licences"),
+        key("item.licences", if (hasAdditionalInformation) "govuk-!-padding-top-6" else ""),
         valueKey(if (isLicenceRequired) "site.yes" else "site.no"),
-        classes = s"item-$itemIndex-licences${if (hasAdditionalInformation) " govuk-!-margin-top-4" else ""}",
+        classes = s"item-$itemIndex-licences${additionalClasses}",
         changeLink(IsLicenceRequiredController.displayPage(item.id), "item.licences", actionsEnabled, Some(itemIndex))
       )
     }
