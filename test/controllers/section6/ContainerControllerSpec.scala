@@ -39,10 +39,10 @@ import views.html.section6.{container_add, container_add_first, container_remove
 
 class ContainerControllerSpec extends ControllerSpec with AuditedControllerSpec with Injector with OptionValues {
 
-  val transportContainersAddFirstPage = instanceOf[container_add_first]
-  val transportContainersAddPage = instanceOf[container_add]
-  val transportContainersRemovePage = instanceOf[container_remove]
-  val transportContainersSummaryPage = mock[container_summary]
+  private val transportContainersAddFirstPage = instanceOf[container_add_first]
+  private val transportContainersAddPage = instanceOf[container_add]
+  private val transportContainersRemovePage = instanceOf[container_remove]
+  private val transportContainersSummaryPage = mock[container_summary]
 
   val controller = new ContainerController(
     mockAuthAction,
@@ -59,8 +59,8 @@ class ContainerControllerSpec extends ControllerSpec with AuditedControllerSpec 
   val containerId = "434335468"
   val sealId = "287345"
 
-  val containerData = Container(1, containerId, List(Seal(1, sealId)))
-  val maxContainerData = (1 to maxNumberOfItems).map(Container(_, "id", Seq.empty))
+  private val containerData = Container(1, containerId, List(Seal(1, sealId)))
+  private val maxContainerData = (1 to maxNumberOfItems).map(Container(_, "id", Seq.empty))
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
@@ -199,8 +199,8 @@ class ContainerControllerSpec extends ControllerSpec with AuditedControllerSpec 
         thePageNavigatedTo mustBe SealController.displaySealSummary("C2")
 
         verifyCachedContainers(
-          0,
-          List(Container(sequenceId = 0, id = "C1", seals = Seq.empty), Container(sequenceId = 0, id = "C2", seals = Seq.empty))
+          1,
+          List(Container(sequenceId = 1, id = "C1", seals = Seq.empty), Container(sequenceId = 1, id = "C2", seals = Seq.empty))
         )
       }
 
@@ -213,8 +213,8 @@ class ContainerControllerSpec extends ControllerSpec with AuditedControllerSpec 
         thePageNavigatedTo mustBe SealController.displaySealSummary("C2")
 
         verifyCachedContainers(
-          0,
-          List(Container(sequenceId = 0, id = "C1", seals = Seq.empty), Container(sequenceId = 0, id = "C2", seals = Seq.empty))
+          1,
+          List(Container(sequenceId = 1, id = "C1", seals = Seq.empty), Container(sequenceId = 1, id = "C2", seals = Seq.empty))
         )
       }
 
@@ -227,8 +227,8 @@ class ContainerControllerSpec extends ControllerSpec with AuditedControllerSpec 
         thePageNavigatedTo mustBe SealController.displaySealSummary("C2")
 
         verifyCachedContainers(
-          0,
-          List(Container(sequenceId = 0, id = "C1", seals = Seq.empty), Container(sequenceId = 0, id = "C2", seals = Seq.empty))
+          1,
+          List(Container(sequenceId = 1, id = "C1", seals = Seq.empty), Container(sequenceId = 1, id = "C2", seals = Seq.empty))
         )
       }
     }
