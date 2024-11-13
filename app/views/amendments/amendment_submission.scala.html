@@ -104,7 +104,7 @@
 
         @pageTitle(messages(s"amendment.${key}.heading"))
 
-        @govukFieldset(Fieldset(html = content))
+        @content
 
         @govukButton(Button(id = Some("submit"), content = Text(messages(submitButton))))
     }
