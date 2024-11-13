@@ -14,18 +14,13 @@
  * limitations under the License.
  */
 
-package views.helpers
+package views.helpers.summary
 
-import play.api.mvc.Call
-import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Content
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.ActionItem
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import views.helpers.summary.SummaryHelper.anchorPlaceholder
 
-object ActionItemBuilder {
+case class ItemSection(index: Int, href: String = anchorPlaceholder, topPaddingClass: String = "")
 
-  val lastUrlPlaceholder = "LAST_URL_PLACEHOLDER"
+case class SummarySectionHeading(sectionId: String, messageSuffix: String, maybeItemSection: Option[ItemSection] = None)
 
-  def actionSummaryItem(href: String, content: Content, visuallyHiddenText: Option[String]): ActionItem =
-    ActionItem(s"$href?$lastUrlPlaceholder", content, visuallyHiddenText, "govuk-link--no-visited-state")
-
-  def callForSummaryChangeLink(call: Call): Call = Call("GET", s"$call?$lastUrlPlaceholder")
-}
+case class SummarySection(rows: Seq[SummaryListRow], maybeHeading: Option[SummarySectionHeading] = None)

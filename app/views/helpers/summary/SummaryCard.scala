@@ -24,9 +24,9 @@ import play.twirl.api.Html
 
 trait SummaryCard extends SummaryHelper {
 
-  def content(declaration: ExportsDeclaration, actionsEnabled: Boolean = true)(implicit messages: Messages): Html
-
   def backLink(implicit request: JourneyRequest[_]): Call
+
+  def content(declaration: ExportsDeclaration, actionsEnabled: Boolean = true)(implicit messages: Messages): Html
 
   def continueTo(implicit request: JourneyRequest[_]): Call
 }

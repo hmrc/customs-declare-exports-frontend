@@ -1,0 +1,44 @@
+@*
+ * Copyright 2024 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import uk.gov.hmrc.govukfrontend.views.html.components.{GovukSummaryList, SummaryList}
+@import views.helpers.summary.{SummarySection, SummarySectionHeading}
+@import views.helpers.summary.SummaryHelper.anchorPlaceholder
+@import views.html.components.gds.link
+
+@this(govukSummaryList: GovukSummaryList, link: link)
+
+@(summarySection: SummarySection)(implicit messages: Messages)
+
+@headingId(heading: SummarySectionHeading): String = @{ s"${heading.sectionId}-heading" }
+
+@summarySection.maybeHeading.map { heading =>
+    @heading.maybeItemSection.fold {
+      <h3 class="@headingId(heading) govuk-heading-s heading-on-no-data govuk-!-margin-bottom-0">
+        @messages(s"declaration.summary.${heading.messageSuffix}")
+      </h3>
+    } { itemSection =>
+      <h3 class="@headingId(heading) govuk-heading-s remove-item-flex govuk-!-margin-bottom-4 @itemSection.topPaddingClass">
+        @messages(s"declaration.summary.${heading.messageSuffix}", itemSection.index)
+        @if(itemSection.href != anchorPlaceholder) {
+          <span class="remove-item-link">
+              @link(messages("declaration.summary.item.remove"), Call("GET", itemSection.href))
+          </span>
+        }
+      </h3>
+    }
+}
+@govukSummaryList(SummaryList(summarySection.rows))

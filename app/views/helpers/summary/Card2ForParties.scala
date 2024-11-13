@@ -31,20 +31,20 @@ import play.api.i18n.Messages
 import play.api.mvc.Call
 import play.twirl.api.{Html, HtmlFormat}
 import services.Countries.findByCode
-import uk.gov.hmrc.govukfrontend.views.html.components.{GovukSummaryList, SummaryList}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import views.html.summary.summary_card
 
 import javax.inject.{Inject, Singleton}
 
 @Singleton
 class Card2ForParties @Inject() (
-  govukSummaryList: GovukSummaryList,
+  summaryCard: summary_card,
   navigator: Navigator,
-  additionalActorsHelper: AdditionalActorsHelper,
   authorisationHoldersHelper: AuthorisationHoldersHelper
 )(implicit codeListConnector: CodeListConnector)
     extends SummaryCard {
 
+  // Called by the Final CYA page
   def eval(declaration: ExportsDeclaration, actionsEnabled: Boolean = true)(implicit messages: Messages): Html = {
     val parties = declaration.parties
     val hasData =
@@ -59,25 +59,20 @@ class Card2ForParties @Inject() (
     if (hasData) content(declaration, actionsEnabled) else HtmlFormat.empty
   }
 
-  def content(declaration: ExportsDeclaration, actionsEnabled: Boolean)(implicit messages: Messages): Html = {
-    val summaryList = SummaryList(rows(declaration.parties, actionsEnabled), card(2))
-    val html = govukSummaryList(summaryList)
-    html
-  }
+  // Called by the Mini CYA page
+  override def content(declaration: ExportsDeclaration, actionsEnabled: Boolean)(implicit messages: Messages): Html =
+    summaryCard(card(2), rows(declaration.parties, actionsEnabled))
 
-  def backLink(implicit request: JourneyRequest[_]): Call = navigator.backLink(Card2ForParties)
+  override def backLink(implicit request: JourneyRequest[_]): Call = navigator.backLink(Card2ForParties)
 
-  def continueTo(implicit request: JourneyRequest[_]): Call = DestinationCountryController.displayPage
+  override def continueTo(implicit request: JourneyRequest[_]): Call = DestinationCountryController.displayPage
 
-  private def rows(parties: Parties, actionsEnabled: Boolean)(implicit messages: Messages): Seq[SummaryListRow] = {
-    // Early evaluation of this attribute in order to verify if it will be displayed as a multi-rows section.
-    val additionalActorRows = additionalActorsHelper.section(parties, actionsEnabled)
+  private def rows(parties: Parties, actionsEnabled: Boolean)(implicit messages: Messages): Seq[SummarySection] = {
+    val hasAdditionalActors = parties.declarationAdditionalActorsData.fold(false)(_.actors.nonEmpty)
 
-    // If it is verified and it is followed by a single-row section, we need to add some margin between the 2 sections.
-    val hasAdditionalActors = additionalActorRows.flatten.length > 1
-
-    (
-      List(declarantIsExporter(parties, actionsEnabled), isEidr(parties, actionsEnabled), personPresentingGoods(parties, actionsEnabled))
+    List(
+      maybeSummarySection(
+        List(declarantIsExporter(parties, actionsEnabled), isEidr(parties, actionsEnabled), personPresentingGoods(parties, actionsEnabled))
         ++ exporterDetails(parties, actionsEnabled)
         ++ List(isExs(parties, actionsEnabled), representativeOtherAgent(parties, actionsEnabled))
         ++ representativeDetails(parties, actionsEnabled)
@@ -85,8 +80,9 @@ class Card2ForParties @Inject() (
         ++ carrierDetails(parties, actionsEnabled)
         ++ consigneeDetails(parties, actionsEnabled)
         ++ consignorDetails(parties, actionsEnabled)
-        ++ additionalActorRows
-        ++ authorisationHoldersHelper.section(parties, hasAdditionalActors, actionsEnabled)
+      ),
+      AdditionalActorsHelper.maybeSummarySection(parties, actionsEnabled),
+      authorisationHoldersHelper.maybeSummarySection(parties, hasAdditionalActors, actionsEnabled)
     ).flatten
   }
 

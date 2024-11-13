@@ -24,35 +24,37 @@ import models.requests.JourneyRequest
 import play.api.i18n.Messages
 import play.api.mvc.Call
 import play.twirl.api.{Html, HtmlFormat}
-import uk.gov.hmrc.govukfrontend.views.html.components.{GovukSummaryList, SummaryList}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import views.helpers.summary.SummaryHelper.hasTransactionData
+import views.html.summary.summary_card
 
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class Card4ForTransactions @Inject() (govukSummaryList: GovukSummaryList, documentsHelper: DocumentsHelper) extends SummaryCard {
+class Card4ForTransactions @Inject() (summaryCard: summary_card, documentsHelper: DocumentsHelper) extends SummaryCard {
 
+  // Called by the Final CYA page
   def eval(declaration: ExportsDeclaration, actionsEnabled: Boolean = true)(implicit messages: Messages): Html =
     if (hasTransactionData(declaration)) content(declaration, actionsEnabled) else HtmlFormat.empty
 
-  def content(declaration: ExportsDeclaration, actionsEnabled: Boolean)(implicit messages: Messages): Html =
-    govukSummaryList(SummaryList(rows(declaration, actionsEnabled), card(4)))
+  // Called by the Mini CYA page
+  override def content(declaration: ExportsDeclaration, actionsEnabled: Boolean)(implicit messages: Messages): Html =
+    summaryCard(card(4), rows(declaration, actionsEnabled))
 
-  def backLink(implicit request: JourneyRequest[_]): Call = PreviousDocumentsSummaryController.displayPage
+  override def backLink(implicit request: JourneyRequest[_]): Call = PreviousDocumentsSummaryController.displayPage
 
-  def continueTo(implicit request: JourneyRequest[_]): Call = ItemsSummaryController.displayItemsSummaryPage
+  override def continueTo(implicit request: JourneyRequest[_]): Call = ItemsSummaryController.displayItemsSummaryPage
 
-  private def rows(declaration: ExportsDeclaration, actionsEnabled: Boolean)(implicit messages: Messages): Seq[SummaryListRow] = {
+  private def rows(declaration: ExportsDeclaration, actionsEnabled: Boolean)(implicit messages: Messages): Seq[SummarySection] = {
     val maybeExchangeRate: Option[String] = declaration.totalNumberOfItems.flatMap(_.exchangeRate)
-    (
-      List(
+    List(
+      maybeSummarySection(List(
         totalAmountInvoiced(declaration, maybeExchangeRate, actionsEnabled),
         exchangeRate(maybeExchangeRate),
         totalPackage(declaration, actionsEnabled),
         natureOfTransaction(declaration, actionsEnabled)
-      )
-        ++ documentsHelper.section(declaration, actionsEnabled)
+      )),
+      documentsHelper.maybeSummarySection(declaration, actionsEnabled)
     ).flatten
   }
 

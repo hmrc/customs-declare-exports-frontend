@@ -23,31 +23,26 @@ import play.api.i18n.Messages
 import play.api.mvc.Call
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Actions, SummaryListRow}
 
-import javax.inject.Singleton
+object AdditionalActorsHelper extends SummaryHelper {
 
-@Singleton
-class AdditionalActorsHelper extends SummaryHelper {
-
-  def section(parties: Parties, actionsEnabled: Boolean)(implicit messages: Messages): Seq[Option[SummaryListRow]] =
+  def maybeSummarySection(parties: Parties, actionsEnabled: Boolean)(implicit messages: Messages): Option[SummarySection] =
     parties.declarationAdditionalActorsData.map { data =>
       val summaryListRows = data.actors.zipWithIndex.flatMap { case (actor, index) =>
         List(actorType(actor, index + 1, actionsEnabled), actorEori(actor, index + 1, actionsEnabled))
-      }
-      if (summaryListRows.flatten.isEmpty) headingOnNoActors(actionsEnabled)
-      else heading("additional-actors", "parties.actors") +: summaryListRows
-    }
-      .getOrElse(List.empty)
+      }.flatten
 
-  private def headingOnNoActors(actionsEnabled: Boolean)(implicit messages: Messages): Seq[Option[SummaryListRow]] =
-    List(
-      Some(
-        SummaryListRow(
-          key("parties.actors"),
-          valueKey("site.none"),
-          classes = "additional-actors-heading",
-          changeActors(AdditionalActorsAddController.displayPage, actionsEnabled)
-        )
-      )
+      if (summaryListRows.isEmpty) headingOnNoActors(actionsEnabled)
+      else SummarySection(summaryListRows, Some(SummarySectionHeading("additional-actors", "parties.actors")))
+    }
+
+  private def headingOnNoActors(actionsEnabled: Boolean)(implicit messages: Messages): SummarySection =
+    SummarySection(
+      List(SummaryListRow(
+        key("parties.actors"),
+        valueKey("site.none"),
+        classes = "heading-on-no-data additional-actors-heading",
+        changeActors(AdditionalActorsAddController.displayPage, actionsEnabled)
+      ))
     )
 
   private def actorType(actor: AdditionalActor, index: Int, actionsEnabled: Boolean)(implicit messages: Messages): Option[SummaryListRow] =

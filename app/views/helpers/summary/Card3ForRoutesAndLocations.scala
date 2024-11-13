@@ -28,17 +28,18 @@ import play.api.i18n.Messages
 import play.api.mvc.Call
 import play.twirl.api.{Html, HtmlFormat}
 import services.Countries
-import uk.gov.hmrc.govukfrontend.views.html.components.{GovukSummaryList, SummaryList}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import views.helpers.CountryHelper
+import views.html.summary.summary_card
 
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class Card3ForRoutesAndLocations @Inject() (govukSummaryList: GovukSummaryList, countryHelper: CountryHelper)(
+class Card3ForRoutesAndLocations @Inject() (summaryCard: summary_card, countryHelper: CountryHelper)(
   implicit codeListConnector: CodeListConnector
 ) extends SummaryCard {
 
+  // Called by the Final CYA page
   def eval(declaration: ExportsDeclaration, actionsEnabled: Boolean = true)(implicit messages: Messages): Html = {
     val locations = declaration.locations
     val hasData =
@@ -51,16 +52,27 @@ class Card3ForRoutesAndLocations @Inject() (govukSummaryList: GovukSummaryList, 
     if (hasData) content(declaration, actionsEnabled) else HtmlFormat.empty
   }
 
-  def content(declaration: ExportsDeclaration, actionsEnabled: Boolean)(implicit messages: Messages): Html =
-    govukSummaryList(SummaryList(rows(declaration, actionsEnabled), card(3)))
+  // Called by the Mini CYA page
+  override def content(declaration: ExportsDeclaration, actionsEnabled: Boolean)(implicit messages: Messages): Html =
+    summaryCard(card(3), rows(declaration, actionsEnabled))
 
-  private def rows(declaration: ExportsDeclaration, actionsEnabled: Boolean)(implicit messages: Messages): Seq[SummaryListRow] =
+  override def backLink(implicit request: JourneyRequest[_]): Call = OfficeOfExitController.displayPage
+
+  override def continueTo(implicit request: JourneyRequest[_]): Call =
+    request.declarationType match {
+      case SUPPLEMENTARY | STANDARD            => InvoiceAndExchangeRateChoiceController.displayPage
+      case OCCASIONAL | SIMPLIFIED | CLEARANCE => PreviousDocumentsSummaryController.displayPage
+    }
+
+  private def rows(declaration: ExportsDeclaration, actionsEnabled: Boolean)(implicit messages: Messages): Seq[SummarySection] =
     List(
-      routingCountries(declaration.locations, actionsEnabled),
-      destinationCountry(declaration.locations, actionsEnabled),
-      goodsLocation(declaration, actionsEnabled),
-      additionalInformation(declaration.locations),
-      officeOfExit(declaration.locations, actionsEnabled)
+      maybeSummarySection(List(
+        routingCountries(declaration.locations, actionsEnabled),
+        destinationCountry(declaration.locations, actionsEnabled),
+        goodsLocation(declaration, actionsEnabled),
+        additionalInformation(declaration.locations),
+        officeOfExit(declaration.locations, actionsEnabled)
+      ))
     ).flatten
 
   private def routingCountries(locations: Locations, actionsEnabled: Boolean)(implicit messages: Messages): Option[SummaryListRow] =
@@ -123,13 +135,5 @@ class Card3ForRoutesAndLocations @Inject() (govukSummaryList: GovukSummaryList, 
         classes = "office-of-exit",
         changeLink(OfficeOfExitController.displayPage, "locations.officeOfExit", actionsEnabled)
       )
-    }
-
-  def backLink(implicit request: JourneyRequest[_]): Call = OfficeOfExitController.displayPage
-
-  def continueTo(implicit request: JourneyRequest[_]): Call =
-    request.declarationType match {
-      case SUPPLEMENTARY | STANDARD            => InvoiceAndExchangeRateChoiceController.displayPage
-      case OCCASIONAL | SIMPLIFIED | CLEARANCE => PreviousDocumentsSummaryController.displayPage
     }
 }
