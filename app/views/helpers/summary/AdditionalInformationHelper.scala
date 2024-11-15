@@ -37,23 +37,23 @@ object AdditionalInformationHelper extends SummaryHelper {
       }
     }
 
-  private def headingOnNoInformation(item: ExportItem, actionsEnabled: Boolean, itemIndex: Int)(
-    implicit messages: Messages
-  ): SummarySection = {
+  private def headingOnNoInformation(item: ExportItem, actionsEnabled: Boolean, itemIndex: Int)(implicit messages: Messages): SummarySection = {
     val call = AdditionalInformationRequiredController.displayPage(item.id)
     SummarySection(
-      List(SummaryListRow(
-        key("item.additionalInformation"),
-        valueKey("site.none"),
-        classes = s"heading-on-no-data item-$itemIndex-additional-information-heading",
-        changeLink(call, "item.additionalInformation", actionsEnabled, Some(itemIndex))
-      ))
+      List(
+        SummaryListRow(
+          key("item.additionalInformation"),
+          valueKey("site.none"),
+          classes = s"heading-on-no-data item-$itemIndex-additional-information-heading",
+          changeLink(call, "item.additionalInformation", actionsEnabled, Some(itemIndex))
+        )
+      )
     )
   }
 
-  private def informationItemRows(
-    item: ExportItem, itemIndex: Int, informationItem: AdditionalInformation, index: Int, actionsEnabled: Boolean
-  )(implicit messages: Messages): Seq[SummaryListRow] = {
+  private def informationItemRows(item: ExportItem, itemIndex: Int, informationItem: AdditionalInformation, index: Int, actionsEnabled: Boolean)(
+    implicit messages: Messages
+  ): Seq[SummaryListRow] = {
     val call = AdditionalInformationController.displayPage(item.id)
     List(
       SummaryListRow(

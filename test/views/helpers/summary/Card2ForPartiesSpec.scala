@@ -143,24 +143,18 @@ class Card2ForPartiesSpec extends UnitViewSpec with ExportsTestHelper with Injec
 
       val view = card2ForParties.eval(declaration1)(messages)
 
+      val rows = checkSection(view, "additional-actors", "parties.actors", 3, 1, 4)
+
       val call = Some(AdditionalActorsSummaryController.displayPage)
 
-      val heading = view.getElementsByClass("additional-actors-heading")
-      checkSummaryRow(heading, "parties.actors", "", None, "")
-
-      val actor1Type = view.getElementsByClass("additional-actor-1-type")
-      checkSummaryRow(actor1Type, "parties.actors.type", expectedType1, call, "parties.actors")
-
-      val actor1Eori = view.getElementsByClass("additional-actor-1-eori")
-      checkSummaryRow(actor1Eori, "parties.actors.eori", eori1, None, "ign")
+      checkMultiRowSection(rows.get(0), List("additional-actor-1-type"), "parties.actors.type", expectedType1, call, "parties.actors")
+      checkMultiRowSection(rows.get(1), List("additional-actor-1-eori"), "parties.actors.eori", eori1)
 
       view.getElementsByClass("additional-actor-2-type") mustBe empty
 
-      val actor2Eori = view.getElementsByClass("additional-actor-2-eori")
-      checkSummaryRow(actor2Eori, "parties.actors.eori", eori2, call, "parties.actors")
+      checkMultiRowSection(rows.get(2), List("additional-actor-2-eori"), "parties.actors.eori", eori2, call, "parties.actors")
 
-      val actor3Type = view.getElementsByClass("additional-actor-3-type")
-      checkSummaryRow(actor3Type, "parties.actors.type", expectedType2, call, "parties.actors")
+      checkMultiRowSection(rows.get(3), List("additional-actor-3-type"), "parties.actors.type", expectedType2, call, "parties.actors")
 
       view.getElementsByClass("additional-actor-3-eori") mustBe empty
     }
@@ -189,24 +183,19 @@ class Card2ForPartiesSpec extends UnitViewSpec with ExportsTestHelper with Injec
 
       val view = card2ForParties.eval(declaration1)(messages)
 
+      val rows = checkSection(view, "authorisation-holders", "parties.holders", 3, 2, 4)
+
       val call = Some(AuthorisationProcedureCodeChoiceController.displayPage)
+      val keyId = "parties.holders"
 
-      val heading = view.getElementsByClass("authorisation-holders-heading")
-      checkSummaryRow(heading, "parties.holders", "", None, "")
-
-      val holder1Type = view.getElementsByClass("authorisation-holder-1-type")
-      checkSummaryRow(holder1Type, "parties.holders.type", expectedType1, call, "parties.holders")
-
-      val holder1Eori = view.getElementsByClass("authorisation-holder-1-eori")
-      checkSummaryRow(holder1Eori, "parties.holders.eori", eori1, None, "ign")
+      checkMultiRowSection(rows.get(0), List("authorisation-holder-1-type"), s"$keyId.type", expectedType1, call, keyId)
+      checkMultiRowSection(rows.get(1), List("authorisation-holder-1-eori"), s"$keyId.eori", eori1)
 
       view.getElementsByClass("authorisation-holder-2-type") mustBe empty
 
-      val holder2Eori = view.getElementsByClass("authorisation-holder-2-eori")
-      checkSummaryRow(holder2Eori, "parties.holders.eori", eori2, call, "parties.holders")
+      checkMultiRowSection(rows.get(2), List("authorisation-holder-2-eori"), s"$keyId.eori", eori2, call, keyId)
 
-      val holder3Type = view.getElementsByClass("authorisation-holder-3-type")
-      checkSummaryRow(holder3Type, "parties.holders.type", expectedType2, call, "parties.holders")
+      checkMultiRowSection(rows.get(3), List("authorisation-holder-3-type"), s"$keyId.type", expectedType2, call, keyId)
 
       view.getElementsByClass("authorisation-holder-3-eori") mustBe empty
     }

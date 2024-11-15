@@ -48,12 +48,14 @@ class Card4ForTransactions @Inject() (summaryCard: summary_card, documentsHelper
   private def rows(declaration: ExportsDeclaration, actionsEnabled: Boolean)(implicit messages: Messages): Seq[SummarySection] = {
     val maybeExchangeRate: Option[String] = declaration.totalNumberOfItems.flatMap(_.exchangeRate)
     List(
-      maybeSummarySection(List(
-        totalAmountInvoiced(declaration, maybeExchangeRate, actionsEnabled),
-        exchangeRate(maybeExchangeRate),
-        totalPackage(declaration, actionsEnabled),
-        natureOfTransaction(declaration, actionsEnabled)
-      )),
+      maybeSummarySection(
+        List(
+          totalAmountInvoiced(declaration, maybeExchangeRate, actionsEnabled),
+          exchangeRate(maybeExchangeRate),
+          totalPackage(declaration, actionsEnabled),
+          natureOfTransaction(declaration, actionsEnabled)
+        )
+      ),
       documentsHelper.maybeSummarySection(declaration, actionsEnabled)
     ).flatten
   }

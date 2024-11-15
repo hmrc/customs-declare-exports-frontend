@@ -31,7 +31,7 @@ trait SummaryHelper {
     require(sectionId >= 1 && sectionId <= classes.length)
     val cardTitle = messages(s"declaration.summary.section.$sectionId")
     val errorClass = if (hasErrors) "govuk-summary-card--error " else ""
-    Card(Some(CardTitle(Text(cardTitle), classes = s"$errorClass${classes(sectionId - 1)}-card")))
+    Card(Some(CardTitle(Text(cardTitle), classes = s"${classes(sectionId - 1)}-card")), classes = errorClass)
   }
 
   def changeLink(call: Call, key: String, actionsEnabled: Boolean, maybeIndex: Option[Int] = None)(implicit messages: Messages): Option[Actions] =
@@ -46,10 +46,7 @@ trait SummaryHelper {
   def key(rowKey: String, classes: String = "")(implicit messages: Messages): Key =
     Key(Text(messages(s"declaration.summary.$rowKey")), classes)
 
-  def maybeSummarySection(
-    rowList: Seq[Option[SummaryListRow]],
-    maybeHeading: Option[SummarySectionHeading] = None
-  ): Option[SummarySection] =
+  def maybeSummarySection(rowList: Seq[Option[SummaryListRow]], maybeHeading: Option[SummarySectionHeading] = None): Option[SummarySection] =
     rowList.flatten match {
       case Nil  => None
       case rows => Some(SummarySection(rows, maybeHeading))

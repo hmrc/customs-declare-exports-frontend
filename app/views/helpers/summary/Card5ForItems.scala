@@ -35,11 +35,7 @@ import views.html.summary.summary_card
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class Card5ForItems @Inject() (
-  summaryCard: summary_card,
-  govukWarningText: GovukWarningText,
-  itemHelper: ItemHelper
-) extends SummaryCard {
+class Card5ForItems @Inject() (summaryCard: summary_card, govukWarningText: GovukWarningText, itemHelper: ItemHelper) extends SummaryCard {
 
   // Called by the Final CYA page
   def eval(declaration: ExportsDeclaration, actionsEnabled: Boolean = true, showNoItemError: Boolean = false)(implicit messages: Messages): Html =
@@ -64,8 +60,7 @@ class Card5ForItems @Inject() (
     if (actionsEnabled && (!declaration.isType(CLEARANCE) || declaration.items.isEmpty)) {
       val call = if (declaration.hasItems) ItemsSummaryController.addAdditionalItem else ItemsSummaryController.displayAddItemPage
       Some(ItemSection(0, call.url))
-    }
-    else None
+    } else None
 
   private def rows(declaration: ExportsDeclaration, actionsEnabled: Boolean, showNoItemError: Boolean)(
     implicit messages: Messages
@@ -80,16 +75,12 @@ class Card5ForItems @Inject() (
     if (actionsEnabled) {
       val warningText = WarningText(Some(messages("site.warning")), content = Text(messages("declaration.summary.items.empty")))
       val content = HtmlContent(govukWarningText(warningText))
-      List(SummarySection(
-        List(noItemError(showNoItemError), Some(SummaryListRow(Key(content), Value(classes = "hidden")))).flatten
-      ))
-    }
-    else List.empty
+      List(SummarySection(List(noItemError(showNoItemError), Some(SummaryListRow(Key(content), Value(classes = "hidden")))).flatten))
+    } else List.empty
 
   private def noItemError(showNoItemError: Boolean)(implicit messages: Messages): Option[SummaryListRow] =
     if (showNoItemError) {
       val classes = "govuk-summary-list__row--no-border"
       Some(SummaryListRow(key("items.none", "govuk-error-message"), Value(classes = "hidden"), classes = classes))
-    }
-    else None
+    } else None
 }

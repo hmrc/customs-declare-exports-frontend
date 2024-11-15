@@ -38,16 +38,16 @@ class PackageInformationHelper @Inject() (packageTypesService: PackageTypesServi
       else SummarySection(summaryListRows, Some(SummarySectionHeading(s"item-$itemIndex-package-information", "item.packageInformation")))
     }
 
-  private def headingOnNoPackageInfo(item: ExportItem, actionsEnabled: Boolean, itemIndex: Int)(
-    implicit messages: Messages
-  ): SummarySection =
+  private def headingOnNoPackageInfo(item: ExportItem, actionsEnabled: Boolean, itemIndex: Int)(implicit messages: Messages): SummarySection =
     SummarySection(
-      List(SummaryListRow(
-        key("item.packageInformation"),
-        valueKey("site.none"),
-        classes = s"summary-row-border-bottom summary-row-border-top item-$itemIndex-package-information-heading",
-        actions = changePackageInformation(item, actionsEnabled, itemIndex)
-      ))
+      List(
+        SummaryListRow(
+          key("item.packageInformation"),
+          valueKey("site.none"),
+          classes = s"summary-row-border-bottom summary-row-border-top item-$itemIndex-package-information-heading",
+          actions = changePackageInformation(item, actionsEnabled, itemIndex)
+        )
+      )
     )
 
   private def packageInfoRows(item: ExportItem, itemIndex: Int, packageInfo: PackageInformation, index: Int, actionsEnabled: Boolean)(

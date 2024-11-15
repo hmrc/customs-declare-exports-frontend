@@ -17,7 +17,7 @@
 package views.helpers.summary
 
 import controllers.section5.routes._
-import models.DeclarationType.{DeclarationType, isStandardOrSupplementary}
+import models.DeclarationType.{isStandardOrSupplementary, DeclarationType}
 import models.declaration.ExportItem
 import play.api.i18n.Messages
 import play.twirl.api.{Html, HtmlFormat}
@@ -28,7 +28,7 @@ import views.html.summary.summary_section
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class ItemHelper @Inject()(packageInformationHelper: PackageInformationHelper, summarySection: summary_section) extends SummaryHelper {
+class ItemHelper @Inject() (packageInformationHelper: PackageInformationHelper, summarySection: summary_section) extends SummaryHelper {
 
   def content(item: ExportItem, itemIdx: Int, declarationType: DeclarationType)(implicit messages: Messages): Html = {
     val summarySections = rows(item, false, itemIdx, declarationType)
@@ -46,25 +46,30 @@ class ItemHelper @Inject()(packageInformationHelper: PackageInformationHelper, s
     val hasAdditionalInformation = item.additionalInformation.fold(false)(_.items.nonEmpty)
 
     List(
-      maybeSummarySection(List(
-        procedureCode(item, actionsEnabled, itemIdx),
-        additionalProcedureCodes(item, actionsEnabled, itemIdx),
-        fiscalInformation(item, actionsEnabled, itemIdx),
-        additionalFiscalReferences(item, actionsEnabled, itemIdx),
-        commodityDetails(item, actionsEnabled, itemIdx),
-        goodsDescription(item, actionsEnabled, itemIdx),
-        dangerousGoodsCode(item, actionsEnabled, itemIdx),
-        cusCode(item, actionsEnabled, itemIdx),
-        nactCodes(item, actionsEnabled, itemIdx),
-        nactExemptionCode(item, actionsEnabled, itemIdx),
-        statisticalValue(item, actionsEnabled, itemIdx)
-      ), Some(itemHeading(item, actionsEnabled, itemIdx))),
+      maybeSummarySection(
+        List(
+          procedureCode(item, actionsEnabled, itemIdx),
+          additionalProcedureCodes(item, actionsEnabled, itemIdx),
+          fiscalInformation(item, actionsEnabled, itemIdx),
+          additionalFiscalReferences(item, actionsEnabled, itemIdx),
+          commodityDetails(item, actionsEnabled, itemIdx),
+          goodsDescription(item, actionsEnabled, itemIdx),
+          dangerousGoodsCode(item, actionsEnabled, itemIdx),
+          cusCode(item, actionsEnabled, itemIdx),
+          nactCodes(item, actionsEnabled, itemIdx),
+          nactExemptionCode(item, actionsEnabled, itemIdx),
+          statisticalValue(item, actionsEnabled, itemIdx)
+        ),
+        Some(itemHeading(item, actionsEnabled, itemIdx))
+      ),
       packageInformationHelper.maybeSummarySection(item, actionsEnabled, itemIdx),
-      maybeSummarySection(List(
-        grossWeight(item, hasPackageInformation, actionsEnabled, itemIdx),
-        netWeight(item, itemIdx),
-        supplementaryUnits(item, actionsEnabled, itemIdx, declarationType)
-      )),
+      maybeSummarySection(
+        List(
+          grossWeight(item, hasPackageInformation, actionsEnabled, itemIdx),
+          netWeight(item, itemIdx),
+          supplementaryUnits(item, actionsEnabled, itemIdx, declarationType)
+        )
+      ),
       maybeAdditionalInformationSection,
       AdditionalDocumentsHelper.maybeSummarySection(item, hasAdditionalInformation, actionsEnabled, itemIdx)
     ).flatten
@@ -76,8 +81,7 @@ class ItemHelper @Inject()(packageInformationHelper: PackageInformationHelper, s
       if (actionsEnabled) {
         val call = RemoveItemsSummaryController.displayRemoveItemConfirmationPage(item.id)
         ItemSection(itemIdx, call.url, topPaddingClass)
-      }
-      else ItemSection(itemIdx, topPaddingClass = topPaddingClass)
+      } else ItemSection(itemIdx, topPaddingClass = topPaddingClass)
     }
     SummarySectionHeading(s"item-$itemIdx", "item", Some(itemSection))
   }
@@ -112,7 +116,9 @@ class ItemHelper @Inject()(packageInformationHelper: PackageInformationHelper, s
       )
     }
 
-  private def additionalFiscalReferences(item: ExportItem, actionsEnabled: Boolean, itemIdx: Int)(implicit messages: Messages): Option[SummaryListRow] =
+  private def additionalFiscalReferences(item: ExportItem, actionsEnabled: Boolean, itemIdx: Int)(
+    implicit messages: Messages
+  ): Option[SummaryListRow] =
     item.additionalFiscalReferencesData.map { additionalFiscalReferences =>
       SummaryListRow(
         key("item.VATdetails"),

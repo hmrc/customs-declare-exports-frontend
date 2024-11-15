@@ -34,19 +34,16 @@ object ContainersHelper extends SummaryHelper {
 
   private def headingOnNoContainers(actionsEnabled: Boolean)(implicit messages: Messages): SummarySection =
     SummarySection(
-      List(SummaryListRow(
-        key("containers"),
-        valueKey("site.none"),
-        classes = "heading-on-no-data containers-heading",
-        changeContainer(actionsEnabled)
-      ))
+      List(
+        SummaryListRow(key("containers"), valueKey("site.none"), classes = "heading-on-no-data containers-heading", changeContainer(actionsEnabled))
+      )
     )
 
   private def containerId(container: Container, index: Int, actionsEnabled: Boolean)(implicit messages: Messages): SummaryListRow =
     SummaryListRow(
       key("container.id"),
       value(container.id),
-      classes = s"govuk-summary-list__row--no-border container-${index}-type",
+      classes = s"govuk-summary-list__row--no-border container-${index}",
       changeContainer(actionsEnabled)
     )
 

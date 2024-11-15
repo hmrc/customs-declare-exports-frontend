@@ -40,12 +40,14 @@ class DocumentsHelper @Inject() (documentTypeService: DocumentTypeService) exten
 
   private def headingOnNoDocuments(actionsEnabled: Boolean)(implicit messages: Messages): SummarySection =
     SummarySection(
-      List(SummaryListRow(
-        key("transaction.previousDocuments"),
-        valueKey("site.none"),
-        classes = "heading-on-no-data previous-documents-heading",
-        changeDocuments(actionsEnabled)
-      ))
+      List(
+        SummaryListRow(
+          key("transaction.previousDocuments"),
+          valueKey("site.none"),
+          classes = "heading-on-no-data previous-documents-heading",
+          changeDocuments(actionsEnabled)
+        )
+      )
     )
 
   private def documentTypeCode(document: Document, index: Int, actionsEnabled: Boolean)(implicit messages: Messages): SummaryListRow =

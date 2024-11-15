@@ -17,17 +17,19 @@
 package views.common
 
 import base.{MessageSpec, UnitWithMocksSpec}
-import org.jsoup.nodes.Document
+import org.jsoup.nodes.{Document, Element}
 import org.jsoup.select.Elements
 import org.scalatest.{Assertion, OptionValues}
 import play.api.mvc.Call
+import play.twirl.api.Html
 import tools.Stubs
 import views.helpers.CommonMessages
+
+import scala.jdk.CollectionConverters.ListHasAsScala
 
 trait UnitViewSpec extends UnitWithMocksSpec with CommonMessages with MessageSpec with OptionValues with Stubs with ViewMatchers {
 
   val itemId = "item1"
-  val sequenceId = "1"
 
   def checkMessages(keys: String*): Unit =
     "check messages present including Welsh" in {
@@ -67,10 +69,55 @@ trait UnitViewSpec extends UnitWithMocksSpec with CommonMessages with MessageSpe
     val action = row.first.getElementsByClass(summaryActionsClassName)
 
     maybeUrl.fold(if (hint.isEmpty) action.size mustBe 0 else action.text mustBe "") { url =>
-      val expectedText = s"""${messages("site.change")} ${messages(s"declaration.summary.$hint.change", sequenceId)}"""
-      action.text must startWith(expectedText)
-
+      val expectedText = s"""${messages("site.change")} ${messages(s"declaration.summary.$hint.change")}"""
+      action.text must startWith(expectedText.replace(" {0}", ""))
       row must haveSummaryActionWithPlaceholder(url)
+    }
+  }
+
+  def checkSection(
+    view: Html,
+    headingId: String,
+    headingText: String,
+    expectedSummaryLists: Int,
+    wantedSummaryList: Int,
+    expectedSummaryRows: Int
+  ): Elements = {
+    val heading = view.getElementsByClass(s"$headingId-heading").first
+    heading.tagName mustBe "h3"
+    messages.isDefinedAt(s"declaration.summary.$headingText") match {
+      case false => heading.text mustBe headingText
+      case _     => heading.text mustBe messages(s"declaration.summary.$headingText")
+    }
+
+    val summaryLists = view.getElementsByClass("govuk-summary-list")
+    summaryLists.size mustBe expectedSummaryLists
+
+    val summaryList = summaryLists.get(wantedSummaryList)
+    summaryList.childrenSize mustBe expectedSummaryRows
+
+    val rows = summaryList.children
+    assert(rows.asScala.forall(_.hasClass("govuk-summary-list__row")))
+    rows
+  }
+
+  def checkMultiRowSection(
+    section: Element,
+    expectedClasses: Seq[String] = List.empty,
+    labelKey: String,
+    value: String,
+    maybeUrl: Option[Call] = None,
+    hint: String = ""
+  ): Assertion = {
+    assert(expectedClasses.forall(section.hasClass))
+    section must hasSummaryKey(messages(s"declaration.summary.$labelKey"))
+    section must hasSummaryValue(value)
+
+    val action = section.getElementsByClass(summaryActionsClassName)
+
+    maybeUrl.fold(if (hint.isEmpty) action.size mustBe 0 else action.text mustBe "") { url =>
+      val expectedText = s"""${messages("site.change")} ${messages(s"declaration.summary.$hint.change")}"""
+      section must haveSummaryActionWithPlaceholder(url, expectedText.replace(" {0}", ""))
     }
   }
 }

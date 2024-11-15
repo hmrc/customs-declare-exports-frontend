@@ -26,9 +26,7 @@ import forms.section5.{CommodityDetails, CusCode, NactCode, UNDangerousGoodsCode
 import models.DeclarationType._
 import models.ExportsDeclaration
 import models.declaration.{AdditionalDocuments, AdditionalInformationData, CommodityMeasure}
-import org.jsoup.select.Elements
 import org.scalatest.Assertion
-import play.api.mvc.Call
 import play.twirl.api.Html
 import play.twirl.api.HtmlFormat.Appendable
 import services.cache.ExportsTestHelper
@@ -40,7 +38,7 @@ class Card5ForItemsSpec extends UnitViewSpec with ExportsTestHelper with Injecto
 
   private val itemWithAnswers = anItem(
     withItemId(itemId),
-    withSequenceId(sequenceId.toInt),
+    withSequenceId(1),
     withProcedureCodes(Some("1234"), Seq("000", "111")),
     withFiscalInformation(),
     withAdditionalFiscalReferenceData(),
@@ -85,18 +83,13 @@ class Card5ForItemsSpec extends UnitViewSpec with ExportsTestHelper with Injecto
       "have the 'Add item' link" when {
         "the declaration type is NOT CLEARANCE" in {
           checkCard(view, true)
-
-          view.getElementsByTag("strong").first.text mustBe messages("declaration.summary.item", 1)
         }
       }
 
       "NOT have the 'Add item' link" when {
         "the declaration type is CLEARANCE" in {
           val view = miniCyaView(aDeclaration(withType(CLEARANCE), withItems(itemWithAnswers)))
-          view.getElementsByTag("form").size() mustBe 0
-          view.getElementsByClass("input-submit").size() mustBe 0
-
-          view.getElementsByTag("strong").first.text mustBe messages("declaration.summary.item", 1)
+          view.getElementsByClass("govuk-summary-card__actions").size mustBe 0
         }
       }
 
@@ -107,16 +100,24 @@ class Card5ForItemsSpec extends UnitViewSpec with ExportsTestHelper with Injecto
 
         checkCard(view, true)
 
-        val rows = view.getElementsByClass(summaryRowClassName)
-        rows.size mustBe 4
+        val headings = view.getElementsByTag("h3")
+        headings.size mustBe 2
 
-        val item1Heading = view.getElementsByClass("item-1-heading")
-        val call1 = Some(RemoveItemsSummaryController.displayRemoveItemConfirmationPage(item1.id))
-        checkRow(item1Heading, "1", "", call1)
+        assert(headings.first.hasClass("item-1-heading"))
+        val href1 = RemoveItemsSummaryController.displayRemoveItemConfirmationPage(item1.id)
+        headings.first must haveSummaryAction(href1)
 
-        val item2Heading = view.getElementsByClass("item-2-heading")
-        val call2 = Some(RemoveItemsSummaryController.displayRemoveItemConfirmationPage(item2.id))
-        checkRow(item2Heading, "2", "", call2)
+        assert(headings.last.hasClass("item-2-heading"))
+        val href2 = RemoveItemsSummaryController.displayRemoveItemConfirmationPage(item2.id)
+        headings.last must haveSummaryAction(href2)
+
+        val call1 = Some(CusCodeController.displayPage(item1.id))
+        val row1 = checkSection(view, "item-1", "Declaration item 1 Remove item", 2, 0, 1).first
+        checkMultiRowSection(row1, List("item-1-cus-code"), "item.cusCode", "code1", call1, "item.cusCode")
+
+        val call2 = Some(CusCodeController.displayPage(item2.id))
+        val row2 = checkSection(view, "item-2", "Declaration item 2 Remove item", 2, 1, 1).first
+        checkMultiRowSection(row2, List("item-2-cus-code"), "item.cusCode", "code2", call2, "item.cusCode")
       }
 
       "NOT have change links" when {
@@ -223,11 +224,11 @@ class Card5ForItemsSpec extends UnitViewSpec with ExportsTestHelper with Injecto
   def checkCard(view: Appendable, withItems: Boolean = false): Assertion = {
     view.getElementsByTag("h2").text mustBe messages("declaration.summary.section.5")
 
-    val link = view.getElementsByTag("a").first
-    link.text must startWith(messages("declaration.summary.items.add"))
+    val actions = view.getElementsByClass("govuk-summary-card__actions")
+    actions.size mustBe 1
 
     val expectedCall = if (withItems) ItemsSummaryController.addAdditionalItem else ItemsSummaryController.displayAddItemPage
-    link.attr("href") mustBe expectedCall.url
+    actions.first must haveSummaryAction(expectedCall, messages("declaration.summary.items.add"))
   }
 
   def checkNoItemsCard(declaration: ExportsDeclaration): Assertion = {
@@ -239,23 +240,6 @@ class Card5ForItemsSpec extends UnitViewSpec with ExportsTestHelper with Injecto
 
     val warning = rows.first.getElementsByClass("govuk-warning-text").first
     warning.text must endWith(messages("declaration.summary.items.empty"))
-  }
-
-  def checkRow(row: Elements, index: String, value: String, maybeUrl: Option[Call] = None, maybeId: Option[String] = None): Assertion = {
-    if (maybeUrl.isDefined) {
-      val args = maybeId.fold {
-        ("declaration.summary.item.remove", "declaration.summary.item.remove", List.empty[String])
-      } { id =>
-        ("site.change", s"declaration.summary.item.$id.change", List(index))
-      }
-      val expectedText = s"""${messages(args._1)} ${messages(args._2, args._3)}"""
-      row.first.getElementsByClass(summaryActionsClassName).text must startWith(expectedText)
-
-      row must haveSummaryActionsHref(maybeUrl.get)
-    }
-
-    row must haveSummaryKey(messages(s"""declaration.summary.item${maybeId.fold("")(id => s".$id")}""", index))
-    row must haveSummaryValue(value)
   }
 
   "Items card" when {
@@ -340,20 +324,24 @@ class Card5ForItemsSpec extends UnitViewSpec with ExportsTestHelper with Injecto
       }
 
       "show the 'Packing details' section" in {
-        val heading = view.getElementsByClass("item-1-package-information-heading")
-        checkSummaryRow(heading, "item.packageInformation", "", None, "")
+        val heading = view.getElementsByClass("item-1-package-information-heading").first
+        heading.tagName mustBe "h3"
+        heading.text mustBe messages("declaration.summary.item.packageInformation")
 
-        val row1 = view.getElementsByClass("item-1-package-information-1-type")
+        val summaryLists = view.getElementsByClass("govuk-summary-list")
+        summaryLists.size mustBe 5
+
+        val summaryList = summaryLists.get(1)
+        summaryList.childrenSize mustBe 3
+
+        val rows = summaryList.children
+
         val call = Some(PackageInformationSummaryController.displayPage(itemId))
-        checkSummaryRow(row1, "item.packageInformation.type", "Parcel (PC)", call, "item.packageInformation")
-        assert(row1.first.hasClass("govuk-summary-list__row--no-border"))
+        val keyId = "item.packageInformation"
 
-        val row2 = view.getElementsByClass("item-1-package-information-1-number")
-        checkSummaryRow(row2, "item.packageInformation.number", "10", None, "")
-        assert(row2.first.hasClass("govuk-summary-list__row--no-border"))
-
-        val row3 = view.getElementsByClass("item-1-package-information-1-markings")
-        checkSummaryRow(row3, "item.packageInformation.markings", "marks", None, "")
+        checkMultiRowSection(rows.get(0), List("item-1-package-information-1-type"), s"$keyId.type", "Parcel (PC)", call, keyId)
+        checkMultiRowSection(rows.get(1), List("item-1-package-information-1-number"), s"$keyId.number", "10")
+        checkMultiRowSection(rows.get(2), List("item-1-package-information-1-markings"), s"$keyId.markings", "marks")
       }
 
       "show the 'Packing details' section when the 'type' is undefined" in {
@@ -422,17 +410,26 @@ class Card5ForItemsSpec extends UnitViewSpec with ExportsTestHelper with Injecto
       }
 
       "show the 'Additional Information' section" in {
-        val heading = view.getElementsByClass("item-1-additional-information-heading")
-        checkSummaryRow(heading, "item.additionalInformation", "", None, "")
+        val heading = view.getElementsByClass("item-1-additional-information-heading").first
+        heading.tagName mustBe "h3"
+        heading.text mustBe messages("declaration.summary.item.additionalInformation")
 
-        val row1 = view.getElementsByClass("item-1-additional-information-1-code")
+        val summaryLists = view.getElementsByClass("govuk-summary-list")
+        summaryLists.size mustBe 5
+
+        val summaryList = summaryLists.get(3)
+        summaryList.childrenSize mustBe 2
+
+        val rows = summaryList.children
+
         val call = Some(AdditionalInformationController.displayPage(itemId))
-        checkSummaryRow(row1, "item.additionalInformation.code", "1234", call, "item.additionalInformation")
-        assert(row1.first.hasClass("govuk-summary-list__row--no-border"))
+        val keyId = "item.additionalInformation"
 
-        val row2 = view.getElementsByClass("item-1-additional-information-1-description")
-        checkSummaryRow(row2, "item.additionalInformation.description", "additionalDescription", None, "")
+        checkMultiRowSection(rows.get(0), List("item-1-additional-information-1-code"), s"$keyId.code", "1234", call, keyId)
+        checkMultiRowSection(rows.get(1), List("item-1-additional-information-1-description"), s"$keyId.description", "additionalDescription")
       }
+
+      val addDocs = "item.additionalDocuments"
 
       "show the 'Additional Documents' section when without data, preceded by the 'License' row" in {
         val item = itemWithAnswers.copy(additionalDocuments = Some(AdditionalDocuments(None, List.empty)))
@@ -448,30 +445,19 @@ class Card5ForItemsSpec extends UnitViewSpec with ExportsTestHelper with Injecto
 
         val heading = view.getElementsByClass("item-1-additional-documents-heading")
         val call2 = Some(AdditionalDocumentsController.displayPage(itemId))
-        checkSummaryRow(heading, "item.additionalDocuments", messages("site.none"), call2, "item.additionalDocuments")
+        checkSummaryRow(heading, addDocs, messages("site.none"), call2, addDocs)
       }
 
       "show the 'Additional Documents' section, with the 'License' row as first" in {
-        val rows = view.getElementsByClass("govuk-summary-list__row")
-        assert(rows.get(rows.size - 4).hasClass("item-1-additional-documents-heading"))
-        assert(rows.get(rows.size - 3).hasClass("item-1-licences"))
-        assert(rows.get(rows.size - 2).hasClass("item-1-additional-document-1-code"))
-        assert(rows.get(rows.size - 1).hasClass("item-1-additional-document-1-identifier"))
+        val rows = checkSection(view, "item-1-additional-documents", addDocs, 5, 4, 3)
 
-        val heading = view.getElementsByClass("item-1-additional-documents-heading")
-        checkSummaryRow(heading, "item.additionalDocuments", "", None, "")
-
-        val licenses = view.getElementsByClass("item-1-licences")
         val call1 = Some(IsLicenceRequiredController.displayPage(itemId))
-        checkSummaryRow(licenses, "item.licences", messages("site.yes"), call1, "item.licences")
+        checkMultiRowSection(rows.get(0), List("item-1-licences"), "item.licences", messages("site.yes"), call1, "item.licences")
 
-        val row1 = view.getElementsByClass("item-1-additional-document-1-code")
-        val call = Some(AdditionalDocumentsController.displayPage(itemId))
-        checkSummaryRow(row1, "item.additionalDocuments.code", "C501", call, "item.additionalDocuments")
-        assert(row1.first.hasClass("govuk-summary-list__row--no-border"))
+        val call2 = Some(AdditionalDocumentsController.displayPage(itemId))
+        checkMultiRowSection(rows.get(1), List("item-1-additional-document-1-code"), s"$addDocs.code", "C501", call2, addDocs)
 
-        val row2 = view.getElementsByClass("item-1-additional-document-1-identifier")
-        checkSummaryRow(row2, "item.additionalDocuments.identifier", "GBAEOC1342", None, "")
+        checkMultiRowSection(rows.get(2), List("item-1-additional-document-1-identifier"), s"$addDocs.identifier", "GBAEOC1342")
       }
 
       "show the 'Additional Documents' section when 'document code' is undefined" in {
@@ -483,7 +469,7 @@ class Card5ForItemsSpec extends UnitViewSpec with ExportsTestHelper with Injecto
 
         val row = view.getElementsByClass("item-1-additional-document-1-identifier")
         val call = Some(AdditionalDocumentsController.displayPage(item.id))
-        checkSummaryRow(row, "item.additionalDocuments.identifier", "GBAEOC1342", call, "item.additionalDocuments")
+        checkSummaryRow(row, s"$addDocs.identifier", "GBAEOC1342", call, addDocs)
       }
     }
   }

@@ -28,10 +28,10 @@
   }
 }
 
-<div class='@toClasses("govuk-summary-card", card.classes)'>
+<div class="@toClasses("govuk-summary-card", card.classes)">
   <div class="govuk-summary-card__title-wrapper">
     @card.title.map { cardTitle =>
-      <h2 class='@toClasses("govuk-summary-card__title", cardTitle.classes)'>
+      <h2 class="@toClasses("govuk-summary-card__title", cardTitle.classes)">
          @cardTitle.content.asHtml
       </h2>
     }

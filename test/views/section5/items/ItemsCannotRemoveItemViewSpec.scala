@@ -72,10 +72,6 @@ class ItemsCannotRemoveItemViewSpec extends UnitViewSpec with ExportsTestHelper 
       view.getElementsByClass(Styles.gdsPageHeading).first() must containMessage("declaration.itemsCannotRemove.title", itemDisplayNum)
     }
 
-    "display Item Section table" in {
-      view must containElementWithID(s"declaration-items-summary-$itemDisplayNum")
-    }
-
     "display cancel button" in {
       val button = createView(item = exportItem).getElementsByClass("govuk-button").first()
       button must containMessage("site.cancel")

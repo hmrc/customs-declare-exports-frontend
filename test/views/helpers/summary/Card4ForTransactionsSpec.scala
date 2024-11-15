@@ -121,28 +121,18 @@ class Card4ForTransactionsSpec extends UnitViewSpec with ExportsTestHelper with 
     }
 
     "show a previous documents section" in {
-      val heading = view.getElementsByClass("previous-documents-heading")
-      checkSummaryRow(heading, "transaction.previousDocuments", "", None, "")
+      val rows = checkSection(view, "previous-documents", "transaction.previousDocuments", 2, 1, 4)
+
+      val expectedType1 = "Entry Summary Declaration (ENS) - 355"
+      val expectedType2 = "Bill of Lading - 705"
 
       val call = Some(PreviousDocumentsSummaryController.displayPage)
+      val keyId = "transaction.previousDocuments"
 
-      val document1Type = view.getElementsByClass("previous-document-1-type")
-      assert(document1Type.hasClass("govuk-summary-list__row--no-border"))
-      val expectedType1 = "Entry Summary Declaration (ENS) - 355"
-      checkSummaryRow(document1Type, "transaction.previousDocuments.type", expectedType1, call, "transaction.previousDocuments")
-
-      val document1Ref = view.getElementsByClass("previous-document-1-reference")
-      assert(!document1Ref.hasClass("govuk-summary-list__row--no-border"))
-      checkSummaryRow(document1Ref, "transaction.previousDocuments.reference", "ref1", None, "ign")
-
-      val document2Type = view.getElementsByClass("previous-document-2-type")
-      assert(document2Type.hasClass("govuk-summary-list__row--no-border"))
-      val expectedType2 = "Bill of Lading - 705"
-      checkSummaryRow(document2Type, "transaction.previousDocuments.type", expectedType2, call, "transaction.previousDocuments")
-
-      val document2Ref = view.getElementsByClass("previous-document-2-reference")
-      assert(!document2Ref.hasClass("govuk-summary-list__row--no-border"))
-      checkSummaryRow(document2Ref, "transaction.previousDocuments.reference", "ref2", None, "ign")
+      checkMultiRowSection(rows.get(0), List("previous-document-1-type"), s"$keyId.type", expectedType1, call, keyId)
+      checkMultiRowSection(rows.get(1), List("previous-document-1-reference"), s"$keyId.reference", "ref1")
+      checkMultiRowSection(rows.get(2), List("previous-document-2-type"), s"$keyId.type", expectedType2, call, keyId)
+      checkMultiRowSection(rows.get(3), List("previous-document-2-reference"), s"$keyId.reference", "ref2")
     }
 
     "NOT have change links" when {

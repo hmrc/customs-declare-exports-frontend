@@ -32,9 +32,13 @@ object AdditionalDocumentsHelper extends SummaryHelper {
     else buildSummarySection(item, hasAdditionalInformation, hasDocuments, actionsEnabled, itemIndex)
   }
 
-  private def buildSummarySection(item: ExportItem, hasAdditionalInformation: Boolean, hasDocuments: Boolean, actionsEnabled: Boolean, itemIndex: Int)(
-    implicit messages: Messages
-  ): Option[SummarySection] =
+  private def buildSummarySection(
+    item: ExportItem,
+    hasAdditionalInformation: Boolean,
+    hasDocuments: Boolean,
+    actionsEnabled: Boolean,
+    itemIndex: Int
+  )(implicit messages: Messages): Option[SummarySection] =
     if (hasDocuments) {
       val documentRows = item.additionalDocuments.fold(Seq.empty[Option[SummaryListRow]]) { additionalDocuments =>
         additionalDocuments.documents.zipWithIndex.flatMap { case (document, index) =>
@@ -44,15 +48,15 @@ object AdditionalDocumentsHelper extends SummaryHelper {
       val summaryListRows = (licenseRow(item, false, actionsEnabled, itemIndex) +: documentRows).flatten
       val sectionTitle = Some(SummarySectionHeading(s"item-$itemIndex-additional-documents", "item.additionalDocuments"))
       Some(SummarySection(summaryListRows, sectionTitle))
-    }
-    else maybeSummarySection(List(
-      licenseRow(item, hasAdditionalInformation, actionsEnabled, itemIndex, " summary-row-border-top"),
-      headingOnNoDocuments(item, actionsEnabled, itemIndex)
-    ))
+    } else
+      maybeSummarySection(
+        List(
+          licenseRow(item, hasAdditionalInformation, actionsEnabled, itemIndex, " summary-row-border-top"),
+          headingOnNoDocuments(item, actionsEnabled, itemIndex)
+        )
+      )
 
-  private def headingOnNoDocuments(
-    item: ExportItem, actionsEnabled: Boolean, itemIndex: Int
-  )(implicit messages: Messages): Option[SummaryListRow] =
+  private def headingOnNoDocuments(item: ExportItem, actionsEnabled: Boolean, itemIndex: Int)(implicit messages: Messages): Option[SummaryListRow] =
     // When 'headingOnNoDocuments' is called we know that 'item.additionalDocuments.documents' is NOT defined.
     // However, to verify if the user has already landed, or not, on the section's pages we also have to check
     // 'item.additionalDocuments'. If defined, and only if defined, we need then to show the 'No documents' row.
@@ -66,7 +70,11 @@ object AdditionalDocumentsHelper extends SummaryHelper {
     }
 
   private def licenseRow(
-    item: ExportItem, hasAdditionalInformation: Boolean, actionsEnabled: Boolean, itemIndex: Int, additionalClasses: String = ""
+    item: ExportItem,
+    hasAdditionalInformation: Boolean,
+    actionsEnabled: Boolean,
+    itemIndex: Int,
+    additionalClasses: String = ""
   )(implicit messages: Messages): Option[SummaryListRow] =
     item.isLicenceRequired.map { isLicenceRequired =>
       SummaryListRow(
