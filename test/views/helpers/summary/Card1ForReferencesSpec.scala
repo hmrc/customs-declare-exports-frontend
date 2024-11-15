@@ -218,7 +218,8 @@ class Card1ForReferencesSpec extends UnitViewSpec with ExportsTestHelper with In
 
     "return a marked (with a red left border) card" when {
       "the declaration has errors" in {
-        val summaryCard = finalCyaView(declaration, hasErrors = true).getElementsByClass("govuk-summary-card").get(0)
+        val view = finalCyaView(declaration, hasErrors = true)
+        val summaryCard = view.getElementsByClass("govuk-summary-card").get(0)
         assert(summaryCard.hasClass("govuk-summary-card--error"))
       }
     }

@@ -40,7 +40,7 @@ class Card6ForTransport @Inject() (summaryCard: summary_card, countryHelper: Cou
     if (hasTransportData(declaration)) content(declaration, actionsEnabled) else HtmlFormat.empty
 
   // Called by the Mini CYA page
-   override def content(declaration: ExportsDeclaration, actionsEnabled: Boolean)(implicit messages: Messages): Html =
+  override def content(declaration: ExportsDeclaration, actionsEnabled: Boolean)(implicit messages: Messages): Html =
     summaryCard(card(6), rows(declaration, actionsEnabled))
 
   override def backLink(implicit request: JourneyRequest[_]): Call =
@@ -51,18 +51,20 @@ class Card6ForTransport @Inject() (summaryCard: summary_card, countryHelper: Cou
 
   private def rows(declaration: ExportsDeclaration, actionsEnabled: Boolean)(implicit messages: Messages): Seq[SummarySection] =
     List(
-      maybeSummarySection(List(
-        borderTransport(declaration.transport, actionsEnabled),
-        warehouseIdentification(declaration.locations, actionsEnabled),
-        supervisingCustomsOffice(declaration.locations, actionsEnabled),
-        inlandOrBorder(declaration.locations, actionsEnabled),
-        inlandModeOfTransport(declaration.locations, actionsEnabled),
-        transportReference(declaration.transport, actionsEnabled),
-        activeTransportType(declaration.transport, actionsEnabled),
-        transportCrossingTheBorder(declaration.transport, actionsEnabled),
-        expressConsignment(declaration.transport, actionsEnabled),
-        transportPayment(declaration.transport, actionsEnabled)
-      )),
+      maybeSummarySection(
+        List(
+          borderTransport(declaration.transport, actionsEnabled),
+          warehouseIdentification(declaration.locations, actionsEnabled),
+          supervisingCustomsOffice(declaration.locations, actionsEnabled),
+          inlandOrBorder(declaration.locations, actionsEnabled),
+          inlandModeOfTransport(declaration.locations, actionsEnabled),
+          transportReference(declaration.transport, actionsEnabled),
+          activeTransportType(declaration.transport, actionsEnabled),
+          transportCrossingTheBorder(declaration.transport, actionsEnabled),
+          expressConsignment(declaration.transport, actionsEnabled),
+          transportPayment(declaration.transport, actionsEnabled)
+        )
+      ),
       ContainersHelper.maybeSummarySection(declaration.transport, actionsEnabled)
     ).flatten
 

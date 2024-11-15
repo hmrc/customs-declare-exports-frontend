@@ -29,7 +29,9 @@ import javax.inject.{Inject, Singleton}
 @Singleton
 class AuthorisationHoldersHelper @Inject() (holderOfAuthorisationCodes: HolderOfAuthorisationCodes) extends SummaryHelper {
 
-  def maybeSummarySection(parties: Parties, hasAdditionalActors: Boolean, actionsEnabled: Boolean)(implicit messages: Messages): Option[SummarySection] =
+  def maybeSummarySection(parties: Parties, hasAdditionalActors: Boolean, actionsEnabled: Boolean)(
+    implicit messages: Messages
+  ): Option[SummarySection] =
     parties.declarationHoldersData.map { data =>
       val summaryListRows = data.holders.zipWithIndex.flatMap { case (holder, index) =>
         List(holderTypeCode(holder, index + 1, actionsEnabled), holderEori(holder, index + 1, actionsEnabled))
@@ -45,12 +47,14 @@ class AuthorisationHoldersHelper @Inject() (holderOfAuthorisationCodes: HolderOf
       Key(HtmlContent(s"""<div class="govuk-!-margin-top-4 govuk-!-margin-bottom-0">$text</div>"""))
     }
     SummarySection(
-      List(SummaryListRow(
-        key = if (hasAdditionalActors) keyOnAdditionalActors else key("parties.holders"),
-        valueKey("site.none"),
-        classes = "heading-on-no-data authorisation-holders-heading",
-        changeHolders(actionsEnabled)
-      ))
+      List(
+        SummaryListRow(
+          key = if (hasAdditionalActors) keyOnAdditionalActors else key("parties.holders"),
+          valueKey("site.none"),
+          classes = "heading-on-no-data authorisation-holders-heading",
+          changeHolders(actionsEnabled)
+        )
+      )
     )
   }
 

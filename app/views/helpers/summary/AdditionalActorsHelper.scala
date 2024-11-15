@@ -37,12 +37,14 @@ object AdditionalActorsHelper extends SummaryHelper {
 
   private def headingOnNoActors(actionsEnabled: Boolean)(implicit messages: Messages): SummarySection =
     SummarySection(
-      List(SummaryListRow(
-        key("parties.actors"),
-        valueKey("site.none"),
-        classes = "heading-on-no-data additional-actors-heading",
-        changeActors(AdditionalActorsAddController.displayPage, actionsEnabled)
-      ))
+      List(
+        SummaryListRow(
+          key("parties.actors"),
+          valueKey("site.none"),
+          classes = "heading-on-no-data additional-actors-heading",
+          changeActors(AdditionalActorsAddController.displayPage, actionsEnabled)
+        )
+      )
     )
 
   private def actorType(actor: AdditionalActor, index: Int, actionsEnabled: Boolean)(implicit messages: Messages): Option[SummaryListRow] =

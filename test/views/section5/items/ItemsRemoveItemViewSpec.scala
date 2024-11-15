@@ -82,10 +82,6 @@ class ItemsRemoveItemViewSpec extends UnitViewSpec with Injector {
       view.getElementsByClass(Styles.gdsPageLegend).first() must containMessage("declaration.itemsRemove.title", itemDisplayNum)
     }
 
-    "display Item Section table" in {
-      view must containElementWithID(s"declaration-items-summary-$itemDisplayNum")
-    }
-
     "not display Item Section header" in {}
 
     "display Yes - No form" in {

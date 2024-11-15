@@ -35,9 +35,8 @@ import views.html.summary.summary_card
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class Card3ForRoutesAndLocations @Inject() (summaryCard: summary_card, countryHelper: CountryHelper)(
-  implicit codeListConnector: CodeListConnector
-) extends SummaryCard {
+class Card3ForRoutesAndLocations @Inject() (summaryCard: summary_card, countryHelper: CountryHelper)(implicit codeListConnector: CodeListConnector)
+    extends SummaryCard {
 
   // Called by the Final CYA page
   def eval(declaration: ExportsDeclaration, actionsEnabled: Boolean = true)(implicit messages: Messages): Html = {
@@ -66,13 +65,15 @@ class Card3ForRoutesAndLocations @Inject() (summaryCard: summary_card, countryHe
 
   private def rows(declaration: ExportsDeclaration, actionsEnabled: Boolean)(implicit messages: Messages): Seq[SummarySection] =
     List(
-      maybeSummarySection(List(
-        routingCountries(declaration.locations, actionsEnabled),
-        destinationCountry(declaration.locations, actionsEnabled),
-        goodsLocation(declaration, actionsEnabled),
-        additionalInformation(declaration.locations),
-        officeOfExit(declaration.locations, actionsEnabled)
-      ))
+      maybeSummarySection(
+        List(
+          routingCountries(declaration.locations, actionsEnabled),
+          destinationCountry(declaration.locations, actionsEnabled),
+          goodsLocation(declaration, actionsEnabled),
+          additionalInformation(declaration.locations),
+          officeOfExit(declaration.locations, actionsEnabled)
+        )
+      )
     ).flatten
 
   private def routingCountries(locations: Locations, actionsEnabled: Boolean)(implicit messages: Messages): Option[SummaryListRow] =

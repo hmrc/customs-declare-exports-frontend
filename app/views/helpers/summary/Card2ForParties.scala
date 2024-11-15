@@ -37,12 +37,9 @@ import views.html.summary.summary_card
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class Card2ForParties @Inject() (
-  summaryCard: summary_card,
-  navigator: Navigator,
-  authorisationHoldersHelper: AuthorisationHoldersHelper
-)(implicit codeListConnector: CodeListConnector)
-    extends SummaryCard {
+class Card2ForParties @Inject() (summaryCard: summary_card, navigator: Navigator, authorisationHoldersHelper: AuthorisationHoldersHelper)(
+  implicit codeListConnector: CodeListConnector
+) extends SummaryCard {
 
   // Called by the Final CYA page
   def eval(declaration: ExportsDeclaration, actionsEnabled: Boolean = true)(implicit messages: Messages): Html = {
@@ -73,13 +70,13 @@ class Card2ForParties @Inject() (
     List(
       maybeSummarySection(
         List(declarantIsExporter(parties, actionsEnabled), isEidr(parties, actionsEnabled), personPresentingGoods(parties, actionsEnabled))
-        ++ exporterDetails(parties, actionsEnabled)
-        ++ List(isExs(parties, actionsEnabled), representativeOtherAgent(parties, actionsEnabled))
-        ++ representativeDetails(parties, actionsEnabled)
-        ++ List(representativeStatusCode(parties, actionsEnabled))
-        ++ carrierDetails(parties, actionsEnabled)
-        ++ consigneeDetails(parties, actionsEnabled)
-        ++ consignorDetails(parties, actionsEnabled)
+          ++ exporterDetails(parties, actionsEnabled)
+          ++ List(isExs(parties, actionsEnabled), representativeOtherAgent(parties, actionsEnabled))
+          ++ representativeDetails(parties, actionsEnabled)
+          ++ List(representativeStatusCode(parties, actionsEnabled))
+          ++ carrierDetails(parties, actionsEnabled)
+          ++ consigneeDetails(parties, actionsEnabled)
+          ++ consignorDetails(parties, actionsEnabled)
       ),
       AdditionalActorsHelper.maybeSummarySection(parties, actionsEnabled),
       authorisationHoldersHelper.maybeSummarySection(parties, hasAdditionalActors, actionsEnabled)

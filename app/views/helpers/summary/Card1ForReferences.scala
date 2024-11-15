@@ -95,21 +95,23 @@ class Card1ForReferences @Inject() (
   private def rows(declaration: ExportsDeclaration, actionsEnabled: Boolean, maybeSubmission: Option[Submission])(
     implicit messages: Messages
   ): Seq[SummarySection] =
-    List(maybeSummarySection(
-      List(creationDate(declaration), expiryDate(declaration), mrnOfSubmission(maybeSubmission)) ++
-      notificationStatuses(maybeSubmission).getOrElse(List.empty) ++
-      List(
-        declarationType(declaration),
-        additionalDeclarationType(declaration),
-        declarantEori(declaration),
-        ducr(declaration, actionsEnabled),
-        mrn(declaration, actionsEnabled),
-        eidrDate(declaration, actionsEnabled),
-        lrn(declaration, actionsEnabled),
-        linkDucrToMucr(declaration, actionsEnabled),
-        mucr(declaration, actionsEnabled)
+    List(
+      maybeSummarySection(
+        List(creationDate(declaration), expiryDate(declaration), mrnOfSubmission(maybeSubmission)) ++
+          notificationStatuses(maybeSubmission).getOrElse(List.empty) ++
+          List(
+            declarationType(declaration),
+            additionalDeclarationType(declaration),
+            declarantEori(declaration),
+            ducr(declaration, actionsEnabled),
+            mrn(declaration, actionsEnabled),
+            eidrDate(declaration, actionsEnabled),
+            lrn(declaration, actionsEnabled),
+            linkDucrToMucr(declaration, actionsEnabled),
+            mucr(declaration, actionsEnabled)
+          )
       )
-    )).flatten
+    ).flatten
 
   private def creationDate(declaration: ExportsDeclaration)(implicit messages: Messages): Option[SummaryListRow] =
     Some(
@@ -136,11 +138,13 @@ class Card1ForReferences @Inject() (
       action <- submission.actions.find(_.requestType == SubmissionRequest)
       notifications <- action.notifications
     } yield notifications.map { notification =>
-      Some(SummaryListRow(
-        Key(Text(asText(notification.enhancedStatus))),
-        valueHtml(ViewDates.formatDateAtTime(notification.dateTimeIssued)),
-        classes = "notification-status"
-      ))
+      Some(
+        SummaryListRow(
+          Key(Text(asText(notification.enhancedStatus))),
+          valueHtml(ViewDates.formatDateAtTime(notification.dateTimeIssued)),
+          classes = "notification-status"
+        )
+      )
     }
 
   private def declarationType(declaration: ExportsDeclaration)(implicit messages: Messages): Option[SummaryListRow] =
