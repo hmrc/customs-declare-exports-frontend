@@ -50,6 +50,7 @@ class LegalDeclarationViewSpec extends UnitViewSpec with Injector {
 
     "have full name input field" in {
       view.getElementsByAttributeValue("for", nameKey) must containMessageForElements("legal.declaration.fullName")
+      view.getElementById("fullName").attr("autocomplete") mustBe "name"
       messages must haveTranslationFor("legal.declaration.fullName.empty")
       messages must haveTranslationFor("legal.declaration.fullName.short")
       messages must haveTranslationFor("legal.declaration.fullName.long")
@@ -66,6 +67,7 @@ class LegalDeclarationViewSpec extends UnitViewSpec with Injector {
 
     "have email input field" in {
       view.getElementsByAttributeValue("for", emailKey) must containMessageForElements("legal.declaration.email")
+      view.getElementById("email").attr("autocomplete") mustBe "email"
       messages must haveTranslationFor("legal.declaration.email.empty")
       messages must haveTranslationFor("legal.declaration.email.long")
       messages must haveTranslationFor("legal.declaration.email.error")

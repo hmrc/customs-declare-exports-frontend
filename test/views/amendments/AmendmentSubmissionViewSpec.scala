@@ -65,6 +65,7 @@ class AmendmentSubmissionViewSpec extends UnitViewSpec with Injector {
 
     "have full name input field" in {
       view().getElementsByAttributeValue("for", nameKey) must containMessageForElements("amendment.submission.fullName")
+      view().getElementById("fullName").attr("autocomplete") mustBe "name"
       messages must haveTranslationFor("amendment.submission.fullName.empty")
       messages must haveTranslationFor("amendment.submission.fullName.short")
       messages must haveTranslationFor("amendment.submission.fullName.long")
@@ -81,6 +82,7 @@ class AmendmentSubmissionViewSpec extends UnitViewSpec with Injector {
 
     "have email input field" in {
       view().getElementsByAttributeValue("for", emailKey) must containMessageForElements("amendment.submission.email")
+      view().getElementById("email").attr("autocomplete") mustBe "email"
       messages must haveTranslationFor("amendment.submission.email.empty")
       messages must haveTranslationFor("amendment.submission.email.long")
       messages must haveTranslationFor("amendment.submission.email.error")

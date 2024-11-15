@@ -85,6 +85,10 @@ class InvoiceAndExchangeRateViewSpec extends PageWithButtonsSpec with Injector {
         view.getElementById("totalAmountInvoiced").attr("value") mustBe empty
       }
 
+      "display correct autocomplete value for Total Amount Invoiced" in {
+        view.getElementById("totalAmountInvoiced").attr("autocomplete") mustBe "transaction-amount"
+      }
+
       "display empty input with label for Currency code" in {
         view.getElementsByAttributeValue("for", "totalAmountInvoicedCurrency") must containMessageForElements(
           "declaration.totalAmountInvoiced.currency.label"
