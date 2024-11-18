@@ -65,13 +65,11 @@ class Card1ForReferences @Inject() (
           )
         )
 
-    val heading = Html(s"""<h2 class="govuk-heading-m">${messages("declaration.summary.heading")}</h2>""")
-
     val hint =
       if (meta.status == COMPLETE) HtmlFormat.empty
       else paragraph(messages("declaration.summary.amend.body"), "govuk-body govuk-!-display-none-print change-links-paragraph")
 
-    HtmlFormat.fill(List(insets, heading, hint, content(declaration, actionsEnabled, hasErrors, maybeSubmission)))
+    HtmlFormat.fill(List(insets, hint, content(declaration, actionsEnabled, hasErrors, maybeSubmission)))
   }
 
   // Called by the Mini CYA page

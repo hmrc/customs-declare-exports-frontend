@@ -41,10 +41,6 @@ class AmendmentSummaryViewSpec extends SummaryViewSpec {
   "AmendmentSummary page" should {
     val view = createView()
 
-    "have references section" in {
-      view.getElementsByTag("h2").first.text mustBe messages(s"declaration.summary.heading")
-    }
-
     "should display correct title" in {
       view.getElementById("title").text() mustBe messages("declaration.summary.amendment-draft-header")
     }

@@ -1804,7 +1804,6 @@ declaration.summary.draft.ducr = DUCR
 declaration.summary.draft = Adolygwch yr wybodaeth a nodwyd gennych hyd yn hyn.
 declaration.summary.unknown = Anhysbys
 
-declaration.summary.heading = Y datganiad hwn
 declaration.summary.references.insets = Dechreuwch yma i fynd drwy’r cwestiynau o’r dechrau
 declaration.summary.references.creation.date = Dyddiad a grëwyd
 declaration.summary.references.expiration.date = Dyddiad dod i ben

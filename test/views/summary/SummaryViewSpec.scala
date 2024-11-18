@@ -35,9 +35,6 @@ trait SummaryViewSpec extends UnitViewSpec with Injector with Stubs {
     s"declaration in $state state" should {
 
       "have common behaviours such as" when {
-        "have references section" in {
-          view.getElementsByTag("h2").first.text mustBe messages(s"declaration.summary.heading")
-        }
 
         "display Exit and come back later button" in {
           view.getElementById("exit-and-complete-later").text mustBe messages(exitAndReturnCaption)

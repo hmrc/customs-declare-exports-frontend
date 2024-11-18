@@ -85,8 +85,6 @@ class SubmittedDeclarationViewSpec extends UnitViewSpec with Stubs with ExportsT
 
     "have references section" in {
       val view = createView()
-      view.getElementsByTag("h2").get(1).text mustBe messages(s"declaration.summary.heading")
-
       links(view) mustBe empty
     }
 
