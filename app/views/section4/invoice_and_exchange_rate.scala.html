@@ -60,7 +60,8 @@
         name = field.name,
         value = field.value,
         label = Label(content = Text(messages(labelKey)), classes = "govuk-label"),
-        classes = s"$inputClasses ${if(field.hasErrors) "govuk-input--error"}"
+        classes = s"$inputClasses ${if(field.hasErrors) "govuk-input--error"}",
+        autocomplete = Some("transaction-amount")
     ))
 }
 

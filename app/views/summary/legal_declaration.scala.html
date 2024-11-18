@@ -54,7 +54,8 @@
     @exportsInputText(
         field = form(nameKey),
         labelKey = "legal.declaration.fullName",
-        inputClasses = Some("govuk-input govuk-!-width-one-half")
+        inputClasses = Some("govuk-input govuk-!-width-one-half"),
+        autocomplete = Some("name")
     )
 
     @exportsInputText(
@@ -66,7 +67,8 @@
     @exportsInputText(
         field = form(emailKey),
         labelKey = "legal.declaration.email",
-        inputClasses = Some("govuk-input govuk-!-width-one-half")
+        inputClasses = Some("govuk-input govuk-!-width-one-half"),
+        autocomplete = Some("email")
     )
 
     @exportsInputCheckbox(

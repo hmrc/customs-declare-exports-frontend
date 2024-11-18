@@ -76,21 +76,25 @@ class ExporterDetailsViewSpec extends AddressViewSpec with PageWithButtonsSpec w
       "display empty input with label for Full name" in {
         view.getElementsByAttributeValue("for", "details_address_fullName").text() mustBe messages("declaration.address.fullName")
         view.getElementById("details_address_fullName").attr("value") mustBe empty
+        view.getElementById("details_address_fullName").attr("autocomplete") mustBe "organization-title"
       }
 
       "display empty input with label for Address" in {
         view.getElementsByAttributeValue("for", "details_address_addressLine").text() mustBe messages("declaration.address.addressLine.exporter")
         view.getElementById("details_address_addressLine").attr("value") mustBe empty
+        view.getElementById("details_address_addressLine").attr("autocomplete") mustBe "address-line1"
       }
 
       "display empty input with label for Town or City" in {
         view.getElementsByAttributeValue("for", "details_address_townOrCity").text() mustBe messages("declaration.address.townOrCity")
         view.getElementById("details_address_townOrCity").attr("value") mustBe empty
+        view.getElementById("details_address_townOrCity").attr("autocomplete") mustBe "address-line2"
       }
 
       "display empty input with label for Postcode" in {
         view.getElementsByAttributeValue("for", "details_address_postCode").text() mustBe messages("declaration.address.postCode")
         view.getElementById("details_address_postCode").attr("value") mustBe empty
+        view.getElementById("details_address_postCode").attr("autocomplete") mustBe "postal-code"
       }
 
       "display empty input with label for Country" in {

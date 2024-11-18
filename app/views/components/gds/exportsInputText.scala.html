@@ -30,6 +30,7 @@
     hintKeyLinks: Seq[Html] = Seq.empty,
     hintHtml: Option[Html] = None,
     bodyHtml: Option[Html] = None,
+    autocomplete: Option[String] = None,
     labelClasses: String = "",
     defaultInputClasses: String = "govuk-!-width-two-thirds",
     inputClasses: Option[String] = None,
@@ -63,5 +64,6 @@
     value = field.value,
     hint = hintContent,
     errorMessage = InputTextHelper.fieldErrorMessages(field),
-    classes = InputTextHelper.defineInputClasses(defaultInputClasses, inputClasses)
+    classes = InputTextHelper.defineInputClasses(defaultInputClasses, inputClasses),
+    autocomplete = autocomplete
 ))

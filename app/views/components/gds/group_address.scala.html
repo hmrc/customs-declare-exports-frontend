@@ -25,26 +25,30 @@
 @exportsInputText(
     field = form(s"${Address.addressId}.fullName"),
     labelKey = "declaration.address.fullName",
-    defaultInputClasses = "govuk-input--width-30"
+    defaultInputClasses = "govuk-input--width-30",
+    autocomplete = Some("organization-title")
 )
 
 @exportsInputText(
     field = form(s"${Address.addressId}.addressLine"),
     labelKey = s"declaration.address.addressLine${page}",
-    defaultInputClasses = "govuk-input--width-30"
+    defaultInputClasses = "govuk-input--width-30",
+    autocomplete = Some("address-line1")
 )
 
 @exportsInputText(
     field = form(s"${Address.addressId}.townOrCity"),
     labelKey = "declaration.address.townOrCity",
-    defaultInputClasses = "govuk-input govuk-input--width-20"
+    defaultInputClasses = "govuk-input govuk-input--width-20",
+    autocomplete = Some("address-line2")
 )
 
 @exportsInputText(
     field = form(s"${Address.addressId}.postCode"),
     labelKey = "declaration.address.postCode",
     hintKey = Some("declaration.address.postCode.hint"),
-    defaultInputClasses = "govuk-input govuk-input--width-10"
+    defaultInputClasses = "govuk-input govuk-input--width-10",
+    autocomplete = Some("postal-code")
 )
 
 @components.fields.field_accessible_location_autocomplete_with_header(
