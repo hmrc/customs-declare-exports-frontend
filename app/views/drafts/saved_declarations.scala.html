@@ -31,22 +31,22 @@
   paragraphBody: paragraphBody
 )
 
-@(pageOfDraftDeclarationData: Paginated[DraftDeclarationData])(implicit request: Request[_], messages: Messages)
+@(pageOfDraftDeclarations: Paginated[DraftDeclarationData])(implicit request: Request[_], messages: Messages)
 
 @amendmentRowContent(status: DeclarationStatus) = @{
     if (status == AMENDMENT_DRAFT) HtmlContent(messages("draft.declarations.amendment"))
     else HtmlContent(messages("draft.declarations.draft"))
 }
 
-@titleCheck = @{
-    val isAmendment = pageOfDraftDeclarationData.currentPageElements.exists(_.status == AMENDMENT_DRAFT)
-    if (isAmendment) "draft.declarations.title.amendments" else "draft.declarations.title"
+@title = @{
+    val isAmendment = pageOfDraftDeclarations.currentPageElements.exists(_.status == AMENDMENT_DRAFT)
+    messages(if (isAmendment) "draft.declarations.title.amendments" else "draft.declarations.title")
 }
 
 @ducr(data: DraftDeclarationData) = @{ data.ducr.getOrElse(messages("draft.declarations.noDucr")) }
 
 @draftDeclarations = @{
-  pageOfDraftDeclarationData.currentPageElements.map { data =>
+  pageOfDraftDeclarations.currentPageElements.map { data =>
     Seq(
       TableRow(
         content = HtmlContent(formatDateAtTime(data.updatedDateTime))
@@ -78,7 +78,7 @@
 }
 
 @govukLayout(
-    title = Title(titleCheck),
+    title = Title.pageOf(title, pageOfDraftDeclarations.page.index, pageOfDraftDeclarations.pagesAmount),
     backButton = Some(BackButton(messages("site.backToSelectionPage"), ChoiceController.displayPage)),
     useCustomContentWidth = true,
     showDeclarationSummaryLink = false
@@ -86,7 +86,7 @@
 
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
-      @pageTitle(text = messages(titleCheck), classes = "govuk-heading-xl")
+      @pageTitle(title, classes = "govuk-heading-xl")
 
       @paragraphBody(messages("draft.declarations.paragraph"))
 
@@ -102,5 +102,5 @@
     </div>
   </div>
 
-  @pagination(pageOfDraftDeclarationData, neighbourPagesAmount = 2)
+  @pagination(pageOfDraftDeclarations, neighbourPagesAmount = 2)
 }

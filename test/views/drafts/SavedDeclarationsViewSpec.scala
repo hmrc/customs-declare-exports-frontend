@@ -47,21 +47,28 @@ class SavedDeclarationsViewSpec extends UnitViewSpec with Injector {
   private val draftWithoutDucr =
     DraftDeclarationData("draftId", None, DRAFT, LocalDateTime.of(year, 1, 1, 9, 45, 0).toInstant(ZoneOffset.UTC))
 
-  private def createView(declarations: Seq[DraftDeclarationData] = List.empty, pageIx: Int = 1, pageSize: Int = 10, total: Int = 0): Appendable = {
-    val data = Paginated(declarations, Page(pageIx, pageSize), total)
+  private def createView(declarations: Seq[DraftDeclarationData] = List.empty, pageIx: Int = 1, pageSize: Int = 10): Appendable = {
+    val data = Paginated(declarations, Page(pageIx, pageSize), declarations.size)
     page(data)(request, messages)
   }
 
   "Draft Declarations View" should {
 
-    "display empty declaration list " in {
+    "display the expected title" in {
+      val view = createView(List.fill(22)(draftWithoutDucr), 5, 4)
+      checkTitle(view, 6, 5)
+    }
+
+    "display an empty page on an empty declaration list" in {
       val view = createView()
 
-      view.getElementsByClass("govuk-heading-xl").get(0) must containMessage("draft.declarations.title")
+      checkTitle(view, 1)
+
+      view.getElementsByClass("govuk-heading-xl").first must containMessage("draft.declarations.title")
 
       view.title() must include(view.getElementsByTag("h1").text())
 
-      view.getElementsByClass("govuk-body").get(0) must containMessage("draft.declarations.paragraph")
+      view.getElementsByClass("govuk-body").first must containMessage("draft.declarations.paragraph")
 
       tableHead(view)(0).text() mustBe messages(dateSaved)
       tableHead(view)(1).text() mustBe messages(ducr)
@@ -74,10 +81,12 @@ class SavedDeclarationsViewSpec extends UnitViewSpec with Injector {
     }
 
     "display created declarations before BST" in {
-      val view = createView(declarations = List(draftWithoutDucr), total = 1)
+      val view = createView(declarations = List(draftWithoutDucr))
 
-      view.getElementsByClass("govuk-heading-xl").get(0) must containMessage("draft.declarations.title")
-      view.getElementsByClass("govuk-body").get(0) must containMessage("draft.declarations.paragraph")
+      checkTitle(view, 1)
+
+      view.getElementsByClass("govuk-heading-xl").first must containMessage("draft.declarations.title")
+      view.getElementsByClass("govuk-body").first must containMessage("draft.declarations.paragraph")
 
       numberOfTableRows(view) mustBe 1
 
@@ -95,10 +104,10 @@ class SavedDeclarationsViewSpec extends UnitViewSpec with Injector {
       val updatedDateTimeAfterBST = LocalDateTime.of(year, 5, 1, 9, 45, 0).toInstant(ZoneOffset.UTC)
       val draftWithoutDucrAfterBST = draftWithoutDucr.copy(updatedDateTime = updatedDateTimeAfterBST)
 
-      val view = createView(declarations = List(draftWithoutDucrAfterBST), total = 1)
+      val view = createView(declarations = List(draftWithoutDucrAfterBST))
 
-      view.getElementsByClass("govuk-heading-xl").get(0) must containMessage("draft.declarations.title")
-      view.getElementsByClass("govuk-body").get(0) must containMessage("draft.declarations.paragraph")
+      view.getElementsByClass("govuk-heading-xl").first must containMessage("draft.declarations.title")
+      view.getElementsByClass("govuk-body").first must containMessage("draft.declarations.paragraph")
 
       numberOfTableRows(view) mustBe 1
 
@@ -113,12 +122,12 @@ class SavedDeclarationsViewSpec extends UnitViewSpec with Injector {
     }
 
     "display created with Amendment" in {
-      val view = createView(declarations = List(draftWithoutDucr.copy(status = AMENDMENT_DRAFT)), total = 1)
+      val view = createView(declarations = List(draftWithoutDucr.copy(status = AMENDMENT_DRAFT)))
 
       numberOfTableRows(view) mustBe 1
 
-      view.getElementsByClass("govuk-heading-xl").get(0) must containMessage("draft.declarations.title.amendments")
-      view.getElementsByClass("govuk-body").get(0) must containMessage("draft.declarations.paragraph")
+      view.getElementsByClass("govuk-heading-xl").first must containMessage("draft.declarations.title.amendments")
+      view.getElementsByClass("govuk-body").first must containMessage("draft.declarations.paragraph")
 
       tableCell(view)(1, 0).text() mustBe s"1 January $year at 9:45am"
       tableCell(view)(1, 1) must containMessage("draft.declarations.noDucr")
@@ -147,7 +156,7 @@ class SavedDeclarationsViewSpec extends UnitViewSpec with Injector {
   private def tableHead(view: Html)(column: Int): Element =
     view
       .select(".govuk-table__head")
-      .first()
+      .first
       .getElementsByClass("govuk-table__header")
       .get(column)
 
@@ -157,4 +166,9 @@ class SavedDeclarationsViewSpec extends UnitViewSpec with Injector {
       .get(row)
       .getElementsByClass("govuk-table__cell")
       .get(column)
+
+  private def checkTitle(view: Html, pageOf: Int, currentPage: Int = 1): Assertion = {
+    val title = view.getElementsByTag("title").first
+    title.text mustBe s"${messages("draft.declarations.title")} - Page $currentPage of $pageOf - ${messages("service.name")} - GOV.UK"
+  }
 }

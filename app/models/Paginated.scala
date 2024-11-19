@@ -23,7 +23,7 @@ import scala.util.Try
 case class Paginated[T](currentPageElements: Seq[T], page: Page, elementsTotal: Long) {
   def map[A](mapper: T => A): Paginated[A] = Paginated(currentPageElements.map(mapper), page, elementsTotal)
   def nonEmpty: Boolean = currentPageElements.nonEmpty
-  def pagesAmount: Int = Math.ceil(elementsTotal.toDouble / page.size).toInt
+  def pagesAmount: Int = Math.max(1, Math.ceil(elementsTotal.toDouble / page.size).toInt)
   def currentPageSize: Int = currentPageElements.size
 }
 

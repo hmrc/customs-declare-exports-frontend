@@ -19,11 +19,11 @@ package models
 import play.api.libs.json.{Json, OFormat}
 import play.api.mvc.QueryStringBindable
 
-case class Page(index: Int = Page.DEFAULT_INDEX, size: Int = Page.DEFAULT_MAX_DOCUMENT_PER_PAGE)
+case class Page(index: Int = Page.DEFAULT_INDEX, size: Int = Page.MAX_DOCUMENT_PER_PAGE)
 
 object Page {
   val DEFAULT_INDEX = 1
-  val DEFAULT_MAX_DOCUMENT_PER_PAGE = 25
+  val MAX_DOCUMENT_PER_PAGE = 25
 
   implicit val format: OFormat[Page] = Json.format[Page]
 
@@ -35,7 +35,7 @@ object Page {
 
     override def bind(key: String, params: Map[String, Seq[String]]): Option[Either[String, Page]] = {
       val index = params.get(queryParamIndex(key)).flatMap(_.headOption).map(_.toInt).getOrElse(DEFAULT_INDEX)
-      val size = params.get(queryParamSize(key)).flatMap(_.headOption).map(_.toInt).getOrElse(DEFAULT_MAX_DOCUMENT_PER_PAGE)
+      val size = params.get(queryParamSize(key)).flatMap(_.headOption).map(_.toInt).getOrElse(MAX_DOCUMENT_PER_PAGE)
       Some(Right(Page(index, size)))
     }
 

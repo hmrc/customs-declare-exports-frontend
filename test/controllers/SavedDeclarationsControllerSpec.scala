@@ -50,7 +50,7 @@ class SavedDeclarationsControllerSpec extends ControllerWithoutFormSpec {
 
     authorizedUser()
     when(savedDeclarations.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
-    when(paginationConfig.itemsPerPage).thenReturn(Page.DEFAULT_MAX_DOCUMENT_PER_PAGE)
+    when(paginationConfig.itemsPerPage).thenReturn(Page.MAX_DOCUMENT_PER_PAGE)
   }
 
   override protected def afterEach(): Unit = reset(mockCustomsDeclareExportsConnector, savedDeclarations, paginationConfig)

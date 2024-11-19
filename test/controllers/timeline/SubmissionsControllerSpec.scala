@@ -87,7 +87,7 @@ class SubmissionsControllerSpec extends ControllerWithoutFormSpec with MockExpor
     setupErrorHandler()
     authorizedUser()
     when(submittedDeclaration.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
-    when(paginationConfig.itemsPerPage).thenReturn(Page.DEFAULT_MAX_DOCUMENT_PER_PAGE)
+    when(paginationConfig.itemsPerPage).thenReturn(Page.MAX_DOCUMENT_PER_PAGE)
   }
 
   override protected def afterEach(): Unit = {

@@ -756,6 +756,7 @@ draft.declarations.remove.title = Are you sure you want to remove this declarati
 draft.declarations.remove.submitButton = Continue
 draft.declarations.remove.option.error.empty = Select yes if you want to remove this declaration
 
+pagination.page.of = {0} - Page {1} of {2}
 pagination.next = Next
 pagination.previous = Previous
 
