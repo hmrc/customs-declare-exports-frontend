@@ -25,7 +25,7 @@
 @page_summary(pager)
 
 @if(pager.pagesAmount > 1) {
-  <nav class="govuk-pagination" aria-label="Pagination">
+  <nav class="govuk-pagination" aria-label="@messages("aria.label.pagination")">
     @if(pager.page.index > 1) {
       <div class="govuk-pagination__prev">
         <a class="govuk-link govuk-pagination__link" href="@onChange(pager.page.index - 1)" rel="prev">
@@ -42,7 +42,7 @@
         @paginationItem match {
           case PageNumber(pageNumber) => {
             <li class="govuk-pagination__item">
-              <a class="govuk-link govuk-pagination__link" href="@onChange(pageNumber)" aria-label="Page @pageNumber">
+              <a class="govuk-link govuk-pagination__link" href="@onChange(pageNumber)" aria-label="@messages("aria.label.page.number", pageNumber)">
                 @{paginationItem.value}
               </a>
             </li>
@@ -51,7 +51,7 @@
             <li class="govuk-pagination__item govuk-pagination__item--ellipses">@{paginationItem.value}</li>
           }
           case ActivePageNumber(pageNumber) => {
-            <li class="govuk-pagination__item govuk-pagination__item--current" aria-label="Page @pageNumber" aria-current="page">
+            <li class="govuk-pagination__item govuk-pagination__item--current" aria-label="@messages("aria.label.page.number", pageNumber)" aria-current="page">
               @{paginationItem.value}
             </li>
           }

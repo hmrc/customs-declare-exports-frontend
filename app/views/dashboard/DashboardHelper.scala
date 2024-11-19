@@ -156,7 +156,7 @@ object DashboardHelper {
     }.mkString
 
     Html(s"""
-         |<nav id="filters" aria-label="declaration filter">
+         |<nav id="filters" aria-label="${messages("aria.label.filters")}">
          |  <div class="govuk-button-group">$groupOfButtons</div>
          |</nav>
          |""".stripMargin)

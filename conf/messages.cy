@@ -7,6 +7,10 @@ service.name = Gwneud a rheoli datganiad allforio ar-lein
 feedback = Gwasanaeth newydd yn hwn – bydd eich {0} yn ein helpu i’w wella.
 feedback.link = adborth
 
+aria.label.filters = hidlydd datganiadau
+aria.label.pagination = Tudaleniad
+aria.label.page.number = Tudalen {0}
+
 title.format = {0} - {1} - GOV.UK
 title.hasErrors.format = Gwall: {0} - {1} - GOV.UK
 

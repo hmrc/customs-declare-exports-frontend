@@ -41,7 +41,7 @@
 @page_summary(pageOfSubmissions.totalSubmissionsInGroup, pageOfSubmissions.submissions.size, currentPage)
 
 @if(pageOfSubmissions.totalSubmissionsInGroup > paginationConfig.itemsPerPage) {
-  <nav class="govuk-pagination" aria-label="Pagination">
+  <nav class="govuk-pagination" aria-label="@messages("aria.label.pagination")">
     @if(currentPage > 1) {
       <div class="govuk-pagination__prev">
         <a class="govuk-link govuk-pagination__link" href="@hrefForPreviousPage(currentPage - 1, pageOfSubmissions, baseHref)" rel="prev">
@@ -58,7 +58,7 @@
         @paginationItem match {
           case PageNumber(pageNumber) => {
             <li class="govuk-pagination__item">
-              <a class="govuk-link govuk-pagination__link" href="@hrefForGoToPage(pageNumber)" aria-label="Page @pageNumber">
+              <a class="govuk-link govuk-pagination__link" href="@hrefForGoToPage(pageNumber)" aria-label="@messages("aria.label.page.number", pageNumber)">
                 @{paginationItem.value}
               </a>
             </li>
@@ -67,7 +67,7 @@
             <li class="govuk-pagination__item govuk-pagination__item--ellipses">@{paginationItem.value}</li>
           }
           case ActivePageNumber(pageNumber) => {
-            <li class="govuk-pagination__item govuk-pagination__item--current" aria-label="Page @pageNumber" aria-current="page">
+            <li class="govuk-pagination__item govuk-pagination__item--current" aria-label="@messages("aria.label.page.number", pageNumber)" aria-current="page">
               @{paginationItem.value}
             </li>
           }
