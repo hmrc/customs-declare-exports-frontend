@@ -20,42 +20,52 @@ import controllers.section6.routes._
 import controllers.summary.routes.SummaryController
 import forms.section6.ModeOfTransportCode.Empty
 import models.ExportsDeclaration
-import models.declaration.{Container, Locations, Transport}
+import models.declaration.{Locations, Transport}
 import models.requests.JourneyRequest
 import play.api.i18n.Messages
 import play.api.mvc.Call
 import play.twirl.api.{Html, HtmlFormat}
-import uk.gov.hmrc.govukfrontend.views.html.components.{GovukSummaryList, SummaryList}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import views.helpers.CountryHelper
 import views.helpers.summary.SummaryHelper.hasTransportData
+import views.html.summary.summary_card
 
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class Card6ForTransport @Inject() (govukSummaryList: GovukSummaryList, countryHelper: CountryHelper) extends SummaryCard {
+class Card6ForTransport @Inject() (summaryCard: summary_card, countryHelper: CountryHelper) extends SummaryCard {
 
+  // Called by the Final CYA page
   def eval(declaration: ExportsDeclaration, actionsEnabled: Boolean = true)(implicit messages: Messages): Html =
     if (hasTransportData(declaration)) content(declaration, actionsEnabled) else HtmlFormat.empty
 
-  def content(declaration: ExportsDeclaration, actionsEnabled: Boolean)(implicit messages: Messages): Html =
-    govukSummaryList(SummaryList(rows(declaration, actionsEnabled), card(6)))
+  // Called by the Mini CYA page
+  override def content(declaration: ExportsDeclaration, actionsEnabled: Boolean)(implicit messages: Messages): Html =
+    summaryCard(card(6), rows(declaration, actionsEnabled))
 
-  private def rows(declaration: ExportsDeclaration, actionsEnabled: Boolean)(implicit messages: Messages): Seq[SummaryListRow] =
-    (
-      List(
-        borderTransport(declaration.transport, actionsEnabled),
-        warehouseIdentification(declaration.locations, actionsEnabled),
-        supervisingCustomsOffice(declaration.locations, actionsEnabled),
-        inlandOrBorder(declaration.locations, actionsEnabled),
-        inlandModeOfTransport(declaration.locations, actionsEnabled),
-        transportReference(declaration.transport, actionsEnabled),
-        activeTransportType(declaration.transport, actionsEnabled),
-        transportCrossingTheBorder(declaration.transport, actionsEnabled),
-        expressConsignment(declaration.transport, actionsEnabled),
-        transportPayment(declaration.transport, actionsEnabled)
-      )
-        ++ containers(declaration.transport, actionsEnabled)
+  override def backLink(implicit request: JourneyRequest[_]): Call =
+    ContainerController.displayContainerSummary
+
+  override def continueTo(implicit request: JourneyRequest[_]): Call =
+    SummaryController.displayPage
+
+  private def rows(declaration: ExportsDeclaration, actionsEnabled: Boolean)(implicit messages: Messages): Seq[SummarySection] =
+    List(
+      maybeSummarySection(
+        List(
+          borderTransport(declaration.transport, actionsEnabled),
+          warehouseIdentification(declaration.locations, actionsEnabled),
+          supervisingCustomsOffice(declaration.locations, actionsEnabled),
+          inlandOrBorder(declaration.locations, actionsEnabled),
+          inlandModeOfTransport(declaration.locations, actionsEnabled),
+          transportReference(declaration.transport, actionsEnabled),
+          activeTransportType(declaration.transport, actionsEnabled),
+          transportCrossingTheBorder(declaration.transport, actionsEnabled),
+          expressConsignment(declaration.transport, actionsEnabled),
+          transportPayment(declaration.transport, actionsEnabled)
+        )
+      ),
+      ContainersHelper.maybeSummarySection(declaration.transport, actionsEnabled)
     ).flatten
 
   private def borderTransport(transport: Transport, actionsEnabled: Boolean)(implicit messages: Messages): Option[SummaryListRow] =
@@ -176,45 +186,4 @@ class Card6ForTransport @Inject() (govukSummaryList: GovukSummaryList, countryHe
         changeLink(ExpressConsignmentController.displayPage, "transport.expressConsignment", actionsEnabled)
       )
     }
-
-  private def containers(transport: Transport, actionsEnabled: Boolean)(implicit messages: Messages): Option[List[SummaryListRow]] =
-    transport.containers flatMap { containers =>
-      val rows = containers.flatMap(containerRows(_, actionsEnabled))
-
-      if (rows.isEmpty) {
-        val header =
-          SummaryListRow(
-            key("containers"),
-            valueKey("site.none"),
-            classes = "containers-heading",
-            changeLink(ContainerController.displayContainerSummary, "container", actionsEnabled)
-          )
-        Some(List(header))
-      } else
-        heading("containers", "container") map { header =>
-          List(header) ++ rows
-        }
-    }
-
-  private def containerRows(container: Container, actionsEnabled: Boolean)(implicit messages: Messages): List[SummaryListRow] = {
-    val valueOfSeals =
-      if (container.seals.isEmpty) messages("declaration.summary.container.securitySeals.none")
-      else container.seals.map(_.id).mkString(", ")
-
-    List(
-      SummaryListRow(
-        key("container.id"),
-        value(container.id),
-        classes = s"govuk-summary-list__row--no-border container container-${container.sequenceId}",
-        changeLink(ContainerController.displayContainerSummary, "container", actionsEnabled)
-      ),
-      SummaryListRow(key("container.securitySeals"), value(valueOfSeals), classes = s"seal container-${container.sequenceId}-seals")
-    )
-  }
-
-  override def backLink(implicit request: JourneyRequest[_]): Call =
-    ContainerController.displayContainerSummary
-
-  override def continueTo(implicit request: JourneyRequest[_]): Call =
-    SummaryController.displayPage
 }

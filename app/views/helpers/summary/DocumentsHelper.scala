@@ -28,29 +28,29 @@ import javax.inject.{Inject, Singleton}
 @Singleton
 class DocumentsHelper @Inject() (documentTypeService: DocumentTypeService) extends SummaryHelper {
 
-  def section(declaration: ExportsDeclaration, actionsEnabled: Boolean)(implicit messages: Messages): Seq[Option[SummaryListRow]] =
+  def maybeSummarySection(declaration: ExportsDeclaration, actionsEnabled: Boolean)(implicit messages: Messages): Option[SummarySection] =
     declaration.previousDocuments.map { previousDocuments =>
       val summaryListRows = previousDocuments.documents.zipWithIndex.flatMap { case (document, index) =>
-        List(Some(documentTypeCode(document, actionsEnabled, index + 1)), Some(documentRef(document, index + 1)))
-      }
-      if (summaryListRows.isEmpty) headingOnNoRows(actionsEnabled)
-      else heading("previous-documents", "transaction.previousDocuments") +: summaryListRows
-    }
-      .getOrElse(List.empty)
+        List(Some(documentTypeCode(document, index + 1, actionsEnabled)), Some(documentRef(document, index + 1)))
+      }.flatten
 
-  private def headingOnNoRows(actionsEnabled: Boolean)(implicit messages: Messages): Seq[Option[SummaryListRow]] =
-    List(
-      Some(
+      if (summaryListRows.isEmpty) headingOnNoDocuments(actionsEnabled)
+      else SummarySection(summaryListRows, Some(SummarySectionHeading("previous-documents", "transaction.previousDocuments")))
+    }
+
+  private def headingOnNoDocuments(actionsEnabled: Boolean)(implicit messages: Messages): SummarySection =
+    SummarySection(
+      List(
         SummaryListRow(
           key("transaction.previousDocuments"),
           valueKey("site.none"),
-          classes = "previous-documents-heading",
+          classes = "heading-on-no-data previous-documents-heading",
           changeDocuments(actionsEnabled)
         )
       )
     )
 
-  private def documentTypeCode(document: Document, actionsEnabled: Boolean, index: Int)(implicit messages: Messages): SummaryListRow =
+  private def documentTypeCode(document: Document, index: Int, actionsEnabled: Boolean)(implicit messages: Messages): SummaryListRow =
     SummaryListRow(
       key("transaction.previousDocuments.type"),
       value(documentTypeService.findByCode(document.documentType).asText),

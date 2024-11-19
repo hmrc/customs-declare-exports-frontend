@@ -1,0 +1,49 @@
+@*
+ * Copyright 2024 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.Card
+@import views.helpers.summary.{ItemSection, SummarySection}
+@import views.helpers.summary.SummaryHelper.addItemLinkId
+
+@this(summarySection: summary_section)
+
+@(card: Card, summarySections: Seq[SummarySection], maybeAddItemSection: Option[ItemSection] = None)(implicit messages: Messages)
+
+@toClasses(firstClass: String, additionalClasses: String*): String = @{
+  additionalClasses.foldLeft(firstClass) { (accum, additionalClass) =>
+    if (additionalClass.trim.isEmpty) accum else s"$accum $additionalClass"
+  }
+}
+
+<div class="@toClasses("govuk-summary-card", card.classes)">
+  <div class="govuk-summary-card__title-wrapper">
+    @card.title.map { cardTitle =>
+      <h2 class="@toClasses("govuk-summary-card__title", cardTitle.classes)">
+         @cardTitle.content.asHtml
+      </h2>
+    }
+    @maybeAddItemSection.map { addItemSection =>
+      <div class="govuk-summary-card__actions">
+        <a id="@addItemLinkId" class="govuk-link" href="@addItemSection.href">
+          @messages("declaration.summary.items.add")
+        </a>
+      </div>
+    }
+  </div>
+  <div class="govuk-summary-card__content">
+    @summarySections.map(summarySection(_))
+  </div>
+</div>

@@ -30,7 +30,6 @@ import views.helpers.ActionItemBuilder.callForSummaryChangeLink
 import scala.concurrent.Future
 import scala.jdk.CollectionConverters.IteratorHasAsScala
 import scala.language.implicitConversions
-import scala.util.Try
 
 //noinspection ScalaStyle
 trait ViewMatchers {
@@ -103,14 +102,23 @@ trait ViewMatchers {
   val summaryValueClassName = "govuk-summary-list__value"
   val summaryActionsClassName = "govuk-summary-list__actions"
 
-  def haveSummaryKey(value: String) = new ElementsHasElementsContainingTextMatcher(summaryKeyClassName, value)
-  def haveSummaryValue(value: String) = new ElementsHasElementsContainingTextMatcher(summaryValueClassName, value)
+  def haveSummaryKey(value: String) = new ElementsHaveElementsContainingTextMatcher(summaryKeyClassName, value)
+  def haveSummaryValue(value: String) = new ElementsHaveElementsContainingTextMatcher(summaryValueClassName, value)
+
+  def hasSummaryKey(value: String) = new ElementHasElementsContainingTextMatcher(summaryKeyClassName, value)
+  def hasSummaryValue(value: String) = new ElementHasElementsContainingTextMatcher(summaryValueClassName, value)
 
   def haveSummaryActionsHref(value: Call) =
-    new ElementsHasSummaryActionMatcher(value)
+    new ElementsHaveSummaryActionMatcher(value)
+
+  def haveSummaryAction(value: Call, expectedText: String = "") =
+    new ElementHasSummaryActionMatcher(value, expectedText)
 
   def haveSummaryActionWithPlaceholder(value: Call) =
-    new ElementsHasSummaryActionMatcher(callForSummaryChangeLink(value))
+    new ElementsHaveSummaryActionMatcher(callForSummaryChangeLink(value))
+
+  def haveSummaryActionWithPlaceholder(expectedCall: Call, expectedText: String) =
+    new ElementHasSummaryActionMatcher(callForSummaryChangeLink(expectedCall), expectedText)
 
   def haveChildCount(count: Int): Matcher[Element] = new ElementHasChildCountMatcher(count)
 
@@ -354,22 +362,44 @@ trait ViewMatchers {
     }
   }
 
-  class ElementsHasElementsContainingTextMatcher(elementsClass: String, value: String) extends Matcher[Elements] {
+  class ElementsHaveElementsContainingTextMatcher(elementsClass: String, value: String) extends Matcher[Elements] {
     override def apply(left: Elements): MatchResult =
       MatchResult(
         left != null && left.first().getElementsByClass(elementsClass).text() == value,
         s"Elements with class {$elementsClass} had text {${left.first().getElementsByClass(elementsClass).text()}}, expected {$value}",
-        s"Element with class {$elementsClass} had text {${left.first().getElementsByClass(elementsClass).text()}}"
+        s"Elements with class {$elementsClass} had text {${left.first().getElementsByClass(elementsClass).text()}}"
       )
   }
 
-  class ElementsHasSummaryActionMatcher(value: Call) extends Matcher[Elements] {
+  class ElementHasElementsContainingTextMatcher(elementsClass: String, value: String) extends Matcher[Element] {
+    override def apply(left: Element): MatchResult =
+      MatchResult(
+        left.getElementsByClass(elementsClass).text == value,
+        s"Element with class {$elementsClass} had text {${left.getElementsByClass(elementsClass).text}}, expected {$value}",
+        s"Element with class {$elementsClass} had text {${left.getElementsByClass(elementsClass).text}}"
+      )
+  }
+
+  class ElementsHaveSummaryActionMatcher(value: Call) extends Matcher[Elements] {
     override def apply(left: Elements): MatchResult = {
-      val actionElement = Try(left.first().getElementsByClass("govuk-link").first()).toOption.orNull
+      val actionElement = Option(left.first.getElementsByClass("govuk-link").first).orNull
 
       MatchResult(
         left != null && actionElement != null && actionElement.attr("href") == value.url,
         s"Elements had no summary action {$value}\n${actualContentWas(actionElement)}",
+        s"Elements had summary action {$value}"
+      )
+    }
+  }
+
+  class ElementHasSummaryActionMatcher(value: Call, expectedText: String = "") extends Matcher[Element] {
+    override def apply(left: Element): MatchResult = {
+      val actionElement = Option(left.getElementsByClass("govuk-link").first).orNull
+
+      MatchResult(
+        actionElement != null && actionElement.attr("href") == value.url &&
+          (expectedText.trim.isEmpty || actionElement.text.startsWith(expectedText)),
+        s"Element had no summary action {$value}\n${actualContentWas(actionElement)}",
         s"Element had summary action {$value}"
       )
     }

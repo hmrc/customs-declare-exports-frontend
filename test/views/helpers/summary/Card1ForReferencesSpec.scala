@@ -195,8 +195,7 @@ class Card1ForReferencesSpec extends UnitViewSpec with ExportsTestHelper with In
 
     "have the expected headings" in {
       val headings = finalCyaView(declaration).getElementsByTag("h2")
-      headings.first.text mustBe messages("declaration.summary.heading")
-      headings.last.text mustBe messages("declaration.summary.section.1")
+      headings.first.text mustBe messages("declaration.summary.section.1")
     }
 
     "have a 'change links' paragraph" when {
@@ -218,7 +217,8 @@ class Card1ForReferencesSpec extends UnitViewSpec with ExportsTestHelper with In
 
     "return a marked (with a red left border) card" when {
       "the declaration has errors" in {
-        val summaryCard = finalCyaView(declaration, hasErrors = true).getElementsByClass("govuk-summary-card").get(0)
+        val view = finalCyaView(declaration, hasErrors = true)
+        val summaryCard = view.getElementsByClass("govuk-summary-card").get(0)
         assert(summaryCard.hasClass("govuk-summary-card--error"))
       }
     }

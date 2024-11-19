@@ -25,15 +25,15 @@
 @import views.components.gds.Styles.gdsPageLegend
 @import views.helpers.ErrorMapper.yesNoErrors
 @import views.helpers.{BackButton, Title}
+@import views.helpers.summary.ItemHelper
 @import views.html.components.gds._
-@import views.html.summary.sections.item_section
 
 @this(
   govukLayout: gdsMainTemplate,
   govukFieldset: GovukFieldset,
   errorSummary: errorSummary,
   sectionHeader: sectionHeader,
-  item_section: item_section,
+  itemHelper: ItemHelper,
   yesNoRadios: yesNoRadios,
   saveButtons: saveButtons,
   saveAndReturnToSummary: saveAndReturnToSummary,
@@ -67,7 +67,7 @@
           isPageHeading = true
         )),
         html = HtmlFormat.fill(Seq(
-          item_section(item, itemIdx, request.declarationType),
+          itemHelper.content(item, itemDisplayNum, request.declarationType),
           Html("""<div class="govuk-!-margin-top-7"/>"""),
           yesNoRadios(form, inline = true),
           buttons
