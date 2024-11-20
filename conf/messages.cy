@@ -760,6 +760,7 @@ declaration.details.upload.files.title = Os ydych eisoes wedi uwchlwytho ffeilia
 declaration.details.upload.files.hint = Os ydych eisoes wedi uwchlwytho ac atodi’r dogfennau sy’n ategu’ch datganiad, nid oes rhaid i chi atodi unrhyw ddogfennau pellach, oni bai bod gofyn i chi wneud hynny mewn ymholiad gan awdurdodau tollau.
 declaration.details.uploading.documents = Uwchlwythwch ddogfennau ategol (yn agor tab newydd)
 declaration.details.view.amendment.details = Bwrw golwg dros y manylion
+declaration.details.view.amendment.hiddenDetails = ar gyfer Diwygiad a wnaed cais amdano ar {0}
 declaration.details.view.external.amendment.details = Ynghylch diwygiadau gan drydydd parti awdurdodedig
 declaration.details.view.declaration = Bwrw golwg dros neu argraffu’r datganiad
 declaration.details.view.queries.button = Bwrw golwg dros ymholiadau

@@ -777,6 +777,7 @@ declaration.details.upload.files.title = If you already uploaded files
 declaration.details.upload.files.hint = If you have already uploaded and attached the documents that support your declaration, you do not have to attach any further documents, unless you are asked to do so in a query from customs authorities.
 declaration.details.uploading.documents = Upload supporting documents (opens in new tab)
 declaration.details.view.amendment.details = View details
+declaration.details.view.amendment.hiddenDetails = for Amendment requested on {0}
 declaration.details.view.external.amendment.details = About third party amendments
 declaration.details.view.declaration = View or print declaration
 declaration.details.view.queries.button = View queries
