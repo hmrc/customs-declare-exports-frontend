@@ -29,7 +29,7 @@ import play.api.i18n.Messages
 import play.api.mvc.Call
 import play.twirl.api.{Html, HtmlFormat}
 import views.helpers.NotificationEvent.maxSecondsBetweenClearedAndArrived
-import views.html.components.gds.{link, linkButton, paragraphBody}
+import views.html.components.gds.{link, linkButton, paragraphBody, spanVisuallyHidden}
 import views.html.components.upload_files_partial_for_timeline
 
 import java.time.ZonedDateTime
@@ -57,6 +57,7 @@ class TimelineEvents @Inject() (
   link: link,
   linkButton: linkButton,
   paragraphBody: paragraphBody,
+  spanVisuallyHidden: spanVisuallyHidden,
   sfusConfig: SfusConfig,
   uploadFilesPartialForTimeline: upload_files_partial_for_timeline
 ) extends Logging {
@@ -87,7 +88,7 @@ class TimelineEvents @Inject() (
             paragraphBody(
               messages("submission.enhancedStatus.timeline.content.external.amendment"),
               "govuk-body govuk-!-margin-bottom-2"
-            ).toString + viewAmendmentDetails(notificationEvent.actionId, true).toString
+            ).toString + viewAmendmentDetails(notificationEvent.actionId, true, notificationEvent.notificationSummary.dateTimeIssued).toString
           )
 
         case IndexToMatchForUploadFilesContent if IndexToMatchForFixResubmitContent < 0 =>
@@ -100,7 +101,7 @@ class TimelineEvents @Inject() (
 
         case _ =>
           val showAmendDetails = notificationEvent.requestType == AmendmentRequest && notificationEvent.notificationSummary.enhancedStatus == AMENDED
-          if (showAmendDetails) viewAmendmentDetails(notificationEvent.actionId, false)
+          if (showAmendDetails) viewAmendmentDetails(notificationEvent.actionId, false, notificationEvent.notificationSummary.dateTimeIssued)
           else HtmlFormat.empty
       }
 
@@ -243,12 +244,15 @@ class TimelineEvents @Inject() (
   private def uploadFilesContent(mrn: Option[String], isPrimary: Boolean)(implicit messages: Messages): Html =
     uploadFilesPartialForTimeline(mrn, isPrimary)
 
-  private def viewAmendmentDetails(actionId: String, isExternalAmendment: Boolean)(implicit messages: Messages): Html = {
+  private def viewAmendmentDetails(actionId: String, isExternalAmendment: Boolean, dateTimeIssued: ZonedDateTime)(
+    implicit messages: Messages
+  ): Html = {
     val key =
       if (isExternalAmendment) "declaration.details.view.external.amendment.details"
       else "declaration.details.view.amendment.details"
 
-    link(messages(key), AmendmentDetailsController.displayPage(actionId))
+    val spanContent = spanVisuallyHidden(messages("declaration.details.view.amendment.hiddenDetails", ViewDates.formatDateAtTime(dateTimeIssued)))
+    link(s"${messages(key)} $spanContent", AmendmentDetailsController.displayPage(actionId))
   }
 
   private def viewQueriesContent(isPrimary: Boolean)(implicit messages: Messages): Html =
