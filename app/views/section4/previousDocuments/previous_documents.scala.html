@@ -25,7 +25,7 @@
 @import services.{DocumentType, DocumentTypeService}
 @import services.view.AutoCompleteItem
 @import uk.gov.hmrc.govukfrontend.views.html.components._
-@import views.helpers.{BackButton, PreviousDocumentsHelper, Title}
+@import views.helpers.{BackButton, PreviousDocumentsHelper, Title,BackLinkHelper}
 @import views.html.components.fields.field_accessible_autocomplete
 @import views.html.components.gds._
 
@@ -51,10 +51,7 @@
 
 @backLink = @{ navigator.backLink(Document) }
 
-@backButtonText = @{
-    if (backLink == SectionSummaryController.displayPage(3)) "site.back"
-    else "site.backToPreviousQuestion"
-}
+@backButtonText = @{BackLinkHelper.getBackLink(navigator)}
 
 @referenceClasses = @{
     if (templateHelper.versionSelection == 1) Some("govuk-!-margin-bottom-4") else None

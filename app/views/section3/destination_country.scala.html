@@ -49,7 +49,7 @@
 
 @govukLayout(
     title = Title("declaration.destinationCountry.title", "declaration.section.3", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.back"), navigator.backLink(DestinationCountryPage)))){
+    backButton = Some(BackButton(messages("site.backToPreviousSection"), navigator.backLink(DestinationCountryPage)))){
 
     @formHelper(action = DestinationCountryController.submit, 'autoComplete -> "off") {
         @errorSummary(form.errors)
