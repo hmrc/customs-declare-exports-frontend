@@ -32,7 +32,7 @@ import play.api.libs.json.Json
 import views.common.UnitViewSpec
 import views.helpers.NotificationEvent.maxSecondsBetweenClearedAndArrived
 import views.helpers.TimelineEventsSpec._
-import views.html.components.gds.{link, linkButton, paragraphBody}
+import views.html.components.gds.{link, linkButton, paragraphBody, spanVisuallyHidden}
 import views.html.components.upload_files_partial_for_timeline
 
 import java.time.ZonedDateTime
@@ -53,7 +53,8 @@ class TimelineEventsSpec extends UnitViewSpec with BeforeAndAfterEach with Injec
 
   private def issued(days: Long = 0): ZonedDateTime = ZonedDateTime.now.plusDays(days)
 
-  private val timelineEvents = new TimelineEvents(new link, new linkButton, new paragraphBody, mockSfusConfig, uploadFilesPartialForTimeline)
+  private val timelineEvents =
+    new TimelineEvents(new link, new linkButton, new paragraphBody, new spanVisuallyHidden, mockSfusConfig, uploadFilesPartialForTimeline)
 
   private def genTimelineEvents(
     notificationSummaries: Seq[NotificationSummary],
@@ -200,7 +201,8 @@ class TimelineEventsSpec extends UnitViewSpec with BeforeAndAfterEach with Injec
 
       val detailsLink = timelineEvents(1).content.value.getElementsByTag("a").get(0)
       assert(detailsLink.attr("href").endsWith(s"/amendment-details/${amendmentGranted(1).id}"))
-      detailsLink.text() mustBe messages("declaration.details.view.amendment.details")
+      detailsLink.text() must startWith(messages("declaration.details.view.amendment.details"))
+      detailsLink.html() must include("""<span class="govuk-visually-hidden">""")
     }
 
     "generate the expected sequence of TimelineEvent instances when the latest action is amendment rejected" in {
@@ -289,7 +291,8 @@ class TimelineEventsSpec extends UnitViewSpec with BeforeAndAfterEach with Injec
         paragraph.text mustBe messages("submission.enhancedStatus.timeline.content.external.amendment")
 
         val link = body.getElementsByTag("a")
-        link.text mustBe messages("declaration.details.view.external.amendment.details")
+        link.text must startWith(messages("declaration.details.view.external.amendment.details"))
+        link.html() must include("""<span class="govuk-visually-hidden">""")
         link.first.attr("href") mustBe AmendmentDetailsController.displayPage(externalAmendment.last.id).url
 
         timelineEvents(1).title mustBe messages(s"submission.enhancedStatus.$RECEIVED")
