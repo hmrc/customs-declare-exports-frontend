@@ -104,7 +104,6 @@ object Stubs {
       |urls.designatedExportPlaceCodes="http://designatedExportPlaceCodes"
       |urls.locationCodesForCsePremises="http://locationCodesForCsePremises"
       |urls.goodsLocationCodesForDataElement="http://goodsLocationCodesForDataElement"
-      |urls.tariffCdsChiefSupplement="http://tariffCdsChiefSupplement"
       |urls.notesForMucrConsolidation="http://notesForMucrConsolidation"
       |urls.arriveOrDepartExportsService="http://arriveOrDepartExportsService"
       |urls.tradeTariffSections = "http://tradeTariffSections"

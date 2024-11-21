@@ -303,7 +303,7 @@ class LocationOfGoodsViewSpec extends PageWithButtonsSpec with Injector {
           messages(
             s"$prefix.expander.paragraph$ix.text",
             messages(s"$prefix.expander.paragraph$ix.link1"),
-            messages(s"$prefix.expander.paragraph$ix.link2")
+            if (ix == 9) messages(s"$prefix.expander.paragraph$ix.link2") else ""
           )
         )
         hint.text mustBe expectedText

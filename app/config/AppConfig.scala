@@ -97,7 +97,6 @@ class AppConfig @Inject() (
   val designatedExportPlaceCodes = loadConfig("urls.designatedExportPlaceCodes")
   val locationCodesForCsePremises = loadConfig("urls.locationCodesForCsePremises")
   val goodsLocationCodesForDataElement = loadConfig("urls.goodsLocationCodesForDataElement")
-  val tariffCdsChiefSupplement = loadConfig("urls.tariffCdsChiefSupplement")
   val tradeTariffSections = loadConfig("urls.tradeTariffSections")
   val additionalDocumentsLicenceTypes = loadConfig("urls.additionalDocumentsLicenceTypes")
   val additionalDocumentsUnionCodes = loadConfig("urls.additionalDocumentsUnionCodes")
