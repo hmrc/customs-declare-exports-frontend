@@ -747,7 +747,7 @@ declaration.details.references = Cyfeirnodau’r datganiad
 declaration.details.ducr = DUCR
 declaration.details.lrn = Cyfeirnod Lleol (LRN)
 
-declaration.details.actions = Camau’r datganiad
+declaration.details.actions.header = Camau’r datganiad
 
 declaration.details.amend.declaration = Diwygio datganiad
 declaration.details.cancel.amendment = Canslo

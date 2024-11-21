@@ -764,7 +764,7 @@ declaration.details.references = Declaration references
 declaration.details.ducr = DUCR
 declaration.details.lrn = LRN
 
-declaration.details.actions = Declaration actions
+declaration.details.actions.header = Declaration actions
 
 declaration.details.amend.declaration = Amend declaration
 declaration.details.cancel.amendment = Cancel
