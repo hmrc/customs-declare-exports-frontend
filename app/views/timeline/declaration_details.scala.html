@@ -47,7 +47,7 @@
 @(submission: Submission, additionalDecType: AdditionalDeclarationType)(implicit request: VerifiedEmailRequest[_], messages: Messages)
 
 @sectionHeading(text: String) = {
-  <h2 class="declaration-details-refs govuk-heading-s">@text</h2>
+  <h2 class="declaration-details-refs govuk-heading-s govuk-!-margin-top-6">@text</h2>
 }
 
 @uploadingDocumentsLink = {
@@ -263,6 +263,8 @@
                 )
             ).filterNot(_.value.content == Empty)
         ))
+
+        @sectionHeading(messages("declaration.details.actions"))
 
         <div class="govuk-list">
             @uploadingDocumentsLink
