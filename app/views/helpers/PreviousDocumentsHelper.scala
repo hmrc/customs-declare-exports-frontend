@@ -17,9 +17,13 @@
 package views.helpers
 
 import config.AppConfig
+import controllers.navigation.Navigator
+import controllers.section4.routes.NatureOfTransactionController
+import controllers.summary.routes.SectionSummaryController
 import forms.common.YesNoAnswer.Yes
 import forms.section2.AuthorisationProcedureCodeChoice.{Choice1007, Choice1040, ChoiceOthers}
 import forms.section4.Document
+import models.DeclarationType
 import models.DeclarationType._
 import models.requests.JourneyRequest
 import play.api.data.Form
@@ -133,4 +137,19 @@ class PreviousDocumentsHelper @Inject() (
   private def paragraph(key: String)(implicit messages: Messages): Html = paragraphBody(messages(s"$prefix.$key"))
 
   private def paragraph(key: String, link: Html)(implicit messages: Messages): Html = paragraphBody(messages(s"$prefix.$key", link))
+
+  def getBackLink(navigator: Navigator)(implicit request: JourneyRequest[_]): String = {
+    val backLink = navigator.backLink(Document)
+    val documentSize = request.cacheModel.previousDocuments.map(_.documents.size).getOrElse(0)
+    if (backLink == NatureOfTransactionController.displayPage && request.declarationType != DeclarationType.OCCASIONAL)
+      "site.backToPreviousQuestion"
+    else if (request.declarationType == DeclarationType.OCCASIONAL && documentSize == 0)
+      "site.backToPreviousSection"
+    else if (backLink == SectionSummaryController.displayPage(3) && request.declarationType != DeclarationType.CLEARANCE && documentSize >= 1)
+      "site.backToPreviousQuestion"
+    else if (documentSize >= 1)
+      "site.backToPreviousQuestion"
+    else
+      "site.backToPreviousSection"
+  }
 }
