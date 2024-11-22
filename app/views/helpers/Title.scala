@@ -22,13 +22,11 @@ case class Title(
   headingKey: String,
   sectionKey: String = "",
   headingArg: String = "",
-  headingArgs: Option[Seq[String]] = None,
+  headingArgs: Seq[String] = List.empty,
   hasErrors: Boolean = false
 ) {
-
   def toString(implicit messages: Messages): String = {
-    def args: Seq[String] = headingArgs.getOrElse(Seq(headingArg))
-
+    val args = if (headingArgs.nonEmpty) headingArgs else List(headingArg)
     val key = if (hasErrors) ".hasErrors" else ""
 
     if (sectionKey.isEmpty) {
@@ -37,4 +35,10 @@ case class Title(
       messages(s"title$key.withSection.format", messages(headingKey, args: _*), messages(sectionKey), messages("service.name"))
     }
   }
+}
+
+object Title {
+
+  def pageOf(titleOfPage: String, currentPage: Int, totalPages: Int): Title =
+    Title("pagination.page.of", headingArgs = List(titleOfPage, currentPage.toString, totalPages.toString))
 }

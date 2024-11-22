@@ -20,14 +20,14 @@
 @import models.declaration.submissions.Submission
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.dashboard.DashboardHelper
-@import views.dashboard.DashboardHelper.Page
 @import views.helpers.{EnhancedStatusHelper, ViewDates}
 @import views.html.components.gds._
 
-@this(dashboardHelper: DashboardHelper)
+@this(dashboardHelper: DashboardHelper, pagination: pagination)
 
 @(statusGroup: StatusGroup,
   pageOfSubmissions: PageOfSubmissions,
+  totalPagesInGroup: Int,
   baseHref: String
 )(implicit request: Request[_], messages: Messages)
 
@@ -36,7 +36,7 @@
 @dashboardHelper.table(pageOfSubmissions, statusGroup)
 
 @if(pageOfSubmissions.submissions.nonEmpty) {
-    @dashboardHelper.paginationComponent(pageOfSubmissions, baseHref)
+    @pagination(pageOfSubmissions, baseHref, totalPagesInGroup, DashboardHelper.currentPage)
 } else {
     <p class="govuk-body page-summary">@{messages("dashboard.status.group.empty")}</p>
 }

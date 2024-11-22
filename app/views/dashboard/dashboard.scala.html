@@ -14,11 +14,13 @@
  * limitations under the License.
  *@
 
+@import config.PaginationConfig
 @import controllers.routes.ChoiceController
 @import models.PageOfSubmissions
 @import uk.gov.hmrc.govukfrontend.views.html.components.GovukButton
 @import views.components.gds.Styles.gdsPageHeading
-@import views.dashboard.DashboardHelper.{buttonGroup, notification, panels, title}
+@import views.dashboard.DashboardHelper
+@import views.dashboard.DashboardHelper.{buttonGroup, currentPage, notification, panels, title}
 @import views.helpers.{BackButton, Title}
 @import views.html.components.gds.{gdsMainTemplate, linkButton, pageTitle, paragraphBody}
 
@@ -28,13 +30,16 @@
     linkButton: linkButton,
     pageTitle: pageTitle,
     paragraph: paragraphBody,
-    table: table
+    table: table,
+    paginationConfig: PaginationConfig
 )
 
 @(pageOfSubmissions: PageOfSubmissions)(implicit request: Request[_], messages: Messages)
 
+@totalPagesInGroup = @{ DashboardHelper.totalPagesInGroup(pageOfSubmissions, paginationConfig.itemsPerPage) }
+
 @govukLayout(
-    title = Title(title(pageOfSubmissions.statusGroup)),
+    title = Title.pageOf(title(pageOfSubmissions.statusGroup), currentPage, totalPagesInGroup),
     backButton = Some(BackButton(messages("site.backToSelectionPage"), ChoiceController.displayPage)),
     useCustomContentWidth = true,
     showDeclarationSummaryLink = false
@@ -45,7 +50,7 @@
 
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-full">
-            @pageTitle(messages(title(pageOfSubmissions.statusGroup)), s"$gdsPageHeading govuk-!-margin-top-1 govuk-!-margin-bottom-2")
+            @pageTitle(title(pageOfSubmissions.statusGroup), s"$gdsPageHeading govuk-!-margin-top-1 govuk-!-margin-bottom-2")
 
             @paragraph(notification(pageOfSubmissions.statusGroup), classes = "govuk-body govuk-!-margin-bottom-6")
 
@@ -53,7 +58,7 @@
 
             @buttonGroup(pageOfSubmissions.statusGroup, govukButton)
 
-            @panels(pageOfSubmissions, table)
+            @panels(pageOfSubmissions, totalPagesInGroup, table)
 
             @linkButton("dashboard.start.new.declaration", ChoiceController.displayPage, "govuk-button govuk-!-margin-top-6")
         </div>
