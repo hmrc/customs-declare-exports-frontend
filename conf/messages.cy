@@ -32,6 +32,7 @@ error.root.redirect.1 = Mae’n flin gennym, ond nid oedd modd cwblhau’r weith
 error.root.redirect.2 = Rhowch gynnig arall ar yr un weithred.
 
 site.back = Yn ôl
+site.backToPreviousSection = Yn ôl i’r adran flaenorol
 site.backToPreviousQuestion = Yn ôl i’r cwestiwn blaenorol
 site.backToSelectionPage = Yn ôl i’r dudalen ddewis
 site.backToDeclarations = Yn ôl i’ch datganiadau

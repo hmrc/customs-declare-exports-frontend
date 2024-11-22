@@ -42,7 +42,7 @@
 @if(request.isType(CLEARANCE)) {
   @govukLayout(
     title = Title("declaration.clearance.itemsAdd.title", "declaration.section.5"),
-    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(ExportItem)))) {
+    backButton = Some(BackButton(messages("site.backToPreviousSection"), navigator.backLink(ExportItem)))) {
 
     @formHelper(action = ItemsSummaryController.addFirstItem, 'autoComplete -> "off") {
 
@@ -66,7 +66,7 @@
 } else {
   @govukLayout(
     title = Title("declaration.itemsAdd.title", "declaration.section.5"),
-    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(ExportItem)))) {
+    backButton = Some(BackButton(messages("site.backToPreviousSection"), navigator.backLink(ExportItem)))) {
 
     @formHelper(action = ItemsSummaryController.addFirstItem, 'autoComplete -> "off") {
 

@@ -56,7 +56,7 @@ class SectionSummaryViewSpec extends SummaryViewSpec {
 
     "should display correct back link" in {
       val backButton = view.getElementById("back-link")
-      backButton.text() mustBe messages("site.back")
+      backButton.text() mustBe messages("site.backToPreviousQuestion")
       backButton must haveHref("/back")
     }
 

@@ -51,10 +51,7 @@
 
 @backLink = @{ navigator.backLink(Document) }
 
-@backButtonText = @{
-    if (backLink == SectionSummaryController.displayPage(3)) "site.back"
-    else "site.backToPreviousQuestion"
-}
+@backButtonText = @{templateHelper.getBackLink(navigator)}
 
 @referenceClasses = @{
     if (templateHelper.versionSelection == 1) Some("govuk-!-margin-bottom-4") else None

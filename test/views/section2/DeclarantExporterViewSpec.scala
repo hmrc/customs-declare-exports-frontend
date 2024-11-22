@@ -90,7 +90,7 @@ class DeclarantExporterViewSpec extends PageWithButtonsSpec with Injector {
       "display 'Back' button that links to the /summary-section/1 page" in {
         val backButton = createView().getElementById("back-link")
 
-        backButton must containMessage(backCaption)
+        backButton must containMessage(backToPreviousSection)
         backButton must haveHref(SectionSummaryController.displayPage(1).url)
       }
     }
@@ -99,7 +99,7 @@ class DeclarantExporterViewSpec extends PageWithButtonsSpec with Injector {
       "display 'Back' button that links to the /summary-section/1 page" in {
         val backButton = createView().getElementById("back-link")
 
-        backButton must containMessage(backCaption)
+        backButton must containMessage(backToPreviousSection)
         backButton must haveHref(SectionSummaryController.displayPage(1).url)
       }
     }
