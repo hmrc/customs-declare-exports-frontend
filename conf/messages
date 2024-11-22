@@ -7,6 +7,10 @@ service.name = Make and manage an export declaration online
 feedback = This is a new service - your {0} will help us to improve it.
 feedback.link = feedback
 
+aria.label.filters = declaration filter
+aria.label.pagination = Pagination
+aria.label.page.number = Page {0}
+
 title.format = {0} - {1} - GOV.UK
 title.hasErrors.format = Error: {0} - {1} - GOV.UK
 
