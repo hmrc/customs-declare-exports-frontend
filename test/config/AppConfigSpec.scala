@@ -159,10 +159,6 @@ class AppConfigSpec extends UnitWithMocksSpec with Stubs {
       validAppConfig.goodsLocationCodesForDataElement must be("http://goodsLocationCodesForDataElement")
     }
 
-    "have tariffCdsChiefSupplement URL" in {
-      validAppConfig.tariffCdsChiefSupplement must be("http://tariffCdsChiefSupplement")
-    }
-
     "have tradeTariffSections URL" in {
       validAppConfig.tradeTariffSections must be("http://tradeTariffSections")
     }

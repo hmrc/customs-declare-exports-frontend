@@ -62,17 +62,17 @@ class LocationOfGoodsHelper @Inject() (
 ) {
   private val prefix = "declaration.locationOfGoods"
   private val expanderLinks = Array(
-    ("", ""),
-    /*  1 */ (appConfig.locationCodesForPortsUsingGVMS, ""),
-    /*  2 */ (appConfig.rollOnRollOffPorts, ""),
-    /*  3 */ (appConfig.railLocationCodes, ""),
-    /*  4 */ (appConfig.locationCodeForAirports, ""),
-    /*  5 */ (appConfig.certificateOfAgreementAirports, ""),
-    /*  6 */ (appConfig.locationCodeForMaritimePorts, ""),
-    /*  7 */ (appConfig.locationCodeForTempStorage, ""),
-    /*  8 */ (appConfig.designatedExportPlaceCodes, ""),
-    /*  9 */ (appConfig.locationCodesForCsePremises, appConfig.previousProcedureCodes),
-    /* 10 */ (appConfig.goodsLocationCodesForDataElement, appConfig.tariffCdsChiefSupplement)
+    "",
+    /*  1 */ appConfig.locationCodesForPortsUsingGVMS,
+    /*  2 */ appConfig.rollOnRollOffPorts,
+    /*  3 */ appConfig.railLocationCodes,
+    /*  4 */ appConfig.locationCodeForAirports,
+    /*  5 */ appConfig.certificateOfAgreementAirports,
+    /*  6 */ appConfig.locationCodeForMaritimePorts,
+    /*  7 */ appConfig.locationCodeForTempStorage,
+    /*  8 */ appConfig.designatedExportPlaceCodes,
+    /*  9 */ appConfig.locationCodesForCsePremises,
+    /* 10 */ appConfig.goodsLocationCodesForDataElement
   )
 
   private lazy val keysV1 = List(s"$prefix.body.v1.1", s"$prefix.body.v1.1.1", s"$prefix.body.v1.2", s"$prefix.body.v1.3")
@@ -127,10 +127,10 @@ class LocationOfGoodsHelper @Inject() (
     (1 to 10).flatMap { ix =>
       val title = if (ix <= 9) Some(heading(text(s"$ix.title"), titleClasses, "h2")) else None
       val hint =
-        if (ix <= 8) row(externalLink(text(s"$ix.link1"), expanderLinks(ix)._1), classes = "")
+        if (ix <= 8) row(externalLink(text(s"$ix.link1"), expanderLinks(ix)), classes = "")
         else {
-          val link1 = externalLink(text(s"$ix.link1"), expanderLinks(ix)._1)
-          val link2 = externalLink(text(s"$ix.link2"), expanderLinks(ix)._2)
+          val link1 = externalLink(text(s"$ix.link1"), expanderLinks(ix))
+          val link2 = if (ix == 9) externalLink(text(s"$ix.link2"), appConfig.previousProcedureCodes) else HtmlFormat.empty
           govukHint(Hint(content = HtmlContent(text(s"$ix.text", link1, link2))))
         }
 

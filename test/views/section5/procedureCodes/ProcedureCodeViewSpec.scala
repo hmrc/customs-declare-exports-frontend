@@ -55,7 +55,6 @@ class ProcedureCodeViewSpec extends PageWithButtonsSpec with ExportsTestHelper w
       messages must haveTranslationFor("declaration.procedureCodes.inset.paragraph.1.bullet.1")
       messages must haveTranslationFor("declaration.procedureCodes.inset.paragraph.1.bullet.2")
       messages must haveTranslationFor("declaration.procedureCodes.inset.paragraph.1.bullet.3")
-      messages must haveTranslationFor("declaration.procedureCodes.inset.paragraph.2")
       messages must haveTranslationFor("declaration.procedureCodes.readMoreExpander.paragraph.1")
       messages must haveTranslationFor("declaration.procedureCodes.readMoreExpander.paragraph.2")
       messages must haveTranslationFor("declaration.procedureCodes.readMoreExpander.removalOfGoodsFromExciseWarehouse")
@@ -114,8 +113,7 @@ class ProcedureCodeViewSpec extends PageWithButtonsSpec with ExportsTestHelper w
           messages("declaration.procedureCodes.inset.paragraph.1"),
           messages("declaration.procedureCodes.inset.paragraph.1.bullet.1"),
           messages("declaration.procedureCodes.inset.paragraph.1.bullet.2"),
-          messages("declaration.procedureCodes.inset.paragraph.1.bullet.3"),
-          messages("declaration.procedureCodes.inset.paragraph.2")
+          messages("declaration.procedureCodes.inset.paragraph.1.bullet.3")
         ).mkString(" ")
         inset.get(0) must containText(expected)
       }
@@ -136,8 +134,7 @@ class ProcedureCodeViewSpec extends PageWithButtonsSpec with ExportsTestHelper w
             messages("declaration.procedureCodes.inset.paragraph.1"),
             messages("declaration.procedureCodes.inset.paragraph.1.bullet.1"),
             messages("declaration.procedureCodes.inset.paragraph.1.bullet.2"),
-            messages("declaration.procedureCodes.inset.paragraph.1.bullet.3"),
-            messages("declaration.procedureCodes.inset.paragraph.2")
+            messages("declaration.procedureCodes.inset.paragraph.1.bullet.3")
           ).mkString(" ")
           inset.get(0) must containText(expected)
         }
