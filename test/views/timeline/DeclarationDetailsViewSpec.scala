@@ -613,8 +613,9 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
 
     "display the expected section headers" in {
       val headers = view.getElementsByClass("declaration-details-refs")
-      headers.get(1).text mustBe messages(s"$msgKey.uploadDocuments.header")
-      headers.get(2).text mustBe messages(s"$msgKey.readMoreAboutDecStatus.header")
+      headers.get(1).text mustBe messages(s"$msgKey.actions.header")
+      headers.get(2).text mustBe messages(s"$msgKey.uploadDocuments.header")
+      headers.get(3).text mustBe messages(s"$msgKey.readMoreAboutDecStatus.header")
     }
 
     "display 'Uploading documents' expander" in {
