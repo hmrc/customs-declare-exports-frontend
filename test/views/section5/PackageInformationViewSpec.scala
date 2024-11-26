@@ -48,7 +48,7 @@ class PackageInformationViewSpec extends PageWithButtonsSpec with Injector {
   "have proper messages for labels" in {
     messages must haveTranslationFor("declaration.packageInformation.title")
     messages must haveTranslationFor("declaration.packageInformation.typesOfPackages.label")
-    messages must haveTranslationFor("declaration.packageInformation.typesOfPackages.hint.1")
+    messages must haveTranslationFor("declaration.packageInformation.typesOfPackages.hint.noJs")
     messages must haveTranslationFor("declaration.packageInformation.numberOfPackages")
     messages must haveTranslationFor("declaration.packageInformation.shippingMark")
     messages must haveTranslationFor("declaration.packageInformation.shippingMark.paragraph")

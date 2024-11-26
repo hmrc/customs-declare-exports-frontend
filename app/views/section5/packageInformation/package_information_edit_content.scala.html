@@ -22,6 +22,7 @@
 @import services.view.AutoCompleteItem
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.html.components.gds._
+@import views.helpers.HintTextAlternatives
 
 @this(
     govukDetails: GovukDetails,
@@ -66,7 +67,7 @@
         isSubHeading = true,
         bodyHtml = Some(paragraphBody(messages("declaration.packageInformation.typesOfPackages.paragraph"))),
         hintParagraphs = List(
-            messages("declaration.packageInformation.typesOfPackages.hint.1")
+            HintTextAlternatives("declaration.packageInformation.typesOfPackages.hint.noJs", Some("declaration.packageInformation.typesOfPackages.hint.withJs"))
         ),
         emptySelectValue = messages("declaration.packageInformation.typesOfPackages.empty"),
         items = AutoCompleteItem.fromPackageType(packageTypesService.all),

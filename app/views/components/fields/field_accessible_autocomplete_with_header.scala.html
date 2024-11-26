@@ -17,13 +17,14 @@
 @import services.view.AutoCompleteItem
 @import views.html.helper._
 @import views.html.components.inputs.input_accessible_autocomplete
+@import views.helpers.HintTextAlternatives
 
 @(field: Field,
   label: String,
   labelClass: Option[String],
   section: Option[String] = None,
   bodyHtml: Option[Html] = None,
-  hintParagraphs: List[String] = List.empty,
+  hintParagraphs: List[HintTextAlternatives] = List.empty,
   emptySelectValue: String,
   items: List[AutoCompleteItem],
   isPageHeading: Boolean,
@@ -73,7 +74,7 @@ To avoid problems, we need to remove [] from field.
     @if(hintParagraphs.nonEmpty) {
         <div id="@(fieldNameWithoutBrackets)-hint">
             @hintParagraphs.map { hint =>
-                <p class="govuk-hint">@hint</p>
+                @hint.getJsSpecificHintAttribute()
             }
         </div>
     }

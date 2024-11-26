@@ -22,7 +22,7 @@
 @import models.viewmodels.ListRows
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.components.gds.Styles._
-@import views.helpers.{BackButton, CountryHelper, Title}
+@import views.helpers.{BackButton, CountryHelper, HintTextAlternatives, Title}
 @import views.html.components.addToTable
 @import views.html.components.gds._
 
@@ -67,7 +67,7 @@
             field = form(fieldId),
             label = Some(messages("declaration.routingCountries.title", countryOfDestination)),
             labelClass = Some(gdsPageLabel),
-            hintParagraphs = List(messages("declaration.country.dropdown.hint")),
+            hintParagraphs = List(HintTextAlternatives("declaration.country.dropdown.hint.noJs", Some("declaration.country.dropdown.hint.withJs"))),
             bodyHtml = Some(
                 Html(Seq("declaration.routingCountries.body.p1", "declaration.routingCountries.body.p2").map(msg => body(messages(msg))).mkString)
             ),

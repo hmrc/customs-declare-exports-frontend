@@ -62,13 +62,15 @@ class AuthorisationHolderEditHelper @Inject() (
     if (isArrived(request.cacheModel.additionalDeclarationType)) insetTextForArrivedDeclarations
     else HtmlFormat.empty
 
-  def hintForAuthorisationCode(implicit messages: Messages, request: JourneyRequest[_]): List[String] =
+  def hintForAuthorisationCode(implicit request: JourneyRequest[_]): List[HintTextAlternatives] =
     valuesToMatch(request.cacheModel) match {
-      case (STANDARD, Some(STANDARD_PRE_LODGED), Choice1007, _)   => listOfMessages("authCode.hint.standard.prelodged.1007")
-      case (STANDARD, Some(STANDARD_PRE_LODGED), ChoiceOthers, _) => listOfMessages("authCode.hint.standard.prelodged.others")
-      case (STANDARD, Some(STANDARD_PRE_LODGED), Choice1040, _)   => listOfMessages("authCode.hint.standard.1040")
-      case (CLEARANCE, Some(CLEARANCE_PRE_LODGED), _, No)         => listOfMessages("authCode.hint.clearance")
-      case _                                                      => List.empty
+      case (STANDARD, Some(STANDARD_PRE_LODGED), Choice1007, _) =>
+        List(HintTextAlternatives(s"$prefix.authCode.hint.standard.prelodged.1007"))
+      case (STANDARD, Some(STANDARD_PRE_LODGED), ChoiceOthers, _) =>
+        List(HintTextAlternatives(s"$prefix.authCode.hint.standard.prelodged.others"))
+      case (STANDARD, Some(STANDARD_PRE_LODGED), Choice1040, _) => List(HintTextAlternatives(s"$prefix.authCode.hint.standard.1040"))
+      case (CLEARANCE, Some(CLEARANCE_PRE_LODGED), _, No)       => List(HintTextAlternatives(s"$prefix.authCode.hint.clearance"))
+      case _                                                    => List.empty
     }
 
   def insetTextBelowAuthorisationCode(appConfig: AppConfig)(implicit messages: Messages, request: JourneyRequest[_]): Option[Html] =

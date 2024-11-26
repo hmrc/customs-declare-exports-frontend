@@ -16,12 +16,13 @@
 
 @import services.view.AutoCompleteItem
 @import views.html.components.fields.field_accessible_autocomplete_with_header
+@import views.helpers.HintTextAlternatives
 
 @(field: Field,
   label: String,
   labelClass: Option[String] = None,
   bodyHtml: Option[Html] = None,
-  hintParagraphs: List[String] = List.empty,
+  hintParagraphs: List[HintTextAlternatives] = List.empty,
   emptySelectValue: String,
   isSubHeading: Boolean = false,
   items: List[AutoCompleteItem],

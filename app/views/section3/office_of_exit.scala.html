@@ -22,7 +22,7 @@
 @import services.OfficeOfExitsService
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.components.gds.Styles._
-@import views.helpers.{BackButton, Title}
+@import views.helpers.{BackButton, HintTextAlternatives, Title}
 @import views.helpers.ErrorMapper.radioGroupErrors
 @import views.html.components.gds._
 
@@ -59,7 +59,7 @@
             field = form(OfficeOfExit.fieldId),
             label = messages("declaration.officeOfExit.title"),
             labelClass = Some("govuk-visually-hidden"),
-            hintParagraphs = List(messages("declaration.officeOfExit.hint")),
+            hintParagraphs = List(HintTextAlternatives("declaration.officeOfExit.hint.noJs", Some("declaration.officeOfExit.hint.withJs"))),
             emptySelectValue = messages("declaration.officeOfExit.empty"),
             items = AutoCompleteItem.fromOfficeOfExit(officeOfExitsService.all),
             isPageHeading = false

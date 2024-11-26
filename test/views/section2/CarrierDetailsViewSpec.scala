@@ -151,7 +151,7 @@ class CarrierDetailsViewSpec extends AddressViewSpec with PageWithButtonsSpec wi
       }
 
       "display empty input with label for Country" in {
-        view.getElementsByClass("govuk-hint").last.text mustBe messages("declaration.country.dropdown.hint")
+        view.getElementsByClass("govuk-hint").last.text mustBe messages("declaration.country.dropdown.hint.noJs")
         view.getElementsByAttributeValue("for", "details_address_country").first.text mustBe messages("declaration.address.country")
         view.getElementById("details_address_country").attr("value") mustBe empty
       }

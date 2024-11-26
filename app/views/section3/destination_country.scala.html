@@ -23,8 +23,7 @@
 @import models.requests.JourneyRequest
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.components.gds.Styles._
-@import views.helpers.{BackButton, Title}
-@import views.helpers.CountryHelper
+@import views.helpers.{BackButton, CountryHelper, HintTextAlternatives, Title}
 @import views.html.components.gds._
 
 @this(
@@ -60,7 +59,7 @@
             field = form(fieldId),
             label = Some(messages("declaration.destinationCountry.title")),
             labelClass = Some(gdsPageLabel),
-            hintParagraphs = List(messages("declaration.country.dropdown.hint")),
+            hintParagraphs = List(HintTextAlternatives("declaration.country.dropdown.hint.noJs", Some("declaration.country.dropdown.hint.withJs"))),
             bodyHtml = Some(body(messages("declaration.destinationCountry.body"))),
             countryKey = (c: CountryModel) => c.countryCode,
             isPageHeading = true

@@ -84,3 +84,11 @@ function enhanceSelectIntoAutoComplete(selectElementId, dataSource, submitOnConf
         }) : [])
     }
 };
+
+//check if any hint text has a JS enabled specific text to replace the default JS disabled text
+let elementsArray = [...document.getElementsByClassName('govuk-hint')]
+elementsArray.forEach(element => {
+    if (element.getAttribute('withjs')) {
+        element.innerHTML = element.getAttribute('withjs');
+    }
+});
