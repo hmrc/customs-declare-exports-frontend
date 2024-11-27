@@ -1031,7 +1031,7 @@ declaration.locationOfGoods.code.error = Goods location code must be in the corr
 declaration.locationOfGoods.code.error.length = Goods location code must have 10 characters minimum and 39 characters maximum
 
 declaration.procedureCodes.title = What is the procedure code for this item?
-declaration.procedureCodes.paragraph = Select the 4-digit procedure code that describes your requested customs treatment and status of the goods.
+declaration.procedureCodes.paragraph = Select the 4-digit procedure code that describes your requested customs treatment and status of the goods from the list.
 declaration.procedureCodes.empty = Select a procedure code from the list
 declaration.procedureCodes.error.empty = Select a procedure code
 declaration.procedureCodes.error.invalid = Procedure code must be 4 digits, containing only numbers

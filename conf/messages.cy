@@ -1033,7 +1033,7 @@ declaration.locationOfGoods.code.error = Mae’n rhaid i’r cod lleoliad y nwyd
 declaration.locationOfGoods.code.error.length = Mae’n rhaid i’r cod lleoliad y nwyddau gael isafswm o 10 cymeriad ac uchafswm o 39 o gymeriadau
 
 declaration.procedureCodes.title = Beth yw’r cod gweithdrefn ar gyfer yr eitem hon?
-declaration.procedureCodes.paragraph = Dewiswch y cod gweithdrefn 4 digid sy’n disgrifio’ch triniaeth tollau a statws y nwyddau y gofynnwyd amdanynt.
+declaration.procedureCodes.paragraph = Dewiswch y cod gweithdrefn 4 digid o’r rhestr sy’n disgrifio’r driniaeth tollau rydych wedi gofyn amdani a statws y nwyddau.
 declaration.procedureCodes.empty = Dewiswch god gweithdrefn o’r rhestr
 declaration.procedureCodes.error.empty = Dewiswch god gweithdrefn
 declaration.procedureCodes.error.invalid = Mae’n rhaid i’r cod gweithdrefn fod yn 4 digid, sy’n cynnwys rhifau’n unig
