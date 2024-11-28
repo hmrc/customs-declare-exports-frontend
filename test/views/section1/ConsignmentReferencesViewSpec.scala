@@ -58,7 +58,6 @@ class ConsignmentReferencesViewSpec extends PageWithButtonsSpec with Injector {
       messages must haveTranslationFor("declaration.consignmentReferences.ducr.paragraph.bullet2")
       messages must haveTranslationFor("declaration.consignmentReferences.ducr.paragraph.bullet3")
       messages must haveTranslationFor("declaration.consignmentReferences.ducr.paragraph.bullet4")
-      messages must haveTranslationFor("declaration.consignmentReferences.ducr.paragraph.bullet5")
       messages must haveTranslationFor("declaration.consignmentReferences.ducr.hint")
       messages must haveTranslationFor("declaration.consignmentReferences.ducr.inset.1")
       messages must haveTranslationFor("declaration.consignmentReferences.ducr.error.empty")
@@ -103,12 +102,11 @@ class ConsignmentReferencesViewSpec extends PageWithButtonsSpec with Injector {
       val view = createView
 
       "display empty input with label for DUCR" in {
-        val expectedBodyTextListMessageKeys = Seq(
+        val expectedBodyTextListMessageKeys = List(
           "declaration.consignmentReferences.ducr.paragraph.bullet1",
           "declaration.consignmentReferences.ducr.paragraph.bullet2",
           "declaration.consignmentReferences.ducr.paragraph.bullet3",
-          "declaration.consignmentReferences.ducr.paragraph.bullet4",
-          "declaration.consignmentReferences.ducr.paragraph.bullet5"
+          "declaration.consignmentReferences.ducr.paragraph.bullet4"
         )
 
         view.getElementsByAttributeValue("for", "ducr_ducr").text mustBe messages("declaration.consignmentReferences.ducr.info")

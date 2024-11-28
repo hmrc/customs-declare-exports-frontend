@@ -75,7 +75,6 @@ class ConfirmDucrViewSpec extends PageWithButtonsSpec with Injector with MockAut
       content must containMessage("declaration.confirmDucr.expander.content.list.2")
       content must containMessage("declaration.confirmDucr.expander.content.list.3")
       content must containMessage("declaration.confirmDucr.expander.content.list.4")
-      content must containMessage("declaration.confirmDucr.expander.content.list.5")
     }
 
     "display back button to Trader Referemce page" in {

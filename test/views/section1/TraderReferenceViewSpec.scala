@@ -68,12 +68,11 @@ class TraderReferenceViewSpec extends PageWithButtonsSpec with Injector with Moc
     "display the first tariff expander" should {
       "in non-Clearance journeys" in {
 
-        val expectedBodyTextListMessageKeys = Seq(
+        val expectedBodyTextListMessageKeys = List(
           "declaration.ducr.expander.bullet1",
           "declaration.ducr.expander.bullet2",
           "declaration.ducr.expander.bullet3",
-          "declaration.ducr.expander.bullet4",
-          "declaration.ducr.expander.bullet5"
+          "declaration.ducr.expander.bullet4"
         )
 
         expectedBodyTextListMessageKeys.foreach { messageKey =>
@@ -81,12 +80,11 @@ class TraderReferenceViewSpec extends PageWithButtonsSpec with Injector with Moc
         }
       }
       "in a Clearance journey" in {
-        val expectedBodyTextListMessageKeys = Seq(
+        val expectedBodyTextListMessageKeys = List(
           "declaration.ducr.expander.bullet1",
           "declaration.ducr.expander.bullet2",
           "declaration.ducr.expander.bullet3",
-          "declaration.ducr.expander.bullet4",
-          "declaration.ducr.expander.bullet5"
+          "declaration.ducr.expander.bullet4"
         )
 
         expectedBodyTextListMessageKeys.foreach { messageKey =>

@@ -278,7 +278,7 @@ class Card2ForPartiesSpec extends UnitViewSpec with ExportsTestHelper with Injec
 
     "not show anything when parties only has undefined attributes" in {
       val view = card2ForParties.eval(aDeclaration())(messages)
-      view.getAllElements.text() mustBe empty
+      view.getAllElements.text.trim mustBe empty
     }
 
     "NOT have change links" when {
