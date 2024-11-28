@@ -25,7 +25,7 @@
 @import services.view.AutoCompleteItem
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.components.gds.Styles._
-@import views.helpers.{BackButton, Title, AdditionalProcedureCodesHelper}
+@import views.helpers.{AdditionalProcedureCodesHelper, BackButton, HintTextAlternatives, Title}
 @import views.html.components.gds._
 @import views.html.components.addToTable
 
@@ -54,7 +54,7 @@
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 
-@hint = @{if(addProcCodesHelper.hintText.isEmpty) List.empty else List(messages(addProcCodesHelper.hintText.get))}
+@hint = @{if(addProcCodesHelper.hintText.isEmpty) List.empty else List(HintTextAlternatives(addProcCodesHelper.hintText.get))}
 
 @govukLayout(
   title = Title("declaration.additionalProcedureCodes.title", "declaration.section.5", procedureCode.code, hasErrors = hasErrors),

@@ -113,7 +113,7 @@ class TransportCountryViewSpec extends PageWithButtonsSpec with Injector {
 
               "display the expected hint" in {
                 val hint = view.getElementsByClass("govuk-hint")
-                hint.get(0).text mustBe messages("declaration.country.dropdown.hint")
+                hint.get(0).text mustBe messages("declaration.country.dropdown.hint.noJs")
               }
 
               "display the expected input field" in {

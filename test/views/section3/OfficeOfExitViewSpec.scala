@@ -53,14 +53,14 @@ class OfficeOfExitViewSpec extends UnitViewSpec with ExportsTestHelper with Inje
 
     "have proper messages for labels" in {
       messages must haveTranslationFor("declaration.officeOfExit.title")
-      messages must haveTranslationFor("declaration.officeOfExit.hint")
+      messages must haveTranslationFor("declaration.officeOfExit.hint.noJs")
       messages must haveTranslationFor("declaration.officeOfExit.empty")
       messages must haveTranslationFor("declaration.officeOfExit.length")
       messages must haveTranslationFor("declaration.officeOfExit.specialCharacters")
     }
 
     "display office of exit question" in {
-      view.getElementById("officeId-hint") must containMessage("declaration.officeOfExit.hint")
+      view.getElementById("officeId-hint") must containMessage("declaration.officeOfExit.hint.noJs")
       view.getElementById("officeId").attr("value") mustBe empty
     }
 

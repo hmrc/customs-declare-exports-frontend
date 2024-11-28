@@ -16,7 +16,7 @@
 
 @import forms.common.Address
 @import models.codes.Country
-@import views.helpers.CountryHelper
+@import views.helpers.{CountryHelper, HintTextAlternatives}
 
 @this(exportsInputText: exportsInputText)(implicit countryAutoCompleteHelper: CountryHelper)
 
@@ -54,6 +54,6 @@
 @components.fields.field_accessible_location_autocomplete_with_header(
     field = form(s"${Address.addressId}.country"),
     label = Some(messages("declaration.address.country")),
-    hintParagraphs = List(messages("declaration.country.dropdown.hint")),
+    hintParagraphs = List(HintTextAlternatives("declaration.country.dropdown.hint.noJs", Some("declaration.country.dropdown.hint.withJs"))),
     countryKey = _.countryCode
 )

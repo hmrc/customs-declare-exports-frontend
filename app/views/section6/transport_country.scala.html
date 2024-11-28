@@ -24,7 +24,7 @@
 @import models.requests.JourneyRequest
 @import play.twirl.api.HtmlFormat
 @import uk.gov.hmrc.govukfrontend.views.html.components._
-@import views.helpers.{BackButton, CountryHelper, ModeOfTransportCodeHelper, Title}
+@import views.helpers.{BackButton, CountryHelper, HintTextAlternatives, ModeOfTransportCodeHelper, Title}
 @import views.helpers.ErrorMapper.radioGroupErrors
 @import views.html.components.gds._
 
@@ -63,7 +63,7 @@
 
         @components.fields.field_accessible_location_autocomplete_with_header(
             field = form(transportCountry),
-            hintParagraphs = List(messages("declaration.country.dropdown.hint")),
+            hintParagraphs = List(HintTextAlternatives("declaration.country.dropdown.hint.noJs", Some("declaration.country.dropdown.hint.withJs"))),
             countryKey = _.countryCode
         )
 

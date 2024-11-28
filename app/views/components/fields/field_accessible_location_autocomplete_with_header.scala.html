@@ -15,7 +15,7 @@
  *@
 
 @import services.view.AutoCompleteItem
-@import views.helpers.CountryHelper
+@import views.helpers.{CountryHelper, HintTextAlternatives}
 @import views.html.components.inputs.input_accessible_location_autocomplete
 @import views.html.helper._
 @import models.codes.Country
@@ -25,7 +25,7 @@
   labelClass: Option[String] = None,
   section: Option[String] = None,
   bodyHtml: Option[Html] = None,
-  hintParagraphs: List[String] = List.empty,
+  hintParagraphs: List[HintTextAlternatives] = List.empty,
   countryKey: Country => String,
   isPageHeading: Boolean = false,
   args: List[(Symbol, Any)] = List.empty,
@@ -74,7 +74,7 @@ To avoid problems, we need to remove [] from field.
     @if(hintParagraphs.nonEmpty) {
         <div id="@(fieldNameWithoutBrackets)-hint">
             @hintParagraphs.map { hint =>
-                <p class="govuk-hint govuk-!-margin-top-0">@hint</p>
+              @hint.getJsSpecificHintAttribute()
             }
         </div>
     }

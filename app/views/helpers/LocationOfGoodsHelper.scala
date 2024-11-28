@@ -201,7 +201,7 @@ class LocationOfGoodsHelper @Inject() (
       field = form(LocationOfGoods.locationId),
       label = messages("declaration.locationOfGoods.yesNo.yesHint"),
       labelClass = Some("govuk-label--s"),
-      hintParagraphs = List(messages("declaration.locationOfGoods.yesNo.yes.hint")),
+      hintParagraphs = List(HintTextAlternatives("declaration.locationOfGoods.yesNo.yes.hint")),
       emptySelectValue = messages("site.search.for.location"),
       items = goodsLocationCodes.asListOfAutoCompleteItems(version == 7)
     )

@@ -1032,7 +1032,7 @@ declaration.locationOfGoods.code.error = Goods location code must be in the corr
 declaration.locationOfGoods.code.error.length = Goods location code must have 10 characters minimum and 39 characters maximum
 
 declaration.procedureCodes.title = What is the procedure code for this item?
-declaration.procedureCodes.paragraph = Select the 4-digit procedure code that describes your requested customs treatment and status of the goods.
+declaration.procedureCodes.paragraph = Select the 4-digit procedure code that describes your requested customs treatment and status of the goods from the list.
 declaration.procedureCodes.empty = Select a procedure code from the list
 declaration.procedureCodes.error.empty = Select a procedure code
 declaration.procedureCodes.error.invalid = Procedure code must be 4 digits, containing only numbers
@@ -1066,7 +1066,7 @@ declaration.additionalProcedureCodes.inset.linkText = Appendix 2: DE 1/11: Addit
 declaration.additionalProcedureCodes.table.header = Additional procedure codes
 declaration.additionalProcedureCodes.remove.hint = Remove additional code {0}.
 declaration.additionalProcedureCodes.add.hint = Add additional code.
-declaration.additionalProcedureCodes.error.empty = Enter an additional procedure code
+declaration.additionalProcedureCodes.error.empty = Select an additional procedure code
 declaration.additionalProcedureCodes.error.invalid = Additional procedure code must be 3 characters, containing only letters and numbers
 declaration.additionalProcedureCodes.error.maximumAmount = Maximum amount of additional procedure codes added
 declaration.additionalProcedureCodes.error.duplication = You have already added this code for this item
@@ -1075,7 +1075,8 @@ declaration.additionalProcedureCodes.error.tripleZero.notFirstCode = Additional 
 
 declaration.officeOfExit.title = Where is the customs office of exit?
 declaration.officeOfExit.paragraph = This is the place where goods are officially recorded as having left the UK.
-declaration.officeOfExit.hint = Type the place name to help find the correct office of exit.
+declaration.officeOfExit.hint.withJs = Type the place name to help find the correct office of exit.
+declaration.officeOfExit.hint.noJs = Select the place name of the office of exit from the list.
 declaration.officeOfExit.empty = Select an office of exit from the list
 declaration.officeOfExit.length = Select an office of exit from the list
 declaration.officeOfExit.specialCharacters = Select an office of exit from the list
@@ -1745,7 +1746,8 @@ declaration.packageInformation.table.heading.numberOfPackages = Number
 declaration.packageInformation.table.heading.shippingMarks = Shipping marks
 declaration.packageInformation.typesOfPackages.label = Package type
 declaration.packageInformation.typesOfPackages.paragraph = Examples: for cartons of books packed on pallets in a container, the package type would be pallet. For cartons of books loaded directly into a truck, the package type would be the carton.
-declaration.packageInformation.typesOfPackages.hint.1 = Start typing the package name (box, pallet, crate, container) or enter the code (PX, CN) to see the options.
+declaration.packageInformation.typesOfPackages.hint.withJs = Start typing the package name (box, pallet, crate, container) or enter the code (PX, CN) to see the options.
+declaration.packageInformation.typesOfPackages.hint.noJs = Select a package type from the list
 declaration.packageInformation.typesOfPackages.error = Select a package type from the list
 declaration.packageInformation.typesOfPackages.empty = Select a package type
 declaration.packageInformation.numberOfPackages = Number of this package type
@@ -2266,7 +2268,8 @@ declaration.exitSurvey.line.1 = This is a new service and we want to know what y
 declaration.exitSurvey.line.2 = {0}. Your thoughts and ideas will help us to make improvements.
 declaration.exitSurvey.link = Send us your feedback
 
-declaration.country.dropdown.hint = Type in at least 2 letters to search for a country
+declaration.country.dropdown.hint.withJs = Type in at least 2 letters to search for a country
+declaration.country.dropdown.hint.noJs = Select a country from the list
 
 declaration.draft.title = Your draft declaration will be saved for 30 days
 declaration.draft.info = The draft declaration will be held until {0}
