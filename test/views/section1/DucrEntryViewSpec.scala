@@ -50,7 +50,6 @@ class DucrEntryViewSpec extends PageWithButtonsSpec with Injector {
       messages must haveTranslationFor("declaration.ducrEntry.ducr.expander.bullet2")
       messages must haveTranslationFor("declaration.ducrEntry.ducr.expander.bullet3")
       messages must haveTranslationFor("declaration.ducrEntry.ducr.expander.bullet4")
-      messages must haveTranslationFor("declaration.ducrEntry.ducr.expander.bullet5")
       messages must haveTranslationFor("declaration.ducrEntry.ducr.hint")
       messages must haveTranslationFor("declaration.ducrEntry.ducr.inset.1")
       messages must haveTranslationFor("declaration.consignmentReferences.ducr.error.empty")
@@ -111,12 +110,11 @@ class DucrEntryViewSpec extends PageWithButtonsSpec with Injector {
 
     "display empty input with label for DUCR" in {
 
-      val expectedBodyTextListMessageKeys = Seq(
+      val expectedBodyTextListMessageKeys = List(
         "declaration.ducrEntry.ducr.expander.bullet1",
         "declaration.ducrEntry.ducr.expander.bullet2",
         "declaration.ducrEntry.ducr.expander.bullet3",
-        "declaration.ducrEntry.ducr.expander.bullet4",
-        "declaration.ducrEntry.ducr.expander.bullet5"
+        "declaration.ducrEntry.ducr.expander.bullet4"
       )
 
       expectedBodyTextListMessageKeys.foreach { messageKey =>
@@ -147,8 +145,7 @@ class DucrEntryViewSpec extends PageWithButtonsSpec with Injector {
         val expanderBullet2 = messages("declaration.ducrEntry.ducr.expander.bullet2")
         val expanderBullet3 = messages("declaration.ducrEntry.ducr.expander.bullet3")
         val expanderBullet4 = messages("declaration.ducrEntry.ducr.expander.bullet4")
-        val expanderBullet5 = messages("declaration.ducrEntry.ducr.expander.bullet5")
-        val expectedText = s"$expanderParagraph $expanderBullet1 $expanderBullet2 $expanderBullet3 $expanderBullet4 $expanderBullet5"
+        val expectedText = s"$expanderParagraph $expanderBullet1 $expanderBullet2 $expanderBullet3 $expanderBullet4"
         val actualText1 = removeBlanksIfAnyBeforeDot(tariffDetails1.text)
         actualText1 mustBe removeLineBreakIfAny(expectedText)
       }
