@@ -25,6 +25,7 @@
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{HtmlContent, Text}
 @import views.helpers.{BackButton, LocationOfGoodsHelper, Title}
 @import views.html.components.gds._
+@import views.html.helper.CSPNonce
 
 @this(
     govukLayout: gdsMainTemplate,
@@ -88,3 +89,25 @@
         @saveButtons()
     }
 }
+
+<script @CSPNonce.attr>
+    $(document).ready(function() {
+        let radio1LabelElement = $('[for="code_yes"]')
+        radio1LabelElement.text('@messages("declaration.locationOfGoods.yesNo.yesKey.withJs")');
+
+        let glcLabelElement = $('#glc-label');
+        glcLabelElement.text('@messages("declaration.locationOfGoods.yesNo.yesHint.withJs")');
+
+        // add in the autocomplete hint text
+        let pElement = document.createElement('p');
+        pElement.classList.add("govuk-hint", "govuk-!-margin-top-0");
+        pElement.innerHTML = '@messages("declaration.locationOfGoods.yesNo.yes.hint")';
+
+        let glcHintElement = document.createElement('div');
+        glcHintElement.id = 'glc-hint';
+        glcHintElement.appendChild(pElement)
+
+        let autoCompleteDiv = $('#glc-autocomplete-outer');
+        autoCompleteDiv.children().eq(1).before(glcHintElement);
+    });
+</script>

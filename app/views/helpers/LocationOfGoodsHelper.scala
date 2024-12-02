@@ -188,7 +188,7 @@ class LocationOfGoodsHelper @Inject() (
       form,
       heading = Some(Fieldset(legend = Some(Legend(Text(messages("declaration.locationOfGoods.yesNo.header")), "govuk-fieldset__legend--s")))),
       answerKey = radioGroupId,
-      yesKey = Some("declaration.locationOfGoods.yesNo.yesKey"),
+      yesKey = Some("declaration.locationOfGoods.yesNo.yesKey.noJs"),
       noKey = Some("declaration.locationOfGoods.yesNo.noKey"),
       yesHint = None,
       noHint = None,
@@ -199,9 +199,8 @@ class LocationOfGoodsHelper @Inject() (
   private def goodsLocationInputYes(form: Form[LocationOfGoods], version: Int)(implicit request: Request[_], messages: Messages): Appendable =
     field_accessible_autocomplete(
       field = form(LocationOfGoods.locationId),
-      label = messages("declaration.locationOfGoods.yesNo.yesHint"),
+      label = messages("declaration.locationOfGoods.yesNo.yesHint.noJs"),
       labelClass = Some("govuk-label--s"),
-      hintParagraphs = List(HintTextAlternatives("declaration.locationOfGoods.yesNo.yes.hint")),
       emptySelectValue = messages("site.search.for.location"),
       items = goodsLocationCodes.asListOfAutoCompleteItems(version == 7)
     )
