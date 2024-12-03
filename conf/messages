@@ -1610,10 +1610,13 @@ declaration.previousDocuments.inset.text.3 = Excise guarantee details must be de
 declaration.previousDocuments.inset.text.3.link = Appendix 1 Data Element 2/1 (opens in new tab)
 
 declaration.previousDocuments.documentCode = Document code
-declaration.previousDocuments.v1.documentCode.body = Select a document type, such as ‘commercial invoice’.
-declaration.previousDocuments.v1.documentCode.hint = To select an invoice, type ‘invoice’ to see the document codes for an invoice.
+declaration.previousDocuments.v1.documentCode.body = Select a document type from the list.
+declaration.previousDocuments.v1.documentCode.body = Select a document type from the list.
+declaration.previousDocuments.v1.documentCode.hint.withJs = To select an invoice, type ‘invoice’ to see the document codes for an invoice.
+declaration.previousDocuments.v1.documentCode.hint.noJs = For example, 'commercial invoice'.
 declaration.previousDocuments.v2.documentCode.body = Select a document type, such as ‘commercial invoice’. For excise removals under Customs Supervised Exports (CSE), select ZZZ for the excise guarantee or the warehouse stock reference.
-declaration.previousDocuments.v2.documentCode.hint = To select an invoice, type ‘invoice’ to see the document codes for an invoice.
+declaration.previousDocuments.v2.documentCode.hint.withJs = To select an invoice, type ‘invoice’ to see the document codes for an invoice.
+declaration.previousDocuments.v2.documentCode.hint.noJs = For example, 'commercial invoice'. For excise removals under Customs Supervised Exports (CSE), select ZZZ for the excise guarantee or the warehouse stock reference.
 declaration.previousDocuments.v3.documentCode.body = Select a document type, such as ‘commercial invoice’. For special procedures, select movement reference number (MRN) to enter the MRN of the previous import delaration. For excise removals under Customs Supervised Exports (CSE), select ZZZ for the excise guarantee or the warehouse stock reference.
 declaration.previousDocuments.v3.documentCode.hint = To select an invoice, type ‘invoice’ to see the document codes for an invoice.
 declaration.previousDocuments.v4.documentCode.body = Select a document type.

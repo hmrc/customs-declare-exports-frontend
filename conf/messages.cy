@@ -1611,9 +1611,11 @@ declaration.previousDocuments.inset.text.3.link = Atodiad 1 Elfen Ddata 2/1 (yn 
 
 declaration.previousDocuments.documentCode = Cod y ddogfen
 declaration.previousDocuments.v1.documentCode.body = Dewiswch fath o ddogfen, megis ‘anfoneb fasnachol’.
-declaration.previousDocuments.v1.documentCode.hint = I ddewis anfoneb, teipiwch ‘anfoneb’ i weld codau’r ddogfen ar gyfer anfoneb.
+declaration.previousDocuments.v1.documentCode.hint.withJs = I ddewis anfoneb, teipiwch ‘anfoneb’ i weld codau’r ddogfen ar gyfer anfoneb.
+declaration.previousDocuments.v1.documentCode.hint.noJs = I ddewis anfoneb, teipiwch ‘anfoneb’ i weld codau’r ddogfen ar gyfer anfoneb.
 declaration.previousDocuments.v2.documentCode.body = Dewiswch fath o ddogfen, megis ‘anfoneb fasnachol’. Ar gyfer tynnu ecséis o dan Allforion Dan Oruchwyliaeth Tollau (CSE), dewiswch ZZZ ar gyfer y warant ecséis neu gyfeirnod stoc y warws.
-declaration.previousDocuments.v2.documentCode.hint = I ddewis anfoneb, teipiwch ‘anfoneb’ i weld codau’r ddogfen ar gyfer anfoneb.
+declaration.previousDocuments.v2.documentCode.hint.withJs = I ddewis anfoneb, teipiwch ‘anfoneb’ i weld codau’r ddogfen ar gyfer anfoneb.
+declaration.previousDocuments.v2.documentCode.hint.noJs = I ddewis anfoneb, teipiwch ‘anfoneb’ i weld codau’r ddogfen ar gyfer anfoneb.
 declaration.previousDocuments.v3.documentCode.body = Dewiswch fath o ddogfen, megis ‘anfoneb fasnachol’. Ar gyfer gweithdrefnau arbennig, dewiswch gyfeirnod symud (MRN) i nodi MRN y datganiad mewnforio blaenorol. Ar gyfer tynnu ecséis o dan Allforion Dan Oruchwyliaeth Tollau (CSE), dewiswch ZZZ ar gyfer y warant ecséis neu gyfeirnod stoc y warws.
 declaration.previousDocuments.v3.documentCode.hint = I ddewis anfoneb, teipiwch ‘anfoneb’ i weld codau’r ddogfen ar gyfer anfoneb.
 declaration.previousDocuments.v4.documentCode.body = Dewiswch fath o ddogfen.

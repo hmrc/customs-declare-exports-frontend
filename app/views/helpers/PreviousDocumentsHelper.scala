@@ -67,14 +67,25 @@ class PreviousDocumentsHelper @Inject() (
     }
   }
 
-  def helpForDocumentCode(implicit messages: Messages, request: JourneyRequest[_]): Html =
+  def helpForDocumentCode(implicit messages: Messages, request: JourneyRequest[_]): Html = {
     versionSelection match {
-      case 1 => new Html(List(paragraph("v1.documentCode.body"), hint("v1.documentCode.hint")))
-      case 2 => new Html(List(paragraph("v2.documentCode.body"), hint("v2.documentCode.hint")))
+      case 1 => paragraph("v1.documentCode.body")
+      case 2 => paragraph("v2.documentCode.body")
       case 3 => new Html(List(paragraph("v3.documentCode.body"), hint("v3.documentCode.hint")))
       case 4 => paragraph("v4.documentCode.body")
       case 5 => paragraph("v5.documentCode.body")
       case 6 => paragraph("v6.documentCode.body")
+    }
+  }
+   def helpForHintDocumentCode(implicit  request: JourneyRequest[_]): List[HintTextAlternatives] = {
+     versionSelection match {
+       case 1 => List(HintTextAlternatives("declaration.previousDocuments.v1.documentCode.hint.noJs", Some("declaration.previousDocuments.v1.documentCode.hint.withJs")))
+       case 2 => List(HintTextAlternatives("declaration.previousDocuments.v2.documentCode.hint.noJs", Some("declaration.previousDocuments.v2.documentCode.hint.withJs")))
+       case 3 => List.empty
+       case 4 => List.empty
+       case 5 => List.empty
+       case 6 => List.empty
+     }
     }
 
   def helpForDocumentReference(implicit messages: Messages, request: JourneyRequest[_]): Html =
