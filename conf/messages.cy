@@ -1611,7 +1611,7 @@ declaration.previousDocuments.inset.text.2 = Gallwch ddatgan anfoneb brofforma o
 declaration.previousDocuments.inset.text.3 = Mae’n rhaid datgan manylion gwarantu ecséis yn yr adran hon oni bai eich bod yn rhoi rhif ARC yn yr adran nesaf (adran 5). Gweler {0} i gael rhagor o fanylion.
 declaration.previousDocuments.inset.text.3.link = Atodiad 1 Elfen Ddata 2/1 (yn agor tab newydd)
 
-declaration.previousDocuments.all.documentCode.hint.noJs = Er enghraifft, ’anfoneb fasnachol’.
+declaration.previousDocuments.all.documentCode.hint.noJs = Er enghraifft, ‘anfoneb fasnachol’.
 declaration.previousDocuments.documentCode = Cod y ddogfen
 declaration.previousDocuments.v1.documentCode.body.withJs = Dewiswch fath o ddogfen, fel ‘anfoneb fasnachol’.
 declaration.previousDocuments.v1.documentCode.body.noJs = Dewiswch fath o ddogfen o’r rhestr.
