@@ -92,7 +92,7 @@ class LocationOfGoodsViewSpec extends PageWithButtonsSpec with Injector {
 
         "display the expected hint" in {
           val hint = view.getElementsByClass("govuk-hint")
-          hint.first.text mustBe messages(s"$prefix.yesNo.yes.hint")
+          hint.first.text mustBe messages(s"$prefix.yesNo.no.hint")
         }
 
         "display the expected tariff details" in {
@@ -142,7 +142,7 @@ class LocationOfGoodsViewSpec extends PageWithButtonsSpec with Injector {
 
         "display the expected hint" in {
           val hint = view.getElementsByClass("govuk-hint")
-          hint.get(2).text mustBe messages(s"$prefix.yesNo.yes.hint")
+          hint.get(2).text mustBe messages(s"$prefix.yesNo.no.hint")
         }
 
         "display the expected tariff details" in {
@@ -245,7 +245,7 @@ class LocationOfGoodsViewSpec extends PageWithButtonsSpec with Injector {
 
         "display the expected hint" in {
           val hint = view.getElementsByClass("govuk-hint")
-          hint.first().text mustBe messages(s"$prefix.yesNo.yes.hint")
+          hint.first().text mustBe messages(s"$prefix.yesNo.no.hint")
         }
       }
     }
