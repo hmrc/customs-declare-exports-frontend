@@ -85,10 +85,16 @@ function enhanceSelectIntoAutoComplete(selectElementId, dataSource, submitOnConf
     }
 };
 
-//check if any hint text has a JS enabled specific text to replace the default JS disabled text
-let elementsArray = [...document.getElementsByClassName('govuk-hint')]
-elementsArray.forEach(element => {
-    if (element.getAttribute('withjs')) {
-        element.innerHTML = element.getAttribute('withjs');
-    }
-});
+function updateContentToJsEnabledVersion(elementsArray) {
+    elementsArray.forEach(element => {
+        if (element.getAttribute('withjs')) {
+            element.innerHTML = element.getAttribute('withjs');
+        }
+    })
+};
+
+//check if any govuk-body paragraphs has a 'withjs' attrib with specific text to replace the default JS disabled text
+updateContentToJsEnabledVersion([...document.getElementsByClassName('govuk-body')])
+
+//check if any govuk-hint paragraphs has a 'withjs' attrib with specific text to replace the default JS disabled text
+updateContentToJsEnabledVersion([...document.getElementsByClassName('govuk-hint')])

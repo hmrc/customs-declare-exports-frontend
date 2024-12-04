@@ -67,24 +67,32 @@ class PreviousDocumentsHelper @Inject() (
     }
   }
 
-  def helpForDocumentCode(implicit messages: Messages, request: JourneyRequest[_]): Html = {
+  def getBodyForDocumentCode(implicit messages: Messages, request: JourneyRequest[_]): Html = {
+    println(s"!!!!!!!!!!!!!!!!!! Version = ${versionSelection}")
     versionSelection match {
-      case 1 => paragraph("v1.documentCode.body")
-      case 2 => paragraph("v2.documentCode.body")
-      case 3 => new Html(List(paragraph("v3.documentCode.body"), hint("v3.documentCode.hint")))
-      case 4 => paragraph("v4.documentCode.body")
-      case 5 => paragraph("v5.documentCode.body")
-      case 6 => paragraph("v6.documentCode.body")
+      case 1 => getJsSpecificHtml("declaration.previousDocuments.v1.documentCode.body.noJs", Some("declaration.previousDocuments.v1.documentCode.body.withJs"))
+      case 2 => getJsSpecificHtml("declaration.previousDocuments.v2.documentCode.body.noJs", Some("declaration.previousDocuments.v2.documentCode.body.withJs"))
+      case 3 => getJsSpecificHtml("declaration.previousDocuments.v3.documentCode.body.noJs", Some("declaration.previousDocuments.v3.documentCode.body.withJs"))
+      case 4 => getJsSpecificHtml("declaration.previousDocuments.v4.documentCode.body.noJs", Some("declaration.previousDocuments.v4.documentCode.body.withJs"))
+      case 5 => getJsSpecificHtml("declaration.previousDocuments.v5.documentCode.body.noJs", Some("declaration.previousDocuments.v5.documentCode.body.withJs"))
+      case 6 => getJsSpecificHtml("declaration.previousDocuments.v6.documentCode.body.noJs", Some("declaration.previousDocuments.v6.documentCode.body.withJs"))
     }
   }
-   def helpForHintDocumentCode(implicit  request: JourneyRequest[_]): List[HintTextAlternatives] = {
+  def getJsSpecificHtml(defaultMessageKey: String, jsEnabledMessageKey: Option[String] = None)(implicit messages: Messages): Html =
+    jsEnabledMessageKey.map { key =>
+      Html(s"""<p class="govuk-body" withJs="${messages(key)}">${messages(defaultMessageKey)}</p>""")
+    }.getOrElse {
+      Html(s"""<p class="govuk-body">${messages(defaultMessageKey)}</p>""")
+    }
+
+   def getHintForDocumentCode(implicit request: JourneyRequest[_]): List[HintTextAlternatives] = {
      versionSelection match {
-       case 1 => List(HintTextAlternatives("declaration.previousDocuments.v1.documentCode.hint.noJs", Some("declaration.previousDocuments.v1.documentCode.hint.withJs")))
-       case 2 => List(HintTextAlternatives("declaration.previousDocuments.v2.documentCode.hint.noJs", Some("declaration.previousDocuments.v2.documentCode.hint.withJs")))
-       case 3 => List.empty
-       case 4 => List.empty
-       case 5 => List.empty
-       case 6 => List.empty
+       case 1 => List(HintTextAlternatives("declaration.previousDocuments.all.documentCode.hint.noJs", Some("declaration.previousDocuments.v1.documentCode.hint.withJs")))
+       case 2 => List(HintTextAlternatives("declaration.previousDocuments.all.documentCode.hint.noJs", Some("declaration.previousDocuments.v2.documentCode.hint.withJs")))
+       case 3 => List(HintTextAlternatives("declaration.previousDocuments.all.documentCode.hint.noJs", Some("declaration.previousDocuments.v3.documentCode.hint.withJs")))
+       case 4 => List(HintTextAlternatives("declaration.previousDocuments.all.documentCode.hint.noJs", None))
+       case 5 => List(HintTextAlternatives("declaration.previousDocuments.all.documentCode.hint.noJs", None))
+       case 6 => List(HintTextAlternatives("declaration.previousDocuments.all.documentCode.hint.noJs", None))
      }
     }
 
