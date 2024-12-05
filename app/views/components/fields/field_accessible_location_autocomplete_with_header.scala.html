@@ -82,6 +82,7 @@ To avoid problems, we need to remove [] from field.
     @input_accessible_location_autocomplete(
         field = field,
         countryKey = countryKey,
-        rightElement = rightElement
+        rightElement = rightElement,
+        allErrors.headOption.map(_ => s"error-message-${field.name}-input")
     )
 </div>

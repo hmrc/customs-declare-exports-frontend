@@ -23,7 +23,8 @@
   emptySelectValue: String,
   items: List[AutoCompleteItem],
   rightElement: Option[Html] = None,
-  hintPresent: Boolean = true
+  hintPresent: Boolean = true,
+  errorDescribeBy: Option[String] = None
 )(implicit request: Request[_], messages: Messages)
 
 @*
@@ -48,10 +49,15 @@ To avoid problems, we need to remove [] from field.
   else if (maxLength >= LowerWidthBand && maxLength < UpperWidthBand) "govuk-input--width-30"
   else "govuk-input--width-20"
 }
+
+@describeBy = @{
+    List(if(hintPresent) Some(s"${field.name}-hint") else None, errorDescribeBy).flatten.mkString(" ")
+}
+
 <div class="govuk-grid-row">
     <div class="@rightElement.map(_ => "govuk-grid-column-two-thirds").getOrElse("govuk-grid-column-full")">
         <div id="@(fieldNameWithoutBrackets)-container" class="autocomplete__wrapper @widthClass">
-            <select class="govuk-form-group" id="@(fieldNameWithoutBrackets)" @if(hintPresent) {aria-describedby="@{field.name}-hint"} @if(field.name.nonEmpty) {name="@field.name"} @if(field.value.nonEmpty) {value="@field.value"} data-gov-select-autocomplete="true">
+            <select class="govuk-form-group" id="@(fieldNameWithoutBrackets)" @if(!describeBy.isEmpty) {aria-describedby="@{describeBy}"} @if(field.name.nonEmpty) {name="@field.name"} @if(field.value.nonEmpty) {value="@field.value"} data-gov-select-autocomplete="true">
                 <option value="" disabled="" selected="" label="@emptySelectValue"></option>
                 @items.map { i =>
                     <option value="@i.value" @if(selectedValue == i.value) {selected="selected"}>@i.label</option>
