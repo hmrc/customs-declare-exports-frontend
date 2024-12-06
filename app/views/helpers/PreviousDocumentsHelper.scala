@@ -68,7 +68,6 @@ class PreviousDocumentsHelper @Inject() (
   }
 
   def getBodyForDocumentCode(implicit messages: Messages, request: JourneyRequest[_]): Html = {
-    println(s"!!!!!!!!!!!!!!!!!! Version = ${versionSelection}")
     versionSelection match {
       case 1 => getJsSpecificHtml(s"${prefix}.v1.documentCode.body.noJs", Some(s"${prefix}.v1.documentCode.body.withJs"))
       case 2 => getJsSpecificHtml(s"${prefix}.v2.documentCode.body.noJs", Some(s"${prefix}.v2.documentCode.body.withJs"))

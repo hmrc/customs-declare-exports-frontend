@@ -104,10 +104,6 @@
         pElement.classList.add('govuk-hint', 'govuk-!-margin-top-0');
         pElement.innerHTML = '@messages("declaration.locationOfGoods.yesNo.yes.hint")';
 
-        // add a reference to the hint created above to the non-js
-        // let defaultSelectComp = $('select.govuk-form-group')[0]
-        // defaultSelectComp.setAttribute('aria-describedby', 'glc-hint')
-
         let autoCompleteComp = $('input.autocomplete__input')[0]
         let defaultAriaDescribedBy = autoCompleteComp.getAttribute('aria-describedby')
         autoCompleteComp.setAttribute('aria-describedby', defaultAriaDescribedBy + ' glc-hint')
