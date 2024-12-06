@@ -67,7 +67,7 @@ class PreviousDocumentsHelper @Inject() (
     }
   }
 
-  def getBodyForDocumentCode(implicit messages: Messages, request: JourneyRequest[_]): Html = {
+  def getBodyForDocumentCode(implicit messages: Messages, request: JourneyRequest[_]): Html =
     versionSelection match {
       case 1 => getJsSpecificHtml(s"${prefix}.v1.documentCode.body.noJs", Some(s"${prefix}.v1.documentCode.body.withJs"))
       case 2 => getJsSpecificHtml(s"${prefix}.v2.documentCode.body.noJs", Some(s"${prefix}.v2.documentCode.body.withJs"))
@@ -76,7 +76,6 @@ class PreviousDocumentsHelper @Inject() (
       case 5 => getJsSpecificHtml(s"${prefix}.v5.documentCode.body.noJs", Some(s"${prefix}.v5.documentCode.body.withJs"))
       case 6 => getJsSpecificHtml(s"${prefix}.v6.documentCode.body.noJs", Some(s"${prefix}.v6.documentCode.body.withJs"))
     }
-  }
 
   def getJsSpecificHtml(defaultMessageKey: String, jsEnabledMessageKey: Option[String] = None)(implicit messages: Messages): Html =
     jsEnabledMessageKey.map { key =>
