@@ -74,7 +74,7 @@ To avoid problems, we need to remove [] from field.
     @if(hintParagraphs.nonEmpty) {
         <div id="@(fieldNameWithoutBrackets)-hint">
             @hintParagraphs.map { hint =>
-                @hint.getJsSpecificHintAttribute()
+                @hint.getJsSpecificHtml()
             }
         </div>
     }
@@ -84,6 +84,7 @@ To avoid problems, we need to remove [] from field.
         emptySelectValue = emptySelectValue,
         items = items,
         rightElement = rightElement,
-        hintPresent = hintParagraphs.nonEmpty
+        hintPresent = hintParagraphs.nonEmpty,
+        allErrors.headOption.map(_ => s"error-message-${field.name}-input")
     )
 </div>

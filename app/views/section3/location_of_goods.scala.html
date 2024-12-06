@@ -92,6 +92,7 @@
 
 <script @CSPNonce.attr>
     $(document).ready(function() {
+        // set JS enabled specific content
         let radio1LabelElement = $('[for="code_yes"]')
         radio1LabelElement.text('@messages("declaration.locationOfGoods.yesNo.yesKey.withJs")');
 
@@ -100,8 +101,12 @@
 
         // add in the autocomplete hint text
         let pElement = document.createElement('p');
-        pElement.classList.add("govuk-hint", "govuk-!-margin-top-0");
+        pElement.classList.add('govuk-hint', 'govuk-!-margin-top-0');
         pElement.innerHTML = '@messages("declaration.locationOfGoods.yesNo.yes.hint")';
+
+        let autoCompleteComp = $('input.autocomplete__input')[0]
+        let defaultAriaDescribedBy = autoCompleteComp.getAttribute('aria-describedby')
+        autoCompleteComp.setAttribute('aria-describedby', defaultAriaDescribedBy + ' glc-hint')
 
         let glcHintElement = document.createElement('div');
         glcHintElement.id = 'glc-hint';

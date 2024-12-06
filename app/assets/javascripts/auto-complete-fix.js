@@ -35,6 +35,24 @@ $(document).ready(function(){
                 selectField.val('');
         })
     })
+
+    //check if any govuk-hint paragraphs has a 'withjs' attrib with specific text to replace the default JS disabled text
+    updateContentToJsEnabledVersion([...document.getElementsByClassName('govuk-hint')])
+
+    //check if any govuk-body paragraphs has a 'withjs' attrib with specific text to replace the default JS disabled text
+    updateContentToJsEnabledVersion([...document.getElementsByClassName('govuk-body')])
+
+    //grab the contents of the default select element's aria-describedby attribute and add its contents into the auto-complete's aria-describedby attribute
+    let defaultSelectComp = $('select.govuk-form-group')[0]
+    let fieldPrefix = defaultSelectComp.getAttribute('name').replace(/\./g, "_")
+    let defaultAriaDescribedBy = defaultSelectComp.getAttribute('aria-describedby')
+    let autoCompleteElement = document.getElementById(fieldPrefix)
+
+    if (autoCompleteElement != null && defaultAriaDescribedBy != null)
+    {
+        let existingAriaValue= autoCompleteElement.getAttribute('aria-describedby')
+        autoCompleteElement.setAttribute('aria-describedby', existingAriaValue + ' ' + defaultAriaDescribedBy)
+    }
 });
 
 // ================================================================================
@@ -85,10 +103,11 @@ function enhanceSelectIntoAutoComplete(selectElementId, dataSource, submitOnConf
     }
 };
 
-//check if any hint text has a JS enabled specific text to replace the default JS disabled text
-let elementsArray = [...document.getElementsByClassName('govuk-hint')]
-elementsArray.forEach(element => {
-    if (element.getAttribute('withjs')) {
-        element.innerHTML = element.getAttribute('withjs');
-    }
-});
+function updateContentToJsEnabledVersion(elementsArray) {
+    elementsArray.forEach(element => {
+        if (element.getAttribute('withjs')) {
+            element.innerHTML = element.getAttribute('withjs');
+        }
+    })
+};
+

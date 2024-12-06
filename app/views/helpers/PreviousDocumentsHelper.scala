@@ -67,14 +67,31 @@ class PreviousDocumentsHelper @Inject() (
     }
   }
 
-  def helpForDocumentCode(implicit messages: Messages, request: JourneyRequest[_]): Html =
+  def getBodyForDocumentCode(implicit messages: Messages, request: JourneyRequest[_]): Html =
     versionSelection match {
-      case 1 => new Html(List(paragraph("v1.documentCode.body"), hint("v1.documentCode.hint")))
-      case 2 => new Html(List(paragraph("v2.documentCode.body"), hint("v2.documentCode.hint")))
-      case 3 => new Html(List(paragraph("v3.documentCode.body"), hint("v3.documentCode.hint")))
-      case 4 => paragraph("v4.documentCode.body")
-      case 5 => paragraph("v5.documentCode.body")
-      case 6 => paragraph("v6.documentCode.body")
+      case 1 => getJsSpecificHtml(s"${prefix}.v1.documentCode.body.noJs", Some(s"${prefix}.v1.documentCode.body.withJs"))
+      case 2 => getJsSpecificHtml(s"${prefix}.v2.documentCode.body.noJs", Some(s"${prefix}.v2.documentCode.body.withJs"))
+      case 3 => getJsSpecificHtml(s"${prefix}.v3.documentCode.body.noJs", Some(s"${prefix}.v3.documentCode.body.withJs"))
+      case 4 => getJsSpecificHtml(s"${prefix}.v4.documentCode.body.noJs", Some(s"${prefix}.v4.documentCode.body.withJs"))
+      case 5 => getJsSpecificHtml(s"${prefix}.v5.documentCode.body.noJs", Some(s"${prefix}.v5.documentCode.body.withJs"))
+      case 6 => getJsSpecificHtml(s"${prefix}.v6.documentCode.body.noJs", Some(s"${prefix}.v6.documentCode.body.withJs"))
+    }
+
+  def getJsSpecificHtml(defaultMessageKey: String, jsEnabledMessageKey: Option[String] = None)(implicit messages: Messages): Html =
+    jsEnabledMessageKey.map { key =>
+      Html(s"""<p class="govuk-body" withJs="${messages(key)}">${messages(defaultMessageKey)}</p>""")
+    }.getOrElse {
+      Html(s"""<p class="govuk-body">${messages(defaultMessageKey)}</p>""")
+    }
+
+  def getHintForDocumentCode(implicit request: JourneyRequest[_]): List[HintTextAlternatives] =
+    versionSelection match {
+      case 1 => List(HintTextAlternatives(s"${prefix}.all.documentCode.hint.noJs", Some(s"${prefix}.v1.documentCode.hint.withJs")))
+      case 2 => List(HintTextAlternatives(s"${prefix}.all.documentCode.hint.noJs", Some(s"${prefix}.v2.documentCode.hint.withJs")))
+      case 3 => List(HintTextAlternatives(s"${prefix}.all.documentCode.hint.noJs", Some(s"${prefix}.v3.documentCode.hint.withJs")))
+      case 4 => List(HintTextAlternatives(s"${prefix}.all.documentCode.hint.noJs", None))
+      case 5 => List(HintTextAlternatives(s"${prefix}.all.documentCode.hint.noJs", None))
+      case 6 => List(HintTextAlternatives(s"${prefix}.all.documentCode.hint.noJs", None))
     }
 
   def helpForDocumentReference(implicit messages: Messages, request: JourneyRequest[_]): Html =

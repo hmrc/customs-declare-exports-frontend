@@ -310,12 +310,11 @@ class PreviousDocumentsViewSpec extends PageWithButtonsSpec with Injector with U
       label.text mustBe messages("declaration.previousDocuments.documentCode")
 
       val bodyHelp = label.nextElementSibling
-      bodyHelp.text mustBe messages(s"declaration.previousDocuments.v$version.documentCode.body")
+      bodyHelp.text mustBe messages(s"declaration.previousDocuments.v$version.documentCode.body.noJs")
+      bodyHelp.attribute("withjs").getValue mustBe messages(s"declaration.previousDocuments.v$version.documentCode.body.withJs")
 
-      if (version == 3) {
-        val hintHelp = bodyHelp.nextElementSibling
-        hintHelp.text mustBe messages("declaration.previousDocuments.v3.documentCode.hint")
-      }
+      val hintHelp = bodyHelp.nextElementSibling
+      hintHelp.text mustBe messages("declaration.previousDocuments.all.documentCode.hint.noJs")
 
       view.getElementById("documentType").attr("value") mustBe empty
     }

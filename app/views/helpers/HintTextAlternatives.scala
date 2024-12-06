@@ -20,7 +20,7 @@ import play.api.i18n.Messages
 import play.twirl.api.Html
 
 case class HintTextAlternatives(defaultMessageKey: String, jsEnabledMessageKey: Option[String] = None) {
-  def getJsSpecificHintAttribute()(implicit messages: Messages): Html =
+  def getJsSpecificHtml()(implicit messages: Messages): Html =
     jsEnabledMessageKey.map { key =>
       Html(s"""<p class="govuk-hint govuk-!-margin-top-0" withJs="${messages(key)}">${messages(defaultMessageKey)}</p>""")
     }.getOrElse {

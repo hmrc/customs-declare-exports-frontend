@@ -63,7 +63,8 @@
             field = form(Document.documentTypeId),
             label = messages("declaration.previousDocuments.documentCode"),
             labelClass = Some("govuk-label--m"),
-            bodyHtml = Some(templateHelper.helpForDocumentCode),
+            bodyHtml = Some(templateHelper.getBodyForDocumentCode),
+            hintParagraphs = templateHelper.getHintForDocumentCode,
             emptySelectValue = messages("declaration.previousDocuments.documentCode.empty"),
             items = AutoCompleteItem.fromDocumentType(documentTypeService.allDocuments())
         )
