@@ -506,5 +506,105 @@
   {
     "parentCode": "Y999",
     "childCodes": ["DocumentCodesRequiringAReason"]
+  },
+  {
+    "parentCode": "Y155",
+    "childCodes": ["DocumentCodesRequiringAReason"]
+  },
+  {
+      "parentCode": "Y170",
+      "childCodes": ["DocumentCodesRequiringAReason"]
+  },
+  {
+      "parentCode": "Y171",
+      "childCodes": ["DocumentCodesRequiringAReason"]
+  },
+  {
+      "parentCode": "Y175",
+      "childCodes": ["DocumentCodesRequiringAReason"]
+  },
+  {
+      "parentCode": "Y176",
+      "childCodes": ["DocumentCodesRequiringAReason"]
+  },
+  {
+      "parentCode": "Y177",
+      "childCodes": ["DocumentCodesRequiringAReason"]
+  },
+  {
+      "parentCode": "Y706",
+      "childCodes": ["DocumentCodesRequiringAReason"]
+  },
+  {
+      "parentCode": "Y707",
+      "childCodes": ["DocumentCodesRequiringAReason"]
+  },
+  {
+      "parentCode": "Y708",
+      "childCodes": ["DocumentCodesRequiringAReason"]
+  },
+  {
+      "parentCode": "Y712",
+      "childCodes": ["DocumentCodesRequiringAReason"]
+  },
+  {
+      "parentCode": "Y714",
+      "childCodes": ["DocumentCodesRequiringAReason"]
+  },
+  {
+      "parentCode": "Y717",
+      "childCodes": ["DocumentCodesRequiringAReason"]
+  },
+  {
+      "parentCode": "Y741",
+      "childCodes": ["DocumentCodesRequiringAReason"]
+  },
+  {
+      "parentCode": "Y742",
+      "childCodes": ["DocumentCodesRequiringAReason"]
+  },
+  {
+      "parentCode": "Y748",
+      "childCodes": ["DocumentCodesRequiringAReason"]
+  },
+  {
+      "parentCode": "9Y03",
+      "childCodes": ["DocumentCodesRequiringAReason"]
+  },
+  {
+      "parentCode": "Y129",
+      "childCodes": ["DocumentCodesRequiringAReason"]
+  },
+  {
+      "parentCode": "Y132",
+      "childCodes": ["DocumentCodesRequiringAReason"]
+  },
+  {
+      "parentCode": "Y133",
+      "childCodes": ["DocumentCodesRequiringAReason"]
+  },
+  {
+      "parentCode": "Y141",
+      "childCodes": ["DocumentCodesRequiringAReason"]
+  },
+  {
+      "parentCode": "Y142",
+      "childCodes": ["DocumentCodesRequiringAReason"]
+  },
+  {
+      "parentCode": "Y796",
+      "childCodes": ["DocumentCodesRequiringAReason"]
+  },
+  {
+      "parentCode": "Y152",
+      "childCodes": ["DocumentCodesRequiringAReason"]
+  },
+  {
+      "parentCode": "Y154",
+      "childCodes": ["DocumentCodesRequiringAReason"]
+  },
+  {
+      "parentCode": "Y972",
+      "childCodes": ["DocumentCodesRequiringAReason"]
   }
 ]
