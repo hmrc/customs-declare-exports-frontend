@@ -1,9 +1,5 @@
 [
-  {
-    "en": "Belfast Airport / DHL Global Fowarding (UK) Limited / Unit 6, New Cargo Agents building, Belfast Intl Airport, BT29 4GB",
-    "cy": "Belfast Airport / DHL Global Fowarding (UK) Limited / Unit 6, New Cargo Agents building, Belfast Intl Airport, BT29 4GB",
-    "code": "GBAUBELBFSAEX"
-  },
+
   {
     "en": "Belfast Airport / Heavyweight Air Express Limited / Hamilton House, The Cargo Village, Belfast International Airport, Northern Ireland, B29 4GB",
     "cy": "Belfast Airport / Heavyweight Air Express Limited / Hamilton House, The Cargo Village, Belfast International Airport, Northern Ireland, B29 4GB",
@@ -65,11 +61,6 @@
     "code": "GBAULHRLHRCPS"
   },
   {
-    "en": "London Heathrow Airport / WORLDWIDE FLIGHTG SERVICES LIMITED / Cargo Point, Bedfont Road, Stanwell, Middlesex, TW19 7LU",
-    "cy": "London Heathrow Airport / WORLDWIDE FLIGHTG SERVICES LIMITED / Cargo Point, Bedfont Road, Stanwell, Middlesex, TW19 7LU",
-    "code": "GBAULHRLHRWJS"
-  },
-  {
     "en": "London Stansted Airport / Aircraft Engineering Services Ltd\nc/o Ryanair Engineering / Hangar 10, Long Border Road\nStansted\nCM24 1RE",
     "cy": "London Stansted Airport / Aircraft Engineering Services Ltd\nc/o Ryanair Engineering / Hangar 10, Long Border Road\nStansted\nCM24 1RE",
     "code": "GBAULSALSAEVS"
@@ -78,5 +69,10 @@
     "en": "City of London Corporation. Spout lane North, Stanwell Moor, Staines' Middlesex. TW19 6BW",
     "cy": "City of London Corporation. Spout lane North, Stanwell Moor, Staines' Middlesex. TW19 6BW",
     "code": "GBAUTMRLHRAPT"
+  },
+  {
+    "en": "Glasgow Airport / Fedex Express UK Ltd / Unit A Marchburn Drive, Glasgow Airport, Abbotsfinch, Paisley PA3 2SJ",
+    "cy": "Glasgow Airport / Fedex Express UK Ltd / Unit A Marchburn Drive, Glasgow Airport, Abbotsfinch, Paisley PA3 2SJ",
+    "code": "GBAUPAYGLAFXG1"
   }
 ]

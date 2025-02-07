@@ -31,7 +31,7 @@ class GoodsLocationCodesServiceSpec extends UnitSpec with Injector {
   "GoodsLocationCodes" should {
 
     "have all entries" in {
-      goodsLocationCodesService.all.length mustBe 1581
+      goodsLocationCodesService.all.length mustBe 1651
       goodsLocationCodesService.all.head mustBe GoodsLocationCode("GBCUASDDOVAPF", "AP FINANCIAL LTD. Unit 17, Arrowhead Road, Ashford. TN24 0FL")
     }
 
@@ -48,29 +48,29 @@ class GoodsLocationCodesServiceSpec extends UnitSpec with Injector {
         goodsLocationCodesService.airportsCodes.head mustBe GoodsLocationCode("GBAUDYCABZDYC", "Aberdeen Airport - Dyce")
       }
       "coa airports" in {
-        goodsLocationCodesService.coaAirportsCodes.length mustBe 111
+        goodsLocationCodesService.coaAirportsCodes.length mustBe 113
         goodsLocationCodesService.coaAirportsCodes.head mustBe GoodsLocationCode("GBCUSAWLSASAW", "Audley End Airfield – Saffron Walden")
       }
       "maritime" in {
-        goodsLocationCodesService.maritimeAndWharvesCodes.length mustBe 288
-        goodsLocationCodesService.maritimeAndWharvesCodes.head mustBe GoodsLocationCode("GBAUABDABDABD", "Aberdeen Docks")
+        goodsLocationCodesService.maritimeAndWharvesCodes.length mustBe 325
+        goodsLocationCodesService.maritimeAndWharvesCodes.head mustBe GoodsLocationCode("GBAUABDABDADP", "Aberdeen - Denholm Port Services Ltd")
       }
       "itsf" in {
-        goodsLocationCodesService.itsfCodes.length mustBe 121
+        goodsLocationCodesService.itsfCodes.length mustBe 117
         goodsLocationCodesService.itsfCodes.head mustBe GoodsLocationCode(
           "GBAUABDABDABM",
           "Aberdeen - Matthews Quay / Sea Cargo Aberdeen Limited / Matthews Quay Aberdeen Harbour Aberdeen AB11 5PG"
         )
       }
       "remote itsf" in {
-        goodsLocationCodesService.remoteItsfCodes.length mustBe 16
+        goodsLocationCodesService.remoteItsfCodes.length mustBe 15
         goodsLocationCodesService.remoteItsfCodes.head mustBe GoodsLocationCode(
-          "GBAUBELBFSAEX",
-          "Belfast Airport / DHL Global Fowarding (UK) Limited / Unit 6, New Cargo Agents building, Belfast Intl Airport, BT29 4GB"
+          "GBAUBELBFSHWS",
+          "Belfast Airport / Heavyweight Air Express Limited / Hamilton House, The Cargo Village, Belfast International Airport, Northern Ireland, B29 4GB"
         )
       }
       "external itsf" in {
-        goodsLocationCodesService.externalItsfCodes.length mustBe 666
+        goodsLocationCodesService.externalItsfCodes.length mustBe 696
         goodsLocationCodesService.externalItsfCodes.head mustBe GoodsLocationCode(
           "GBAUPOEABZEBX",
           "Aberdeen / Crane Worldwide UK Ltd / Warehouse Unit 7, Gourdieburn, Potterton, Aberdeen, AB23 8UY"
