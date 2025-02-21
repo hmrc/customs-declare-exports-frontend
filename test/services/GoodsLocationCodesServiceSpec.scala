@@ -31,16 +31,16 @@ class GoodsLocationCodesServiceSpec extends UnitSpec with Injector {
   "GoodsLocationCodes" should {
 
     "have all entries" in {
-      goodsLocationCodesService.all.length mustBe 1651
+      goodsLocationCodesService.all.length mustBe 1718
       goodsLocationCodesService.all.head mustBe GoodsLocationCode("GBCUASDDOVAPF", "AP FINANCIAL LTD. Unit 17, Arrowhead Road, Ashford. TN24 0FL")
     }
 
     "have entries" when {
       "depCodes" in {
-        goodsLocationCodesService.depCodes.length mustBe 83
+        goodsLocationCodesService.depCodes.length mustBe 87
         goodsLocationCodesService.depCodes.head mustBe GoodsLocationCode(
-          "GBAUBA5ABDCGD",
-          "Aberdeen 410 /  Grampian Continental Ltd, Birchwood Works, Kinellar, Aberdeen, AB21 0SH"
+          "GBAULOFLHRXDI",
+          "CH Robinson Worldwide (UK) Limited  /  2 Millbrook Way, Colnbrook, Slough. SL3 0HN"
         )
       }
       "airports" in {
@@ -107,7 +107,7 @@ class GoodsLocationCodesServiceSpec extends UnitSpec with Injector {
         goodsLocationCodesService.railCodes.head mustBe GoodsLocationCode("GBAUASDASDASD", "Ashford / Eurostar / Ashford International")
       }
       "acts" in {
-        goodsLocationCodesService.actsCodes.length mustBe 56
+        goodsLocationCodesService.actsCodes.length mustBe 119
         goodsLocationCodesService.actsCodes.head mustBe GoodsLocationCode(
           "GBCUASDDOVAPF",
           "AP FINANCIAL LTD. Unit 17, Arrowhead Road, Ashford. TN24 0FL"

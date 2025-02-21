@@ -125,11 +125,6 @@
     "code": "GBAURMGRMGRMGGVM"
   },
   {
-    "en": "Sheerness / Sheerness GVMS Port",
-    "cy": "Sheerness / Sheerness GVMS Port",
-    "code": "GBAUMEDMEDMEDGVM"
-  },
-  {
     "en": "Teesport / Teesport GVMS Port",
     "cy": "Teesport / Teesport GVMS Port",
     "code": "GBAUTEEMIDTEEGVM"
@@ -143,5 +138,10 @@
     "en": "Warrenpoint / Warrenpoint GVMS Port",
     "cy": "Warrenpoint / Warrenpoint GVMS Port",
     "code": "GBAUWPTWPTGVM"
+  },
+  {
+    "en": "Manchester / Manchester GVMS Port",
+    "cy": "Manchester / Manchester GVMS Port",
+    "code": "GBAUEAMMNCMSCGVM"
   }
 ]
