@@ -118,7 +118,7 @@ object MultipleItemsHelper {
     maybeA.foldLeft(sequence)((sequence, maybeItem) => append(sequence, maybeItem))
   }
 
-  def generateItemId(): String = RandomStringUtils.random(8, "0123456789abcdefg")
+  def generateItemId(): String = RandomStringUtils.insecure().next(8, "0123456789abcdefg")
 }
 
 trait MultipleItemsDuplicateHandler[A] {
