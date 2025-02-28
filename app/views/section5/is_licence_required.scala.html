@@ -39,7 +39,6 @@
     insetText: exportsInsetText,
     yesNoRadios: yesNoRadios,
     tariffLink: tariffLink,
-    tariffExpander: tariffExpander,
     saveButtons: saveButtons,
     navigator: Navigator,
     formHelper: FormWithCSRF
@@ -86,8 +85,7 @@
        @paragraphBody(messages("declaration.item.isLicenceRequired.body"))
 
         @yesNoRadios(
-            form,
-            noHint = Some(Seq("declaration.item.isLicenceRequired.no.hint"))
+            form
         )
         </fieldset>
 
@@ -96,7 +94,6 @@
                 heading(messages("declaration.item.isLicenceRequired.inset.title"), classes = "govuk-heading", tier = "strong"),
                 paragraphBody(tariffLinkContent),
                 paragraphBody(messages("declaration.item.isLicenceRequired.inset.2.text")),
-                paragraphBody(messages("declaration.item.isLicenceRequired.inset.3.text")),
                 paragraphBody(messages("declaration.item.isLicenceRequired.inset.4.text",
                     tariffLink(
                         messages("declaration.item.isLicenceRequired.inset.4.linkText"),
@@ -106,8 +103,6 @@
                 paragraphBody(messages("declaration.item.isLicenceRequired.inset.5.text"))
             ).mkString)
         )
-
-        @tariffExpander(IsLicenceRequired, request.declarationType)(messages, appConfig)
 
         @saveButtons()
     }
