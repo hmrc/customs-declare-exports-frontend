@@ -1110,10 +1110,10 @@ declaration.additionalFiscalReferences.error.duplicate = VAT details already add
 
 declaration.additionalDocumentsRequired.title = Do you need to declare any additional documents for this item?
 declaration.additionalDocumentsRequired.inset.text1 = How do I know if my goods require licences, certificates or exemptions?
-declaration.additionalDocumentsRequired.inset.text2 = The {0} will list any requirements in the ‘Exports’ tab in the column ‘Conditions that apply’.
+declaration.additionalDocumentsRequired.inset.text2 = The {0} will list any requirements. Navigate to the ‘Exports’ tab, then view any applicable information under ‘Conditions’.
 declaration.additionalDocumentsRequired.inset.link2 = Tariff entry for {0}, the code you entered (opens in new tab)
 declaration.additionalDocumentsRequired.inset.link2Alt = Tariff entry for your commodity (opens in new tab)
-declaration.additionalDocumentsRequired.inset.text3 = If you are unsure if your commodity requires a licence or allows an exemption, see as an example, commodity code 0306310010 (opens in new tab). This requires a C673 certificate, or a Y927 exemption.
+declaration.additionalDocumentsRequired.inset.text3 = If you are unsure if your commodity requires a licence or allows an exemption, see as an example, {0}. This requires a C673 certificate, or a Y927 exemption.
 declaration.additionalDocumentsRequired.inset.link3 = commodity code 0306310010 (opens in new tab)
 declaration.additionalDocumentsRequired.empty = Select yes if you want to declare additional documents
 declaration.additionalDocumentsRequired.title = Do you need to enter any other document details?
@@ -1160,14 +1160,14 @@ declaration.additionalDocument.v6.code.body = Document codes are 4-character cod
 declaration.additionalDocument.v6.code.hint = For example, 9005, C639.
 
 declaration.additionalDocument.expander.title = How to enter licences, certificates and exemptions
-declaration.additionalDocument.expander.body.1.withCommodityCode = The {0} will list any requirements. Navigate to the 'Exports' tab, then view any applicable information under 'Conditions'.
+declaration.additionalDocument.expander.body.1.withCommodityCode = The {0} will list any requirements. Navigate to the ‘Exports’ tab, then view any applicable information under ‘Conditions’ that can be entered into relevant sections on this page.
 declaration.additionalDocument.expander.body.1.withCommodityCode.link = Tariff entry for {0}, the code you entered (opens in new tab)
 declaration.additionalDocument.expander.body.1.withoutCommodityCode = The entry for your commodity code in the {0} will list any requirements. Navigate to the 'Exports' tab, then view any applicable information under 'Conditions'
 declaration.additionalDocument.expander.body.1.withoutCommodityCode.link = Trade Tariff (opens in new tab)
 declaration.additionalDocument.expander.body.2 = If more than one licence requirement is shown, you can declare any one of them, along with the reference number that will identify the licence to HMRC (the document identifier).
 declaration.additionalDocument.expander.body.3 = If you want to declare a licence and you do not know which document code to enter for the licence, you can check {0}.
 declaration.additionalDocument.expander.body.3.link = Appendix 5C ‘Exports’ section (opens in new tab)
-declaration.additionalDocument.expander.body.4 = If you are unsure if your commodity requires a licence or allows an exemption, see as an example, {0}. This requires a C673 certificate, or a Y927 exemption.
+declaration.additionalDocument.expander.body.4 = If you are unsure if your commodity requires a licence or allows an exemption, see an example, {0}. This requires a C673 certificate, or a Y927 exemption.
 declaration.additionalDocument.expander.body.4.link = commodity code 0306310010 (opens in new tab)
 
 declaration.additionalDocument.code = Document code
@@ -1262,7 +1262,6 @@ declaration.item.isLicenceRequired.inset.title = How do I know if the goods requ
 declaration.item.isLicenceRequired.inset.1.text = The {0} will list any requirements. Navigate to the 'Exports' tab, then view any applicable information under 'Conditions'.
 declaration.item.isLicenceRequired.inset.1.linkText = Tariff entry for the code you entered (opens in new tab)
 declaration.item.isLicenceRequired.inset.1.linkText.0 = Tariff entry for {0}, the code you entered (opens in new tab)
-declaration.item.isLicenceRequired.inset.2.text = If there are no requirements, it will say ‘There are no export measures for this commodity on this date.’ You should then select ‘No’.
 declaration.item.isLicenceRequired.inset.3.text = If you are allowed to declare waiver codes 999L, Y999, Y924, Y923 or Y903 this will be listed in the ‘Conditions’ box.
 declaration.item.isLicenceRequired.inset.4.text = Use of waivers constitutes a legal declaration that the goods do not require the certificate or licence shown. See more information about {0}.
 declaration.item.isLicenceRequired.inset.4.linkText = prohibitions and restrictions on exports (opens in new tab)
