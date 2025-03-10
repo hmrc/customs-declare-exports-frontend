@@ -1110,7 +1110,7 @@ declaration.additionalFiscalReferences.remove.title = A ydych yn siŵr eich bod 
 declaration.additionalFiscalReferences.remove.empty = Dewiswch ‘Iawn’ os ydych am ddileu’r manylion TAW hyn
 declaration.additionalFiscalReferences.error.duplicate = Manylion TAW eisoes wedi’u hychwanegu
 
-declaration.additionalDocumentsRequired.title = A oes angen i chi ddatgan unrhyw ddogfennau ychwanegol ar gyfer yr eitem hon?
+declaration.additionalDocumentsRequired.title = A oes angen i chi ddatgan unrhyw ddogfennau ychwanegol ar gyfer yr eitem hon? *** WE NEED THIS CORRECTED ***
 declaration.additionalDocumentsRequired.inset.text1 = Sut ydw i’n gwybod a oes angen trwyddedau, tystysgrifau neu eithriadau ar fy nwyddau?
 declaration.additionalDocumentsRequired.inset.text2 = Bydd y {0} yn rhestru unrhyw ofynion, Ewch i’r tab ‘Allforion’, yna bwrw golwg dros unrhyw wybodaeth berthnasol o dan ‘Amodau’.
 declaration.additionalDocumentsRequired.inset.link2 = Cofnod yn y tariff ar gyfer {0}, y cod a nodwyd gennych (yn agor tab newydd)
@@ -1118,11 +1118,8 @@ declaration.additionalDocumentsRequired.inset.link2Alt = Cofnod yn y tariff ar g
 declaration.additionalDocumentsRequired.inset.text3 = Os nad ydych yn siŵr a oes angen trwydded ar eich nwydd neu a yw’n caniatáu eithriad, gweler {0} fel enghraifft. Mae angen tystysgrif C673 ar gyfer hyn, neu eithriad Y927.
 declaration.additionalDocumentsRequired.inset.link3 = cod nwyddau 0306310010 (yn agor tab newydd)
 declaration.additionalDocumentsRequired.empty = Dewiswch ‘Iawn’ os ydych am ddatgan dogfennau ychwanegol
-declaration.additionalDocumentsRequired.title = A oes angen i chi ddatgan unrhyw ddogfennau ychwanegol ar gyfer yr eitem hon?
-declaration.additionalDocumentsRequired.clearance.title = A oes angen i chi ddatgan unrhyw ddogfennau ychwanegol ar gyfer yr eitem hon?
 declaration.additionalDocumentsRequired.paragraph = Hyd yn oed heb unrhyw ofyniad i gael trwydded, efallai y bydd angen dogfennau eraill ar eich nwyddau megis tystysgrifau neu daflenni gwybodaeth.
 declaration.additionalDocumentsRequired.paragraph.1 = Mae’r rhain ar ben y dogfennau a ychwanegoch chi at eich datganiad eisoes yn adran 4, megis anfoneb a rhestr bacio.
-declaration.additionalDocumentsRequired.clearance.paragraph = Gallai’r rhain gynnwys trwyddedau neu dystysgrifau ar gyfer eich nwyddau, ar ben y dogfennau a ychwanegoch chi at eich datganiad eisoes yn adran 4.
 
 declaration.additionalDocument.v1.title = Nodwch fanylion y drwydded, rhifau awdurdodi ac unrhyw fanylion eraill y ddogfen
 declaration.additionalDocument.v1.body.1 = Fesul un, drwy ddefnyddio’r dudalen hon, nodwch fanylion y drwydded ac unrhyw ddogfennau eraill ar gyfer y nwyddau hyn, megis tystysgrifau neu daflenni gwybodaeth. Mae’r rhain ar ben y dogfennau rydych eisoes wedi’u hychwanegu at eich datganiad yn adran 4.
