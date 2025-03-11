@@ -136,6 +136,7 @@ class AdditionalDocumentsRequiredViewSpec extends UnitViewSpec with Injector {
         }
       }
     }
+
     onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL)(aDeclaration(withItem(item))) { implicit request =>
       "display page title" in {
         createView().getElementsByTag("h1").first() must containMessage(s"$msgKey.title")
