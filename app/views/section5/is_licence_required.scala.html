@@ -26,9 +26,11 @@
 @import views.helpers.CommodityCodeHelper.commodityCodeOfItem
 @import views.helpers.ErrorMapper.yesNoErrors
 @import views.html.components.gds._
+@import uk.gov.hmrc.govukfrontend.views.html.components._
 
 @this(
     govukLayout: gdsMainTemplate,
+    govukNotificationBanner: GovukNotificationBanner,
     errorSummary: errorSummary,
     sectionHeader: sectionHeader,
     govukRadios: GovukRadios,
@@ -47,6 +49,13 @@
 @(itemId: String, form: Form[YesNoAnswer])(implicit request: JourneyRequest[_], messages: Messages)
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
+
+@notificationTitleContent = { @messages("declaration.item.isLicenceRequired.notification.title") }
+
+@notificationContent = {
+@messages("declaration.item.isLicenceRequired.notification.content.1")
+<p>@messages("declaration.item.isLicenceRequired.notification.content.2")</p>
+}
 
 @tariffLinkContent = @{
     commodityCodeOfItem(itemId).map { commodityCode =>
@@ -72,8 +81,13 @@
     title = Title("declaration.item.isLicenceRequired.title", "declaration.section.5", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(IsLicenceRequired, ItemId(itemId))))
 ) {
+
+
+
     @formHelper(action = IsLicenceRequiredController.submitForm(itemId), 'autoComplete -> "off") {
         @errorSummary(yesNoErrors(form.errors))
+
+        @govukNotificationBanner(NotificationBanner(title = HtmlContent(notificationTitleContent),content = HtmlContent(notificationContent)))
 
         @sectionHeader(messages("declaration.section.5"))
 

@@ -1252,9 +1252,12 @@ declaration.additionalDocument.CWP.hint = GBCWP12345678900020191023163657
 declaration.additionalDocument.DPO.hint = GBDPO1000131
 declaration.additionalDocument.MOU.hint = GBMOU12345678900020191023163657
 
+declaration.item.isLicenceRequired.error = Select yes if the goods require a licence
+declaration.item.isLicenceRequired.notification.title = Important: notice about changes to waiver codes
+declaration.item.isLicenceRequired.notification.content.1 = Waiver codes are no longer automatically populated. If your goods meet the conditions for claiming a waiver document code, you should select “Yes” and manually enter the code in the next screen.
+declaration.item.isLicenceRequired.notification.content.2 = Check the tariff entry below to find any specific measures and document codes which may be required by the commodity code you have declared.
 declaration.item.isLicenceRequired.title = Do the goods require a reference or code relating to a licence or certificate?
 declaration.item.isLicenceRequired.body = It is your responsibility to check if your goods require a licence.
-declaration.item.isLicenceRequired.error = Select yes if the goods require a licence
 declaration.item.isLicenceRequired.inset.title = How do I know if the goods require a licence?
 declaration.item.isLicenceRequired.inset.1.text = The {0} will list any requirements. Navigate to the ‘Exports’ tab, then view any applicable information under ‘Conditions’.
 declaration.item.isLicenceRequired.inset.1.linkText = Tariff entry for the code you entered (opens in new tab)

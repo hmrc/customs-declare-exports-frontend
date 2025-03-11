@@ -1254,9 +1254,12 @@ declaration.additionalDocument.CWP.hint = GBCWP12345678900020191023163657
 declaration.additionalDocument.DPO.hint = GBDPO1000131
 declaration.additionalDocument.MOU.hint = GBMOU12345678900020191023163657
 
+declaration.item.isLicenceRequired.error = Dewiswch ‘Iawn’ os oes angen trwydded ar y nwyddau
+declaration.item.isLicenceRequired.notification.title = NEED WELSH
+declaration.item.isLicenceRequired.notification.content.1 = NEED WELSH
+declaration.item.isLicenceRequired.notification.content.2 = NEED WELSH
 declaration.item.isLicenceRequired.title = A oes angen cyfeirnod ar y nwyddau sy’n ymwneud â thrwydded neu dystysgrif?
 declaration.item.isLicenceRequired.body = Eich cyfrifoldeb chi yw gwirio a oes angen trwydded ar eich nwyddau.
-declaration.item.isLicenceRequired.error = Dewiswch ‘Iawn’ os oes angen trwydded ar y nwyddau
 declaration.item.isLicenceRequired.inset.title = Sut ydw i’n gwybod a oes angen trwydded ar y nwyddau?
 declaration.item.isLicenceRequired.inset.1.text = Bydd {0} yn rhestru unrhyw ofynion. Ewch i’r tab ‘Allforion’, yna bwrw golwg dros unrhyw wybodaeth berthnasol o dan ‘Amodau’.
 declaration.item.isLicenceRequired.inset.1.linkText = Cofnod yn y tariff ar gyfer y cod a nodoch (yn agor tab newydd)
