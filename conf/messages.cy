@@ -1110,7 +1110,7 @@ declaration.additionalFiscalReferences.remove.title = A ydych yn siŵr eich bod 
 declaration.additionalFiscalReferences.remove.empty = Dewiswch ‘Iawn’ os ydych am ddileu’r manylion TAW hyn
 declaration.additionalFiscalReferences.error.duplicate = Manylion TAW eisoes wedi’u hychwanegu
 
-declaration.additionalDocumentsRequired.title = A oes angen i chi ddatgan unrhyw ddogfennau ychwanegol ar gyfer yr eitem hon? *** WE NEED THIS CORRECTED ***
+declaration.additionalDocumentsRequired.title = A oes angen i chi nodi unrhyw fanylion eraill y ddogfen?
 declaration.additionalDocumentsRequired.inset.text1 = Sut ydw i’n gwybod a oes angen trwyddedau, tystysgrifau neu eithriadau ar fy nwyddau?
 declaration.additionalDocumentsRequired.inset.text2 = Bydd y {0} yn rhestru unrhyw ofynion, Ewch i’r tab ‘Allforion’, yna bwrw golwg dros unrhyw wybodaeth berthnasol o dan ‘Amodau’.
 declaration.additionalDocumentsRequired.inset.link2 = Cofnod yn y tariff ar gyfer {0}, y cod a nodwyd gennych (yn agor tab newydd)
