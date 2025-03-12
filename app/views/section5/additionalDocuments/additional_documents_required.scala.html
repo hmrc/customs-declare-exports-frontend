@@ -48,27 +48,15 @@
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 
-@showWaiverInfo = @{
-    request.declarationType != DeclarationType.CLEARANCE
-}
-
 @title = @{
-    if(showWaiverInfo){
-        "declaration.additionalDocumentsRequired.title"
-    } else {
-        "declaration.additionalDocumentsRequired.clearance.title"
-    }
+    "declaration.additionalDocumentsRequired.title"
 }
 
 @body = @{
-    if(request.declarationType == models.DeclarationType.CLEARANCE){
-       Seq("declaration.additionalDocumentsRequired.clearance.paragraph")
-    } else {
-        Seq(
-            "declaration.additionalDocumentsRequired.paragraph",
-            "declaration.additionalDocumentsRequired.paragraph.1"
-        )
-    }
+    Seq(
+        "declaration.additionalDocumentsRequired.paragraph",
+        "declaration.additionalDocumentsRequired.paragraph.1"
+    )
 }
 
 @commodityCodeLink = {
@@ -92,8 +80,7 @@
         id = Some("licenses-and-certificates-inset-link"),
         url = appConfig.licensesForExportingGoods,
         text = messages("declaration.additionalDocumentsRequired.inset.link3")
-    )
-}
+    )}
 
 @insetSection = {
     @paragraph(classes = "govuk-label--s", message = messages("declaration.additionalDocumentsRequired.inset.text1"))

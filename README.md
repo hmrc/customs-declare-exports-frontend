@@ -6,16 +6,13 @@ This public-facing microservice is part of Customs Exports Declaration Service (
 It provides functionality to submit and manage exports declarations.
 
 ## Prerequisites
-This service is written in [Scala](http://www.scala-lang.org/) and [Play](http://playframework.com/), so needs at a [JRE](https://www.java.com/en/download/) to run and a JDK for development.
-
-This service does **not** use MongoDB.
 
 This service depends on other services. The easiest way to set up required microservices is to use Service Manager and profiles from [service-manager-config](https://github.com/hmrc/service-manager-config/) repository:
-- CDS_EXPORTS_DECLARATION_DEPS - all services EXCEPT both declarations services
-- CDS_EXPORTS_DECLARATION_ALL - all services together with both declarations services
+- `sm2 --start CDS_EXPORTS_DECLARATION_DEPS` - all services EXCEPT both declarations services
+- `sm2 --start CDS_EXPORTS_DECLARATION_ALL` - all services together with both declarations services
 
 ### Running the application
-In order to run the application you need to have SBT installed. Then, it is enough to start the service with: 
+Start the service with: 
 
 `sbt run`
 

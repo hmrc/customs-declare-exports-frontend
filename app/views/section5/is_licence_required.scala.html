@@ -26,9 +26,11 @@
 @import views.helpers.CommodityCodeHelper.commodityCodeOfItem
 @import views.helpers.ErrorMapper.yesNoErrors
 @import views.html.components.gds._
+@import uk.gov.hmrc.govukfrontend.views.html.components._
 
 @this(
     govukLayout: gdsMainTemplate,
+    govukNotificationBanner: GovukNotificationBanner,
     errorSummary: errorSummary,
     sectionHeader: sectionHeader,
     govukRadios: GovukRadios,
@@ -39,7 +41,6 @@
     insetText: exportsInsetText,
     yesNoRadios: yesNoRadios,
     tariffLink: tariffLink,
-    tariffExpander: tariffExpander,
     saveButtons: saveButtons,
     navigator: Navigator,
     formHelper: FormWithCSRF
@@ -48,6 +49,13 @@
 @(itemId: String, form: Form[YesNoAnswer])(implicit request: JourneyRequest[_], messages: Messages)
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
+
+@notificationTitleContent = { @messages("declaration.item.isLicenceRequired.notification.title") }
+
+@notificationContent = {
+@messages("declaration.item.isLicenceRequired.notification.content.1")
+<p>@messages("declaration.item.isLicenceRequired.notification.content.2")</p>
+}
 
 @tariffLinkContent = @{
     commodityCodeOfItem(itemId).map { commodityCode =>
@@ -73,8 +81,11 @@
     title = Title("declaration.item.isLicenceRequired.title", "declaration.section.5", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(IsLicenceRequired, ItemId(itemId))))
 ) {
+
     @formHelper(action = IsLicenceRequiredController.submitForm(itemId), 'autoComplete -> "off") {
         @errorSummary(yesNoErrors(form.errors))
+
+        @govukNotificationBanner(NotificationBanner(title = HtmlContent(notificationTitleContent), content = HtmlContent(notificationContent)))
 
         @sectionHeader(messages("declaration.section.5"))
 
@@ -86,8 +97,7 @@
        @paragraphBody(messages("declaration.item.isLicenceRequired.body"))
 
         @yesNoRadios(
-            form,
-            noHint = Some(Seq("declaration.item.isLicenceRequired.no.hint"))
+            form
         )
         </fieldset>
 
@@ -95,19 +105,14 @@
             content = HtmlContent(Seq(
                 heading(messages("declaration.item.isLicenceRequired.inset.title"), classes = "govuk-heading", tier = "strong"),
                 paragraphBody(tariffLinkContent),
-                paragraphBody(messages("declaration.item.isLicenceRequired.inset.2.text")),
-                paragraphBody(messages("declaration.item.isLicenceRequired.inset.3.text")),
                 paragraphBody(messages("declaration.item.isLicenceRequired.inset.4.text",
                     tariffLink(
                         messages("declaration.item.isLicenceRequired.inset.4.linkText"),
                         appConfig.tariffGuideUrl("urls.tariff.declaration.item.isLicenceRequired.inset.4")
                     )
                 )),
-                paragraphBody(messages("declaration.item.isLicenceRequired.inset.5.text"))
             ).mkString)
         )
-
-        @tariffExpander(IsLicenceRequired, request.declarationType)(messages, appConfig)
 
         @saveButtons()
     }

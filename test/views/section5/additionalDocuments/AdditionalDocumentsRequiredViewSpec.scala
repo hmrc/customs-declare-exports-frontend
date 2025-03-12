@@ -127,7 +127,7 @@ class AdditionalDocumentsRequiredViewSpec extends UnitViewSpec with Injector {
 
     onJourney(CLEARANCE)(aDeclaration(withItem(item))) { implicit request =>
       "display page title" in {
-        createView().getElementsByTag("h1").first() must containMessage(s"$msgKey.clearance.title")
+        createView().getElementsByTag("h1").first() must containMessage(s"$msgKey.title")
       }
 
       "display a 'Back' button that links to the 'Additional Information' page" when {
@@ -136,6 +136,7 @@ class AdditionalDocumentsRequiredViewSpec extends UnitViewSpec with Injector {
         }
       }
     }
+
     onJourney(STANDARD, SUPPLEMENTARY, SIMPLIFIED, OCCASIONAL)(aDeclaration(withItem(item))) { implicit request =>
       "display page title" in {
         createView().getElementsByTag("h1").first() must containMessage(s"$msgKey.title")
