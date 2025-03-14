@@ -54,7 +54,7 @@
 
         <fieldset class="govuk-fieldset" @if(form.hasErrors) { aria-describedby="yesNo-error" }>
             <legend class="govuk-fieldset__legend govuk-!-margin-bottom-0">
-                @heading(messages("declaration.additionalInformationRequired.title"), Styles.gdsPageLegend)
+                @heading(messages("declaration.additionalInformationRequired.title"))
             </legend>
 
         @additionalInformationRequiredHelper.getBodyContent(request.declarationType, maybeProcedureCode)

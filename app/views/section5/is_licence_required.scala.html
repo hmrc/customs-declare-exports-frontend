@@ -91,19 +91,19 @@
 
         <fieldset class="govuk-fieldset" @if(form.hasErrors) { aria-describedby="yesNo-error" }>
             <legend class="govuk-fieldset__legend govuk-!-margin-bottom-0">
-                @heading(messages("declaration.item.isLicenceRequired.title"), Styles.gdsPageLegend)
+                @heading(messages("declaration.item.isLicenceRequired.title"))
             </legend>
 
        @paragraphBody(messages("declaration.item.isLicenceRequired.body"))
 
         @yesNoRadios(
-            form
+            form, inline = true
         )
         </fieldset>
 
         @insetText(
             content = HtmlContent(Seq(
-                heading(messages("declaration.item.isLicenceRequired.inset.title"), classes = "govuk-heading", tier = "strong"),
+                heading(messages("declaration.item.isLicenceRequired.inset.title"), classes = "govuk-heading-s", tier = "h2"),
                 paragraphBody(tariffLinkContent),
                 paragraphBody(messages("declaration.item.isLicenceRequired.inset.4.text",
                     tariffLink(
