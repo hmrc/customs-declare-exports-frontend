@@ -25,7 +25,6 @@ import org.jsoup.nodes.Document
 import play.api.mvc.Call
 import services.cache.ExportsTestHelper
 import views.common.PageWithButtonsSpec
-import views.components.gds.Styles
 import views.html.section5.additionalInformation.additional_information_required
 import views.tags.ViewTest
 
@@ -60,7 +59,7 @@ class AdditionalInformationRequiredViewSpec extends PageWithButtonsSpec with Exp
       }
 
       "display page title" in {
-        createView.getElementsByClass(Styles.gdsPageLegend) must containMessageForElements("declaration.additionalInformationRequired.title")
+        createView.getElementsByClass("govuk-fieldset__legend") must containMessageForElements("declaration.additionalInformationRequired.title")
       }
 
       "display section header" in {

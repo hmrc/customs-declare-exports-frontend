@@ -29,7 +29,6 @@ import play.api.data.Form
 import services.cache.ExportsTestHelper
 import tools.Stubs
 import views.common.UnitViewSpec
-import views.components.gds.Styles
 import views.helpers.CommonMessages
 import views.html.section5.is_licence_required
 import views.tags.ViewTest
@@ -47,7 +46,7 @@ class IsLicenceRequiredViewSpec extends UnitViewSpec with ExportsTestHelper with
 
     onEveryDeclarationJourney() { implicit request =>
       "display page title" in {
-        createView().getElementsByClass(Styles.gdsPageLegend) must containMessageForElements("declaration.item.isLicenceRequired.title")
+        createView().getElementsByClass("govuk-fieldset__legend") must containMessageForElements("declaration.item.isLicenceRequired.title")
       }
 
       "display section header" in {
