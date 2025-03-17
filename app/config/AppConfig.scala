@@ -46,6 +46,12 @@ class AppConfig @Inject() (
   val loginUrl = loadConfig("urls.login")
   val loginContinueUrl = loadConfig("urls.loginContinue")
 
+  val choicePageNotificationFromTime = loadConfig("choicePage.fromTime")
+  val choicePageNotificationFromDate = loadConfig("choicePage.fromDate")
+  val choicePageNotificationToTime = loadConfig("choicePage.toTime")
+  val choicePageNotificationToDate = loadConfig("choicePage.toDate")
+  val choicePageNotificationLink = loadConfig("urls.choicePageNotification")
+
   val cdsUploadDocs = loadConfig("urls.cdsUploadDocs")
 
   val commodityCodeTariffPageUrl = loadConfig("urls.commodityCodeTariffPage")

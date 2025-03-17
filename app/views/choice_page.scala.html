@@ -15,6 +15,7 @@
  *@
 
 @import config.ExternalServicesConfig
+@import config.AppConfig
 @import controllers.journey.routes.StandardOrOtherJourneyController
 @import controllers.routes.{FileUploadController, SavedDeclarationsController}
 @import models.requests.SessionHelper.showErrorsIfAny
@@ -24,6 +25,8 @@
 @import views.html.components.gds._
 
 @this(
+    appConfig: AppConfig,
+    govukNotificationBanner: GovukNotificationBanner,
     govukLayout: gdsMainTemplate,
     heading: heading,
     externalLink: externalLink,
@@ -36,8 +39,33 @@
 
 @()(implicit request: Request[_], messages: Messages)
 
+
+@notificationTitleContent = { @messages("declaration.choice.notification.title") }
+
+@notificationLink = {
+    @externalLink(
+        id = Some("declaration-choice-notification-content-link"),
+        text = messages("declaration.choice.notification.content.link"),
+        url = appConfig.choicePageNotificationLink
+    )
+}
+
+@notificationContent = {
+    @messages(
+        "declaration.choice.notification.content",
+        appConfig.choicePageNotificationFromTime,
+        appConfig.choicePageNotificationFromDate,
+        appConfig.choicePageNotificationToTime,
+        appConfig.choicePageNotificationToDate
+    )
+    @notificationLink
+}
+
+
 @govukLayout(title = Title("declaration.choice.heading"), showDeclarationSummaryLink = false) {
     @showErrorsIfAny
+
+    @govukNotificationBanner(NotificationBanner(title = HtmlContent(notificationTitleContent), content = HtmlContent(notificationContent)))
 
     @pageTitle(messages("declaration.choice.heading"))
 
