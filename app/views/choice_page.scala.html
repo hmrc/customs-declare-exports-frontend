@@ -64,8 +64,10 @@
 
 @govukLayout(title = Title("declaration.choice.heading"), showDeclarationSummaryLink = false) {
     @showErrorsIfAny
+    @if(appConfig.choicePageNotificationEnabled){
+        @govukNotificationBanner(NotificationBanner(title = HtmlContent(notificationTitleContent), content = HtmlContent(notificationContent)))
+    }
 
-    @govukNotificationBanner(NotificationBanner(title = HtmlContent(notificationTitleContent), content = HtmlContent(notificationContent)))
 
     @pageTitle(messages("declaration.choice.heading"))
 

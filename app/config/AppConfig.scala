@@ -46,6 +46,7 @@ class AppConfig @Inject() (
   val loginUrl = loadConfig("urls.login")
   val loginContinueUrl = loadConfig("urls.loginContinue")
 
+  val choicePageNotificationEnabled = servicesConfig.getBoolean("features.choicePageNotification")
   val choicePageNotificationFromTime = loadConfig("choicePage.fromTime")
   val choicePageNotificationFromDate = loadConfig("choicePage.fromDate")
   val choicePageNotificationToTime = loadConfig("choicePage.toTime")
