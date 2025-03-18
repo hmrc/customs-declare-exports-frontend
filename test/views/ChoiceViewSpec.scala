@@ -21,6 +21,7 @@ import config.ExternalServicesConfig
 import controllers.journey.routes.StandardOrOtherJourneyController
 import controllers.routes.{FileUploadController, SavedDeclarationsController}
 import models.requests.SessionHelper.errorKey
+import org.jsoup.nodes.Element
 import org.mockito.Mockito.when
 import play.api.inject.bind
 import play.api.mvc.Request
@@ -82,32 +83,33 @@ class ChoiceViewSpec extends UnitViewSpec with CommonMessages {
 
     "display the expected option links" in {
       val options = view.getElementsByClass("govuk-link--no-visited-state")
-      options.size mustBe 5
+      options.size mustBe 6
 
-      val createDeclaration = options.get(0)
+      val createDeclaration: Element = options.get(1)
       createDeclaration.className().contains("focus")
       createDeclaration.text mustBe messages("declaration.choice.link.create.new")
       createDeclaration.attr("href") mustBe StandardOrOtherJourneyController.displayPage.url
 
-      val continueDraftDeclaration = options.get(1)
+      val continueDraftDeclaration = options.get(2)
       continueDraftDeclaration.text mustBe messages("declaration.choice.link.manage.drafts")
       continueDraftDeclaration.attr("href") mustBe SavedDeclarationsController.displayDeclarations().url
 
-      val dashboard = options.get(2)
+      val dashboard = options.get(3)
       dashboard.text mustBe messages("declaration.choice.link.manage.submitted")
       dashboard.attr("href") mustBe toDashboard.url
 
-      val movements = options.get(3)
+      val movements = options.get(4)
       movements.text mustBe messages("declaration.choice.link.movements")
       movements.attr("href") mustBe movementsUrl
 
-      val uploadDocuments = options.get(4)
+      val uploadDocuments = options.get(5)
       uploadDocuments.text mustBe messages("declaration.choice.link.sfus")
       uploadDocuments.attr("href") mustBe FileUploadController.startFileUpload("").url
     }
 
     "display the expected h2 headings" in {
-      val headings = view.getElementsByTag("h2")
+      val headings = view.getElementsByClass("govuk-heading-m")
+
       headings.get(0).text mustBe messages("declaration.choice.heading.movements")
       headings.get(1).text mustBe messages("declaration.choice.heading.sfus")
     }
