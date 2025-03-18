@@ -15,13 +15,14 @@
  *@
 
 @import config.ExternalServicesConfig
+@import models.requests.VerifiedEmailRequest
 @import config.AppConfig
 @import controllers.journey.routes.StandardOrOtherJourneyController
 @import controllers.routes.{FileUploadController, SavedDeclarationsController}
 @import models.requests.SessionHelper.showErrorsIfAny
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.dashboard.DashboardHelper.toDashboard
-@import views.helpers.Title
+@import views.helpers._
 @import views.html.components.gds._
 
 @this(
@@ -37,7 +38,7 @@
     externalServicesConfig: ExternalServicesConfig
 )
 
-@()(implicit request: Request[_], messages: Messages)
+@()(implicit request: VerifiedEmailRequest[AnyContent], messages: Messages, messagesApi: MessagesApi)
 
 
 @notificationTitleContent = { @messages("declaration.choice.notification.title") }
@@ -50,13 +51,16 @@
     )
 }
 
+@fromToDates = @{ FromToTime(appConfig.choicePageNotificationFrom, appConfig.choicePageNotificationTo)}
+
+
 @notificationContent = {
     @messages(
         "declaration.choice.notification.content",
-        appConfig.choicePageNotificationFromTime,
-        appConfig.choicePageNotificationFromDate,
-        appConfig.choicePageNotificationToTime,
-        appConfig.choicePageNotificationToDate
+        fromToDates.fromHour,
+        fromToDates.fromDate,
+        fromToDates.toHour,
+        fromToDates.toDate
     )
     @notificationLink
 }

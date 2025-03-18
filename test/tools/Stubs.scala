@@ -236,10 +236,8 @@ object Stubs {
       |guidance.moveGoodsThroughPortsUsingGVMS = "https://www.gov.uk/guidance/check-how-to-move-goods-through-ports-that-use-the-goods-vehicle-movement-service"
       |guidance.january2022locations = "https://www.gov.uk/guidance/check-which-locations-need-an-arrived-export-declaration-from-1-january-2022"
       |
-      |choicePage.fromTime = "11pm"
-      |choicePage.fromDate = "Wednesday 26 February"
-      |choicePage.toTime = "2am"
-      |choicePage.toDate = "Thursday 27 February 2025"
+      |choicePage.from = "2025-02-26T23:00Z"
+      |choicePage.to = "2025-02-27T02:00Z"
       """.stripMargin
 
   def minimalConfig: String =
