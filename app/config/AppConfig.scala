@@ -46,10 +46,10 @@ class AppConfig @Inject() (
   val loginUrl = loadConfig("urls.login")
   val loginContinueUrl = loadConfig("urls.loginContinue")
 
-  val choicePageNotificationEnabled = servicesConfig.getBoolean("features.choicePageNotification")
-  val choicePageNotificationFrom = loadConfig("choicePageMaintenanceBanner.from")
-  val choicePageNotificationTo = loadConfig("choicePageMaintenanceBanner.to")
-  val choicePageNotificationLink = loadConfig("urls.choicePageNotification")
+  val choicePageMaintenanceBannerEnabled = servicesConfig.getBoolean("features.choicePageMaintenanceBanner")
+  val choicePageMaintenanceBannerFrom = loadConfig("choicePageMaintenanceBanner.from")
+  val choicePageMaintenanceBannerTo = loadConfig("choicePageMaintenanceBanner.to")
+  val choicePageMaintenanceBannerLink = loadConfig("urls.choicePageMaintenanceBanner")
 
   val cdsUploadDocs = loadConfig("urls.cdsUploadDocs")
 

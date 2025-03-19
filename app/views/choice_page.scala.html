@@ -47,11 +47,11 @@
     @externalLink(
         id = Some("declaration-choice-notification-content-link"),
         text = messages("declaration.choice.notification.content.link"),
-        url = appConfig.choicePageNotificationLink
+        url = appConfig.choicePageMaintenanceBannerLink
     )
 }
 
-@fromToDates = @{ FromToTime(appConfig.choicePageNotificationFrom, appConfig.choicePageNotificationTo)}
+@fromToDates = @{ FromToTime(appConfig.choicePageMaintenanceBannerFrom, appConfig.choicePageMaintenanceBannerTo)}
 
 
 @notificationContent = {
@@ -68,7 +68,7 @@
 
 @govukLayout(title = Title("declaration.choice.heading"), showDeclarationSummaryLink = false) {
     @showErrorsIfAny
-    @if(appConfig.choicePageNotificationEnabled){
+    @if(appConfig.choicePageMaintenanceBannerEnabled){
         @govukNotificationBanner(NotificationBanner(title = HtmlContent(notificationTitleContent), content = HtmlContent(notificationContent)))
     }
 
