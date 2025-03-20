@@ -16,19 +16,16 @@
 
 package views
 
-import base.MessageSpec.instanceOf
 import base.OverridableInjector
 import config.ExternalServicesConfig
 import controllers.journey.routes.StandardOrOtherJourneyController
 import controllers.routes.{FileUploadController, SavedDeclarationsController}
-import models.requests.{JourneyRequest, VerifiedEmailRequest}
+import models.requests.{AuthenticatedRequest, VerifiedEmailRequest}
 import models.requests.SessionHelper.errorKey
 import org.jsoup.nodes.Element
-import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import play.api.i18n.MessagesApi
 import play.api.inject.bind
-import play.api.mvc.{AnyContent, Request}
+import play.api.mvc.AnyContent
 import play.api.test.FakeRequest
 import views.common.UnitViewSpec
 import views.dashboard.DashboardHelper.toDashboard
@@ -48,9 +45,9 @@ class ChoiceViewSpec extends UnitViewSpec with CommonMessages {
 
   private val choicePage = injector.instanceOf[choice_page]
 
-  implicit val journeyRequest: VerifiedEmailRequest[AnyContent] = VerifiedEmailRequest(request, "email@email.com")
+  private implicit val verifiedEmailRequest: VerifiedEmailRequest[AnyContent] = VerifiedEmailRequest(request, "email@email.com")
 
-  private val view = choicePage()(journeyRequest, messages, realMessagesApi)
+  private val view = choicePage()(verifiedEmailRequest, messages, realMessagesApi)
 
   "Choice page" should {
 
@@ -62,16 +59,17 @@ class ChoiceViewSpec extends UnitViewSpec with CommonMessages {
 
     "display an error summary box" when {
       "the Session contains errors" in {
-        implicit val request: Request[_] = FakeRequest().withSession(errorKey -> "error.root.redirect.1|error.root.redirect.2")
-        val view = choicePage()(request, messages)
+        val errorRequest = FakeRequest().withSession(errorKey -> "error.root.redirect.1|error.root.redirect.2").asInstanceOf[AuthenticatedRequest[play.api.mvc.AnyContent]]
+        implicit val verifiedEmailRequest: VerifiedEmailRequest[play.api.mvc.AnyContent] = VerifiedEmailRequest(errorRequest, "email@email.com")
+        val view = choicePage()(verifiedEmailRequest, messages(verifiedEmailRequest), realMessagesApi)
         val box = view.getElementsByClass("govuk-error-summary").first
 
-        box.getElementsByTag("h2").first.text mustBe messages("error.root.redirect.title")
+        box.getElementsByTag("h2").first.text mustBe messages("error.root.redirect.title")(verifiedEmailRequest)
 
         val paragraphs = box.getElementsByTag("li")
         paragraphs.size mustBe 2
-        paragraphs.first.text mustBe messages("error.root.redirect.1")
-        paragraphs.last.text mustBe messages("error.root.redirect.2")
+        paragraphs.first.text mustBe messages("error.root.redirect.1")(verifiedEmailRequest)
+        paragraphs.last.text mustBe messages("error.root.redirect.2")(verifiedEmailRequest)
       }
     }
 
