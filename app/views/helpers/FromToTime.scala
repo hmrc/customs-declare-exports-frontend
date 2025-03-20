@@ -31,10 +31,7 @@ object FromToTime {
   private val HOUR_PATTERN = "ha"
   private val DATE_PATTERN = "EEEE d MMMM YYYY"
 
-  def apply(
-    fromDateTimeString: String,
-    toDateTimeString: String
-  )(implicit request: Request[_], messagesApi: MessagesApi): FromToTime = {
+  def apply(fromDateTimeString: String, toDateTimeString: String)(implicit request: Request[_], messagesApi: MessagesApi): FromToTime = {
     val locale = request.lang.toLocale
     val (fromHour, fromDate) = parseAndFormat(fromDateTimeString, locale)
     val (toHour, toDate) = parseAndFormat(toDateTimeString, locale)
