@@ -59,7 +59,9 @@ class ChoiceViewSpec extends UnitViewSpec with CommonMessages {
 
     "display an error summary box" when {
       "the Session contains errors" in {
-        val errorRequest = FakeRequest().withSession(errorKey -> "error.root.redirect.1|error.root.redirect.2").asInstanceOf[AuthenticatedRequest[play.api.mvc.AnyContent]]
+        val errorRequest = FakeRequest()
+          .withSession(errorKey -> "error.root.redirect.1|error.root.redirect.2")
+          .asInstanceOf[AuthenticatedRequest[play.api.mvc.AnyContent]]
         implicit val verifiedEmailRequest: VerifiedEmailRequest[play.api.mvc.AnyContent] = VerifiedEmailRequest(errorRequest, "email@email.com")
         val view = choicePage()(verifiedEmailRequest, messages(verifiedEmailRequest), realMessagesApi)
         val box = view.getElementsByClass("govuk-error-summary").first
