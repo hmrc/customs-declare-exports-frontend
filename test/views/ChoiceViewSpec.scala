@@ -16,15 +16,19 @@
 
 package views
 
+import base.MessageSpec.instanceOf
 import base.OverridableInjector
 import config.ExternalServicesConfig
 import controllers.journey.routes.StandardOrOtherJourneyController
 import controllers.routes.{FileUploadController, SavedDeclarationsController}
+import models.requests.{JourneyRequest, VerifiedEmailRequest}
 import models.requests.SessionHelper.errorKey
 import org.jsoup.nodes.Element
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
+import play.api.i18n.MessagesApi
 import play.api.inject.bind
-import play.api.mvc.Request
+import play.api.mvc.{AnyContent, Request}
 import play.api.test.FakeRequest
 import views.common.UnitViewSpec
 import views.dashboard.DashboardHelper.toDashboard
@@ -44,7 +48,9 @@ class ChoiceViewSpec extends UnitViewSpec with CommonMessages {
 
   private val choicePage = injector.instanceOf[choice_page]
 
-  private val view = choicePage()(request, messages)
+  implicit val journeyRequest: VerifiedEmailRequest[AnyContent] = VerifiedEmailRequest(request, "email@email.com")
+
+  private val view = choicePage()(journeyRequest, messages, realMessagesApi)
 
   "Choice page" should {
 
