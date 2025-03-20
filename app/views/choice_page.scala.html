@@ -15,7 +15,6 @@
  *@
 
 @import config.ExternalServicesConfig
-@import models.requests.VerifiedEmailRequest
 @import config.AppConfig
 @import controllers.journey.routes.StandardOrOtherJourneyController
 @import controllers.routes.{FileUploadController, SavedDeclarationsController}
@@ -38,7 +37,7 @@
     externalServicesConfig: ExternalServicesConfig
 )
 
-@()(implicit request: VerifiedEmailRequest[AnyContent], messages: Messages, messagesApi: MessagesApi)
+@()(implicit request: Request[_], messages: Messages, messagesApi: MessagesApi)
 
 
 @notificationTitleContent = { @messages("declaration.choice.notification.title") }

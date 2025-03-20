@@ -16,10 +16,9 @@
 
 package views.helpers
 
-import models.requests.VerifiedEmailRequest
 import play.api.i18n.I18nSupport.RequestWithMessagesApi
 import play.api.i18n.MessagesApi
-import play.api.mvc.AnyContent
+import play.api.mvc.Request
 
 import java.time._
 import java.time.format.DateTimeFormatter
@@ -35,7 +34,7 @@ object FromToTime {
   def apply(
     fromDateTimeString: String,
     toDateTimeString: String
-  )(implicit request: VerifiedEmailRequest[AnyContent], messagesApi: MessagesApi): FromToTime = {
+  )(implicit request: Request[_], messagesApi: MessagesApi): FromToTime = {
     val locale = request.lang.toLocale
     val (fromHour, fromDate) = parseAndFormat(fromDateTimeString, locale)
     val (toHour, toDate) = parseAndFormat(toDateTimeString, locale)
