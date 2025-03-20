@@ -32,7 +32,10 @@ object FromToTime {
   private val HOUR_PATTERN = "ha"
   private val DATE_PATTERN = "EEEE d MMMM YYYY"
 
-  def apply(fromDateTimeString: String, toDateTimeString: String)(implicit request: VerifiedEmailRequest[AnyContent], messagesApi: MessagesApi): FromToTime = {
+  def apply(
+    fromDateTimeString: String,
+    toDateTimeString: String
+  )(implicit request: VerifiedEmailRequest[AnyContent], messagesApi: MessagesApi): FromToTime = {
     val locale = request.lang.toLocale
     val (fromHour, fromDate) = parseAndFormat(fromDateTimeString, locale)
     val (toHour, toDate) = parseAndFormat(toDateTimeString, locale)
@@ -40,11 +43,7 @@ object FromToTime {
     FromToTime(fromHour, fromDate, toHour, toDate)
   }
 
-  private def formatDateTime(
-                      dateTime: ZonedDateTime,
-                      pattern: String,
-                      locale: Locale
-                    ): String =
+  private def formatDateTime(dateTime: ZonedDateTime, pattern: String, locale: Locale): String =
     dateTime.format(DateTimeFormatter.ofPattern(pattern, locale))
 
   private def parseAndFormat(dateTimeString: String, locale: Locale): (String, String) = {
