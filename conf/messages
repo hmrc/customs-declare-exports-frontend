@@ -149,8 +149,8 @@ cancellation.result.unprocessed.title = Your cancellation request has not been p
 cancellation.result.unprocessed.p1 = Processing your request took longer than expected. Please check the status of your submitted declarations to view the progress of your request.
 
 declaration.choice.notification.title = Important: notice about service maintenance
-declaration.choice.notification.content = We will be carrying out scheduled maintenance from {0} on {1} to {2} on {3}. The service will be unavailable during this time. Check
-declaration.choice.notification.content.link = availability and issues for Customs Declaration Service (opens in new tab).
+declaration.choice.notification.content = We will be carrying out scheduled maintenance from {0} on {1} to {2} on {3}. The service will be unavailable during this time. Check {4}.
+declaration.choice.notification.content.link = availability and issues for Customs Declaration Service (opens in new tab)
 declaration.choice.heading = Make and manage export declarations
 declaration.choice.hint = Choose one of the following options.
 declaration.choice.link.create.new = Make a new export declaration
