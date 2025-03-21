@@ -53,16 +53,20 @@
 @fromToDates = @{ FromToTime(appConfig.choicePageMaintenanceBannerFrom, appConfig.choicePageMaintenanceBannerTo)}
 
 @notificationContent = {
-    @messages(
+    @paragraphBody(messages(
         "declaration.choice.notification.content",
         fromToDates.fromHour,
         fromToDates.fromDate,
         fromToDates.toHour,
-        fromToDates.toDate
+        fromToDates.toDate,
+        externalLink(
+            id = Some("declaration-choice-notification-content-link"),
+            text = messages("declaration.choice.notification.content.link"),
+            url = appConfig.choicePageMaintenanceBannerLink
+        )
     )
-    @notificationLink
+    )
 }
-
 
 @govukLayout(title = Title("declaration.choice.heading"), showDeclarationSummaryLink = false) {
     @showErrorsIfAny
