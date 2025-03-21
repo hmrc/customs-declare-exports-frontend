@@ -51,7 +51,7 @@ class AuthActionSpec extends ControllerWithoutFormSpec {
     reset(appConfig)
     when(appConfig.loginUrl).thenReturn("/unauthorised")
     when(appConfig.loginContinueUrl).thenReturn("/loginContinueUrl")
-    when(choicePage()(any(), any(), any())).thenReturn(HtmlFormat.empty)
+    when(choicePage()(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   "Auth Action" should {

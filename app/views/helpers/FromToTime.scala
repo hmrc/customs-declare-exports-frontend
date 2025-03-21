@@ -16,9 +16,7 @@
 
 package views.helpers
 
-import play.api.i18n.I18nSupport.RequestWithMessagesApi
-import play.api.i18n.MessagesApi
-import play.api.mvc.Request
+import play.api.i18n.Messages
 
 import java.time._
 import java.time.format.DateTimeFormatter
@@ -31,8 +29,8 @@ object FromToTime {
   private val HOUR_PATTERN = "h:mma"
   private val DATE_PATTERN = "EEEE d MMMM YYYY"
 
-  def apply(fromDateTimeString: String, toDateTimeString: String)(implicit request: Request[_], messagesApi: MessagesApi): FromToTime = {
-    val locale = request.lang.toLocale
+  def apply(fromDateTimeString: String, toDateTimeString: String)(implicit messages: Messages): FromToTime = {
+    val locale = messages.lang.toLocale
     val (fromHour, fromDate) = parseAndFormat(fromDateTimeString, locale)
     val (toHour, toDate) = parseAndFormat(toDateTimeString, locale)
 
