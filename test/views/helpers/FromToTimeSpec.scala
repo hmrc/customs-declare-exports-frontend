@@ -16,16 +16,10 @@
 
 package views.helpers
 
-import models.requests.JourneyRequest
-import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.BeforeAndAfterEach
-import play.api.i18n.I18nSupport.RequestWithMessagesApi
-import play.api.i18n.{Lang, Messages, MessagesApi}
-import play.api.mvc.{AnyContent, RequestHeader}
+import play.api.i18n.{Lang, Messages}
 import views.common.UnitViewSpec
-
-import java.util.Locale
 
 class FromToTimeSpec extends UnitViewSpec with BeforeAndAfterEach {
 
@@ -42,18 +36,15 @@ class FromToTimeSpec extends UnitViewSpec with BeforeAndAfterEach {
     val from_30 = "2025-02-26T23:30Z"
     val to_30 = "2025-02-27T02:30Z"
 
-    implicit val messagesApi: MessagesApi = mock[MessagesApi]
-    val messages: Messages = mock[Messages]
-    implicit val request: JourneyRequest[AnyContent] = mock[JourneyRequest[AnyContent]]
-    when(messagesApi.preferred(any[RequestHeader])).thenReturn(messages)
+    implicit val messages: Messages = mock[Messages]
   }
 
   "FromToTime" should {
 
     "Output in English correctly with 00 mins" in new Setup {
-      when(request.lang(messagesApi)).thenReturn(Lang(Locale.forLanguageTag(english)))
+      when(messages.lang).thenReturn(Lang(english))
 
-      val fromTo = FromToTime(from_00, to_00)
+      val fromTo: FromToTime = FromToTime(from_00, to_00)
       fromTo.fromHour mustBe "11:00pm"
       fromTo.fromDate mustBe "Wednesday 26 February 2025"
       fromTo.toHour mustBe "2:00am"
@@ -61,9 +52,9 @@ class FromToTimeSpec extends UnitViewSpec with BeforeAndAfterEach {
     }
 
     "Output in English correctly with 01 mins" in new Setup {
-      when(request.lang(messagesApi)).thenReturn(Lang(Locale.forLanguageTag(english)))
+      when(messages.lang).thenReturn(Lang(english))
 
-      val fromTo = FromToTime(from_01, to_01)
+      val fromTo: FromToTime = FromToTime(from_01, to_01)
       fromTo.fromHour mustBe "11:01pm"
       fromTo.fromDate mustBe "Wednesday 26 February 2025"
       fromTo.toHour mustBe "2:01am"
@@ -71,9 +62,9 @@ class FromToTimeSpec extends UnitViewSpec with BeforeAndAfterEach {
     }
 
     "Output in English correctly with 30 mins" in new Setup {
-      when(request.lang(messagesApi)).thenReturn(Lang(Locale.forLanguageTag(english)))
+      when(messages.lang).thenReturn(Lang(english))
 
-      val fromTo = FromToTime(from_30, to_30)
+      val fromTo: FromToTime = FromToTime(from_30, to_30)
       fromTo.fromHour mustBe "11:30pm"
       fromTo.fromDate mustBe "Wednesday 26 February 2025"
       fromTo.toHour mustBe "2:30am"
@@ -81,9 +72,9 @@ class FromToTimeSpec extends UnitViewSpec with BeforeAndAfterEach {
     }
 
     "Output in Welsh correctly with 00 mins" in new Setup {
-      when(request.lang(messagesApi)).thenReturn(Lang(Locale.forLanguageTag(welsh)))
+      when(messages.lang).thenReturn(Lang(welsh))
 
-      val fromTo = FromToTime(from_00, to_00)
+      val fromTo: FromToTime = FromToTime(from_00, to_00)
       fromTo.fromHour mustBe "11:00yh"
       fromTo.fromDate mustBe "Dydd Mercher 26 Chwefror 2025"
       fromTo.toHour mustBe "2:00yb"
@@ -91,9 +82,9 @@ class FromToTimeSpec extends UnitViewSpec with BeforeAndAfterEach {
     }
 
     "Output in Welsh correctly with 01 mins" in new Setup {
-      when(request.lang(messagesApi)).thenReturn(Lang(Locale.forLanguageTag(welsh)))
+      when(messages.lang).thenReturn(Lang(welsh))
 
-      val fromTo = FromToTime(from_01, to_01)
+      val fromTo: FromToTime = FromToTime(from_01, to_01)
       fromTo.fromHour mustBe "11:01yh"
       fromTo.fromDate mustBe "Dydd Mercher 26 Chwefror 2025"
       fromTo.toHour mustBe "2:01yb"
@@ -101,9 +92,9 @@ class FromToTimeSpec extends UnitViewSpec with BeforeAndAfterEach {
     }
 
     "Output in Welsh correctly with 30 mins" in new Setup {
-      when(request.lang(messagesApi)).thenReturn(Lang(Locale.forLanguageTag(welsh)))
+      when(messages.lang).thenReturn(Lang(welsh))
 
-      val fromTo = FromToTime(from_30, to_30)
+      val fromTo: FromToTime = FromToTime(from_30, to_30)
       fromTo.fromHour mustBe "11:30yh"
       fromTo.fromDate mustBe "Dydd Mercher 26 Chwefror 2025"
       fromTo.toHour mustBe "2:30yb"

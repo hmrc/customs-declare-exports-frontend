@@ -44,7 +44,7 @@ class ChoiceViewSpec extends UnitViewSpec with CommonMessages {
 
   private val choicePage = injector.instanceOf[choice_page]
 
-  private val view = choicePage()(request, messages, realMessagesApi)
+  private val view = choicePage()(request, messages)
 
   "Choice page" should {
 
@@ -57,7 +57,7 @@ class ChoiceViewSpec extends UnitViewSpec with CommonMessages {
     "display an error summary box" when {
       "the Session contains errors" in {
         implicit val errorRequest: Request[_] = FakeRequest().withSession(errorKey -> "error.root.redirect.1|error.root.redirect.2")
-        val view = choicePage()(errorRequest, messages(errorRequest), realMessagesApi)
+        val view = choicePage()(errorRequest, messages(errorRequest))
         val box = view.getElementsByClass("govuk-error-summary").first
 
         box.getElementsByTag("h2").first.text mustBe messages("error.root.redirect.title")(errorRequest)
