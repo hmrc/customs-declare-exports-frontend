@@ -28,7 +28,7 @@ import views.common.UnitViewSpec
 
 import java.util.Locale
 
-class FromToTimeSpec extends UnitViewSpec with BeforeAndAfterEach  {
+class FromToTimeSpec extends UnitViewSpec with BeforeAndAfterEach {
 
   val from = "2025-02-26T23:00Z"
   val to = "2025-02-27T02:00Z"
@@ -43,7 +43,7 @@ class FromToTimeSpec extends UnitViewSpec with BeforeAndAfterEach  {
   val messages: Messages = mock[Messages]
   override implicit val request: JourneyRequest[AnyContent] = mock[JourneyRequest[AnyContent]]
 
-  override protected def beforeEach(): Unit =  {
+  override protected def beforeEach(): Unit = {
     super.beforeEach()
     Mockito.reset(request)
 
