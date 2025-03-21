@@ -18,7 +18,6 @@ package views.helpers
 
 import models.requests.JourneyRequest
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito
 import org.mockito.Mockito.when
 import org.scalatest.BeforeAndAfterEach
 import play.api.i18n.I18nSupport.RequestWithMessagesApi
@@ -30,30 +29,20 @@ import java.util.Locale
 
 class FromToTimeSpec extends UnitViewSpec with BeforeAndAfterEach {
 
-  val from = "2025-02-26T23:00Z"
-  val to = "2025-02-27T02:00Z"
+  trait Setup {
+    val from = "2025-02-26T23:00Z"
+    val to = "2025-02-27T02:00Z"
 
-  val ENGLISH_LOCALE: Locale = Locale.forLanguageTag("en")
-  val WELSH_LOCALE: Locale = Locale.forLanguageTag("cy");
-
-  val ENGLISH_LANG: Lang = Lang(ENGLISH_LOCALE)
-  val WELSH_LANG: Lang = Lang(WELSH_LOCALE)
-
-  implicit val messagesApi: MessagesApi = mock[MessagesApi]
-  val messages: Messages = mock[Messages]
-  override implicit val request: JourneyRequest[AnyContent] = mock[JourneyRequest[AnyContent]]
-
-  override protected def beforeEach(): Unit = {
-    super.beforeEach()
-    Mockito.reset(request)
-
+    implicit val messagesApi: MessagesApi = mock[MessagesApi]
+    val messages: Messages = mock[Messages]
+    implicit val request: JourneyRequest[AnyContent] = mock[JourneyRequest[AnyContent]]
     when(messagesApi.preferred(any[RequestHeader])).thenReturn(messages)
   }
 
   "FromToTime" should {
 
-    "Output in English correctly" in {
-      when(request.lang(messagesApi)).thenReturn(ENGLISH_LANG)
+    "Output in English correctly" in new Setup {
+      when(request.lang(messagesApi)).thenReturn(Lang(Locale.forLanguageTag("en")))
 
       val fromTo = FromToTime(from, to)
 
@@ -63,8 +52,8 @@ class FromToTimeSpec extends UnitViewSpec with BeforeAndAfterEach {
       fromTo.toDate mustBe "Thursday 27 February 2025"
     }
 
-    "Output in Welsh correctly" in {
-      when(request.lang(messagesApi)).thenReturn(WELSH_LANG)
+    "Output in Welsh correctly" in new Setup {
+      when(request.lang(messagesApi)).thenReturn(Lang(Locale.forLanguageTag("cy")))
 
       val fromTo = FromToTime(from, to)
 
