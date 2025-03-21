@@ -44,7 +44,7 @@ class FromToTimeSpec extends UnitViewSpec with BeforeAndAfterEach {
     "Output in English correctly with 00 mins" in new Setup {
       when(messages.lang).thenReturn(Lang(english))
 
-      val fromTo: FromToTime = FromToTime(from_00, to_00)
+      val fromTo = FromToTime(from_00, to_00)
       fromTo.fromHour mustBe "11:00pm"
       fromTo.fromDate mustBe "Wednesday 26 February 2025"
       fromTo.toHour mustBe "2:00am"
@@ -54,7 +54,7 @@ class FromToTimeSpec extends UnitViewSpec with BeforeAndAfterEach {
     "Output in English correctly with 01 mins" in new Setup {
       when(messages.lang).thenReturn(Lang(english))
 
-      val fromTo: FromToTime = FromToTime(from_01, to_01)
+      val fromTo = FromToTime(from_01, to_01)
       fromTo.fromHour mustBe "11:01pm"
       fromTo.fromDate mustBe "Wednesday 26 February 2025"
       fromTo.toHour mustBe "2:01am"
@@ -64,7 +64,7 @@ class FromToTimeSpec extends UnitViewSpec with BeforeAndAfterEach {
     "Output in English correctly with 30 mins" in new Setup {
       when(messages.lang).thenReturn(Lang(english))
 
-      val fromTo: FromToTime = FromToTime(from_30, to_30)
+      val fromTo = FromToTime(from_30, to_30)
       fromTo.fromHour mustBe "11:30pm"
       fromTo.fromDate mustBe "Wednesday 26 February 2025"
       fromTo.toHour mustBe "2:30am"
@@ -74,7 +74,7 @@ class FromToTimeSpec extends UnitViewSpec with BeforeAndAfterEach {
     "Output in Welsh correctly with 00 mins" in new Setup {
       when(messages.lang).thenReturn(Lang(welsh))
 
-      val fromTo: FromToTime = FromToTime(from_00, to_00)
+      val fromTo = FromToTime(from_00, to_00)
       fromTo.fromHour mustBe "11:00yh"
       fromTo.fromDate mustBe "Dydd Mercher 26 Chwefror 2025"
       fromTo.toHour mustBe "2:00yb"
@@ -84,7 +84,7 @@ class FromToTimeSpec extends UnitViewSpec with BeforeAndAfterEach {
     "Output in Welsh correctly with 01 mins" in new Setup {
       when(messages.lang).thenReturn(Lang(welsh))
 
-      val fromTo: FromToTime = FromToTime(from_01, to_01)
+      val fromTo = FromToTime(from_01, to_01)
       fromTo.fromHour mustBe "11:01yh"
       fromTo.fromDate mustBe "Dydd Mercher 26 Chwefror 2025"
       fromTo.toHour mustBe "2:01yb"
@@ -94,7 +94,7 @@ class FromToTimeSpec extends UnitViewSpec with BeforeAndAfterEach {
     "Output in Welsh correctly with 30 mins" in new Setup {
       when(messages.lang).thenReturn(Lang(welsh))
 
-      val fromTo: FromToTime = FromToTime(from_30, to_30)
+      val fromTo = FromToTime(from_30, to_30)
       fromTo.fromHour mustBe "11:30yh"
       fromTo.fromDate mustBe "Dydd Mercher 26 Chwefror 2025"
       fromTo.toHour mustBe "2:30yb"
