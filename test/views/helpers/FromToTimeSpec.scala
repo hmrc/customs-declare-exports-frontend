@@ -43,7 +43,6 @@ class FromToTimeSpec extends UnitViewSpec with BeforeAndAfterEach  {
   val messages: Messages = mock[Messages]
   override implicit val request: JourneyRequest[AnyContent] = mock[JourneyRequest[AnyContent]]
 
-
   override protected def beforeEach(): Unit =  {
     super.beforeEach()
     Mockito.reset(request)
