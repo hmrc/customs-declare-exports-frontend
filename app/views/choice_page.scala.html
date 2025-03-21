@@ -15,15 +15,18 @@
  *@
 
 @import config.ExternalServicesConfig
+@import config.AppConfig
 @import controllers.journey.routes.StandardOrOtherJourneyController
 @import controllers.routes.{FileUploadController, SavedDeclarationsController}
 @import models.requests.SessionHelper.showErrorsIfAny
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.dashboard.DashboardHelper.toDashboard
-@import views.helpers.Title
+@import views.helpers._
 @import views.html.components.gds._
 
 @this(
+    appConfig: AppConfig,
+    govukNotificationBanner: GovukNotificationBanner,
     govukLayout: gdsMainTemplate,
     heading: heading,
     externalLink: externalLink,
@@ -34,10 +37,39 @@
     externalServicesConfig: ExternalServicesConfig
 )
 
-@()(implicit request: Request[_], messages: Messages)
+@()(implicit request: Request[_], messages: Messages, messagesApi: MessagesApi)
+
+
+@notificationTitleContent = { @messages("declaration.choice.notification.title") }
+
+@notificationLink = {
+    @externalLink(
+        id = Some("declaration-choice-notification-content-link"),
+        text = messages("declaration.choice.notification.content.link"),
+        url = appConfig.choicePageMaintenanceBannerLink
+    )
+}
+
+@fromToDates = @{ FromToTime(appConfig.choicePageMaintenanceBannerFrom, appConfig.choicePageMaintenanceBannerTo)}
+
+@notificationContent = {
+    @messages(
+        "declaration.choice.notification.content",
+        fromToDates.fromHour,
+        fromToDates.fromDate,
+        fromToDates.toHour,
+        fromToDates.toDate
+    )
+    @notificationLink
+}
+
 
 @govukLayout(title = Title("declaration.choice.heading"), showDeclarationSummaryLink = false) {
     @showErrorsIfAny
+    @if(appConfig.choicePageMaintenanceBannerEnabled){
+        @govukNotificationBanner(NotificationBanner(title = HtmlContent(notificationTitleContent), content = HtmlContent(notificationContent)))
+    }
+
 
     @pageTitle(messages("declaration.choice.heading"))
 

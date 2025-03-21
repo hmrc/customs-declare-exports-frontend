@@ -149,6 +149,10 @@ cancellation.result.denied.p1 = Gall hyn fod oherwydd bod eich datganiad yn dal 
 cancellation.result.unprocessed.title = Nid yw’ch cais i ganslo wedi’i brosesu.
 cancellation.result.unprocessed.p1 = Roedd prosesu’ch cais yn cymryd mwy o amser na’r disgwyl. Gwiriwch statws eich datganiadau a gyflwynwyd i weld cynnydd eich cais.
 
+declaration.choice.notification.title = Pwysig: hysbysiad ynghylch gwaith cynnal a chadw ar wasanaeth
+declaration.choice.notification.content = Byddwn yn cyflawni gwaith cynnal a chadw sydd wedi’i drefnu o {0} ar {1} i {2} ar {3}. Ni fydd y gwasanaeth ar gael yn ystod yr amser hwn. Gwiriwch
+declaration.choice.notification.content.link = argaeledd a phroblemau gyda’r Gwasanaeth Datganiad Tollau (CDS) (yn agor tab newydd).
+
 declaration.choice.heading = Gwneud a rheoli Datganiadau Allforio
 declaration.choice.hint = Dewiswch un o’r opsiynau canlynol.
 declaration.choice.link.create.new = Gwneud datganiad allforio newydd

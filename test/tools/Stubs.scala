@@ -64,6 +64,8 @@ object Stubs {
 
   val baseConfig: String =
     """
+      |features.choicePageMaintenanceBanner = true
+      |urls.choicePageMaintenanceBanner ="https://www.gov.uk/government/publications/make-and-manage-an-export-declaration-online-service-availability-and-issues/670ec3d3-ec08-4a2d-9fa4-43db9a5d8fdd"
       |urls.login="http://localhost:9949/auth-login-stub/gg-sign-in"
       |urls.loginContinue="http://localhost:9000/customs-declare-exports-frontend"
       |
@@ -234,6 +236,8 @@ object Stubs {
       |guidance.moveGoodsThroughPortsUsingGVMS = "https://www.gov.uk/guidance/check-how-to-move-goods-through-ports-that-use-the-goods-vehicle-movement-service"
       |guidance.january2022locations = "https://www.gov.uk/guidance/check-which-locations-need-an-arrived-export-declaration-from-1-january-2022"
       |
+      |choicePageMaintenanceBanner.from = "2025-02-26T23:01Z"
+      |choicePageMaintenanceBanner.to = "2025-02-27T02:30Z"
       """.stripMargin
 
   def minimalConfig: String =

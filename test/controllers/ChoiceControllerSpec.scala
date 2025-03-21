@@ -35,14 +35,14 @@ class ChoiceControllerSpec extends ControllerWithoutFormSpec {
 
     "return 200 (OK)" in {
       authorizedUser()
-      when(choicePage.apply()(any(), any())).thenReturn(HtmlFormat.empty)
+      when(choicePage()(any(), any(), any())).thenReturn(HtmlFormat.empty)
 
       val result = await(controller.displayPage(getRequestWithSession(errorFixModeSessionKey -> "err1", errorKey -> "err2")))
       result.header.status mustBe OK
 
       List(declarationUuid, errorFixModeSessionKey, errorKey).foreach(result.header.headers.get(_) mustBe None)
 
-      verify(choicePage).apply()(any(), any())
+      verify(choicePage)()(any(), any(), any())
     }
   }
 }
