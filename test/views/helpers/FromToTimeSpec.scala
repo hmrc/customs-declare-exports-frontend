@@ -30,8 +30,14 @@ import java.util.Locale
 class FromToTimeSpec extends UnitViewSpec with BeforeAndAfterEach {
 
   trait Setup {
-    val from = "2025-02-26T23:30Z"
-    val to = "2025-02-27T02:30Z"
+    val from_00 = "2025-02-26T23:00Z"
+    val to_00 = "2025-02-27T02:00Z"
+
+    val from_01 = "2025-02-26T23:01Z"
+    val to_01 = "2025-02-27T02:01Z"
+
+    val from_30 = "2025-02-26T23:30Z"
+    val to_30 = "2025-02-27T02:30Z"
 
     implicit val messagesApi: MessagesApi = mock[MessagesApi]
     val messages: Messages = mock[Messages]
@@ -41,22 +47,60 @@ class FromToTimeSpec extends UnitViewSpec with BeforeAndAfterEach {
 
   "FromToTime" should {
 
-    "Output in English correctly" in new Setup {
+    "Output in English correctly with 00 mins" in new Setup {
       when(request.lang(messagesApi)).thenReturn(Lang(Locale.forLanguageTag("en")))
 
-      val fromTo = FromToTime(from, to)
+      val fromTo = FromToTime(from_00, to_00)
+      fromTo.fromHour mustBe "11:00pm"
+      fromTo.fromDate mustBe "Wednesday 26 February 2025"
+      fromTo.toHour mustBe "2:00am"
+      fromTo.toDate mustBe "Thursday 27 February 2025"
+    }
 
+    "Output in English correctly with 01 mins" in new Setup {
+      when(request.lang(messagesApi)).thenReturn(Lang(Locale.forLanguageTag("en")))
+
+      val fromTo = FromToTime(from_01, to_01)
+      fromTo.fromHour mustBe "11:01pm"
+      fromTo.fromDate mustBe "Wednesday 26 February 2025"
+      fromTo.toHour mustBe "2:01am"
+      fromTo.toDate mustBe "Thursday 27 February 2025"
+    }
+
+    "Output in English correctly with 30 mins" in new Setup {
+      when(request.lang(messagesApi)).thenReturn(Lang(Locale.forLanguageTag("en")))
+
+      val fromTo = FromToTime(from_30, to_30)
       fromTo.fromHour mustBe "11:30pm"
       fromTo.fromDate mustBe "Wednesday 26 February 2025"
       fromTo.toHour mustBe "2:30am"
       fromTo.toDate mustBe "Thursday 27 February 2025"
     }
 
-    "Output in Welsh correctly" in new Setup {
+    "Output in Welsh correctly with 00 mins" in new Setup {
       when(request.lang(messagesApi)).thenReturn(Lang(Locale.forLanguageTag("cy")))
 
-      val fromTo = FromToTime(from, to)
+      val fromTo = FromToTime(from_00, to_00)
+      fromTo.fromHour mustBe "11:00yh"
+      fromTo.fromDate mustBe "Dydd Mercher 26 Chwefror 2025"
+      fromTo.toHour mustBe "2:00yb"
+      fromTo.toDate mustBe "Dydd Iau 27 Chwefror 2025"
+    }
 
+    "Output in Welsh correctly with 01 mins" in new Setup {
+      when(request.lang(messagesApi)).thenReturn(Lang(Locale.forLanguageTag("cy")))
+
+      val fromTo = FromToTime(from_01, to_01)
+      fromTo.fromHour mustBe "11:01yh"
+      fromTo.fromDate mustBe "Dydd Mercher 26 Chwefror 2025"
+      fromTo.toHour mustBe "2:01yb"
+      fromTo.toDate mustBe "Dydd Iau 27 Chwefror 2025"
+    }
+
+    "Output in Welsh correctly with 30 mins" in new Setup {
+      when(request.lang(messagesApi)).thenReturn(Lang(Locale.forLanguageTag("cy")))
+
+      val fromTo = FromToTime(from_30, to_30)
       fromTo.fromHour mustBe "11:30yh"
       fromTo.fromDate mustBe "Dydd Mercher 26 Chwefror 2025"
       fromTo.toHour mustBe "2:30yb"

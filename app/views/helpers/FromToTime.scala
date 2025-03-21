@@ -28,7 +28,7 @@ case class FromToTime(fromHour: String, fromDate: String, toHour: String, toDate
 
 object FromToTime {
 
-  private val HOUR_PATTERN = "h:ma"
+  private val HOUR_PATTERN = "h:mma"
   private val DATE_PATTERN = "EEEE d MMMM YYYY"
 
   def apply(fromDateTimeString: String, toDateTimeString: String)(implicit request: Request[_], messagesApi: MessagesApi): FromToTime = {
