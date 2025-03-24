@@ -16,22 +16,16 @@
 
 package views.helpers
 
-import models.requests.JourneyRequest
-import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.BeforeAndAfterEach
-import play.api.i18n.I18nSupport.RequestWithMessagesApi
-import play.api.i18n.{Lang, Messages, MessagesApi}
-import play.api.mvc.{AnyContent, RequestHeader}
+import play.api.i18n.{Lang, Messages}
 import views.common.UnitViewSpec
-
-import java.util.Locale
 
 class FromToTimeSpec extends UnitViewSpec with BeforeAndAfterEach {
 
   trait Setup {
-    val english = "en"
-    val welsh = "cy"
+    val english = Lang("en")
+    val welsh = Lang("cy")
 
     val from_00 = "2025-02-26T23:00Z"
     val to_00 = "2025-02-27T02:00Z"
@@ -42,16 +36,13 @@ class FromToTimeSpec extends UnitViewSpec with BeforeAndAfterEach {
     val from_30 = "2025-02-26T23:30Z"
     val to_30 = "2025-02-27T02:30Z"
 
-    implicit val messagesApi: MessagesApi = mock[MessagesApi]
-    val messages: Messages = mock[Messages]
-    implicit val request: JourneyRequest[AnyContent] = mock[JourneyRequest[AnyContent]]
-    when(messagesApi.preferred(any[RequestHeader])).thenReturn(messages)
+    implicit val messages: Messages = mock[Messages]
   }
 
   "FromToTime" should {
 
     "Output in English correctly with 00 mins" in new Setup {
-      when(request.lang(messagesApi)).thenReturn(Lang(Locale.forLanguageTag(english)))
+      when(messages.lang).thenReturn(english)
 
       val fromTo = FromToTime(from_00, to_00)
       fromTo.fromHour mustBe "11:00pm"
@@ -61,7 +52,7 @@ class FromToTimeSpec extends UnitViewSpec with BeforeAndAfterEach {
     }
 
     "Output in English correctly with 01 mins" in new Setup {
-      when(request.lang(messagesApi)).thenReturn(Lang(Locale.forLanguageTag(english)))
+      when(messages.lang).thenReturn(english)
 
       val fromTo = FromToTime(from_01, to_01)
       fromTo.fromHour mustBe "11:01pm"
@@ -71,7 +62,7 @@ class FromToTimeSpec extends UnitViewSpec with BeforeAndAfterEach {
     }
 
     "Output in English correctly with 30 mins" in new Setup {
-      when(request.lang(messagesApi)).thenReturn(Lang(Locale.forLanguageTag(english)))
+      when(messages.lang).thenReturn(english)
 
       val fromTo = FromToTime(from_30, to_30)
       fromTo.fromHour mustBe "11:30pm"
@@ -81,7 +72,7 @@ class FromToTimeSpec extends UnitViewSpec with BeforeAndAfterEach {
     }
 
     "Output in Welsh correctly with 00 mins" in new Setup {
-      when(request.lang(messagesApi)).thenReturn(Lang(Locale.forLanguageTag(welsh)))
+      when(messages.lang).thenReturn(welsh)
 
       val fromTo = FromToTime(from_00, to_00)
       fromTo.fromHour mustBe "11:00yh"
@@ -91,7 +82,7 @@ class FromToTimeSpec extends UnitViewSpec with BeforeAndAfterEach {
     }
 
     "Output in Welsh correctly with 01 mins" in new Setup {
-      when(request.lang(messagesApi)).thenReturn(Lang(Locale.forLanguageTag(welsh)))
+      when(messages.lang).thenReturn(welsh)
 
       val fromTo = FromToTime(from_01, to_01)
       fromTo.fromHour mustBe "11:01yh"
@@ -101,7 +92,7 @@ class FromToTimeSpec extends UnitViewSpec with BeforeAndAfterEach {
     }
 
     "Output in Welsh correctly with 30 mins" in new Setup {
-      when(request.lang(messagesApi)).thenReturn(Lang(Locale.forLanguageTag(welsh)))
+      when(messages.lang).thenReturn(welsh)
 
       val fromTo = FromToTime(from_30, to_30)
       fromTo.fromHour mustBe "11:30yh"

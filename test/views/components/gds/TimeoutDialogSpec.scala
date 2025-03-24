@@ -48,7 +48,7 @@ class TimeoutDialogSpec extends UnitViewSpec with CommonMessages with MockAuthAc
       )
       val choicePage = injector.instanceOf[choice_page]
 
-      val view = choicePage()(getAuthenticatedRequest(), messages, realMessagesApi)
+      val view = choicePage()(getAuthenticatedRequest(), messages)
 
       val metas = view.getElementsByTag("meta").iterator.asScala.toList.filter(_.attr("name") == "hmrc-timeout-dialog")
 
