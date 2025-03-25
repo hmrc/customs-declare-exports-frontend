@@ -123,17 +123,7 @@
 
             @* Section 3 *@
             @heading(messages("rejected.notification.guidance.section.3.header"), "govuk-heading-s", "h2")
-
-            @if(appConfig.isTdrVersion) {
-                @paragraphBody(messages("rejected.notification.tdr.guidance.section.3.paragraph.1"))
-
-                @paragraphBody(messages("rejected.notification.tdr.guidance.section.3.paragraph.2",
-                    externalLink(
-                        text = messages("rejected.notification.tdr.guidance.section.3.paragraph.2.email"),
-                        url = s"mailto:${messages("rejected.notification.tdr.guidance.section.3.paragraph.2.email")}"
-                    )
-                ))
-            } else {
+{
                 @paragraph(
                     externalLink(
                         text = messages("rejected.notification.guidance.section.3.link.1"),

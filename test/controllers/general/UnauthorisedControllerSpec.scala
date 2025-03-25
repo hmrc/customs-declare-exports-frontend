@@ -23,30 +23,27 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
-import views.html.general.{unauthorised, unauthorisedAgent, unauthorisedEoriInTdr}
+import views.html.general.{unauthorised, unauthorisedAgent}
 
 class UnauthorisedControllerSpec extends ControllerWithoutFormSpec {
 
   private val mockAppConfig = mock[AppConfig]
   private val unauthorisedPage = mock[unauthorised]
-  private val unauthorisedEoriInTdrPage = mock[unauthorisedEoriInTdr]
   private val unauthorisedAgentPage = mock[unauthorisedAgent]
 
-  val controller = new UnauthorisedController(mcc, unauthorisedPage, unauthorisedEoriInTdrPage, unauthorisedAgentPage, mockAppConfig)
+  val controller = new UnauthorisedController(mcc, unauthorisedPage, unauthorisedAgentPage, mockAppConfig)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
 
-    when(mockAppConfig.isTdrVersion).thenReturn(false)
     when(unauthorisedPage(any())(any(), any())).thenReturn(HtmlFormat.empty)
-    when(unauthorisedEoriInTdrPage()(any(), any())).thenReturn(HtmlFormat.empty)
     when(unauthorisedAgentPage(any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
     super.afterEach()
 
-    reset(unauthorisedPage, unauthorisedEoriInTdrPage, unauthorisedAgentPage, mockAppConfig)
+    reset(unauthorisedPage, unauthorisedAgentPage, mockAppConfig)
   }
 
   "Unauthorised controller" should {
@@ -67,15 +64,6 @@ class UnauthorisedControllerSpec extends ControllerWithoutFormSpec {
           status(result) must be(OK)
 
           verify(unauthorisedPage).apply(any())(any(), any())
-        }
-
-        "user has sufficient enrollments but the EORI is not in the allow list (TDR enabled)" in {
-          when(mockAppConfig.isTdrVersion).thenReturn(true)
-
-          val result = controller.onPageLoad(UrlDirect)(getRequest())
-          status(result) must be(OK)
-
-          verify(unauthorisedEoriInTdrPage).apply()(any(), any())
         }
 
         "someone travels to the URL directly" in {

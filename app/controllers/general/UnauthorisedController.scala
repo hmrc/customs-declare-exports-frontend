@@ -22,24 +22,22 @@ import models.UnauthorisedReason._
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import views.html.general.{unauthorised, unauthorisedAgent, unauthorisedEoriInTdr}
+import views.html.general.{unauthorised, unauthorisedAgent}
 
 import javax.inject.Inject
 
 class UnauthorisedController @Inject() (
   mcc: MessagesControllerComponents,
   unauthorisedPage: unauthorised,
-  unauthorisedEoriInTdrPage: unauthorisedEoriInTdr,
   unauthorisedAgent: unauthorisedAgent,
   appConfig: AppConfig
 ) extends FrontendController(mcc) with I18nSupport {
 
   def onPageLoad(unauthorisedReason: UnauthorisedReason): Action[AnyContent] = Action { implicit request =>
     unauthorisedReason match {
-      case _ if appConfig.isTdrVersion => Ok(unauthorisedEoriInTdrPage())
-      case UserEoriNotAllowed          => Ok(unauthorisedPage(displaySignOut = true))
-      case UserIsNotEnrolled           => Ok(unauthorisedPage(displaySignOut = true))
-      case UrlDirect                   => Ok(unauthorisedPage(displaySignOut = false))
+      case UserEoriNotAllowed => Ok(unauthorisedPage(displaySignOut = true))
+      case UserIsNotEnrolled  => Ok(unauthorisedPage(displaySignOut = true))
+      case UrlDirect          => Ok(unauthorisedPage(displaySignOut = false))
     }
   }
 
