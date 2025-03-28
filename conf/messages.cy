@@ -91,9 +91,6 @@ unauthorised.paragraph.3.linkText = ychwanegu chi eich hun fel aelod o’r tîm 
 unauthorised.insetText = Gwiriwch â’r person sy’n delio â TAW, er enghraifft, gan y gallai fod wedi cofrestru ar gyfer CDS er mwyn hawlio TAW yn ôl.
 
 unauthorised.heading.eori.not.allowed = Nid yw’ch rhif EORI yn ddilys ar y gwasanaeth hwn
-unauthorised.tdr.heading = Nid yw’r EORI a nodwyd gennych yn ddilys eto ar wasanaeth prawf y CDS
-unauthorised.tdr.body = Cysylltwch â {0} i sicrhau bod mynediad wedi’i drefnu ar gyfer eich rhif EORI.
-unauthorised.tdr.body.link = cdsexportsuiteam@hmrc.gov.uk
 
 unauthorisedAgent.heading = Ni allwch ddefnyddio’r gwasanaeth hwn
 unauthorisedAgent.paragraph.1 = Rydych wedi mewngofnodi i Borth y Llywodraeth gyda manylion cyfrif gwasanaethau asiant. Os ydych yn drefnydd anfon nwyddau neu’n frocer tollau sy’n cynrychioli allforiwr, mewngofnodwch gan ddefnyddio’r manylion Porth y Llywodraeth ar gyfer eich busnes.
@@ -2314,7 +2311,6 @@ rejected.notification.title = Cywiro gwallau datganiad
 rejected.notification.table.title = Gwallau’r datganiad
 rejected.notification.warning = Mae angen i chi cywiro’r gwallau hyn ac ailgyflwyno’ch datganiad. Defnyddiwch y cysylltiadau ar gyfer newid o dan y pennawd gweithredu (isod) i fwrw golwg a chywiro bob gwall. Pan fydd y gwallau wedi’u cywiro, ewch i’r dudalen ar gyfer gwirio’ch atebion, ac ailgyflwyno’ch datganiad.
 rejected.notification.description.format = Cod gwall {0}.
-rejected.notification.check.answers.paragraph.tdr = Defnyddiwch y cysylltiadau newid ar y dudalen Gwirio’ch atebion i drwsio pob gwall. Yna, ewch ati i ailgyflwyno’ch datganiad.
 rejected.notification.check.answers.button = Gwiriwch eich atebion
 
 rejected.notification.fieldTable.error = Gwall
@@ -2338,9 +2334,7 @@ rejected.notification.guidance.section.3.paragraph.1 = Os oes angen help arnoch 
 rejected.notification.guidance.section.3.paragraph.2 = Ffôn: 0300 200 3705
 rejected.notification.guidance.section.3.paragraph.3 = Dydd Llun i Ddydd Gwener, 08:30 i 17:00 (heblaw am benwythnosau a gwyliau’r banc)
 
-rejected.notification.tdr.guidance.section.3.paragraph.1 = Os oes angen help arnoch gyda dogfennau sydd ar goll neu wallau’n ymwneud â gofynion tariff penodol, gallwch gysylltu â’r ddesg gymorth.
-rejected.notification.tdr.guidance.section.3.paragraph.2 = E-bostiwch: {0}
-rejected.notification.tdr.guidance.section.3.paragraph.2.email = tdrcommunications@hmrc.gov.uk
+
 
 amendment.cancellation.heading = Canslo’r cais am ddiwygiad
 amendment.submission.heading = Cyflwyno cais am ddiwygiad
