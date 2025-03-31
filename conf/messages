@@ -90,9 +90,7 @@ unauthorised.paragraph.3.linkText = add you as an administrator level team membe
 unauthorised.insetText = Check with the person who deals with VAT, for example, as they may have registered for CDS in order to claim back VAT.
 
 unauthorised.heading.eori.not.allowed = Your EORI number is not valid on this service
-unauthorised.tdr.heading = The EORI you entered is not valid on the customs declaration test service
-unauthorised.tdr.body = You need to contact {0} to ensure access has been set up for your EORI number.
-unauthorised.tdr.body.link = cdsexportsuiteam@hmrc.gov.uk
+
 
 unauthorisedAgent.heading = You cannot use this service
 unauthorisedAgent.paragraph.1 = You’ve signed in with Government Gateway details for an agent services account. If you are a freight forwarder or customs broker representing an exporter, sign in with the Government Gateway details for your business.
@@ -2319,7 +2317,6 @@ rejected.notification.title = Fix declaration errors
 rejected.notification.table.title = Declaration errors
 rejected.notification.warning = You need to fix these errors and resubmit your declaration. Use the ‘Change’ links under the ‘Action’ heading (below) to view and fix each error. When the errors are fixed, go to the ‘Check your answers’ page and resubmit your declaration.
 rejected.notification.description.format = Error code {0}.
-rejected.notification.check.answers.paragraph.tdr = Use the change links on the check your answers page and fix each error. Then resubmit your declaration.
 rejected.notification.check.answers.button = Check your answers
 
 rejected.notification.fieldTable.error = Error
@@ -2343,9 +2340,7 @@ rejected.notification.guidance.section.3.paragraph.1 = If you need help with mis
 rejected.notification.guidance.section.3.paragraph.2 = Telephone: 0300 322 9434
 rejected.notification.guidance.section.3.paragraph.3 = Monday to Friday, 9am to 5pm (except public holidays)
 
-rejected.notification.tdr.guidance.section.3.paragraph.1 = If you need help with missing documents or errors related to specific tariff requirements, you can contact HMRC by email.
-rejected.notification.tdr.guidance.section.3.paragraph.2 = Email: {0}
-rejected.notification.tdr.guidance.section.3.paragraph.2.email = tdrcommunications@hmrc.gov.uk
+
 
 amendment.cancellation.heading = Cancel amendment request
 amendment.resubmission.heading = Resubmit amendment request

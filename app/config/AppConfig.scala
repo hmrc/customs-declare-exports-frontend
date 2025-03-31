@@ -228,7 +228,6 @@ class AppConfig @Inject() (
 
   // Feature flags
   val isBetaBannerEnabled: Boolean = servicesConfig.getBoolean("features.betaBanner")
-  val isTdrVersion: Boolean = servicesConfig.getBoolean("features.tdrVersion")
 
   lazy val languages: Seq[String] = runModeConfiguration.get[Seq[String]]("play.i18n.langs")
 

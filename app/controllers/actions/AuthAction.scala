@@ -32,7 +32,6 @@ import uk.gov.hmrc.auth.core.retrieve.~
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.metrics.Metrics
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
-import utils.HashingUtils.generateHashOfValue
 
 import javax.inject.Provider
 import scala.concurrent.{ExecutionContext, Future}
@@ -155,18 +154,6 @@ class AuthActionImpl @Inject() (
     eoriOnAllowList
   }
 
-  def tdrSecretAuthentication(eori: String, maybeHiddenSalt: Option[String], providedHash: String): Boolean =
-    maybeHiddenSalt match {
-      case None => true
-      case Some(hiddenSalt) =>
-        val hashOfPayload = generateHashOfValue(eori, hiddenSalt)
-        val matchingHash = providedHash.equalsIgnoreCase(hashOfPayload)
-
-        if (!matchingHash)
-          logger.info("Authentication Rejected: User's TDRSecret does not match")
-
-        matchingHash
-    }
 }
 
 @ImplementedBy(classOf[AuthActionImpl])
