@@ -725,11 +725,6 @@
     "code": "GBAULONLONTMP"
   },
   {
-    "en": "London Gateway Port",
-    "cy": "London Gateway Port",
-    "code": "GBAULGPLGPLGP"
-  },
-  {
     "en": "London Thamesport - Isle of Grain",
     "cy": "London Thamesport - Isle of Grain",
     "code": "GBAULTPTHPLTP"
@@ -953,11 +948,6 @@
     "en": "Plymouth - Corporation Wharf",
     "cy": "Plymouth - Corporation Wharf",
     "code": "GBAUPLYPLYCOR"
-  },
-  {
-    "en": "Plymouth - Millbay Docks",
-    "cy": "Plymouth - Millbay Docks",
-    "code": "GBAUPLYPLYPLY"
   },
   {
     "en": "Plymouth - Pomphlett Jetty",
@@ -1200,11 +1190,6 @@
     "code": "GBAUSVTLONTLS"
   },
   {
-    "en": "Skewen - Neath Abbey Wharf",
-    "cy": "Skewen - Neath Abbey Wharf",
-    "code": "GBAUSKWCDFMCD"
-  },
-  {
     "en": "Solent Gateway - Marchwood",
     "cy": "Solent Gateway - Marchwood",
     "code": "GBAUMAWSTNSGL1"
@@ -1363,11 +1348,6 @@
     "en": "Troon",
     "cy": "Troon",
     "code": "GBAUTRNGLWTRN"
-  },
-  {
-    "en": "Truro - Lighterage Quay",
-    "cy": "Truro - Lighterage Quay",
-    "code": "GBAUTRUFALTRU"
   },
   {
     "en": "Ullapool",
@@ -1623,5 +1603,10 @@
     "en": "Whitehead",
     "cy": "Whitehead",
     "code": "GBAUWHEBELWHE"
+  },
+  {
+    "en": "Hull - Seaway Logistics",
+    "cy": "Hull - Seaway Logistics",
+    "code": "GBAUHSEHULHLD1"
   }
 ]
