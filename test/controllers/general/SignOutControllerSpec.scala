@@ -34,9 +34,9 @@ class SignOutControllerSpec extends ControllerWithoutFormSpec with ScalaFutures 
 
   private val controller = new SignOutController(mcc, sessionTimedOutPage, userSignedOutPage, config)
 
-  private val expectedBasGatewayHost = "http://localhost:9553/bas-gateway/sign-out-without-state"
-  private val expectedUserSignOutUrl = s"${expectedBasGatewayHost}?continue=http%3A%2F%2Flocalhost%3A6791%2Fcustoms-declare-exports%2Fyou-have-signed-out"
-  private val expectedTimeoutSignOutUrl = s"${expectedBasGatewayHost}?continue=http%3A%2F%2Flocalhost%3A6791%2Fcustoms-declare-exports%2Fwe-signed-you-out"
+  private val expectedBasGatewayHost = "http://localhost:9553/bas-gateway/sign-out-without-state?continue=http%3A%2F%2Flocalhost%3A6791"
+  private val expectedUserSignOutUrl = s"$expectedBasGatewayHost%2Fcustoms-declare-exports%2Fyou-have-signed-out"
+  private val expectedTimeoutSignOutUrl = s"$expectedBasGatewayHost%2Fcustoms-declare-exports%2Fwe-signed-you-out"
 
   override def beforeEach(): Unit = {
     super.beforeEach()
