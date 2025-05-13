@@ -17,6 +17,7 @@
 package controllers.general
 
 import base.ControllerWithoutFormSpec
+import config.AppConfig
 import models.SignOutReason
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
@@ -29,12 +30,13 @@ class SignOutControllerSpec extends ControllerWithoutFormSpec with ScalaFutures 
 
   private val sessionTimedOutPage = mock[session_timed_out]
   private val userSignedOutPage = mock[user_signed_out]
+  private val config = instanceOf[AppConfig]
 
-  private val controller = new SignOutController(mcc, sessionTimedOutPage, userSignedOutPage, appConfig)
+  private val controller = new SignOutController(mcc, sessionTimedOutPage, userSignedOutPage, config)
 
   private val expectedBasGatewayHost = "http://localhost:9553/bas-gateway/sign-out-without-state"
-  private val expectedUserSignOutUrl = s"${expectedBasGatewayHost}?continue=http%3A%2F%2Flocalhost%3A6791%2Fyou-have-signed-out"
-  private val expectedTimeoutSignOutUrl = s"${expectedBasGatewayHost}?continue=http%3A%2F%2Flocalhost%3A6791%2Fwe-signed-you-out"
+  private val expectedUserSignOutUrl = s"${expectedBasGatewayHost}?continue=http%3A%2F%2Flocalhost%3A6791%2Fcustoms-declare-exports%2Fyou-have-signed-out"
+  private val expectedTimeoutSignOutUrl = s"${expectedBasGatewayHost}?continue=http%3A%2F%2Flocalhost%3A6791%2Fcustoms-declare-exports%2Fwe-signed-you-out"
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -81,7 +83,7 @@ class SignOutControllerSpec extends ControllerWithoutFormSpec with ScalaFutures 
 
   "SignOutController on sessionTimeoutSignedOut" should {
 
-    val controller = new SignOutController(mcc, sessionTimedOutPage, userSignedOutPage, appConfig)
+    val controller = new SignOutController(mcc, sessionTimedOutPage, userSignedOutPage, config)
 
     "call sessionTimedOutPage" in {
       controller.sessionTimeoutSignedOut()(getRequest()).futureValue
@@ -96,7 +98,7 @@ class SignOutControllerSpec extends ControllerWithoutFormSpec with ScalaFutures 
 
   "SignOutController on userSignedOut" should {
 
-    val controller = new SignOutController(mcc, sessionTimedOutPage, userSignedOutPage, appConfig)
+    val controller = new SignOutController(mcc, sessionTimedOutPage, userSignedOutPage, config)
 
     "call userSignedOutPage" in {
       controller.userSignedOut()(getRequest()).futureValue
