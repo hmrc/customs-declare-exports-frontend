@@ -24,18 +24,17 @@ import java.io.{File, PrintWriter}
 object JsonUpdater extends App {
   val filePath = "conf/code-lists/additionalDocumentCodes/additionalDocumentCodes.json"
 
-  def readJsonFile(path: String): Try[JsArray] = {
+  def readJsonFile(path: String): Try[JsArray] =
     Try(Using(Source.fromFile(path))(_.mkString).map(Json.parse).get match {
       case JsArray(elements) => JsArray(elements)
-      case _ => throw new IllegalArgumentException("Not provided a valid json file")
+      case _                 => throw new IllegalArgumentException("Not provided a valid json file")
     })
-  }
 
   def writeJsonFile(path: String, data: JsArray): Unit = {
     val writer = new PrintWriter(new File(path))
-    try{
+    try
       writer.write(Json.prettyPrint(data))
-    }finally writer.close()
+    finally writer.close()
   }
 
   println("Please enter a comma-separated list of codes for DELETION:")
@@ -44,9 +43,12 @@ object JsonUpdater extends App {
 
   println("\nPlease enter a comma-separated list of codes for ADDITION:")
   val additionInput = scala.io.StdIn.readLine()
-  val codesToAdd = additionInput.split(",").map(_.trim).filter(_.nonEmpty).map(code =>
-    Json.obj("parentCode" -> JsString(code), "childCodes" -> JsArray(Seq(JsString("[DocumentCodesRequiringAReason]"))))
-  ).toList
+  val codesToAdd = additionInput
+    .split(",")
+    .map(_.trim)
+    .filter(_.nonEmpty)
+    .map(code => Json.obj("parentCode" -> JsString(code), "childCodes" -> JsArray(Seq(JsString("DocumentCodesRequiringAReason")))))
+    .toList
 
   readJsonFile(filePath) match {
     case Success(existingData) =>
@@ -55,7 +57,8 @@ object JsonUpdater extends App {
       })
 
       val finalData = JsArray(updatedData.value ++ codesToAdd)
-      writeJsonFile(filePath, finalData)
+      val sortedFinalData: JsArray = JsArray(finalData.value.sortBy(obj => (obj \ "parentCode").as[String]))
+      writeJsonFile(filePath, sortedFinalData)
   }
 
 }
