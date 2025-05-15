@@ -111,8 +111,7 @@ object DashboardHelper {
   def hrefForNextPage(nextPage: Int, pageOfSubmissions: PageOfSubmissions, baseHref: String): String = {
     val hrefWithPage = s"$baseHref&$Page=$nextPage"
     pageOfSubmissions.submissions.lastOption.fold(hrefWithPage) { submission =>
-      addDatetime(hrefWithPage, DatetimeForNextPage, submission.enhancedStatusLastUpdated)
-      addUuid(hrefWithPage, Uuid, submission.uuid)
+      addDatetime(hrefWithPage, DatetimeForNextPage, submission.enhancedStatusLastUpdated).concat(addUuid(hrefWithPage, Uuid, submission.uuid))
     }
   }
 
@@ -121,13 +120,12 @@ object DashboardHelper {
     if (previousPage == 1) hrefWithPage
     else
       pageOfSubmissions.submissions.headOption.fold(hrefWithPage) { submission =>
-        addDatetime(hrefWithPage, DatetimeForPreviousPage, submission.enhancedStatusLastUpdated)
-        addUuid(hrefWithPage, Uuid, submission.uuid)
+        addDatetime(hrefWithPage, DatetimeForPreviousPage, submission.enhancedStatusLastUpdated).concat(addUuid(hrefWithPage, Uuid, submission.uuid))
       }
   }
 
   private def addUuid(href: String, key: String, uuid: String): String =
-    s"$href&$key=$uuid"
+    s"&$key=$uuid"
 
   private def addDatetime(href: String, key: String, maybeDatetime: Option[ZonedDateTime]): String =
     maybeDatetime.fold(href)(datetime => s"${href}&${key}=${toUTC(datetime)}")
