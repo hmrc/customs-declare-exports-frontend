@@ -68,6 +68,7 @@ object Stubs {
       |urls.choicePageMaintenanceBanner ="https://www.gov.uk/government/publications/make-and-manage-an-export-declaration-online-service-availability-and-issues/670ec3d3-ec08-4a2d-9fa4-43db9a5d8fdd"
       |urls.login="http://localhost:9949/auth-login-stub/gg-sign-in"
       |urls.loginContinue="http://localhost:9000/customs-declare-exports-frontend"
+      |urls.signOut="http://localhost:9553/bas-gateway/sign-out-without-state"
       |
       |google-analytics.token=N/A
       |google-analytics.host=localhostGoogle
