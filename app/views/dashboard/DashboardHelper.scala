@@ -101,11 +101,7 @@ object DashboardHelper {
   val Limit = "limit"
   val Page = "page"
   val Reverse = "&reverse"
-
-  def hrefForLastPage(itemsPerPage: Int, totalPagesInGroup: Int, pageOfSubmissions: PageOfSubmissions, baseHref: String): String = {
-    val limit = pageOfSubmissions.totalSubmissionsInGroup - (totalPagesInGroup - 1) * itemsPerPage
-    s"${baseHref}&$Limit=$limit&$Page=$totalPagesInGroup"
-  }
+  val Uuid = "uuid"
 
   def hrefForLoosePage(goToPage: Int, currentPage: Int, pageOfSubmissions: PageOfSubmissions, baseHref: String): String =
     if (goToPage - currentPage == 1) hrefForNextPage(goToPage, pageOfSubmissions, baseHref)
@@ -115,7 +111,7 @@ object DashboardHelper {
   def hrefForNextPage(nextPage: Int, pageOfSubmissions: PageOfSubmissions, baseHref: String): String = {
     val hrefWithPage = s"$baseHref&$Page=$nextPage"
     pageOfSubmissions.submissions.lastOption.fold(hrefWithPage) { submission =>
-      addDatetime(hrefWithPage, DatetimeForNextPage, submission.enhancedStatusLastUpdated)
+      addDatetime(hrefWithPage, DatetimeForNextPage, submission.enhancedStatusLastUpdated).concat(addUuid(hrefWithPage, Uuid, submission.uuid))
     }
   }
 
@@ -124,9 +120,12 @@ object DashboardHelper {
     if (previousPage == 1) hrefWithPage
     else
       pageOfSubmissions.submissions.headOption.fold(hrefWithPage) { submission =>
-        addDatetime(hrefWithPage, DatetimeForPreviousPage, submission.enhancedStatusLastUpdated)
+        addDatetime(hrefWithPage, DatetimeForPreviousPage, submission.enhancedStatusLastUpdated).concat(addUuid(hrefWithPage, Uuid, submission.uuid))
       }
   }
+
+  private def addUuid(href: String, key: String, uuid: String): String =
+    s"&$key=$uuid"
 
   private def addDatetime(href: String, key: String, maybeDatetime: Option[ZonedDateTime]): String =
     maybeDatetime.fold(href)(datetime => s"${href}&${key}=${toUTC(datetime)}")
