@@ -10,11 +10,6 @@
     "code": "GBAUBELBELGVM"
   },
   {
-    "en": "Cairnryan / Cairnryan GVMS Port",
-    "cy": "Cairnryan / Cairnryan GVMS Port",
-    "code": "GBAUCYNAYRCYNGVM"
-  },
-  {
     "en": "Dover/Eurotunnel / Dover/Eurotunnel GVMS Port",
     "cy": "Dover/Eurotunnel / Dover/Eurotunnel GVMS Port",
     "code": "GBAUDEUDEUDEUGVM"
@@ -80,11 +75,6 @@
     "code": "GBAULIVLIVLIVGVM"
   },
   {
-    "en": "Loch Ryan  / Loch Ryan GVMS Port",
-    "cy": "Loch Ryan  / Loch Ryan GVMS Port",
-    "code": "GBAULRPAYRLRPGVM"
-  },
-  {
     "en": "Newhaven / Newhaven GVMS Port",
     "cy": "Newhaven / Newhaven GVMS Port",
     "code": "GBAUNHVNHVNHVGVM"
@@ -143,5 +133,10 @@
     "en": "Manchester / Manchester GVMS Port",
     "cy": "Manchester / Manchester GVMS Port",
     "code": "GBAUEAMMNCMSCGVM"
+  },
+  {
+    "en": "London Thamesport / London Thamesport, Isle of Grain",
+    "cy": "London Thamesport / London Thamesport, Isle of Grain",
+    "code": "GBAULTPTHPLTPGVM"
   }
 ]

@@ -31,13 +31,16 @@ class GoodsLocationCodesServiceSpec extends UnitSpec with Injector {
   "GoodsLocationCodes" should {
 
     "have all entries" in {
-      goodsLocationCodesService.all.length mustBe 1718
-      goodsLocationCodesService.all.head mustBe GoodsLocationCode("GBCUASDDOVAPF", "AP FINANCIAL LTD. Unit 17, Arrowhead Road, Ashford. TN24 0FL")
+      goodsLocationCodesService.all.length mustBe 1741
+      goodsLocationCodesService.all.head mustBe GoodsLocationCode(
+        "GBAUSLSSTNTCL1",
+        "3TC Logistics Limited / Unit 1, The Ferns, Common Road, Whiteparish, Wiltshire. SP5 2RD"
+      )
     }
 
     "have entries" when {
       "depCodes" in {
-        goodsLocationCodesService.depCodes.length mustBe 87
+        goodsLocationCodesService.depCodes.length mustBe 86
         goodsLocationCodesService.depCodes.head mustBe GoodsLocationCode(
           "GBAULOFLHRXDI",
           "CH Robinson Worldwide (UK) Limited  /  2 Millbrook Way, Colnbrook, Slough. SL3 0HN"
@@ -52,11 +55,11 @@ class GoodsLocationCodesServiceSpec extends UnitSpec with Injector {
         goodsLocationCodesService.coaAirportsCodes.head mustBe GoodsLocationCode("GBCUSAWLSASAW", "Audley End Airfield – Saffron Walden")
       }
       "maritime" in {
-        goodsLocationCodesService.maritimeAndWharvesCodes.length mustBe 325
+        goodsLocationCodesService.maritimeAndWharvesCodes.length mustBe 322
         goodsLocationCodesService.maritimeAndWharvesCodes.head mustBe GoodsLocationCode("GBAUABDABDADP", "Aberdeen - Denholm Port Services Ltd")
       }
       "itsf" in {
-        goodsLocationCodesService.itsfCodes.length mustBe 117
+        goodsLocationCodesService.itsfCodes.length mustBe 123
         goodsLocationCodesService.itsfCodes.head mustBe GoodsLocationCode(
           "GBAUABDABDABM",
           "Aberdeen - Matthews Quay / Sea Cargo Aberdeen Limited / Matthews Quay Aberdeen Harbour Aberdeen AB11 5PG"
@@ -70,10 +73,10 @@ class GoodsLocationCodesServiceSpec extends UnitSpec with Injector {
         )
       }
       "external itsf" in {
-        goodsLocationCodesService.externalItsfCodes.length mustBe 696
+        goodsLocationCodesService.externalItsfCodes.length mustBe 701
         goodsLocationCodesService.externalItsfCodes.head mustBe GoodsLocationCode(
-          "GBAUPOEABZEBX",
-          "Aberdeen / Crane Worldwide UK Ltd / Warehouse Unit 7, Gourdieburn, Potterton, Aberdeen, AB23 8UY"
+          "GBAUSLSSTNTCL1",
+          "3TC Logistics Limited / Unit 1, The Ferns, Common Road, Whiteparish, Wiltshire. SP5 2RD"
         )
       }
       "borderInspectionPosts" in {
@@ -107,7 +110,7 @@ class GoodsLocationCodesServiceSpec extends UnitSpec with Injector {
         goodsLocationCodesService.railCodes.head mustBe GoodsLocationCode("GBAUASDASDASD", "Ashford / Eurostar / Ashford International")
       }
       "acts" in {
-        goodsLocationCodesService.actsCodes.length mustBe 119
+        goodsLocationCodesService.actsCodes.length mustBe 135
         goodsLocationCodesService.actsCodes.head mustBe GoodsLocationCode(
           "GBCUASDDOVAPF",
           "AP FINANCIAL LTD. Unit 17, Arrowhead Road, Ashford. TN24 0FL"
@@ -118,7 +121,7 @@ class GoodsLocationCodesServiceSpec extends UnitSpec with Injector {
         goodsLocationCodesService.roroCodes.head mustBe GoodsLocationCode("GBAUCYNAYRCYN", "Cairnryan")
       }
       "gvms" in {
-        goodsLocationCodesService.gvmsCodes.length mustBe 29
+        goodsLocationCodesService.gvmsCodes.length mustBe 28
         goodsLocationCodesService.gvmsCodes.head mustBe GoodsLocationCode("GBAUABDABDABDGVM", "Aberdeen  / Aberdeen GVMS Port")
       }
     }

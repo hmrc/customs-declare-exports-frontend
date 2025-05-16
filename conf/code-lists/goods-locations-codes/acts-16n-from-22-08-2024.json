@@ -90,11 +90,6 @@
     "code": "GBCULARBELACL"
   },
   {
-    "en": "Mtec Warehousing Ltd. Units 4b/4d, Dales Manor Business Park, Grove Road, Sawston, Cambridge. CB22 3TJ",
-    "cy": "Mtec Warehousing Ltd. Units 4b/4d, Dales Manor Business Park, Grove Road, Sawston, Cambridge. CB22 3TJ",
-    "code": "GBCUSASIPSMWL"
-  },
-  {
     "en": "Mtec Warehousing Ltd. 3-4 Orchad Road, Royston, SG8 5HA.",
     "cy": "Mtec Warehousing Ltd. 3-4 Orchad Road, Royston, SG8 5HA.",
     "code": "GBCUROSIPSMTW"
@@ -560,11 +555,6 @@
     "code": "GBCUTGMSTNTAN"
   },
   {
-    "en": "Tilbury / Bollore Logistics UK Ltd / Thurrock Park Way, Tilbury, RM18 7HW",
-    "cy": "Tilbury / Bollore Logistics UK Ltd / Thurrock Park Way, Tilbury, RM18 7HW",
-    "code": "GBCUTILLONBLL"
-  },
-  {
     "en": "Tilbury / Pro Carrier Limited / Port Centric House, Thurrock Parkway, Tilbury, Essex",
     "cy": "Tilbury / Pro Carrier Limited / Port Centric House, Thurrock Parkway, Tilbury, Essex",
     "code": "GBCUTILLONPCL"
@@ -593,5 +583,95 @@
     "en": "Woking / CARS United Kingdom Limited / Building K, Alpha 319 Business Centre, Chertsey Road, Chobham, Woking, Surrey. GU25 8JB",
     "cy": "Woking / CARS United Kingdom Limited / Building K, Alpha 319 Business Centre, Chertsey Road, Chobham, Woking, Surrey. GU25 8JB",
     "code": "GBCUCHBLONCUL"
+  },
+  {
+    "en": "Alpha Coatings Ltd",
+    "cy": "Unit 6, Walbrook Business Park, Sheerness. ME12 3XS",
+    "code": "GBCUQUBLONACS"
+  },
+  {
+    "en": "Ball Colegrave Limited",
+    "cy": "Borden Hill Nurseries, Borden Hill, Stratford upon Avon. CV37 9RY",
+    "code": "GBCUSAVBHXBCL"
+  },
+  {
+    "en": "BMW (UK) Holdings Ltd",
+    "cy": "BMW Hams Hall GmbH, Edison Road, Hams Hall National Distribution Park, Coleshill, Birmingham. B46 1AB",
+    "code": "GBCUCLLBHXBHL"
+  },
+  {
+    "en": "Clarkson Port Services Ltd",
+    "cy": "Unit 5A, Prince Edward Drive, Queens Road, Immingham. DN40 1QU",
+    "code": "GBCUIMMIMMCPS"
+  },
+  {
+    "en": "DP World Logistics UK Ltd",
+    "cy": "c/o JLR, DC4 Midpoint, Prologis Park, Minworth, Birmingham. B76 9EH",
+    "code": "GBCUMINBHXDPW"
+  },
+  {
+    "en": "Flowervision East Anglia Ltd",
+    "cy": "Colman's Close, The Food Enterprise Park, Norwich, Norfolk. NR9 5PG",
+    "code": "GBCURPHNORFEA"
+  },
+  {
+    "en": "Fresca Group Ltd T/A Fresh Clear Customs Freight",
+    "cy": "Thanet Earth Peppers Ltd, 2 Barrow Main Road, Birchington, Kent. CT7 0AX",
+    "code": "GBCUSCWDOVFCF"
+  },
+  {
+    "en": "Fresca Group Ltd T/A Fresh Clear Customs Freight",
+    "cy": "Barrow Man Road Birchington, Kent. CT7 0AX",
+    "code": "GBCUKNMDOVBMR"
+  },
+  {
+    "en": "Fresca Group Ltd T/A Fresh Clear Customs Freight",
+    "cy": "Thanet Earth Peppers Ltd, 2 Barrow Main Road, Birchington, Kent. CT7 0AX",
+    "code": "GBCUSPAHULBSL"
+  },
+  {
+    "en": "Fresca Group Ltd T/A Fresh Clear Customs Freight",
+    "cy": "The Fresh Produce Centre, Transfesa Road, Paddock Wood, Kent. TN12 6UT",
+    "code": "GBCUKNMDOVFGL"
+  },
+  {
+    "en": "Fresca Group Ltd T/A Fresh Clear Customs Freight",
+    "cy": "The Green House Ely Ltd, Ely Road, Chittering, Cambridge. CB25 9PN",
+    "code": "GBCUWBECBGFCE"
+  },
+  {
+    "en": "Fresca Group Ltd T/A Fresh Clear Customs Freight",
+    "cy": "The Green House Norwich Ltd, Kirby Road, Trowse, Norwich, Norfolk. NR14 8RS",
+    "code": "GBCUNRWNORFCB"
+  },
+  {
+    "en": "Fresca Group Ltd T/A Fresh Clear Customs Freight",
+    "cy": "The Green House Sussex Ltd, Pollards Nursery, Lake Lane, Barnham. PO22 0AD",
+    "code": "GBCUAXNPTMFCC"
+  },
+  {
+    "en": "Ital Logistics Limited",
+    "cy": "Unit 1, Birch Business Park, Whittle Lane, Heywood, Lancashire. OL10 2SX",
+    "code": "GBCUHYMLIVILL"
+  },
+  {
+    "en": "Network International cargo UK Limited",
+    "cy": "Unit 5, Cyan Park, Phoenix Way, Coventry. CV2 4QP",
+    "code": "GBCUCVTBHXNIC"
+  },
+  {
+    "en": "Panasonic UK",
+    "cy": "c/o Miniclipper, Unit 2, Avro Business Park, Wellington Road, Burton-On-Trent. SW17 0JH",
+    "code": "GBCUESJBHXPAN"
+  },
+  {
+    "en": "Panasonic UK",
+    "cy": "c/o Miniclipper, High Bay Warehouse, Stanbridge Road, Leighton Buzzard. LU7 4QQ",
+    "code": "GBCULBZLTNPNS"
+  },
+  {
+    "en": "Van Duyenvoorde UK Limited",
+    "cy": "Vine Nurseries, Spout Lane, Stanwell Moor, Staines, Middlesex. TW19 6BN",
+    "code": "GBCUTMRLHRVDV"
   }
 ]
