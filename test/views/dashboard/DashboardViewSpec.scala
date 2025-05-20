@@ -313,15 +313,16 @@ class DashboardViewSpec extends UnitViewSpec with BeforeAndAfterEach with Export
 
               val statusGroup = toStatusGroup(status)
               val datetimeForNextPage = toUTC(submissions.last.enhancedStatusLastUpdated.get)
+              val uuidForNextPage = submissions.last.uuid
 
-              val expectedNextPageHref = Some(s"$path?$Groups=$statusGroup&$Page=2&$DatetimeForNextPage=$datetimeForNextPage")
-              val expectedLoosePageHref = Some(s"$path?$Groups=$statusGroup&$Page=3")
-              val expectedLastPageHref = Some(s"$path?$Groups=$statusGroup&$Limit=$lastPage&$Page=4")
+              val expectedNextPageHref = Some(s"$path?$Groups=$statusGroup&$Page=2&$DatetimeForNextPage=$datetimeForNextPage&$Uuid=$uuidForNextPage")
+              val expectedLoosePage3Href = Some(s"$path?$Groups=$statusGroup&$Page=3")
+              val expectedLoosePage4Href = Some(s"$path?$Groups=$statusGroup&$Page=4")
 
               page(controls(0), "1")
               page(controls(1), "2", expectedNextPageHref)
-              page(controls(2), "3", expectedLoosePageHref)
-              page(controls(3), "4", expectedLastPageHref)
+              page(controls(2), "3", expectedLoosePage3Href)
+              page(controls(3), "4", expectedLoosePage4Href)
               page(controls(4), "Next", expectedNextPageHref)
             }
           }
@@ -335,20 +336,25 @@ class DashboardViewSpec extends UnitViewSpec with BeforeAndAfterEach with Export
               val statusGroup = toStatusGroup(status)
               val datetimeForPreviousPage = toUTC(submissions.head.enhancedStatusLastUpdated.get)
               val datetimeForNextPage = toUTC(submissions.last.enhancedStatusLastUpdated.get)
+              val uuidForNextPage = submissions.last.uuid
+              val uuidForPreviousPage = submissions.head.uuid
 
-              val expectedPreviousPageHref = Some(s"$path?$Groups=$statusGroup&$Page=2&$DatetimeForPreviousPage=$datetimeForPreviousPage")
+              val expectedPreviousPageHref = Some(
+                s"$path?$Groups=$statusGroup&$Page=2&$DatetimeForPreviousPage=" +
+                  s"$datetimeForPreviousPage&$Uuid=$uuidForPreviousPage"
+              )
               val expectedFirstPageHref = Some(s"$path?$Groups=$statusGroup&$Page=1")
-              val expectedNextPageHref = Some(s"$path?$Groups=$statusGroup&$Page=4&$DatetimeForNextPage=$datetimeForNextPage")
-              val expectedLoosePageHref = Some(s"$path?$Groups=$statusGroup&$Page=5")
-              val expectedLastPageHref = Some(s"$path?$Groups=$statusGroup&$Limit=$lastPage&$Page=6")
+              val expectedNextPageHref = Some(s"$path?$Groups=$statusGroup&$Page=4&$DatetimeForNextPage=$datetimeForNextPage&$Uuid=$uuidForNextPage")
+              val expectedLoosePage5Href = Some(s"$path?$Groups=$statusGroup&$Page=5")
+              val expectedLoosePage6Href = Some(s"$path?$Groups=$statusGroup&$Page=6")
 
               page(controls(0), "Previous", expectedPreviousPageHref)
               page(controls(1), "1", expectedFirstPageHref)
               page(controls(2), "2", expectedPreviousPageHref)
               page(controls(3), "3")
               page(controls(4), "4", expectedNextPageHref)
-              page(controls(5), "5", expectedLoosePageHref)
-              page(controls(6), "6", expectedLastPageHref)
+              page(controls(5), "5", expectedLoosePage5Href)
+              page(controls(6), "6", expectedLoosePage6Href)
               page(controls(7), "Next", expectedNextPageHref)
             }
           }
