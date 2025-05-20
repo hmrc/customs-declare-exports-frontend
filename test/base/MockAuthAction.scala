@@ -44,7 +44,7 @@ trait MockAuthAction extends MockitoSugar with Stubs with MetricsMocks with Inje
   val mockAuthAction =
     new AuthActionImpl(mockAuthConnector, new EoriAllowList(Seq.empty), stubMessagesControllerComponents(), metricsMock, appConfig)
 
-  val exampleUser = newUser(eori, "external1", Some("2DE695899BB94DF38DC11D8937A06732A644DFEC29050E84A319A32603B68CE7"))
+  val exampleUser = newUser(eori, "external1")
 
   def unauthorizedUser(exceptionThrown: AuthorisationException): Unit =
     when(
@@ -265,7 +265,7 @@ trait MockAuthAction extends MockitoSugar with Stubs with MetricsMocks with Inje
     buildVerifiedEmailRequest(FakeRequest("GET", "").withSession(declarationUuid -> declarationId).withCSRFToken, exampleUser)
 
   def getAuthenticatedRequest(eori: String, declarationId: String): VerifiedEmailRequest[AnyContentAsEmpty.type] = {
-    val user = newUser(eori, "external1", Some("2DE695899BB94DF38DC11D8937A06732A644DFEC29050E84A319A32603B68CE7"))
+    val user = newUser(eori, "external1")
     buildVerifiedEmailRequest(FakeRequest("GET", "").withSession(declarationUuid -> declarationId).withCSRFToken, user)
   }
 

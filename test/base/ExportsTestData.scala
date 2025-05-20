@@ -19,7 +19,7 @@ package base
 import forms.section6.ModeOfTransportCode.RoRo
 import forms.section2.authorisationHolder.AuthorizationTypeCodes.{CSE, EXRR}
 import forms.section3.LocationOfGoods
-import models.AuthKey.{enrolment, hashIdentifierKey, identifierKey}
+import models.AuthKey.{enrolment, identifierKey}
 import models.codes.AdditionalProcedureCode.NO_APC_APPLIES_CODE
 import models.declaration.ProcedureCodesData.warehouseRequiredProcedureCodes
 import models.declaration.{ExportItem, ProcedureCodesData}
@@ -86,15 +86,13 @@ object ExportsTestData extends ExportsDeclarationBuilder with ExportsItemBuilder
 
   val allValuesRequiringToSkipInlandOrBorder = valuesRequiringToSkipInlandOrBorder ++ modifiersForWarehouseRequired
 
-  def newUser(eori: String, externalId: String, tdrSecret: Option[String] = None): SignedInUser = {
+  def newUser(eori: String, externalId: String): SignedInUser = {
 
     val eoriEnrolment = Set(Enrolment(enrolment).withIdentifier(identifierKey, eori))
-    val enrolmentSet =
-      tdrSecret.map(secret => eoriEnrolment + Enrolment(enrolment).withIdentifier(hashIdentifierKey, secret)).getOrElse(eoriEnrolment)
 
     SignedInUser(
       eori,
-      Enrolments(enrolmentSet),
+      Enrolments(eoriEnrolment),
       IdentityData(
         Some("Int-ba17b467-90f3-42b6-9570-73be7b78eb2b"),
         Some(externalId),

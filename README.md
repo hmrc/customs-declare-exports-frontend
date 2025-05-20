@@ -31,8 +31,6 @@ The list of feature flags and what they are responsible for:
 
 `betaBanner = [true/false]` - When enabled, all pages in the service have BETA banner.
 
-`tdrVersion = [true/false]` - It's enabled when the service runs in 'TDR' (External Test) as this environment requires specific features.
-
 ### GDS Components
 The service's user interface is always built using the components provided by the [play-frontend-hmrc](https://github.com/hmrc/play-frontend-hmrc/) library except for two of them due to the service's business requirements.
 - The ["Summary" Card](https://github.com/hmrc/customs-declare-exports-frontend/blob/main/app/views/summary/summary_card.scala.html) Twirl template was required as the [Card](https://github.com/hmrc/play-frontend-hmrc/tree/main/play-frontend-hmrc-play-30/src/main/scala/uk/gov/hmrc/govukfrontend/views/viewmodels/summarylist/Card.scala)

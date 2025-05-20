@@ -208,7 +208,6 @@ object Stubs {
       |microservice.services.contact-frontend.serviceId=DeclarationServiceId
       |
       |features.betaBanner=true
-      |features.tdrVersion=false
       |
       |draft.timeToLive=30d
       |mongodb.timeToLive=24h
