@@ -813,5 +813,10 @@
     "code": "CDS77005",
     "en": "Reason for waiver must be declared for Document Category",
     "cy": "Mae\u2019n rhaid datgan rheswm dros yr ildiad ar gyfer Categori\u2019r Ddogfen"
+  },
+  {
+    "code": "CDS12155",
+    "en": "Uniqueness Error: Only one instance of 999L may be declared in D.E. 2/3 per goods item",
+    "cy": "Gwall Unigrywiaeth: Dim ond un enghraifft o 999L y gellir ei ddatgan yn D.E. 2/3 fesul eitem nwyddau"
   }
 ]
