@@ -41,18 +41,18 @@
   },
   {
     "code": "CDS11003",
-    "en": "Relation Error: The value declared in Total Number of Items (D.E. 1/9) does not correspond with the number of Goods Items on the Declaration.",
-    "cy": "Gwall Perthynas: Nid yw\u2019r gwerth a ddatganwyd yn \u2018Cyfanswm yr Eitemau\u2019 (D.E. 1/9) yn cyfateb \u00e2 nifer yr Eitemau o Nwyddau ar y Datganiad."
+    "en": "Relation Error: The value declared in Total Number of Items (D.E. 1/9) does not correspond with the number of Goods Items on the Declaration",
+    "cy": "Gwall Perthynas: Nid yw\u2019r gwerth a ddatganwyd yn \u2018Cyfanswm yr Eitemau\u2019 (D.E. 1/9) yn cyfateb \u00e2 nifer yr Eitemau o Nwyddau ar y Datganiad"
   },
   {
     "code": "CDS11004",
-    "en": "Relation error: The combination of Trade Movement Type, Declaration Type followed by requested procedure and /or previous procedure code is invalid.",
-    "cy": "Gwall Perthynas: Mae\u2019r cyfuniad o \u2018Math o Symudiadau Masnachol\u2019, \u2018Math o Ddatganiad\u2019 wedi\u2019u dilyn gan weithdrefn y gofynnir amdani a / neu god gweithdrefn flaenorol yn annilys."
+    "en": "Relation error: The combination of Trade Movement Type, Declaration Type followed by requested procedure and /or previous procedure code is invalid",
+    "cy": "Gwall Perthynas: Mae\u2019r cyfuniad o \u2018Math o Symudiadau Masnachol\u2019, \u2018Math o Ddatganiad\u2019 wedi\u2019u dilyn gan weithdrefn y gofynnir amdani a / neu god gweithdrefn flaenorol yn annilys"
   },
   {
     "code": "CDS11005",
-    "en": "Relation Error: The Requested Procedure (D.E. 1/10) for each Goods Item must derive the same Declaration Category (e.g. H1) or acceptance date is not valid. No further validation has been carried out.",
-    "cy": "Gwall Perthynas: Mae\u2019n rhaid i\u2019r Weithdrefn y gofynnir amdani (D.E. 1/10) ar gyfer pob Eitem o Nwyddau ddeillio o\u2019r un Categori Datganiad (e.e. H1) neu nid yw\u2019r dyddiad derbyn yn ddilys. Does dim dilysiad pellach wedi\u2019i wneud."
+    "en": "Relation Error: The Requested Procedure (D.E. 1/10) for each Goods Item must derive the same Declaration Category (e.g. H1) or acceptance date is not valid. No further validation has been carried out",
+    "cy": "Gwall Perthynas: Mae\u2019n rhaid i\u2019r Weithdrefn y gofynnir amdani (D.E. 1/10) ar gyfer pob Eitem o Nwyddau ddeillio o\u2019r un Categori Datganiad (e.e. H1) neu nid yw\u2019r dyddiad derbyn yn ddilys. Does dim dilysiad pellach wedi\u2019i wneud"
   },
   {
     "code": "CDS11006",
@@ -156,8 +156,8 @@
   },
   {
     "code": "CDS12050",
-    "en": "A valid Requested Procedure (D.E. 1/10) has not been provided or acceptance date is not valid. No further validation has been carried out.",
-    "cy": "Nid yw gweithdrefn y gofynnir amdani ddilys (D.E. 1/10) wedi\u2019i rhoi neu nid yw\u2019r dyddiad derbyn yn ddilys. Does dim dilysiad pellach wedi\u2019i wneud."
+    "en": "A valid Requested Procedure (D.E. 1/10) has not been provided or acceptance date is not valid. No further validation has been carried out",
+    "cy": "Nid yw gweithdrefn y gofynnir amdani ddilys (D.E. 1/10) wedi\u2019i rhoi neu nid yw\u2019r dyddiad derbyn yn ddilys. Does dim dilysiad pellach wedi\u2019i wneud"
   },
   {
     "code": "CDS12052",
