@@ -2648,7 +2648,7 @@ dmsError.CDS12157.title = EORI Annilys
 dmsError.CDS12158.title = Elfen ar Goll
 dmsError.CDS12066.title = Ni chaniateir cyfuniad o elfen(nau) neu werth(oedd)
 dmsError.CDS12067.title = Ni chaniateir cyfuniad o elfen(nau) neu werth(oedd)
-dmsError.CDS12069.title =
+dmsError.CDS12069.title = Mae annilysu datganiad yn cael ei brosesu yn y Swyddfa lle mae’r nwyddau’n Gadael
 dmsError.CDS12170.title = Gwall Awdurdodi
 
 userSignedOut.title = Rydym wedi cadw’ch atebion a’ch allgofnodi
