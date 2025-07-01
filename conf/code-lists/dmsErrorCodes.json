@@ -41,18 +41,18 @@
   },
   {
     "code": "CDS11003",
-    "en": "Relation Error: The value declared in Total Number of Items (D.E. 1/9) does not correspond with the number of Goods Items on the Declaration.",
-    "cy": "Gwall Perthynas: Nid yw\u2019r gwerth a ddatganwyd yn \u2018Cyfanswm yr Eitemau\u2019 (D.E. 1/9) yn cyfateb \u00e2 nifer yr Eitemau o Nwyddau ar y Datganiad."
+    "en": "Relation Error: The value declared in Total Number of Items (D.E. 1/9) does not correspond with the number of Goods Items on the Declaration",
+    "cy": "Gwall Perthynas: Nid yw\u2019r gwerth a ddatganwyd yn \u2018Cyfanswm yr Eitemau\u2019 (D.E. 1/9) yn cyfateb \u00e2 nifer yr Eitemau o Nwyddau ar y Datganiad"
   },
   {
     "code": "CDS11004",
-    "en": "Relation error: The combination of Trade Movement Type, Declaration Type followed by requested procedure and /or previous procedure code is invalid.",
-    "cy": "Gwall Perthynas: Mae\u2019r cyfuniad o \u2018Math o Symudiadau Masnachol\u2019, \u2018Math o Ddatganiad\u2019 wedi\u2019u dilyn gan weithdrefn y gofynnir amdani a / neu god gweithdrefn flaenorol yn annilys."
+    "en": "Relation error: The combination of Trade Movement Type, Declaration Type followed by requested procedure and /or previous procedure code is invalid",
+    "cy": "Gwall Perthynas: Mae\u2019r cyfuniad o \u2018Math o Symudiadau Masnachol\u2019, \u2018Math o Ddatganiad\u2019 wedi\u2019u dilyn gan weithdrefn y gofynnir amdani a / neu god gweithdrefn flaenorol yn annilys"
   },
   {
     "code": "CDS11005",
-    "en": "Relation Error: The Requested Procedure (D.E. 1/10) for each Goods Item must derive the same Declaration Category (e.g. H1) or acceptance date is not valid. No further validation has been carried out.",
-    "cy": "Gwall Perthynas: Mae\u2019n rhaid i\u2019r Weithdrefn y gofynnir amdani (D.E. 1/10) ar gyfer pob Eitem o Nwyddau ddeillio o\u2019r un Categori Datganiad (e.e. H1) neu nid yw\u2019r dyddiad derbyn yn ddilys. Does dim dilysiad pellach wedi\u2019i wneud."
+    "en": "Relation Error: The Requested Procedure (D.E. 1/10) for each Goods Item must derive the same Declaration Category (e.g. H1) or acceptance date is not valid. No further validation has been carried out",
+    "cy": "Gwall Perthynas: Mae\u2019n rhaid i\u2019r Weithdrefn y gofynnir amdani (D.E. 1/10) ar gyfer pob Eitem o Nwyddau ddeillio o\u2019r un Categori Datganiad (e.e. H1) neu nid yw\u2019r dyddiad derbyn yn ddilys. Does dim dilysiad pellach wedi\u2019i wneud"
   },
   {
     "code": "CDS11006",
@@ -156,8 +156,8 @@
   },
   {
     "code": "CDS12050",
-    "en": "A valid Requested Procedure (D.E. 1/10) has not been provided or acceptance date is not valid. No further validation has been carried out.",
-    "cy": "Nid yw gweithdrefn y gofynnir amdani ddilys (D.E. 1/10) wedi\u2019i rhoi neu nid yw\u2019r dyddiad derbyn yn ddilys. Does dim dilysiad pellach wedi\u2019i wneud."
+    "en": "A valid Requested Procedure (D.E. 1/10) has not been provided or acceptance date is not valid. No further validation has been carried out",
+    "cy": "Nid yw gweithdrefn y gofynnir amdani ddilys (D.E. 1/10) wedi\u2019i rhoi neu nid yw\u2019r dyddiad derbyn yn ddilys. Does dim dilysiad pellach wedi\u2019i wneud"
   },
   {
     "code": "CDS12052",
@@ -813,5 +813,55 @@
     "code": "CDS77005",
     "en": "Reason for waiver must be declared for Document Category",
     "cy": "Mae\u2019n rhaid datgan rheswm dros yr ildiad ar gyfer Categori\u2019r Ddogfen"
+  },
+  {
+    "code": "CDS12153",
+    "en": "Relation Error: EORIs with this country code are not supported",
+    "cy": "Gwall Perthynas: Ni chefnogir rhifau EORI gyda’r cod gwlad hwn"
+  },
+  {
+    "code": "CDS12154",
+    "en": "Incompatible goods movements declared. When AI code 'NIIMP', 'NIDOM' or 'NIEXP' is entered at item level in D.E. 2/2, Document Code – 999L cannot be entered in D.E.2/3",
+    "cy": "Symudiadau nwyddau anghydnaws wedi’u datgan. Pan gaiff cod AI ‘NIIMP’, ‘NIDOM’ neu ‘NIEXP’ ei nodi ar lefel eitem yn D.E. 2/2, Cod y Ddogfen – ni ellir nodi 999L yn D.E.2/3"
+  },
+  {
+    "code": "CDS12155",
+    "en": "Uniqueness Error: Only one instance of 999L may be declared in D.E. 2/3 per goods item",
+    "cy": "Gwall Unigrywiaeth: Dim ond un enghraifft o 999L y gellir ei datgan yn D.E. 2/3 fesul eitem nwyddau"
+  },
+  {
+    "code": "CDS12156",
+    "en": "Obligation Error: Mandatory Data Element has not been provided or the ID for previous document CLE must match the AcceptanceDate in the format yyyymmdd",
+    "cy": "Gwall Rhwymedigaeth: Nid yw’r Elfen Ddata Orfodol wedi’i darparu neu mae’n rhaid i’r ID ar gyfer CLE y ddogfen flaenorol gyd-fynd â’r DyddiadDerbyn yn y fformat bbbbmmdd"
+  },
+  {
+    "code": "CDS12157",
+    "en": "Invalid EORI - This Party must have a permanent business establishment in Northern Ireland",
+    "cy": "EORI Annilys - Mae’n rhaid i’r Parti hwn fod â sefydliad busnes parhaol yng Ngogledd Iwerddon"
+  },
+  {
+    "code": "CDS12158",
+    "en": "Missing Element - A non-GB EORI requires entry of NI Movement AI Codes in DE 2/2",
+    "cy": "Elfen Ar Goll -Mae rhif EORI nad yw’n dechrau â GB yn gofyn am gofnodi Codau Gwybodaeth Ychwanegol ar gyfer Symudiadau Gogledd Iwerddon yn Elfen Ddata 2/2"
+  },
+  {
+    "code": "CDS12066",
+    "en": "This element or value is not allowed in combination with the declared element(s) or value(s)",
+    "cy": "Ni chaniateir yr elfen neu’r gwerth hwn ar y cyd â’r elfennau neu’r gwerthoedd datganedig"
+  },
+  {
+    "code": "CDS12067",
+    "en": "These elements or values are not allowed in combination with the declared element(s) or value(s)",
+    "cy": "Ni chaniateir yr elfennau na’r gwerthoedd hyn ar y cyd â’r elfennau neu’r gwerthoedd datganedig"
+  },
+  {
+    "code": "CDS12069",
+    "en": "Declaration invalidation is already being processed at the Office of Exit. Please wait for further update",
+    "cy": "Mae annilysu datganiad eisoes yn cael ei brosesu yn y Swyddfa lle mae’r nwyddau’n Gadael. Arhoswch am ddiweddariad pellach"
+  },
+  {
+    "code": "CDS12170",
+    "en": "Authorisation Error: Invalid VAT number. Please note, if you are attempting to claim Onward Supply Relief (OSR), you must be identified as trading under the terms of the Northern Ireland Protocol (now Windsor Framework) for VAT",
+    "cy": "Gwall Awdurdodi: Rhif TAW annilys. Sylwer, os ydych yn ceisio hawlio Rhyddhad Anfon Cyflenwad Ymlaen (OSR), mae’n rhaid i chi gael eich nodi fel rhywun sy’n masnachu o dan delerau Protocol Gogledd Iwerddon (Fframwaith Windsor bellach) ar gyfer TAW"
   }
 ]

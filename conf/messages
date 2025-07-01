@@ -2640,6 +2640,16 @@ dmsError.CDS77002.title = Document status code needed
 dmsError.CDS77003.title = Licence error
 dmsError.CDS77004.title = Reservation could not be made
 dmsError.CDS77005.title = Reason not given for use of a ‘Y’ code
+dmsError.CDS12153.title = Relation Error
+dmsError.CDS12154.title = Incompatible goods movements declared
+dmsError.CDS12155.title = Uniqueness Error
+dmsError.CDS12156.title = Obligation Error
+dmsError.CDS12157.title = Invalid EORI
+dmsError.CDS12158.title = Missing Element
+dmsError.CDS12066.title = Combination of element(s) or value(s) is not allowed
+dmsError.CDS12067.title = Combination of element(s) or value(s) is not allowed
+dmsError.CDS12069.title = Declaration invalidation is being processed at the Office of Exit
+dmsError.CDS12170.title = Authorisation Error
 
 userSignedOut.title = We have saved your answers and signed you out
 

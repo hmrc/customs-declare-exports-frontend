@@ -66,7 +66,6 @@ site.radio.divider = neu
 site.accessibility.error = Gwall:
 site.warning = Rhybudd
 site.cancel = Canslo
-
 site.print = Argraffu’r dudalen hon
 site.printable = Fersiwn argraffadwy
 
@@ -2641,6 +2640,16 @@ dmsError.CDS77002.title = Mae angen cod statws y ddogfen
 dmsError.CDS77003.title = Gwall trwydded
 dmsError.CDS77004.title = Doedd dim modd neilltuo
 dmsError.CDS77005.title = Ni roddwyd rheswm am ddefnyddio cod ‘Y’
+dmsError.CDS12153.title = Gwall Perthynas
+dmsError.CDS12154.title = Symudiadau nwyddau anghydnaws wedi’u datgan
+dmsError.CDS12155.title = Gwall Unigrywiaeth
+dmsError.CDS12156.title = Gwall Ymrwymiad
+dmsError.CDS12157.title = EORI Annilys
+dmsError.CDS12158.title = Elfen ar Goll
+dmsError.CDS12066.title = Ni chaniateir cyfuniad o elfen(nau) neu werth(oedd)
+dmsError.CDS12067.title = Ni chaniateir cyfuniad o elfen(nau) neu werth(oedd)
+dmsError.CDS12069.title = Mae annilysu datganiad yn cael ei brosesu yn y Swyddfa lle mae’r nwyddau’n Gadael
+dmsError.CDS12170.title = Gwall Awdurdodi
 
 userSignedOut.title = Rydym wedi cadw’ch atebion a’ch allgofnodi
 
