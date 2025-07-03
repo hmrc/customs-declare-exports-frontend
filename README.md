@@ -6,10 +6,7 @@ This public-facing microservice is part of Customs Exports Declaration Service (
 It provides functionality to submit and manage exports declarations.
 
 ## Prerequisites
-
-This service depends on other services. The easiest way to set up required microservices is to use Service Manager and profiles from [service-manager-config](https://github.com/hmrc/service-manager-config/) repository:
-- `sm2 --start CDS_EXPORTS_DECLARATION_DEPS` - all services EXCEPT both declarations services
-- `sm2 --start CDS_EXPORTS_DECLARATION_ALL` - all services together with both declarations services
+`sm2 --start CDS_EXPORTS_DECLARATION_ALL`
 
 ### Running the application
 Start the service with: 
