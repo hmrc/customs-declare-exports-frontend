@@ -17,6 +17,8 @@
 package views.section4
 
 import base.Injector
+import config.AppConfig
+import controllers.navigation.Navigator
 import controllers.section4.routes.InvoiceAndExchangeRateChoiceController
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.section3.OfficeOfExit
@@ -26,9 +28,26 @@ import models.DeclarationType.STANDARD
 import models.declaration.Locations
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
+import org.mockito.Mockito.when
 import play.api.data.Form
+import services.InvoiceAndExchangeRateService
+import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF, GovukDetails, GovukFieldset, GovukInput}
 import views.html.section4.invoice_and_exchange_rate
 import views.common.PageWithButtonsSpec
+import views.html.components.gds.{
+  errorSummary,
+  exportsInputText,
+  externalLink,
+  gdsMainTemplate,
+  heading,
+  label,
+  pageTitle,
+  paragraphBody,
+  saveButtons,
+  sectionHeader,
+  tariffExpander,
+  yesNoRadios
+}
 import views.tags.ViewTest
 
 @ViewTest
@@ -36,11 +55,33 @@ class InvoiceAndExchangeRateViewSpec extends PageWithButtonsSpec with Injector {
 
   val validCurrencyCode = "GBP"
 
-  val page = instanceOf[invoice_and_exchange_rate]
+  private val appConfig = mock[AppConfig]
 
-  override val typeAndViewInstance = (STANDARD, page(form)(_, _))
+  val page = new invoice_and_exchange_rate(
+    instanceOf[gdsMainTemplate],
+    instanceOf[GovukInput],
+    instanceOf[GovukFieldset],
+    instanceOf[GovukDetails],
+    instanceOf[pageTitle],
+    instanceOf[heading],
+    instanceOf[label],
+    instanceOf[exportsInputText],
+    instanceOf[errorSummary],
+    instanceOf[sectionHeader],
+    instanceOf[saveButtons],
+    instanceOf[tariffExpander],
+    instanceOf[externalLink],
+    instanceOf[yesNoRadios],
+    instanceOf[paragraphBody],
+    instanceOf[FormWithCSRF],
+    instanceOf[Navigator],
+    appConfig,
+    instanceOf[InvoiceAndExchangeRateService]
+  )
 
-  def createView(frm: Form[InvoiceAndExchangeRate] = form)(implicit request: JourneyRequest[_]): Document =
+  override val typeAndViewInstance = (STANDARD, page(form(appConfig))(_, _))
+
+  def createView(frm: Form[InvoiceAndExchangeRate] = form(appConfig))(implicit request: JourneyRequest[_]): Document =
     page(frm)(request, messages)
 
   "Total Number Of Items View on empty page" should {
@@ -69,7 +110,7 @@ class InvoiceAndExchangeRateViewSpec extends PageWithButtonsSpec with Injector {
 
       "display same page title as header" in {
         val viewWithMessage = createView()
-        viewWithMessage.title must include(viewWithMessage.getElementsByTag("h1").text)
+        viewWithMessage.title must include(viewWithMessage.getElementsByClass("govuk-heading-xl").text)
       }
 
       "display section header" in {
@@ -97,9 +138,13 @@ class InvoiceAndExchangeRateViewSpec extends PageWithButtonsSpec with Injector {
       }
 
       "display empty input with label for Exchange Rate" in {
+        when(appConfig.isOptionalFieldsEnabled).thenReturn(false)
+        val view = createView()
+
         view.getElementsByAttributeValue("for", "exchangeRate") must containMessageForElements("declaration.exchangeRate.input.label")
         view.getElementById("exchangeRate-hint") must containMessage("declaration.exchangeRate.input.hint")
         view.getElementById("exchangeRate").attr("value") mustBe empty
+
       }
 
       "display 'Back' button that links to 'Office of Exit' page" in {
@@ -122,7 +167,7 @@ class InvoiceAndExchangeRateViewSpec extends PageWithButtonsSpec with Injector {
       "display error when all entered input is incorrect" in {
         val invoiceAndExchangeRate =
           Map("exchangeRate" -> "abcd", "totalAmountInvoiced" -> "kjsad", "totalAmountInvoicedCurrency" -> "jsad", "agreedExchangeRate" -> "asd")
-        val view = createView(form.bind(invoiceAndExchangeRate))
+        val view = createView(form(appConfig).bind(invoiceAndExchangeRate))
 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#totalAmountInvoiced")
@@ -134,7 +179,7 @@ class InvoiceAndExchangeRateViewSpec extends PageWithButtonsSpec with Injector {
 
       "display error when Total Amount Invoiced is incorrect" in {
         val invoiceAndExchangeRate = InvoiceAndExchangeRate(Some("abcd"), Some(validCurrencyCode), YesNoAnswers.yes, Some("123.12345"))
-        val view = createView(form.fillAndValidate(invoiceAndExchangeRate))
+        val view = createView(form(appConfig).fillAndValidate(invoiceAndExchangeRate))
 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#totalAmountInvoiced")
@@ -145,7 +190,7 @@ class InvoiceAndExchangeRateViewSpec extends PageWithButtonsSpec with Injector {
       "display error when Exchange Rate is incorrect" in {
         val invoiceAndExchangeRate =
           Map("exchangeRate" -> "abcd", "totalAmountInvoiced" -> "123000.12", "totalAmountInvoicedCurrency" -> "GBP", "agreedExchangeRate" -> "Yes")
-        val view = createView(form.bind(invoiceAndExchangeRate))
+        val view = createView(form(appConfig).bind(invoiceAndExchangeRate))
 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#exchangeRate")
@@ -161,7 +206,7 @@ class InvoiceAndExchangeRateViewSpec extends PageWithButtonsSpec with Injector {
             "totalAmountInvoicedCurrency" -> "US",
             "agreedExchangeRate" -> "Yes"
           )
-        val view = createView(form.bind(invoiceAndExchangeRate))
+        val view = createView(form(appConfig).bind(invoiceAndExchangeRate))
 
         view must haveGovukGlobalErrorSummary
         view must containErrorElementWithTagAndHref("a", "#totalAmountInvoicedCurrency")
@@ -175,7 +220,7 @@ class InvoiceAndExchangeRateViewSpec extends PageWithButtonsSpec with Injector {
     onEveryDeclarationJourney() { implicit request =>
       "display data in Total Amount Invoiced input" in {
         val invoiceAndExchangeRate = InvoiceAndExchangeRate(Some("123.123"), None, YesNoAnswers.no, None)
-        val view = createView(form.fill(invoiceAndExchangeRate))
+        val view = createView(form(appConfig).fill(invoiceAndExchangeRate))
 
         view.getElementById("totalAmountInvoiced").attr("value") must be("123.123")
         view.getElementById("exchangeRate").attr("value") mustBe empty
@@ -184,7 +229,7 @@ class InvoiceAndExchangeRateViewSpec extends PageWithButtonsSpec with Injector {
 
       "display data in Exchange Rate input" in {
         val invoiceAndExchangeRate = InvoiceAndExchangeRate(Some(""), None, YesNoAnswers.yes, Some("123.12345"))
-        val view = createView(form.fill(invoiceAndExchangeRate))
+        val view = createView(form(appConfig).fill(invoiceAndExchangeRate))
 
         view.getElementById("totalAmountInvoiced").attr("value") mustBe empty
         view.getElementById("exchangeRate").attr("value") must be("123.12345")
@@ -193,7 +238,7 @@ class InvoiceAndExchangeRateViewSpec extends PageWithButtonsSpec with Injector {
 
       "display data in Currency code input" in {
         val invoiceAndExchangeRate = InvoiceAndExchangeRate(Some(""), Some(validCurrencyCode), YesNoAnswers.yes, None)
-        val view = createView(form.fill(invoiceAndExchangeRate))
+        val view = createView(form(appConfig).fill(invoiceAndExchangeRate))
 
         view.getElementById("totalAmountInvoiced").attr("value") mustBe empty
         view.getElementById("exchangeRate").attr("value") mustBe empty
@@ -202,7 +247,7 @@ class InvoiceAndExchangeRateViewSpec extends PageWithButtonsSpec with Injector {
 
       "display data in all inputs" in {
         val invoiceAndExchangeRate = InvoiceAndExchangeRate(Some("123.123"), Some(validCurrencyCode), YesNoAnswers.yes, Some("123.12345"))
-        val view = createView(form.fill(invoiceAndExchangeRate))
+        val view = createView(form(appConfig).fill(invoiceAndExchangeRate))
 
         view.getElementById("totalAmountInvoiced").attr("value") must be("123.123")
         view.getElementById("exchangeRate").attr("value") must be("123.12345")
