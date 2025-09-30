@@ -1526,6 +1526,7 @@ declaration.exchangeRate.paragraph1.text = This means a rate agreed in advance, 
 declaration.exchangeRate.yes = Yes
 declaration.exchangeRate.no = No
 declaration.exchangeRate.input.label = Enter the agreed rate of exchange
+declaration.exchangeRate.input.label.flag = Enter the agreed rate of exchange (optional)
 declaration.exchangeRate.input.hint = For example, if the contract states that a rate of USD1.25 = £1 will be used, you need to enter 1.25
 declaration.exchangeRate.expander.title = What is an agreed rate of exchange?
 declaration.exchangeRate.expander.paragraph.1 = If the invoice uses an agreed rate of exchange different from the HMRC rate, and this is stipulated in the contract of sale, enter this rate of exchange. Do not enter the HMRC rate of exchange.

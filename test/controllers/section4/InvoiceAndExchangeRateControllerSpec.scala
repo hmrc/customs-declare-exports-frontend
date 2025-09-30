@@ -17,6 +17,7 @@
 package controllers.section4
 
 import base.{AuditedControllerSpec, ControllerSpec}
+import config.AppConfig
 import controllers.general.routes.RootController
 import controllers.section4.routes.TotalPackageQuantityController
 import forms.common.YesNoAnswer.YesNoAnswers
@@ -34,6 +35,8 @@ import play.twirl.api.{Html, HtmlFormat}
 import views.html.section4.invoice_and_exchange_rate
 
 class InvoiceAndExchangeRateControllerSpec extends ControllerSpec with AuditedControllerSpec with OptionValues {
+
+  override val appConfig = mock[AppConfig]
 
   val mockInvoiceAndExchangeRatePage = mock[invoice_and_exchange_rate]
 
@@ -63,7 +66,8 @@ class InvoiceAndExchangeRateControllerSpec extends ControllerSpec with AuditedCo
   val controller =
     new InvoiceAndExchangeRateController(mockAuthAction, mockJourneyAction, navigator, mcc, mockInvoiceAndExchangeRatePage, mockExportsCacheService)(
       ec,
-      auditService
+      auditService,
+      appConfig
     )
 
   val withoutExchange = InvoiceAndExchangeRate(
