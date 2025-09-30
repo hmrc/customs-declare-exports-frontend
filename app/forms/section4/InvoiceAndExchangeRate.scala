@@ -16,6 +16,7 @@
 
 package forms.section4
 
+import config.AppConfig
 import forms.mappings.MappingHelper.requiredRadio
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
@@ -80,7 +81,7 @@ object InvoiceAndExchangeRate extends DeclarationPage {
   val validateWithoutCommas = (validator: String => Boolean) => (input: String) => validator(input.replaceAll(",", ""))
   val isNotOnlyCommas = (input: String) => !input.forall(_.equals(','))
   val validateOptionWithoutCommas = (validator: String => Boolean) =>
-    (input: Option[String]) => input.fold(false)(x => validator(x.replaceAll(",", "")))
+    (input: Option[String]) => input.forall(x => validator(x.replaceAll(",", "")))
   val isNotOnlyCommasOption = (input: Option[String]) => !input.fold(false)(_.forall(_.equals(',')))
   val validateAsWholeNumber = (validator: String => Boolean) =>
     (input: String) =>
@@ -129,16 +130,18 @@ object InvoiceAndExchangeRate extends DeclarationPage {
     AdditionalConstraintsMapping(
       optional(text()).transform(_.map(_.toUpperCase), (o: Option[String]) => o),
       Seq(
-        ConditionalConstraint(
-          isFieldIgnoreCaseString(agreedExchangeRateYesNo, YesNoAnswers.yes) and isFieldNotEmpty(exchangeRate),
-          rateFieldErrorKey,
-          isNotOnlyCommasOption and validateOptionWithoutCommas(ofPattern(exchangeRatePattern))
-        ),
+        if(true){
+          println("///HITS HERE///")
         ConditionalConstraint(
           isFieldIgnoreCaseString(agreedExchangeRateYesNo, YesNoAnswers.yes),
-          exchangeRateYesRadioSelectedErrorKey,
-          nonEmptyOptionString
-        )
+          rateFieldErrorKey,
+          isNotOnlyCommasOption and validateOptionWithoutCommas(ofPattern(exchangeRatePattern))
+        )}else{
+          ConditionalConstraint(
+            isFieldIgnoreCaseString(agreedExchangeRateYesNo, YesNoAnswers.yes) and isFieldNotEmpty(exchangeRate),
+            rateFieldErrorKey,
+            isNotOnlyCommasOption and validateOptionWithoutCommas(ofPattern(exchangeRatePattern)))
+        }
       )
     )
 
