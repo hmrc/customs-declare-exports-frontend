@@ -133,12 +133,6 @@ object InvoiceAndExchangeRate extends DeclarationPage {
           isFieldIgnoreCaseString(agreedExchangeRateYesNo, YesNoAnswers.yes) and isFieldNotEmpty(exchangeRate),
           rateFieldErrorKey,
           isNotOnlyCommasOption and validateOptionWithoutCommas(ofPattern(exchangeRatePattern))
-        ),
-        //HERE - REMOVE THIS
-        ConditionalConstraint(
-          isFieldIgnoreCaseString(agreedExchangeRateYesNo, YesNoAnswers.yes),
-          exchangeRateYesRadioSelectedErrorKey,
-          nonEmptyOptionString
         )
       )
     )
