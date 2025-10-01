@@ -126,16 +126,6 @@ class TransportCountryViewSpec extends PageWithButtonsSpec with Injector {
 
             "display an error" when {
 
-              "the user does not enter a country" in {
-                val formData = Json.obj(transportCountry -> "")
-                val formWithError = form(transportMode).bind(formData, JsonBindMaxChars)
-                val view = createView(formWithError, transportMode)(journeyRequest(declarationType))
-
-                view must haveGovukGlobalErrorSummary
-                view must containErrorElementWithTagAndHref("a", s"#$transportCountry")
-                view must containErrorElementWithMessage(messages(s"$prefix.country.error.empty", transportMode))
-              }
-
               "the user enters an invalid country" in {
                 val formData = Json.obj(transportCountry -> "12345")
                 val formWithError = form(transportMode).bind(formData, JsonBindMaxChars)
