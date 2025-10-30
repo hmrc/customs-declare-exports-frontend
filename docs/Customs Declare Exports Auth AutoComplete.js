@@ -18,7 +18,7 @@
 
     document.getElementsByName("enrolment[0].name")[0].value = "HMRC-CUS-ORG";
     document.getElementById("input-0-0-name").value = "EORINumber";
-    document.getElementById("input-0-0-value").value = "GB71727550" + (Math.floor(Math.random()*90000) + 10000);
+    document.getElementById("input-0-0-value").value = "GB239355053000";
 
     document.getElementsByName("itmp.dateOfBirth")[0].value = "1993-06-30";
 
