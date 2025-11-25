@@ -59,6 +59,17 @@ object TransportCountry extends DeclarationPage with FieldMapping {
         .verifying(s"$prefix.country.error.invalid", input => input.isEmpty or isValidCountryCode(input))
     )(country => TransportCountry(Some(country)))(_.countryCode)
 
+
+  //  private def mapping(transportMode: String)(implicit messages: Messages, connector: CodeListConnector): Mapping[TransportCountry] =
+//    Forms.mapping(
+//      transportCountry -> text
+//        .verifying(s"$prefix.country.error.invalid", input => input.isEmpty or isValidCountryCode(input))
+//    )(country => if(country.isEmpty) {
+//      System.out.println("$$$")
+//      TransportCountry(Some("Not provided"))
+//    } else TransportCountry(Some(country)))(_.countryCode)
+
+
   override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
     Seq(TariffContentKey("tariff.declaration.transportCountry.common"))
 }
