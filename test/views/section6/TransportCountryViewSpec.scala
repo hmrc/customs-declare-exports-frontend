@@ -104,10 +104,10 @@ class TransportCountryViewSpec extends PageWithButtonsSpec with Injector {
                 "'Transport Leaving the Border' is 'RoRo'" in {
                   val body = view.getElementsByClass("govuk-body")
 
-                  body.size mustBe (if (code == RoRo) 2 else 1)
+                  body.size mustBe (if (code == RoRo) 3 else 2)
 
                   val expectedText = messages(if (code == RoRo) s"$prefix.roro.paragraph" else exitAndReturnCaption)
-                  body.get(0).text mustBe expectedText
+                  body.get(1).text mustBe expectedText
                 }
               }
 

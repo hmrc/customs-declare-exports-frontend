@@ -1848,6 +1848,7 @@ declaration.summary.noData.header.secondary = The declaration was not saved beca
 declaration.summary.noData.button = Create a new declaration
 declaration.summary.draft.ducr = DUCR
 declaration.summary.draft = Review the information you entered so far.
+declaration.summary.not.provided = Not provided
 declaration.summary.unknown = Unknown
 declaration.summary.section = Summary of your answers for section {0}
 
