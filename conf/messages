@@ -1452,6 +1452,7 @@ declaration.transportInformation.meansOfTransport.WagonNumber.hint = For example
 
 declaration.transportInformation.transportCountry.title = Select the country where the {0} is registered
 declaration.transportInformation.transportCountry.roro.paragraph = For Eurotunnel, select France as the country of registration.
+declaration.transportInformation.transportCountry.roro.message = Select the country code (optional)
 declaration.transportInformation.transportCountry.country.error.empty = Select the country where the {0} is registered
 declaration.transportInformation.transportCountry.country.error.invalid = Please, choose a valid country
 
