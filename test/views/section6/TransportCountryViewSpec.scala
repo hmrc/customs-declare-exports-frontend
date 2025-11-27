@@ -100,14 +100,28 @@ class TransportCountryViewSpec extends PageWithButtonsSpec with Injector {
                 view.getElementsByTag("h1").text mustBe messages(s"$prefix.title", transportMode)
               }
 
+              "display the expected onset text" when {
+                "'Transport Leaving the Border' is 'RoRo'" in {
+                  val onsetText = view.getElementsByClass("govuk-inset-text")
+
+                  onsetText.size mustBe (if (code == RoRo) 1 else 0)
+
+                  if(code == RoRo){
+                    val expectedText = messages(s"$prefix.roro.inset.text")
+                    onsetText.get(0).text mustBe expectedText
+                  }
+
+                }
+              }
+
               "display the expected paragraph" when {
                 "'Transport Leaving the Border' is 'RoRo'" in {
                   val body = view.getElementsByClass("govuk-body")
 
-                  body.size mustBe (if (code == RoRo) 3 else 2)
+                  body.size mustBe (if (code == RoRo) 2 else 1)
 
                   val expectedText = messages(if (code == RoRo) s"$prefix.roro.paragraph" else exitAndReturnCaption)
-                  body.get(1).text mustBe expectedText
+                  body.get(0).text mustBe expectedText
                 }
               }
 
