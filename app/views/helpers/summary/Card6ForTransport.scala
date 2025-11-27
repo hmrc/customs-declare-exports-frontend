@@ -170,13 +170,13 @@ class Card6ForTransport @Inject() (summaryCard: summary_card, countryHelper: Cou
       System.out.println("????????????")
 
       lazy val country = transportCrossingTheBorderNationality.countryCode.map { value =>
-          if (value.trim.isEmpty) {
-            messages("declaration.summary.not.provided")
-          }
-          else
-          countryHelper.getShortNameForCountryCode(value)
+        if (value.trim.isEmpty) {
+          messages("declaration.summary.not.provided")
+        } else
+          countryHelper
+            .getShortNameForCountryCode(value)
             .getOrElse(messages("declaration.summary.unknown"))
-        }.getOrElse(messages("declaration.summary.unknown"))
+      }.getOrElse(messages("declaration.summary.unknown"))
 
 //      match {
 //        case Some(value) =>
@@ -185,8 +185,6 @@ class Card6ForTransport @Inject() (summaryCard: summary_card, countryHelper: Cou
 //        case None =>
 //          messages("declaration.summary.not.provided")
 //      }
-
-
 
       SummaryListRow(
         key("transport.registrationCountry"),

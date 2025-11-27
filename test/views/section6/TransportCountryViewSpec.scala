@@ -106,7 +106,7 @@ class TransportCountryViewSpec extends PageWithButtonsSpec with Injector {
 
                   onsetText.size mustBe (if (code == RoRo) 1 else 0)
 
-                  if(code == RoRo){
+                  if (code == RoRo) {
                     val expectedText = messages(s"$prefix.roro.inset.text")
                     onsetText.get(0).text mustBe expectedText
                   }
