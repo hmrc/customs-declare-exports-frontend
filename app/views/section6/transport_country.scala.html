@@ -43,9 +43,14 @@
 
 @(transportMode: String, form: Form[TransportCountry])(implicit request: JourneyRequest[_], messages: Messages)
 
+@insetTextOnRoRo = @{
+    if (transportMode != ModeOfTransportCodeHelper.transportMode(Some(RoRo))) HtmlFormat.empty
+    else paragraph(messages(s"$prefix.roro.inset.text"), "govuk-inset-text transport-country-on-roro")
+}
+
 @paragraphOnRoRo = @{
     if (transportMode != ModeOfTransportCodeHelper.transportMode(Some(RoRo))) HtmlFormat.empty
-    else paragraph(messages(s"$prefix.roro.paragraph"), "govuk-inset-text transport-country-on-roro")
+    else paragraph(messages(s"$prefix.roro.paragraph"), "govuk-body transport-country-on-roro")
 }
 
 @govukLayout(
@@ -59,9 +64,9 @@
 
         @heading(messages(s"$prefix.title", transportMode), "govuk-label--xl", "h1", Some(form(transportCountry).id))
 
-        @paragraphOnRoRo
+        @insetTextOnRoRo
 
-        @paragraph(messages(s"$prefix.roro.message"), "govuk-body transport-country-on-roro")
+        @paragraphOnRoRo
 
         @components.fields.field_accessible_location_autocomplete_with_header(
             field = form(transportCountry),
