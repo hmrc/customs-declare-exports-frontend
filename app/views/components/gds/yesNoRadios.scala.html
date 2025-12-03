@@ -17,6 +17,7 @@
 @import models.requests.JourneyRequest
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import forms.common.YesNoAnswer.YesNoAnswers._
+@import views.helpers.ErrorMapper.prefixedErrorMessage
 
 @this(govukRadios: GovukRadios)
 
@@ -79,5 +80,5 @@
             checked = form(answerKey).value.contains(noValue.get)
         )
     ),
-    errorMessage = form(answerKey).error.map(err => ErrorMessage(content = Text(messages(err.message, err.args: _*))))
+    errorMessage = form(answerKey).error.map(prefixedErrorMessage(_))
 ))

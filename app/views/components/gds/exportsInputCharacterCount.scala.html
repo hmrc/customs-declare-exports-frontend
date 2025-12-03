@@ -17,6 +17,7 @@
 @import uk.gov.hmrc.hmrcfrontend.views.html.components._
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.charactercount.CharacterCount
+@import views.helpers.ErrorMapper.prefixedErrorMessage
 @import views.components.gds.Styles
 
 @this(hmrcCharacterCount: HmrcCharacterCount)
@@ -49,7 +50,7 @@
   maxLength = maxLength,
   label = buildLabel,
   hint = hintKey.map(key => Hint(content = Text(messages(key)))),
-  errorMessage = field.error.map(err => ErrorMessage(content = Text(messages(err.message)))),
+  errorMessage = field.error.map(prefixedErrorMessage(_)),
   classes = inputClasses
 ))
 

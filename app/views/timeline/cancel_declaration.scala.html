@@ -21,7 +21,7 @@
 @import models.requests.CancelDeclarationData
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.helpers.{BackButton, Title}
-@import views.helpers.ErrorMapper.radioGroupErrors
+@import views.helpers.ErrorMapper.{radioGroupErrors, prefixedErrorMessage}
 @import views.html.components.gds._
 
 @this(
@@ -84,7 +84,7 @@
                     checked = form("changeReason").value.contains(OtherReason.toString)
                 )
             ),
-            errorMessage = form("changeReason").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
+            errorMessage = form("changeReason").error.map(prefixedErrorMessage(_))
         ))
 
         @characterCount(

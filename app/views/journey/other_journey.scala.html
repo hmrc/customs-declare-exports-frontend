@@ -22,7 +22,7 @@
 @import views.components.gds.Styles.gdsPageLegend
 @import views.components.inputs.RadioOption
 @import views.helpers.{BackButton, Title}
-@import views.helpers.ErrorMapper.radioGroupErrors
+@import views.helpers.ErrorMapper.{radioGroupErrors, prefixedErrorMessage}
 @import views.html.components.gds._
 
 @this(
@@ -94,7 +94,7 @@
                     checked = form("type").value.contains(OCCASIONAL.toString)
                 )
             ),
-            errorMessage = form("type").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
+            errorMessage = form("type").error.map(prefixedErrorMessage(_))
         ))
 
         @insetText(content = HtmlContent(HtmlFormat.fill(List(

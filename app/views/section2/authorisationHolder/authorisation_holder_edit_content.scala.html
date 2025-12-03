@@ -25,6 +25,7 @@
 @import views.components.gds.Styles._
 @import views.helpers.AuthorisationHolderEditHelper
 @import views.html.components.fields.field_accessible_autocomplete
+@import views.helpers.ErrorMapper.prefixedErrorMessage
 @import views.html.components.gds._
 
 @import scala.collection.immutable
@@ -76,7 +77,7 @@
             )
         ),
         attributes = Map("id" -> EoriSourceId),
-        errorMessage = form(EoriSourceId).error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
+        errorMessage = form(EoriSourceId).error.map(prefixedErrorMessage(_))
     ))
 }
 

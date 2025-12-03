@@ -25,7 +25,7 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.components.gds.Styles._
 @import views.helpers.{BackButton, Title}
-@import views.helpers.ErrorMapper.radioGroupErrors
+@import views.helpers.ErrorMapper.{radioGroupErrors, prefixedErrorMessage}
 @import views.html.components.gds._
 
 @this(
@@ -100,7 +100,7 @@
                     checked = form(hasNactCodeKey).value.contains(YesNoAnswers.no)
                 )
             ),
-            errorMessage = form(hasNactCodeKey).error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
+            errorMessage = form(hasNactCodeKey).error.map(prefixedErrorMessage(_))
         ))
         </fieldset>
 

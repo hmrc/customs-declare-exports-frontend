@@ -28,7 +28,7 @@
 @import views.components.gds.Styles.gdsPageLegend
 @import views.html.components.gds._
 @import views.helpers.{BackButton, CountryHelper, Title}
-@import views.helpers.ErrorMapper.radioGroupErrors
+@import views.helpers.ErrorMapper.{radioGroupErrors, prefixedErrorMessage}
 
 @this(
     govukLayout: gdsMainTemplate,
@@ -84,7 +84,7 @@
                     checked = form("answer").value.contains("No")
                 )
             ),
-            errorMessage = form("answer").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
+            errorMessage = form("answer").error.map(prefixedErrorMessage(_))
         ))
 
         @saveButtons()

@@ -23,6 +23,7 @@
 @import models.requests.JourneyRequest
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.helpers.{AdditionalDeclarationTypeHelper, BackButton, Title}
+@import views.helpers.ErrorMapper.prefixedErrorMessage
 @import views.html.components.gds._
 
 @this(
@@ -90,9 +91,7 @@
                 name = "additionalDeclarationType",
                 classes = classes,
                 items = declarationTypeHelper.radioItems(form),
-                errorMessage = form("additionalDeclarationType").error.map {
-                    err => ErrorMessage(content = Text(messages(err.message, err.args:_*)))
-                }
+                errorMessage = form("additionalDeclarationType").error.map(prefixedErrorMessage(_))
             ))
         </fieldset>
 

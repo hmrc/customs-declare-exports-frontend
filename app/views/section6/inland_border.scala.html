@@ -23,7 +23,7 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.components.gds.Styles.gdsPageLegend
 @import views.helpers.{BackButton, Title}
-@import views.helpers.ErrorMapper.radioGroupErrors
+@import views.helpers.ErrorMapper.{radioGroupErrors, prefixedErrorMessage}
 @import views.html.components.gds._
 
 @this(
@@ -88,7 +88,7 @@
                     checked = form(fieldId).value.contains(Inland.location)
                 )
             ),
-            errorMessage = form(fieldId).error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
+            errorMessage = form(fieldId).error.map(prefixedErrorMessage(_))
         ))
 
         @insetText(content = HtmlContent(insetContent))
