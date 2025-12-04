@@ -23,6 +23,7 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.components.gds.Styles._
 @import views.helpers.{BackButton, Title}
+@import views.helpers.ErrorMapper.prefixedErrorMessage
 @import views.html.components.gds._
 
 @this(
@@ -116,7 +117,7 @@
                             checked = form("inlandModeOfTransportCode").value.contains(Unknown.value)
                         )
                     ),
-                    errorMessage = form("inlandModeOfTransportCode").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
+                    errorMessage = form("inlandModeOfTransportCode").error.map(prefixedErrorMessage(_))
                 )),
 
                 saveButtons()

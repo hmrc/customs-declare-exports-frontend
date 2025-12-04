@@ -4,8 +4,8 @@ date.year = Blwyddyn
 
 service.name = Gwneud a rheoli datganiad allforio ar-lein
 
-feedback = Gwasanaeth newydd yn hwn – bydd eich {0} yn ein helpu i’w wella.
-feedback.link = adborth
+feedback = Gwasanaeth newydd yw hwn. Rhowch help i ni ei wella, a {0}.
+feedback.link = rhoi eich adborth (yn agor tab newydd)
 
 aria.label.filters = hidlydd datganiadau
 aria.label.pagination = Tudaleniad
@@ -63,7 +63,7 @@ site.add.country = Ychwanegwch wlad
 site.search.for.country = Chwilio am wlad
 site.search.for.location = Chwilio am leoliad
 site.radio.divider = neu
-site.accessibility.error = Gwall:
+site.accessibility.error = Gwall
 site.warning = Rhybudd
 site.cancel = Canslo
 site.print = Argraffu’r dudalen hon
@@ -148,7 +148,6 @@ cancellation.result.unprocessed.p1 = Roedd prosesu’ch cais yn cymryd mwy o ams
 declaration.choice.notification.title = Pwysig: hysbysiad ynghylch gwaith cynnal a chadw ar wasanaeth
 declaration.choice.notification.content = Byddwn yn cyflawni gwaith cynnal a chadw sydd wedi’i drefnu o {0} ar {1} i {2} ar {3}. Ni fydd y gwasanaeth ar gael yn ystod yr amser hwn. Gwiriwch {4}.
 declaration.choice.notification.content.link = argaeledd a phroblemau gyda’r Gwasanaeth Datganiad Tollau (CDS) (yn agor tab newydd)
-
 declaration.choice.heading = Gwneud a rheoli Datganiadau Allforio
 declaration.choice.hint = Dewiswch un o’r opsiynau canlynol.
 declaration.choice.link.create.new = Gwneud datganiad allforio newydd
@@ -205,14 +204,16 @@ tariff.declaration.type.text.1 = Mae datganiad safonol (hynny yw un sydd wedi cy
 tariff.declaration.type.text.2 = Dewch o hyd i fanylion am {0}.
 tariff.declaration.type.linkText.2 = wneud datganiad allforio llawn (yn agor tab newydd)
 tariff.declaration.type.common.linkText.0 = Elfen Ddata 1/2 - Math Ychwanegol o Ddatganiad (yn agor tab newydd)
-
 tariff.declaration.lrn.common.linkText.0 = Elfen Ddata 2/5 - Cyfeirnod Lleol (LRN), dim cyfeirnod blaenorol (yn agor tab newydd)
+
 tariff.declaration.consignmentReferences.common.text = Am fanylion, ewch i {0} ac {1}.
 tariff.declaration.consignmentReferences.common.linkText.0 = Elfen Ddata 2/4 - Cyfeirnod Unigryw y Llwyth (UCR) (yn agor tab newydd)
 tariff.declaration.consignmentReferences.common.linkText.1 = Elfen Ddata 2/5 - Cyfeirnod Lleol (LRN), dim cyfeirnod blaenorol (yn agor tab newydd)
 tariff.declaration.consignmentReferences.supplementary.linkText.0 = Elfen Ddata 2/1 - Datganiadau atodol (yn agor tab newydd)
+
 tariff.declaration.mucr.common.text = Mae yna 3 fformat MUCR. Cymerwch ofal i sicrhau eich bod yn defnyddio’r un cywir.<br><br>Gellir dod o hyd i wybodaeth fformat yn yr adran ‘Fformat y MUCR’ o arweiniad ar {0}.
 tariff.declaration.mucr.common.linkText.0 = Gyfeiriadau Negeseuon, Dogfennau, Tystysgrifau a Awdurdodiadau (yn agor tab newydd)
+
 tariff.declaration.declarantDetails.common.linkText.0 = Elfen Ddata 3/18 - Rhif Adnabod y Datganydd (yn agor tab newydd)
 tariff.declaration.exporterAddress.common.linkText.0 = Elfen Ddata 3/1 - Allforiwr (yn agor tab newydd)
 tariff.declaration.consignorEoriNumber.clearance.linkText.0 = Elfen Ddata 3/8 - Rhif Adnabod yr Anfonydd (yn agor tab newydd)
@@ -221,50 +222,64 @@ tariff.declaration.areYouCompletingThisDeclarationOnBehalfOfAnotherAgent.common.
 tariff.declaration.representativesEoriNumber.common.linkText.0 = Elfen Ddata 3/20 - Rhif Adnabod y Cynrychiolydd (yn agor tab newydd)
 tariff.declaration.carrierEoriNumber.common.linkText.0 = Elfen Ddata 3/32 - Rhif Adnabod y Cludwr (yn agor tab newydd)
 tariff.declaration.carrierAddress.common.linkText.0 = Elfen Ddata 3/31 - Enw a chyfeiriad y Cludwr (yn agor tab newydd)
+
 tariff.declaration.isAuthorisationRequired.common.text = Am fanylion, ewch i {0}, {1}, ac {2}.
 tariff.declaration.isAuthorisationRequired.common.linkText.0 = Elfen Ddata 2/3 - Dogfennau a Gyflwynir, Tystysgrifau ac Awdurdodiadau, Cyfeirnodau Ychwanegol (yn agor tab newydd)
 tariff.declaration.isAuthorisationRequired.common.linkText.1 = Atodiad 1: Elfen Ddata 1/10 - Codau gweithdrefn y gofynnwyd amdanynt a rhai blaenorol (yn agor tab newydd)
 tariff.declaration.isAuthorisationRequired.common.linkText.2 =  Elfen Ddata 1/11 - Codau Gweithdrefn Ychwanegol (yn agor tab newydd)
+
 tariff.declaration.originationCountry.common.linkText.0 = Elfen Ddata 5/14 - Gwlad anfon, Allforio (yn agor tab newydd)
+
 tariff.declaration.destinationCountry.1.common.text = Am fanylion, ewch i {0}. Os dewiswch ‘Jersey’ neu ‘Guernsey’, bydd eich datganiad yn cael ei ddiweddaru i nodi CO yn CDS.
 tariff.declaration.destinationCountry.1.common.linkText.0 = Elfen Ddata 5/8 - Cyrchwlad (yn agor tab newydd)
 tariff.declaration.destinationCountry.2.common.linkText.0 = Elfen Ddata 1/1 - Math o ddatganiad (yn agor tab newydd)
+
 tariff.declaration.countryOfRouting.common.linkText.0 = Elfen Ddata 5/18 - Cod y Wlad Cyfeirio (yn agor tab newydd)
 tariff.declaration.addAuthorisationRequired.common.linkText.0 = Elfen Ddata 3/39 - Deiliad Rhif Adnabod yr Awdurdod (yn agor tab newydd)
+
 tariff.declaration.destinationCountry.1.common.text = Os dewiswch ‘Jersey’ neu ‘Guernsey’, bydd eich datganiad yn cael ei ddiweddaru i nodi CO yn CDS.
 tariff.declaration.destinationCountry.2.common.linkText.0 = Elfen Ddata 5/8 - Cyrchwlad (yn agor tab newydd)
 tariff.declaration.destinationCountry.3.common.linkText.0 = Elfen Ddata 1/1 - Math o ddatganiad (yn agor tab newydd)
+
 tariff.declaration.locationOfGoods.common.linkText.0 = Elfen Ddata 5/23 - Lleoliad y Nwyddau (yn agor tab newydd)
+
 tariff.declaration.totalNumbersOfItems.common.text = Am fanylion, ewch i {0} ac {1}.
 tariff.declaration.totalNumbersOfItems.common.linkText.0 = Elfen Ddata 4/11 - Y Cyfanswm a Anfonebwyd (yn agor tab newydd)
 tariff.declaration.totalNumbersOfItems.common.linkText.1 = Elfen Ddata 4/15 - Cyfradd Cyfnewid yr Anfoneb (yn agor tab newydd)
 tariff.declaration.totalPackageQuantity.common.linkText.0 = Elfen Ddata 6/18 - Cyfanswm y Pecynnau (yn agor tab newydd)
 tariff.declaration.natureOfTransaction.common.linkText.0 = Elfen Ddata 8/5 - Natur y Trafodyn (yn agor tab newydd)
+
 tariff.declaration.item.additionalProcedureCodes.1.common.linkText.0 = Elfen Ddata 1/11 - Codau Gweithdrefn Ychwanegol (yn agor tab newydd)
 tariff.declaration.item.additionalProcedureCodes.2.common.text = Dewch o hyd i godau gweithdrefn ychwanegol 3 digid a’u defnyddio
 tariff.declaration.item.additionalProcedureCodes.3.common.text = Gallwch ddefnyddio’r {0}
 tariff.declaration.item.additionalProcedureCodes.3.common.linkText.0 = siart cymharu 4 digid â 3 digid i ddod o hyd i’r cod gweithdrefn ychwanegol ar gyfer eich datganiadau allforio (yn agor tab newydd)
 tariff.declaration.item.additionalProcedureCodes.4.common.text = Gallwch ddefnyddio’r {0}
 tariff.declaration.item.additionalProcedureCodes.4.common.linkText.0 = siart cymharu 4 digid â 3 digid i ddod o hyd i’r cod gweithdrefn ychwanegol 3 digid cywir ar gyfer allforion stocrestr (yn agor tab newydd)
+
 tariff.declaration.item.fiscalInformation.common.linkText.0 = Elfen Ddata 3/40 - Rhif Adnabod Cyfeirnodau Cyllid Ychwanegol (yn agor tab newydd)
 tariff.declaration.item.additionalFiscalReferences.common.linkText.0 = Elfen Ddata 3/40 - Rhif Adnabod Cyfeirnodau Cyllid Ychwanegol (yn agor tab newydd)
+
 tariff.declaration.item.commodityDetails.1.common.text = Mae’r cod nwyddau yn deillio o’r cod HS (System wedi’i Chysoni) sy’n adnabod nwyddau ar gyfer y tollau. Gellir cyfeirio ato hefyd fel ‘cod tariff’ neu god HTS (Atodlen Tariffau wedi’i Chysoni) yn UDA.
 tariff.declaration.item.commodityDetails.2.common.text = Mae cod nwyddau yn gysylltiedig â threthi, tariffau a thollau cysylltiedig i’w talu wrth allforio neu fewnforio.
 tariff.declaration.item.commodityDetails.3.common.text = Am fanylion, ewch i {0} ac {1}.
 tariff.declaration.item.commodityDetails.3.common.linkText.0 = Elfen Ddata 6/14 - Cod Nwyddau: Cod Cyfundrefn Enwi Gyfun (yn agor tab newydd)
 tariff.declaration.item.commodityDetails.3.common.linkText.1 = Elfen Ddata 6/8 - Disgrifiad o’r nwyddau (yn agor tab newydd)
+
 tariff.declaration.item.commodityDetails.clearance.text = Am fanylion, ewch i {0} a {1}.
 tariff.declaration.item.commodityDetails.clearance.linkText.0 = Elfen Ddata 6/14 - Cod Nwyddau: Cod Cyfundrefn Enwi Gyfun (yn agor tab newydd)
 tariff.declaration.item.commodityDetails.clearance.linkText.1 = Elfen Ddata 6/8 – Disgrifiad o’r Nwyddau (yn agor tab newydd)
+
 tariff.declaration.item.cusCode.common.linkText.0 = Elfen Ddata 6/13 - Cod CUS ar gyfer Cemegion (yn agor tab newydd)
 tariff.declaration.item.zeroRatedForVat.common.text = Bydd y cofnod hwn yn anfon cod VATZ am ‘Iawn’, VATR ar gyfer ‘Is’ neu VATE am ‘Eithriedig’.<br><br>Am fanylion, ewch i {0}.
 tariff.declaration.item.zeroRatedForVat.common.linkText.0 = Elfen Ddata 6/17 - Cod Ychwanegol Cenedlaethol (yn agor tab newydd)
 tariff.declaration.item.statisticalValue.common.text = I gael manylion llawn am sut i gyfrifo’r gwerth ystadegol, ac i gael gwybod pryd y mae’rgwerth hwn yn orfodol, yn ddewisol neu ddim yn ofynnol, ewch i {0}.
 tariff.declaration.item.statisticalValue.common.linkText.0 = Elfen Ddata 8/6 – Gwerth Ystadegol (yn agor tab newydd)
+
 tariff.declaration.item.packageInformation.common.text = Am fanylion, ewch i {0}, {1}, ac {2}.
 tariff.declaration.item.packageInformation.common.linkText.0 = Elfen Ddata 6/9 - Math o Becynnau (yn agor tab newydd)
 tariff.declaration.item.packageInformation.common.linkText.1 = Elfen Ddata 6/10 - Nifer y Pecynnau (yn agor tab newydd)
 tariff.declaration.item.packageInformation.common.linkText.2 = Elfen Ddata 6/11 - Marciau cludo (yn agor tab newydd)
+
 tariff.declaration.item.commodityMeasure.1.common.text = Wrth gyfrifo Pwysau Gros, peidiwch â chynnwys pwysau unrhyw gynwysyddion llwyth neu drelars.
 tariff.declaration.item.commodityMeasure.2.common.text = Peidiwch â chynnwys paledi sydd wedi’u datgan ar wahân, neu sydd wedi’u heithrio gan ofynion trwyddedau allforio.
 tariff.declaration.item.commodityMeasure.3.common.text = Am fanylion, ewch i {0}, ac {1}.
@@ -273,6 +288,7 @@ tariff.declaration.item.commodityMeasure.3.common.linkText.1 = Elfen Ddata 6/1 -
 tariff.declaration.item.commodityMeasure.clearance.text = Am fanylion, ewch i {0}, ac {1}.
 tariff.declaration.item.commodityMeasure.clearance.linkText.0 = Elfen Ddata 6/5 - Màs Gros (yn agor tab newydd)
 tariff.declaration.item.commodityMeasure.clearance.linkText.1 = Elfen Ddata 6/1 - Màs Net (yn agor tab newydd)
+
 tariff.declaration.item.supplementaryUnits.common.linkText.0 = Elfen Ddata 6/2 - Unedau Atodol (yn agor tab newydd)
 tariff.declaration.item.isAdditionalInformationRequired.common.linkText.0 = Elfen Ddata 2/2 - Gwybodaeth Ychwanegol (yn agor tab newydd)
 tariff.declaration.item.additionalInformation.common.linkText.0 = Elfen Ddata 2/2 - Gwybodaeth Ychwanegol (yn agor tab newydd)
@@ -369,6 +385,7 @@ declaration.declarationType.expander.paragraph.2 = Ni allwch ddefnyddio’r math
 declaration.declarationType.expander.paragraph.3 = Bydd yr holl allforion eraill yn defnyddio’r math o ddatganiad a gyflwynwyd ymlaen llaw, lle mae’n rhaid i’ch nwyddau gael eu nodi fel ‘wedi cyrraedd’ gan eich cludwr neu’ch llwythwr cyn y gellir eu clirio gan y Tollau.
 declaration.declarationType.expander.paragraph.4 = Yn neu’n agos at yr 7 lleoliad mae cyfleusterau lle mae nwyddau’n cael eu gwirio.
 declaration.declarationType.expander.paragraph.5 = Bydd yr holl allforion eraill yn defnyddio’r math o ddatganiad a gyflwynwyd ymlaen llaw, lle mae’n rhaid i’ch nwyddau gael eu nodi fel ‘wedi cyrraedd’ gan eich cludwr neu’ch llwythwr cyn y gellir eu clirio gan y Tollau.
+declaration.declarationType.expander.link = {0}
 declaration.declarationType.expander.link.content = Dewch o hyd i gyfeiriad llawn pob un o’r lleoliadau hyn (yn agor tab newydd)
 
 notEligible.title = Nid oes angen i chi ddefnyddio’r gwasanaeth hwn
@@ -501,6 +518,9 @@ declaration.exs.title = A oes angen i chi roi gwybodaeth diogelwch i ni?
 declaration.exs.hint = Gelwir hyn hefyd yn Ddatganiad Cryno wrth Ymadael (EXS).
 declaration.exs.error = Dewiswch ‘Iawn’ os oes angen i chi roi gwybodaeth diogelwch i ni
 
+declaration.declarant.eori.banner.title = Pwysig: ynglŷn â’r rhif EORI
+declaration.declarant.eori.banner.content = Mae’r Rhif Cofrestru ac Adnabod Gweithredwyr Economaidd (EORI) yn rhif cofrestru sy’n nodi busnes mewnforio neu allforio.
+
 declaration.declarant.title = Ai {0} yw’ch rhif EORI?
 declaration.declarant.paragraph = Trwy ddewis ‘Iawn’ rydych yn cadarnhau bod y rhif EORI hwn yn perthyn i ddatganydd y datganiad allforio hwn.
 declaration.declarant.error = Dewiswch ‘Iawn’ os mai hwn yw’ch rhif EORI
@@ -511,9 +531,6 @@ declaration.linkDucrToMucr.banner.title = Pwysig: Defnyddio Prif Gyfeirnod Unigr
 declaration.linkDucrToMucr.banner.content = Defnyddir MUCR i gysylltu mwy nag un DUCR gyda’i gilydd. Fel arfer, defnyddir MUCR i gysylltu llwythi gan wahanol allforwyr sy’n rhannu lle yn yr un cynhwysydd.
 declaration.linkDucrToMucr.paragraph = Gallwch gysylltu mwy nag un DUCR â MUCR os yw’ch llwythwr neu gludwr wedi rhoi MUCR i chi.<br><br>Ni allwch gysylltu â MUCR os yw’ch cludwr yn defnyddio’r Gwasanaeth Symud Cerbydau Nwyddau (GVMS). Bydd y cludwr yn cysylltu’r DUCRau ar gyfer yr holl nwyddau y maent yn eu cludo gan ddefnyddio Cyfeirnod Symud Nwyddau (GMR).<br><br>Bydd angen i’ch llwythwr gau’r MUCR cyn i’r nwyddau ymadael.
 declaration.linkDucrToMucr.error.required = Dewiswch ‘Iawn’ os ydych am gysylltu DUCR y datganiad hwn gyda MUCR
-
-declaration.declarant.eori.banner.title = Pwysig: ynglŷn â’r rhif EORI
-declaration.declarant.eori.banner.content = Mae’r Rhif Cofrestru ac Adnabod Gweithredwyr Economaidd (EORI) yn rhif cofrestru sy’n nodi busnes mewnforio neu allforio.
 
 declaration.mucr.title = Nodwch yr MUCR
 declaration.mucr.error.empty = Nodwch MUCR
@@ -659,6 +676,7 @@ declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.11.lin
 declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.12.linkText = Allforio dros dro ar gyfer nwyddau a ddychwelwyd mewn cyflwr heb eu newid.
 declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.13 = {0} (cais am weithdrefn 31)
 declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.13.linkText = Ail-allforio yn dilyn gweithdrefn arbennig
+
 declaration.copy.title = Copïwch y datganiad
 declaration.copy.ducr.label = Nodwch Ddatganiad o Gyfeirnod Unigryw y Llwyth (DUCR) newydd
 declaration.copy.ducr.hint = Er enghraifft, 1GB121212121212-INVOICE123/4.
@@ -746,6 +764,25 @@ dashboard.pagination.plural = datganiadau
 dashboard.status.group.empty = Dim datganiadau
 dashboard.start.new.declaration = Dechreuwch ddatganiad newydd
 
+draft.declarations.title = Eich datganiadau sydd wedi’u cadw
+draft.declarations.title.amendments = Eich datganiadau a diwygiadau sydd wedi’u cadw
+draft.declarations.paragraph = Dewiswch DUCR i fwrw golwg dros a chwblhau datganiad drafft. Mae datganiadau drafft yn cael eu cadw am 30 diwrnod.
+draft.declarations.ducr = DUCR
+draft.declarations.noDucr = Dim DUCR wedi’i ychwanegu
+draft.declarations.dateSaved = Dyddiad ac amser wedi’u cadw
+draft.declarations.status = Statws
+draft.declarations.action = Gweithredu
+draft.declarations.amendment = Diwygiad
+draft.declarations.draft = Drafft
+draft.declarations.continue.hidden = Parhau â’r datganiad {0}
+draft.declarations.remove.hidden = Tynnu’r datganiad {0}
+draft.declarations.summary.continue = Parhau â’r datganiad
+draft.declarations.pagination.singular = datganiad wedi’i gadw
+draft.declarations.pagination.plural = datganiadau wedi’u cadw
+draft.declarations.remove.title = A ydych yn siŵr eich bod am dynnu’r datganiad hwn?
+draft.declarations.remove.submitButton = Yn eich blaen
+draft.declarations.remove.option.error.empty = Dewiswch ‘Iawn’ os ydych am dynnu’r datganiad hwn
+
 pagination.page.of = {0} - Tudalen {1} o {2}
 pagination.next = Nesaf
 pagination.previous = Flaenorol
@@ -831,31 +868,13 @@ amendment.details.unavailable.timeline.link = Dychwelyd i’r dudalen ynghylch s
 
 amendment.details.title = Manylion y diwygiad
 amendment.details.title.external = Manylion y datganiad wedi’u diweddaru
+amendment.details.ducr.heading = DUCR: {0}
 amendment.details.last.updated = Diweddarwyd diwethaf ar:
 amendment.details.reason.amendment = Rheswm dros y diwygiad:
 amendment.details.heading.lists = Diwygiad gwneud i:
 amendment.details.description = Disgrifiad
 amendment.details.previous.value = Gwerth blaenorol
 amendment.details.amended.value = Gwerth diwygiedig
-
-draft.declarations.title = Eich datganiadau sydd wedi’u cadw
-draft.declarations.title.amendments = Eich datganiadau a diwygiadau sydd wedi’u cadw
-draft.declarations.paragraph = Dewiswch DUCR i fwrw golwg dros a chwblhau datganiad drafft. Mae datganiadau drafft yn cael eu cadw am 30 diwrnod.
-draft.declarations.ducr = DUCR
-draft.declarations.noDucr = Dim DUCR wedi’i ychwanegu
-draft.declarations.dateSaved = Dyddiad ac amser wedi’u cadw
-draft.declarations.status = Statws
-draft.declarations.action = Gweithredu
-draft.declarations.amendment = Diwygiad
-draft.declarations.draft = Drafft
-draft.declarations.continue.hidden = Parhau â’r datganiad {0}
-draft.declarations.remove.hidden = Tynnu’r datganiad {0}
-draft.declarations.summary.continue = Parhau â’r datganiad
-draft.declarations.pagination.singular = datganiad wedi’i gadw
-draft.declarations.pagination.plural = datganiadau wedi’u cadw
-draft.declarations.remove.title = A ydych yn siŵr eich bod am dynnu’r datganiad hwn?
-draft.declarations.remove.submitButton = Yn eich blaen
-draft.declarations.remove.option.error.empty = Dewiswch ‘Iawn’ os ydych am dynnu’r datganiad hwn
 
 declaration.authorisationHolderRequired.title = A ydych eisiau ychwanegu unrhyw awdurdodiadau?
 declaration.authorisationHolderRequired.title.standard.prelodged.1040 = A oes gennych unrhyw awdurdodiadau rydych am eu datgan?
@@ -1498,6 +1517,7 @@ declaration.commodityDetails.notification.title = Pwysig: ynglŷn â chodau nwyd
 declaration.commodityDetails.notification.body.1 = Dynodydd rhyngwladol sy’n adnabod eitem nwyddau penodol yw cod nwyddau. Caiff un neu nifer o becynnau o’r un math o nwyddau eu hystyried fel un eitem i’w datgan.
 declaration.commodityDetails.notification.body.2 = Rhaid datgan dwy eitem nwyddau gyda gwahanol godau nwyddau sy’n rhannu’r un cynhwysydd fel dwy eitem sy’n cael eu datgan.
 declaration.commodityDetails.combinedNomenclatureCode.label = Chwiliwch a rhowch y cod nwyddau cywir
+declaration.commodityDetails.combinedNomenclatureCode.body.1 = {0}.
 declaration.commodityDetails.combinedNomenclatureCode.body.1.link = Chwiliwch y cod nwyddau cywir ar gyfer eich nwyddau (yn agor tab newydd)
 declaration.commodityDetails.combinedNomenclatureCode.body.2 = Nodwch god nwyddau 8 digid, er enghraifft 42034000. Os oes gennych god 10 digid, nodwch yr 8 digid cyntaf yn unig.
 declaration.commodityDetails.combinedNomenclatureCode.error.empty = Nodwch god nwyddau yn y fformat cywir
@@ -1824,6 +1844,7 @@ declaration.summary.noData.button = Gwnewch ddatganiad allforio
 declaration.summary.draft.ducr = DUCR
 declaration.summary.draft = Adolygwch yr wybodaeth a nodwyd gennych hyd yn hyn.
 declaration.summary.unknown = Anhysbys
+declaration.summary.section = Crynodeb o’ch atebion ar gyfer adran {0}
 
 declaration.summary.references.insets = Dechreuwch yma i fynd drwy’r cwestiynau o’r dechrau
 declaration.summary.references.creation.date = Dyddiad a grëwyd
@@ -1856,8 +1877,11 @@ declaration.summary.references.linkDucrToMucr = Cysylltiad i MUCR
 declaration.summary.references.linkDucrToMucr.change = Newidiwch y cysylltiad DUCR i MUCR
 declaration.summary.references.mucr = MUCR
 declaration.summary.references.mucr.change = Newidiwch yr MUCR
+
 declaration.summary.parties.eidr = Ai EIDR yw hyn?
 declaration.summary.parties.eidr.change = Newidiwch Ai EIDR yw hyn?
+declaration.summary.parties.eidr.yes = Iawn
+declaration.summary.parties.eidr.no = Na
 declaration.summary.parties.personPresentingGoods = Rhif EORI y person sy’n cyflwyno’r nwyddau i’r tollau
 declaration.summary.parties.personPresentingGoods.change = Newidiwch rif EORI y person sy’n cyflwyno’r nwyddau i’r tollau
 declaration.summary.parties.declarantIsExporter = Ai chi yw’r allforiwr?
@@ -1938,6 +1962,7 @@ declaration.summary.parties.representative.type.change = Newidiwch y math o gynr
 declaration.summary.parties.representative.type.1 = Datganydd
 declaration.summary.parties.representative.type.2 = Uniongyrchol
 declaration.summary.parties.representative.type.3 = Anuniongyrchol
+
 declaration.summary.countries.routingCountry = Gwlad y llwybr
 declaration.summary.countries.routingCountries = Gwledydd ar y llwybr
 declaration.summary.countries.routingCountries.change = Newidiwch y gwledydd ar y llwybr
@@ -2224,25 +2249,6 @@ declaration.confirmation.needsDocument.warning = Mae’n rhaid i chi uwchlwytho 
 declaration.confirmation.needsDocument.body.2 = Gwiriwch y gofynion ac uwchlwytho dogfennau o {0}.
 
 declaration.confirmation.other.title = Mae’ch datganiad yn dal i gael ei wirio
-declaration.confirmation.what.happens.next = Yr hyn sy’n digwydd nesaf
-
-declaration.confirmation.actionRequired.title = Mae’ch datganiad wedi’i gyflwyno - mae angen cymryd camau
-declaration.confirmation.actionRequired.warning = Camau i’w cymryd: Uwchlwytho’r dogfennau sydd ar goll.
-declaration.confirmation.actionRequired.paragraph1 = Mae’ch datganiad wedi’i gyflwyno ond mae angen atodi un neu fwy o ddogfennau o hyd.
-declaration.confirmation.actionRequired.paragraph2 = Dewch o hyd i’r cyfarwyddiadau ar gyfer uwchlwytho ar y dudalen sy’n dangos manylion y datganiad.
-
-declaration.confirmation.submitted.title = Mae’ch datganiad wedi’i gyflwyno
-declaration.confirmation.submitted.whatHappensNext.paragraph = Mae’r cais o ran datganiad bellach yn aros hyd nes bod gwiriad wedi’i gynnal. Bydd hyn yn cymryd ychydig o funudau.
-
-declaration.confirmation.checkDetails.title = Nawr gwiriwch dudalen statws y datganiad
-declaration.confirmation.checkDetails.link = Gwiriwch y dudalen sy’n dangos manylion y datganiad
-
-declaration.confirmation.submitted.checkDetails.paragraph = Mae’n bosibl y bydd yn dal i fod angen i chi gywiro unrhyw wallau neu uwchlwytho dogfen sydd ar goll.
-
-declaration.confirmation.pendingNotification.title = Mae’ch datganiad sydd wedi ei gyflwyno yn dal i gael ei wirio
-declaration.confirmation.pendingNotification.paragraph1 = Mae’n cymryd mwy o amser nag arfer i wirio’ch datganiad. Caniatewch ychydig o funudau i’r gwiriad gael ei gwblhau.
-declaration.confirmation.pendingNotification.paragraph2 = Ar ôl iddo gwblhau rhoddir Cyfeirnod Symud (MRN) i’ch datganiad. Dangosir hyn ar y dudalen sy’n dangos manylion y datganiad.
-
 declaration.confirmation.other.body.1 = Bydd eich datganiad{0}{1} yn cael cyfeirnod symud yn fuan. Ewch i {2} i ddarganfod statws y datganiad hwn a gweld a oes angen i chi weithredu o gwbl.
 declaration.confirmation.other.body.1.link = Eich datganiadau
 declaration.confirmation.other.body.2 = Dylai’r canlyniad fod ar gael yn syth neu o fewn ychydig funudau.
@@ -2250,6 +2256,30 @@ declaration.confirmation.other.body.2 = Dylai’r canlyniad fod ar gael yn syth 
 declaration.confirmation.received.title = Mae’ch datganiad wedi’i gyflwyno ymlaen llaw i CThEF
 declaration.confirmation.received.next.1 = Bydd gwiriadau tollau pellach yn cael eu cynnal pan fydd y nwyddau’n cyrraedd. Byddwch yn cael gwybod am unrhyw gamau i’w cymryd drwy {0}, sef eich cyfeiriad e-bost CDS cofrestredig, ac ar {1}.
 declaration.confirmation.received.next.2 = Os nad yw statws eich datganiad wedi newid cyn pen 2 awr i’r adeg pan fydd y nwyddau’n cyrraedd, dylech {0}.
+
+declaration.confirmation.what.happens.next = Yr hyn sy’n digwydd nesaf
+declaration.confirmation.whatYouCanDoNow.heading = Yr hyn y gallwch ei wneud nawr
+declaration.confirmation.whatYouCanDoNow.nonGvms.paragraph = Gallwch hefyd {0} drwy ei gysylltu, ynghyd â llwythi eraill, â phrif lwyth. Byddwch hefyd yn gallu trefnu i’r datganiad hwn {1} os ydych yn llwythwr cofrestredig.
+declaration.confirmation.whatYouCanDoNow.nonGvms.paragraph.link.1 = gydgyfnerthu’r datganiad hwn
+declaration.confirmation.whatYouCanDoNow.nonGvms.paragraph.link.2 = fod â statws ‘wedi cyrraedd’ neu ‘wedi ymadael’
+declaration.confirmation.whatYouCanDoNow.paragraph.2 = Os hoffech, gallwch {0}, ond nid oes rhaid i chi wneud hyn oni bai’ch bod yn cael yr hysbysiad o ‘Angen dogfennau’ pan fydd eich nwyddau’n cyrraedd.
+declaration.confirmation.whatYouCanDoNow.paragraph.2.link = uwchlwythwch y dogfennau a enwyd gennych ar eich datganiad (yn agor tab newydd)
+
+declaration.confirmation.submitted.title = Mae’ch datganiad wedi’i gyflwyno
+declaration.confirmation.submitted.whatHappensNext.paragraph = Mae’r cais o ran datganiad bellach yn aros hyd nes bod gwiriad wedi’i gynnal. Bydd hyn yn cymryd ychydig o funudau.
+declaration.confirmation.submitted.checkDetails.paragraph = Mae’n bosibl y bydd yn dal i fod angen i chi gywiro unrhyw wallau neu uwchlwytho dogfen sydd ar goll.
+
+declaration.confirmation.checkDetails.title = Nawr gwiriwch dudalen statws y datganiad
+declaration.confirmation.checkDetails.link = Gwiriwch y dudalen sy’n dangos manylion y datganiad
+
+declaration.confirmation.actionRequired.title = Mae’ch datganiad wedi’i gyflwyno - mae angen cymryd camau
+declaration.confirmation.actionRequired.warning = Camau i’w cymryd: Uwchlwytho’r dogfennau sydd ar goll.
+declaration.confirmation.actionRequired.paragraph1 = Mae’ch datganiad wedi’i gyflwyno ond mae angen atodi un neu fwy o ddogfennau o hyd.
+declaration.confirmation.actionRequired.paragraph2 = Dewch o hyd i’r cyfarwyddiadau ar gyfer uwchlwytho ar y dudalen sy’n dangos manylion y datganiad.
+
+declaration.confirmation.pendingNotification.title = Mae’ch datganiad sydd wedi ei gyflwyno yn dal i gael ei wirio
+declaration.confirmation.pendingNotification.paragraph1 = Mae’n cymryd mwy o amser nag arfer i wirio’ch datganiad. Caniatewch ychydig o funudau i’r gwiriad gael ei gwblhau.
+declaration.confirmation.pendingNotification.paragraph2 = Ar ôl iddo gwblhau rhoddir Cyfeirnod Symud (MRN) i’ch datganiad. Dangosir hyn ar y dudalen sy’n dangos manylion y datganiad.
 
 declaration.confirmation.additionalType = Math o ddatganiad
 declaration.confirmation.ducr = DUCR
@@ -2264,12 +2294,9 @@ declaration.confirmation.next.2.link = cysylltwch â’r Ganolfan Clirio Genedla
 declaration.confirmation.whatHappensNext = Yr hyn sy’n digwydd nesaf
 declaration.confirmation.eidr = EIDR
 
-declaration.confirmation.whatYouCanDoNow.heading = Yr hyn y gallwch ei wneud nawr
-declaration.confirmation.whatYouCanDoNow.nonGvms.paragraph = Gallwch hefyd {0} drwy ei gysylltu, ynghyd â llwythi eraill, â phrif lwyth. Byddwch hefyd yn gallu trefnu i’r datganiad hwn {1} os ydych yn llwythwr cofrestredig.
-declaration.confirmation.whatYouCanDoNow.nonGvms.paragraph.link.1 = gydgyfnerthu’r datganiad hwn
-declaration.confirmation.whatYouCanDoNow.nonGvms.paragraph.link.2 = fod â statws ‘wedi cyrraedd’ neu ‘wedi ymadael’
-declaration.confirmation.whatYouCanDoNow.paragraph.2 = Os hoffech, gallwch {0}, ond nid oes rhaid i chi wneud hyn oni bai’ch bod yn cael yr hysbysiad o ‘Angen dogfennau’ pan fydd eich nwyddau’n cyrraedd.
-declaration.confirmation.whatYouCanDoNow.paragraph.2.link = uwchlwythwch y dogfennau a enwyd gennych ar eich datganiad (yn agor tab newydd)
+declaration.confirmation.prelodged = Pre-lodged
+declaration.confirmation.arrived = Arrived
+declaration.confirmation.simplified = Simplified
 
 declaration.exitSurvey.header = Rhowch eich barn
 declaration.exitSurvey.line.1 = Mae hwn yn wasanaeth newydd ac rydym eisiau gwybod beth yw’ch barn amdano.
@@ -2345,9 +2372,6 @@ rejected.notification.guidance.section.3.paragraph.1 = Os oes angen help arnoch 
 rejected.notification.guidance.section.3.paragraph.2 = Ffôn: 0300 200 3705
 rejected.notification.guidance.section.3.paragraph.3 = Dydd Llun i Ddydd Gwener, 08:30 i 17:00 (heblaw am benwythnosau a gwyliau’r banc)
 
-
-
-amendment.cancellation.heading = Canslo’r cais am ddiwygiad
 amendment.submission.heading = Cyflwyno cais am ddiwygiad
 amendment.submission.warning = Gallech gael eich erlyn os byddwch yn rhoi gwybodaeth anwir neu gamarweiniol yn fwriadol.
 amendment.submission.fullName = Enw llawn
@@ -2363,18 +2387,24 @@ amendment.submission.jobRole.error = Mae’n rhaid i’r swydd gynnwys llythrenn
 amendment.submission.email = Cyfeiriad e-bost
 amendment.submission.email.empty = Nodwch gyfeiriad e-bost
 amendment.submission.email.long = Mae’n rhaid i’ch cyfeiriad e-bost beidio â bod yn fwy na 64 o gymeriadau
-amendment.submission.email.error = Nodwch gyfeiriad e-bost dilys
-amendment.cancellation.reason = Eich rheswm dros ganslo
+amendment.submission.email.error = Nodwch gyfeiriad e-bost dily
 amendment.submission.reason = Rheswm dros eich diwygiad
-amendment.cancellation.reason.empty = Nodwch reswm dros y canslo hwn
 amendment.submission.reason.empty = Nodwch reswm dros y diwygiad hwn
-amendment.cancellation.reason.long = Ni all eich rheswm dros ganslo fod yn fwy na 512 o gymeriadau
 amendment.submission.reason.long = Ni all eich rheswm dros ddiwygio fod yn fwy na 512 o gymeriadau
-amendment.cancellation.reason.error = Dim ond llythrennau, rhifau, a chymeriadau arbennig penodol y gellir eu defnyddio wrth nodi rheswm dros ganslo
 amendment.submission.reason.error = Dim ond llythrennau, rhifau, a chymeriadau arbennig penodol y gellir eu defnyddio wrth nodi rheswm dros ddiwygio
 amendment.submission.confirmation = Rwy’n cadarnhau bod yr wybodaeth a roddwyd gennyf yn gywir hyd eithaf fy ngwybodaeth
 amendment.submission.confirmation.missing = Mae’n rhaid i chi gadarnhau bod yr wybodaeth a roddwyd gennych yn gywir hyd eithaf eich gwybodaeth
 amendment.submission.button = Cyflwyno diwygiad
+
+amendment.cancellation.heading = Canslo’r cais am ddiwygiad
+amendment.cancellation.reason = Eich rheswm dros ganslo
+amendment.cancellation.reason.empty = Nodwch reswm dros y canslo hwn
+amendment.cancellation.reason.long = Ni all eich rheswm dros ganslo fod yn fwy na 512 o gymeriadau
+amendment.cancellation.reason.error = Dim ond llythrennau, rhifau, a chymeriadau arbennig penodol y gellir eu defnyddio wrth nodi rheswm dros ganslo
+
+amendment.resubmission.heading = Ailgyflwyno cais am ddiwygiad
+amendment.resubmission.reason = Rheswm dros eich diwygiad
+amendment.resubmission.button = Ailgyflwyno Diwygiad
 
 field.declaration.functionCode = Math o Ddatganiad
 field.declaration.consignmentReferences.lrn = Cyfeirnod Lleol (LRN)
@@ -2439,6 +2469,7 @@ field.declaration.locations.destinationCountries.countryOfDestination = Gwlad pe
 field.declaration.locations.destinationCountries.countryOfDispatch = Gwlad anfon
 field.declaration.locations.destinationCountries.countryOfRouting = Gwlad y llwybr
 field.declaration.items.$.statisticalValue.statisticalValue = Gwerth ystadegol yr eitem
+field.declaration.items.$ = Eitem {0}
 field.declaration.items.$.additionalDocument = Eitem {0} - Dogfennau ychwanegol
 field.declaration.items.$.additionalDocument.$ = Eitem {0} - Dogfen ychwanegol {1}
 field.declaration.items.$.additionalDocument.$.documentIdentifier = Eitem {0} - Dynodydd Dogfen ychwanegol {1}

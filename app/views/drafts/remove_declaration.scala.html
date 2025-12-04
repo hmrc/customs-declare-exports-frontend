@@ -22,6 +22,7 @@
 @import views.helpers.{BackButton, Title, ViewDates}
 @import views.helpers.ErrorMapper.radioGroupErrors
 @import views.html.components.gds._
+@import views.helpers.ErrorMapper.prefixedErrorMessage
 
 @this(
     govukLayout: gdsMainTemplate,
@@ -83,7 +84,7 @@
                 checked = form("remove").value.contains("false")
             )
         ),
-        errorMessage = form("remove").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args: _*))))
+        errorMessage = form("remove").error.map(prefixedErrorMessage(_))
     ))
 }
 

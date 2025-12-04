@@ -24,7 +24,7 @@
 @import views.helpers.{BackButton, Title}
 @import views.components.gds.Styles._
 @import views.html.components.gds._
-@import views.helpers.ErrorMapper.radioGroupErrors
+@import views.helpers.ErrorMapper.{radioGroupErrors, prefixedErrorMessage}
 
 
 @this(
@@ -76,7 +76,7 @@
                     checked = form(isExsKey).value.contains(YesNoAnswers.no)
                 )
             ),
-            errorMessage = form(isExsKey).error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
+            errorMessage = form(isExsKey).error.map(prefixedErrorMessage(_))
         ))
 
         @saveButtons()

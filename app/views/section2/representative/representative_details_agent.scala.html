@@ -23,7 +23,7 @@
 @import views.html.components.gds._
 @import views.components.gds.Styles._
 @import views.helpers.{BackButton, Title}
-@import views.helpers.ErrorMapper.radioGroupErrors
+@import views.helpers.ErrorMapper.{radioGroupErrors, prefixedErrorMessage}
 @import config.AppConfig
 
 @this(
@@ -75,7 +75,7 @@
                     checked = form("representingAgent").value.contains(YesNoAnswers.no)
                 )
             ),
-            errorMessage = form("representingAgent").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
+            errorMessage = form("representingAgent").error.map(prefixedErrorMessage(_))
         ))
 
         @tariffExpander(RepresentativeAgent, request.declarationType)(messages, appConfig)

@@ -29,9 +29,9 @@ import play.twirl.api.{Html, HtmlFormat}
 import services.TransportCodeService
 import uk.gov.hmrc.govukfrontend.views.html.components.{GovukInsetText, GovukRadios}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
-import uk.gov.hmrc.govukfrontend.views.viewmodels.errormessage.ErrorMessage
 import uk.gov.hmrc.govukfrontend.views.viewmodels.insettext.InsetText
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.{RadioItem, Radios}
+import views.helpers.ErrorMapper.prefixedErrorMessage
 import views.html.components.gds.{exportsInputText, pageTitle, paragraphBody}
 
 import javax.inject.{Inject, Singleton}
@@ -121,13 +121,7 @@ class DepartureTransportHelper @Inject() (
       case 3 => tcs.transportCodesForV3.asList.map(radioButton(form, _))
     }
 
-    govukRadios(
-      Radios(
-        name = radioButtonGroupId,
-        items = items,
-        errorMessage = form(radioButtonGroupId).error.map(err => ErrorMessage(content = Text(messages(err.message, err.args: _*))))
-      )
-    )
+    govukRadios(Radios(name = radioButtonGroupId, items = items, errorMessage = form(radioButtonGroupId).error.map(prefixedErrorMessage(_))))
   }
 
   def transportCodes(implicit request: JourneyRequest[_]): TransportCodes =

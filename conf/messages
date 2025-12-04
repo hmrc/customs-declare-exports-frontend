@@ -4,8 +4,8 @@ date.year = Year
 
 service.name = Make and manage an export declaration online
 
-feedback = This is a new service - your {0} will help us to improve it.
-feedback.link = feedback
+feedback = This is a new service. Help us improve it and {0} .
+feedback.link = give your feedback (opens in new tab)
 
 aria.label.filters = declaration filter
 aria.label.pagination = Pagination
@@ -63,7 +63,7 @@ site.add.country = Add country
 site.search.for.country = Search for country
 site.search.for.location = Search for location
 site.radio.divider = or
-site.accessibility.error = Error:
+site.accessibility.error = Error
 site.warning = Warning
 site.cancel = Cancel
 site.print = Print this page
@@ -90,7 +90,6 @@ unauthorised.paragraph.3.linkText = add you as an administrator level team membe
 unauthorised.insetText = Check with the person who deals with VAT, for example, as they may have registered for CDS in order to claim back VAT.
 
 unauthorised.heading.eori.not.allowed = Your EORI number is not valid on this service
-
 
 unauthorisedAgent.heading = You cannot use this service
 unauthorisedAgent.paragraph.1 = You’ve signed in with Government Gateway details for an agent services account. If you are a freight forwarder or customs broker representing an exporter, sign in with the Government Gateway details for your business.
@@ -204,13 +203,17 @@ tariff.declaration.text = For details, go to {0}.
 tariff.declaration.type.text.1 = A standard declaration (arrived or pre-lodged) is a full declaration. This means all sections of the declaration must be completed.
 tariff.declaration.type.text.2 = Find details about {0}.
 tariff.declaration.type.linkText.2 = making a full export declaration (opens in a new tab)
+tariff.declaration.type.common.linkText.0 = Data Element 1/2 - Additional Declaration Type (opens in new tab)
 tariff.declaration.lrn.common.linkText.0 = Data Element 2/5 - LRN - No previous reference (opens in new tab)
+
 tariff.declaration.consignmentReferences.common.text = For details, go to {0} and {1}.
 tariff.declaration.consignmentReferences.common.linkText.0 = Data Element 2/4 - UCR Reference Number (opens in new tab)
 tariff.declaration.consignmentReferences.common.linkText.1 = Data Element 2/5 - LRN, no previous reference (opens in new tab)
 tariff.declaration.consignmentReferences.supplementary.linkText.0 = Data Element 2/1 - Supplementary declarations (opens in new tab)
+
 tariff.declaration.mucr.common.text = There are 3 MUCR formats. Take care to ensure you use the correct one.<br><br>Format information can be found in the ‘Format of the MUCR’ section of guidance on {0}.
 tariff.declaration.mucr.common.linkText.0 = References of Messages, Document, Certificates and Authorisations (opens in new tab)
+
 tariff.declaration.declarantDetails.common.linkText.0 = Data Element 3/18 - Declarant Identification Number (opens in new tab)
 tariff.declaration.exporterAddress.common.linkText.0 = Data Element 3/1 - Exporter (opens in new tab)
 tariff.declaration.consignorEoriNumber.clearance.linkText.0 = Data Element 3/8 - Consignor Identification Number (opens in new tab)
@@ -219,45 +222,64 @@ tariff.declaration.areYouCompletingThisDeclarationOnBehalfOfAnotherAgent.common.
 tariff.declaration.representativesEoriNumber.common.linkText.0 = Data Element 3/20 - Representative Identification Number (opens in new tab)
 tariff.declaration.carrierEoriNumber.common.linkText.0 = Data Element 3/32 - Carrier Identification Number (opens in new tab)
 tariff.declaration.carrierAddress.common.linkText.0 = Data Element 3/31 - Carrier name and address (opens in new tab)
+
 tariff.declaration.isAuthorisationRequired.common.text = For details, go to {0}, {1}, and {2}.
 tariff.declaration.isAuthorisationRequired.common.linkText.0 = Data Element 2/3 - Documents Produced, Certificates and Authorisations, Additional References (opens in new tab)
 tariff.declaration.isAuthorisationRequired.common.linkText.1 = Appendix 1: Data Element 1/10 - Requested and Previous Procedure Codes (opens in new tab)
 tariff.declaration.isAuthorisationRequired.common.linkText.2 = Data Element 1/11 - Additional Procedure Codes (opens in new tab)
+
 tariff.declaration.originationCountry.common.linkText.0 = Data Element 5/14 - Country of Dispatch, Export (opens in new tab)
+
+tariff.declaration.destinationCountry.1.common.text = For details, go to {0}. If you select ‘Jersey’ or ‘Guernsey’, your declaration will be updated to type CO in CDS.
+tariff.declaration.destinationCountry.1.common.linkText.0 = Data Element 5/8 - country of destination (opens in new tab)
+tariff.declaration.destinationCountry.2.common.linkText.0 = Data Element 1/1 - Declaration Type (opens in new tab)
+
+tariff.declaration.countryOfRouting.common.linkText.0 = Data Element 5/18 - Country of Routing Codes (opens in new tab)
+tariff.declaration.addAuthorisationRequired.common.linkText.0 = Data Element 3/39 - Holder of the Authorisation Identification Number (opens in new tab)
+
 tariff.declaration.destinationCountry.1.common.text = If you select ‘Jersey’ or ‘Guernsey’, your declaration will be updated to type CO in CDS.
 tariff.declaration.destinationCountry.2.common.linkText.0 = Data Element 5/8 - Country of Destination (opens in new tab)
 tariff.declaration.destinationCountry.3.common.linkText.0 = Data Element 1/1 - Declaration Type (opens in new tab)
+
 tariff.declaration.locationOfGoods.common.linkText.0 = Data Element 5/23 - Location of Goods (opens in new tab)
+
 tariff.declaration.totalNumbersOfItems.common.text = For details, go to {0} and {1}.
 tariff.declaration.totalNumbersOfItems.common.linkText.0 = Data Element 4/11 - Total Amount Invoiced (opens in new tab)
 tariff.declaration.totalNumbersOfItems.common.linkText.1 = Data Element 4/15 - Invoice Exchange Rate (opens in new tab)
 tariff.declaration.totalPackageQuantity.common.linkText.0 = Data Element 6/18 - Total Packages (opens in new tab)
 tariff.declaration.natureOfTransaction.common.linkText.0 = Data Element 8/5 - Nature of Transaction (opens in new tab)
+
 tariff.declaration.item.additionalProcedureCodes.1.common.linkText.0 = Data Element 1/11 - Additional Procedure Codes (opens in new tab)
 tariff.declaration.item.additionalProcedureCodes.2.common.text = Find and use 3-digit additional procedure codes
 tariff.declaration.item.additionalProcedureCodes.3.common.text = You can use the {0}.
 tariff.declaration.item.additionalProcedureCodes.3.common.linkText.0 = 4-digit to 3-digit correlation chart to find the correct 3-digit additional procedure code for your export declaration (opens in new tab)
 tariff.declaration.item.additionalProcedureCodes.4.common.text = You can use the {0}.
 tariff.declaration.item.additionalProcedureCodes.4.common.linkText.0 = 4-digit to 3-digit correlation chart to find the correct 3-digit additional procedure code for inventory exports (opens in new tab).
+
 tariff.declaration.item.fiscalInformation.common.linkText.0 = Data Element 3/40 - Additional Fiscal References Identification Number (opens in new tab)
 tariff.declaration.item.additionalFiscalReferences.common.linkText.0 = Data Element 3/40 - Additional Fiscal References Identification Number (opens in new tab)
-tariff.declaration.item.commodityDetails.clearance.text = For details, go to {0} and {1}.
-tariff.declaration.item.commodityDetails.clearance.linkText.0 = Data Element 6/14 - Commodity Code: Combined Nomenclature Code (opens in new tab)
-tariff.declaration.item.commodityDetails.clearance.linkText.1 = Data Element 6/8 - Description of Goods (opens in new tab)
+
 tariff.declaration.item.commodityDetails.1.common.text = The commodity code stems from the HS (Harmonized System) code that identifies goods for customs. It can also be referred to as a ‘tariff code’ or a HTS (Harmonized Tariff Schedule) code in the US.
 tariff.declaration.item.commodityDetails.2.common.text = A commodity code is linked to associated taxes, tariffs and duties to be paid on export or import.
 tariff.declaration.item.commodityDetails.3.common.text = For details, go to {0} and {1}.
 tariff.declaration.item.commodityDetails.3.common.linkText.0 = Data element 6/14 - Commodity Code: Combined Nomenclature Code (opens in a new tab)
 tariff.declaration.item.commodityDetails.3.common.linkText.1 = Data element 6/8 Description of Goods (opens in a new tab)
+
+tariff.declaration.item.commodityDetails.clearance.text = For details, go to {0} and {1}.
+tariff.declaration.item.commodityDetails.clearance.linkText.0 = Data Element 6/14 - Commodity Code: Combined Nomenclature Code (opens in new tab)
+tariff.declaration.item.commodityDetails.clearance.linkText.1 = Data Element 6/8 - Description of Goods (opens in new tab)
+
 tariff.declaration.item.cusCode.common.linkText.0 = Data Element 6/13 - CUS Code for Chemicals (opens in new tab)
 tariff.declaration.item.zeroRatedForVat.common.text = This entry will send code VATZ for ‘Yes’, VATR for ‘Reduced’, or VATE for ‘Exempt’.<br><br>For details, go to {0}.
 tariff.declaration.item.zeroRatedForVat.common.linkText.0 = Data Element 6/17 - National Additional Code (opens in new tab)
 tariff.declaration.item.statisticalValue.common.text = For full details about calculating statistical value, and when the value is mandatory, optional or not required, go to {0}.
 tariff.declaration.item.statisticalValue.common.linkText.0 = Data element 8/6 - Statistical Value (opens in new tab)
+
 tariff.declaration.item.packageInformation.common.text = For details, go to {0}, {1}, and {2}.
 tariff.declaration.item.packageInformation.common.linkText.0 = Data Element 6/9 - Type of Packages (opens in new tab)
 tariff.declaration.item.packageInformation.common.linkText.1 = Data Element 6/10 - Number of Packages (opens in new tab)
 tariff.declaration.item.packageInformation.common.linkText.2 = Data Element 6/11 - Shipping Marks (opens in new tab)
+
 tariff.declaration.item.commodityMeasure.1.common.text = When calculating gross weight, do not include the weight of any freight containers or trailers.
 tariff.declaration.item.commodityMeasure.2.common.text = Do not include pallets that have been declared separately or excluded by export license requirements.
 tariff.declaration.item.commodityMeasure.3.common.text = For details, go to {0} and {1}.
@@ -266,6 +288,7 @@ tariff.declaration.item.commodityMeasure.3.common.linkText.1 = Data Element 6/1 
 tariff.declaration.item.commodityMeasure.clearance.text = For details, go to {0} and {1}.
 tariff.declaration.item.commodityMeasure.clearance.linkText.0 = Data Element 6/5 - Gross Mass (opens in new tab)
 tariff.declaration.item.commodityMeasure.clearance.linkText.1 = Data Element 6/1 - Net Mass (opens in new tab)
+
 tariff.declaration.item.supplementaryUnits.common.linkText.0 = Data Element 6/2 - Supplementary Units (opens in new tab)
 tariff.declaration.item.isAdditionalInformationRequired.common.linkText.0 = Data Element 2/2 - Additional Information (opens in new tab)
 tariff.declaration.item.additionalInformation.common.linkText.0 = Data Element 2/2 - Additional Information (opens in new tab)
@@ -450,6 +473,7 @@ declaration.traderReference.expander.content = For details about the DUCR number
 declaration.traderReference.expander.content.link = Data Element 2/4 - Reference Number / UCR
 declaration.traderReference.error.invalid = Your reference must be in the correct format.
 declaration.traderReference.error.empty = Enter a trader reference.
+
 declaration.ducr.expander.title = Understand the format of a DUCR
 declaration.ducr.expander.paragraph = A DUCR is made up of these parts
 declaration.ducr.expander.bullet1 = last number of the current year
@@ -496,6 +520,7 @@ declaration.exs.error = Select yes if you need to give us safety and security in
 
 declaration.declarant.eori.banner.title = Important: about the EORI number
 declaration.declarant.eori.banner.content = The Economic Operators Registration and Identification (EORI) is a registration number that identifies an import or export business.
+
 declaration.declarant.title = Is your EORI number {0}?
 declaration.declarant.paragraph = By selecting yes you are confirming that this EORI number belongs to the declarant of this export declaration.
 declaration.declarant.error = Select yes if this is your EORI number
@@ -1253,12 +1278,12 @@ declaration.additionalDocument.CWP.hint = GBCWP12345678900020191023163657
 declaration.additionalDocument.DPO.hint = GBDPO1000131
 declaration.additionalDocument.MOU.hint = GBMOU12345678900020191023163657
 
+declaration.item.isLicenceRequired.title = Do the goods require a reference or code relating to a licence or certificate?
+declaration.item.isLicenceRequired.body = It is your responsibility to check if your goods require a licence.
 declaration.item.isLicenceRequired.error = Select yes if the goods require a licence
 declaration.item.isLicenceRequired.notification.title = Important: notice about changes to waiver codes
 declaration.item.isLicenceRequired.notification.content.1 = Waiver codes are no longer automatically populated. If your goods meet the conditions for claiming a waiver document code, you should select “Yes” and manually enter the code in the next screen.
 declaration.item.isLicenceRequired.notification.content.2 = Check the tariff entry below to find any specific measures and document codes which may be required by the commodity code you have declared.
-declaration.item.isLicenceRequired.title = Do the goods require a reference or code relating to a licence or certificate?
-declaration.item.isLicenceRequired.body = It is your responsibility to check if your goods require a licence.
 declaration.item.isLicenceRequired.inset.title = How do I know if the goods require a licence?
 declaration.item.isLicenceRequired.inset.1.text = The {0} will list any requirements. Navigate to the ‘Exports’ tab, then view any applicable information under ‘Conditions’.
 declaration.item.isLicenceRequired.inset.1.linkText = Tariff entry for the code you entered (opens in new tab)
@@ -1266,6 +1291,7 @@ declaration.item.isLicenceRequired.inset.1.linkText.0 = Tariff entry for {0}, th
 declaration.item.isLicenceRequired.inset.3.text = If you are allowed to declare waiver codes 999L, Y999, Y924, Y923 or Y903 this will be listed in the ‘Conditions’ box.
 declaration.item.isLicenceRequired.inset.4.text = Use of waivers constitutes a legal declaration that the goods do not require the certificate or licence shown. See more information about {0}.
 declaration.item.isLicenceRequired.inset.4.linkText = prohibitions and restrictions on exports (opens in new tab)
+declaration.item.isLicenceRequired.inset.5.text = You must keep records of sufficient evidence to show eligibility for this 999L waiver, and you must provide it on demand.
 
 declaration.totalPackageQuantity.title = What is the total number of packages in this declaration?
 declaration.totalPackageQuantity.paragraph = Count the smallest external package type that the goods have been packed in for export.
@@ -1614,9 +1640,11 @@ declaration.previousDocuments.documentCode = Document code
 declaration.previousDocuments.v1.documentCode.body.withJs = Select a document type, such as ‘commercial invoice’.
 declaration.previousDocuments.v1.documentCode.body.noJs = Select a document type from the list.
 declaration.previousDocuments.v1.documentCode.hint.withJs = To select an invoice, type ‘invoice’ to see the document codes for an invoice.
+declaration.previousDocuments.v1.documentCode.hint.noJs = To select invoice, type ‘invoice’ to view the document codes for the invoice.
 declaration.previousDocuments.v2.documentCode.body.withJs = Select a document type, such as ‘commercial invoice’. For excise removals under Customs Supervised Exports (CSE), select ZZZ for the excise guarantee or the warehouse stock reference.
 declaration.previousDocuments.v2.documentCode.body.noJs = Select a document type from the list. For excise removals under Customs Supervised Exports (CSE), select ZZZ for the excise guarantee or the warehouse stock reference.
 declaration.previousDocuments.v2.documentCode.hint.withJs = To select an invoice, type ‘invoice’ to see the document codes for an invoice.
+declaration.previousDocuments.v2.documentCode.hint.noJs = To select invoice, type ‘invoice’ to view the document codes for the invoice.
 declaration.previousDocuments.v3.documentCode.body.withJs = Select a document type, such as ‘commercial invoice’. For special procedures, select movement reference number (MRN) to enter the MRN of the previous import delaration. For excise removals under Customs Supervised Exports (CSE), select ZZZ for the excise guarantee or the warehouse stock reference.
 declaration.previousDocuments.v3.documentCode.body.noJs = Select a document type from the list. For example, ‘commercial invoice’. For special procedures, select movement reference number (MRN) to enter the MRN of the previous import delaration. For excise removals under Customs Supervised Exports (CSE), select ZZZ for the excise guarantee or the warehouse stock reference.
 declaration.previousDocuments.v3.documentCode.hint.withJs = To select an invoice, type ‘invoice’ to see the document codes for an invoice.
@@ -1849,6 +1877,7 @@ declaration.summary.references.linkDucrToMucr = Link to a MUCR
 declaration.summary.references.linkDucrToMucr.change = Change Link DUCR to a MUCR
 declaration.summary.references.mucr = MUCR
 declaration.summary.references.mucr.change = Change MUCR
+
 declaration.summary.parties.eidr = Is this an EIDR?
 declaration.summary.parties.eidr.change = Change Is this an EIDR?
 declaration.summary.parties.eidr.yes = Yes
@@ -1933,6 +1962,7 @@ declaration.summary.parties.representative.type.change = Change type of represen
 declaration.summary.parties.representative.type.1 = Declarant
 declaration.summary.parties.representative.type.2 = Direct
 declaration.summary.parties.representative.type.3 = Indirect
+
 declaration.summary.countries.routingCountry = Routing country
 declaration.summary.countries.routingCountries = Routing countries
 declaration.summary.countries.routingCountries.change = Change routing countries
@@ -2109,6 +2139,9 @@ declaration.summary.transport.payment.Y = Account holder with carrier
 declaration.summary.transport.payment.Z = Not pre-paid
 declaration.summary.transport.payment._ = Payment information is not available
 
+declaration.summary.transport.containers = Goods in a container
+declaration.summary.transport.containers.change = Change the goods in a container
+
 declaration.summary.containers = Goods in a container
 declaration.summary.container = Container information
 declaration.summary.container.id = Container ID
@@ -2225,6 +2258,7 @@ declaration.confirmation.received.next.1 = Further customs checks will be carrie
 declaration.confirmation.received.next.2 = If the status of your declaration has not changed within 2 hours from when the goods are arrived, you should {0}.
 
 declaration.confirmation.what.happens.next = What happens next
+declaration.confirmation.whatYouCanDoNow.heading = What you can do now
 declaration.confirmation.whatYouCanDoNow.nonGvms.paragraph = You are also able to {0} by associating it, and other consignments, to a master consignment. You will also be able to {1} this declaration if you are a registered loader.
 declaration.confirmation.whatYouCanDoNow.nonGvms.paragraph.link.1 = consolidate this declaration
 declaration.confirmation.whatYouCanDoNow.nonGvms.paragraph.link.2 = arrive or depart
@@ -2258,13 +2292,11 @@ declaration.confirmation.body.2 = You can check the status of your declaration a
 declaration.confirmation.declaration.details.link = Declaration status
 declaration.confirmation.next.2.link = contact the National Clearance Hub
 declaration.confirmation.whatHappensNext = What happens next
+declaration.confirmation.eidr = EIDR
 
 declaration.confirmation.prelodged = Pre-lodged
 declaration.confirmation.arrived = Arrived
 declaration.confirmation.simplified = Simplified
-declaration.confirmation.eidr = EIDR
-
-declaration.confirmation.whatYouCanDoNow.heading = What you can do now
 
 declaration.exitSurvey.header = Tell us what you think
 declaration.exitSurvey.line.1 = This is a new service and we want to know what you think of it.
@@ -2340,10 +2372,6 @@ rejected.notification.guidance.section.3.paragraph.1 = If you need help with mis
 rejected.notification.guidance.section.3.paragraph.2 = Telephone: 0300 322 9434
 rejected.notification.guidance.section.3.paragraph.3 = Monday to Friday, 9am to 5pm (except public holidays)
 
-
-
-amendment.cancellation.heading = Cancel amendment request
-amendment.resubmission.heading = Resubmit amendment request
 amendment.submission.heading = Submit amendment request
 amendment.submission.warning = You could be prosecuted if you deliberately give untrue or misleading information.
 amendment.submission.fullName = Full name
@@ -2360,21 +2388,24 @@ amendment.submission.email = Email address
 amendment.submission.email.empty = Enter an email address
 amendment.submission.email.long = Your email address must not be more than 64 characters
 amendment.submission.email.error = Enter a valid email address
-amendment.cancellation.reason = Reason for your cancellation
-amendment.resubmission.reason = Reason for your amendment
 amendment.submission.reason = Reason for your amendment
-amendment.cancellation.reason.empty = Enter a reason for this cancellation
 amendment.submission.reason.empty = Enter a reason for this amendment
-amendment.cancellation.reason.long = Your cancellation reason must not be more than 512 characters
 amendment.submission.reason.long = Your amendment reason must not be more than 512 characters
-amendment.cancellation.reason.error = Only letters, numbers, and certain special characters can be used in a cancellation reason
 amendment.submission.reason.error = Only letters, numbers, and certain special characters can be used in a amendment reason
 amendment.submission.confirmation = I confirm the information given is correct to the best of my knowledge
 amendment.submission.confirmation.missing = You must confirm the information is correct to the best of your knowledge
-amendment.resubmission.button = Resubmit Amendment
 amendment.submission.button = Submit Amendment
 
-field.declaration.unknown = ???
+amendment.cancellation.heading = Cancel amendment request
+amendment.cancellation.reason = Reason for your cancellation
+amendment.cancellation.reason.empty = Enter a reason for this cancellation
+amendment.cancellation.reason.long = Your cancellation reason must not be more than 512 characters
+amendment.cancellation.reason.error = Only letters, numbers, and certain special characters can be used in a cancellation reason
+
+amendment.resubmission.heading = Resubmit amendment request
+amendment.resubmission.reason = Reason for your amendment
+amendment.resubmission.button = Resubmit Amendment
+
 field.declaration.functionCode = Declaration type
 field.declaration.consignmentReferences.lrn = LRN
 field.declaration.typeCode = Type of standard declaration

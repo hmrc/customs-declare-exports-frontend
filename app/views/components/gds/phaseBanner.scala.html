@@ -23,14 +23,14 @@
 
 @backUrl = @{ appConfig.selfBaseUrl.map(url => s"&backUrl=$url${request.uri}").getOrElse("") }
 @betaFeedbackUrl = @{s"${appConfig.giveFeedbackLink}$backUrl"}
-@link = {<a href="@betaFeedbackUrl" class="govuk-link">@messages("feedback.link")</a>}
+@link = {<a href="@betaFeedbackUrl" class="govuk-link" target="_blank">@messages("feedback.link")</a>}
 
 @feedbackBanner = {
   @Html(messages("feedback", link))
 }
 
 @govukPhaseBanner(PhaseBanner(
-  tag = Some(Tag(Text(phase), "beta")),
+  tag = Some(Tag(Text(phase))),
   content = HtmlContent(feedbackBanner),
   classes ="govuk-!-display-none-print"
 ))

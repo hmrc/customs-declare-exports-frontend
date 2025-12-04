@@ -24,6 +24,7 @@
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.currencyinput.CurrencyInput
 @import views.components.gds.Styles._
 @import views.helpers.{BackButton, Title}
+@import views.helpers.ErrorMapper.prefixedErrorMessage
 @import views.html.components.gds._
 
 @this(
@@ -82,7 +83,7 @@
             name = "statisticalValue",
             value = form("statisticalValue").value,
             classes = "govuk-input--width-10",
-            errorMessage = form("statisticalValue").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
+            errorMessage = form("statisticalValue").error.map(prefixedErrorMessage(_))
         ))
 
         @heading(messages("declaration.statisticalValue.section.header"), "govuk-heading-s govuk-!-margin-top-8", "h2")

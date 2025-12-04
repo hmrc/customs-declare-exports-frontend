@@ -24,6 +24,7 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.components.gds.Styles._
 @import views.helpers.{BackButton, Title}
+@import views.helpers.ErrorMapper.prefixedErrorMessage
 @import views.html.components.gds._
 
 @this(
@@ -81,7 +82,7 @@
                     checked = form(inWarehouseKey).value.contains(no)
                 )
             ),
-            errorMessage = form(inWarehouseKey).error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
+            errorMessage = form(inWarehouseKey).error.map(prefixedErrorMessage(_))
         ))
 
         @tariffExpander(WarehouseIdentification, request.declarationType)(messages, appConfig)

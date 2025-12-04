@@ -23,7 +23,7 @@
 @import services.TransportCodeService
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.helpers.{BackButton, BorderTransportHelper, ModeOfTransportCodeHelper}
-@import views.helpers.ErrorMapper.radioGroupErrors
+@import views.helpers.ErrorMapper.{radioGroupErrors, prefixedErrorMessage}
 @import views.html.components.gds._
 
 @this(
@@ -64,7 +64,7 @@
         @govukRadios(Radios(
             name = radioButtonGroupId,
             items = borderTransportHelper.radioButtons(form),
-            errorMessage = form(radioButtonGroupId).error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
+            errorMessage = form(radioButtonGroupId).error.map(prefixedErrorMessage(_))
         ))
 
         @saveButtons()

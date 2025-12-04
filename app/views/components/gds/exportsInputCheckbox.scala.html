@@ -15,6 +15,7 @@
  *@
 
 @import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.helpers.ErrorMapper.prefixedErrorMessage
 @import views.components.gds.Styles._
 
 @this(govukCheckboxes: GovukCheckboxes)
@@ -36,5 +37,5 @@
             checked = field.value == Some("true")
         )
     ),
-    errorMessage = field.error.map(err => ErrorMessage(content = Text(messages(err.message))))
+    errorMessage = field.error.map(prefixedErrorMessage(_))
 ))

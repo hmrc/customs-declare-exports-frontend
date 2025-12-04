@@ -25,6 +25,7 @@
 @import views.helpers.{BackButton, Title}
 @import views.helpers.ErrorMapper.radioGroupErrors
 @import views.html.components.gds._
+@import views.helpers.ErrorMapper.prefixedErrorMessage
 
 @this(
     govukLayout: gdsMainTemplate,
@@ -85,7 +86,10 @@
                     checked = form("type").value.contains(NonStandardDeclarationType)
                 )
             ),
-            errorMessage = form("type").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
+
+            errorMessage = form("type").error.map(prefixedErrorMessage(_))
+
+
         ))
 
         @govukWarningText(WarningText(

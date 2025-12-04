@@ -17,6 +17,9 @@
 package views.helpers
 
 import play.api.data.FormError
+import play.api.i18n.Messages
+import uk.gov.hmrc.govukfrontend.views.Aliases.Text
+import uk.gov.hmrc.govukfrontend.views.viewmodels.errormessage.ErrorMessage
 
 object ErrorMapper {
 
@@ -28,4 +31,7 @@ object ErrorMapper {
 
   def yesNoErrors(errors: Seq[FormError], answerKey: String = "yesNo"): Seq[FormError] =
     radioGroupErrors(answerKey, "code_yes", errors)
+
+  def prefixedErrorMessage(err: FormError)(implicit messages: Messages): ErrorMessage =
+    ErrorMessage(visuallyHiddenText = Some(messages("site.accessibility.error")), content = Text(messages(err.message, err.args: _*)))
 }
