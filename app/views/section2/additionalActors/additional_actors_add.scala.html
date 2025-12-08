@@ -49,7 +49,7 @@
     Some(exportsInputText(
         field = form(s"eori$partyType"),
         inputClasses = Some("govuk-input govuk-!-width-three-quarters"),
-        labelKey = "declaration.additionalActors.eori"
+        labelKey = s"declaration.additionalActors.eori.$partyType"
     ))
 }
 
@@ -112,7 +112,7 @@
 }
 
 @govukLayout(
-    title = Title("declaration.additionalActors.title",  "declaration.section.2", hasErrors = hasErrors),
+    title = Title("declaration.additionalActors.title", "declaration.section.2", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(AdditionalActor)))) {
 
     @formHelper(action = AdditionalActorsAddController.saveForm, 'autoComplete -> "off") {
