@@ -47,14 +47,6 @@
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 
-@fieldsetAttributes = @{
-    if(hasErrors) {
-        Map("aria-describedby" -> "yesNo-error")
-    } else {
-        Map.empty[String, String]
-    }
-}
-
 @govukLayout(
     title = Title(authorisationHolderRequiredHelper.title, "declaration.section.2", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(AuthorisationHolderRequired)))) {
@@ -65,7 +57,7 @@
         @sectionHeader(messages("declaration.section.2"))
 
         @govukFieldset(Fieldset(
-            attributes = fieldsetAttributes,
+            describedBy = Option.when(form.hasErrors)("yesNo-error"),
             legend = Some(Legend(
                 content = Text(messages(authorisationHolderRequiredHelper.title)),
                 classes = gdsPageLegend,

@@ -103,6 +103,7 @@
 @authorisationHolderEditHelper.insetTextBelowAuthorisationCode(appConfig)
 
 @govukFieldset(Fieldset(
+    describedBy = Option.when(form.hasErrors)("eoriSource-error"),
     legend = Some(Legend(
         content = Text(messages("declaration.authorisationHolder.eori")),
         classes = "govuk-fieldset__legend--m"
