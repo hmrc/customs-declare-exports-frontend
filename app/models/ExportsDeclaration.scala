@@ -217,14 +217,8 @@ case class ExportsDeclaration(
     )
   }
 
-  def updateTransportCountry(transportCountry: TransportCountry): ExportsDeclaration = {
-    val transportCountryOption: Option[TransportCountry] =
-      transportCountry.countryCode match {
-        case Some(code) if code.trim.nonEmpty => Some(transportCountry)
-        case _                                => None
-      }
-    copy(transport = transport.copy(transportCrossingTheBorderNationality = transportCountryOption))
-  }
+  def updateTransportCountry(transportCountry: TransportCountry): ExportsDeclaration =
+    copy(transport = transport.copy(transportCrossingTheBorderNationality = transportCountry.countryCode.map(_ => transportCountry)))
 
   def removeAuthorisationProcedureCodeChoice: ExportsDeclaration =
     copy(parties = parties.copy(authorisationProcedureCodeChoice = None))
