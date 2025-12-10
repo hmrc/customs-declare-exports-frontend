@@ -260,7 +260,6 @@ class ConfirmationViewSpec extends UnitViewSpec with GivenWhenThen with Injector
       }
     }
 
-
   private def displayPrintButton(view: Document): Unit =
     "display print button" in {
       val button = view.getElementsByClass("ceds-print-link")
