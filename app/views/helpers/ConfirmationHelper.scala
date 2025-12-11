@@ -24,10 +24,11 @@ import models.declaration.submissions.Submission
 import play.api.i18n.Messages
 import play.api.mvc.{Call, Request}
 import play.twirl.api.Html
-import uk.gov.hmrc.govukfrontend.views.Aliases.{Key, SummaryList, SummaryListRow, Value}
-import uk.gov.hmrc.govukfrontend.views.html.components.{GovukPanel, GovukSummaryList, GovukWarningText}
+import uk.gov.hmrc.govukfrontend.views.Aliases.TableRow
+import uk.gov.hmrc.govukfrontend.views.html.components.{GovukPanel, GovukTable, GovukWarningText}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.panel.Panel
+import uk.gov.hmrc.govukfrontend.views.viewmodels.table.Table
 import uk.gov.hmrc.govukfrontend.views.viewmodels.warningtext.WarningText
 import views.helpers.ConfirmationHelper.getConfirmationPageMessageKey
 import views.html.components.print_page_button
@@ -42,7 +43,7 @@ case class Confirmation(email: String, declarationType: String, submission: Subm
 class ConfirmationHelper @Inject() (
   exitSurvey: exit_survey,
   govukPanel: GovukPanel,
-  govukSummaryList: GovukSummaryList,
+  govukTable: GovukTable,
   govukWarningText: GovukWarningText,
   heading: heading,
   link: link,
@@ -112,32 +113,37 @@ class ConfirmationHelper @Inject() (
     new Html(topSection ::: List(title, body1, body2, link1) ::: bottomSection)
   }
 
-  private def topSection(implicit confirmation: Confirmation, messages: Messages): List[Html] = List(panel(title(confirmation)), summaryList)
+  private def topSection(implicit confirmation: Confirmation, messages: Messages): List[Html] = List(panel(title(confirmation)), table)
   private def bottomSection(implicit request: Request[_], messages: Messages): List[Html] = List(print_page_button(8, 4), sectionBreak, exitSurvey())
 
-  private def summaryList(implicit confirmation: Confirmation, messages: Messages): Html =
-    govukSummaryList(
-      SummaryList(
-        classes = "govuk-!-margin-bottom-6",
-        rows = Seq(
+  private def table(implicit confirmation: Confirmation, messages: Messages): Html =
+    govukTable(
+      Table(rows =
+        Seq(
           Some(
-            SummaryListRow(
-              key = Key(content = Text(messages("declaration.confirmation.additionalType"))),
-              value = Value(content = Text(messages(getConfirmationPageMessageKey(confirmation.declarationType))))
+            Seq(
+              TableRow(content = Text(messages(s"declaration.confirmation.additionalType")), classes = "govuk-!-font-weight-bold"),
+              TableRow(content = Text(messages(getConfirmationPageMessageKey(confirmation.declarationType))))
             )
           ),
-          confirmation.submission.ducr.map { ducr =>
-            SummaryListRow(key = Key(content = Text(messages("declaration.confirmation.ducr"))), value = Value(content = Text(ducr)))
-          },
-          Some(
-            SummaryListRow(
-              key = Key(content = Text(messages("declaration.confirmation.lrn"))),
-              value = Value(content = Text(confirmation.submission.lrn))
+          confirmation.submission.ducr.map(ducr =>
+            Seq(
+              TableRow(content = Text(messages(s"declaration.confirmation.ducr")), classes = "govuk-!-font-weight-bold"),
+              TableRow(content = Text(ducr))
             )
           ),
-          confirmation.submission.mrn.map { mrn =>
-            SummaryListRow(key = Key(content = Text(messages("declaration.confirmation.mrn"))), value = Value(content = Text(mrn)))
-          }
+          Some(
+            Seq(
+              TableRow(content = Text(messages(s"declaration.confirmation.lrn")), classes = "govuk-!-font-weight-bold"),
+              TableRow(content = Text(confirmation.submission.lrn))
+            )
+          ),
+          confirmation.submission.mrn.map(mrn =>
+            Seq(
+              TableRow(content = Text(messages(s"declaration.confirmation.mrn")), classes = "govuk-!-font-weight-bold"),
+              TableRow(content = Text(mrn))
+            )
+          )
         ).flatten
       )
     )
