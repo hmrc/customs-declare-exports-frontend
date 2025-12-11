@@ -165,9 +165,14 @@ class Card6ForTransport @Inject() (summaryCard: summary_card, countryHelper: Cou
 
   private def transportCrossingTheBorder(transport: Transport, actionsEnabled: Boolean)(implicit messages: Messages): Option[SummaryListRow] =
     transport.transportCrossingTheBorderNationality.map { transportCrossingTheBorderNationality =>
-      lazy val country = transportCrossingTheBorderNationality.countryCode
-        .flatMap(countryHelper.getShortNameForCountryCode)
-        .getOrElse(messages("declaration.summary.unknown"))
+      lazy val country = transportCrossingTheBorderNationality.countryCode.map { value =>
+        if (value.trim.isEmpty) {
+          messages("declaration.summary.not.provided")
+        } else
+          countryHelper
+            .getShortNameForCountryCode(value)
+            .getOrElse(messages("declaration.summary.unknown"))
+      }.getOrElse(messages("declaration.summary.unknown"))
 
       SummaryListRow(
         key("transport.registrationCountry"),
