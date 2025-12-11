@@ -60,6 +60,12 @@ class TransportCountrySpec extends UnitWithMocksSpec with BeforeAndAfterEach wit
 
     "return form with errors" when {
 
+      "provided with an empty country" in {
+        val aTransportMode = List("declaration.transport.leavingTheBorder.transportMode.sea")
+        val errors = form.bind(formData(None), JsonBindMaxChars).errors
+        errors mustBe List(FormError(transportCountry, s"$prefix.country.error.empty", aTransportMode))
+      }
+
       "provided with an invalid country" in {
         val errors = form.bind(formData(Some("12345")), JsonBindMaxChars).errors
         errors mustBe List(FormError(transportCountry, s"$prefix.country.error.invalid"))
