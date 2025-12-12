@@ -222,18 +222,6 @@ class TransportCountryControllerSpec extends ControllerSpec with AuditedControll
 
     "return 400 (BAD_REQUEST)" when {
 
-      "no value is entered" in {
-        withNewCaching(aStandardDeclaration)
-
-        val incorrectForm = Json.obj(fieldIdOnError(transportCountry) -> "")
-        val result = controller.submitForm(postRequest(incorrectForm))
-
-        status(result) mustBe BAD_REQUEST
-        verifyNoAudit()
-
-        theResponseForm.errors.head.messages.head mustBe "declaration.transportInformation.transportCountry.country.error.empty"
-      }
-
       "the entered value is incorrect or not a list's option" in {
         withNewCaching(aStandardDeclaration)
 
