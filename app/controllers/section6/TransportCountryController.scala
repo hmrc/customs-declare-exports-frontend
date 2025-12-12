@@ -16,6 +16,7 @@
 
 package controllers.section6
 
+import config.AppConfig
 import connectors.CodeListConnector
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.general.{ModelCacheable, SubmissionErrors}
@@ -46,7 +47,7 @@ class TransportCountryController @Inject() (
   override val exportsCacheService: ExportsCacheService,
   mcc: MessagesControllerComponents,
   transportCountry: transport_country
-)(implicit ec: ExecutionContext, codeListConnector: CodeListConnector, auditService: AuditService)
+)(implicit ec: ExecutionContext, codeListConnector: CodeListConnector, auditService: AuditService, appConfig: AppConfig)
     extends FrontendController(mcc) with AutoCompleteFieldBinding with I18nSupport with ModelCacheable with SubmissionErrors
     with WithUnsafeDefaultFormBinding {
 
