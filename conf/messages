@@ -1451,8 +1451,7 @@ declaration.transportInformation.meansOfTransport.WagonNumber.label = Wagon numb
 declaration.transportInformation.meansOfTransport.WagonNumber.hint = For example, 6767 or ‘Unknown’.
 
 declaration.transportInformation.transportCountry.title = Select the country where the {0} is registered
-declaration.transportInformation.transportCountry.roro.inset.text = For Eurotunnel, select France as the country of registration.
-declaration.transportInformation.transportCountry.roro.paragraph = Select the country code (optional)
+declaration.transportInformation.transportCountry.roro.paragraph = For Eurotunnel, select France as the country of registration.
 declaration.transportInformation.transportCountry.country.error.empty = Select the country where the {0} is registered
 declaration.transportInformation.transportCountry.country.error.invalid = Please, choose a valid country
 
@@ -1848,7 +1847,6 @@ declaration.summary.noData.header.secondary = The declaration was not saved beca
 declaration.summary.noData.button = Create a new declaration
 declaration.summary.draft.ducr = DUCR
 declaration.summary.draft = Review the information you entered so far.
-declaration.summary.not.provided = Not provided
 declaration.summary.unknown = Unknown
 declaration.summary.section = Summary of your answers for section {0}
 
