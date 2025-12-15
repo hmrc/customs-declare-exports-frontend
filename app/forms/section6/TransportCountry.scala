@@ -55,21 +55,21 @@ object TransportCountry extends DeclarationPage with FieldMapping {
   def form(transportMode: String)(implicit messages: Messages, connector: CodeListConnector, appConfig: AppConfig): Form[TransportCountry] =
     Form(mapping(transportMode))
 
-  private def mapping(transportMode: String)(implicit messages: Messages, connector: CodeListConnector, appConfig: AppConfig): Mapping[TransportCountry] = {
-    if(appConfig.isOptionalFieldsEnabled){
+  private def mapping(
+    transportMode: String
+  )(implicit messages: Messages, connector: CodeListConnector, appConfig: AppConfig): Mapping[TransportCountry] =
+    if (appConfig.isOptionalFieldsEnabled) {
       Forms.mapping(
         transportCountry -> text
           .verifying(s"$prefix.country.error.invalid", input => input.isEmpty or isValidCountryCode(input))
       )(country => TransportCountry(Some(country)))(_.countryCode)
-    }else{
+    } else {
       Forms.mapping(
         transportCountry -> text
           .verifying(nonEmptyConstraint(transportMode))
           .verifying(s"$prefix.country.error.invalid", input => input.isEmpty or isValidCountryCode(input))
       )(country => TransportCountry(Some(country)))(_.countryCode)
     }
-
-  }
 
   private def nonEmptyConstraint(transportMode: String): Constraint[String] =
     Constraint("constraint.nonEmpty.country") { country =>

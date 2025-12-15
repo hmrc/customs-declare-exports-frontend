@@ -17,6 +17,7 @@
 package forms.section6
 
 import base.UnitWithMocksSpec
+import config.AppConfig
 import connectors.CodeListConnector
 import forms.common.DeclarationPageBaseSpec
 import forms.section6.ModeOfTransportCode.Maritime
@@ -38,6 +39,8 @@ import scala.collection.immutable.ListMap
 class TransportCountrySpec extends UnitWithMocksSpec with BeforeAndAfterEach with DeclarationPageBaseSpec {
 
   implicit val codeListConnector: CodeListConnector = mock[CodeListConnector]
+
+  implicit val appConfig: AppConfig = mock[AppConfig]
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()

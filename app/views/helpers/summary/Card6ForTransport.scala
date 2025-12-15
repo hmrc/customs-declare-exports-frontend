@@ -164,7 +164,9 @@ class Card6ForTransport @Inject() (summaryCard: summary_card, countryHelper: Cou
       )
     }
 
-  private def transportCrossingTheBorder(transport: Transport, actionsEnabled: Boolean, appConfig: AppConfig)(implicit messages: Messages): Option[SummaryListRow] =
+  private def transportCrossingTheBorder(transport: Transport, actionsEnabled: Boolean, appConfig: AppConfig)(
+    implicit messages: Messages
+  ): Option[SummaryListRow] =
     transport.transportCrossingTheBorderNationality.map { transportCrossingTheBorderNationality =>
       if (appConfig.isOptionalFieldsEnabled) {
         lazy val country = transportCrossingTheBorderNationality.countryCode.map { value =>
@@ -180,7 +182,8 @@ class Card6ForTransport @Inject() (summaryCard: summary_card, countryHelper: Cou
           key("transport.registrationCountry"),
           value(country),
           classes = "active-transport-country",
-          changeLink(TransportCountryController.displayPage, "transport.registrationCountry", actionsEnabled))
+          changeLink(TransportCountryController.displayPage, "transport.registrationCountry", actionsEnabled)
+        )
       } else {
         lazy val country = transportCrossingTheBorderNationality.countryCode
           .flatMap(countryHelper.getShortNameForCountryCode)
@@ -190,7 +193,8 @@ class Card6ForTransport @Inject() (summaryCard: summary_card, countryHelper: Cou
           key("transport.registrationCountry"),
           value(country),
           classes = "active-transport-country",
-          changeLink(TransportCountryController.displayPage, "transport.registrationCountry", actionsEnabled))
+          changeLink(TransportCountryController.displayPage, "transport.registrationCountry", actionsEnabled)
+        )
       }
     }
 

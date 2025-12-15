@@ -17,6 +17,7 @@
 package controllers.section6
 
 import base.{AuditedControllerSpec, ControllerSpec}
+import config.AppConfig
 import connectors.CodeListConnector
 import controllers.helpers.TransportSectionHelper.{Guernsey, Jersey}
 import controllers.general.routes.RootController
@@ -45,10 +46,13 @@ class TransportCountryControllerSpec extends ControllerSpec with AuditedControll
   val page = mock[transport_country]
   val codeListConnector = mock[CodeListConnector]
 
+  override implicit val appConfig: AppConfig = mock[AppConfig]
+
   val controller = new TransportCountryController(mockAuthAction, mockJourneyAction, navigator, mockExportsCacheService, mcc, page)(
     ec,
     codeListConnector,
-    auditService
+    auditService,
+    appConfig
   )
 
   val countryCode = "ZA"

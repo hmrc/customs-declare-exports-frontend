@@ -17,6 +17,7 @@
 package views.section6
 
 import base.Injector
+import config.AppConfig
 import connectors.CodeListConnector
 import controllers.helpers.TransportSectionHelper.nonPostalOrFTIModeOfTransportCodes
 import controllers.section6.routes._
@@ -43,6 +44,8 @@ import scala.collection.immutable.ListMap
 class TransportCountryViewSpec extends PageWithButtonsSpec with Injector {
 
   implicit val codeListConnector: CodeListConnector = mock[CodeListConnector]
+
+  implicit val appConfig: AppConfig = mock[AppConfig]
 
   val page = instanceOf[transport_country]
 
@@ -100,28 +103,43 @@ class TransportCountryViewSpec extends PageWithButtonsSpec with Injector {
                 view.getElementsByTag("h1").text mustBe messages(s"$prefix.title", transportMode)
               }
 
-              "display the expected onset text" when {
-                "'Transport Leaving the Border' is 'RoRo'" in {
-                  val onsetText = view.getElementsByClass("govuk-inset-text")
+              if (appConfig.isOptionalFieldsEnabled) {
+                "display the expected onset text" when {
+                  "'Transport Leaving the Border' is 'RoRo'" in {
+                    val onsetText = view.getElementsByClass("govuk-inset-text")
 
-                  onsetText.size mustBe (if (code == RoRo) 1 else 0)
+                    onsetText.size mustBe (if (code == RoRo) 1 else 0)
 
-                  if (code == RoRo) {
-                    val expectedText = messages(s"$prefix.roro.inset.text")
-                    onsetText.get(0).text mustBe expectedText
+                    if (code == RoRo) {
+                      val expectedText = messages(s"$prefix.roro.inset.text")
+                      onsetText.get(0).text mustBe expectedText
+                    }
+
                   }
-
                 }
               }
 
               "display the expected paragraph" when {
-                "'Transport Leaving the Border' is 'RoRo'" in {
-                  val body = view.getElementsByClass("govuk-body")
+                if (appConfig.isOptionalFieldsEnabled) {
+                  "'Transport Leaving the Border' is 'RoRo'" in {
+                    val body = view.getElementsByClass("govuk-body")
 
-                  body.size mustBe (if (code == RoRo) 2 else 1)
+                    body.size mustBe (if (code == RoRo) 2 else 1)
 
-                  val expectedText = messages(if (code == RoRo) s"$prefix.roro.paragraph" else exitAndReturnCaption)
-                  body.get(0).text mustBe expectedText
+                    val expectedText = messages(if (code == RoRo) s"$prefix.roro.paragraph" else exitAndReturnCaption)
+                    body.get(0).text mustBe expectedText
+                  }
+                } else {
+                  "display the expected paragraph" when {
+                    "'Transport Leaving the Border' is 'RoRo'" in {
+                      val body = view.getElementsByClass("govuk-body")
+
+                      body.size mustBe (if (code == RoRo) 2 else 1)
+
+                      val expectedText = messages(if (code == RoRo) s"$prefix.roro.inset.text" else exitAndReturnCaption)
+                      body.get(0).text mustBe expectedText
+                    }
+                  }
                 }
               }
 
