@@ -91,39 +91,46 @@ class AmendmentRejectionViewSpec extends UnitViewSpec with GivenWhenThen with In
       val rows = summaryList.getElementsByClass("govuk-summary-list__row")
       rows.size mustBe 4
 
-      rows.get(0)
+      rows
+        .get(0)
         .getElementsByClass("govuk-summary-list__key")
         .first() must containMessage("declaration.confirmation.additionalType")
 
-      rows.get(0)
+      rows
+        .get(0)
         .getElementsByClass("govuk-summary-list__value")
         .first() must containText(STANDARD_FRONTIER.toString)
 
-      rows.get(1)
+      rows
+        .get(1)
         .getElementsByClass("govuk-summary-list__key")
         .first() must containMessage("declaration.confirmation.ducr")
 
-      rows.get(1)
+      rows
+        .get(1)
         .getElementsByClass("govuk-summary-list__value")
         .first() must containText(ducr)
 
-      rows.get(2)
+      rows
+        .get(2)
         .getElementsByClass("govuk-summary-list__key")
         .first() must containMessage("declaration.confirmation.lrn")
 
-      rows.get(2)
+      rows
+        .get(2)
         .getElementsByClass("govuk-summary-list__value")
         .first() must containText(lrn)
 
-      rows.get(3)
+      rows
+        .get(3)
         .getElementsByClass("govuk-summary-list__key")
         .first() must containMessage("declaration.confirmation.mrn")
 
-      rows.get(3)
+      rows
+        .get(3)
         .getElementsByClass("govuk-summary-list__value")
         .first() must containText(mrn)
     }
-
 
   private def displayPrintButton(view: Document): Unit =
     "display print button" in {
