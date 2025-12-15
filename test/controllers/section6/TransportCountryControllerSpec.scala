@@ -17,6 +17,7 @@
 package controllers.section6
 
 import base.{AuditedControllerSpec, ControllerSpec}
+import config.AppConfig
 import connectors.CodeListConnector
 import controllers.helpers.TransportSectionHelper.{Guernsey, Jersey}
 import controllers.general.routes.RootController
@@ -40,7 +41,7 @@ import views.html.section6.transport_country
 import scala.collection.immutable.ListMap
 import scala.concurrent.Future
 
-class TransportCountryControllerSpec extends ControllerSpec with AuditedControllerSpec with OptionValues {
+class TransportCountryControllerSpec (implicit appConfig: AppConfig) extends ControllerSpec with AuditedControllerSpec with OptionValues {
 
   val page = mock[transport_country]
   val codeListConnector = mock[CodeListConnector]
@@ -48,7 +49,8 @@ class TransportCountryControllerSpec extends ControllerSpec with AuditedControll
   val controller = new TransportCountryController(mockAuthAction, mockJourneyAction, navigator, mockExportsCacheService, mcc, page)(
     ec,
     codeListConnector,
-    auditService
+    auditService,
+    appConfig
   )
 
   val countryCode = "ZA"

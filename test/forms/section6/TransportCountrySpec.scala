@@ -17,6 +17,7 @@
 package forms.section6
 
 import base.UnitWithMocksSpec
+import config.AppConfig
 import connectors.CodeListConnector
 import forms.common.DeclarationPageBaseSpec
 import forms.section6.ModeOfTransportCode.Maritime
@@ -35,7 +36,7 @@ import views.helpers.ModeOfTransportCodeHelper.transportMode
 import java.util.Locale
 import scala.collection.immutable.ListMap
 
-class TransportCountrySpec extends UnitWithMocksSpec with BeforeAndAfterEach with DeclarationPageBaseSpec {
+class TransportCountrySpec (implicit appConfig: AppConfig) extends UnitWithMocksSpec with BeforeAndAfterEach with DeclarationPageBaseSpec {
 
   implicit val codeListConnector: CodeListConnector = mock[CodeListConnector]
 

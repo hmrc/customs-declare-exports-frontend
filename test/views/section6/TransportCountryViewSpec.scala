@@ -17,6 +17,7 @@
 package views.section6
 
 import base.Injector
+import config.AppConfig
 import connectors.CodeListConnector
 import controllers.helpers.TransportSectionHelper.nonPostalOrFTIModeOfTransportCodes
 import controllers.section6.routes._
@@ -40,7 +41,7 @@ import views.tags.ViewTest
 import scala.collection.immutable.ListMap
 
 @ViewTest
-class TransportCountryViewSpec extends PageWithButtonsSpec with Injector {
+class TransportCountryViewSpec (implicit appConfig: AppConfig) extends PageWithButtonsSpec with Injector {
 
   implicit val codeListConnector: CodeListConnector = mock[CodeListConnector]
 
