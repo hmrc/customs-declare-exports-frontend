@@ -58,7 +58,7 @@ class AmendmentAcceptedViewSpec extends UnitViewSpec with GivenWhenThen with Inj
       children.get(0).text mustBe messages("declaration.confirmation.accepted.amendment.title")
     }
 
-    displayExpectedTableWithDucrLrnAndMrn(view)
+    displayExpectedSummaryListWithDucrLrnAndMrn(view)
 
     "display the expected 'What happens next' section" in {
       view.getElementsByTag("h2").get(0).text mustBe messages("declaration.confirmation.whatHappensNext")
@@ -79,25 +79,47 @@ class AmendmentAcceptedViewSpec extends UnitViewSpec with GivenWhenThen with Inj
     }
   }
 
-  private def displayExpectedTableWithDucrLrnAndMrn(view: Document): Unit =
-    "display expected table when MRN, LRN and DUCR are defined" in {
-      val table = view.getElementsByClass("govuk-table").first()
+  private def displayExpectedSummaryListWithDucrLrnAndMrn(view: Document): Unit =
+    "display expected summary list when MRN, LRN and DUCR are defined" in {
 
-      val rows = table.getElementsByClass("govuk-table__row")
+      val summaryList = view.getElementsByClass("govuk-summary-list").first()
+
+      val rows = summaryList.getElementsByClass("govuk-summary-list__row")
       rows.size mustBe 4
 
-      rows.get(0).children().get(0) must containMessage("declaration.confirmation.additionalType")
-      rows.get(0).children().get(1) must containText(STANDARD_FRONTIER.toString)
+      rows.get(0)
+        .getElementsByClass("govuk-summary-list__key")
+        .first() must containMessage("declaration.confirmation.additionalType")
 
-      rows.get(1).children().get(0) must containMessage("declaration.confirmation.ducr")
-      rows.get(1).children().get(1) must containText(ducr)
+      rows.get(0)
+        .getElementsByClass("govuk-summary-list__value")
+        .first() must containText(STANDARD_FRONTIER.toString)
 
-      rows.get(2).children().get(0) must containMessage("declaration.confirmation.lrn")
-      rows.get(2).children().get(1) must containText(lrn)
+      rows.get(1)
+        .getElementsByClass("govuk-summary-list__key")
+        .first() must containMessage("declaration.confirmation.ducr")
 
-      rows.get(3).children().get(0) must containMessage("declaration.confirmation.mrn")
-      rows.get(3).children().get(1) must containText(mrn)
+      rows.get(1)
+        .getElementsByClass("govuk-summary-list__value")
+        .first() must containText(ducr)
+
+      rows.get(2)
+        .getElementsByClass("govuk-summary-list__key")
+        .first() must containMessage("declaration.confirmation.lrn")
+
+      rows.get(2)
+        .getElementsByClass("govuk-summary-list__value")
+        .first() must containText(lrn)
+
+      rows.get(3)
+        .getElementsByClass("govuk-summary-list__key")
+        .first() must containMessage("declaration.confirmation.mrn")
+
+      rows.get(3)
+        .getElementsByClass("govuk-summary-list__value")
+        .first() must containText(mrn)
     }
+
 
   private def displayPrintButton(view: Document): Unit =
     "display print button" in {

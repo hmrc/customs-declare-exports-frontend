@@ -1,0 +1,73 @@
+@*
+ * Copyright 2024 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import views.html.components.gds._
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.helpers.Confirmation
+
+@this(govukSummaryList: GovukSummaryList)
+
+@(confirmation: Confirmation)(implicit messages: Messages)
+
+@govukSummaryList(
+  SummaryList(
+    classes = "govuk-!-margin-bottom-6",
+    rows = Seq(
+      Some(
+        SummaryListRow(
+          key = Key(
+            content = Text(messages("declaration.summary.references.additionalType"))
+          ),
+          value = Value(
+            content = Text(
+              messages(s"declaration.summary.references.additionalType.${confirmation.declarationType}")
+            )
+          )
+        )
+      ),
+      confirmation.submission.ducr.map { ducr =>
+        SummaryListRow(
+          key = Key(
+            content = Text(messages("declaration.confirmation.ducr"))
+          ),
+        value = Value(
+          content = Text(ducr)
+        )
+      )
+    },
+    Some(
+      SummaryListRow(
+        key = Key(
+          content = Text(messages("declaration.confirmation.lrn"))
+        ),
+        value = Value(
+          content = Text(confirmation.submission.lrn)
+        )
+      )
+    ),
+    confirmation.submission.mrn.map { mrn =>
+      SummaryListRow(
+        key = Key(
+          content = Text(messages("declaration.confirmation.mrn"))
+        ),
+        value = Value(
+          content = Text(mrn)
+        )
+      )
+    }
+    ).flatten
+  )
+)

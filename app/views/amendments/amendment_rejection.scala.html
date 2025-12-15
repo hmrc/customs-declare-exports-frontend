@@ -23,14 +23,11 @@
 
 @this(
     govukLayout: gdsMainTemplate,
-    govukPanel: GovukPanel,
-    govukTable: GovukTable,
     heading: heading,
     paragraph: paragraphBody,
     link: link,
     exitSurvey: exit_survey,
-    references_table: references_table
-)
+    references_summary_list: references_summary_list)
 
 @(confirmation: Confirmation)(implicit request: Request[_], messages: Messages)
 
@@ -40,7 +37,7 @@
 
     @heading(messages("declaration.confirmation.whatHappensNext"), "govuk-heading-m", "h2")
 
-    @references_table(confirmation)
+    @references_summary_list(confirmation)
 
     @paragraph(messages("declaration.confirmation.rejected.amendment.next.1"))
     @paragraph(messages("declaration.confirmation.rejected.amendment.next.2"))
