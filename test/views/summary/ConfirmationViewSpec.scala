@@ -88,7 +88,7 @@ class ConfirmationViewSpec extends UnitViewSpec with GivenWhenThen with Injector
         children.get(0).text mustBe messages("declaration.confirmation.submitted.title")
       }
 
-      displayExpectedTable(view, declarationType, submission.mrn)
+      displayExpectedSummaryList(view, declarationType, submission.mrn)
 
       "display the expected 'What happens next' section" in {
         view.getElementsByTag("h2").get(0).text mustBe messages("declaration.confirmation.whatHappensNext")
@@ -144,7 +144,7 @@ class ConfirmationViewSpec extends UnitViewSpec with GivenWhenThen with Injector
           children.get(0).text mustBe messages("declaration.confirmation.actionRequired.title")
         }
 
-        displayExpectedTable(view, STANDARD_FRONTIER, submission.mrn)
+        displayExpectedSummaryList(view, STANDARD_FRONTIER, submission.mrn)
 
         "display the 'WHat happens next' heading" in {
           view.getElementsByTag("h2").get(0).text mustBe messages("declaration.confirmation.whatHappensNext")
@@ -196,7 +196,7 @@ class ConfirmationViewSpec extends UnitViewSpec with GivenWhenThen with Injector
         children.get(0).text mustBe messages("declaration.confirmation.pendingNotification.title")
       }
 
-      displayExpectedTable(view, STANDARD_FRONTIER, None)
+      displayExpectedSummaryList(view, STANDARD_FRONTIER, None)
 
       "display the 'WHat happens next' heading" in {
         view.getElementsByTag("h2").get(0).text mustBe messages("declaration.confirmation.whatHappensNext")
@@ -223,26 +223,40 @@ class ConfirmationViewSpec extends UnitViewSpec with GivenWhenThen with Injector
     }
   }
 
-  private def displayExpectedTable(view: Document, declarationType: AdditionalDeclarationType, maybeMrn: Option[String]): Unit =
-    "display expected table when dec type, MRN, LRN and DUCR are defined" in {
-      val table = view.getElementsByClass("govuk-table").first()
+  private def displayExpectedSummaryList(view: Document, declarationType: AdditionalDeclarationType, maybeMrn: Option[String]): Unit =
+    "display expected summary list when dec type, MRN, LRN and DUCR are defined" in {
 
-      val rows = table.getElementsByClass("govuk-table__row")
+      val summaryList = view.getElementsByClass("govuk-summary-list").first()
+
+      val rows = summaryList.getElementsByClass("govuk-summary-list__row")
+
       if (maybeMrn.isDefined) rows.size mustBe 4
       else rows.size mustBe 3
 
-      rows.get(0).children().get(0) must containMessage("declaration.confirmation.additionalType")
-      rows.get(0).children().get(1) must containMessage(s"${getConfirmationPageMessageKey(declarationType.toString)}")
+      rows.get(0).getElementsByClass("govuk-summary-list__key").first() must
+        containMessage("declaration.confirmation.additionalType")
 
-      rows.get(1).children().get(0) must containMessage("declaration.confirmation.ducr")
-      rows.get(1).children().get(1) must containText(ducr)
+      rows.get(0).getElementsByClass("govuk-summary-list__value").first() must
+        containMessage(getConfirmationPageMessageKey(declarationType.toString))
 
-      rows.get(2).children().get(0) must containMessage("declaration.confirmation.lrn")
-      rows.get(2).children().get(1) must containText(lrn)
+      rows.get(1).getElementsByClass("govuk-summary-list__key").first() must
+        containMessage("declaration.confirmation.ducr")
+
+      rows.get(1).getElementsByClass("govuk-summary-list__value").first() must
+        containText(ducr)
+
+      rows.get(2).getElementsByClass("govuk-summary-list__key").first() must
+        containMessage("declaration.confirmation.lrn")
+
+      rows.get(2).getElementsByClass("govuk-summary-list__value").first() must
+        containText(lrn)
 
       if (maybeMrn.isDefined) {
-        rows.get(3).children().get(0) must containMessage("declaration.confirmation.mrn")
-        rows.get(3).children().get(1) must containText(mrn)
+        rows.get(3).getElementsByClass("govuk-summary-list__key").first() must
+          containMessage("declaration.confirmation.mrn")
+
+        rows.get(3).getElementsByClass("govuk-summary-list__value").first() must
+          containText(mrn)
       }
     }
 

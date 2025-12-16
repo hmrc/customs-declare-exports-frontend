@@ -27,8 +27,7 @@
   paragraph: paragraphBody,
   link: link,
   exitSurvey: exit_survey,
-  references_table: references_table
-)
+  references_summary_list: references_summary_list)
 
 @(confirmation: Confirmation)(implicit request: Request[_], messages: Messages)
 
@@ -36,7 +35,7 @@
 
     @heading(messages("declaration.confirmation.pending.amendment.title"))
 
-    @references_table(confirmation)
+    @references_summary_list(confirmation)
 
     @paragraph(messages("declaration.confirmation.pending.amendment.paragraph", link(
       messages("declaration.confirmation.pending.amendment.paragraph.link"),

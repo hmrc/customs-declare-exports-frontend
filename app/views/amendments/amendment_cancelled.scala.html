@@ -30,8 +30,7 @@
     paragraph: paragraphBody,
     link: link,
     exitSurvey: exit_survey,
-    references_table: references_table
-)
+    references_summary_list: references_summary_list)
 
 @(confirmation: Confirmation)(implicit request: Request[_], messages: Messages)
 
@@ -39,7 +38,7 @@
 
     @govukPanel(Panel(title = Text(messages(s"declaration.confirmation.amendment.cancelled.title"))))
 
-    @references_table(confirmation)
+    @references_summary_list(confirmation)
 
     @heading(messages("declaration.confirmation.whatHappensNext"), "govuk-heading-m", "h2")
 
