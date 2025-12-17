@@ -17,6 +17,7 @@
 package controllers.section6
 
 import base.{AuditedControllerSpec, ControllerSpec}
+import config.AppConfig
 import connectors.CodeListConnector
 import controllers.helpers.TransportSectionHelper.{Guernsey, Jersey}
 import controllers.general.routes.RootController
@@ -45,10 +46,13 @@ class TransportCountryControllerSpec extends ControllerSpec with AuditedControll
   val page = mock[transport_country]
   val codeListConnector = mock[CodeListConnector]
 
+  override implicit val appConfig: AppConfig = mock[AppConfig]
+
   val controller = new TransportCountryController(mockAuthAction, mockJourneyAction, navigator, mockExportsCacheService, mcc, page)(
     ec,
     codeListConnector,
-    auditService
+    auditService,
+    appConfig
   )
 
   val countryCode = "ZA"
@@ -221,18 +225,6 @@ class TransportCountryControllerSpec extends ControllerSpec with AuditedControll
     }
 
     "return 400 (BAD_REQUEST)" when {
-
-      "no value is entered" in {
-        withNewCaching(aStandardDeclaration)
-
-        val incorrectForm = Json.obj(fieldIdOnError(transportCountry) -> "")
-        val result = controller.submitForm(postRequest(incorrectForm))
-
-        status(result) mustBe BAD_REQUEST
-        verifyNoAudit()
-
-        theResponseForm.errors.head.messages.head mustBe "declaration.transportInformation.transportCountry.country.error.empty"
-      }
 
       "the entered value is incorrect or not a list's option" in {
         withNewCaching(aStandardDeclaration)

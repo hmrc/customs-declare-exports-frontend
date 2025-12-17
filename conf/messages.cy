@@ -1451,7 +1451,8 @@ declaration.transportInformation.meansOfTransport.WagonNumber.label = Rhif y wag
 declaration.transportInformation.meansOfTransport.WagonNumber.hint = Er enghraifft, 6767 neu ‘Anhysbys’.
 
 declaration.transportInformation.transportCountry.title = Dewiswch y wlad lle mae {0} wedi’i gofrestru
-declaration.transportInformation.transportCountry.roro.paragraph = Ar gyfer Eurotunnel, dewiswch Ffrainc fel gwlad cofrestru.
+declaration.transportInformation.transportCountry.roro.inset.text = Ar gyfer Eurotunnel, dewiswch Ffrainc fel gwlad cofrestru.
+declaration.transportInformation.transportCountry.roro.paragraph = Dewiswch god y wlad (dewisol)
 declaration.transportInformation.transportCountry.country.error.empty = Dewiswch y wlad lle mae {0} wedi’i gofrestru
 declaration.transportInformation.transportCountry.country.error.invalid = Dewiswch wlad ddilys
 

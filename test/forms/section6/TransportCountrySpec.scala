@@ -17,6 +17,7 @@
 package forms.section6
 
 import base.UnitWithMocksSpec
+import config.AppConfig
 import connectors.CodeListConnector
 import forms.common.DeclarationPageBaseSpec
 import forms.section6.ModeOfTransportCode.Maritime
@@ -39,6 +40,8 @@ class TransportCountrySpec extends UnitWithMocksSpec with BeforeAndAfterEach wit
 
   implicit val codeListConnector: CodeListConnector = mock[CodeListConnector]
 
+  implicit val appConfig: AppConfig = mock[AppConfig]
+
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     when(codeListConnector.getCountryCodes(any())).thenReturn(ListMap("ZA" -> Country("South Africa", "ZA")))
@@ -59,12 +62,6 @@ class TransportCountrySpec extends UnitWithMocksSpec with BeforeAndAfterEach wit
   "TransportCountry mapping" should {
 
     "return form with errors" when {
-
-      "provided with an empty country" in {
-        val aTransportMode = List("declaration.transport.leavingTheBorder.transportMode.sea")
-        val errors = form.bind(formData(None), JsonBindMaxChars).errors
-        errors mustBe List(FormError(transportCountry, s"$prefix.country.error.empty", aTransportMode))
-      }
 
       "provided with an invalid country" in {
         val errors = form.bind(formData(Some("12345")), JsonBindMaxChars).errors
