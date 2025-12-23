@@ -22,7 +22,7 @@ import controllers.general.{ModelCacheable, SubmissionErrors}
 import controllers.navigation.Navigator
 import controllers.general.routes.RootController
 import forms.section5.StatisticalValue
-import forms.section5.StatisticalValue.form
+import forms.section5.StatisticalValue.{form, formOptional}
 import models.DeclarationType._
 import models.ExportsDeclaration
 import models.requests.JourneyRequest
@@ -61,20 +61,43 @@ class StatisticalValueController @Inject() (
 
   def submitItemType(itemId: String): Action[AnyContent] = (authenticate andThen journeyType(validJourneys)).async { implicit request =>
     if (redirectToRoot(itemId)) Future.successful(Redirect(RootController.displayPage))
-    else
-      form
-        .bindFromRequest()
-        .fold(
-          (formWithErrors: Form[StatisticalValue]) => Future.successful(BadRequest(itemTypePage(itemId, formWithErrors))),
-          statisticalValue => {
-            val statisticalValueOption = if (statisticalValue.statisticalValue.trim.isEmpty) None else Some(statisticalValue)
-            updateExportsCache(itemId, statisticalValueOption).map(_ => navigator.continueTo(PackageInformationSummaryController.displayPage(itemId)))
-          }
-        )
+    else {
+      if (!is3NS(itemId))
+        form
+          .bindFromRequest()
+          .fold(
+            (formWithErrors: Form[StatisticalValue]) => Future.successful(BadRequest(itemTypePage(itemId, formWithErrors))),
+            statisticalValue => {
+              val statisticalValueOption = Some(statisticalValue)
+              updateExportsCache(itemId, statisticalValueOption)
+                .map(_ => navigator.continueTo(PackageInformationSummaryController.displayPage(itemId)))
+            }
+          )
+      else
+        formOptional
+          .bindFromRequest()
+          .fold(
+            (formWithErrors: Form[StatisticalValue]) => Future.successful(BadRequest(itemTypePage(itemId, formWithErrors))),
+            statisticalValue => {
+              val statisticalValueOption = if (statisticalValue.statisticalValue.trim.isEmpty) None else Some(statisticalValue)
+              updateExportsCache(itemId, statisticalValueOption)
+                .map(_ => navigator.continueTo(PackageInformationSummaryController.displayPage(itemId)))
+            }
+          )
+
+    }
   }
 
   private def redirectToRoot(itemId: String)(implicit request: JourneyRequest[_]): Boolean =
     occasionalAndSimplified.contains(request.declarationType) && !request.cacheModel.isLowValueDeclaration(itemId)
+
+  private def is3NS(itemId: String)(implicit request: JourneyRequest[_]): Boolean = {
+    val item = request.cacheModel.itemBy(itemId)
+
+    val is3NS: Boolean =
+      item.exists(value => value.procedureCodes.exists(codes => codes.additionalProcedureCodes.contains("3NS")))
+    is3NS
+  }
 
   private def updateExportsCache(itemId: String, updatedItem: Option[StatisticalValue])(
     implicit request: JourneyRequest[AnyContent]
