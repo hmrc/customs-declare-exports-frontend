@@ -66,18 +66,15 @@ class StatisticalValueController @Inject() (
         .bindFromRequest()
         .fold(
           (formWithErrors: Form[StatisticalValue]) => Future.successful(BadRequest(itemTypePage(itemId, formWithErrors))),
-          statisticalValue => {
-            val statisticalValueOption = if (statisticalValue.statisticalValue.trim.isEmpty) None else Some(statisticalValue)
-            updateExportsCache(itemId, statisticalValueOption).map(_ => navigator.continueTo(PackageInformationSummaryController.displayPage(itemId)))
-          }
+          updateExportsCache(itemId, _).map(_ => navigator.continueTo(PackageInformationSummaryController.displayPage(itemId)))
         )
   }
 
   private def redirectToRoot(itemId: String)(implicit request: JourneyRequest[_]): Boolean =
     occasionalAndSimplified.contains(request.declarationType) && !request.cacheModel.isLowValueDeclaration(itemId)
 
-  private def updateExportsCache(itemId: String, updatedItem: Option[StatisticalValue])(
+  private def updateExportsCache(itemId: String, updatedItem: StatisticalValue)(
     implicit request: JourneyRequest[AnyContent]
   ): Future[ExportsDeclaration] =
-    updateDeclarationFromRequest(_.updatedItem(itemId, item => item.copy(statisticalValue = updatedItem)))
+    updateDeclarationFromRequest(_.updatedItem(itemId, item => item.copy(statisticalValue = Some(updatedItem))))
 }
