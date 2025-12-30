@@ -18,7 +18,7 @@ package views.helpers.summary
 
 import config.AppConfig
 import controllers.section5.routes._
-import models.DeclarationType.{DeclarationType, isStandardOrSupplementary}
+import models.DeclarationType.{isStandardOrSupplementary, DeclarationType}
 import models.declaration.ExportItem
 import play.api.i18n.Messages
 import play.twirl.api.{Html, HtmlFormat}
@@ -29,7 +29,8 @@ import views.html.summary.summary_section
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class ItemHelper @Inject() (packageInformationHelper: PackageInformationHelper, summarySection: summary_section, appConfig: AppConfig) extends SummaryHelper {
+class ItemHelper @Inject() (packageInformationHelper: PackageInformationHelper, summarySection: summary_section, appConfig: AppConfig)
+    extends SummaryHelper {
 
   def content(item: ExportItem, itemIdx: Int, declarationType: DeclarationType)(implicit messages: Messages): Html = {
     val summarySections = rows(item, false, itemIdx, declarationType)
@@ -189,17 +190,16 @@ class ItemHelper @Inject() (packageInformationHelper: PackageInformationHelper, 
       )
     }
 
-  private def statisticalValue(item: ExportItem, actionsEnabled: Boolean, itemIdx: Int)
-                              (implicit messages: Messages): Option[SummaryListRow] =
+  private def statisticalValue(item: ExportItem, actionsEnabled: Boolean, itemIdx: Int)(implicit messages: Messages): Option[SummaryListRow] =
     item.statisticalValue.map { statisticalValue =>
-      if(statisticalValue.statisticalValue.trim.isEmpty && appConfig.isOptionalFieldsEnabled) {
+      if (statisticalValue.statisticalValue.trim.isEmpty) {
         SummaryListRow(
           key("item.itemValue"),
           value(messages("declaration.summary.not.provided")),
           classes = s"item-$itemIdx-item-value",
           changeLink(StatisticalValueController.displayPage(item.id), "item.itemValue", actionsEnabled, Some(itemIdx))
         )
-      }else{
+      } else {
         SummaryListRow(
           key("item.itemValue"),
           value(statisticalValue.statisticalValue),

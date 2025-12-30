@@ -101,7 +101,7 @@ class StatisticalValueViewSpec extends PageWithButtonsSpec with Injector {
 
     "display the expected guidance expander" in {
 
-      if(appConfig.isOptionalFieldsEnabled){
+      if (appConfig.isOptionalFieldsEnabled) {
         val expander = view.getElementsByClass("govuk-details").first
         expander.tagName mustBe "details"
 
@@ -110,7 +110,7 @@ class StatisticalValueViewSpec extends PageWithButtonsSpec with Injector {
           element.text mustBe messages(s"declaration.statisticalValue.guidance.text.${index + 1}.flag")
         }
 
-      }else{
+      } else {
         val expander = view.getElementsByClass("govuk-details").first
         expander.tagName mustBe "details"
 
