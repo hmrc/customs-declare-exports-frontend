@@ -100,13 +100,26 @@ class StatisticalValueViewSpec extends PageWithButtonsSpec with Injector {
     }
 
     "display the expected guidance expander" in {
-      val expander = view.getElementsByClass("govuk-details").first
-      expander.tagName mustBe "details"
 
-      expander.getElementsByClass("govuk-details__summary").text mustBe messages("declaration.statisticalValue.guidance.title")
-      expander.getElementsByClass("govuk-body").iterator.asScala.toList.zipWithIndex.foreach { case (element, index) =>
-        element.text mustBe messages(s"declaration.statisticalValue.guidance.text.${index + 1}")
+      if(appConfig.isOptionalFieldsEnabled){
+        val expander = view.getElementsByClass("govuk-details").first
+        expander.tagName mustBe "details"
+
+        expander.getElementsByClass("govuk-details__summary").text mustBe messages("declaration.statisticalValue.guidance.title")
+        expander.getElementsByClass("govuk-body").iterator.asScala.toList.zipWithIndex.foreach { case (element, index) =>
+          element.text mustBe messages(s"declaration.statisticalValue.guidance.text.${index + 1}.flag")
+        }
+
+      }else{
+        val expander = view.getElementsByClass("govuk-details").first
+        expander.tagName mustBe "details"
+
+        expander.getElementsByClass("govuk-details__summary").text mustBe messages("declaration.statisticalValue.guidance.title")
+        expander.getElementsByClass("govuk-body").iterator.asScala.toList.zipWithIndex.foreach { case (element, index) =>
+          element.text mustBe messages(s"declaration.statisticalValue.guidance.text.${index + 1}")
+        }
       }
+
     }
 
     "display the expected tariff details" in {
