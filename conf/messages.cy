@@ -1617,6 +1617,12 @@ declaration.statisticalValue.guidance.text.2 = Mae gwerth ystadegol yn orfodol a
 declaration.statisticalValue.guidance.text.3 = Pan fo masnachwr wedi’i awdurdodi ar gyfer Gweithdrefnau Datganiad Symlach, nid oes angen y gwerth ystadegol cyn cludo.
 declaration.statisticalValue.guidance.text.4 = Nid oes angen gwerth ystadegol pan fydd nwyddau sy’n cael eu hallforio yn defnyddio Cais i Glirio’r Tollau (Gweithdrefn C21).
 declaration.statisticalValue.guidance.text.5 = Os yw’r gwerth ystadegol yn ddewisol neu os nad oes ei angen, gellir gadael y maes yn wag.
+declaration.statisticalValue.guidance.text.1.flag = cy:
+declaration.statisticalValue.guidance.bullet.1.flag = cy:
+declaration.statisticalValue.guidance.bullet.2.flag = cy:
+declaration.statisticalValue.guidance.bullet.3.flag = cy:
+declaration.statisticalValue.guidance.text.2.flag = cy:
+declaration.statisticalValue.guidance.text.3.flag = cy:
 declaration.statisticalValue.error.length = Mae’n rhaid i gyfanswm y gost gynnwys 15 digid neu lai
 declaration.statisticalValue.error.wrongFormat = Mae’n rhaid i gyfanswm y gost gynnwys rhifau’n unig
 
