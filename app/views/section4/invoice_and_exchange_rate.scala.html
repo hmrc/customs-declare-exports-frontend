@@ -113,10 +113,27 @@
     </div>
 }
 
+<!--HERE-->
 @exchangeRateInput = {
+<div class="govuk-form-group">
+    <h1 class="govuk-label-wrapper">
+        <label class="govuk-label govuk-label--m" for="event-name">
+            Enter the agreed rate of exchange (optional)
+        </label>
+    </h1>
+
+
+
+    <div id="event-name-hint" class="govuk-hint">
+        For example, if the contract states that a rate of USD1.25 = £1 will be used, you need to enter 1.25.
+    </div>
+
+
+    <input class="govuk-input govuk-input--width-10 govuk-!-margin-bottom-4" id="event-name" name="eventName" type="text" aria-describedby="event-name-hint">
+
+</div>
     @exportsInputText(
         field = form(exchangeRate),
-        labelKey = "declaration.exchangeRate.input.label",
         hintKey = Some("declaration.exchangeRate.input.hint"),
         inputClasses = Some("govuk-input--width-10")
     )
@@ -150,13 +167,8 @@
         @currencyCodeAndAmount
 
         @heading(messages("declaration.exchangeRate"), "govuk-heading-m", "h2")
-        @paragraphBody(messages("declaration.exchangeRate.paragraph1.text"))
 
-        @yesNoRadios(
-            form,
-            answerKey = "agreedExchangeRate",
-            yesConditionalHtml = Some(exchangeRateInput)
-        )
+        @exchangeRateInput
 
         @govukDetails(Details(
             summary = Text(messages("declaration.exchangeRate.expander.title")),
