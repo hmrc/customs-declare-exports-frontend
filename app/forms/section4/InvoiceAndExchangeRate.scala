@@ -17,7 +17,7 @@
 package forms.section4
 
 import config.AppConfig
-import forms.mappings.MappingHelper.requiredRadio
+import forms.mappings.MappingHelper.{optionalRadio}
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.mappings.{AdditionalConstraintsMapping, ConditionalConstraint}
@@ -45,7 +45,9 @@ object InvoiceAndExchangeRate extends DeclarationPage {
     InvoiceAndExchangeRate(
       totals.totalAmountInvoiced,
       totals.totalAmountInvoicedCurrency,
-      totals.agreedExchangeRate.fold("")(x => x),
+      totals.agreedExchangeRate.fold{
+        if(totals.exchangeRate.nonEmpty) "Yes" else "No"
+      }(x => x),
       totals.exchangeRate
     )
 
@@ -205,5 +207,5 @@ object InvoiceAndExchangeRate extends DeclarationPage {
     )
 
   private def validateAgreedExchangeRateYesNo: FieldMapping[String] =
-    requiredRadio(exchangeRateNoAnswerErrorKey, YesNoAnswer.allowedValues)
+    optionalRadio(exchangeRateNoAnswerErrorKey, YesNoAnswer.allowedValues)
 }
