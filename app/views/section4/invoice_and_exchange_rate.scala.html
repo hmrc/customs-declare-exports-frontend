@@ -71,12 +71,12 @@
 
 @currencyCodeAndAmountContent = {
 
-    @if(totalAmountInvoicedErrors.nonEmpty){
-        <p class="govuk-error-message">
-            <span class="govuk-visually-hidden">@messages("site.accessibility.error")</span>
-            @Html(totalAmountInvoicedErrors.map(err => messages(err.message, err.args:_*)).mkString("<br>"))
-        </p>
-    }
+<!--    @if(totalAmountInvoicedErrors.nonEmpty){-->
+<!--        <p class="govuk-error-message">-->
+<!--            <span class="govuk-visually-hidden">@messages("site.accessibility.error")</span>-->
+<!--            @Html(totalAmountInvoicedErrors.map(err => messages(err.message, err.args:_*)).mkString("<br>"))-->
+<!--        </p>-->
+<!--    }-->
 
     <div class="currency-dropdown">
         <div class="govuk-date-input__item">
@@ -118,25 +118,16 @@
 <div class="govuk-form-group">
     <h1 class="govuk-label-wrapper">
         <label class="govuk-label govuk-label--m" for="event-name">
-            Enter the agreed rate of exchange (optional)
+            @messages("declaration.exchangeRate.input.label")
         </label>
     </h1>
 
-
-
-    <div id="event-name-hint" class="govuk-hint">
-        For example, if the contract states that a rate of USD1.25 = £1 will be used, you need to enter 1.25.
-    </div>
-
-
-    <input class="govuk-input govuk-input--width-10 govuk-!-margin-bottom-4" id="event-name" name="eventName" type="text" aria-describedby="event-name-hint">
-
-</div>
     @exportsInputText(
         field = form(exchangeRate),
         hintKey = Some("declaration.exchangeRate.input.hint"),
         inputClasses = Some("govuk-input--width-10")
     )
+</div>
 }
 
 @expanderContent = {
@@ -166,7 +157,11 @@
 
         @currencyCodeAndAmount
 
-        @heading(messages("declaration.exchangeRate"), "govuk-heading-m", "h2")
+<!--        @if(true){-->
+<!--        @heading(messages("declaration.exchangeRate"), "govuk-heading-m", "h2")-->
+
+<!--        @exchangeRateInput-->
+<!--        }-->
 
         @exchangeRateInput
 
