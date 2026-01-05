@@ -52,7 +52,7 @@
     backButton = Some(BackButton(messages("site.backToPreviousQuestion"), StandardOrOtherJourneyController.displayPage)),
     showDeclarationSummaryLink = false
 ) {
-    @formHelper(action = OtherJourneyController.submitChoice, 'autoComplete -> "off") {
+    @formHelper(action = OtherJourneyController.submitChoice, Symbol("autoComplete") -> "off") {
         @errorSummary(radioGroupErrors("type", SIMPLIFIED.toString, form.errors))
 
         @govukRadios(Radios(

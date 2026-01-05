@@ -42,7 +42,7 @@ object FiscalInformation extends DeclarationPage {
   val mapping: Mapping[FiscalInformation] = Forms.mapping(
     "onwardSupplyRelief" -> requiredRadio("declaration.fiscalInformation.onwardSupplyRelief.empty")
       .verifying("declaration.fiscalInformation.onwardSupplyRelief.error", isContainedIn(allowedValues))
-  )(FiscalInformation.apply)(FiscalInformation.unapply)
+  )(FiscalInformation.apply)(FiscalInformation => Some(FiscalInformation.onwardSupplyRelief))
 
   val formId = "FiscalInformation"
 

@@ -78,7 +78,7 @@
     title = Title("declaration.supplementaryUnits.yesNo.title", "declaration.section.5", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(SupplementaryUnits, ItemId(itemId))))) {
 
-    @formHelper(action = SupplementaryUnitsController.submitPage(itemId), 'autoComplete -> "off") {
+    @formHelper(action = SupplementaryUnitsController.submitPage(itemId), Symbol("autoComplete") -> "off") {
         @errorSummary(radioGroupErrors(hasSupplementaryUnits, "Yes", form.errors))
 
         @sectionHeader(messages("declaration.section.5"))

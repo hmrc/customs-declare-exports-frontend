@@ -58,7 +58,7 @@
     ),
     backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(RoutingCountryPage)))){
 
-    @formHelper(action = RoutingCountriesController.submitRoutingCountry, 'autoComplete -> "off") {
+    @formHelper(action = RoutingCountriesController.submitRoutingCountry, Symbol("autoComplete") -> "off") {
         @errorSummary(form.errors)
 
         @sectionHeader(messages("declaration.section.3"))

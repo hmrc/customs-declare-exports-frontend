@@ -81,7 +81,7 @@ object Countries {
     implicit messages: Messages,
     codeListConnector: CodeListConnector
   ): Mapping[Country] =
-    Forms.mapping(fieldId -> optional(mapping(page, cachedCountries)))(Country.apply)(Country.unapply)
+    Forms.mapping(fieldId -> optional(mapping(page, cachedCountries)))(Country.apply)(Country => Some(Country.code))
 
   def form(
     page: CountryPage,

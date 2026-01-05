@@ -95,7 +95,7 @@
     title = Title("declaration.additionalDocument.remove.title", "declaration.section.5", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.backToPreviousQuestion"), AdditionalDocumentsController.displayPage(itemId)))) {
 
-    @formHelper(action = AdditionalDocumentRemoveController.submitForm(itemId, documentId), 'autoComplete -> "off") {
+    @formHelper(action = AdditionalDocumentRemoveController.submitForm(itemId, documentId), Symbol("autoComplete") -> "off") {
         @errorSummary(yesNoErrors(form.errors))
 
         @sectionHeader(messages("declaration.section.5"))

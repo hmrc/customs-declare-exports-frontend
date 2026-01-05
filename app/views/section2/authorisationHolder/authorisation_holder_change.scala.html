@@ -36,7 +36,7 @@
     backButton = Some(BackButton(messages("site.backToPreviousQuestion"), AuthorisationHolderSummaryController.displayPage))
 ) {
 
-    @formHelper(action = AuthorisationHolderChangeController.submitForm(id), 'autoComplete -> "off") {
+    @formHelper(action = AuthorisationHolderChangeController.submitForm(id), Symbol("autoComplete") -> "off") {
         @editContent(form, userEori)
     }
 }

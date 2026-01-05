@@ -24,7 +24,7 @@ import models.{Amendment, FieldMapping}
 import play.api.data.Forms.text
 import play.api.data.{Form, Forms, Mapping}
 import play.api.libs.json.{Json, OFormat}
-import utils.validators.forms.FieldValidator._
+import utils.validators.forms.FieldValidator.*
 
 case class StatisticalValue(statisticalValue: String) extends Ordered[StatisticalValue] with Amendment {
 
@@ -51,7 +51,7 @@ object StatisticalValue extends DeclarationPage with FieldMapping {
     .verifying("declaration.statisticalValue.error.wrongFormat", isEmpty or isDecimalWithNoMoreDecimalPlacesThan(statisticalValueDecimalPlaces))
 
   private val mapping: Mapping[StatisticalValue] =
-    Forms.mapping(statisticalValueKey -> mappingStatisticalValue)(StatisticalValue.apply)(StatisticalValue.unapply)
+    Forms.mapping(statisticalValueKey -> mappingStatisticalValue)(StatisticalValue.apply)(StatisticalValue => Some(StatisticalValue.statisticalValue))
 
   def form: Form[StatisticalValue] = Form(mapping)
 

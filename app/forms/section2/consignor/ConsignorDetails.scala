@@ -27,7 +27,7 @@ import play.api.data.{Form, Forms, Mapping}
 import play.api.i18n.Messages
 import play.api.libs.json.{Json, OFormat}
 import services.DiffTools
-import services.DiffTools.{combinePointers, ExportsDeclarationDiff}
+import services.DiffTools.{ExportsDeclarationDiff, combinePointers}
 
 case class ConsignorDetails(details: EntityDetails) extends Details with DiffTools[ConsignorDetails] {
   override def createDiff(original: ConsignorDetails, pointerString: ExportsFieldPointer, sequenceId: Option[Int] = None): ExportsDeclarationDiff =
@@ -42,7 +42,7 @@ object ConsignorDetails extends DeclarationPage with FieldMapping {
   val id = "ConsignorDetails"
 
   def mapping(implicit messages: Messages, codeListConnector: CodeListConnector): Mapping[ConsignorDetails] =
-    Forms.mapping("details" -> EntityDetails.addressMapping())(ConsignorDetails.apply)(ConsignorDetails.unapply)
+    Forms.mapping("details" -> EntityDetails.addressMapping())(ConsignorDetails.apply)(ConsignorDetails => Some(ConsignorDetails.details))
 
   def form(implicit messages: Messages, codeListConnector: CodeListConnector): Form[ConsignorDetails] = Form(mapping)
 

@@ -60,7 +60,7 @@
     title = Title("declaration.transportInformation.container.remove.title", "declaration.section.6", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.backToPreviousQuestion"), ContainerController.displayContainerSummary))
 ) {
-    @formHelper(action = ContainerController.submitContainerRemove(container.id), 'autoComplete -> "off") {
+    @formHelper(action = ContainerController.submitContainerRemove(container.id), Symbol("autoComplete") -> "off") {
         @errorSummary(yesNoErrors(form.errors))
 
         @sectionHeader(messages("declaration.section.6"))

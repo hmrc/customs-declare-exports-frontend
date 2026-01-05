@@ -75,7 +75,7 @@
     title = Title("declaration.procedureCodes.title", "declaration.section.5", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(ProcedureCode)))) {
 
-    @formHelper(action = ProcedureCodesController.submitProcedureCodes(itemId), 'autoComplete -> "off") {
+    @formHelper(action = ProcedureCodesController.submitProcedureCodes(itemId), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 

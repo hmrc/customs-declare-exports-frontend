@@ -24,7 +24,7 @@ import models.viewmodels.TariffContentKey
 import play.api.data.Forms.text
 import play.api.data.{Form, Forms, Mapping}
 import play.api.libs.json.{Json, OFormat}
-import utils.validators.forms.FieldValidator._
+import utils.validators.forms.FieldValidator.*
 
 case class Mucr(mucr: String) extends Ordered[Mucr] {
   override def compare(y: Mucr): Int = mucr.compareTo(y.mucr)
@@ -43,7 +43,7 @@ object Mucr extends DeclarationPage with FieldMapping {
     MUCR -> text()
       .verifying("declaration.mucr.error.empty", nonEmpty)
       .verifying("declaration.mucr.error.invalid", isEmpty or validMucrIgnoreCase)
-  )(form2Data)(Mucr.unapply)
+  )(form2Data)(Mucr => Some(Mucr.mucr))
 
   def form: Form[Mucr] = Form(mapping)
 

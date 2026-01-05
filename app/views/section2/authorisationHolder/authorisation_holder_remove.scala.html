@@ -60,7 +60,7 @@
     title = Title("declaration.authorisationHolder.remove.title", "declaration.section.2", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.backToPreviousQuestion"), AuthorisationHolderSummaryController.displayPage))
 ) {
-    @formHelper(action = AuthorisationHolderRemoveController.submitForm(holder.id), 'autoComplete -> "off") {
+    @formHelper(action = AuthorisationHolderRemoveController.submitForm(holder.id), Symbol("autoComplete") -> "off") {
         @errorSummary(yesNoErrors(form.errors))
 
         @sectionHeader(messages("declaration.section.2"))
