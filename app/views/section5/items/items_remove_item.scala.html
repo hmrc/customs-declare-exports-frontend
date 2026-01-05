@@ -55,7 +55,7 @@
     backButton = Some(BackButton(messages("site.back"), referrer)),
     showDeclarationSummaryLink = false
 ) {
-    @formHelper(action = RemoveItemsSummaryController.removeItem(item.id, RedirectUrl(referrer.url)), 'autoComplete -> "off") {
+    @formHelper(action = RemoveItemsSummaryController.removeItem(item.id, RedirectUrl(referrer.url)), Symbol("autoComplete") -> "off") {
       @errorSummary(yesNoErrors(form.errors))
 
       @sectionHeader(messages("declaration.section.5"))

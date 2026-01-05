@@ -62,7 +62,7 @@
     title = Title("declaration.additionalActors.remove.title", "declaration.section.2", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.backToPreviousQuestion"), AdditionalActorsSummaryController.displayPage))) {
 
-    @formHelper(action = AdditionalActorsRemoveController.submitForm(id), 'autoComplete -> "off") {
+    @formHelper(action = AdditionalActorsRemoveController.submitForm(id), Symbol("autoComplete") -> "off") {
         @errorSummary(yesNoErrors(form.errors))
 
         @sectionHeader(messages("declaration.section.2"))

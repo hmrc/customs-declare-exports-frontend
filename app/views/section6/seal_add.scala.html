@@ -44,7 +44,7 @@
     title = Title("declaration.seal.title", "declaration.section.6", containerId, hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.backToPreviousQuestion"), SealController.displaySealSummary(containerId)))) {
 
-    @formHelper(action = SealController.submitAddSeal(containerId), 'autoComplete -> "off") {
+    @formHelper(action = SealController.submitAddSeal(containerId), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 

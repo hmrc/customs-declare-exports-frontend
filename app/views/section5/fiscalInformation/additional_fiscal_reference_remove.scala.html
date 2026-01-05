@@ -62,7 +62,7 @@
     title = Title("declaration.additionalFiscalReferences.remove.title", "declaration.section.5", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.backToPreviousQuestion"), AdditionalFiscalReferencesController.displayPage(itemId)))
 ) {
-    @formHelper(action = AdditionalFiscalReferenceRemoveController.submitForm(itemId, referenceId), 'autoComplete -> "off") {
+    @formHelper(action = AdditionalFiscalReferenceRemoveController.submitForm(itemId, referenceId), Symbol("autoComplete") -> "off") {
         @errorSummary(yesNoErrors(form.errors))
 
         @sectionHeader(messages("declaration.section.5"))

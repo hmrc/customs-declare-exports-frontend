@@ -68,7 +68,7 @@
     title = Title("declaration.additionalFiscalReferences.title", "declaration.section.5", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(AdditionalFiscalReference, ItemId(itemId))))
 ) {
-    @formHelper(action = AdditionalFiscalReferenceAddController.submitForm(itemId), 'autoComplete -> "off") {
+    @formHelper(action = AdditionalFiscalReferenceAddController.submitForm(itemId), Symbol("autoComplete") -> "off") {
         @errorSummary(form.errors)
 
         @sectionHeader(messages("declaration.section.5"))

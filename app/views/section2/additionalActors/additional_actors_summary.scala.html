@@ -101,7 +101,7 @@
     title = title,
     backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(AdditionalActorsSummary  )))
 ) {
-    @formHelper(action = AdditionalActorsSummaryController.submitForm, 'autoComplete -> "off") {
+    @formHelper(action = AdditionalActorsSummaryController.submitForm, Symbol("autoComplete") -> "off") {
         @errorSummary(yesNoErrors(form.errors))
 
         @sectionHeader(messages("declaration.section.2"))

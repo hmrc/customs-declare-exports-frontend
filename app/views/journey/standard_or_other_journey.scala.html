@@ -47,7 +47,7 @@
     backButton = Some(BackButton(messages("site.backToSelectionPage"), ChoiceController.displayPage)),
     showDeclarationSummaryLink = false
 ) {
-    @formHelper(action = StandardOrOtherJourneyController.submitChoice, 'autoComplete -> "off") {
+    @formHelper(action = StandardOrOtherJourneyController.submitChoice, Symbol("autoComplete") -> "off") {
         @errorSummary(radioGroupErrors("type", STANDARD.toString, form.errors))
 
         @heading(messages("declaration.type.description"))

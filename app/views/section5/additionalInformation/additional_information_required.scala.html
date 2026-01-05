@@ -47,7 +47,7 @@
     title = Title("declaration.additionalInformationRequired.title", "declaration.section.5", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.backToPreviousQuestion"), backLink))
 ) {
-    @formHelper(action = AdditionalInformationRequiredController.submitForm((itemId)), 'autoComplete -> "off") {
+    @formHelper(action = AdditionalInformationRequiredController.submitForm((itemId)), Symbol("autoComplete") -> "off") {
         @errorSummary(yesNoErrors(form.errors))
 
         @sectionHeader(messages("declaration.section.5"))

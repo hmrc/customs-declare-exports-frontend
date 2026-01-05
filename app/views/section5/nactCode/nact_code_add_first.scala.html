@@ -54,7 +54,7 @@
     title = Title("declaration.nationalAdditionalCode.addfirst.header", "declaration.section.5", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(NactCodeFirst, ItemId(itemId))))
 ) {
-    @formHelper(action = NactCodeAddController.submitForm(itemId), 'autoComplete -> "off") {
+    @formHelper(action = NactCodeAddController.submitForm(itemId), Symbol("autoComplete") -> "off") {
         @errorSummary(radioGroupErrors(hasNactCodeKey, "code_yes", form.errors))
 
         @sectionHeader(messages("declaration.section.5"))

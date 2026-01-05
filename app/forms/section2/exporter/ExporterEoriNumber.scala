@@ -37,7 +37,7 @@ object ExporterEoriNumber extends DeclarationPage {
   val mapping: Mapping[ExporterEoriNumber] = Forms.mapping(
     eori -> mandatoryIfEqual(hasEori, YesNoAnswers.yes, Eori.mapping("declaration.exporterEori.eori.empty")),
     hasEori -> requiredRadio("declaration.exporterEori.hasEori.empty", YesNoAnswer.allowedValues)
-  )(ExporterEoriNumber.apply)(ExporterEoriNumber.unapply)
+  )(ExporterEoriNumber.apply)(ExporterEoriNumber => Some(Tuple.fromProductTyped(ExporterEoriNumber)))
 
   def form: Form[ExporterEoriNumber] = Form(ExporterEoriNumber.mapping)
 

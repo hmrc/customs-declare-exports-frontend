@@ -104,7 +104,7 @@
     title = title,
     backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(AuthorisationHolderSummary)))
 ) {
-    @formHelper(action = AuthorisationHolderSummaryController.submitForm, 'autoComplete -> "off") {
+    @formHelper(action = AuthorisationHolderSummaryController.submitForm, Symbol("autoComplete") -> "off") {
         @errorSummary(yesNoErrors(form.errors))
 
         @sectionHeader(messages("declaration.section.2"))

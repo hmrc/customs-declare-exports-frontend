@@ -46,7 +46,7 @@
     title = Title("declaration.representative.entity.title", "declaration.section.2", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(RepresentativeEntity)))) {
 
-    @formHelper(action = RepresentativeEntityController.submitForm, 'autoComplete -> "off") {
+    @formHelper(action = RepresentativeEntityController.submitForm, Symbol("autoComplete") -> "off") {
         @errorSummary(form.errors)
 
         @sectionHeader(messages("declaration.section.2"))

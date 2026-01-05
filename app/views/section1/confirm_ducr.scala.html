@@ -60,7 +60,7 @@
     backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(ConfirmDucr))),
     showDeclarationSummaryLink = false
 ) {
-    @formHelper(action = ConfirmDucrController.submitForm, 'autoComplete -> "off") {
+    @formHelper(action = ConfirmDucrController.submitForm, Symbol("autoComplete") -> "off") {
         @errorSummary(form.errors)
 
         @sectionHeader(messages("declaration.section.1"))
