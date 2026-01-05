@@ -55,7 +55,7 @@
     title = Title("declaration.seal.remove.title", "declaration.section.6", containerId, hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.backToPreviousQuestion"), SealController.displaySealSummary(containerId)))
 ) {
-    @formHelper(action = SealController.submitSealRemove(containerId, sealId), 'autoComplete -> "off") {
+    @formHelper(action = SealController.submitSealRemove(containerId, sealId), Symbol("autoComplete") -> "off") {
         @errorSummary(yesNoErrors(form.errors))
 
         @sectionHeader(messages("declaration.section.6"))

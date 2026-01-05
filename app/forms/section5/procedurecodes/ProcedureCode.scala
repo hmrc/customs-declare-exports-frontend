@@ -20,7 +20,7 @@ import forms.DeclarationPage
 import play.api.data.Forms.text
 import play.api.data.{Form, Forms}
 import play.api.libs.json.{Json, OFormat}
-import utils.validators.forms.FieldValidator._
+import utils.validators.forms.FieldValidator.*
 
 case class ProcedureCode(procedureCode: String)
 
@@ -36,7 +36,7 @@ object ProcedureCode extends DeclarationPage {
         text()
           .verifying("declaration.procedureCodes.error.empty", nonEmpty)
           .verifying("declaration.procedureCodes.error.invalid", isEmpty or (hasSpecificLength(procedureCodeLength) and isAlphanumeric))
-    )(ProcedureCode.apply)(ProcedureCode.unapply)
+    )(ProcedureCode.apply)(ProcedureCode => Some(ProcedureCode.procedureCode))
 
   def form: Form[ProcedureCode] = Form(mapping)
 }

@@ -49,7 +49,7 @@
     title = Title("declaration.unDangerousGoodsCode.header", "declaration.section.5", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(UNDangerousGoodsCode, ItemId(itemId))))) {
 
-    @formHelper(action = UNDangerousGoodsCodeController.submitForm(itemId), 'autoComplete -> "off") {
+    @formHelper(action = UNDangerousGoodsCodeController.submitForm(itemId), Symbol("autoComplete") -> "off") {
         @errorSummary(radioGroupErrors(hasDangerousGoodsCodeKey, "code_yes", form.errors))
 
         @sectionHeader(messages("declaration.section.5"))

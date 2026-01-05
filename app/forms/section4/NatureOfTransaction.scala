@@ -24,7 +24,7 @@ import models.viewmodels.TariffContentKey
 import models.{Amendment, FieldMapping}
 import play.api.data.{Form, Forms, Mapping}
 import play.api.libs.json.{Json, OFormat}
-import utils.validators.forms.FieldValidator._
+import utils.validators.forms.FieldValidator.*
 
 case class NatureOfTransaction(natureType: String) extends Ordered[NatureOfTransaction] with Amendment {
 
@@ -58,7 +58,7 @@ object NatureOfTransaction extends DeclarationPage with FieldMapping {
   val mapping: Mapping[NatureOfTransaction] = Forms.mapping(
     "natureType" -> requiredRadio("declaration.natureOfTransaction.empty")
       .verifying("declaration.natureOfTransaction.error", isContainedIn(allowedTypes))
-  )(NatureOfTransaction.apply)(NatureOfTransaction.unapply)
+  )(NatureOfTransaction.apply)(NatureOfTransaction => Some(NatureOfTransaction.natureType))
 
   def form: Form[NatureOfTransaction] = Form(mapping)
 

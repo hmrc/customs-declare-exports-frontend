@@ -25,7 +25,7 @@ import play.api.data.{Form, Forms, Mapping}
 import play.api.i18n.Messages
 import play.api.libs.json.{Json, OFormat}
 import services.DiffTools
-import services.DiffTools.{combinePointers, ExportsDeclarationDiff}
+import services.DiffTools.{ExportsDeclarationDiff, combinePointers}
 
 case class ConsigneeDetails(details: EntityDetails) extends Details with DiffTools[ConsigneeDetails] {
   override def createDiff(original: ConsigneeDetails, pointerString: ExportsFieldPointer, sequenceId: Option[Int] = None): ExportsDeclarationDiff =
@@ -44,8 +44,8 @@ object ConsigneeDetails extends DeclarationPage with FieldMapping {
     declarationType: DeclarationType
   )(implicit messages: Messages, codeListConnector: CodeListConnector): Mapping[ConsigneeDetails] =
     if (declarationType == CLEARANCE)
-      Forms.mapping("details" -> EntityDetails.partialAndOptionalAddressMapping(35))(ConsigneeDetails.apply)(ConsigneeDetails.unapply)
-    else Forms.mapping("details" -> EntityDetails.addressMapping(35))(ConsigneeDetails.apply)(ConsigneeDetails.unapply)
+      Forms.mapping("details" -> EntityDetails.partialAndOptionalAddressMapping(35))(ConsigneeDetails.apply)(ConsigneeDetails => Some(ConsigneeDetails.details))
+    else Forms.mapping("details" -> EntityDetails.addressMapping(35))(ConsigneeDetails.apply)(ConsigneeDetails => Some(ConsigneeDetails.details))
 
   def form(declarationType: DeclarationType)(implicit messages: Messages, codeListConnector: CodeListConnector): Form[ConsigneeDetails] = Form(
     mapping(declarationType)

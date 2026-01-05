@@ -19,7 +19,7 @@ package forms.section2
 import forms.DeclarationPage
 import forms.mappings.MappingHelper.requiredRadio
 import models.declaration.AuthorisationProcedureCode
-import models.declaration.AuthorisationProcedureCode._
+import models.declaration.AuthorisationProcedureCode.*
 import play.api.data.{Form, Forms, Mapping}
 import play.api.libs.json.{Json, OFormat}
 import utils.validators.forms.FieldValidator.isContainedIn
@@ -43,7 +43,7 @@ object AuthorisationProcedureCodeChoice extends DeclarationPage {
     formFieldName -> requiredRadio("declaration.authorisations.procedureCodeChoice.error.empty")
       .verifying("declaration.authorisations.procedureCodeChoice.error.empty", isContainedIn(allowedValues))
       .transform((x: String) => lookupByValue.getOrElse(x, CodeOther), (x: AuthorisationProcedureCode) => x.toString)
-  )(AuthorisationProcedureCodeChoice.apply)(AuthorisationProcedureCodeChoice.unapply)
+  )(AuthorisationProcedureCodeChoice.apply)(AuthorisationProcedureCodeChoice => Some(AuthorisationProcedureCodeChoice.code))
 
   def form: Form[AuthorisationProcedureCodeChoice] = Form(mapping)
 }

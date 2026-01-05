@@ -101,7 +101,7 @@
     useCustomContentWidth = true,
     showDeclarationSummaryLink = false
 ) {
-    @formHelper(action = SubmissionController.submitAmendment(amendmentAction.toString), 'autoComplete -> "off") {
+    @formHelper(action = SubmissionController.submitAmendment(amendmentAction.toString), Symbol("autoComplete") -> "off") {
         @errorSummary(form.errors)
 
         @pageTitle(messages(s"amendment.${key}.heading"))

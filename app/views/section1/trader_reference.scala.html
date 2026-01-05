@@ -54,7 +54,7 @@
     backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(TraderReference))),
     showDeclarationSummaryLink = false
 ) {
-    @formHelper(action = TraderReferenceController.submitForm, 'autoComplete -> "off") {
+    @formHelper(action = TraderReferenceController.submitForm, Symbol("autoComplete") -> "off") {
         @errorSummary(form.errors)
 
 

@@ -83,7 +83,7 @@
     useCustomContentWidth = true,
     showDeclarationSummaryLink = false
 ) {
-    @formHelper(action = SubmissionController.submitDeclaration, 'autoComplete -> "off") {
+    @formHelper(action = SubmissionController.submitDeclaration, Symbol("autoComplete") -> "off") {
         @errorSummary(form.errors)
 
         @pageTitle(messages(headerMsgKey))

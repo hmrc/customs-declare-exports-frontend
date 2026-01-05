@@ -27,7 +27,7 @@ import play.api.data.{Form, Forms, Mapping}
 import play.api.i18n.Messages
 import play.api.libs.json.{Json, OFormat}
 import services.DiffTools
-import services.DiffTools.{combinePointers, ExportsDeclarationDiff}
+import services.DiffTools.{ExportsDeclarationDiff, combinePointers}
 
 case class ExporterDetails(details: EntityDetails) extends Details with DiffTools[ExporterDetails] {
 
@@ -41,10 +41,10 @@ object ExporterDetails extends DeclarationPage with FieldMapping {
   val pointer: ExportsFieldPointer = "exporterDetails"
 
   def defaultMapping(implicit messages: Messages, codeListConnector: CodeListConnector): Mapping[ExporterDetails] =
-    Forms.mapping("details" -> EntityDetails.addressMapping(35))(ExporterDetails.apply)(ExporterDetails.unapply)
+    Forms.mapping("details" -> EntityDetails.addressMapping(35))(ExporterDetails.apply)(ExporterDetails => Some(ExporterDetails.details))
 
   def optionalMapping(implicit messages: Messages, codeListConnector: CodeListConnector): Mapping[ExporterDetails] =
-    Forms.mapping("details" -> EntityDetails.optionalAddressMapping(35))(ExporterDetails.apply)(ExporterDetails.unapply)
+    Forms.mapping("details" -> EntityDetails.optionalAddressMapping(35))(ExporterDetails.apply)(ExporterDetails => Some(ExporterDetails.details))
 
   def form(
     declarationType: DeclarationType,

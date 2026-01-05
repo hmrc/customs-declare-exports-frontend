@@ -22,7 +22,7 @@ import models.{Amendment, FieldMapping}
 import play.api.data.Forms.text
 import play.api.data.{Form, Forms, Mapping}
 import play.api.libs.json.{Json, OFormat}
-import utils.validators.forms.FieldValidator.{hasSpecificLength, nonEmpty, _}
+import utils.validators.forms.FieldValidator.{hasSpecificLength, nonEmpty, *}
 
 case class OfficeOfExit(officeId: String) extends Ordered[OfficeOfExit] with Amendment {
 
@@ -52,5 +52,5 @@ object OfficeOfExit extends DeclarationPage with FieldMapping {
       .verifying("declaration.officeOfExit.empty", nonEmpty)
       .verifying("declaration.officeOfExit.length", isEmpty or hasSpecificLength(8))
       .verifying("declaration.officeOfExit.specialCharacters", isEmpty or isAlphanumeric)
-  )(OfficeOfExit.apply)(OfficeOfExit.unapply)
+  )(OfficeOfExit.apply)(OfficeOfExit => Some(OfficeOfExit.officeId))
 }

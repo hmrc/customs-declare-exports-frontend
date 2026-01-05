@@ -19,7 +19,7 @@ package forms.section5
 import forms.DeclarationPage
 import forms.section1.AdditionalDeclarationType.SUPPLEMENTARY_EIDR
 import forms.section5.CommodityDetails.{combinedNomenclatureCodePointer, descriptionOfGoodsPointer}
-import models.DeclarationType._
+import models.DeclarationType.*
 import models.ExportsFieldPointer.ExportsFieldPointer
 import models.FieldMapping
 import models.declaration.ExportItem.itemsPrefix
@@ -29,8 +29,8 @@ import play.api.data.Forms.{mapping, optional, text}
 import play.api.data.{Form, Mapping}
 import play.api.libs.json.{Json, OFormat}
 import services.DiffTools
-import services.DiffTools.{combinePointers, compareStringDifference, ExportsDeclarationDiff}
-import utils.validators.forms.FieldValidator._
+import services.DiffTools.{ExportsDeclarationDiff, combinePointers, compareStringDifference}
+import utils.validators.forms.FieldValidator.*
 
 case class CommodityDetails(combinedNomenclatureCode: Option[String], descriptionOfGoods: Option[String]) extends DiffTools[CommodityDetails] {
 
@@ -92,17 +92,17 @@ object CommodityDetails extends DeclarationPage with FieldMapping {
   private val mappingRequiredCode: Mapping[CommodityDetails] =
     mapping(combinedNomenclatureCodeKey -> mappingCombinedNomenclatureCodeRequired, descriptionOfGoodsKey -> mappingDescriptionOfGoodsRequired)(
       CommodityDetails.apply
-    )(CommodityDetails.unapply)
+    )(CommodityDetails => Some(Tuple.fromProductTyped(CommodityDetails)))
 
   private val mappingOptionalCode: Mapping[CommodityDetails] =
     mapping(combinedNomenclatureCodeKey -> mappingCombinedNomenclatureCodeOptional, descriptionOfGoodsKey -> mappingDescriptionOfGoodsRequired)(
       CommodityDetails.apply
-    )(CommodityDetails.unapply)
+    )(CommodityDetails => Some(Tuple.fromProductTyped(CommodityDetails)))
 
   private val mappingOptionalCodeAndOptionalDescription: Mapping[CommodityDetails] =
     mapping(combinedNomenclatureCodeKey -> mappingCombinedNomenclatureCodeOptional, descriptionOfGoodsKey -> mappingDescriptionOfGoodsOptional)(
       CommodityDetails.apply
-    )(CommodityDetails.unapply)
+    )(CommodityDetails => Some(Tuple.fromProductTyped(CommodityDetails)))
 
   def form(implicit request: JourneyRequest[_]): Form[CommodityDetails] = {
     val isEidr =

@@ -50,7 +50,7 @@
     title = Title("declaration.cusCode.header", "declaration.section.5", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(CusCode, ItemId(itemId))))) {
 
-    @formHelper(action = CusCodeController.submitForm(itemId), 'autoComplete -> "off") {
+    @formHelper(action = CusCodeController.submitForm(itemId), Symbol("autoComplete") -> "off") {
         @errorSummary(radioGroupErrors(hasCusCodeKey, "code_yes", form.errors))
 
         @sectionHeader(messages("declaration.section.5"))

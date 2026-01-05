@@ -81,7 +81,7 @@
     backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(IsLicenceRequired, ItemId(itemId))))
 ) {
 
-    @formHelper(action = IsLicenceRequiredController.submitForm(itemId), 'autoComplete -> "off") {
+    @formHelper(action = IsLicenceRequiredController.submitForm(itemId), Symbol("autoComplete") -> "off") {
         @errorSummary(yesNoErrors(form.errors))
 
         @govukNotificationBanner(NotificationBanner(title = HtmlContent(notificationTitleContent), content = HtmlContent(notificationContent)))

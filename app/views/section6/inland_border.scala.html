@@ -60,7 +60,7 @@
     title = Title("declaration.inlandOrBorder.title", "declaration.section.6", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(InlandOrBorder)))) {
 
-    @formHelper(action = InlandOrBorderController.submitPage, 'autoComplete -> "off") {
+    @formHelper(action = InlandOrBorderController.submitPage, Symbol("autoComplete") -> "off") {
         @errorSummary(radioGroupErrors(fieldId, Border.location, form.errors))
 
         @sectionHeader(messages("declaration.section.6"))

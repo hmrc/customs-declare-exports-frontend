@@ -52,7 +52,7 @@
     title = Title("declaration.commodityMeasure.title", "declaration.section.5", hasErrors = form.hasErrors || form.hasGlobalErrors),
     backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(CommodityMeasure, ItemId(itemId))))) {
 
-    @formHelper(action = CommodityMeasureController.submitPage(itemId), 'autoComplete -> "off") {
+    @formHelper(action = CommodityMeasureController.submitPage(itemId), Symbol("autoComplete") -> "off") {
         @errorSummary(form.errors)
 
         @sectionHeader(messages("declaration.section.5"))

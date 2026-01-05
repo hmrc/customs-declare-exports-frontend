@@ -54,7 +54,7 @@
     backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(Lrn))),
     showDeclarationSummaryLink = false) {
 
-    @formHelper(action = LocalReferenceNumberController.submitForm, 'autoComplete -> "off") {
+    @formHelper(action = LocalReferenceNumberController.submitForm, Symbol("autoComplete") -> "off") {
         @errorSummary(form.errors)
 
         @notificationBanner(
