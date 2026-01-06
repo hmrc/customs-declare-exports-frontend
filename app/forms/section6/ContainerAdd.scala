@@ -20,7 +20,7 @@ import forms.DeclarationPage
 import play.api.data.Forms.{optional, text}
 import play.api.data.{Form, Forms}
 import play.api.libs.json.{Json, OFormat}
-import utils.validators.forms.FieldValidator._
+import utils.validators.forms.FieldValidator.*
 
 case class ContainerAdd(id: Option[String])
 
@@ -36,7 +36,7 @@ object ContainerAdd extends DeclarationPage {
         .verifying("declaration.transportInformation.containerId.error.invalid", isAlphanumeric)
         .verifying("declaration.transportInformation.containerId.error.length", noLongerThan(maxContainerIdLength))
     ).verifying("declaration.transportInformation.containerId.empty", isSome(_))
-  )(ContainerAdd.apply)(ContainerAdd.unapply)
+  )(ContainerAdd.apply)(ContainerAdd => Some(ContainerAdd.id))
 
   def form: Form[ContainerAdd] = Form(mapping)
 }

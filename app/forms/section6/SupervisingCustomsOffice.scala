@@ -25,7 +25,7 @@ import play.api.data.Forms.{optional, text}
 import play.api.data.{Form, Forms}
 import play.api.libs.json.{Json, OFormat}
 import services.DiffTools.compareOptionalString
-import utils.validators.forms.FieldValidator._
+import utils.validators.forms.FieldValidator.*
 
 case class SupervisingCustomsOffice(supervisingCustomsOffice: Option[String] = None) extends Ordered[SupervisingCustomsOffice] with Amendment {
 
@@ -53,7 +53,7 @@ object SupervisingCustomsOffice extends DeclarationPage with FieldMapping {
         text()
           .verifying("declaration.warehouse.supervisingCustomsOffice.error", isAlphanumeric and hasSpecificLength(8))
       )
-    )(SupervisingCustomsOffice.apply)(SupervisingCustomsOffice.unapply)
+    )(SupervisingCustomsOffice.apply)(SupervisingCustomsOffice => Some(SupervisingCustomsOffice.supervisingCustomsOffice))
 
   def form: Form[SupervisingCustomsOffice] = Form(mapping)
 

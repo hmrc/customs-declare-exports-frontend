@@ -19,7 +19,7 @@ package forms.summary
 import play.api.data.Forms.{boolean, text}
 import play.api.data.{Form, Forms, Mapping}
 import play.api.libs.json.{Json, OFormat}
-import utils.validators.forms.FieldValidator._
+import utils.validators.forms.FieldValidator.*
 
 case class LegalDeclaration(fullName: String, jobRole: String, email: String, confirmation: Boolean)
 
@@ -48,7 +48,7 @@ object LegalDeclaration {
       .verifying("legal.declaration.email.long", isEmpty or noLongerThan(64))
       .verifying("legal.declaration.email.error", isEmpty or isValidEmail),
     confirmationKey -> boolean.verifying("legal.declaration.confirmation.missing", isTrue)
-  )(LegalDeclaration.apply)(LegalDeclaration.unapply)
+  )(LegalDeclaration.apply)(LegalDeclaration => Some(Tuple.fromProductTyped(LegalDeclaration)))
 
   def form: Form[LegalDeclaration] = Form(mapping)
 }
