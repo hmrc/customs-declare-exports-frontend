@@ -55,7 +55,7 @@ object TransportPayment extends DeclarationPage with FieldMapping {
     "paymentMethod" ->
       requiredRadio(s"$prefix.error.empty")
         .verifying(s"$prefix.error.empty", isContainedIn(validPaymentMethods))
-  )(TransportPayment.apply)(TransportPayment.unapply)
+  )(TransportPayment.apply)(TransportPayment => Some(TransportPayment.paymentMethod))
 
   def form: Form[TransportPayment] = Form(formMapping)
 }
