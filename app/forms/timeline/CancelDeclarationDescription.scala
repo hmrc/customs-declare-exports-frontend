@@ -17,11 +17,11 @@
 package forms.timeline
 
 import forms.mappings.MappingHelper.requiredRadio
-import forms.timeline.CancellationChangeReason._
+import forms.timeline.CancellationChangeReason.*
 import play.api.data.Forms.text
 import play.api.data.{Form, Forms}
 import play.api.libs.json.{Json, OFormat}
-import utils.validators.forms.FieldValidator._
+import utils.validators.forms.FieldValidator.*
 
 case class CancelDeclarationDescription(changeReason: String, statementDescription: String)
 
@@ -44,7 +44,7 @@ object CancelDeclarationDescription {
       .verifying("cancellation.statementDescription.error.empty", nonEmpty)
       .verifying("cancellation.statementDescription.error.length", isEmpty or noLongerThan(statementDescriptionMaxLength))
       .verifying("cancellation.statementDescription.error.invalid", isEmpty or isAlphanumericWithAllowedSpecialCharacters)
-  )(CancelDeclarationDescription.apply)(CancelDeclarationDescription.unapply)
+  )(CancelDeclarationDescription.apply)(CancelDeclarationDescription => Some(Tuple.fromProductTyped(CancelDeclarationDescription)))
 
   def form: Form[CancelDeclarationDescription] = Form(mapping)
 }
