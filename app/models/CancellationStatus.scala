@@ -29,11 +29,11 @@ object CancellationStatus {
   val CancellationRequestSentName = CancellationRequestSent.toString
 
   def unapply(status: CancellationStatus): Option[(String, JsValue)] = {
-    val (prod: Product, sub) = status match {
+    val (prod, sub) = status match {
       case CancellationAlreadyRequested => (CancellationAlreadyRequested, Json.toJson(CancellationAlreadyRequestedName))
       case CancellationRequestSent      => (CancellationRequestSent, Json.toJson(CancellationRequestSentName))
     }
-    Some(prod.productPrefix -> sub)
+    Some(prod.toString -> sub)
   }
 
   def apply(`class`: String, data: JsValue): CancellationStatus =
