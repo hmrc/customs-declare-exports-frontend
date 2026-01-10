@@ -22,7 +22,9 @@ import controllers.section6.routes._
 import forms.common.Country
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.section6.ContainerFirst
+import forms.section6.ContainerFirst.HasContainerAnswers
 import forms.section6.InlandOrBorder.Border
+import models.DeclarationType
 import models.DeclarationType.{CLEARANCE, OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
@@ -91,6 +93,15 @@ class ContainerAddFirstViewSpec extends UnitViewSpec with ExportsTestHelper with
       }
     }
 
+    "not contain opt-not-to-declare radio" when {
+      DeclarationType.allDeclarationTypes.filterNot(_ == SUPPLEMENTARY).foreach { declarationType =>
+        s"declaration type is $declarationType" in {
+          val view = createView()(withRequestOfType(declarationType))
+          view.getElementById("code_optNotToDeclare") mustBe null
+        }
+      }
+    }
+
     checkAllSaveButtonsAreDisplayed(view)
   }
 
@@ -144,12 +155,21 @@ class ContainerAddFirstViewSpec extends UnitViewSpec with ExportsTestHelper with
           }
         }
       }
+
+      "contain opt-not-to-declare option" in {
+        val view = createView()(withRequestOfType(SUPPLEMENTARY))
+        view.getElementById("code_optNotToDeclare").attr("value") mustBe HasContainerAnswers.optNotToDeclare
+        view.getElementsByAttributeValue("for", "code_optNotToDeclare") must containMessageForElements(
+          "declaration.transportInformation.containers.optNotToDeclare"
+        )
+        view.getElementsByAttributeValue("for", "id") must containMessageForElements("declaration.transportInformation.supplementary.containerId")
+      }
     }
   }
 
   "Transport Containers Add View" should {
     "display errors for invalid input" in {
-      val view = createView(ContainerFirst.form.fillAndValidate(ContainerFirst(Some("abc123@#"))))
+      val view = createView(ContainerFirst.form.fillAndValidate(ContainerFirst(Some("abc123@#"), HasContainerAnswers.yes)))
 
       view must haveGovukGlobalErrorSummary
       view must containErrorElementWithTagAndHref("a", "#id")
@@ -157,7 +177,7 @@ class ContainerAddFirstViewSpec extends UnitViewSpec with ExportsTestHelper with
     }
 
     "display errors for invalid length" in {
-      val view = createView(ContainerFirst.form.fillAndValidate(ContainerFirst(Some("123456789012345678"))))
+      val view = createView(ContainerFirst.form.fillAndValidate(ContainerFirst(Some("123456789012345678"), HasContainerAnswers.yes)))
 
       view must haveGovukGlobalErrorSummary
       view must containErrorElementWithTagAndHref("a", "#id")
@@ -167,7 +187,7 @@ class ContainerAddFirstViewSpec extends UnitViewSpec with ExportsTestHelper with
 
   "Transport Containers Add View when filled" should {
     "display data in Container ID input" in {
-      val view = createView(ContainerFirst.form.fill(ContainerFirst(Some("Test"))))
+      val view = createView(ContainerFirst.form.fill(ContainerFirst(Some("Test"), HasContainerAnswers.yes)))
 
       view.getElementsByAttributeValue("for", "id").get(0) must containMessage("declaration.transportInformation.containerId")
       view.getElementById("id").attr("value") must be("Test")

@@ -33,6 +33,7 @@ class Card6ForTransportSpec extends UnitViewSpec with ExportsTestHelper with Inj
     withDepartureTransport(Maritime, "10", "identifier"),
     withBorderTransport("11", "borderId"),
     withContainerData(Seq.empty: _*),
+    withGoodsInContainerDelared(Some("No")),
     withTransportPayment(Some(TransportPayment("A"))),
     withWarehouseIdentification(Some(WarehouseIdentification(Some("12345")))),
     withSupervisingCustomsOffice(Some(SupervisingCustomsOffice(Some("23456")))),
