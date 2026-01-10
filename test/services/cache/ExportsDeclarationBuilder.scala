@@ -477,6 +477,9 @@ trait ExportsDeclarationBuilder {
       )
     }
 
+  def withGoodsInContainerDelared(value: Option[String]): ExportsDeclarationModifier = declaration =>
+    declaration.copy(transport = declaration.transport.copy(goodsInContainerDeclared = value))
+
   val withoutContainerData: ExportsDeclarationModifier =
     model => model.copy(transport = model.transport.copy(containers = None))
 

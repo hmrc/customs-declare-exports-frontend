@@ -161,7 +161,7 @@ class ContainerControllerSpec extends ControllerSpec with AuditedControllerSpec 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe SealController.displaySealSummary("value")
 
-        verifyCachedContainers(1, List(Container(sequenceId = 1, id = "value", seals = Seq.empty)))
+        verifyCachedContainers(1, List(Container(sequenceId = 1, id = "value", seals = Seq.empty)), expectedUpdateInvocations = 2)
       }
 
       "working on supplementary declaration with cache empty" in {
@@ -172,7 +172,7 @@ class ContainerControllerSpec extends ControllerSpec with AuditedControllerSpec 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe SealController.displaySealSummary("value")
 
-        verifyCachedContainers(1, List(Container(sequenceId = 1, id = "value", seals = Seq.empty)))
+        verifyCachedContainers(1, List(Container(sequenceId = 1, id = "value", seals = Seq.empty)), expectedUpdateInvocations = 2)
       }
 
       "working on simplified declaration with cache empty" in {
@@ -183,7 +183,7 @@ class ContainerControllerSpec extends ControllerSpec with AuditedControllerSpec 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe SealController.displaySealSummary("value")
 
-        verifyCachedContainers(1, List(Container(sequenceId = 1, id = "value", seals = Seq.empty)))
+        verifyCachedContainers(1, List(Container(sequenceId = 1, id = "value", seals = Seq.empty)), expectedUpdateInvocations = 2)
       }
     }
 
@@ -305,7 +305,7 @@ class ContainerControllerSpec extends ControllerSpec with AuditedControllerSpec 
         await(result) mustBe aRedirectToTheNextPage
         thePageNavigatedTo mustBe ContainerController.displayContainerSummary
 
-        verifyCachedContainers(1, Seq.empty)
+        verifyCachedContainers(1, Seq.empty, expectedUpdateInvocations = 2)
       }
     }
 
@@ -356,8 +356,8 @@ class ContainerControllerSpec extends ControllerSpec with AuditedControllerSpec 
     }
   }
 
-  def verifyCachedContainers(expectedSequenceId: Int, expectedContainers: Seq[Container]): Assertion = {
-    val declaration = theCacheModelUpdated
+  def verifyCachedContainers(expectedSequenceId: Int, expectedContainers: Seq[Container], expectedUpdateInvocations: Int = 1): Assertion = {
+    val declaration = theCacheModelUpdated(expectedUpdateInvocations).head
     verifyAudit()
     declaration.containers mustBe expectedContainers
     valueOfEso[Container](declaration).value mustBe expectedSequenceId

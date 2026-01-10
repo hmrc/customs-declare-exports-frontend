@@ -28,14 +28,19 @@ object ContainersHelper extends SummaryHelper {
       val summaryListRows = containers.zipWithIndex.flatMap { case (container, index) =>
         List(Some(containerId(container, index + 1, actionsEnabled)), Some(securitySeals(container, index + 1)))
       }.flatten
-      if (summaryListRows.isEmpty) headingOnNoContainers(actionsEnabled)
+      if (summaryListRows.isEmpty) headingOnNoContainers(actionsEnabled, transport.goodsInContainerDeclared)
       else SummarySection(summaryListRows, Some(SummarySectionHeading("containers", "container")))
     }
 
-  private def headingOnNoContainers(actionsEnabled: Boolean)(implicit messages: Messages): SummarySection =
+  private def headingOnNoContainers(actionsEnabled: Boolean, maybeGoodsInContainerDeclared: Option[String])(
+    implicit messages: Messages
+  ): SummarySection =
     SummarySection(
-      List(
-        SummaryListRow(key("containers"), valueKey("site.none"), classes = "heading-on-no-data containers-heading", changeContainer(actionsEnabled))
+      maybeGoodsInContainerDeclared.toList.map {
+        case "No"              => "site.none"
+        case "OptNotToDeclare" => "declaration.transportInformation.summary.containers.optNotToDeclare"
+      }.map(messageKey =>
+        SummaryListRow(key("containers"), valueKey(messageKey), classes = "heading-on-no-data containers-heading", changeContainer(actionsEnabled))
       )
     )
 

@@ -28,6 +28,7 @@ case class Transport(
   expressConsignment: Option[YesNoAnswer] = None,
   transportPayment: Option[TransportPayment] = None,
   containers: Option[Seq[Container]] = None,
+  goodsInContainerDeclared: Option[String] = None,
   borderModeOfTransportCode: Option[TransportLeavingTheBorder] = None,
   meansOfTransportOnDepartureType: Option[String] = None,
   meansOfTransportOnDepartureIDNumber: Option[String] = None,

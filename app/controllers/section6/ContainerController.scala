@@ -60,7 +60,14 @@ class ContainerController @Inject() (
 
   def displayAddContainer(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     if (request.cacheModel.hasContainers) Ok(addPage(form.withSubmissionErrors))
-    else Ok(addFirstPage(ContainerFirst.form.withSubmissionErrors))
+    else
+      Ok(
+        addFirstPage(
+          ContainerFirst.form
+            .bind(Map(ContainerFirst.hasContainerKey -> request.cacheModel.transport.goodsInContainerDeclared.getOrElse("")))
+            .withSubmissionErrors
+        )
+      )
   }
 
   def submitAddContainer(): Action[AnyContent] =
@@ -71,7 +78,7 @@ class ContainerController @Inject() (
       } else
         ContainerFirst.form
           .bindFromRequest()
-          .fold(formWithErrors => Future.successful(BadRequest(addFirstPage(formWithErrors))), containerId => saveFirstContainer(containerId.id))
+          .fold(formWithErrors => Future.successful(BadRequest(addFirstPage(formWithErrors))), saveFirstContainer)
     }
 
   def displayContainerSummary(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
@@ -104,14 +111,24 @@ class ContainerController @Inject() (
     removeContainerAnswer(containerId)
   }
 
-  private def saveFirstContainer(containerId: Option[String])(implicit request: JourneyRequest[AnyContent]): Future[Result] =
-    containerId match {
-      case Some(id) => updateCache(Seq(Container(id = id, seals = Seq.empty))).map(_ => redirectAfterAdd(id))
+  private def saveFirstContainer(containerFirst: ContainerFirst)(implicit request: JourneyRequest[AnyContent]): Future[Result] = {
+
+    def withGoodsInContainerDeclared(declaration: ExportsDeclaration) =
+      declaration.copy(transport = declaration.transport.copy(goodsInContainerDeclared = Some(containerFirst.goodsInContainerDeclared)))
+
+    containerFirst.id match {
+      case Some(id) =>
+        for {
+          dec <- updateCache(Seq(Container(id = id, seals = Seq.empty)))
+          _ <- updateDeclaration(withGoodsInContainerDeclared(dec), request.eori)
+        } yield redirectAfterAdd(id)
       case None =>
-        updateCache(Seq.empty).flatMap(dec => updateDeclaration(dec.updateReadyForSubmission(true), request.eori)) map { _ =>
-          navigator.continueTo(SectionSummaryController.displayPage(6))
-        }
+        for {
+          dec <- updateCache(Seq.empty)
+          _ <- updateDeclaration(withGoodsInContainerDeclared(dec).updateReadyForSubmission(true), request.eori)
+        } yield navigator.continueTo(SectionSummaryController.displayPage(6))
     }
+  }
 
   private def saveAdditionalContainer(boundForm: Form[ContainerAdd], elementLimit: Int, containersInCache: Seq[Container])(
     implicit request: JourneyRequest[AnyContent]
@@ -178,9 +195,18 @@ class ContainerController @Inject() (
         }
       )
 
-  private def removeContainer(containerId: String)(implicit request: JourneyRequest[AnyContent]): Future[Result] =
-    updateCache(request.cacheModel.containers.filterNot(_.id == containerId))
-      .map(_ => navigator.continueTo(ContainerController.displayContainerSummary))
+  private def removeContainer(containerId: String)(implicit request: JourneyRequest[AnyContent]): Future[Result] = {
+
+    def removeGoodsInContainerDeclaredIfNoContainers(declaration: ExportsDeclaration): Future[ExportsDeclaration] =
+      if (declaration.transport.containers.toList.flatten.isEmpty) {
+        updateDeclaration(declaration.copy(transport = declaration.transport.copy(goodsInContainerDeclared = None)), request.eori)
+      } else Future.successful(declaration)
+
+    for {
+      declaration <- updateCache(request.cacheModel.containers.filterNot(_.id == containerId))
+      _ <- removeGoodsInContainerDeclaredIfNoContainers(declaration)
+    } yield navigator.continueTo(ContainerController.displayContainerSummary)
+  }
 
   private def containerId(values: Seq[String]): String = values.headOption.getOrElse("")
 

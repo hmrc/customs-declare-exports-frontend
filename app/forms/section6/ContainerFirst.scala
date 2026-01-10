@@ -20,12 +20,12 @@ import forms.DeclarationPage
 import forms.mappings.MappingHelper.requiredRadio
 import forms.section6.ContainerAdd.maxContainerIdLength
 import play.api.data.Forms.text
-import play.api.data.{Form, Forms}
+import play.api.data.{Form, Forms, Mapping}
 import play.api.libs.json.{Json, OFormat}
 import uk.gov.voa.play.form.ConditionalMappings.mandatoryIfEqual
 import utils.validators.forms.FieldValidator._
 
-case class ContainerFirst(id: Option[String])
+case class ContainerFirst(id: Option[String], goodsInContainerDeclared: String)
 
 object ContainerFirst extends DeclarationPage {
   implicit val format: OFormat[ContainerFirst] = Json.format[ContainerFirst]
@@ -36,25 +36,27 @@ object ContainerFirst extends DeclarationPage {
   object HasContainerAnswers {
     val yes = "Yes"
     val no = "No"
+    val optNotToDeclare = "OptNotToDeclare"
   }
 
   import HasContainerAnswers._
 
   private def form2Model: (String, Option[String]) => ContainerFirst = { case (hasContainer, containerId) =>
     hasContainer match {
-      case HasContainerAnswers.yes => ContainerFirst(containerId)
-      case HasContainerAnswers.no  => ContainerFirst(None)
+      case HasContainerAnswers.yes             => ContainerFirst(containerId, HasContainerAnswers.yes)
+      case HasContainerAnswers.no              => ContainerFirst(None, HasContainerAnswers.no)
+      case HasContainerAnswers.optNotToDeclare => ContainerFirst(None, HasContainerAnswers.optNotToDeclare)
     }
   }
 
   private def model2Form: ContainerFirst => Option[(String, Option[String])] =
     model =>
       model.id match {
-        case Some(id) => Some((yes, Some(id)))
-        case None     => Some((no, None))
+        case Some(id) => Some((model.goodsInContainerDeclared, Some(id)))
+        case None     => Some((model.goodsInContainerDeclared, None))
       }
 
-  private val mapping = Forms.mapping(
+  private val mapping: Mapping[ContainerFirst] = Forms.mapping(
     hasContainerKey -> requiredRadio("declaration.transportInformation.container.answer.empty"),
     containerIdKey -> mandatoryIfEqual(
       hasContainerKey,
