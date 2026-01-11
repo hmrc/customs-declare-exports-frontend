@@ -27,6 +27,7 @@ lazy val scalacFlags = List(
   "-feature",                // warn about misused language features
   "-unchecked",              // warn about unchecked type parameters
   "-Xfatal-warnings",        // warnings are fatal!!
+  "-Wconf:cat=deprecation&src=app/controllers/.*:silent", // deprecation messages muted
   "-Wunused:-nowarn",        // enable @no-warn annotation
   "-Wconf:src=target/.*:s",  // silence warnings from compiled files
   "-Wconf:msg=match may not be exhaustive:s", // silence warnings about non-exhaustive pattern matching
