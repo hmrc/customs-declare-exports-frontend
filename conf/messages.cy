@@ -1476,12 +1476,15 @@ declaration.transportInformation.containerId.error.length = Mae’n rhaid i Ddyn
 declaration.transportInformation.containers.first.title = Ydy’r nwyddau mewn cynhwysydd neu gynwysyddion?
 declaration.transportInformation.containers.yes = Iawn, mae’r nwyddau mewn un cynhwysydd neu fwy
 declaration.transportInformation.containers.no = Na, nid yw’r nwyddau mewn cynwysyddion
+declaration.transportInformation.containers.optNotToDeclare = Optio i beidio â datgan
 declaration.transportInformation.containerId = Nodwch rif adnabod y cynhwysydd. Os ydych am ychwanegu’r wybodaeth hon nes ymlaen, nodwch ‘Anhysbys’ yn y blwch.
 declaration.transportInformation.containers.paragraph = Mae hyn yn cynnwys:
 declaration.transportInformation.containers.bullet1 = cynwysyddion cludo
 declaration.transportInformation.containers.bullet2 = cynwysyddion cludiant awyr
 declaration.transportInformation.containers.bullet3 = cyrff cyfnewid a lled-drelars a ddefnyddir ar gyfer cludiant ffordd a rheilffordd
 declaration.transportInformation.error.duplicate = Mae Dynodydd y cynhwysydd eisoes wedi’i ychwanegu
+declaration.transportInformation.summary.containers.optNotToDeclare = Heb ddarparu
+declaration.transportInformation.supplementary.containerId = Nodwch rif adnabod y cynhwysydd (dewisol)
 
 declaration.invoice.amount.choice.title = A yw’r cyfanswm a anfonebir yn llai na £100,000 mewn gwerth?
 declaration.invoice.amount.choice.answer.no = Na, mae cyfanswm ei werth yn £100,000 neu fwy

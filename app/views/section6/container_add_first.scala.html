@@ -18,6 +18,7 @@
 @import controllers.section6.routes.ContainerController
 @import forms.section6.ContainerFirst
 @import forms.section6.ContainerFirst._
+@import models.DeclarationType.SUPPLEMENTARY
 @import models.requests.JourneyRequest
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.components.gds.Styles._
@@ -42,6 +43,22 @@
 @(form: Form[ContainerFirst])(implicit request: JourneyRequest[_], messages: Messages)
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
+
+@isSupplementaryDeclaration = @{request.isType(SUPPLEMENTARY)}
+
+@supplementaryDeclarationTypeRadios = @{
+  if(isSupplementaryDeclaration) {
+    Seq(RadioItem(divider = Some(messages("site.radio.divider"))),
+        RadioItem(
+            id = Some("code_optNotToDeclare"),
+            value = Some(HasContainerAnswers.optNotToDeclare),
+            content = Text(messages("declaration.transportInformation.containers.optNotToDeclare")),
+            checked = form(hasContainerKey).value.contains(HasContainerAnswers.optNotToDeclare)
+        ))
+  } else {
+    Seq.empty
+  }
+}
 
 @govukLayout(
     title = Title("declaration.transportInformation.containers.first.title", "declaration.section.6", hasErrors = hasErrors),
@@ -79,7 +96,7 @@
                     conditionalHtml = Some(exportsInputText(
                         field = form(containerIdKey),
                         inputClasses = Some("govuk-input govuk-input--width-20"),
-                        labelKey = "declaration.transportInformation.containerId"
+                        labelKey = if(isSupplementaryDeclaration) "declaration.transportInformation.supplementary.containerId" else "declaration.transportInformation.containerId"
                     )),
                     checked = form(hasContainerKey).value.contains(HasContainerAnswers.yes)
                 ),
@@ -89,7 +106,7 @@
                     content = Text(messages("declaration.transportInformation.containers.no")),
                     checked = form(hasContainerKey).value.contains(HasContainerAnswers.no)
                 )
-            ),
+            ) ++ supplementaryDeclarationTypeRadios,
             errorMessage = form(hasContainerKey).error.map(prefixedErrorMessage(_))
         ))
 

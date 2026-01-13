@@ -1476,12 +1476,15 @@ declaration.transportInformation.containerId.error.length = Container ID must co
 declaration.transportInformation.containers.first.title = Are the goods in a container or containers?
 declaration.transportInformation.containers.yes = Yes, the goods are in one or more containers
 declaration.transportInformation.containers.no = No, the goods are not in containers
+declaration.transportInformation.containers.optNotToDeclare = Opt not to declare
 declaration.transportInformation.containerId = Enter container identification number. If you want to add this information later, enter ‘Unknown’ in the box.
 declaration.transportInformation.containers.paragraph = This includes:
 declaration.transportInformation.containers.bullet1 = shipping containers
 declaration.transportInformation.containers.bullet2 = air freight containers
 declaration.transportInformation.containers.bullet3 = swap bodies and semi-trailers used for road and rail transport
 declaration.transportInformation.error.duplicate = Container ID already added
+declaration.transportInformation.summary.containers.optNotToDeclare = Not provided
+declaration.transportInformation.supplementary.containerId = Enter container identification number (optional)
 
 declaration.invoice.amount.choice.title = Is the total amount invoiced less than £100,000 in value?
 declaration.invoice.amount.choice.answer.no = No, it has a total value of £100,000 or more
