@@ -29,25 +29,25 @@
 @import views.html.components.inputs.input_accessible_autocomplete
 
 @this(
-    govukLayout: gdsMainTemplate,
-    govukInput: GovukInput,
-    govukFieldset: GovukFieldset,
-    govukDetails : GovukDetails,
-    pageTitle: pageTitle,
-    heading: heading,
-    label: label,
-    exportsInputText: exportsInputText,
-    errorSummary: errorSummary,
-    sectionHeader: sectionHeader,
-    saveButtons: saveButtons,
-    tariffExpander: tariffExpander,
-    externalLink: externalLink,
-    yesNoRadios: yesNoRadios,
-    paragraphBody: paragraphBody,
-    formHelper: FormWithCSRF,
-    navigator: Navigator,
-    appConfig: AppConfig,
-    invoiceAndExchangeRateService: InvoiceAndExchangeRateService
+govukLayout: gdsMainTemplate,
+govukInput: GovukInput,
+govukFieldset: GovukFieldset,
+govukDetails : GovukDetails,
+pageTitle: pageTitle,
+heading: heading,
+label: label,
+exportsInputText: exportsInputText,
+errorSummary: errorSummary,
+sectionHeader: sectionHeader,
+saveButtons: saveButtons,
+tariffExpander: tariffExpander,
+externalLink: externalLink,
+yesNoRadios: yesNoRadios,
+paragraphBody: paragraphBody,
+formHelper: FormWithCSRF,
+navigator: Navigator,
+appConfig: AppConfig,
+invoiceAndExchangeRateService: InvoiceAndExchangeRateService
 )
 
 @(form: Form[InvoiceAndExchangeRate])(implicit request: JourneyRequest[_], messages: Messages)
@@ -55,14 +55,14 @@
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 
 @input(field: Field, labelKey: String, inputClasses: String) = {
-    @govukInput(Input(
-        id = field.id,
-        name = field.name,
-        value = field.value,
-        label = Label(content = Text(messages(labelKey)), classes = "govuk-label"),
-        classes = s"$inputClasses ${if(field.hasErrors) "govuk-input--error"}",
-        autocomplete = Some("transaction-amount")
-    ))
+@govukInput(Input(
+id = field.id,
+name = field.name,
+value = field.value,
+label = Label(content = Text(messages(labelKey)), classes = "govuk-label"),
+classes = s"$inputClasses ${if(field.hasErrors) "govuk-input--error"}",
+autocomplete = Some("transaction-amount")
+))
 }
 
 @totalAmountInvoicedField = @{form(totalAmountInvoiced)}
@@ -71,101 +71,101 @@
 
 @currencyCodeAndAmountContent = {
 
-    @if(totalAmountInvoicedErrors.nonEmpty){
-        <p class="govuk-error-message">
-            <span class="govuk-visually-hidden">@messages("site.accessibility.error")</span>
-            @Html(totalAmountInvoicedErrors.map(err => messages(err.message, err.args:_*)).mkString("<br>"))
-        </p>
-    }
+@if(totalAmountInvoicedErrors.nonEmpty){
+<p class="govuk-error-message">
+    <span class="govuk-visually-hidden">@messages("site.accessibility.error")</span>
+    @Html(totalAmountInvoicedErrors.map(err => messages(err.message, err.args:_*)).mkString("<br>"))
+</p>
+}
 
-    <div class="currency-dropdown">
-        <div class="govuk-date-input__item">
+<div class="currency-dropdown">
+    <div class="govuk-date-input__item">
 
-            @label(
-                "declaration.totalAmountInvoiced.currency.label",
-                "totalAmountInvoicedCurrency",
-                "govuk-label"
-            )
-
-            @input_accessible_autocomplete(
-                field = form("totalAmountInvoicedCurrency"),
-                emptySelectValue = messages("declaration.totalAmountInvoiced.currency.select"),
-                items = AutoCompleteItem.fromCurrencyCode(invoiceAndExchangeRateService.all)
-            )
-
-        </div>
-        <div class="govuk-date-input__item">
-        @input(
-            field = totalAmountInvoicedField,
-            labelKey = "declaration.totalAmountInvoiced.amount.label",
-            inputClasses = "govuk-input--width-15"
+        @label(
+        "declaration.totalAmountInvoiced.currency.label",
+        "totalAmountInvoicedCurrency",
+        "govuk-label"
         )
-        </div>
+
+        @input_accessible_autocomplete(
+        field = form("totalAmountInvoicedCurrency"),
+        emptySelectValue = messages("declaration.totalAmountInvoiced.currency.select"),
+        items = AutoCompleteItem.fromCurrencyCode(invoiceAndExchangeRateService.all)
+        )
+
     </div>
+    <div class="govuk-date-input__item">
+        @input(
+        field = totalAmountInvoicedField,
+        labelKey = "declaration.totalAmountInvoiced.amount.label",
+        inputClasses = "govuk-input--width-15"
+        )
+    </div>
+</div>
 }
 
 @currencyCodeAndAmount = {
-    <div class="govuk-form-group @if(totalAmountInvoicedErrors.nonEmpty){govuk-form-group--error}">
+<div class="govuk-form-group @if(totalAmountInvoicedErrors.nonEmpty){govuk-form-group--error}">
     @govukFieldset(Fieldset(
-        attributes = Map("id" -> "currencyCodeAndAmount"),
-        html = HtmlFormat.fill(List(currencyCodeAndAmountContent))
+    attributes = Map("id" -> "currencyCodeAndAmount"),
+    html = HtmlFormat.fill(List(currencyCodeAndAmountContent))
     ))
-    </div>
+</div>
 }
 
 @exchangeRateInput = {
-    @exportsInputText(
-        field = form(exchangeRate),
-        labelKey = "declaration.exchangeRate.input.label",
-        hintKey = Some("declaration.exchangeRate.input.hint"),
-        inputClasses = Some("govuk-input--width-10")
-    )
+@exportsInputText(
+field = form(exchangeRate),
+labelKey = "declaration.exchangeRate.input.label",
+hintKey = Some("declaration.exchangeRate.input.hint"),
+inputClasses = Some("govuk-input--width-10")
+)
 }
 
 @expanderContent = {
-    @paragraphBody(messages("declaration.exchangeRate.expander.paragraph.1"))
-    @paragraphBody(messages("declaration.exchangeRate.expander.paragraph.2"))
+@paragraphBody(messages("declaration.exchangeRate.expander.paragraph.1"))
+@paragraphBody(messages("declaration.exchangeRate.expander.paragraph.2"))
 }
 
 
 @govukLayout(
-    title = Title("declaration.invoice.details.title", "declaration.section.4", hasErrors = hasErrors),
-    backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(InvoiceAndExchangeRate)))) {
+title = Title("declaration.invoice.details.title", "declaration.section.4", hasErrors = hasErrors),
+backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(InvoiceAndExchangeRate)))) {
 
-    @formHelper(action = InvoiceAndExchangeRateController.saveNoOfItems, 'autoComplete -> "off") {
-        @errorSummary(form.errors)
+@formHelper(action = InvoiceAndExchangeRateController.saveNoOfItems, 'autoComplete -> "off") {
+@errorSummary(form.errors)
 
-        @sectionHeader(messages("declaration.section.4"))
-        @pageTitle(messages("declaration.invoice.details.title"))
+@sectionHeader(messages("declaration.section.4"))
+@pageTitle(messages("declaration.invoice.details.title"))
 
-        @paragraphBody(messages("declaration.invoice.details.body.1"))
-        @paragraphBody(messages("declaration.invoice.details.body.2",
-            externalLink(
-                text = messages("declaration.invoice.details.body.2.link.text"),
-                url = appConfig.exchangeRatesForCustoms
-            )
-        ))
-        @paragraphBody(messages("declaration.invoice.details.body.3"))
+@paragraphBody(messages("declaration.invoice.details.body.1"))
+@paragraphBody(messages("declaration.invoice.details.body.2",
+externalLink(
+text = messages("declaration.invoice.details.body.2.link.text"),
+url = appConfig.exchangeRatesForCustoms
+)
+))
+@paragraphBody(messages("declaration.invoice.details.body.3"))
 
-        @currencyCodeAndAmount
+@currencyCodeAndAmount
 
-        @heading(messages("declaration.exchangeRate"), "govuk-heading-m", "h2")
-        @paragraphBody(messages("declaration.exchangeRate.paragraph1.text"))
+@heading(messages("declaration.exchangeRate"), "govuk-heading-m", "h2")
+@paragraphBody(messages("declaration.exchangeRate.paragraph1.text"))
 
-        @yesNoRadios(
-            form,
-            answerKey = "agreedExchangeRate",
-            yesConditionalHtml = Some(exchangeRateInput)
-        )
+@yesNoRadios(
+form,
+answerKey = "agreedExchangeRate",
+yesConditionalHtml = Some(exchangeRateInput)
+)
 
-        @govukDetails(Details(
-            summary = Text(messages("declaration.exchangeRate.expander.title")),
-            content = HtmlContent(expanderContent),
-            id = Some("exchange-rate-expander")
-        ))
+@govukDetails(Details(
+summary = Text(messages("declaration.exchangeRate.expander.title")),
+content = HtmlContent(expanderContent),
+id = Some("exchange-rate-expander")
+))
 
-        @tariffExpander(InvoiceAndExchangeRate, request.declarationType)(messages, appConfig)
+@tariffExpander(InvoiceAndExchangeRate, request.declarationType)(messages, appConfig)
 
-        @saveButtons()
-    }
+@saveButtons()
+}
 }
