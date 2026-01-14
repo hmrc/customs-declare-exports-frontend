@@ -72,7 +72,9 @@ class InvoiceAndExchangeRateController @Inject() (
           InvoiceAndPackageTotals(
             totalAmountInvoiced = invoiceAndExchangeRate.totalAmountInvoiced,
             totalAmountInvoicedCurrency = invoiceAndExchangeRate.totalAmountInvoicedCurrency,
-            agreedExchangeRate = Some(invoiceAndExchangeRate.agreedExchangeRate),
+            agreedExchangeRate = if(appConfig.isOptionalFieldsEnabled){
+              if(invoiceAndExchangeRate.exchangeRate.nonEmpty) Some("Yes") else Some("No")
+            } else Some(invoiceAndExchangeRate.agreedExchangeRate),
             totalPackage = declaration.totalNumberOfItems.flatMap(_.totalPackage),
             exchangeRate =
               if (invoiceAndExchangeRate.agreedExchangeRate.toLowerCase == "no") None

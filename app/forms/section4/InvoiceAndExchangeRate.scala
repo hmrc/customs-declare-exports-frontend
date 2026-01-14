@@ -45,9 +45,7 @@ object InvoiceAndExchangeRate extends DeclarationPage {
     InvoiceAndExchangeRate(
       totals.totalAmountInvoiced,
       totals.totalAmountInvoicedCurrency,
-      totals.agreedExchangeRate.fold{
-        if(totals.exchangeRate.nonEmpty) "Yes" else "No"
-      }(x => x),
+      totals.agreedExchangeRate.fold("")(x => x),
       totals.exchangeRate
     )
 
