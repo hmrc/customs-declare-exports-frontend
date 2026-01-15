@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,25 +37,44 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class DucrChoiceController @Inject() (
-  authenticate: AuthAction,
-  journeyAction: JourneyAction,
-  override val exportsCacheService: ExportsCacheService,
-  navigator: Navigator,
-  mcc: MessagesControllerComponents,
-  ducrChoicePage: ducr_choice
-)(implicit ec: ExecutionContext, auditService: AuditService)
-    extends FrontendController(mcc) with AmendmentDraftFilter with I18nSupport with ModelCacheable with SubmissionErrors
+                                       authenticate: AuthAction,
+                                       journeyAction: JourneyAction,
+                                       override val exportsCacheService: ExportsCacheService,
+                                       navigator: Navigator,
+                                       mcc: MessagesControllerComponents,
+                                       ducrChoicePage: ducr_choice
+                                     )(implicit ec: ExecutionContext, auditService: AuditService)
+  extends FrontendController(mcc)
+    with AmendmentDraftFilter
+    with I18nSupport
+    with ModelCacheable
+    with SubmissionErrors
     with WithUnsafeDefaultFormBinding {
 
-  val nextPage: JourneyRequest[_] => Call = _ => DucrEntryController.displayPage
+  val nextPage: JourneyRequest[_] => Call =
+    _ => DucrEntryController.displayPage
 
-  private val validTypes = allDeclarationTypesExcluding(SUPPLEMENTARY)
+  private val validTypes =
+    allDeclarationTypesExcluding(SUPPLEMENTARY)
 
-  private val actionFilters = authenticate andThen journeyAction(validTypes) andThen nextPageIfAmendmentDraft
+  private val actionFilters =
+    authenticate andThen
+      journeyAction(validTypes) andThen
+      nextPageIfAmendmentDraft
 
   val displayPage: Action[AnyContent] = actionFilters { implicit request =>
-    val form = YesNoAnswer.form(errorKey = "declaration.ducr.choice.answer.empty").withSubmissionErrors
-    Ok(ducrChoicePage(form))
+    val baseForm =
+      YesNoAnswer
+        .form(errorKey = "declaration.ducr.choice.answer.empty")
+        .withSubmissionErrors
+
+    val filledForm =
+      request.cacheModel.ducrChoice match {
+        case Some(answer) => baseForm.fill(answer)
+        case None         => baseForm
+      }
+
+    Ok(ducrChoicePage(filledForm))
   }
 
   val submitForm: Action[AnyContent] = actionFilters.async { implicit request =>
@@ -63,16 +82,32 @@ class DucrChoiceController @Inject() (
       .form(errorKey = "declaration.ducr.choice.answer.empty")
       .bindFromRequest()
       .fold(
-        formWithErrors => Future.successful(BadRequest(ducrChoicePage(formWithErrors))),
+        formWithErrors =>
+          Future.successful(BadRequest(ducrChoicePage(formWithErrors))),
+
         yesNoAnswer =>
-          updateCache.map { _ =>
-            navigator.continueTo(if (yesNoAnswer.answer == no) TraderReferenceController.displayPage else nextPage(request))
+          updateCache(yesNoAnswer).map { _ =>
+            navigator.continueTo(
+              if (yesNoAnswer.answer == no)
+                TraderReferenceController.displayPage
+              else
+                nextPage(request)
+            )
           }
       )
   }
 
-  private def updateCache(implicit request: JourneyRequest[AnyContent]): Future[ExportsDeclaration] =
+  private def updateCache(
+                           yesNoAnswer: YesNoAnswer
+                         )(implicit request: JourneyRequest[AnyContent]): Future[ExportsDeclaration] =
     updateDeclarationFromRequest { declaration =>
-      declaration.copy(consignmentReferences = declaration.consignmentReferences.map(_.copy(ducr = None)))
+      declaration.copy(
+        ducrChoice = Some(yesNoAnswer),
+        consignmentReferences =
+          if (yesNoAnswer.answer == no)
+            declaration.consignmentReferences.map(_.copy(ducr = None))
+          else
+            declaration.consignmentReferences
+      )
     }
 }
