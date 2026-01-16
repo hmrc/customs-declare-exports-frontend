@@ -66,7 +66,7 @@ class Card6ForTransport @Inject() (summaryCard: summary_card, countryHelper: Cou
           transportPayment(declaration.transport, actionsEnabled)
         )
       ),
-      ContainersHelper.maybeSummarySection(declaration.transport, actionsEnabled)
+      ContainersHelper.maybeSummarySection(declaration.transport, actionsEnabled, appConfig)
     ).flatten
 
   private def borderTransport(transport: Transport, actionsEnabled: Boolean)(implicit messages: Messages): Option[SummaryListRow] =

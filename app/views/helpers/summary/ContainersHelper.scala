@@ -16,6 +16,7 @@
 
 package views.helpers.summary
 
+import config.AppConfig
 import controllers.section6.routes._
 import models.declaration.{Container, Transport}
 import play.api.i18n.Messages
@@ -23,26 +24,30 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Actions, SummaryL
 
 object ContainersHelper extends SummaryHelper {
 
-  def maybeSummarySection(transport: Transport, actionsEnabled: Boolean)(implicit messages: Messages): Option[SummarySection] =
+  def maybeSummarySection(transport: Transport, actionsEnabled: Boolean, appConfig: AppConfig)(implicit messages: Messages): Option[SummarySection] =
     transport.containers.map { containers =>
       val summaryListRows = containers.zipWithIndex.flatMap { case (container, index) =>
         List(Some(containerId(container, index + 1, actionsEnabled)), Some(securitySeals(container, index + 1)))
       }.flatten
-      if (summaryListRows.isEmpty) headingOnNoContainers(actionsEnabled, transport.goodsInContainerDeclared)
+      if (summaryListRows.isEmpty) headingOnNoContainers(actionsEnabled, transport.goodsInContainerDeclared, appConfig)
       else SummarySection(summaryListRows, Some(SummarySectionHeading("containers", "container")))
     }
 
-  private def headingOnNoContainers(actionsEnabled: Boolean, maybeGoodsInContainerDeclared: Option[String])(
+  private def headingOnNoContainers(actionsEnabled: Boolean, maybeGoodsInContainerDeclared: Option[String], appConfig: AppConfig)(
     implicit messages: Messages
   ): SummarySection =
-    SummarySection(
+    SummarySection(if (appConfig.isOptionalFieldsEnabled) {
       maybeGoodsInContainerDeclared.toList.map {
         case "No"              => "site.none"
         case "OptNotToDeclare" => "declaration.transportInformation.summary.containers.optNotToDeclare"
       }.map(messageKey =>
         SummaryListRow(key("containers"), valueKey(messageKey), classes = "heading-on-no-data containers-heading", changeContainer(actionsEnabled))
       )
-    )
+    } else {
+      List(
+        SummaryListRow(key("containers"), valueKey("site.none"), classes = "heading-on-no-data containers-heading", changeContainer(actionsEnabled))
+      )
+    })
 
   private def containerId(container: Container, index: Int, actionsEnabled: Boolean)(implicit messages: Messages): SummaryListRow =
     SummaryListRow(
