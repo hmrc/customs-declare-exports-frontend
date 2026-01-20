@@ -21,7 +21,7 @@
   },
   {
     "parentCode": "option_none",
-    "childCodes": ["NotApplicable"]
+    "childCodes": ["NotApplicable", "NotProvided"]
   },
   {
     "parentCode": "10",

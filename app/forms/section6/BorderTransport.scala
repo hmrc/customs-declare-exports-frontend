@@ -47,6 +47,7 @@ object BorderTransport extends DeclarationPage {
         transportReferenceMapping(tcs.FlightNumber),
         transportReferenceMapping(tcs.AircraftRegistrationNumber),
         transportReferenceMapping(tcs.EuropeanVesselIDNumber),
+        transportReferenceMapping(tcs.NameOfInlandWaterwayVessel),
         transportReferenceMapping(tcs.NameOfInlandWaterwayVessel)
       )(form2Model)(model2Form(tcs))
     )

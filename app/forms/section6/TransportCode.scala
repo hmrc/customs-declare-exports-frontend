@@ -39,9 +39,11 @@ case class TransportCodes(
   code6: TransportCode,
   code7: TransportCode,
   code8: TransportCode,
+  notProvided: TransportCode,
   maybeNotAvailable: Option[TransportCode] = None
 ) {
   lazy val asList =
-    List(Some(code1), Some(code2), Some(code3), Some(code4), Some(code5), Some(code6), Some(code7), Some(code8), maybeNotAvailable).flatten
+    List(Some(code1), Some(code2), Some(code3), Some(code4), Some(code5), Some(code6), Some(code7), Some(code8), Some(notProvided), maybeNotAvailable)
+      .flatten
       .map(identity)
 }
