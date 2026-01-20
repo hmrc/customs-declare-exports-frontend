@@ -34,8 +34,17 @@ class BorderTransportHelper @Inject() (exportsInputText: exportsInputText, trans
 
   private val prefix = "declaration.transportInformation.meansOfTransport"
 
-  def radioButtons(form: Form[BorderTransport])(implicit messages: Messages): List[RadioItem] =
-    transportCodeService.transportCodesOnBorderTransport.map(radioButton(form, _))
+  def radioButtons(form: Form[BorderTransport])(implicit messages: Messages): List[RadioItem] = {
+    val standardItems = transportCodeService.transportCodesOnBorderTransport.map(radioButton(form, _))
+
+    val divider =  RadioItem(divider = Some(messages("site.or")))
+    val extraItem =
+      RadioItem(
+        value   = Some(""),
+        content = Text(messages("borderTransport.other")),
+      )
+    standardItems ++ List(divider, extraItem)
+  }
 
   def titleInHeadTag(hasErrors: Boolean)(implicit messages: Messages, request: JourneyRequest[_]): Title = {
     val transportMode = ModeOfTransportCodeHelper.transportMode(request.cacheModel.transportLeavingBorderCode)

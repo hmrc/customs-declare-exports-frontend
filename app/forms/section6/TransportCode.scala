@@ -39,6 +39,7 @@ case class TransportCodes(
   code6: TransportCode,
   code7: TransportCode,
   code8: TransportCode,
+  //opt here?
   maybeNotAvailable: Option[TransportCode] = None
 ) {
   lazy val asList =
