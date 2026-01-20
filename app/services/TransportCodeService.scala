@@ -33,6 +33,7 @@ class TransportCodeService @Inject() (implicit codeLinkConnector: CodeLinkConnec
   val ShipOrRoroImoNumber = TransportCode(Tag.ShipOrRoroImoNumber, false, true)
   val VehicleRegistrationNumber = TransportCode(Tag.VehicleRegistrationNumber, false, true)
   val WagonNumber = TransportCode(Tag.WagonNumber, true, true)
+  val NotProvided = TransportCode(Tag.NotProvided, false, false)
 
   // As used on /departure-transport when journey is Standard or Supplementary_Simplified and /inland-or-border is 'Border'
   val transportCodesForV1 = TransportCodes(
@@ -43,7 +44,8 @@ class TransportCodeService @Inject() (implicit codeLinkConnector: CodeLinkConnec
     AircraftRegistrationNumber,
     EuropeanVesselIDNumber,
     NameOfInlandWaterwayVessel,
-    VehicleRegistrationNumber
+    VehicleRegistrationNumber,
+    NotProvided
   )
 
   // As used on /departure-transport by default
@@ -55,7 +57,8 @@ class TransportCodeService @Inject() (implicit codeLinkConnector: CodeLinkConnec
     AircraftRegistrationNumber,
     WagonNumber,
     EuropeanVesselIDNumber,
-    NameOfInlandWaterwayVessel
+    NameOfInlandWaterwayVessel,
+    NotProvided
   )
 
   // As used on /departure-transport when journey is Clearance
@@ -71,6 +74,7 @@ class TransportCodeService @Inject() (implicit codeLinkConnector: CodeLinkConnec
     EuropeanVesselIDNumber,
     NameOfInlandWaterwayVessel,
     VehicleRegistrationNumber,
+    NotProvided,
     Some(NotApplicable)
   )
 
@@ -83,6 +87,7 @@ class TransportCodeService @Inject() (implicit codeLinkConnector: CodeLinkConnec
     FlightNumber,
     AircraftRegistrationNumber,
     EuropeanVesselIDNumber,
-    NameOfInlandWaterwayVessel
+    NameOfInlandWaterwayVessel,
+    NotProvided
   )
 }

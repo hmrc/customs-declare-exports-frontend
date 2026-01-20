@@ -34,8 +34,20 @@ class BorderTransportHelper @Inject() (exportsInputText: exportsInputText, trans
 
   private val prefix = "declaration.transportInformation.meansOfTransport"
 
-  def radioButtons(form: Form[BorderTransport])(implicit messages: Messages): List[RadioItem] =
-    transportCodeService.transportCodesOnBorderTransport.map(radioButton(form, _))
+  def radioButtons(form: Form[BorderTransport])(implicit messages: Messages): List[RadioItem] = {
+    val (h :: t) = transportCodeService.transportCodesOnBorderTransport.map(radioButton(form, _)).reverse
+    List(h, RadioItem(divider = Some(messages("site.radio.divider")))).concat(t).reverse
+  }
+
+
+  //:+
+//      RadioItem(divider = Some(messages("site.radio.divider"))) :+
+//      RadioItem(
+//      id = Some(s"radio_undeclared"),
+//      value = Some(""),
+//      content = Text(messages("bananafruitcake")),
+//      checked = form(radioButtonGroupId).value.contains(""),
+//    )
 
   def titleInHeadTag(hasErrors: Boolean)(implicit messages: Messages, request: JourneyRequest[_]): Title = {
     val transportMode = ModeOfTransportCodeHelper.transportMode(request.cacheModel.transportLeavingBorderCode)
@@ -52,12 +64,34 @@ class BorderTransportHelper @Inject() (exportsInputText: exportsInputText, trans
       )
     )
 
-  private def radioButton(form: Form[BorderTransport], transportCode: TransportCode)(implicit messages: Messages): RadioItem =
-    RadioItem(
-      id = Some(s"radio_${transportCode.id}"),
-      value = Some(transportCode.value),
-      content = Text(messages(s"$prefix.${transportCode.id}${if (transportCode.useAltRadioTextForBorderTransport) ".vBT" else ""}")),
-      conditionalHtml = if (transportCode != transportCodeService.NotApplicable) inputField(transportCode, form) else None,
-      checked = form(radioButtonGroupId).value.contains(transportCode.value)
-    )
+  private def radioButton(form: Form[BorderTransport], transportCode: TransportCode)(implicit messages: Messages): RadioItem = {
+    //if transportcode == NotProvided handle case accordingly
+    transportCode.id match {
+      case "NotApplicable" =>
+        RadioItem(
+          id = Some(s"radios_undeclared"),
+          value = Some(""),
+          content = Text("bananafruitcake"),
+          checked = form(radioButtonGroupId).value.contains(""),
+        )
+      case _ =>
+        RadioItem(
+          id = Some(s"radio_${transportCode.id}"),
+          value = Some(transportCode.value),
+          content = Text(messages(s"$prefix.${transportCode.id}${if (transportCode.useAltRadioTextForBorderTransport) ".vBT" else ""}")),
+          conditionalHtml = if (transportCode != transportCodeService.NotApplicable) inputField(transportCode, form) else None,
+          checked = form(radioButtonGroupId).value.contains(transportCode.value)
+        )
+    }
+  }
+
+  //  RadioItem(
+//    id = Some(s"radio_undeclared"),
+//    value = Some(""),
+//    content = Text("bananafruitcake"),
+//    checked = form(radioButtonGroupId).value.contains(""),
+//    divider = messages("or")
+//  )
+
+
 }
