@@ -16,9 +16,10 @@
 
 package forms.section6
 
+import config.AppConfig
 import forms.DeclarationPage
 import forms.mappings.MappingHelper.requiredRadio
-import play.api.data.Forms.{mapping, text, default}
+import play.api.data.Forms.{default, mapping, text}
 import play.api.data.{Form, Mapping}
 import play.api.libs.json.{Json, OFormat}
 import services.TransportCodeService
@@ -35,32 +36,33 @@ object BorderTransport extends DeclarationPage {
 
   val prefix = "declaration.transportInformation.meansOfTransport.crossingTheBorder"
 
-  def form(implicit tcs: TransportCodeService): Form[BorderTransport] =
+  def form(implicit tcs: TransportCodeService, appConfig: AppConfig): Form[BorderTransport] =
     Form(
       mapping(
         radioButtonGroupId -> requiredRadio(s"$prefix.error.empty")
           .verifying(s"$prefix.error.incorrect", isContainedIn(tcs.transportCodesOnBorderTransport.map(_.value))),
-        transportReferenceMapping(tcs.ShipOrRoroImoNumber),
-        transportReferenceMapping(tcs.NameOfVessel),
-        transportReferenceMapping(tcs.WagonNumber),
-        transportReferenceMapping(tcs.VehicleRegistrationNumber),
-        transportReferenceMapping(tcs.FlightNumber),
-        transportReferenceMapping(tcs.AircraftRegistrationNumber),
-        transportReferenceMapping(tcs.EuropeanVesselIDNumber),
-        transportReferenceMapping(tcs.NameOfInlandWaterwayVessel),
-        transportReferenceMapping(tcs.NotProvided)
+        transportReferenceMapping(tcs.ShipOrRoroImoNumber, appConfig.isOptionalFieldsEnabled),
+        transportReferenceMapping(tcs.NameOfVessel, appConfig.isOptionalFieldsEnabled),
+        transportReferenceMapping(tcs.WagonNumber, appConfig.isOptionalFieldsEnabled),
+        transportReferenceMapping(tcs.VehicleRegistrationNumber, appConfig.isOptionalFieldsEnabled),
+        transportReferenceMapping(tcs.FlightNumber, appConfig.isOptionalFieldsEnabled),
+        transportReferenceMapping(tcs.AircraftRegistrationNumber, appConfig.isOptionalFieldsEnabled),
+        transportReferenceMapping(tcs.EuropeanVesselIDNumber, appConfig.isOptionalFieldsEnabled),
+        transportReferenceMapping(tcs.NameOfInlandWaterwayVessel, appConfig.isOptionalFieldsEnabled),
+        transportReferenceMapping(tcs.NotProvided, appConfig.isOptionalFieldsEnabled)
       )(form2Model)(model2Form(tcs))
     )
 
-  private def transportReferenceMapping(transportCode: TransportCode): (String, Mapping[Option[String]]) = {
-    if(true){
+  private def transportReferenceMapping(transportCode: TransportCode, isOptional: Boolean): (String, Mapping[Option[String]]) =
+    if (isOptional) {
       transportCode.id match {
         case "NotApplicable" =>
           transportCode.id -> mandatoryIfEqual(
             radioButtonGroupId,
             transportCode.value,
             default(text, "")
-              .verifying(s"$prefix.IDNumber.error.length", isEmpty or noLongerThan(35)))
+              .verifying(s"$prefix.IDNumber.error.length", isEmpty or noLongerThan(35))
+          )
 
         case _ =>
           transportCode.id -> mandatoryIfEqual(
@@ -72,8 +74,7 @@ object BorderTransport extends DeclarationPage {
           )
       }
 
-    }
-    else {
+    } else {
       transportCode.id -> mandatoryIfEqual(
         radioButtonGroupId,
         transportCode.value,
@@ -83,7 +84,6 @@ object BorderTransport extends DeclarationPage {
           .verifying(s"$prefix.IDNumber.error.invalid", isAlphanumericWithAllowedSpecialCharacters)
       )
     }
-  }
 
   private def form2Model: (
     String,
@@ -127,7 +127,18 @@ object BorderTransport extends DeclarationPage {
 
   // scalastyle:off
   private def model2Form(tcs: TransportCodeService): BorderTransport => Option[
-    (String, Option[String], Option[String], Option[String], Option[String], Option[String], Option[String], Option[String], Option[String], Option[String])
+    (
+      String,
+      Option[String],
+      Option[String],
+      Option[String],
+      Option[String],
+      Option[String],
+      Option[String],
+      Option[String],
+      Option[String],
+      Option[String]
+    )
   ] =
     implicit borderTransport =>
       Some(
@@ -148,8 +159,7 @@ object BorderTransport extends DeclarationPage {
 
   private def form2Ref(refs: Option[String]*): String = refs.map(_.getOrElse("")).mkString
 
-  private def model2Ref(transportCode: TransportCode)(implicit model: BorderTransport): Option[String] = {
+  private def model2Ref(transportCode: TransportCode)(implicit model: BorderTransport): Option[String] =
     if (transportCode.value != model.meansOfTransportCrossingTheBorderType) None
     else Some(model.meansOfTransportCrossingTheBorderIDNumber)
-  }
 }

@@ -16,6 +16,7 @@
 
 package views.helpers
 
+import config.AppConfig
 import forms.section6.BorderTransport.radioButtonGroupId
 import forms.section6.{BorderTransport, TransportCode}
 import models.requests.JourneyRequest
@@ -30,15 +31,21 @@ import views.html.components.gds.exportsInputText
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class BorderTransportHelper @Inject() (exportsInputText: exportsInputText, transportCodeService: TransportCodeService) {
+class BorderTransportHelper @Inject() (exportsInputText: exportsInputText, transportCodeService: TransportCodeService)(
+  implicit appConfig: AppConfig
+) {
 
   private val prefix = "declaration.transportInformation.meansOfTransport"
 
-  def radioButtons(form: Form[BorderTransport])(implicit messages: Messages): List[RadioItem] = {
-    //ADD FLAG, UPDATE CODE
-    val (h :: t) = transportCodeService.transportCodesOnBorderTransport.map(radioButton(form, _)).reverse
-    List(h, RadioItem(divider = Some(messages("site.radio.divider")))).concat(t).reverse
-  }
+  def radioButtons(form: Form[BorderTransport])(implicit messages: Messages): List[RadioItem] =
+    if (appConfig.isOptionalFieldsEnabled) {
+      val radioButtons: List[RadioItem] = transportCodeService.transportCodesOnBorderTransport.map(radioButton(form, _))
+      radioButtons.dropRight(1) :+ RadioItem(divider = Some(messages("site.radio.divider"))) :++ radioButtons.takeRight(1)
+
+    } else {
+      val radioButtons: List[RadioItem] = transportCodeService.transportCodesOnBorderTransport.map(radioButton(form, _))
+      radioButtons.dropRight(1)
+    }
 
   def titleInHeadTag(hasErrors: Boolean)(implicit messages: Messages, request: JourneyRequest[_]): Title = {
     val transportMode = ModeOfTransportCodeHelper.transportMode(request.cacheModel.transportLeavingBorderCode)
@@ -46,16 +53,26 @@ class BorderTransportHelper @Inject() (exportsInputText: exportsInputText, trans
   }
 
   private def inputField(transportCode: TransportCode, form: Form[_])(implicit messages: Messages): Option[Html] =
-    Some(
-      exportsInputText(
-        field = form(transportCode.id),
-        inputClasses = Some("govuk-input govuk-!-width-two-thirds"),
-        labelKey = s"$prefix.${transportCode.id}.label",
-        hintKey = Some(s"$prefix.${transportCode.id}.hint")
+    if (appConfig.isOptionalFieldsEnabled) {
+      Some(
+        exportsInputText(
+          field = form(transportCode.id),
+          inputClasses = Some("govuk-input govuk-!-width-two-thirds"),
+          labelKey = s"$prefix.${transportCode.id}.label.flag",
+          hintKey = Some(s"$prefix.${transportCode.id}.hint")
+        )
       )
-    )
+    } else
+      Some(
+        exportsInputText(
+          field = form(transportCode.id),
+          inputClasses = Some("govuk-input govuk-!-width-two-thirds"),
+          labelKey = s"$prefix.${transportCode.id}.label",
+          hintKey = Some(s"$prefix.${transportCode.id}.hint")
+        )
+      )
 
-  private def radioButton(form: Form[BorderTransport], transportCode: TransportCode)(implicit messages: Messages): RadioItem = {
+  private def radioButton(form: Form[BorderTransport], transportCode: TransportCode)(implicit messages: Messages): RadioItem =
     transportCode.id match {
       case "NotApplicable" =>
         RadioItem(
@@ -74,6 +91,5 @@ class BorderTransportHelper @Inject() (exportsInputText: exportsInputText, trans
           checked = form(radioButtonGroupId).value.contains(transportCode.value)
         )
     }
-  }
 
 }
