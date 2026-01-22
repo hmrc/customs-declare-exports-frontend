@@ -25,6 +25,7 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.helpers.{BackButton, Title}
 @import views.helpers.AuthorisationHolderRequiredHelper
+@import views.helpers.DescribedByHelper
 @import views.components.gds.Styles._
 @import views.helpers.ErrorMapper.yesNoErrors
 @import views.html.components.gds._
@@ -52,23 +53,22 @@
     backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(AuthorisationHolderRequired)))) {
 
     @formHelper(action = routes.AuthorisationHolderRequiredController.submitForm, 'autoComplete -> "off") {
-        @errorSummary(yesNoErrors(form.errors))
+    @errorSummary(yesNoErrors(form.errors))
 
-        @sectionHeader(messages("declaration.section.2"))
+    @sectionHeader(messages("declaration.section.2"))
 
-        @govukFieldset(Fieldset(
-            legend = Some(Legend(
-                content = Text(messages(authorisationHolderRequiredHelper.title)),
-                classes = gdsPageLegend,
-                isPageHeading = true
-            )),
-            html = HtmlFormat.fill(List(
-                authorisationHolderRequiredHelper.body,
-                yesNoRadios(form, inline = true),
-                authorisationHolderRequiredHelper.insetText,
-                tariffExpander(AuthorisationHolderRequired, request.declarationType)(messages, appConfig),
-                saveButtons()
-            ))
+    @govukFieldset(DescribedByHelper(
+        form = form,
+        fieldName = "yesNo",
+        content = List(
+            authorisationHolderRequiredHelper.body,
+            yesNoRadios(form, inline = true),
+            authorisationHolderRequiredHelper.insetText,
+            tariffExpander(AuthorisationHolderRequired, request.declarationType)(messages, appConfig),
+            saveButtons()
+        ),
+        titleKey = Some(authorisationHolderRequiredHelper.title)
         ))
     }
 }
+
