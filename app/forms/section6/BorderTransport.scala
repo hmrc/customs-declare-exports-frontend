@@ -18,7 +18,7 @@ package forms.section6
 
 import forms.DeclarationPage
 import forms.mappings.MappingHelper.requiredRadio
-import play.api.data.Forms.{mapping, text}
+import play.api.data.Forms.{mapping, text, default}
 import play.api.data.{Form, Mapping}
 import play.api.libs.json.{Json, OFormat}
 import services.TransportCodeService
@@ -48,22 +48,46 @@ object BorderTransport extends DeclarationPage {
         transportReferenceMapping(tcs.AircraftRegistrationNumber),
         transportReferenceMapping(tcs.EuropeanVesselIDNumber),
         transportReferenceMapping(tcs.NameOfInlandWaterwayVessel),
-        //add mapping for new value created
+        transportReferenceMapping(tcs.NotProvided)
       )(form2Model)(model2Form(tcs))
     )
 
-  private def transportReferenceMapping(transportCode: TransportCode): (String, Mapping[Option[String]]) =
-    transportCode.id -> mandatoryIfEqual(
-      radioButtonGroupId,
-      transportCode.value,
-      text
-        .verifying(s"$prefix.IDNumber.error.empty", nonEmpty)
-        .verifying(s"$prefix.IDNumber.error.length", isEmpty or noLongerThan(35))
-        .verifying(s"$prefix.IDNumber.error.invalid", isAlphanumericWithAllowedSpecialCharacters)
-    )
+  private def transportReferenceMapping(transportCode: TransportCode): (String, Mapping[Option[String]]) = {
+    if(true){
+      transportCode.id match {
+        case "NotApplicable" =>
+          transportCode.id -> mandatoryIfEqual(
+            radioButtonGroupId,
+            transportCode.value,
+            default(text, "")
+              .verifying(s"$prefix.IDNumber.error.length", isEmpty or noLongerThan(35)))
+
+        case _ =>
+          transportCode.id -> mandatoryIfEqual(
+            radioButtonGroupId,
+            transportCode.value,
+            text
+              .verifying(s"$prefix.IDNumber.error.length", isEmpty or noLongerThan(35))
+              .verifying(s"$prefix.IDNumber.error.invalid", isAlphanumericWithAllowedSpecialCharacters)
+          )
+      }
+
+    }
+    else {
+      transportCode.id -> mandatoryIfEqual(
+        radioButtonGroupId,
+        transportCode.value,
+        text
+          .verifying(s"$prefix.IDNumber.error.empty", nonEmpty)
+          .verifying(s"$prefix.IDNumber.error.length", isEmpty or noLongerThan(35))
+          .verifying(s"$prefix.IDNumber.error.invalid", isAlphanumericWithAllowedSpecialCharacters)
+      )
+    }
+  }
 
   private def form2Model: (
     String,
+    Option[String],
     Option[String],
     Option[String],
     Option[String],
@@ -82,7 +106,8 @@ object BorderTransport extends DeclarationPage {
           flightNumber,
           aircraftRegistrationNumber,
           europeanVesselIDNumber,
-          nameOfInlandWaterwayVessel
+          nameOfInlandWaterwayVessel,
+          notProvided
         ) =>
       BorderTransport(
         transportType,
@@ -94,14 +119,15 @@ object BorderTransport extends DeclarationPage {
           flightNumber,
           aircraftRegistrationNumber,
           europeanVesselIDNumber,
-          nameOfInlandWaterwayVessel
+          nameOfInlandWaterwayVessel,
+          notProvided
         )
       )
   }
 
   // scalastyle:off
   private def model2Form(tcs: TransportCodeService): BorderTransport => Option[
-    (String, Option[String], Option[String], Option[String], Option[String], Option[String], Option[String], Option[String], Option[String])
+    (String, Option[String], Option[String], Option[String], Option[String], Option[String], Option[String], Option[String], Option[String], Option[String])
   ] =
     implicit borderTransport =>
       Some(
@@ -114,14 +140,16 @@ object BorderTransport extends DeclarationPage {
           model2Ref(tcs.FlightNumber),
           model2Ref(tcs.AircraftRegistrationNumber),
           model2Ref(tcs.EuropeanVesselIDNumber),
-          model2Ref(tcs.NameOfInlandWaterwayVessel)
+          model2Ref(tcs.NameOfInlandWaterwayVessel),
+          model2Ref(tcs.NotProvided)
         )
       )
   // scalastyle:on
 
   private def form2Ref(refs: Option[String]*): String = refs.map(_.getOrElse("")).mkString
 
-  private def model2Ref(transportCode: TransportCode)(implicit model: BorderTransport): Option[String] =
+  private def model2Ref(transportCode: TransportCode)(implicit model: BorderTransport): Option[String] = {
     if (transportCode.value != model.meansOfTransportCrossingTheBorderType) None
     else Some(model.meansOfTransportCrossingTheBorderIDNumber)
+  }
 }

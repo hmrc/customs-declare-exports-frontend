@@ -68,6 +68,7 @@ site.warning = Warning
 site.cancel = Cancel
 site.print = Print this page
 site.printable = Printable version
+site.optNotToDeclare = Opt not to declare
 
 site.pagination.showing = Showing
 site.pagination.showing.no = Showing no
