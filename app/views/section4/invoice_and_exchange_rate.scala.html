@@ -25,6 +25,8 @@
 @import services.InvoiceAndExchangeRateService
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.helpers.{BackButton, Title}
+@import views.helpers.AuthorisationHolderRequiredHelper
+@import views.helpers.DescribedByHelper
 @import views.html.components.gds._
 @import views.html.components.inputs.input_accessible_autocomplete
 
@@ -152,11 +154,18 @@
         @heading(messages("declaration.exchangeRate"), "govuk-heading-m", "h2")
         @paragraphBody(messages("declaration.exchangeRate.paragraph1.text"))
 
-        @yesNoRadios(
-            form,
-            answerKey = "agreedExchangeRate",
-            yesConditionalHtml = Some(exchangeRateInput)
-        )
+        @govukFieldset(DescribedByHelper(
+            form = form,
+            fieldName = "yesNo",
+            content = List(
+                yesNoRadios(
+                    form,
+                    answerKey = "agreedExchangeRate",
+                    yesConditionalHtml = Some(exchangeRateInput)
+                )
+            ),
+            titleKey = None
+        ))
 
         @govukDetails(Details(
             summary = Text(messages("declaration.exchangeRate.expander.title")),

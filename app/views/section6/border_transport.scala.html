@@ -24,11 +24,13 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.helpers.{BackButton, BorderTransportHelper, ModeOfTransportCodeHelper}
 @import views.helpers.ErrorMapper.{radioGroupErrors, prefixedErrorMessage}
+@import views.helpers.DescribedByHelper
 @import views.html.components.gds._
 
 @this(
     govukLayout: gdsMainTemplate,
     govukRadios: GovukRadios,
+    govukFieldset: GovukFieldset,
     errorSummary: errorSummary,
     sectionHeader: sectionHeader,
     pageTitle: pageTitle,
@@ -61,10 +63,17 @@
 
         @paragraphBody(messages("declaration.transportInformation.meansOfTransport.crossingTheBorder.body"))
 
-        @govukRadios(Radios(
-            name = radioButtonGroupId,
-            items = borderTransportHelper.radioButtons(form),
-            errorMessage = form(radioButtonGroupId).error.map(prefixedErrorMessage(_))
+        @govukFieldset(DescribedByHelper(
+            form = form,
+            fieldName = "borderTransportType",
+            content = List(
+                govukRadios(Radios(
+                    name = radioButtonGroupId,
+                    items = borderTransportHelper.radioButtons(form),
+                    errorMessage = form(radioButtonGroupId).error.map(prefixedErrorMessage(_))
+                ))
+            ),
+            titleKey = None
         ))
 
         @saveButtons()

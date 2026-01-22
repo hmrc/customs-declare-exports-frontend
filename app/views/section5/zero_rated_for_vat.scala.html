@@ -57,7 +57,7 @@
 }
 
 @radios = {
-    @formGroupWrapper(field = form("zeroRatedForVat")) {
+    @formGroupWrapper(field = form(NactCode.nactCodeKey)) {
         @govukRadios(Radios(
             name = NactCode.nactCodeKey,
             items = Seq(
@@ -120,6 +120,7 @@
         @sectionHeader(messages("declaration.section.5"))
 
         @govukFieldset(Fieldset(
+            describedBy = Option.when(form.hasErrors)("nactCode-error"),
             legend = Some(Legend(
                 content = Text(messages("declaration.zeroRatedForVat.title")),
                 classes = gdsPageLegend,
