@@ -36,6 +36,7 @@ object MockTransportCodeService extends MockitoSugar {
   when(codeLinkConnector.getTransportCodeForTag(refEq(ShipOrRoroImoNumber))).thenReturn(("ShipOrRoroImoNumber", "10"))
   when(codeLinkConnector.getTransportCodeForTag(refEq(VehicleRegistrationNumber))).thenReturn(("VehicleRegistrationNumber", "30"))
   when(codeLinkConnector.getTransportCodeForTag(refEq(WagonNumber))).thenReturn(("WagonNumber", "20"))
+  when(codeLinkConnector.getTransportCodeForTag(refEq(NotProvided))).thenReturn(("NotApplicable", "option_none"))
 
   val transportCodeService: TransportCodeService = new TransportCodeService()(codeLinkConnector)
 }
