@@ -68,6 +68,7 @@ site.warning = Rhybudd
 site.cancel = Canslo
 site.print = Argraffu’r dudalen hon
 site.printable = Fersiwn argraffadwy
+site.optNotToDeclare = Optio i beidio â datgan
 
 site.pagination.showing = Yn dangos
 site.pagination.showing.no = Yn dangos dim
