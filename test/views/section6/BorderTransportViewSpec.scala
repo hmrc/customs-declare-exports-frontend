@@ -73,6 +73,10 @@ class BorderTransportViewSpec extends PageWithButtonsSpec with Injector {
 
         "display the expected 'Means of Transport' section" in {
           transportCodeService.transportCodesOnBorderTransport.foreach { transportCode =>
+            if(transportCode.value == "option_none"){
+              Option(view.getElementById(s"radio_${transportCode.id}")) must be (None)
+            } else{
+
             Option(view.getElementById(s"radio_${transportCode.id}")) must not be None
 
             val suffix = if (transportCode.useAltRadioTextForBorderTransport) ".vBT" else ""
@@ -92,6 +96,7 @@ class BorderTransportViewSpec extends PageWithButtonsSpec with Injector {
           }
         }
 
+      }
         checkAllSaveButtonsAreDisplayed(createView())
       }
     }
