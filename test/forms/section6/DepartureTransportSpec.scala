@@ -63,7 +63,7 @@ class DepartureTransportSpec extends FormSpec with DeclarationPageBaseSpec {
           }
 
           "transport id not provided" in {
-            transportCodes.asList.filterNot(_ == tcs.NotApplicable).foreach { transportCode =>
+            transportCodes.asList.filterNot(_ == tcs.NotApplicable).filterNot(_ == tcs.NotProvided).foreach { transportCode =>
               val incorrectForm = Map(radioButtonGroupId -> transportCode.value, transportCode.id -> "")
 
               val result = form.bind(incorrectForm)
@@ -91,7 +91,7 @@ class DepartureTransportSpec extends FormSpec with DeclarationPageBaseSpec {
           "means of transport on departure id number is too long" in {
             val tooLong = TestHelper.createRandomAlphanumericString(36)
 
-            transportCodes.asList.filterNot(_ == tcs.NotApplicable).foreach { transportCode =>
+            transportCodes.asList.filterNot(_ == tcs.NotApplicable).filterNot(_ == tcs.NotProvided).foreach { transportCode =>
               val incorrectForm = Map(radioButtonGroupId -> transportCode.value, transportCode.id -> tooLong)
 
               val result = form.bind(incorrectForm)
@@ -104,7 +104,7 @@ class DepartureTransportSpec extends FormSpec with DeclarationPageBaseSpec {
           }
 
           "means of transport on departure id number contains invalid special characters" in {
-            transportCodes.asList.filterNot(_ == tcs.NotApplicable).foreach { transportCode =>
+            transportCodes.asList.filterNot(_ == tcs.NotApplicable).filterNot(_ == tcs.NotProvided).foreach { transportCode =>
               val incorrectForm = Map(radioButtonGroupId -> transportCode.value, transportCode.id -> "!@#$")
 
               val result = form.bind(incorrectForm)
@@ -119,7 +119,7 @@ class DepartureTransportSpec extends FormSpec with DeclarationPageBaseSpec {
           "means of transport on departure id number is too long with invalid characters" in {
             val tooLongAndInvalid = TestHelper.createRandomAlphanumericString(36) + "!@#$"
 
-            transportCodes.asList.filterNot(_ == tcs.NotApplicable).foreach { transportCode =>
+            transportCodes.asList.filterNot(_ == tcs.NotApplicable).filterNot(_ == tcs.NotProvided).foreach { transportCode =>
               val incorrectForm = Map(radioButtonGroupId -> transportCode.value, transportCode.id -> tooLongAndInvalid)
 
               val result = form.bind(incorrectForm)
