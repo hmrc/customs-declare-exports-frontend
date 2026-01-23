@@ -1408,7 +1408,7 @@ declaration.transportInformation.meansOfTransport.departure.error.invalid = Mae�
 declaration.transportInformation.meansOfTransport.departure.error.length = Mae’n rhaid i’r cyfeirnod gynnwys 35 o gymeriadau neu lai
 
 declaration.transportInformation.meansOfTransport.crossingTheBorder.title = Beth yw’r manylion ar gyfer {0}?
-declaration.transportInformation.meansOfTransport.crossingTheBorder.body = Dewiswch y manylion y byddwch yn eu rhoi ar gyfer y cludiant sy’n mynd â’r nwyddau allan o’r DU. Yna, gallwch nodi’r manylion gofynnol yn y blwch neu nodi ‘Anhysbys’ os ydych am roi’r manylion nes ymlaen.
+declaration.transportInformation.meansOfTransport.crossingTheBorder.body = cy: Placeholder
 declaration.transportInformation.meansOfTransport.crossingTheBorder.IDNumber.error.empty = Nodwch gyfeirnod cludiant
 declaration.transportInformation.meansOfTransport.crossingTheBorder.IDNumber.error.length = Mae’n rhaid i’r cyfeirnod gynnwys 35 o gymeriadau neu lai
 declaration.transportInformation.meansOfTransport.crossingTheBorder.IDNumber.error.invalid = Mae’n rhaid i’r cyfeirnod gynnwys llythrennau a rhifau’n unig
@@ -1442,6 +1442,8 @@ declaration.transportInformation.meansOfTransport.NameOfVessel.label.flag = Enw�
 declaration.transportInformation.meansOfTransport.NameOfVessel.hint = Er enghraifft, Seraphim neu ‘Anhysbys’.
 declaration.transportInformation.meansOfTransport.NotApplicable = Nid yw’n berthnasol
 declaration.transportInformation.meansOfTransport.NotApplicable.vBT = Nid wyf yn gwybod
+declaration.transportInformation.meansOfTransport.NotApplicable.label = Nid yw’n berthnasol
+eclaration.transportInformation.meansOfTransport.NotApplicable.hint Nid yw’n berthnasol
 declaration.transportInformation.meansOfTransport.ShipOrRoroImoNumber = Rhif IMO y llong
 declaration.transportInformation.meansOfTransport.ShipOrRoroImoNumber.vBT = Rhif IMO y llong neu’r fferi RoRo
 declaration.transportInformation.meansOfTransport.ShipOrRoroImoNumber.label = Rhif adnabod IMO
