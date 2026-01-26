@@ -60,8 +60,12 @@
   @if(packages.nonEmpty) {
     @govukTable(Table(
       head = Some(List(
-        HeadCell(content = Text(messages("declaration.packageInformation.table.heading.typesOfPackages"))),
-        HeadCell(content = Text(messages("declaration.packageInformation.table.heading.numberOfPackages"))),
+        if(true){HeadCell(content = Text(messages("declaration.packageInformation.table.heading.numberOfPackages")))}
+        else{ HeadCell(content = Text(messages("declaration.packageInformation.table.heading.typesOfPackages")))},
+
+        if(true){HeadCell(content = Text(messages("declaration.packageInformation.table.heading.typesOfPackages")))}
+        else{HeadCell(content = Text(messages("declaration.packageInformation.table.heading.numberOfPackages")))},
+
         HeadCell(content = Text(messages("declaration.packageInformation.table.heading.shippingMarks"))),
         HeadCell(content = HtmlContent(spanVisuallyHidden(messages("site.change.header")))),
         HeadCell(content = HtmlContent(spanVisuallyHidden(messages("site.remove.header"))))
@@ -70,9 +74,13 @@
       captionClasses = "govuk-visually-hidden",
       rows = packages.zipWithIndex.map { case (item, index) =>
         Seq(
-          TableRow(content = Text(item.typesOfPackages.map(packageTypesService.findByCode).map(_.asText).getOrElse(""))),
-          TableRow(content = Text(item.numberOfPackages.getOrElse(0).toString)),
-          TableRow(content = Text(item.shippingMarks.getOrElse(""))),
+            if(true){TableRow(content = Text(item.numberOfPackages.getOrElse(0).toString))}
+            else{TableRow(content = Text(item.typesOfPackages.map(packageTypesService.findByCode).map(_.asText).getOrElse("")))},
+
+          if(true){TableRow(content = Text(item.typesOfPackages.map(packageTypesService.findByCode).map(_.asText).getOrElse(messages("declaration.summary.not.provided"))))}
+          else{TableRow(content = Text(item.numberOfPackages.getOrElse(0).toString))},
+
+          TableRow(content = Text(item.shippingMarks.getOrElse(messages("declaration.summary.not.provided")))),
           TableRow(
             content = HtmlContent(link(
               messages("site.change"),
