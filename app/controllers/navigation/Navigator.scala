@@ -67,6 +67,7 @@ class Navigator @Inject() (
     }
 
   def backLink(page: DeclarationPage)(implicit request: JourneyRequest[_]): Call = {
+    println("page: " + page)
     val specific: PartialFunction[DeclarationPage, Object] = request.declarationType match {
       case STANDARD      => standardCacheDependent.orElse(standard)
       case SUPPLEMENTARY => supplementaryCacheDependent.orElse(supplementary)

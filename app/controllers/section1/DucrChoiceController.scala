@@ -22,9 +22,11 @@ import controllers.general.{ModelCacheable, SubmissionErrors}
 import controllers.navigation.Navigator
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers.no
+import forms.section1.ConsignmentReferences
 import models.DeclarationType._
 import models.ExportsDeclaration
 import models.requests.JourneyRequest
+import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import services.audit.AuditService
@@ -54,8 +56,8 @@ class DucrChoiceController @Inject() (
   private val actionFilters = authenticate andThen journeyAction(validTypes) andThen nextPageIfAmendmentDraft
 
   val displayPage: Action[AnyContent] = actionFilters { implicit request =>
-    val form = YesNoAnswer.form(errorKey = "declaration.ducr.choice.answer.empty").withSubmissionErrors
-    Ok(ducrChoicePage(form))
+    val form = YesNoAnswer.form(errorKey = "declaration.ducr.choice.answer.empty")
+    Ok(ducrChoicePage(populateForm(form.withSubmissionErrors)))
   }
 
   val submitForm: Action[AnyContent] = actionFilters.async { implicit request =>
@@ -65,14 +67,28 @@ class DucrChoiceController @Inject() (
       .fold(
         formWithErrors => Future.successful(BadRequest(ducrChoicePage(formWithErrors))),
         yesNoAnswer =>
-          updateCache.map { _ =>
+          updateCache(yesNoAnswer).map { _ =>
             navigator.continueTo(if (yesNoAnswer.answer == no) TraderReferenceController.displayPage else nextPage(request))
           }
       )
   }
 
-  private def updateCache(implicit request: JourneyRequest[AnyContent]): Future[ExportsDeclaration] =
+  private def updateCache(yesNoAnswer: YesNoAnswer)(implicit request: JourneyRequest[AnyContent]): Future[ExportsDeclaration] =
     updateDeclarationFromRequest { declaration =>
-      declaration.copy(consignmentReferences = declaration.consignmentReferences.map(_.copy(ducr = None)))
+      declaration.copy(consignmentReferences = declaration.consignmentReferences match {
+        case Some(consignmentRefs) => Some(consignmentRefs.copy(hasDucr = Some(yesNoAnswer.answer)))
+        case _                     => Some(ConsignmentReferences(ducr = None, hasDucr = Some(yesNoAnswer.answer)))
+      })
+    }
+
+  private def populateForm(form: Form[YesNoAnswer])(implicit request: JourneyRequest[_]): Form[YesNoAnswer] =
+    request.cacheModel.consignmentReferences.flatMap(_.hasDucr) match {
+      case Some("Yes") =>
+        println("Got to Yes Value")
+        form.fill(YesNoAnswer.Yes.get)
+      case Some("No") =>
+        println("Got to No Value")
+        form.fill(YesNoAnswer.No.get)
+      case _ => form
     }
 }
