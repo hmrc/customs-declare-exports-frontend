@@ -23,6 +23,7 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.html.components.gds._
 @import views.helpers.HintTextAlternatives
+@import models.DeclarationType.SUPPLEMENTARY
 
 @this(
     govukDetails: GovukDetails,
@@ -60,6 +61,29 @@
 
 @formGroupWrapper(field = form(PackageInformationFormGroupId)){
 
+    @if(false){@components.fields.field_accessible_autocomplete(
+        field = form(PackageInformation.typeId),
+        label = messages("declaration.packageInformation.typesOfPackages.label"),
+        labelClass = Some("govuk-label--m"),
+        isSubHeading = true,
+        bodyHtml = Some(paragraphBody(messages("declaration.packageInformation.typesOfPackages.paragraph"))),
+        hintParagraphs = List(
+            HintTextAlternatives("declaration.packageInformation.typesOfPackages.hint.noJs", Some("declaration.packageInformation.typesOfPackages.hint.withJs"))
+        ),
+        emptySelectValue = messages("declaration.packageInformation.typesOfPackages.empty"),
+        items = AutoCompleteItem.fromPackageType(packageTypesService.all),
+        args = List('otherErrorFields -> Seq("typesOfPackages"))
+    )}
+
+    @exportsInputText(
+        field = form("numberOfPackages"),
+        labelKey = "declaration.packageInformation.numberOfPackages",
+        isSubHeading = true,
+        hintKey = Some("declaration.packageInformation.numberOfPackages.hint"),
+        inputClasses = Some("govuk-input--width-10")
+    )
+
+    @if(true){
     @components.fields.field_accessible_autocomplete(
         field = form(PackageInformation.typeId),
         label = messages("declaration.packageInformation.typesOfPackages.label"),
@@ -72,15 +96,7 @@
         emptySelectValue = messages("declaration.packageInformation.typesOfPackages.empty"),
         items = AutoCompleteItem.fromPackageType(packageTypesService.all),
         args = List('otherErrorFields -> Seq("typesOfPackages"))
-    )
-
-    @exportsInputText(
-        field = form("numberOfPackages"),
-        labelKey = "declaration.packageInformation.numberOfPackages",
-        isSubHeading = true,
-        hintKey = Some("declaration.packageInformation.numberOfPackages.hint"),
-        inputClasses = Some("govuk-input--width-10")
-    )
+    )}
 
     @govukDetails(Details(
         summary = Text(messages("declaration.packageInformation.numberOfPackages.details.summary")),
