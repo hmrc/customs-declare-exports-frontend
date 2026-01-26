@@ -1443,7 +1443,7 @@ declaration.transportInformation.meansOfTransport.NameOfVessel.hint = Er enghrai
 declaration.transportInformation.meansOfTransport.NotApplicable = Nid yw’n berthnasol
 declaration.transportInformation.meansOfTransport.NotApplicable.vBT = Nid wyf yn gwybod
 declaration.transportInformation.meansOfTransport.NotApplicable.label = Nid yw’n berthnasol
-eclaration.transportInformation.meansOfTransport.NotApplicable.hint Nid yw’n berthnasol
+declaration.transportInformation.meansOfTransport.NotApplicable.hint = Nid yw’n berthnasol
 declaration.transportInformation.meansOfTransport.ShipOrRoroImoNumber = Rhif IMO y llong
 declaration.transportInformation.meansOfTransport.ShipOrRoroImoNumber.vBT = Rhif IMO y llong neu’r fferi RoRo
 declaration.transportInformation.meansOfTransport.ShipOrRoroImoNumber.label = Rhif adnabod IMO
