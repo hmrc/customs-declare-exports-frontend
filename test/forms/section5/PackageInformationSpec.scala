@@ -33,7 +33,6 @@ class PackageInformationSpec extends UnitWithMocksSpec with JourneyTypeTestRunne
   private implicit val packageTypesService: PackageTypesService = instanceOf[PackageTypesService]
   private implicit val appConfig: AppConfig = mock[AppConfig]
 
-
   "Package Information" should {
 
     "has correct form id" in {

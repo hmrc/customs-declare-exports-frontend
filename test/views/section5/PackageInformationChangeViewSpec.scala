@@ -41,7 +41,6 @@ class PackageInformationChangeViewSpec extends PageWithButtonsSpec with ExportsT
   implicit val packageTypesService: PackageTypesService = instanceOf[PackageTypesService]
   implicit val appConfig: AppConfig = mock[AppConfig]
 
-
   val page = instanceOf[package_information_change]
 
   override val typeAndViewInstance = (STANDARD, page(itemId, form, packageInfoId)(_, _, appConfig))

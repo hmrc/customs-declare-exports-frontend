@@ -38,7 +38,6 @@ class PackageInformationChangeControllerSpec extends ControllerSpec with Audited
   val mockPackageTypesService = instanceOf[PackageTypesService]
   val mockAppConfig = mock[AppConfig]
 
-
   val controller =
     new PackageInformationChangeController(
       mockAuthAction,

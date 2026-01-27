@@ -42,8 +42,9 @@ class PackageInformationSummaryController @Inject() (
   override val exportsCacheService: ExportsCacheService,
   navigator: Navigator,
   mcc: MessagesControllerComponents,
-  packageInformationPage: package_information,
-)(implicit appConfig: AppConfig) extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithUnsafeDefaultFormBinding  {
+  packageInformationPage: package_information
+)(implicit appConfig: AppConfig)
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithUnsafeDefaultFormBinding {
 
   def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.cacheModel.itemBy(itemId).flatMap(_.packageInformation) match {
