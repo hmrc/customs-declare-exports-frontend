@@ -2073,6 +2073,7 @@ declaration.summary.item.netWeight.change = Change net weight for item {0}
 declaration.summary.item.packageInformation = Packing details
 declaration.summary.item.packageInformation.type = Package type
 declaration.summary.item.packageInformation.number = Number of package type
+declaration.summary.item.packageInformation.number.change = Change package information for item {0}
 declaration.summary.item.packageInformation.markings = Shipping marks
 declaration.summary.item.packageInformation.change = Change package information for item {0}
 declaration.summary.item.additionalInformation = Additional information statement codes

@@ -17,6 +17,7 @@
 package views.section5
 
 import base.Injector
+import config.AppConfig
 import controllers.section5.routes.PackageInformationSummaryController
 import forms.section5.PackageInformation
 import forms.section5.PackageInformation.form
@@ -38,13 +39,15 @@ class PackageInformationChangeViewSpec extends PageWithButtonsSpec with ExportsT
 
   val packageInfoId = "id"
   implicit val packageTypesService: PackageTypesService = instanceOf[PackageTypesService]
+  implicit val appConfig: AppConfig = mock[AppConfig]
+
 
   val page = instanceOf[package_information_change]
 
-  override val typeAndViewInstance = (STANDARD, page(itemId, form, packageInfoId)(_, _))
+  override val typeAndViewInstance = (STANDARD, page(itemId, form, packageInfoId)(_, _, appConfig))
 
   def createView(frm: Form[PackageInformation] = form)(implicit request: JourneyRequest[_]): Document =
-    page(itemId, frm, packageInfoId)(request, messages)
+    page(itemId, frm, packageInfoId)(request, messages, appConfig)
 
   "PackageInformation Change View" should {
 

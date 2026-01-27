@@ -17,6 +17,7 @@
 package views.section5
 
 import base.Injector
+import config.AppConfig
 import controllers.section5.routes._
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.form
@@ -36,14 +37,16 @@ import views.tags.ViewTest
 @ViewTest
 class PackageInformationViewSpec extends PageWithButtonsSpec with Injector {
 
+  val mockAppConfig = mock[AppConfig]
+
   override val typeAndViewInstance =
-    (STANDARD, page(itemId, form(), List(PackageInformationViewSpec.packageInformation))(_, _))
+    (STANDARD, page(itemId, form(), List(PackageInformationViewSpec.packageInformation))(_, _, mockAppConfig))
 
   val page = instanceOf[package_information]
 
   def createView(frm: Form[YesNoAnswer] = form(), packages: Seq[PackageInformation] = List(PackageInformationViewSpec.packageInformation))(
     implicit request: JourneyRequest[_]
-  ): Document = page(itemId, frm, packages)(request, messages)
+  ): Document = page(itemId, frm, packages)(request, messages, mockAppConfig)
 
   "have proper messages for labels" in {
     messages must haveTranslationFor("declaration.packageInformation.title")
