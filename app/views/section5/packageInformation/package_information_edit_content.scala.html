@@ -38,7 +38,7 @@
     packageTypesService: PackageTypesService
 )
 
-@(form: Form[_])(implicit request: JourneyRequest[_], messages: Messages)
+@(form: Form[_])(implicit request: JourneyRequest[_], messages: Messages, appConfig: AppConfig)
 
 @errorSummary(form.errors)
 
@@ -61,7 +61,7 @@
 
 @formGroupWrapper(field = form(PackageInformationFormGroupId)){
 
-    @if(false){@components.fields.field_accessible_autocomplete(
+    @if(!appConfig.isOptionalFieldsEnabled){@components.fields.field_accessible_autocomplete(
         field = form(PackageInformation.typeId),
         label = messages("declaration.packageInformation.typesOfPackages.label"),
         labelClass = Some("govuk-label--m"),
@@ -83,7 +83,7 @@
         inputClasses = Some("govuk-input--width-10")
     )
 
-    @if(true){
+    @if(appConfig.isOptionalFieldsEnabled){
     @components.fields.field_accessible_autocomplete(
         field = form(PackageInformation.typeId),
         label = messages("declaration.packageInformation.typesOfPackages.label"),
