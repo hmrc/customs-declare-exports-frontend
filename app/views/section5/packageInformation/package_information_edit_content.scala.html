@@ -42,6 +42,8 @@
 
 @errorSummary(form.errors)
 
+@isSupplementaryDeclaration = @{request.isType(SUPPLEMENTARY)}
+
 @numberOfPackagesDetails = {
     @paragraphBody(messages("declaration.packageInformation.numberOfPackages.details.paragraph.1"))
     @paragraphBody(messages("declaration.packageInformation.numberOfPackages.details.paragraph.2"))
@@ -75,6 +77,8 @@
         args = List('otherErrorFields -> Seq("typesOfPackages"))
     )}
 
+<!--Remove above when removing flag-->
+
     @exportsInputText(
         field = form("numberOfPackages"),
         labelKey = "declaration.packageInformation.numberOfPackages",
@@ -86,7 +90,11 @@
     @if(appConfig.isOptionalFieldsEnabled){
     @components.fields.field_accessible_autocomplete(
         field = form(PackageInformation.typeId),
-        label = messages("declaration.packageInformation.typesOfPackages.label"),
+        label = if (isSupplementaryDeclaration) {
+          messages("declaration.packageInformation.typesOfPackages.label.optional")
+        } else {
+          messages("declaration.packageInformation.typesOfPackages.label")
+        },
         labelClass = Some("govuk-label--m"),
         isSubHeading = true,
         bodyHtml = Some(paragraphBody(messages("declaration.packageInformation.typesOfPackages.paragraph"))),
@@ -105,7 +113,11 @@
 
     @exportsInputText(
         field = form("shippingMarks"),
-        labelKey = "declaration.packageInformation.shippingMark",
+        labelKey = if (isSupplementaryDeclaration && appConfig.isOptionalFieldsEnabled) {
+            "declaration.packageInformation.shippingMark.optional"
+        } else {
+            "declaration.packageInformation.shippingMark"
+        },
         isSubHeading = true,
         bodyHtml = Some(paragraphBody(messages("declaration.packageInformation.shippingMark.paragraph"))),
         inputClasses = Some("govuk-input--width-20")
