@@ -58,7 +58,11 @@
 
 @noOfPackagesSection(item: ExportItem) = {
     @item.packageInformation.map { packageInformationList =>
+        @System.out.println("$/$/$")
+        @System.out.println(packageInformationList)
+        @System.out.println(packageInformationList.drop(1))
         @if(packageInformationList.drop(1).isEmpty) {
+            @System.out.println("if called")
             @packageInformationList.map { packageInfo =>
                 @packageInfo.numberOfPackages.getOrElse("")
             }
