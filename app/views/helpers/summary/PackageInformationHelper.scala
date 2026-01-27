@@ -29,14 +29,12 @@ import javax.inject.{Inject, Singleton}
 @Singleton
 class PackageInformationHelper @Inject() (packageTypesService: PackageTypesService, appConfig: AppConfig) extends SummaryHelper {
 
-  def maybeSummarySection(item: ExportItem, actionsEnabled: Boolean, itemIndex: Int)(implicit messages: Messages):
-  Option[SummarySection] =
+  def maybeSummarySection(item: ExportItem, actionsEnabled: Boolean, itemIndex: Int)(implicit messages: Messages): Option[SummarySection] =
     item.packageInformation.map { listOfPackageInformation =>
       val summaryListRows = listOfPackageInformation.zipWithIndex.flatMap { case (packageInfo, index) =>
-        if(appConfig.isOptionalFieldsEnabled){
-        packageInfoRowsOpt(item, itemIndex, packageInfo, index + 1, actionsEnabled)
-        }
-        else {
+        if (appConfig.isOptionalFieldsEnabled) {
+          packageInfoRowsOpt(item, itemIndex, packageInfo, index + 1, actionsEnabled)
+        } else {
           packageInfoRows(item, itemIndex, packageInfo, index + 1, actionsEnabled)
         }
       }.flatten
@@ -108,11 +106,15 @@ class PackageInformationHelper @Inject() (packageTypesService: PackageTypesServi
           value(packageTypesService.typesOfPackagesText(packageInfo.typesOfPackages).getOrElse("")),
           classes = s"${noBorder(false, packageInfo)}item-$itemIndex-package-information-$index-type"
         )
-      }.orElse(Some(SummaryListRow(
-        key("item.packageInformation.type"),
-        value(messages("declaration.summary.not.provided")),
-        classes = s"${noBorder(false, packageInfo)}item-$itemIndex-package-information-$index-type"
-      ))),
+      }.orElse(
+        Some(
+          SummaryListRow(
+            key("item.packageInformation.type"),
+            value(messages("declaration.summary.not.provided")),
+            classes = s"${noBorder(false, packageInfo)}item-$itemIndex-package-information-$index-type"
+          )
+        )
+      ),
       packageInfo.shippingMarks.map { shippingMarks =>
         SummaryListRow(
           key("item.packageInformation.markings"),
@@ -122,14 +124,18 @@ class PackageInformationHelper @Inject() (packageTypesService: PackageTypesServi
             if (changeLinkOnShippingMarks) changePackageInformation(item, actionsEnabled, itemIndex) else None
           }
         )
-      }.orElse(Some(SummaryListRow(
-        key("item.packageInformation.markings"),
-        value(messages("declaration.summary.not.provided")),
-        classes = s"package-info item-$itemIndex-package-information-$index-markings", {
-          val changeLinkOnShippingMarks = packageInfo.typesOfPackages.isEmpty && packageInfo.numberOfPackages.isEmpty
-          if (changeLinkOnShippingMarks) changePackageInformation(item, actionsEnabled, itemIndex) else None
-        }
-      )))
+      }.orElse(
+        Some(
+          SummaryListRow(
+            key("item.packageInformation.markings"),
+            value(messages("declaration.summary.not.provided")),
+            classes = s"package-info item-$itemIndex-package-information-$index-markings", {
+              val changeLinkOnShippingMarks = packageInfo.typesOfPackages.isEmpty && packageInfo.numberOfPackages.isEmpty
+              if (changeLinkOnShippingMarks) changePackageInformation(item, actionsEnabled, itemIndex) else None
+            }
+          )
+        )
+      )
     )
 
   private def noBorder(isNumberOfPackages: Boolean, packageInfo: PackageInformation): String =

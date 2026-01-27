@@ -44,7 +44,6 @@ class PackageInformationAddViewSpec extends PageWithButtonsSpec with ExportsTest
 
   implicit val appConfig: AppConfig = mock[AppConfig]
 
-
   override val typeAndViewInstance = (STANDARD, page(itemId, form)(_, _, appConfig))
 
   def createView(frm: Form[PackageInformation] = form)(implicit request: JourneyRequest[_]): Document =

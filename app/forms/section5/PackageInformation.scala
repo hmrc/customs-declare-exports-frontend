@@ -30,7 +30,7 @@ import play.api.data.Forms.{number, optional, text}
 import play.api.data.{Form, Forms, Mapping}
 import play.api.i18n.Messages
 import play.api.libs.json.{Json, OFormat}
-import services.DiffTools.{ExportsDeclarationDiff, combinePointers, compareIntDifference, compareStringDifference}
+import services.DiffTools.{combinePointers, compareIntDifference, compareStringDifference, ExportsDeclarationDiff}
 import services.{DiffTools, PackageTypesService}
 import utils.validators.forms.FieldValidator._
 
@@ -93,7 +93,7 @@ object PackageInformation extends DeclarationPage with FieldMapping {
   def data2Form(data: PackageInformation): Option[(Option[String], Option[Int], Option[String])] =
     Some((data.typesOfPackages, data.numberOfPackages, data.shippingMarks))
 
-  //Remove above and use below when removing flag
+  // Remove above and use below when removing flag
   def form2DataOpt(numberOfPackages: Option[Int], typesOfPackages: Option[String], shippingMarks: Option[String]): PackageInformation =
     new PackageInformation(sequenceIdPlaceholder, generateId, typesOfPackages, numberOfPackages, shippingMarks)
 
@@ -103,7 +103,7 @@ object PackageInformation extends DeclarationPage with FieldMapping {
   val typeId = "typesOfPackages"
 
   def mapping(implicit messages: Messages, packageTypesService: PackageTypesService, appConfig: AppConfig): Mapping[PackageInformation] =
-    if(appConfig.isOptionalFieldsEnabled){
+    if (appConfig.isOptionalFieldsEnabled) {
       Forms
         .mapping(
           "numberOfPackages" -> optional(
@@ -120,7 +120,7 @@ object PackageInformation extends DeclarationPage with FieldMapping {
               .verifying("declaration.packageInformation.shippingMark.lengthError", isEmpty or noLongerThan(42))
           )
         )(form2DataOpt)(data2FormOpt)
-    }else {
+    } else {
       Forms
         .mapping(
           typeId -> optional(
