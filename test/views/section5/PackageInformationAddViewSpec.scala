@@ -17,6 +17,7 @@
 package views.section5
 
 import base.Injector
+import config.AppConfig
 import controllers.section5.routes._
 import forms.section5.PackageInformation
 import forms.section5.PackageInformation.form
@@ -41,10 +42,13 @@ class PackageInformationAddViewSpec extends PageWithButtonsSpec with ExportsTest
 
   val page = instanceOf[package_information_add]
 
-  override val typeAndViewInstance = (STANDARD, page(itemId, form)(_, _))
+  implicit val appConfig: AppConfig = mock[AppConfig]
+
+
+  override val typeAndViewInstance = (STANDARD, page(itemId, form)(_, _, appConfig))
 
   def createView(frm: Form[PackageInformation] = form)(implicit request: JourneyRequest[_]): Document =
-    page(itemId, frm)(request, messages)
+    page(itemId, frm)(request, messages, appConfig)
 
   val itemWithPackageInfo = anItem(withPackageInformation(packageInformation))
 
@@ -68,7 +72,7 @@ class PackageInformationAddViewSpec extends PageWithButtonsSpec with ExportsTest
       }
 
       "display 'Back' button that links to 'PackageInformation summary' page when adding subsequent value" in {
-        val backLink = page(itemWithPackageInfo.id, form)(request, messages).getElementById("back-link")
+        val backLink = page(itemWithPackageInfo.id, form)(request, messages, appConfig).getElementById("back-link")
         backLink must haveHref(PackageInformationSummaryController.displayPage(itemWithPackageInfo.id))
       }
 

@@ -17,6 +17,7 @@
 package controllers.section5
 
 import base.{AuditedControllerSpec, ControllerSpec, Injector}
+import config.AppConfig
 import controllers.helpers.SequenceIdHelper.valueOfEso
 import controllers.section5.routes.PackageInformationSummaryController
 import forms.section5.PackageInformation
@@ -35,6 +36,8 @@ class PackageInformationChangeControllerSpec extends ControllerSpec with Audited
 
   val mockChangePage = mock[package_information_change]
   val mockPackageTypesService = instanceOf[PackageTypesService]
+  val mockAppConfig = mock[AppConfig]
+
 
   val controller =
     new PackageInformationChangeController(
@@ -45,13 +48,13 @@ class PackageInformationChangeControllerSpec extends ControllerSpec with Audited
       mockErrorHandler,
       mcc,
       mockChangePage
-    )(ec, mockPackageTypesService, auditService)
+    )(ec, mockPackageTypesService, auditService, mockAppConfig)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     authorizedUser()
     setupErrorHandler()
-    when(mockChangePage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockChangePage.apply(any(), any(), any())(any(), any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
@@ -67,12 +70,12 @@ class PackageInformationChangeControllerSpec extends ControllerSpec with Audited
 
   def thePackageInformation: Form[PackageInformation] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[PackageInformation]])
-    verify(mockChangePage).apply(any(), captor.capture(), any())(any(), any())
+    verify(mockChangePage).apply(any(), captor.capture(), any())(any(), any(), any())
     captor.getValue
   }
 
   private def verifyChangePageInvoked(numberOfTimes: Int = 1): HtmlFormat.Appendable =
-    verify(mockChangePage, times(numberOfTimes)).apply(any(), any(), any())(any(), any())
+    verify(mockChangePage, times(numberOfTimes)).apply(any(), any(), any())(any(), any(), any())
 
   val id = "pkgId"
   val packageInformation = PackageInformation(3, id, Some("AB"), Some(1), Some("SHIP"))
