@@ -43,7 +43,7 @@
     packageTypesService: PackageTypesService
 )
 
-@(itemId: String, form: Form[_], packages: Seq[PackageInformation])(implicit request: JourneyRequest[_], messages: Messages)
+@(itemId: String, form: Form[_], packages: Seq[PackageInformation])(implicit request: JourneyRequest[_], messages: Messages, appConfig: AppConfig)
 
 @title = @{
   val hasErrors = form.hasErrors || form.hasGlobalErrors
@@ -60,12 +60,8 @@
   @if(packages.nonEmpty) {
     @govukTable(Table(
       head = Some(List(
-        if(true){HeadCell(content = Text(messages("declaration.packageInformation.table.heading.numberOfPackages")))}
-        else{ HeadCell(content = Text(messages("declaration.packageInformation.table.heading.typesOfPackages")))},
-
-        if(true){HeadCell(content = Text(messages("declaration.packageInformation.table.heading.typesOfPackages")))}
-        else{HeadCell(content = Text(messages("declaration.packageInformation.table.heading.numberOfPackages")))},
-
+        HeadCell(content = Text(messages("declaration.packageInformation.table.heading.typesOfPackages"))),
+        HeadCell(content = Text(messages("declaration.packageInformation.table.heading.numberOfPackages"))),
         HeadCell(content = Text(messages("declaration.packageInformation.table.heading.shippingMarks"))),
         HeadCell(content = HtmlContent(spanVisuallyHidden(messages("site.change.header")))),
         HeadCell(content = HtmlContent(spanVisuallyHidden(messages("site.remove.header"))))
@@ -74,12 +70,58 @@
       captionClasses = "govuk-visually-hidden",
       rows = packages.zipWithIndex.map { case (item, index) =>
         Seq(
-            if(true){TableRow(content = Text(item.numberOfPackages.getOrElse(0).toString))}
-            else{TableRow(content = Text(item.typesOfPackages.map(packageTypesService.findByCode).map(_.asText).getOrElse("")))},
+          TableRow(content = Text(item.typesOfPackages.map(packageTypesService.findByCode).map(_.asText).getOrElse(""))),
+          TableRow(content = Text(item.numberOfPackages.getOrElse(0).toString)),
+          TableRow(content = Text(item.shippingMarks.getOrElse(""))),
+          TableRow(
+            content = HtmlContent(link(
+              messages("site.change"),
+              PackageInformationChangeController.displayPage(itemId, item.id),
+              textHidden = Some(messages(
+                "declaration.packageInformation.change.hint",
+                item.typesOfPackages.getOrElse(""),
+                item.shippingMarks.getOrElse("")
+              ))
+            )),
+            classes = "govuk-table__cell--numeric",
+            attributes = Map("id" -> s"package-table-row$index-change_button")
+          ),
+          TableRow(
+             content = HtmlContent(link(
+                 messages("site.remove"),
+                 PackageInformationRemoveController.displayPage(itemId, item.id),
+                 textHidden = Some(messages(
+                     "declaration.packageInformation.remove.hint",
+                     item.typesOfPackages.getOrElse(""),
+                     item.shippingMarks.getOrElse("")
+                 ))
+             )),
+             classes = "govuk-table__cell--numeric",
+             attributes = Map("id" -> s"package-table-row$index-remove_button")
+          )
+        )
+      }
+    ))
+  }
+}
 
-          if(true){TableRow(content = Text(item.typesOfPackages.map(packageTypesService.findByCode).map(_.asText).getOrElse(messages("declaration.summary.not.provided"))))}
-          else{TableRow(content = Text(item.numberOfPackages.getOrElse(0).toString))},
-
+<!-- Remove above apply below when removing flag-->
+@packageInfoTableOpt = {
+  @if(packages.nonEmpty) {
+    @govukTable(Table(
+      head = Some(List(
+        HeadCell(content = Text(messages("declaration.packageInformation.table.heading.numberOfPackages"))),
+        HeadCell(content = Text(messages("declaration.packageInformation.table.heading.typesOfPackages"))),
+        HeadCell(content = Text(messages("declaration.packageInformation.table.heading.shippingMarks"))),
+        HeadCell(content = HtmlContent(spanVisuallyHidden(messages("site.change.header")))),
+        HeadCell(content = HtmlContent(spanVisuallyHidden(messages("site.remove.header"))))
+      )),
+      caption = Some(messages("declaration.packageInformation.table.caption")),
+      captionClasses = "govuk-visually-hidden",
+      rows = packages.zipWithIndex.map { case (item, index) =>
+        Seq(
+          TableRow(content = Text(item.numberOfPackages.getOrElse(0).toString)),
+          TableRow(content = Text(item.typesOfPackages.map(packageTypesService.findByCode).map(_.asText).getOrElse(messages("declaration.summary.not.provided")))),
           TableRow(content = Text(item.shippingMarks.getOrElse(messages("declaration.summary.not.provided")))),
           TableRow(
             content = HtmlContent(link(
@@ -122,6 +164,7 @@
 
         @sectionHeader(messages("declaration.section.5"))
 
+        @if(appConfig.isOptionalFieldsEnabled){
         @govukFieldset(Fieldset(
             legend = Some(Legend(
                 content = header,
@@ -129,10 +172,22 @@
                 isPageHeading = true
             )),
             html = HtmlFormat.fill(List(
-                packageInfoTable,
+                packageInfoTableOpt,
                 addAnotherQuestion("declaration.packageInformation.add.another", form),
                 saveButtons()
             ))
-        ))
+        ))}else{
+         @govukFieldset(Fieldset(
+                    legend = Some(Legend(
+                        content = header,
+                        classes = gdsPageLegend,
+                        isPageHeading = true
+                    )),
+                    html = HtmlFormat.fill(List(
+                        packageInfoTable,
+                        addAnotherQuestion("declaration.packageInformation.add.another", form),
+                        saveButtons()
+                    ))
+        ))}
     }
 }

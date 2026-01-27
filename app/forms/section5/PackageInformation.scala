@@ -16,6 +16,7 @@
 
 package forms.section5
 
+import config.AppConfig
 import forms.DeclarationPage
 import forms.section5.PackageInformation.{numberOfPackagesPointer, shippingMarksPointer, typesOfPackagesPointer}
 import models.DeclarationMeta.sequenceIdPlaceholder
@@ -29,7 +30,7 @@ import play.api.data.Forms.{number, optional, text}
 import play.api.data.{Form, Forms, Mapping}
 import play.api.i18n.Messages
 import play.api.libs.json.{Json, OFormat}
-import services.DiffTools.{combinePointers, compareIntDifference, compareStringDifference, ExportsDeclarationDiff}
+import services.DiffTools.{ExportsDeclarationDiff, combinePointers, compareIntDifference, compareStringDifference}
 import services.{DiffTools, PackageTypesService}
 import utils.validators.forms.FieldValidator._
 
@@ -101,8 +102,8 @@ object PackageInformation extends DeclarationPage with FieldMapping {
 
   val typeId = "typesOfPackages"
 
-  def mapping(implicit messages: Messages, packageTypesService: PackageTypesService): Mapping[PackageInformation] =
-    if(true){
+  def mapping(implicit messages: Messages, packageTypesService: PackageTypesService, appConfig: AppConfig): Mapping[PackageInformation] =
+    if(appConfig.isOptionalFieldsEnabled){
       Forms
         .mapping(
           "numberOfPackages" -> optional(
@@ -138,7 +139,7 @@ object PackageInformation extends DeclarationPage with FieldMapping {
         )(form2Data)(data2Form)
     }
 
-  def form(implicit messages: Messages, packageTypesService: PackageTypesService): Form[PackageInformation] = Form(mapping)
+  def form(implicit messages: Messages, packageTypesService: PackageTypesService, appConfig: AppConfig): Form[PackageInformation] = Form(mapping)
 
   override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
     decType match {

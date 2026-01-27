@@ -16,6 +16,7 @@
 
 package controllers.section5
 
+import config.AppConfig
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.general.{ErrorHandler, ModelCacheable, SubmissionErrors}
 import controllers.helpers.PackageInformationHelper.{allCachedPackageInformation, singleCachedPackageInformation}
@@ -49,7 +50,7 @@ class PackageInformationChangeController @Inject() (
   errorHandler: ErrorHandler,
   mcc: MessagesControllerComponents,
   packageChangePage: package_information_change
-)(implicit ec: ExecutionContext, packageTypesService: PackageTypesService, auditService: AuditService)
+)(implicit ec: ExecutionContext, packageTypesService: PackageTypesService, auditService: AuditService, appConfig: AppConfig)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithUnsafeDefaultFormBinding {
 
   def displayPage(itemId: String, code: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
