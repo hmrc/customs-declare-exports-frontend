@@ -192,7 +192,7 @@ class ItemHelper @Inject() (packageInformationHelper: PackageInformationHelper, 
 
   private def statisticalValue(item: ExportItem, actionsEnabled: Boolean, itemIdx: Int)(implicit messages: Messages): Option[SummaryListRow] =
     item.statisticalValue.map { statisticalValue =>
-      if (statisticalValue.statisticalValue.trim.isEmpty) {
+      if (statisticalValue.statisticalValue.trim.isEmpty && appConfig.isOptionalFieldsEnabled) {
         SummaryListRow(
           key("item.itemValue"),
           value(messages("declaration.summary.not.provided")),
