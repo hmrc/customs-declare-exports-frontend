@@ -136,8 +136,14 @@ class TransportCountryViewSpec extends PageWithButtonsSpec with Injector {
 
                       body.size mustBe (if (code == RoRo) 2 else 1)
 
-                      val expectedText = messages(if (code == RoRo) s"$prefix.roro.paragraph" else exitAndReturnCaption)
-                      body.get(0).text mustBe expectedText
+                      if (appConfig.isOptionalFieldsEnabled) {
+                        val expectedText = messages(if (code == RoRo) s"$prefix.roro.paragraph" else exitAndReturnCaption)
+                        body.get(0).text mustBe expectedText
+                      }
+                      else{
+                        val expectedText = messages(if (code == RoRo) s"$prefix.roro.inset.text" else exitAndReturnCaption)
+                        body.get(0).text mustBe expectedText
+                      }
                     }
                   }
                 }
