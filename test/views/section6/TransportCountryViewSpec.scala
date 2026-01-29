@@ -62,7 +62,6 @@ class TransportCountryViewSpec extends PageWithButtonsSpec with Injector {
     instanceOf[FormWithCSRF]
   )(instanceOf[CountryHelper])
 
-
   val countryCode = "ZA"
   val countryName = "South Africa"
 
