@@ -16,7 +16,8 @@
 
 package forms.section4
 
-import forms.mappings.MappingHelper.requiredRadio
+import config.AppConfig
+import forms.mappings.MappingHelper.optionalRadio
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers
 import forms.mappings.{AdditionalConstraintsMapping, ConditionalConstraint}
@@ -81,6 +82,8 @@ object InvoiceAndExchangeRate extends DeclarationPage {
   val isNotOnlyCommas = (input: String) => !input.forall(_.equals(','))
   val validateOptionWithoutCommas = (validator: String => Boolean) =>
     (input: Option[String]) => input.fold(false)(x => validator(x.replaceAll(",", "")))
+  val validateOptionWithoutCommasOptional = (validator: String => Boolean) =>
+    (input: Option[String]) => input.forall(x => validator(x.replaceAll(",", "")))
   val isNotOnlyCommasOption = (input: Option[String]) => !input.fold(false)(_.forall(_.equals(',')))
   val validateAsWholeNumber = (validator: String => Boolean) =>
     (input: String) =>
@@ -113,34 +116,52 @@ object InvoiceAndExchangeRate extends DeclarationPage {
   // with `validateWithoutCommas` before validating the number of digits.
   // To prevent the validation from allowing an invalid value like ",,,," we also must use the `isNotOnlyCommas`
   // function to specifically guard against this.
-  val mapping: Mapping[InvoiceAndExchangeRate] = Forms.mapping(
+  def mapping(implicit appConfig: AppConfig): Mapping[InvoiceAndExchangeRate] = Forms.mapping(
     totalAmountInvoiced -> validateTotalAmountInvoiced,
     totalAmountInvoicedCurrency -> validateTotalAmountInvoicedCurrency,
     agreedExchangeRateYesNo -> validateAgreedExchangeRateYesNo,
-    exchangeRate -> validateExchangeRate
+    exchangeRate -> validateExchangeRate(appConfig.isOptionalFieldsEnabled)
   )(InvoiceAndExchangeRate.apply)(InvoiceAndExchangeRate.unapply)
 
-  def form: Form[InvoiceAndExchangeRate] = Form(mapping)
+  def form(implicit appConfig: AppConfig): Form[InvoiceAndExchangeRate] = Form(mapping)
 
   override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
     List(TariffContentKey("tariff.declaration.totalNumbersOfItems.common"))
 
-  private def validateExchangeRate: AdditionalConstraintsMapping[Option[String]] =
-    AdditionalConstraintsMapping(
-      optional(text()).transform(_.map(_.toUpperCase), (o: Option[String]) => o),
-      Seq(
-        ConditionalConstraint(
-          isFieldIgnoreCaseString(agreedExchangeRateYesNo, YesNoAnswers.yes) and isFieldNotEmpty(exchangeRate),
-          rateFieldErrorKey,
-          isNotOnlyCommasOption and validateOptionWithoutCommas(ofPattern(exchangeRatePattern))
-        ),
-        ConditionalConstraint(
-          isFieldIgnoreCaseString(agreedExchangeRateYesNo, YesNoAnswers.yes),
-          exchangeRateYesRadioSelectedErrorKey,
-          nonEmptyOptionString
+  private def validateExchangeRate(isOptional: Boolean): AdditionalConstraintsMapping[Option[String]] =
+    if (isOptional) {
+      AdditionalConstraintsMapping(
+        optional(text()).transform(_.map(_.toUpperCase), (o: Option[String]) => o),
+        Seq(
+          ConditionalConstraint(
+            isFieldIgnoreCaseString(agreedExchangeRateYesNo, YesNoAnswers.yes),
+            rateFieldErrorKey,
+            isNotOnlyCommasOption and validateOptionWithoutCommasOptional(ofPattern(exchangeRatePattern))
+          ),
+          ConditionalConstraint(
+            isFieldIgnoreCaseString(agreedExchangeRateYesNo, YesNoAnswers.yes),
+            exchangeRateYesRadioSelectedErrorKey,
+            nonEmptyOptionString
+          )
         )
       )
-    )
+    } else {
+      AdditionalConstraintsMapping(
+        optional(text()).transform(_.map(_.toUpperCase), (o: Option[String]) => o),
+        Seq(
+          ConditionalConstraint(
+            isFieldIgnoreCaseString(agreedExchangeRateYesNo, YesNoAnswers.yes) and isFieldNotEmpty(exchangeRate),
+            rateFieldErrorKey,
+            isNotOnlyCommasOption and validateOptionWithoutCommas(ofPattern(exchangeRatePattern))
+          ),
+          ConditionalConstraint(
+            isFieldIgnoreCaseString(agreedExchangeRateYesNo, YesNoAnswers.yes),
+            exchangeRateYesRadioSelectedErrorKey,
+            nonEmptyOptionString
+          )
+        )
+      )
+    }
 
   private def validateTotalAmountInvoiced: AdditionalConstraintsMapping[Option[String]] =
     AdditionalConstraintsMapping(
@@ -183,5 +204,5 @@ object InvoiceAndExchangeRate extends DeclarationPage {
     )
 
   private def validateAgreedExchangeRateYesNo: FieldMapping[String] =
-    requiredRadio(exchangeRateNoAnswerErrorKey, YesNoAnswer.allowedValues)
+    optionalRadio(exchangeRateNoAnswerErrorKey, YesNoAnswer.allowedValues)
 }

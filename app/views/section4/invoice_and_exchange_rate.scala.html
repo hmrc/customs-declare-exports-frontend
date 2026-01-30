@@ -71,14 +71,7 @@
 @totalAmountInvoicedCurrencyField = @{form(totalAmountInvoicedCurrency)}
 @totalAmountInvoicedErrors = @{totalAmountInvoicedField.errors ++ totalAmountInvoicedCurrencyField.errors}
 
-@currencyCodeAndAmountContent = {
-
-    @if(totalAmountInvoicedErrors.nonEmpty){
-        <p class="govuk-error-message">
-            <span class="govuk-visually-hidden">@messages("site.accessibility.error")</span>
-            @Html(totalAmountInvoicedErrors.map(err => messages(err.message, err.args:_*)).mkString("<br>"))
-        </p>
-    }
+@currencyCodeAndAmountContentFlag = {
 
     <div class="currency-dropdown">
         <div class="govuk-date-input__item">
@@ -106,13 +99,76 @@
     </div>
 }
 
-@currencyCodeAndAmount = {
+@currencyCodeAndAmountFlag = {
     <div class="govuk-form-group @if(totalAmountInvoicedErrors.nonEmpty){govuk-form-group--error}">
     @govukFieldset(Fieldset(
         attributes = Map("id" -> "currencyCodeAndAmount"),
         html = HtmlFormat.fill(List(currencyCodeAndAmountContent))
     ))
     </div>
+}
+
+@exchangeRateInputFlag = {
+<div class="govuk-form-group">
+
+    <h1 class="govuk-label-wrapper">
+        @label(
+        "declaration.exchangeRate.input.label.flag",
+        "exchangeRate",
+        "govuk-label govuk-label--m"
+        )
+    </h1>
+
+    @exportsInputText(
+        field = form(exchangeRate),
+        hintKey = Some("declaration.exchangeRate.input.hint"),
+        inputClasses = Some("govuk-input--width-10")
+    )
+</div>
+}
+
+@currencyCodeAndAmountContent = {
+
+@if(totalAmountInvoicedErrors.nonEmpty){
+<p class="govuk-error-message">
+    <span class="govuk-visually-hidden">@messages("site.accessibility.error")</span>
+    @Html(totalAmountInvoicedErrors.map(err => messages(err.message, err.args:_*)).mkString("<br>"))
+</p>
+}
+
+<div class="currency-dropdown">
+    <div class="govuk-date-input__item">
+
+        @label(
+        "declaration.totalAmountInvoiced.currency.label",
+        "totalAmountInvoicedCurrency",
+        "govuk-label"
+        )
+
+        @input_accessible_autocomplete(
+        field = form("totalAmountInvoicedCurrency"),
+        emptySelectValue = messages("declaration.totalAmountInvoiced.currency.select"),
+        items = AutoCompleteItem.fromCurrencyCode(invoiceAndExchangeRateService.all)
+        )
+
+    </div>
+    <div class="govuk-date-input__item">
+        @input(
+        field = totalAmountInvoicedField,
+        labelKey = "declaration.totalAmountInvoiced.amount.label",
+        inputClasses = "govuk-input--width-15"
+        )
+    </div>
+</div>
+}
+
+@currencyCodeAndAmount = {
+<div class="govuk-form-group @if(totalAmountInvoicedErrors.nonEmpty){govuk-form-group--error}">
+    @govukFieldset(Fieldset(
+    attributes = Map("id" -> "currencyCodeAndAmount"),
+    html = HtmlFormat.fill(List(currencyCodeAndAmountContent))
+    ))
+</div>
 }
 
 @exchangeRateInput = {
@@ -149,12 +205,21 @@
         ))
         @paragraphBody(messages("declaration.invoice.details.body.3"))
 
-        @currencyCodeAndAmount
+        @if(appConfig.isOptionalFieldsEnabled){
+            @currencyCodeAndAmountFlag
+        } else {
+            @currencyCodeAndAmount
+        }
 
-        @heading(messages("declaration.exchangeRate"), "govuk-heading-m", "h2")
-        @paragraphBody(messages("declaration.exchangeRate.paragraph1.text"))
+        @if(appConfig.isOptionalFieldsEnabled){
+            @exchangeRateInputFlag
+        } else {
+            @heading(messages("declaration.exchangeRate"), "govuk-heading-m", "h2")
+            @paragraphBody(messages("declaration.exchangeRate.paragraph1.text"))
+        }
 
-        @govukFieldset(DescribedByHelper(
+@if(!appConfig.isOptionalFieldsEnabled){
+@govukFieldset(DescribedByHelper(
             form = form,
             fieldName = "yesNo",
             content = List(
@@ -166,6 +231,8 @@
             ),
             titleKey = None
         ))
+        }
+
 
         @govukDetails(Details(
             summary = Text(messages("declaration.exchangeRate.expander.title")),
