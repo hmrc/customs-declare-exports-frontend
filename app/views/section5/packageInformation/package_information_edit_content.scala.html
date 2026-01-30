@@ -79,13 +79,27 @@
 
 <!--Remove above when removing flag-->
 
+    @if(appConfig.isOptionalFieldsEnabled){
     @exportsInputText(
+        field = form("numberOfPackages"),
+        labelKey = "declaration.packageInformation.numberOfPackages.flag",
+        isSubHeading = true,
+        hintKey = Some("declaration.packageInformation.numberOfPackages.hint.flag"),
+        inputClasses = Some("govuk-input--width-10")
+    )
+    }
+
+    @if(!appConfig.isOptionalFieldsEnabled){
+        @exportsInputText(
         field = form("numberOfPackages"),
         labelKey = "declaration.packageInformation.numberOfPackages",
         isSubHeading = true,
         hintKey = Some("declaration.packageInformation.numberOfPackages.hint"),
         inputClasses = Some("govuk-input--width-10")
-    )
+        )
+    }
+
+
 
     @if(appConfig.isOptionalFieldsEnabled){
     @components.fields.field_accessible_autocomplete(
