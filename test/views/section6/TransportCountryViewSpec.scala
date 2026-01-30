@@ -20,6 +20,7 @@ import base.Injector
 import config.AppConfig
 import connectors.CodeListConnector
 import controllers.helpers.TransportSectionHelper.nonPostalOrFTIModeOfTransportCodes
+import controllers.navigation.Navigator
 import controllers.section6.routes._
 import forms.section6.InlandOrBorder.Border
 import forms.section6.ModeOfTransportCode.{Maritime, Rail, RoRo}
@@ -33,7 +34,9 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, when}
 import play.api.data.Form
 import play.api.libs.json.Json
-import views.helpers.ModeOfTransportCodeHelper
+import uk.gov.hmrc.govukfrontend.views.html.components.FormWithCSRF
+import views.html.components.gds._
+import views.helpers.{CountryHelper, ModeOfTransportCodeHelper}
 import views.html.section6.transport_country
 import views.common.PageWithButtonsSpec
 import views.tags.ViewTest
@@ -44,16 +47,27 @@ import scala.collection.immutable.ListMap
 class TransportCountryViewSpec extends PageWithButtonsSpec with Injector {
 
   implicit val codeListConnector: CodeListConnector = mock[CodeListConnector]
-
   implicit val appConfig: AppConfig = mock[AppConfig]
 
-  val page = instanceOf[transport_country]
+  val page = new transport_country(
+    instanceOf[gdsMainTemplate],
+    instanceOf[errorSummary],
+    instanceOf[sectionHeader],
+    instanceOf[heading],
+    instanceOf[paragraphBody],
+    instanceOf[saveButtons],
+    instanceOf[tariffExpander],
+    appConfig,
+    instanceOf[Navigator],
+    instanceOf[FormWithCSRF]
+  )(instanceOf[CountryHelper])
 
   val countryCode = "ZA"
   val countryName = "South Africa"
 
   override def beforeEach(): Unit = {
     super.beforeEach()
+    when(appConfig.isOptionalFieldsEnabled).thenReturn(false)
     when(codeListConnector.getCountryCodes(any())).thenReturn(ListMap("ZA" -> Country("South Africa", "ZA")))
   }
 
@@ -103,43 +117,33 @@ class TransportCountryViewSpec extends PageWithButtonsSpec with Injector {
                 view.getElementsByTag("h1").text mustBe messages(s"$prefix.title", transportMode)
               }
 
-              if (appConfig.isOptionalFieldsEnabled) {
-                "display the expected onset text" when {
-                  "'Transport Leaving the Border' is 'RoRo'" in {
-                    val onsetText = view.getElementsByClass("govuk-inset-text")
+              "display the expected paragraph FEATURE FLAGGED" when {
+                "'Transport Leaving the Border' is 'RoRo'" in {
+                  reset(appConfig)
+                  when(appConfig.isOptionalFieldsEnabled).thenReturn(true)
+                  val view = createView(form(transportMode), transportMode)(journeyRequest(declarationType))
 
-                    onsetText.size mustBe (if (code == RoRo) 1 else 0)
+                  val body = view.getElementsByClass("govuk-body")
 
-                    if (code == RoRo) {
-                      val expectedText = messages(s"$prefix.roro.inset.text")
-                      onsetText.get(0).text mustBe expectedText
-                    }
+                  body.size mustBe (if (code == RoRo) 2 else 1)
 
-                  }
+                  val expectedText = messages(if (code == RoRo) s"$prefix.roro.paragraph" else exitAndReturnCaption)
+                  body.get(0).text mustBe expectedText
                 }
               }
 
               "display the expected paragraph" when {
-                if (appConfig.isOptionalFieldsEnabled) {
-                  "'Transport Leaving the Border' is 'RoRo'" in {
-                    val body = view.getElementsByClass("govuk-body")
+                "'Transport Leaving the Border' is 'RoRo'" in {
+                  reset(appConfig)
+                  when(appConfig.isOptionalFieldsEnabled).thenReturn(false)
+                  val view = createView(form(transportMode), transportMode)(journeyRequest(declarationType))
 
-                    body.size mustBe (if (code == RoRo) 2 else 1)
+                  val body = view.getElementsByClass("govuk-body")
 
-                    val expectedText = messages(if (code == RoRo) s"$prefix.roro.paragraph" else exitAndReturnCaption)
-                    body.get(0).text mustBe expectedText
-                  }
-                } else {
-                  "display the expected paragraph" when {
-                    "'Transport Leaving the Border' is 'RoRo'" in {
-                      val body = view.getElementsByClass("govuk-body")
+                  body.size mustBe (if (code == RoRo) 2 else 1)
 
-                      body.size mustBe (if (code == RoRo) 2 else 1)
-
-                      val expectedText = messages(if (code == RoRo) s"$prefix.roro.inset.text" else exitAndReturnCaption)
-                      body.get(0).text mustBe expectedText
-                    }
-                  }
+                  val expectedText = messages(if (code == RoRo) s"$prefix.roro.inset.text" else exitAndReturnCaption)
+                  body.get(0).text mustBe expectedText
                 }
               }
 
@@ -157,6 +161,16 @@ class TransportCountryViewSpec extends PageWithButtonsSpec with Injector {
             }
 
             "display an error" when {
+
+              "the user does not enter a country" in {
+                val formData = Json.obj(transportCountry -> "")
+                val formWithError = form(transportMode).bind(formData, JsonBindMaxChars)
+                val view = createView(formWithError, transportMode)(journeyRequest(declarationType))
+
+                view must haveGovukGlobalErrorSummary
+                view must containErrorElementWithTagAndHref("a", s"#$transportCountry")
+                view must containErrorElementWithMessage(messages(s"$prefix.country.error.empty", transportMode))
+              }
 
               "the user enters an invalid country" in {
                 val formData = Json.obj(transportCountry -> "12345")

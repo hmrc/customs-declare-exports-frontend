@@ -18,13 +18,30 @@ package views.section5
 
 import base.Injector
 import config.AppConfig
+import controllers.navigation.Navigator
 import controllers.section5.routes.NactCodeSummaryController
 import forms.section5.StatisticalValue
 import forms.section5.StatisticalValue.form
 import models.DeclarationType.STANDARD
 import org.jsoup.nodes.Document
+import org.mockito.Mockito.when
 import play.api.data.Form
+import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF, GovukDetails}
+import uk.gov.hmrc.hmrcfrontend.views.html.components.HmrcCurrencyInput
 import views.common.PageWithButtonsSpec
+import views.html.components.gds.{
+  errorSummary,
+  exportsInsetText,
+  externalLink,
+  gdsMainTemplate,
+  heading,
+  label,
+  notificationBanner,
+  paragraphBody,
+  saveButtons,
+  sectionHeader,
+  tariffExpander
+}
 import views.html.section5.statistical_value
 import views.tags.ViewTest
 
@@ -33,9 +50,26 @@ import scala.jdk.CollectionConverters.IteratorHasAsScala
 @ViewTest
 class StatisticalValueViewSpec extends PageWithButtonsSpec with Injector {
 
-  private val appConfig = instanceOf[AppConfig]
+  private val appConfig = mock[AppConfig]
 
-  private val page = instanceOf[statistical_value]
+  val page = new statistical_value(
+    instanceOf[gdsMainTemplate],
+    instanceOf[GovukDetails],
+    instanceOf[HmrcCurrencyInput],
+    instanceOf[errorSummary],
+    instanceOf[notificationBanner],
+    instanceOf[sectionHeader],
+    instanceOf[paragraphBody],
+    instanceOf[externalLink],
+    instanceOf[heading],
+    instanceOf[label],
+    instanceOf[exportsInsetText],
+    instanceOf[saveButtons],
+    instanceOf[tariffExpander],
+    instanceOf[FormWithCSRF],
+    instanceOf[Navigator],
+    appConfig
+  )
 
   override val typeAndViewInstance = (STANDARD, page(itemId, form)(_, _))
 
@@ -86,6 +120,9 @@ class StatisticalValueViewSpec extends PageWithButtonsSpec with Injector {
     }
 
     "display the expected text section" in {
+      when(appConfig.hmrcExchangeRatesFor2021).thenReturn("https://www.gov.uk/government/publications/hmrc-exchange-rates-for-2021-monthly")
+      val view: Document = createView()
+
       val title = view.getElementsByClass("govuk-heading-s").get(0)
       title.tagName mustBe "h2"
       title.text mustBe messages("declaration.statisticalValue.section.header")
@@ -100,6 +137,7 @@ class StatisticalValueViewSpec extends PageWithButtonsSpec with Injector {
     }
 
     "display the expected guidance expander" in {
+
       val expander = view.getElementsByClass("govuk-details").first
       expander.tagName mustBe "details"
 
@@ -107,9 +145,28 @@ class StatisticalValueViewSpec extends PageWithButtonsSpec with Injector {
       expander.getElementsByClass("govuk-body").iterator.asScala.toList.zipWithIndex.foreach { case (element, index) =>
         element.text mustBe messages(s"declaration.statisticalValue.guidance.text.${index + 1}")
       }
+
+    }
+
+    "display the expected guidance expander FEATURE FLAGGED" in {
+      when(appConfig.isOptionalFieldsEnabled).thenReturn(true)
+      val view: Document = createView()
+
+      val expander = view.getElementsByClass("govuk-details").first
+      expander.tagName mustBe "details"
+
+      expander.getElementsByClass("govuk-details__summary").text mustBe messages("declaration.statisticalValue.guidance.title")
+      expander.getElementsByClass("govuk-body").iterator.asScala.toList.zipWithIndex.foreach { case (element, index) =>
+        element.text mustBe messages(s"declaration.statisticalValue.guidance.text.${index + 1}.flag")
+
+      }
     }
 
     "display the expected tariff details" in {
+      when(appConfig.tariffGuideUrl("urls.tariff.declaration.item.statisticalValue.common.0"))
+        .thenReturn("")
+      val view: Document = createView()
+
       val expander = view.getElementsByClass("govuk-details").last
       expander.tagName mustBe "details"
 

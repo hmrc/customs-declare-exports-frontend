@@ -1617,6 +1617,12 @@ declaration.statisticalValue.guidance.text.2 = Mae gwerth ystadegol yn orfodol a
 declaration.statisticalValue.guidance.text.3 = Pan fo masnachwr wedi’i awdurdodi ar gyfer Gweithdrefnau Datganiad Symlach, nid oes angen y gwerth ystadegol cyn cludo.
 declaration.statisticalValue.guidance.text.4 = Nid oes angen gwerth ystadegol pan fydd nwyddau sy’n cael eu hallforio yn defnyddio Cais i Glirio’r Tollau (Gweithdrefn C21).
 declaration.statisticalValue.guidance.text.5 = Os yw’r gwerth ystadegol yn ddewisol neu os nad oes ei angen, gellir gadael y maes yn wag.
+declaration.statisticalValue.guidance.text.1.flag = Mae’n rhaid darparu gwerth ystadegol ar gyfer y datganiadau canlynol, oni bai mai’r Cod Gweithdrefn Ychwanegol yw 3NS yn DE 1/11:
+declaration.statisticalValue.guidance.bullet.1.flag = Datganiad Allforio Safonol
+declaration.statisticalValue.guidance.bullet.2.flag = Datganiad Ail-allforio Safonol
+declaration.statisticalValue.guidance.bullet.3.flag = Datganiad Allforio ar gyfer anfon nwyddau i Diriogaeth Ariannol Arbennig neu Diriogaeth sydd â Chyfundrefn Tollau gyda’r UE
+declaration.statisticalValue.guidance.text.2.flag = Ar gyfer Datganiad Allforio o dan Brosesu Allanol:
+declaration.statisticalValue.guidance.text.3.flag = Nodwch y gwerth ystadegol ar gyfer yr eitem nwyddau mewn GBP (£ sterling), hyd yn oed os defnyddir arian cyfred gwahanol yn DE 4/11 Cyfanswm a Anfonebwyd.
 declaration.statisticalValue.error.length = Mae’n rhaid i gyfanswm y gost gynnwys 15 digid neu lai
 declaration.statisticalValue.error.wrongFormat = Mae’n rhaid i gyfanswm y gost gynnwys rhifau’n unig
 

@@ -16,6 +16,7 @@
 
 package views.helpers.summary
 
+import config.AppConfig
 import controllers.section5.routes._
 import models.DeclarationType.{isStandardOrSupplementary, DeclarationType}
 import models.declaration.ExportItem
@@ -28,7 +29,8 @@ import views.html.summary.summary_section
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class ItemHelper @Inject() (packageInformationHelper: PackageInformationHelper, summarySection: summary_section) extends SummaryHelper {
+class ItemHelper @Inject() (packageInformationHelper: PackageInformationHelper, summarySection: summary_section, appConfig: AppConfig)
+    extends SummaryHelper {
 
   def content(item: ExportItem, itemIdx: Int, declarationType: DeclarationType)(implicit messages: Messages): Html = {
     val summarySections = rows(item, false, itemIdx, declarationType)
@@ -190,12 +192,22 @@ class ItemHelper @Inject() (packageInformationHelper: PackageInformationHelper, 
 
   private def statisticalValue(item: ExportItem, actionsEnabled: Boolean, itemIdx: Int)(implicit messages: Messages): Option[SummaryListRow] =
     item.statisticalValue.map { statisticalValue =>
-      SummaryListRow(
-        key("item.itemValue"),
-        value(statisticalValue.statisticalValue),
-        classes = s"item-$itemIdx-item-value",
-        changeLink(StatisticalValueController.displayPage(item.id), "item.itemValue", actionsEnabled, Some(itemIdx))
-      )
+      if (statisticalValue.statisticalValue.trim.isEmpty && appConfig.isOptionalFieldsEnabled) {
+        SummaryListRow(
+          key("item.itemValue"),
+          value(messages("declaration.summary.not.provided")),
+          classes = s"item-$itemIdx-item-value",
+          changeLink(StatisticalValueController.displayPage(item.id), "item.itemValue", actionsEnabled, Some(itemIdx))
+        )
+      } else {
+        SummaryListRow(
+          key("item.itemValue"),
+          value(statisticalValue.statisticalValue),
+          classes = s"item-$itemIdx-item-value",
+          changeLink(StatisticalValueController.displayPage(item.id), "item.itemValue", actionsEnabled, Some(itemIdx))
+        )
+      }
+
     }
 
   private def grossWeight(item: ExportItem, hasPackageInformation: Boolean, actionsEnabled: Boolean, itemIdx: Int)(

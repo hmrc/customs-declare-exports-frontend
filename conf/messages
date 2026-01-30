@@ -1617,6 +1617,12 @@ declaration.statisticalValue.guidance.text.2 = A statistical value is mandatory 
 declaration.statisticalValue.guidance.text.3 = Where a trader is authorised for Simplified Declaration Procedures, the pre-shipment statistical value is not required.
 declaration.statisticalValue.guidance.text.4 = A statistical value is not required where goods being exported use a Customs Clearance Request (C21 procedure).
 declaration.statisticalValue.guidance.text.5 = Where the statistical value is optional or not required, the field can be left blank.
+declaration.statisticalValue.guidance.text.1.flag = A statistical value must be supplied for the following declarations, unless the Additional Procedure Code is 3NS in the DE 1/11:
+declaration.statisticalValue.guidance.bullet.1.flag = Export Standard Declaration
+declaration.statisticalValue.guidance.bullet.2.flag = Re-export Standard Declaration
+declaration.statisticalValue.guidance.bullet.3.flag = Export Declaration for dispatch of goods to a Special Fiscal Territory or Territory with which the EU has formed a Customs Union
+declaration.statisticalValue.guidance.text.2.flag = For an Export Declaration under Outward Processing:
+declaration.statisticalValue.guidance.text.3.flag = Enter the statistical value for the goods item in GBP (£ sterling), even if a different currency is used in DE 4/11 Total Amount Invoiced.
 declaration.statisticalValue.error.length = Total cost must contain 15 digits or less
 declaration.statisticalValue.error.wrongFormat = Total cost must contain only numbers
 
