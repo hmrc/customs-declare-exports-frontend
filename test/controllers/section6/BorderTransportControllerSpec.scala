@@ -44,7 +44,6 @@ class BorderTransportControllerSpec extends ControllerSpec with AuditedControlle
 
   override val appConfig = mock[AppConfig]
 
-
   val controller = new BorderTransportController(
     mockAuthAction,
     mockJourneyAction,
