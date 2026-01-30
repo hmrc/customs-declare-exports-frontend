@@ -17,6 +17,7 @@
 package controllers.section5
 
 import base.{AuditedControllerSpec, ControllerSpec, Injector}
+import config.AppConfig
 import controllers.helpers.SequenceIdHelper.valueOfEso
 import controllers.section5.routes.PackageInformationSummaryController
 import forms.section5.PackageInformation
@@ -38,18 +39,22 @@ class PackageInformationAddControllerSpec extends ControllerSpec with AuditedCon
 
   val mockAddPage = mock[package_information_add]
   val mockPackageTypesService = instanceOf[PackageTypesService]
+  val mockAppConfig = mock[AppConfig]
+
+  override implicit val appConfig: AppConfig = mock[AppConfig]
 
   val controller =
     new PackageInformationAddController(mockAuthAction, mockJourneyAction, mockExportsCacheService, navigator, mcc, mockAddPage)(
       ec,
       mockPackageTypesService,
-      auditService
+      auditService,
+      mockAppConfig
     )
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     authorizedUser()
-    when(mockAddPage.apply(any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockAddPage.apply(any(), any())(any(), any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
@@ -65,12 +70,12 @@ class PackageInformationAddControllerSpec extends ControllerSpec with AuditedCon
 
   def theResponseForm: Form[PackageInformation] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[PackageInformation]])
-    verify(mockAddPage).apply(any(), captor.capture())(any(), any())
+    verify(mockAddPage).apply(any(), captor.capture())(any(), any(), any())
     captor.getValue
   }
 
   private def verifyAddPageInvoked(numberOfTimes: Int = 1): HtmlFormat.Appendable =
-    verify(mockAddPage, times(numberOfTimes)).apply(any(), any())(any(), any())
+    verify(mockAddPage, times(numberOfTimes)).apply(any(), any())(any(), any(), any())
 
   val item = anItem()
 
