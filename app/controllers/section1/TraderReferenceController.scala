@@ -57,7 +57,6 @@ class TraderReferenceController @Inject() (
     val ducr = request.cacheModel.ducr
     val traderReference = ducr.map(ducr => TraderReference(ducr.ducr.split('-')(1)))
     val form = TraderReference.form.withSubmissionErrors
-
     Ok(traderReferencePage(traderReference.fold(form)(value => form.fill(value))))
   }
 
@@ -66,20 +65,28 @@ class TraderReferenceController @Inject() (
       .bindFromRequest()
       .fold(
         formWithErrors => Future.successful(BadRequest(traderReferencePage(formWithErrors))),
-        traderReference => updateCache(generateDucr(traderReference)).map(_ => navigator.continueTo(nextPage(request)))
+        traderReference => {
+          val newDucr = generateDucr(traderReference)
+          val existingDucr = request.cacheModel.ducr
+
+          updateCache(newDucr, existingDucr).map(_ => navigator.continueTo(nextPage(request)))
+        }
       )
   }
 
   private def generateDucr(traderReference: TraderReference)(implicit request: JourneyRequest[_]): Ducr =
     Ducr(s"$generateDucrPrefix${traderReference.value}")
 
-  private def updateCache(generatedDucr: Ducr)(implicit request: JourneyRequest[_]): Future[ExportsDeclaration] = {
+  private def updateCache(newDucr: Ducr, oldDucr: Option[Ducr])(implicit request: JourneyRequest[_]): Future[ExportsDeclaration] = {
     val existingConsignmentRefs = request.cacheModel.consignmentReferences
+    val traderRefChanged = !oldDucr.map(_.ducr).contains(newDucr.ducr)
 
     existingConsignmentRefs.fold {
-      updateDeclarationFromRequest(_.copy(consignmentReferences = Some(ConsignmentReferences(Some(generatedDucr)))))
+      updateDeclarationFromRequest(_.copy(consignmentReferences = Some(ConsignmentReferences(Some(newDucr)))))
     } { existingRefs =>
-      updateDeclarationFromRequest(_.copy(consignmentReferences = Some(existingRefs.copy(ducr = Some(generatedDucr)))))
+      updateDeclarationFromRequest(
+        _.copy(consignmentReferences = Some(existingRefs.copy(ducr = Some(newDucr), confirmDucr = Some(traderRefChanged))))
+      )
     }
   }
 }

@@ -17,8 +17,6 @@
 package forms.section1
 
 import forms._
-import forms.section1.{Ducr, Lrn, LrnValidator, Mrn}
-import forms.section1.AdditionalDeclarationType
 import forms.section1.AdditionalDeclarationType.AdditionalDeclarationType
 import models.DeclarationType.{CLEARANCE, DeclarationType, SUPPLEMENTARY}
 import models.viewmodels.TariffContentKey
@@ -35,7 +33,8 @@ case class ConsignmentReferences(
   lrn: Option[Lrn] = None,
   mrn: Option[Mrn] = None,
   eidrDateStamp: Option[String] = None,
-  hasDucr: Option[String] = None
+  hasDucr: Option[String] = None,
+  confirmDucr: Option[Boolean] = None
 )
 
 object ConsignmentReferences extends DeclarationPage {

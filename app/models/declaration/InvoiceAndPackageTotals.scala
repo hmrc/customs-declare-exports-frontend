@@ -27,7 +27,8 @@ case class InvoiceAndPackageTotals(
   totalAmountInvoicedCurrency: Option[String] = None,
   agreedExchangeRate: Option[String] = None,
   exchangeRate: Option[String] = None,
-  totalPackage: Option[String] = None
+  totalPackage: Option[String] = None,
+  confirmInvoiceAndExchangeRateChoice: Option[String] = None
 ) extends DiffTools[InvoiceAndPackageTotals] {
 
   def createDiff(original: InvoiceAndPackageTotals, pointerString: ExportsFieldPointer, sequenceId: Option[Int] = None): ExportsDeclarationDiff =

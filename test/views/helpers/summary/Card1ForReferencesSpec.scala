@@ -119,7 +119,11 @@ class Card1ForReferencesSpec extends UnitViewSpec with ExportsTestHelper with In
 
     "show the 'consignment references' rows of the declaration" in {
       val call = Some(ConsignmentReferencesController.displayPage)
-      val callForDucr = Some(DucrEntryController.displayPage)
+      val callForDucr = declaration.consignmentReferences.flatMap(_.hasDucr) match {
+        case Some("Yes") => Some(DucrEntryController.displayPage)
+        case Some("No")  => Some(TraderReferenceController.displayPage)
+        case _           => Some(DucrChoiceController.displayPage)
+      }
       val callForLrn = Some(LocalReferenceNumberController.displayPage)
 
       checkSummaryRow(view.getElementsByClass("ducr"), "references.ducr", ducr, callForDucr, "references.ducr")

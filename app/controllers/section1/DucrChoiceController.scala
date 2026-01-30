@@ -83,12 +83,8 @@ class DucrChoiceController @Inject() (
 
   private def populateForm(form: Form[YesNoAnswer])(implicit request: JourneyRequest[_]): Form[YesNoAnswer] =
     request.cacheModel.consignmentReferences.flatMap(_.hasDucr) match {
-      case Some("Yes") =>
-        println("Got to Yes Value")
-        form.fill(YesNoAnswer.Yes.get)
-      case Some("No") =>
-        println("Got to No Value")
-        form.fill(YesNoAnswer.No.get)
-      case _ => form
+      case Some("Yes") => form.fill(YesNoAnswer.Yes.get)
+      case Some("No")  => form.fill(YesNoAnswer.No.get)
+      case _           => form
     }
 }
