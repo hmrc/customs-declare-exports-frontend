@@ -79,7 +79,7 @@ class ThirdPartyGoodsTransportationControllerSpec extends ControllerSpec with Au
 
   "ThirdPartyGoodsTransportation Controller on POST" should {
 
-    "do not change the cache when the user answers yes" in {
+    "do change the cache when the user answers yes" in {
       withNewCaching(declaration)
 
       val yesAnswer = Json.obj(YesNoAnswer.formId -> YesNoAnswers.yes)
@@ -88,8 +88,9 @@ class ThirdPartyGoodsTransportationControllerSpec extends ControllerSpec with Au
       status(result) mustBe SEE_OTHER
 
       thePageNavigatedTo mustBe CarrierEoriNumberController.displayPage
-      verifyTheCacheIsUnchanged()
-      verifyNoAudit()
+      theCacheModelUpdated.parties.hasThirdPartyGoodsTransportation mustBe Some(YesNoAnswer.Yes.get)
+      theCacheModelUpdated.parties.carrierDetails mustBe declaration.parties.carrierDetails
+      verifyAudit()
     }
 
     "do change the cache when the user answers no" in {

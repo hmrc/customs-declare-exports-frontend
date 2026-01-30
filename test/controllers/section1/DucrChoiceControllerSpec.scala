@@ -155,7 +155,8 @@ class DucrChoiceControllerSpec extends ControllerSpec with AuditedControllerSpec
               status(result) mustBe SEE_OTHER
 
               val consignmentReferences = theCacheModelUpdated.consignmentReferences.get
-              consignmentReferences.ducr mustBe None
+              consignmentReferences.ducr mustBe defined
+              consignmentReferences.confirmDucr mustBe None
               consignmentReferences.lrn.get.lrn mustBe LRN.lrn
 
               thePageNavigatedTo mustBe DucrEntryController.displayPage

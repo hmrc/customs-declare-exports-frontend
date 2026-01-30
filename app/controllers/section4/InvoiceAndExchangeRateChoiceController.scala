@@ -22,10 +22,11 @@ import controllers.navigation.Navigator
 import controllers.section4.routes.{InvoiceAndExchangeRateController, TotalPackageQuantityController}
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.YesNoAnswers.{no, yes}
-import forms.common.YesNoAnswer.form
+import forms.common.YesNoAnswer.{form, YesNoAnswers}
 import models.declaration.InvoiceAndPackageTotals
 import models.requests.JourneyRequest
 import models.{DeclarationType, ExportsDeclaration}
+import play.api.data.Form
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.audit.AuditService
@@ -51,12 +52,7 @@ class InvoiceAndExchangeRateChoiceController @Inject() (
 
   def displayPage: Action[AnyContent] = (authenticate andThen journeyType(validTypes)) { implicit request =>
     val frm = form(errorKey = "declaration.invoice.amount.choice.answer.empty").withSubmissionErrors
-
-    val declaration = request.cacheModel
-
-    if (declaration.isInvoiceAmountGreaterThan100000) Ok(invoiceAndExchangeRateChoicePage(frm.fill(YesNoAnswer(no))))
-    else if (declaration.totalNumberOfItems.isDefined) Ok(invoiceAndExchangeRateChoicePage(frm.fill(YesNoAnswer(yes))))
-    else Ok(invoiceAndExchangeRateChoicePage(frm))
+    Ok(invoiceAndExchangeRateChoicePage(populateForm(frm)))
   }
 
   def submitForm(): Action[AnyContent] = (authenticate andThen journeyType(validTypes)).async { implicit request =>
@@ -65,10 +61,19 @@ class InvoiceAndExchangeRateChoiceController @Inject() (
       .fold(
         formWithErrors => Future.successful(BadRequest(invoiceAndExchangeRateChoicePage(formWithErrors))),
         yesNoAnswer =>
-          if (yesNoAnswer.answer == no) Future.successful(navigator.continueTo(InvoiceAndExchangeRateController.displayPage))
-          else resetCachedInvoiceData.map(_ => navigator.continueTo(TotalPackageQuantityController.displayPage))
+          if (yesNoAnswer.answer == no) {
+            updateCache(yesNoAnswer)
+            Future.successful(navigator.continueTo(InvoiceAndExchangeRateController.displayPage))
+          } else resetCachedInvoiceData.map(_ => navigator.continueTo(TotalPackageQuantityController.displayPage))
       )
   }
+
+  private def updateCache(answer: YesNoAnswer)(implicit request: JourneyRequest[_]): Future[ExportsDeclaration] =
+    request.cacheModel.totalNumberOfItems.fold(Future.successful(request.cacheModel))(totalNumberOfItemsChoice =>
+      updateDeclarationFromRequest(
+        _.copy(totalNumberOfItems = Some(totalNumberOfItemsChoice.copy(confirmInvoiceAndExchangeRateChoice = Some(answer.value))))
+      )
+    )
 
   private def resetCachedInvoiceData(implicit r: JourneyRequest[AnyContent]): Future[ExportsDeclaration] =
     updateDeclarationFromRequest { declaration =>
@@ -79,9 +84,22 @@ class InvoiceAndExchangeRateChoiceController @Inject() (
             totalAmountInvoicedCurrency = None,
             agreedExchangeRate = None,
             exchangeRate = None,
-            totalPackage = declaration.totalNumberOfItems.flatMap(_.totalPackage)
+            totalPackage = declaration.totalNumberOfItems.flatMap(_.totalPackage),
+            confirmInvoiceAndExchangeRateChoice = Some(YesNoAnswers.yes)
           )
         )
       )
     }
+
+  private def populateForm(form: Form[YesNoAnswer])(implicit request: JourneyRequest[_]): Form[YesNoAnswer] =
+    if (request.cacheModel.isInvoiceAmountGreaterThan100000) {
+      form.fill(YesNoAnswer(no))
+    } else {
+      request.cacheModel.totalNumberOfItems.flatMap(_.confirmInvoiceAndExchangeRateChoice) match {
+        case Some("Yes") => form.fill(YesNoAnswer(yes))
+        case Some("No")  => form.fill(YesNoAnswer(no))
+        case _           => form
+      }
+    }
+
 }

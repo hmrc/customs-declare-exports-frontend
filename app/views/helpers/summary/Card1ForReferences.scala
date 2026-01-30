@@ -172,7 +172,18 @@ class Card1ForReferences @Inject() (
     def action: Option[Actions] =
       if (declaration.isAmendmentDraft) None
       else {
-        val call = if (declaration.isType(SUPPLEMENTARY)) ConsignmentReferencesController.displayPage else DucrEntryController.displayPage
+        val call = if (declaration.isType(SUPPLEMENTARY)) {
+          ConsignmentReferencesController.displayPage
+        } else {
+          declaration.consignmentReferences.flatMap(_.hasDucr) match {
+            case Some("Yes") =>
+              DucrEntryController.displayPage
+            case Some("No") =>
+              TraderReferenceController.displayPage
+            case _ =>
+              DucrChoiceController.displayPage
+          }
+        }
         changeLink(call, "references.ducr", actionsEnabled)
       }
 

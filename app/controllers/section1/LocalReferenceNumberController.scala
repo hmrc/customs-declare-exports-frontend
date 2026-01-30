@@ -70,7 +70,7 @@ class LocalReferenceNumberController @Inject() (
 
   private def updateCacheAndContinue(lrn: Lrn)(implicit request: JourneyRequest[AnyContent]): Future[Result] =
     updateDeclarationFromRequest { dec =>
-      dec.copy(consignmentReferences = dec.ducr.map(ducr => ConsignmentReferences(Some(ducr), Some(lrn))))
+      dec.copy(consignmentReferences = dec.ducr.map(ducr => ConsignmentReferences(Some(ducr), Some(lrn), hasDucr = dec.hasDucr)))
     } map (_ => navigator.continueTo(nextPage(request)))
 
 }

@@ -63,18 +63,18 @@ class ThirdPartyGoodsTransportationController @Inject() (
   }
 
   private def populateForm(form: Form[YesNoAnswer])(implicit request: JourneyRequest[_]): Form[YesNoAnswer] =
-    request.cacheModel.parties.carrierDetails match {
-      case Some(carrier) if carrier.details.nonEmpty                                   => form.fill(YesNoAnswer.Yes.get)
-      case _ if request.cacheModel.parties.consigneeDetails.exists(_.details.nonEmpty) => form.fill(YesNoAnswer.No.get)
-      case _                                                                           => form
-    }
+    request.cacheModel.parties.hasThirdPartyGoodsTransportation.map(form.fill).getOrElse(form)
 
-  private def saveAndRedirect(answer: YesNoAnswer)(implicit request: JourneyRequest[_]): Future[Call] =
-    Some(answer) match {
-      case YesNoAnswer.Yes => Future.successful(CarrierEoriNumberController.displayPage)
+  private def saveAndRedirect(answer: YesNoAnswer)(implicit request: JourneyRequest[_]): Future[Call] = {
+    val updatedParties = request.cacheModel.parties.copy(
+      hasThirdPartyGoodsTransportation = Some(answer),
+      carrierDetails = if (answer == YesNoAnswer.No.get) None else request.cacheModel.parties.carrierDetails
+    )
 
-      case _ =>
-        updateDeclarationFromRequest(model => model.copy(parties = model.parties.copy(carrierDetails = None)))
-          .map(_ => ConsigneeDetailsController.displayPage)
+    updateDeclarationFromRequest(_.copy(parties = updatedParties)).map { _ =>
+      if (answer == YesNoAnswer.Yes.get) CarrierEoriNumberController.displayPage
+      else ConsigneeDetailsController.displayPage
     }
+  }
+
 }

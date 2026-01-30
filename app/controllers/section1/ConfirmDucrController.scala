@@ -60,13 +60,12 @@ class ConfirmDucrController @Inject() (
       logger.warn("No generated DUCR found in cache!")
       Redirect(DucrEntryController.displayPage)
     } { ducr =>
-      Ok(confirmDucrPage(form.withSubmissionErrors, ducr))
+      Ok(confirmDucrPage(populateForm(form.withSubmissionErrors), ducr))
     }
   }
 
   val submitForm: Action[AnyContent] = actionFilters.async { implicit request =>
     request.cacheModel.ducr.fold {
-      logger.warn("No generated DUCR found in cache!")
       Future.successful(Redirect(DucrEntryController.displayPage))
     } { ducr =>
       form
@@ -87,4 +86,10 @@ class ConfirmDucrController @Inject() (
     request.cacheModel.consignmentReferences.fold(Future.successful(request.cacheModel))(consignmentRefs =>
       updateDeclarationFromRequest(_.copy(consignmentReferences = Some(consignmentRefs.copy(ducr = None))))
     )
+
+  private def populateForm(form: Form[YesNoAnswer])(implicit request: JourneyRequest[_]): Form[YesNoAnswer] =
+    request.cacheModel.consignmentReferences.flatMap(_.confirmDucr) match {
+      case Some(false) => form.fill(YesNoAnswer.Yes.get)
+      case _           => form
+    }
 }

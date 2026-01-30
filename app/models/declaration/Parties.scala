@@ -41,7 +41,8 @@ case class Parties(
   authorisationProcedureCodeChoice: Option[AuthorisationProcedureCodeChoice] = None,
   carrierDetails: Option[CarrierDetails] = None,
   isEntryIntoDeclarantsRecords: Option[YesNoAnswer] = None,
-  personPresentingGoodsDetails: Option[PersonPresentingGoodsDetails] = None
+  personPresentingGoodsDetails: Option[PersonPresentingGoodsDetails] = None,
+  hasThirdPartyGoodsTransportation: Option[YesNoAnswer] = None
 ) extends DiffTools[Parties] {
 
   // isExs, declarantIsExporter & authorisationProcedureCodeChoice fields are not used to create WCO XML
