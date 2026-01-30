@@ -48,7 +48,7 @@ object Tag extends Enumeration {
 
   // Tags for Transport codes
   AircraftRegistrationNumber, EuropeanVesselIDNumber, FlightNumber, NameOfInlandWaterwayVessel, NameOfVessel, NotApplicable, ShipOrRoroImoNumber,
-    VehicleRegistrationNumber, WagonNumber = Value
+    VehicleRegistrationNumber, WagonNumber, NotProvided = Value
 }
 
 @ImplementedBy(classOf[FileBasedCodeLinkConnector])

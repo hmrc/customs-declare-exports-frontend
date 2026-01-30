@@ -144,14 +144,26 @@ class Card6ForTransport @Inject() (summaryCard: summary_card, countryHelper: Cou
 
   private def activeTransportType(transport: Transport, actionsEnabled: Boolean)(implicit messages: Messages): Option[SummaryListRow] =
     transport.meansOfTransportCrossingTheBorderType.flatMap { meansType =>
-      transport.meansOfTransportCrossingTheBorderIDNumber.map { meansId =>
-        SummaryListRow(
-          key("transport.border.meansOfTransport.header"),
-          valueHtml(s"${messages(s"declaration.summary.transport.border.meansOfTransport.$meansType")}<br>$meansId"),
-          classes = "active-transport-type",
-          changeLink(BorderTransportController.displayPage, "transport.border.meansOfTransport.header", actionsEnabled)
+      if (appConfig.isOptionalFieldsEnabled && meansType == "option_none") {
+        Option(
+          SummaryListRow(
+            key("transport.border.meansOfTransport.header"),
+            valueHtml(messages("declaration.summary.not.provided")),
+            classes = "active-transport-type",
+            changeLink(BorderTransportController.displayPage, "transport.border.meansOfTransport.header", actionsEnabled)
+          )
         )
+      } else {
+        transport.meansOfTransportCrossingTheBorderIDNumber.map { meansId =>
+          SummaryListRow(
+            key("transport.border.meansOfTransport.header"),
+            valueHtml(s"${messages(s"declaration.summary.transport.border.meansOfTransport.$meansType")}<br>$meansId"),
+            classes = "active-transport-type",
+            changeLink(BorderTransportController.displayPage, "transport.border.meansOfTransport.header", actionsEnabled)
+          )
+        }
       }
+
     }
 
   private def transportPayment(transport: Transport, actionsEnabled: Boolean)(implicit messages: Messages): Option[SummaryListRow] =

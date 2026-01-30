@@ -17,6 +17,8 @@
 package forms.section6
 
 import base.MockTransportCodeService
+import base.MockTransportCodeService.mock
+import config.AppConfig
 import forms.common.DeclarationPageBaseSpec
 import forms.section6.BorderTransport.{form, radioButtonGroupId}
 import play.api.i18n.{Lang, Messages}
@@ -32,6 +34,8 @@ class BorderTransportSpec extends DeclarationPageBaseSpec {
   implicit val messages: Messages = stubMessagesApi().preferred(Seq(Lang(Locale.ENGLISH)))
 
   implicit val transportCodeService: TransportCodeService = MockTransportCodeService.transportCodeService
+
+  implicit val appConfig: AppConfig = mock[AppConfig]
 
   "Transport Details form" when {
 

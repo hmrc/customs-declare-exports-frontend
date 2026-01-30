@@ -16,7 +16,9 @@
 
 package views.section6
 
-import base.{Injector, MockTransportCodeService}
+import base.Injector
+import base.MockTransportCodeService
+import config.AppConfig
 import controllers.section6.routes.{DepartureTransportController, InlandTransportDetailsController}
 import forms.section6.BorderTransport.form
 import models.DeclarationType._
@@ -38,6 +40,8 @@ class BorderTransportViewSpec extends PageWithButtonsSpec with Injector {
   val page = instanceOf[border_transport]
 
   override val typeAndViewInstance = (STANDARD, page(form)(_, _))
+
+  implicit val appConfig: AppConfig = mock[AppConfig]
 
   def createView()(implicit request: JourneyRequest[_]): Document = page(form)
 
@@ -68,22 +72,30 @@ class BorderTransportViewSpec extends PageWithButtonsSpec with Injector {
 
         "display the expected 'Means of Transport' section" in {
           transportCodeService.transportCodesOnBorderTransport.foreach { transportCode =>
-            Option(view.getElementById(s"radio_${transportCode.id}")) must not be None
+            if (transportCode.value == "option_none") {
+              Option(view.getElementById(s"radio_${transportCode.id}")) must be(None)
+            } else {
 
-            val suffix = if (transportCode.useAltRadioTextForBorderTransport) ".vBT" else ""
-            val radioLabel = view.getElementsByAttributeValue("for", s"radio_${transportCode.id}").text
-            radioLabel mustBe messages(s"declaration.transportInformation.meansOfTransport.${transportCode.id}$suffix")
+              Option(view.getElementById(s"radio_${transportCode.id}")) must not be None
 
-            Option(view.getElementById(s"${transportCode.id}")) must not be None
+              val suffix = if (transportCode.useAltRadioTextForBorderTransport) ".vBT" else ""
+              val radioLabel = view.getElementsByAttributeValue("for", s"radio_${transportCode.id}").text
 
-            val inputLabel = view.getElementsByAttributeValue("for", transportCode.id).text
-            inputLabel mustBe messages(s"declaration.transportInformation.meansOfTransport.${transportCode.id}.label")
+              radioLabel mustBe messages(s"declaration.transportInformation.meansOfTransport.${transportCode.id}$suffix")
 
-            val inputHint = view.getElementById(s"${transportCode.id}-hint").text
-            inputHint mustBe messages(s"declaration.transportInformation.meansOfTransport.${transportCode.id}.hint")
+              Option(view.getElementById(s"${transportCode.id}")) must not be None
+
+              val inputLabel = view.getElementsByAttributeValue("for", transportCode.id).text
+              if (appConfig.isOptionalFieldsEnabled) {
+                inputLabel mustBe messages(s"declaration.transportInformation.meansOfTransport.${transportCode.id}.label.flag")
+              } else inputLabel mustBe messages(s"declaration.transportInformation.meansOfTransport.${transportCode.id}.label")
+
+              val inputHint = view.getElementById(s"${transportCode.id}-hint").text
+              inputHint mustBe messages(s"declaration.transportInformation.meansOfTransport.${transportCode.id}.hint")
+            }
           }
-        }
 
+        }
         checkAllSaveButtonsAreDisplayed(createView())
       }
     }
