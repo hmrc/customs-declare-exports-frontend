@@ -1525,7 +1525,8 @@ declaration.exchangeRate = A oes gan yr anfoneb neu’r contract gyfradd gyfnewi
 declaration.exchangeRate.paragraph1.text = Mae hyn yn golygu cyfradd a gytunwyd arni ymlaen llaw, nid cyfradd gyfnewid safonol CThEF.
 declaration.exchangeRate.yes = Iawn
 declaration.exchangeRate.no = Na
-declaration.exchangeRate.input.label = Nodwch y gyfradd gyfnewid y cytunwyd arni
+declaration.exchangeRate.input.label = Nodwch y gyfradd gyfnewid gytunedig
+declaration.exchangeRate.input.label.flag = Nodwch y gyfradd gyfnewid gytunedig (dewisol)
 declaration.exchangeRate.input.hint = Er enghraifft, os yw’r contract yn datgan y bydd cyfradd o USD1.25 = £1 yn cael ei defnyddio, mae angen i chi nodi 1.25
 declaration.exchangeRate.expander.title = Beth yw’r gyfradd gyfnewid y cytunwyd arni?
 declaration.exchangeRate.expander.paragraph.1 = Os yw’r anfoneb yn defnyddio cyfradd gyfnewid y cytunwyd arni sy’n wahanol i gyfradd CThEF, a phennir hyn yn y contract gwerthu, nodwch y gyfradd gyfnewid hon. Peidiwch â nodi cyfradd gyfnewid CThEF.
