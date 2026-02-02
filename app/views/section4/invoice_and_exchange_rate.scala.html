@@ -73,9 +73,9 @@
 
 @currencyCodeAndAmountContentFlag = {
 
+<div class="govuk-grid-row govuk-!-padding-bottom-6">
+    <div class="govuk-grid-column-one-half">
     <div class="currency-dropdown">
-        <div class="govuk-date-input__item">
-
             @label(
                 "declaration.totalAmountInvoiced.currency.label",
                 "totalAmountInvoicedCurrency",
@@ -87,23 +87,27 @@
                 emptySelectValue = messages("declaration.totalAmountInvoiced.currency.select"),
                 items = AutoCompleteItem.fromCurrencyCode(invoiceAndExchangeRateService.all)
             )
-
         </div>
+        </div>
+        <div class="govuk-grid-column-one-half">
         <div class="govuk-date-input__item">
+
         @input(
             field = totalAmountInvoicedField,
             labelKey = "declaration.totalAmountInvoiced.amount.label",
             inputClasses = "govuk-input--width-15"
         )
         </div>
-    </div>
+        </div>
+</div>
+
 }
 
 @currencyCodeAndAmountFlag = {
     <div class="govuk-form-group @if(totalAmountInvoicedErrors.nonEmpty){govuk-form-group--error}">
     @govukFieldset(Fieldset(
         attributes = Map("id" -> "currencyCodeAndAmount"),
-        html = HtmlFormat.fill(List(currencyCodeAndAmountContent))
+        html = HtmlFormat.fill(List(currencyCodeAndAmountContentFlag))
     ))
     </div>
 }
