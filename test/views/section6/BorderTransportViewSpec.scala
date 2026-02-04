@@ -67,7 +67,10 @@ class BorderTransportViewSpec extends PageWithButtonsSpec with Injector {
         }
 
         "display the expected body" in {
-          view.getElementsByClass("govuk-body").first.text mustBe messages(s"$prefix.body")
+          if (declarationType == STANDARD || declarationType == SUPPLEMENTARY) {
+            view.getElementsByClass("govuk-body").first.text mustBe messages(s"$prefix.body.opt")
+          } else view.getElementsByClass("govuk-body").first.text mustBe messages(s"$prefix.body")
+
         }
 
         "display the expected 'Means of Transport' section" in {

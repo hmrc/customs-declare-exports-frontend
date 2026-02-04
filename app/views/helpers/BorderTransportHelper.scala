@@ -38,8 +38,8 @@ class BorderTransportHelper @Inject() (exportsInputText: exportsInputText, trans
   private val prefix = "declaration.transportInformation.meansOfTransport"
 
   def radioButtons(form: Form[BorderTransport])(implicit messages: Messages): List[RadioItem] = {
-      val radioButtons: List[RadioItem] = transportCodeService.transportCodesOnBorderTransport.map(radioButton(form, _))
-      radioButtons.dropRight(1)
+    val radioButtons: List[RadioItem] = transportCodeService.transportCodesOnBorderTransport.map(radioButton(form, _))
+    radioButtons.dropRight(1)
   }
 
   def radioButtonsOpt(form: Form[BorderTransport])(implicit messages: Messages): List[RadioItem] =
@@ -58,14 +58,14 @@ class BorderTransportHelper @Inject() (exportsInputText: exportsInputText, trans
   }
 
   private def inputField(transportCode: TransportCode, form: Form[_])(implicit messages: Messages): Option[Html] =
-      Some(
-        exportsInputText(
-          field = form(transportCode.id),
-          inputClasses = Some("govuk-input govuk-!-width-two-thirds"),
-          labelKey = s"$prefix.${transportCode.id}.label",
-          hintKey = Some(s"$prefix.${transportCode.id}.hint")
-        )
+    Some(
+      exportsInputText(
+        field = form(transportCode.id),
+        inputClasses = Some("govuk-input govuk-!-width-two-thirds"),
+        labelKey = s"$prefix.${transportCode.id}.label",
+        hintKey = Some(s"$prefix.${transportCode.id}.hint")
       )
+    )
 
   private def inputFieldOpt(transportCode: TransportCode, form: Form[_])(implicit messages: Messages): Option[Html] =
     Some(
