@@ -78,6 +78,12 @@
         @heading(messages(s"$prefix.title", transportMode), "govuk-label--xl", "h1", Some(form(transportCountry).id))
 
             @if(appConfig.isOptionalFieldsEnabled) {
+                @insetTextOnRoRo
+            } else {
+                @nonInsetTextOnRoRo
+            }
+
+            @if(appConfig.isOptionalFieldsEnabled) {
                 @if(isStandardOrSupplementaryDeclaration) {
                     @paragraphOnRoRoOpt
                 } else {
