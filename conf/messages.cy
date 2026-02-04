@@ -1409,7 +1409,7 @@ declaration.transportInformation.meansOfTransport.departure.error.length = Mae�
 
 declaration.transportInformation.meansOfTransport.crossingTheBorder.title = Beth yw’r manylion ar gyfer {0}?
 declaration.transportInformation.meansOfTransport.crossingTheBorder.body = Dewiswch y manylion y byddwch yn eu rhoi ar gyfer y cludiant sy’n mynd â’r nwyddau allan o’r DU. Yna, gallwch nodi’r manylion gofynnol yn y blwch neu nodi ‘Anhysbys’ os ydych am roi’r manylion nes ymlaen.
-declaration.transportInformation.meansOfTransport.crossingTheBorder.body.opt = cy: Placeholder
+declaration.transportInformation.meansOfTransport.crossingTheBorder.body.opt = Dewiswch y math o gludiant sy'n mynd â'r nwyddau allan o'r DU a rhowch y manylion yn y blwch priodol.  Neu, gallwch ddewis peidio â darparu'r manylion hyn drwy ddewis yr opsiwn "Peidiwch â darparu manylion cludo".
 declaration.transportInformation.meansOfTransport.crossingTheBorder.IDNumber.error.empty = Nodwch gyfeirnod cludiant
 declaration.transportInformation.meansOfTransport.crossingTheBorder.IDNumber.error.length = Mae’n rhaid i’r cyfeirnod gynnwys 35 o gymeriadau neu lai
 declaration.transportInformation.meansOfTransport.crossingTheBorder.IDNumber.error.invalid = Mae’n rhaid i’r cyfeirnod gynnwys llythrennau a rhifau’n unig
