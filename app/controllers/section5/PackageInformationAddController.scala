@@ -16,6 +16,7 @@
 
 package controllers.section5
 
+import config.AppConfig
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.general.{ModelCacheable, SubmissionErrors}
 import controllers.helpers.MultipleItemsHelper
@@ -48,7 +49,7 @@ class PackageInformationAddController @Inject() (
   navigator: Navigator,
   mcc: MessagesControllerComponents,
   packageInformationPage: package_information_add
-)(implicit ec: ExecutionContext, packageTypesService: PackageTypesService, auditService: AuditService)
+)(implicit ec: ExecutionContext, packageTypesService: PackageTypesService, auditService: AuditService, appConfig: AppConfig)
     extends FrontendController(mcc) with AutoCompleteFieldBinding with I18nSupport with ModelCacheable with SubmissionErrors
     with WithUnsafeDefaultFormBinding {
 

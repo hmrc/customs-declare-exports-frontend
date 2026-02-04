@@ -35,7 +35,7 @@
     editContent: package_information_edit_content
 )
 
-@(itemId: String, form: Form[_])(implicit request: JourneyRequest[_], messages: Messages)
+@(itemId: String, form: Form[_])(implicit request: JourneyRequest[_], messages: Messages, appConfig: AppConfig)
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 

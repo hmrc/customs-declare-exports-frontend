@@ -16,6 +16,7 @@
 
 package controllers.section5
 
+import config.AppConfig
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.general.{ModelCacheable, SubmissionErrors}
 import controllers.navigation.Navigator
@@ -42,7 +43,8 @@ class PackageInformationSummaryController @Inject() (
   navigator: Navigator,
   mcc: MessagesControllerComponents,
   packageInformationPage: package_information
-) extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithUnsafeDefaultFormBinding {
+)(implicit appConfig: AppConfig)
+    extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithUnsafeDefaultFormBinding {
 
   def displayPage(itemId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.cacheModel.itemBy(itemId).flatMap(_.packageInformation) match {

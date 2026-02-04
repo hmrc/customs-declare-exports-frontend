@@ -17,6 +17,7 @@
 package controllers.section5
 
 import base.ControllerSpec
+import config.AppConfig
 import controllers.section5.routes.{AdditionalInformationRequiredController, CommodityMeasureController, PackageInformationAddController}
 import forms.common.YesNoAnswer
 import forms.section5.PackageInformation
@@ -37,12 +38,16 @@ class PackageInformationSummaryControllerSpec extends ControllerSpec with Option
 
   val mockPage = mock[package_information]
 
-  val controller = new PackageInformationSummaryController(mockAuthAction, mockJourneyAction, mockExportsCacheService, navigator, mcc, mockPage)
+  val mockAppConfig = mock[AppConfig]
+
+  val controller = new PackageInformationSummaryController(mockAuthAction, mockJourneyAction, mockExportsCacheService, navigator, mcc, mockPage)(
+    mockAppConfig
+  )
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
     authorizedUser()
-    when(mockPage.apply(any(), any(), any())(any(), any())).thenReturn(HtmlFormat.empty)
+    when(mockPage.apply(any(), any(), any())(any(), any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
@@ -59,23 +64,24 @@ class PackageInformationSummaryControllerSpec extends ControllerSpec with Option
 
   def theResponseForm: Form[YesNoAnswer] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[YesNoAnswer]])
-    verify(mockPage).apply(any(), captor.capture(), any())(any(), any())
+    verify(mockPage).apply(any(), captor.capture(), any())(any(), any(), any())
     captor.getValue
   }
 
   def thePackageInformationList: Seq[PackageInformation] = {
     val captor = ArgumentCaptor.forClass(classOf[Seq[PackageInformation]])
-    verify(mockPage).apply(any(), any(), captor.capture())(any(), any())
+    verify(mockPage).apply(any(), any(), captor.capture())(any(), any(), any())
     captor.getValue
   }
 
   private def verifyPageInvoked(numberOfTimes: Int = 1): HtmlFormat.Appendable =
-    verify(mockPage, times(numberOfTimes)).apply(any(), any(), any())(any(), any())
+    verify(mockPage, times(numberOfTimes)).apply(any(), any(), any())(any(), any(), any())
 
   "PackageInformation Summary Controller" should {
 
     onEveryDeclarationJourney() { request =>
       "return 200 (OK)" that {
+
         "display page method is invoked and cache contains data" in {
           val item = anItem(withPackageInformation(packageInformation))
           withNewCaching(aDeclarationAfter(request.cacheModel, withItems(item)))

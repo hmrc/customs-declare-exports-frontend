@@ -17,6 +17,7 @@
 package forms.section5
 
 import base.{Injector, JourneyTypeTestRunner, TestHelper, UnitWithMocksSpec}
+import config.AppConfig
 import forms.common.DeclarationPageBaseSpec
 import forms.section5.PackageInformation.form
 import models.viewmodels.TariffContentKey
@@ -30,6 +31,7 @@ class PackageInformationSpec extends UnitWithMocksSpec with JourneyTypeTestRunne
 
   private implicit val messages: Messages = stubMessagesApi().preferred(Seq(Lang(Locale.ENGLISH)))
   private implicit val packageTypesService: PackageTypesService = instanceOf[PackageTypesService]
+  private implicit val appConfig: AppConfig = mock[AppConfig]
 
   "Package Information" should {
 

@@ -16,6 +16,7 @@
 
 package forms.section5
 
+import config.AppConfig
 import forms.DeclarationPage
 import forms.section5.PackageInformation.{numberOfPackagesPointer, shippingMarksPointer, typesOfPackagesPointer}
 import models.DeclarationMeta.sequenceIdPlaceholder
@@ -92,26 +93,53 @@ object PackageInformation extends DeclarationPage with FieldMapping {
   def data2Form(data: PackageInformation): Option[(Option[String], Option[Int], Option[String])] =
     Some((data.typesOfPackages, data.numberOfPackages, data.shippingMarks))
 
+  // Remove above and use below when removing flag
+  def form2DataOpt(numberOfPackages: Option[Int], typesOfPackages: Option[String], shippingMarks: Option[String]): PackageInformation =
+    new PackageInformation(sequenceIdPlaceholder, generateId, typesOfPackages, numberOfPackages, shippingMarks)
+
+  def data2FormOpt(data: PackageInformation): Option[(Option[Int], Option[String], Option[String])] =
+    Some((data.numberOfPackages, data.typesOfPackages, data.shippingMarks))
+
   val typeId = "typesOfPackages"
 
-  def mapping(implicit messages: Messages, packageTypesService: PackageTypesService): Mapping[PackageInformation] = Forms
-    .mapping(
-      typeId -> optional(
-        text()
-          .verifying("declaration.packageInformation.typesOfPackages.error", isContainedIn(packageTypesService.all.map(_.code)))
-      ).verifying("declaration.packageInformation.typesOfPackages.empty", isSome),
-      "numberOfPackages" -> optional(
-        number()
-          .verifying("declaration.packageInformation.numberOfPackages.error", isInRange(NumberOfPackagesLimitLower, NumberOfPackagesLimitUpper))
-      ).verifying("declaration.packageInformation.numberOfPackages.error", isSome),
-      "shippingMarks" -> optional(
-        text()
-          .verifying("declaration.packageInformation.shippingMark.characterError", isEmpty or isAlphanumericWithAllowedSpecialCharacters)
-          .verifying("declaration.packageInformation.shippingMark.lengthError", isEmpty or noLongerThan(42))
-      ).verifying("declaration.packageInformation.shippingMark.empty", isSome)
-    )(form2Data)(data2Form)
+  def mapping(implicit messages: Messages, packageTypesService: PackageTypesService, appConfig: AppConfig): Mapping[PackageInformation] =
+    if (appConfig.isOptionalFieldsEnabled) {
+      Forms
+        .mapping(
+          "numberOfPackages" -> optional(
+            number()
+              .verifying("declaration.packageInformation.numberOfPackages.error", isInRange(NumberOfPackagesLimitLower, NumberOfPackagesLimitUpper))
+          ).verifying("declaration.packageInformation.numberOfPackages.error", isSome),
+          typeId -> optional(
+            text()
+              .verifying("declaration.packageInformation.typesOfPackages.error", isContainedIn(packageTypesService.all.map(_.code)))
+          ),
+          "shippingMarks" -> optional(
+            text()
+              .verifying("declaration.packageInformation.shippingMark.characterError", isEmpty or isAlphanumericWithAllowedSpecialCharacters)
+              .verifying("declaration.packageInformation.shippingMark.lengthError", isEmpty or noLongerThan(42))
+          )
+        )(form2DataOpt)(data2FormOpt)
+    } else {
+      Forms
+        .mapping(
+          typeId -> optional(
+            text()
+              .verifying("declaration.packageInformation.typesOfPackages.error", isContainedIn(packageTypesService.all.map(_.code)))
+          ).verifying("declaration.packageInformation.typesOfPackages.empty", isSome),
+          "numberOfPackages" -> optional(
+            number()
+              .verifying("declaration.packageInformation.numberOfPackages.error", isInRange(NumberOfPackagesLimitLower, NumberOfPackagesLimitUpper))
+          ).verifying("declaration.packageInformation.numberOfPackages.error", isSome),
+          "shippingMarks" -> optional(
+            text()
+              .verifying("declaration.packageInformation.shippingMark.characterError", isEmpty or isAlphanumericWithAllowedSpecialCharacters)
+              .verifying("declaration.packageInformation.shippingMark.lengthError", isEmpty or noLongerThan(42))
+          ).verifying("declaration.packageInformation.shippingMark.empty", isSome)
+        )(form2Data)(data2Form)
+    }
 
-  def form(implicit messages: Messages, packageTypesService: PackageTypesService): Form[PackageInformation] = Form(mapping)
+  def form(implicit messages: Messages, packageTypesService: PackageTypesService, appConfig: AppConfig): Form[PackageInformation] = Form(mapping)
 
   override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
     decType match {
