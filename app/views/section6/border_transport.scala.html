@@ -26,6 +26,7 @@
 @import views.helpers.ErrorMapper.{radioGroupErrors, prefixedErrorMessage}
 @import views.helpers.DescribedByHelper
 @import views.html.components.gds._
+@import models.DeclarationType.{SUPPLEMENTARY, STANDARD}
 
 @this(
     govukLayout: gdsMainTemplate,
@@ -46,6 +47,8 @@
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 
+@isStandardOrSupplementaryDeclaration = @{request.isType(STANDARD) || request.isType(SUPPLEMENTARY)}
+
 @govukLayout(
     title = borderTransportHelper.titleInHeadTag(form.hasErrors || form.hasGlobalErrors),
     backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(BorderTransport)))) {
@@ -61,6 +64,21 @@
             ModeOfTransportCodeHelper.transportMode(request.cacheModel.transportLeavingBorderCode)
         ))
 
+        @if(isStandardOrSupplementaryDeclaration){
+            @paragraphBody(messages("declaration.transportInformation.meansOfTransport.crossingTheBorder.body.opt"))
+            @govukFieldset(DescribedByHelper(
+            form = form,
+            fieldName = "borderTransportType",
+            content = List(
+                govukRadios(Radios(
+                    name = radioButtonGroupId,
+                    items = borderTransportHelper.radioButtonsOpt(form),
+                    errorMessage = form(radioButtonGroupId).error.map(prefixedErrorMessage(_))
+                ))
+            ),
+            titleKey = None
+        ))
+        }else{
         @paragraphBody(messages("declaration.transportInformation.meansOfTransport.crossingTheBorder.body"))
 
         @govukFieldset(DescribedByHelper(
@@ -75,6 +93,7 @@
             ),
             titleKey = None
         ))
+    }
 
         @saveButtons()
     }
