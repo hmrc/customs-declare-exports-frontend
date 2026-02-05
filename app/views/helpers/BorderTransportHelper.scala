@@ -37,9 +37,14 @@ class BorderTransportHelper @Inject() (exportsInputText: exportsInputText, trans
 
   private val prefix = "declaration.transportInformation.meansOfTransport"
 
-  def radioButtons(form: Form[BorderTransport])(implicit messages: Messages): List[RadioItem] =
+  def radioButtons(form: Form[BorderTransport])(implicit messages: Messages): List[RadioItem] = {
+    val radioButtons: List[RadioItem] = transportCodeService.transportCodesOnBorderTransport.map(radioButton(form, _))
+    radioButtons.dropRight(1)
+  }
+
+  def radioButtonsOpt(form: Form[BorderTransport])(implicit messages: Messages): List[RadioItem] =
     if (appConfig.isOptionalFieldsEnabled) {
-      val radioButtons: List[RadioItem] = transportCodeService.transportCodesOnBorderTransport.map(radioButton(form, _))
+      val radioButtons: List[RadioItem] = transportCodeService.transportCodesOnBorderTransport.map(radioButtonOpt(form, _))
       radioButtons.dropRight(1) :+ RadioItem(divider = Some(messages("site.radio.divider"))) :++ radioButtons.takeRight(1)
 
     } else {
@@ -53,24 +58,24 @@ class BorderTransportHelper @Inject() (exportsInputText: exportsInputText, trans
   }
 
   private def inputField(transportCode: TransportCode, form: Form[_])(implicit messages: Messages): Option[Html] =
-    if (appConfig.isOptionalFieldsEnabled) {
-      Some(
-        exportsInputText(
-          field = form(transportCode.id),
-          inputClasses = Some("govuk-input govuk-!-width-two-thirds"),
-          labelKey = s"$prefix.${transportCode.id}.label.flag",
-          hintKey = Some(s"$prefix.${transportCode.id}.hint")
-        )
+    Some(
+      exportsInputText(
+        field = form(transportCode.id),
+        inputClasses = Some("govuk-input govuk-!-width-two-thirds"),
+        labelKey = s"$prefix.${transportCode.id}.label",
+        hintKey = Some(s"$prefix.${transportCode.id}.hint")
       )
-    } else
-      Some(
-        exportsInputText(
-          field = form(transportCode.id),
-          inputClasses = Some("govuk-input govuk-!-width-two-thirds"),
-          labelKey = s"$prefix.${transportCode.id}.label",
-          hintKey = Some(s"$prefix.${transportCode.id}.hint")
-        )
+    )
+
+  private def inputFieldOpt(transportCode: TransportCode, form: Form[_])(implicit messages: Messages): Option[Html] =
+    Some(
+      exportsInputText(
+        field = form(transportCode.id),
+        inputClasses = Some("govuk-input govuk-!-width-two-thirds"),
+        labelKey = s"$prefix.${transportCode.id}.label.opt",
+        hintKey = Some(s"$prefix.${transportCode.id}.hint.opt")
       )
+    )
 
   private def radioButton(form: Form[BorderTransport], transportCode: TransportCode)(implicit messages: Messages): RadioItem =
     transportCode.id match {
@@ -88,6 +93,26 @@ class BorderTransportHelper @Inject() (exportsInputText: exportsInputText, trans
           value = Some(transportCode.value),
           content = Text(messages(s"$prefix.${transportCode.id}${if (transportCode.useAltRadioTextForBorderTransport) ".vBT" else ""}")),
           conditionalHtml = if (transportCode != transportCodeService.NotApplicable) inputField(transportCode, form) else None,
+          checked = form(radioButtonGroupId).value.contains(transportCode.value)
+        )
+    }
+
+  private def radioButtonOpt(form: Form[BorderTransport], transportCode: TransportCode)(implicit messages: Messages): RadioItem =
+    transportCode.id match {
+      case "NotApplicable" =>
+        RadioItem(
+          id = Some(s"radio_${transportCode.id}"),
+          value = Some(transportCode.value),
+          content = Text(messages("site.optNotToDeclare")),
+          conditionalHtml = None,
+          checked = form(radioButtonGroupId).value.contains(transportCode.value)
+        )
+      case _ =>
+        RadioItem(
+          id = Some(s"radio_${transportCode.id}"),
+          value = Some(transportCode.value),
+          content = Text(messages(s"$prefix.${transportCode.id}${if (transportCode.useAltRadioTextForBorderTransport) ".vBT" else ""}")),
+          conditionalHtml = if (transportCode != transportCodeService.NotApplicable) inputFieldOpt(transportCode, form) else None,
           checked = form(radioButtonGroupId).value.contains(transportCode.value)
         )
     }

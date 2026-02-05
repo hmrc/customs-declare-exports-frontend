@@ -27,6 +27,7 @@
 @import views.helpers.{BackButton, CountryHelper, HintTextAlternatives, ModeOfTransportCodeHelper, Title}
 @import views.helpers.ErrorMapper.radioGroupErrors
 @import views.html.components.gds._
+@import models.DeclarationType.{SUPPLEMENTARY, STANDARD}
 
 @this(
     govukLayout: gdsMainTemplate,
@@ -43,6 +44,8 @@
 
 @(transportMode: String, form: Form[TransportCountry])(implicit request: JourneyRequest[_], messages: Messages)
 
+@isStandardOrSupplementaryDeclaration = @{request.isType(STANDARD) || request.isType(SUPPLEMENTARY)}
+
 @insetTextOnRoRo = @{
     if (transportMode != ModeOfTransportCodeHelper.transportMode(Some(RoRo))) HtmlFormat.empty
     else paragraph(messages(s"$prefix.roro.inset.text"), "govuk-inset-text transport-country-on-roro")
@@ -58,6 +61,11 @@
     else paragraph(messages(s"$prefix.roro.paragraph"), "govuk-body transport-country-on-roro")
 }
 
+@paragraphOnRoRoOpt = @{
+    if (transportMode != ModeOfTransportCodeHelper.transportMode(Some(RoRo))) HtmlFormat.empty
+    else paragraph(messages(s"$prefix.roro.paragraph.optional"), "govuk-body transport-country-on-roro")
+}
+
 @govukLayout(
     title = Title(s"$prefix.title", "declaration.section.6", transportMode, hasErrors = form.hasErrors || form.hasGlobalErrors),
     backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(TransportCountry)))
@@ -69,16 +77,19 @@
 
         @heading(messages(s"$prefix.title", transportMode), "govuk-label--xl", "h1", Some(form(transportCountry).id))
 
-        @if(appConfig.isOptionalFieldsEnabled){
-            @insetTextOnRoRo
-        }else{
-            @nonInsetTextOnRoRo
-        }
+            @if(appConfig.isOptionalFieldsEnabled) {
+                @insetTextOnRoRo
+            } else {
+                @nonInsetTextOnRoRo
+            }
 
-        @if(appConfig.isOptionalFieldsEnabled){
-            @paragraphOnRoRo
-        }
-
+            @if(appConfig.isOptionalFieldsEnabled) {
+                @if(isStandardOrSupplementaryDeclaration) {
+                    @paragraphOnRoRoOpt
+                } else {
+                    @paragraphOnRoRo
+                }
+            }
 
         @components.fields.field_accessible_location_autocomplete_with_header(
             field = form(transportCountry),
