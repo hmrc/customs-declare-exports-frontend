@@ -863,5 +863,10 @@
     "code": "CDS12170",
     "en": "Authorisation Error: Invalid VAT number. Please note, if you are attempting to claim Onward Supply Relief (OSR), you must be identified as trading under the terms of the Northern Ireland Protocol (now Windsor Framework) for VAT",
     "cy": "Gwall Awdurdodi: Rhif TAW annilys. Sylwer, os ydych yn ceisio hawlio Rhyddhad Anfon Cyflenwad Ymlaen (OSR), mae’n rhaid i chi gael eich nodi fel rhywun sy’n masnachu o dan delerau Protocol Gogledd Iwerddon (Fframwaith Windsor bellach) ar gyfer TAW"
+  },
+  {
+    "code": "CDS12171",
+    "en": "STATISTICAL VALUE ERROR HERE",
+    "cy": "Gwall Awdurdodi: Rhif TAW annilys. Sylwer, os ydych yn ceisio hawlio Rhyddhad Anfon Cyflenwad Ymlaen (OSR), mae’n rhaid i chi gael eich nodi fel rhywun sy’n masnachu o dan delerau Protocol Gogledd Iwerddon (Fframwaith Windsor bellach) ar gyfer TAW"
   }
 ]
