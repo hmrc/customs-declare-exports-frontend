@@ -2722,6 +2722,13 @@ dmsError.CDS12066.title = Ni chaniateir cyfuniad o elfen(nau) neu werth(oedd)
 dmsError.CDS12067.title = Ni chaniateir cyfuniad o elfen(nau) neu werth(oedd)
 dmsError.CDS12069.title = Mae annilysu datganiad yn cael ei brosesu yn y Swyddfa lle mae’r nwyddau’n Gadael
 dmsError.CDS12170.title = Gwall Awdurdodi
+dmsError.CDS12078.title = Gwall perthynas
+dmsError.CDS12151.title = Gwall perthynas
+dmsError.CDS12152.title = Mae cod gweithdrefn ychwanegol ar goll
+dmsError.CDS12171.title = Gwall perthynas
+dmsError.CDS12172.title = Gwall perthynas
+dmsError.CDS40012.title = Gwall cod nwyddau
+dmsError.CDS50018.title = Mae Dyddiad/Amser Cyrraedd Nwyddau yn annilys neu heb ei gynnwys
 
 userSignedOut.title = Rydym wedi cadw’ch atebion a’ch allgofnodi
 
