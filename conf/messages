@@ -2723,7 +2723,13 @@ dmsError.CDS12066.title = Combination of element(s) or value(s) is not allowed
 dmsError.CDS12067.title = Combination of element(s) or value(s) is not allowed
 dmsError.CDS12069.title = Declaration invalidation is being processed at the Office of Exit
 dmsError.CDS12170.title = Authorisation
-dmsError.CDS12171.title = STAT TEST VALUE HERE
+dmsError.CDS12078.title = Relation error
+dmsError.CDS12151.title = Relation error
+dmsError.CDS12152.title = Additional procedure code is missing
+dmsError.CDS12171.title = Relation error
+dmsError.CDS12172.title = Relation error
+dmsError.CDS40012.title = Commodity code error
+dmsError.CDS50018.title = Goods Arrival Date/Time is invalid or not included
 
 
 userSignedOut.title = We have saved your answers and signed you out
