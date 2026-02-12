@@ -35,6 +35,7 @@ import uk.gov.hmrc.play.bootstrap.binders.RedirectUrl._
 import uk.gov.hmrc.play.bootstrap.binders.{OnlyRelative, RedirectUrl}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import views.html.timeline.submitted_declaration
+import scala.annotation.unused
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -58,7 +59,7 @@ class SubmissionsController @Inject() (
     else findOrCreateDraftForRejection(rejectedParentId, redirect)
   }
 
-  def amendErrors(rejectedParentId: String, pattern: String, message: String, isAmendment: Boolean, redirectUrl: RedirectUrl): Action[AnyContent] =
+  def amendErrors(rejectedParentId: String, @unused pattern: String, message: String, isAmendment: Boolean, redirectUrl: RedirectUrl): Action[AnyContent] =
     authAndEmailActions.async { implicit request =>
       val flashData = if (message.nonEmpty) Map(FlashKeys.errorMessage -> message) else Map.empty[String, String]
       val redirect = setErrorFixMode(Redirect(redirectUrl.get(OnlyRelative).url).flashing(Flash(flashData)))

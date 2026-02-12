@@ -23,7 +23,7 @@ import scala.util.{Failure, Try}
 
 object EnumJson {
 
-  private def enumReads[E <: Enumeration](anEnum: E): Reads[E#Value] = {
+  private def enumReads[E <: Enumeration](anEnum: E): Reads[anEnum.Value] = {
     case JsString(s) =>
       Try(JsSuccess(anEnum.withName(s))) recoverWith { case _: NoSuchElementException =>
         Failure(new InvalidEnumException(anEnum.getClass.getSimpleName, s))
@@ -31,10 +31,10 @@ object EnumJson {
     case _ => JsError("String value expected")
   }
 
-  implicit def enumWrites[E <: Enumeration]: Writes[E#Value] = (v: E#Value) => JsString(v.toString)
+  implicit def enumWrites[E <: Enumeration](anEnum: E): Writes[anEnum.Value] = (v: anEnum.Value) => JsString(v.toString)
 
-  implicit def format[E <: Enumeration](anEnum: E): Format[E#Value] =
-    Format(enumReads(anEnum), enumWrites)
+  implicit def format[E <: Enumeration](anEnum: E): Format[anEnum.Value] =
+    Format(enumReads(anEnum), enumWrites(anEnum))
 }
 
 class InvalidEnumException(className: String, input: String)

@@ -31,6 +31,7 @@ import views.helpers.PointerHelper.clearanceDecDetailsCall
 import views.html.components.gds.link
 
 import javax.inject.{Inject, Singleton}
+import scala.annotation.unused
 
 @Singleton
 class ErrorsReportedHelper @Inject() (link: link, codeListConnector: CodeListConnector, countryHelper: CountryHelper) extends Logging {
@@ -143,7 +144,7 @@ class ErrorsReportedHelper @Inject() (link: link, codeListConnector: CodeListCon
       }
   }
 
-  private def getDecDetailsEoriChangeLinkUrl(pointer: Pointer, pointerRecord: PointerRecord, declaration: ExportsDeclaration): Option[Call] =
+  private def getDecDetailsEoriChangeLinkUrl(@unused pointer: Pointer, pointerRecord: PointerRecord, declaration: ExportsDeclaration): Option[Call] =
     if (declaration.isType(CLEARANCE) && declaration.isExs && declaration.parties.personPresentingGoodsDetails.nonEmpty)
       Some(clearanceDecDetailsCall)
     else

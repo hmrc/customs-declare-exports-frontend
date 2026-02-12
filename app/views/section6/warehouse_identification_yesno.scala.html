@@ -48,7 +48,7 @@
     title = Title("declaration.warehouse.identification.optional.title", "declaration.section.6", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(WarehouseIdentification)))) {
 
-    @formHelper(action = WarehouseIdentificationController.saveIdentificationNumber, Symbol("autoComplete") -> "off") {
+    @formHelper(action = WarehouseIdentificationController.saveIdentificationNumber(), Symbol("autoComplete") -> "off") {
         @errorSummary(form.errors)
 
         @sectionHeader(messages("declaration.section.6"))

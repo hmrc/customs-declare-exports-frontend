@@ -16,7 +16,6 @@
 
 package controllers.general
 
-import config.AppConfig
 import models.UnauthorisedReason
 import models.UnauthorisedReason._
 import play.api.i18n.I18nSupport
@@ -29,8 +28,7 @@ import javax.inject.Inject
 class UnauthorisedController @Inject() (
   mcc: MessagesControllerComponents,
   unauthorisedPage: unauthorised,
-  unauthorisedAgent: unauthorisedAgent,
-  appConfig: AppConfig
+  unauthorisedAgent: unauthorisedAgent
 ) extends FrontendController(mcc) with I18nSupport {
 
   def onPageLoad(unauthorisedReason: UnauthorisedReason): Action[AnyContent] = Action { implicit request =>

@@ -17,6 +17,7 @@
 package models
 
 import play.api.libs.json._
+import scala.annotation.unused
 
 sealed trait CancellationStatus
 
@@ -36,7 +37,7 @@ object CancellationStatus {
     Some(prod.toString -> sub)
   }
 
-  def apply(`class`: String, data: JsValue): CancellationStatus =
+  def apply(`class`: String, @unused data: JsValue): CancellationStatus =
     `class` match {
       case CancellationAlreadyRequestedName => CancellationAlreadyRequested
       case CancellationRequestSentName      => CancellationRequestSent

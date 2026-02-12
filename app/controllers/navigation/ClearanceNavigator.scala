@@ -49,7 +49,7 @@ trait ClearanceNavigator extends CacheDependentNavigators {
     case ExporterDetails              => ExporterEoriNumberController.displayPage
     case DeclarantDetails             => EntryIntoDeclarantsRecordsController.displayPage
     case PersonPresentingGoodsDetails => EntryIntoDeclarantsRecordsController.displayPage
-    case ContainerAdd                 => ContainerController.displayContainerSummary
+    case ContainerAdd                 => ContainerController.displayContainerSummary()
     case RoutingCountryQuestionPage   => DestinationCountryController.displayPage
     case RemoveCountryPage            => RoutingCountriesController.displayRoutingCountry
     case ChangeCountryPage            => RoutingCountriesController.displayRoutingCountry

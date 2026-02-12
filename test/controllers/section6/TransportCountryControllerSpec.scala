@@ -84,7 +84,7 @@ class TransportCountryControllerSpec extends ControllerSpec with AuditedControll
 
   def nextPage: PartialFunction[DeclarationType, Call] = {
     case STANDARD | OCCASIONAL | SIMPLIFIED => ExpressConsignmentController.displayPage
-    case SUPPLEMENTARY                      => ContainerController.displayContainerSummary
+    case SUPPLEMENTARY                      => ContainerController.displayContainerSummary()
   }
 
   "TransportCountryController" should {
