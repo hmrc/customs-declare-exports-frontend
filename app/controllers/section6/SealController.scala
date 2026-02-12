@@ -119,7 +119,7 @@ class SealController @Inject() (
         formWithErrors => Future.successful(BadRequest(summaryPage(formWithErrors, containerId, seals(containerId)))),
         _.answer match {
           case YesNoAnswers.yes => Future.successful(navigator.continueTo(SealController.displayAddSeal(containerId)))
-          case YesNoAnswers.no  => Future.successful(navigator.continueTo(ContainerController.displayContainerSummary))
+          case YesNoAnswers.no  => Future.successful(navigator.continueTo(ContainerController.displayContainerSummary()))
         }
       )
 

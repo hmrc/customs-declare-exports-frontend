@@ -47,7 +47,7 @@
     title = Title("declaration.representative.agent.title", "declaration.section.2", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(RepresentativeAgent)))) {
 
-    @formHelper(action = RepresentativeAgentController.submitForm, Symbol("autoComplete") -> "off") {
+    @formHelper(action = RepresentativeAgentController.submitForm(), Symbol("autoComplete") -> "off") {
         @errorSummary(radioGroupErrors("representingAgent", "agent_yes", form.errors))
 
         @sectionHeader(messages("declaration.section.2"))

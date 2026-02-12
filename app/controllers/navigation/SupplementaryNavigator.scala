@@ -44,7 +44,7 @@ trait SupplementaryNavigator extends CacheDependentNavigators {
     case ConsignmentReferences   => DeclarantDetailsController.displayPage
     case ExporterEoriNumber      => DeclarantExporterController.displayPage
     case ExporterDetails         => ExporterEoriNumberController.displayPage
-    case ContainerAdd            => ContainerController.displayContainerSummary
+    case ContainerAdd            => ContainerController.displayContainerSummary()
     case LocationOfGoods         => DestinationCountryController.displayPage
     case DocumentSummary         => NatureOfTransactionController.displayPage
     case AdditionalActorsSummary => ConsigneeDetailsController.displayPage

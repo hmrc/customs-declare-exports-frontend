@@ -67,7 +67,7 @@ class InlandTransportDetailsController @Inject() (
 
   private def nextPage(declaration: ExportsDeclaration): Call =
     if (skipTransportPages(declaration)) {
-      if (declaration.isType(SUPPLEMENTARY)) ContainerController.displayContainerSummary
+      if (declaration.isType(SUPPLEMENTARY)) ContainerController.displayContainerSummary()
       else ExpressConsignmentController.displayPage
     } else if (!(declaration.isType(SIMPLIFIED) || declaration.isType(OCCASIONAL))) DepartureTransportController.displayPage
     else if (declaration.isInlandOrBorder(Border)) TransportCountryController.displayPage

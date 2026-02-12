@@ -122,7 +122,7 @@
     title = title,
     backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(ContainerFirst)))
 ) {
-    @formHelper(action = ContainerController.submitSummaryAction, Symbol("autoComplete") -> "off") {
+    @formHelper(action = ContainerController.submitSummaryAction(), Symbol("autoComplete") -> "off") {
         @errorSummary(yesNoErrors(form.errors))
 
         @sectionHeader(messages("declaration.section.6"))

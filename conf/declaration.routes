@@ -27,9 +27,9 @@ POST        /declarant-details                   controllers.section1.DeclarantD
 
 # Not Eligible
 
-GET         /not-eligible                       controllers.section1.NotEligibleController.displayNotEligible
+GET         /not-eligible                       controllers.section1.NotEligibleController.displayNotEligible()
 
-GET         /not-declarant                      controllers.section1.NotEligibleController.displayNotDeclarant
+GET         /not-declarant                      controllers.section1.NotEligibleController.displayNotDeclarant()
 
 # DUCR Choice
 
@@ -83,25 +83,25 @@ POST        /enter-a-mucr                        controllers.section1.MucrContro
 
 GET         /entry-into-declarants-records       controllers.section2.EntryIntoDeclarantsRecordsController.displayPage
 
-POST        /entry-into-declarants-records       controllers.section2.EntryIntoDeclarantsRecordsController.submitForm
+POST        /entry-into-declarants-records       controllers.section2.EntryIntoDeclarantsRecordsController.submitForm()
 
 # Person presenting goods (Clearance journey)
 
 GET         /person-presenting-goods             controllers.section2.PersonPresentingGoodsDetailsController.displayPage
 
-POST        /person-presenting-goods             controllers.section2.PersonPresentingGoodsDetailsController.submitForm
+POST        /person-presenting-goods             controllers.section2.PersonPresentingGoodsDetailsController.submitForm()
 
 # Declarant is exporter
 
 GET         /are-you-the-exporter                controllers.section2.DeclarantExporterController.displayPage
 
-POST        /are-you-the-exporter                controllers.section2.DeclarantExporterController.submitForm
+POST        /are-you-the-exporter                controllers.section2.DeclarantExporterController.submitForm()
 
 # Declarant is not the exporter - Exporter EORI (if known)
 
 GET         /exporter-eori-number                controllers.section2.ExporterEoriNumberController.displayPage
 
-POST        /exporter-eori-number                controllers.section2.ExporterEoriNumberController.submit
+POST        /exporter-eori-number                controllers.section2.ExporterEoriNumberController.submit()
 
 # Declarant is not the exporter - Exporter address (EORI is not known)
 
@@ -113,13 +113,13 @@ POST        /exporter-address                    controllers.section2.ExporterDe
 
 GET         /is-this-exs                         controllers.section2.IsExsController.displayPage
 
-POST        /is-this-exs                         controllers.section2.IsExsController.submit
+POST        /is-this-exs                         controllers.section2.IsExsController.submit()
 
 # Consignor Eori Number (Clearance journey)
 
 GET         /consignor-eori-number               controllers.section2.ConsignorEoriNumberController.displayPage
 
-POST        /consignor-eori-number               controllers.section2.ConsignorEoriNumberController.submit
+POST        /consignor-eori-number               controllers.section2.ConsignorEoriNumberController.submit()
 
 # Consignor address (Clearance journey)
 
@@ -131,19 +131,19 @@ POST        /consignor-address                   controllers.section2.ConsignorD
 
 GET         /are-you-completing-this-declaration-on-behalf-of-another-agent  controllers.section2.RepresentativeAgentController.displayPage
 
-POST        /are-you-completing-this-declaration-on-behalf-of-another-agent  controllers.section2.RepresentativeAgentController.submitForm
+POST        /are-you-completing-this-declaration-on-behalf-of-another-agent  controllers.section2.RepresentativeAgentController.submitForm()
 
 # Declarant is not the exporter - Representative EORI (if known)
 
 GET         /representatives-eori-number         controllers.section2.RepresentativeEntityController.displayPage
 
-POST        /representatives-eori-number         controllers.section2.RepresentativeEntityController.submitForm
+POST        /representatives-eori-number         controllers.section2.RepresentativeEntityController.submitForm()
 
 # Declarant is not the exporter - Representative type (EORI not known)
 
 GET         /representation-type-agreed          controllers.section2.RepresentativeStatusController.displayPage
 
-POST        /representation-type-agreed          controllers.section2.RepresentativeStatusController.submitForm
+POST        /representation-type-agreed          controllers.section2.RepresentativeStatusController.submitForm()
 
 # Third Party Goods Transportation
 
@@ -155,7 +155,7 @@ POST        /third-party-goods-transportation    controllers.section2.ThirdParty
 
 GET         /carrier-eori-number                 controllers.section2.CarrierEoriNumberController.displayPage
 
-POST        /carrier-eori-number                 controllers.section2.CarrierEoriNumberController.submit
+POST        /carrier-eori-number                 controllers.section2.CarrierEoriNumberController.submit()
 
 # Carrier details (Carrier's EORI not known)
 
@@ -191,15 +191,15 @@ POST        /authorisation-choice                controllers.section2.Authorisat
 
 GET         /is-authorisation-required           controllers.section2.AuthorisationHolderRequiredController.displayPage
 
-POST        /is-authorisation-required           controllers.section2.AuthorisationHolderRequiredController.submitForm
+POST        /is-authorisation-required           controllers.section2.AuthorisationHolderRequiredController.submitForm()
 
 GET         /add-authorisation-required          controllers.section2.AuthorisationHolderAddController.displayPage
 
-POST        /add-authorisation-required          controllers.section2.AuthorisationHolderAddController.submitForm
+POST        /add-authorisation-required          controllers.section2.AuthorisationHolderAddController.submitForm()
 
 GET         /authorisations-required             controllers.section2.AuthorisationHolderSummaryController.displayPage
 
-POST        /authorisations-required             controllers.section2.AuthorisationHolderSummaryController.submitForm
+POST        /authorisations-required             controllers.section2.AuthorisationHolderSummaryController.submitForm()
 
 GET         /authorisations-required/:id/change  controllers.section2.AuthorisationHolderChangeController.displayPage(id: String)
 
@@ -245,11 +245,11 @@ POST        /office-of-exit                      controllers.section3.OfficeOfEx
 
 GET         /invoices-and-exchange-rate-choice   controllers.section4.InvoiceAndExchangeRateChoiceController.displayPage
 
-POST        /invoices-and-exchange-rate-choice   controllers.section4.InvoiceAndExchangeRateChoiceController.submitForm
+POST        /invoices-and-exchange-rate-choice   controllers.section4.InvoiceAndExchangeRateChoiceController.submitForm()
 
 GET         /invoices-and-exchange-rate          controllers.section4.InvoiceAndExchangeRateController.displayPage
 
-POST        /invoices-and-exchange-rate          controllers.section4.InvoiceAndExchangeRateController.saveNoOfItems
+POST        /invoices-and-exchange-rate          controllers.section4.InvoiceAndExchangeRateController.saveNoOfItems()
 
 # Total package quantity
 
@@ -265,7 +265,7 @@ POST        /add-previous-document               controllers.section4.PreviousDo
 
 GET         /previous-documents-list             controllers.section4.PreviousDocumentsSummaryController.displayPage
 
-POST        /previous-documents-list             controllers.section4.PreviousDocumentsSummaryController.submit
+POST        /previous-documents-list             controllers.section4.PreviousDocumentsSummaryController.submit()
 
 GET         /previous-documents/:id/remove       controllers.section4.PreviousDocumentsRemoveController.displayPage(id: String)
 
@@ -275,7 +275,7 @@ POST        /previous-documents/:id/remove       controllers.section4.PreviousDo
 
 GET         /nature-of-transaction               controllers.section4.NatureOfTransactionController.displayPage
 
-POST        /nature-of-transaction               controllers.section4.NatureOfTransactionController.saveTransactionType
+POST        /nature-of-transaction               controllers.section4.NatureOfTransactionController.saveTransactionType()
 
 ## SECTION 5 -----------------------------------------------------------------------------------------------------------
 
@@ -453,7 +453,7 @@ POST        /items/:itemId/additional-documentation-list        controllers.sect
 
 GET         /transport-leaving-the-border        controllers.section6.TransportLeavingTheBorderController.displayPage
 
-POST        /transport-leaving-the-border        controllers.section6.TransportLeavingTheBorderController.submitForm
+POST        /transport-leaving-the-border        controllers.section6.TransportLeavingTheBorderController.submitForm()
 
 # Guidance page from Transport leaving the border when auth code is EXRR
 
@@ -463,7 +463,7 @@ GET         /send-by-roro                        controllers.section6.TransportL
 
 GET         /warehouse-details                   controllers.section6.WarehouseIdentificationController.displayPage
 
-POST        /warehouse-details                   controllers.section6.WarehouseIdentificationController.saveIdentificationNumber
+POST        /warehouse-details                   controllers.section6.WarehouseIdentificationController.saveIdentificationNumber()
 
 # Supervising Customs Office
 
@@ -475,13 +475,13 @@ POST        /supervising-customs-office          controllers.section6.Supervisin
 
 GET         /inland-or-border                    controllers.section6.InlandOrBorderController.displayPage
 
-POST        /inland-or-border                    controllers.section6.InlandOrBorderController.submitPage
+POST        /inland-or-border                    controllers.section6.InlandOrBorderController.submitPage()
 
 # Inland Transport Details
 
 GET         /inland-transport-details            controllers.section6.InlandTransportDetailsController.displayPage
 
-POST        /inland-transport-details            controllers.section6.InlandTransportDetailsController.submit
+POST        /inland-transport-details            controllers.section6.InlandTransportDetailsController.submit()
 
 # Departure Transport
 
@@ -503,21 +503,21 @@ POST        /transport-country                  controllers.section6.TransportCo
 
 GET         /express-consignment                 controllers.section6.ExpressConsignmentController.displayPage
 
-POST        /express-consignment                 controllers.section6.ExpressConsignmentController.submitForm
+POST        /express-consignment                 controllers.section6.ExpressConsignmentController.submitForm()
 
 GET         /transport-payment                   controllers.section6.TransportPaymentController.displayPage
 
-POST        /transport-payment                   controllers.section6.TransportPaymentController.submitForm
+POST        /transport-payment                   controllers.section6.TransportPaymentController.submitForm()
 
 # Transport Containers & Seals
 
-GET         /containers                          controllers.section6.ContainerController.displayContainerSummary
+GET         /containers                          controllers.section6.ContainerController.displayContainerSummary()
 
-POST        /containers                          controllers.section6.ContainerController.submitSummaryAction
+POST        /containers                          controllers.section6.ContainerController.submitSummaryAction()
 
-GET         /container                           controllers.section6.ContainerController.displayAddContainer
+GET         /container                           controllers.section6.ContainerController.displayAddContainer()
 
-POST        /container                           controllers.section6.ContainerController.submitAddContainer
+POST        /container                           controllers.section6.ContainerController.submitAddContainer()
 
 GET         /containers/:containerId/remove      controllers.section6.ContainerController.displayContainerRemove(containerId)
 

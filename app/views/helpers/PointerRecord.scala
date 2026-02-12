@@ -238,7 +238,7 @@ object PointerRecord {
 
   private val containers = new DefaultPointerRecord() {
     def fetchRawValue(dec: ExportsDeclaration, args: Int*): Option[String] = getContainer(dec, args(0)).map(_.id)
-    override val pageLink1Param: Option[Call] = Some(ContainerController.displayContainerSummary)
+    override val pageLink1Param: Option[Call] = Some(ContainerController.displayContainerSummary())
     override val amendKey: Option[String] = Some("declaration.summary.container.id")
   }
 

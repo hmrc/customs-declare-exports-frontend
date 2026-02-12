@@ -36,6 +36,7 @@ import models.ExportsDeclaration
 import models.requests.JourneyRequest
 import play.api.mvc.Call
 import services.TaggedAuthCodes
+import scala.annotation.unused
 
 // scalastyle:off
 trait CacheDependentNavigators {
@@ -218,7 +219,7 @@ trait CacheDependentNavigators {
     if (inlandOrBorderHelper.skipInlandOrBorder(cacheModel)) inlandOrBorderPreviousPage(cacheModel)
     else InlandOrBorderController.displayPage
 
-  protected def departureTransportPreviousPageOnClearance(cacheModel: ExportsDeclaration): Call =
+  protected def departureTransportPreviousPageOnClearance(@unused cacheModel: ExportsDeclaration): Call =
     SupervisingCustomsOfficeController.displayPage
 
   // Must be a lazy val, as full-path Calls are generated at runtime from reverse routing.
