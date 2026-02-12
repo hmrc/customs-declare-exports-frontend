@@ -48,7 +48,7 @@ trait SimplifiedNavigator extends CacheDependentNavigators {
     case ExporterEoriNumber         => DeclarantExporterController.displayPage
     case ExporterDetails            => ExporterEoriNumberController.displayPage
     case AdditionalActor            => ConsigneeDetailsController.displayPage
-    case ContainerAdd               => ContainerController.displayContainerSummary
+    case ContainerAdd               => ContainerController.displayContainerSummary()
     case RoutingCountryQuestionPage => DestinationCountryController.displayPage
     case RemoveCountryPage          => RoutingCountriesController.displayRoutingCountry
     case ChangeCountryPage          => RoutingCountriesController.displayRoutingCountry

@@ -156,8 +156,8 @@ object PointerHelper extends Logging {
     "declaration.locations.goodsLocation.postCode" -> LocationOfGoodsController.displayPage,
     "declaration.locations.goodsLocation.qualifierOfIdentification" -> LocationOfGoodsController.displayPage,
     "declaration.locations.goodsLocation.typeOfLocation" -> LocationOfGoodsController.displayPage,
-    "declaration.containers.container.$.id" -> ContainerController.displayContainerSummary, // ?? SealController.displaySealSummary
-    "declaration.containers.container.$.seals.seal.$.id" -> ContainerController.displayContainerSummary, // ?? SealController.displaySealRemove
+    "declaration.containers.container.$.id" -> ContainerController.displayContainerSummary(), // ?? SealController.displaySealSummary
+    "declaration.containers.container.$.seals.seal.$.id" -> ContainerController.displayContainerSummary(), // ?? SealController.displaySealRemove
     "declaration.previousDocuments.$.documentCategory" -> PreviousDocumentsSummaryController.displayPage,
     "declaration.previousDocuments.$.documentReference" -> PreviousDocumentsSummaryController.displayPage,
     "declaration.previousDocuments.$.documentType" -> PreviousDocumentsSummaryController.displayPage,

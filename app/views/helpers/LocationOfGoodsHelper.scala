@@ -214,7 +214,7 @@ class LocationOfGoodsHelper @Inject() (
         label =
           Label(forAttr = Some(field.id), content = HtmlContent(messages("declaration.locationOfGoods.yesNo.noHint")), classes = "govuk-label--s"),
         hint = Some(Hint(content = Text(messages("declaration.locationOfGoods.yesNo.no.hint")))),
-        classes = s"govuk-!-width-two-thirds ${if (field.hasErrors) "govuk-input--error"}",
+        classes = s"govuk-!-width-two-thirds ${if (field.hasErrors) "govuk-input--error" else ""}",
         errorMessage = InputTextHelper.fieldErrorMessages(field)
       )
     )

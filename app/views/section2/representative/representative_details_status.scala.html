@@ -44,7 +44,7 @@
     title = Title("declaration.representative.status.title", "declaration.section.2", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(navigationForm)))) {
 
-    @formHelper(action = RepresentativeStatusController.submitForm, Symbol("autoComplete") -> "off") {
+    @formHelper(action = RepresentativeStatusController.submitForm(), Symbol("autoComplete") -> "off") {
         @errorSummary(radioGroupErrors("statusCode", DirectRepresentative, form.errors))
 
         @sectionHeader(messages("declaration.section.2"))

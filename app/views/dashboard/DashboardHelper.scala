@@ -36,6 +36,7 @@ import views.html.dashboard.table
 
 import java.time.{Instant, ZoneId, ZonedDateTime}
 import javax.inject.{Inject, Singleton}
+import scala.annotation.unused
 
 @Singleton
 class DashboardHelper @Inject() (govukTable: GovukTable, link: link) {
@@ -124,7 +125,7 @@ object DashboardHelper {
       }
   }
 
-  private def addUuid(href: String, key: String, uuid: String): String =
+  private def addUuid(@unused href: String, key: String, uuid: String): String =
     s"&$key=$uuid"
 
   private def addDatetime(href: String, key: String, maybeDatetime: Option[ZonedDateTime]): String =

@@ -52,7 +52,7 @@
     title = Title(authorisationHolderRequiredHelper.title, "declaration.section.2", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(AuthorisationHolderRequired)))) {
 
-    @formHelper(action = routes.AuthorisationHolderRequiredController.submitForm, Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.AuthorisationHolderRequiredController.submitForm(), Symbol("autoComplete") -> "off") {
         @errorSummary(yesNoErrors(form.errors))
 
     @sectionHeader(messages("declaration.section.2"))

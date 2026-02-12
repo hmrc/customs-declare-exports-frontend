@@ -88,7 +88,7 @@ class InlandOrBorderController @Inject() (
   private def nextPage(declaration: ExportsDeclaration, inlandOrBorder: InlandOrBorder): Call =
     inlandOrBorder match {
       case Border if skipTransportPages(declaration) =>
-        if (declaration.isType(SUPPLEMENTARY)) ContainerController.displayContainerSummary
+        if (declaration.isType(SUPPLEMENTARY)) ContainerController.displayContainerSummary()
         else ExpressConsignmentController.displayPage
 
       case Border => DepartureTransportController.displayPage
