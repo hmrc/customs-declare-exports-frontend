@@ -40,33 +40,33 @@ import play.api.mvc.Call
 
 trait StandardNavigator extends CacheDependentNavigators {
 
-  val standard: PartialFunction[DeclarationPage, Call] = {
-    case DeclarantDetails           => AdditionalDeclarationTypeController.displayPage
-    case LinkDucrToMucr             => LocalReferenceNumberController.displayPage
-    case DucrChoice                 => DeclarantDetailsController.displayPage
-    case ConsignmentReferences      => DeclarantDetailsController.displayPage
-    case ExporterEoriNumber         => DeclarantExporterController.displayPage
-    case ExporterDetails            => ExporterEoriNumberController.displayPage
-    case AdditionalActor            => ConsigneeDetailsController.displayPage
-    case RoutingCountryQuestionPage => DestinationCountryController.displayPage
-    case RemoveCountryPage          => RoutingCountriesController.displayRoutingCountry
-    case ChangeCountryPage          => RoutingCountriesController.displayRoutingCountry
-    case LocationOfGoods            => RoutingCountriesController.displayRoutingCountry
-    case AdditionalActorsSummary    => ConsigneeDetailsController.displayPage
-    case DocumentSummary            => NatureOfTransactionController.displayPage
-    case ContainerAdd               => ContainerController.displayContainerSummary()
-    case CarrierEoriNumber          => ThirdPartyGoodsTransportationController.displayPage
-    case page                       => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on standard")
+  val standard: PartialFunction[DeclarationPage, ExportsDeclaration => Call] = {
+    case DeclarantDetails           => _ => AdditionalDeclarationTypeController.displayPage
+    case LinkDucrToMucr             => _ => LocalReferenceNumberController.displayPage
+    case DucrChoice                 => _ => DeclarantDetailsController.displayPage
+    case ConsignmentReferences      => _ => DeclarantDetailsController.displayPage
+    case ExporterEoriNumber         => _ => DeclarantExporterController.displayPage
+    case ExporterDetails            => _ => ExporterEoriNumberController.displayPage
+    case AdditionalActor            => _ => ConsigneeDetailsController.displayPage
+    case RoutingCountryQuestionPage => _ => DestinationCountryController.displayPage
+    case RemoveCountryPage          => _ => RoutingCountriesController.displayRoutingCountry
+    case ChangeCountryPage          => _ => RoutingCountriesController.displayRoutingCountry
+    case LocationOfGoods            => _ => RoutingCountriesController.displayRoutingCountry
+    case AdditionalActorsSummary    => _ => ConsigneeDetailsController.displayPage
+    case DocumentSummary            => _ => NatureOfTransactionController.displayPage
+    case ContainerAdd               => _ => ContainerController.displayContainerSummary()
+    case CarrierEoriNumber          => _ => ThirdPartyGoodsTransportationController.displayPage
+    case page                       => _ => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on standard")
   }
 
-  val standardItemPage: PartialFunction[DeclarationPage, String => Call] = {
-    case AdditionalDocumentsRequired => IsLicenceRequiredController.displayPage
-    case AdditionalDocumentsSummary  => IsLicenceRequiredController.displayPage
-    case PackageInformation          => StatisticalValueController.displayPage
-    case CusCode                     => UNDangerousGoodsCodeController.displayPage
-    case NactCode                    => NactCodeSummaryController.displayPage
-    case CommodityMeasure            => PackageInformationSummaryController.displayPage
-    case page                        => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on standard")
+  val standardItemPage: PartialFunction[DeclarationPage, (ExportsDeclaration, String) => Call] = {
+    case AdditionalDocumentsRequired => (_, itemId) => IsLicenceRequiredController.displayPage(itemId)
+    case AdditionalDocumentsSummary  => (_, itemId) => IsLicenceRequiredController.displayPage(itemId)
+    case PackageInformation          => (_, itemId) => StatisticalValueController.displayPage(itemId)
+    case CusCode                     => (_, itemId) => UNDangerousGoodsCodeController.displayPage(itemId)
+    case NactCode                    => (_, itemId) => NactCodeSummaryController.displayPage(itemId)
+    case CommodityMeasure            => (_, itemId) => PackageInformationSummaryController.displayPage(itemId)
+    case page                        => (_, _) => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on standard")
   }
 
   def standardCacheDependent: PartialFunction[DeclarationPage, ExportsDeclaration => Call] = {
