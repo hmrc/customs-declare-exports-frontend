@@ -32,7 +32,6 @@ import play.api.mvc.{AnyContent, Call, Result}
 import services.TaggedAuthCodes
 
 import javax.inject.{Inject, Singleton}
-import scala.annotation.nowarn
 
 case class ItemId(id: String)
 
@@ -67,18 +66,18 @@ class Navigator @Inject() (
     }
 
   def backLink(page: DeclarationPage)(implicit request: JourneyRequest[_]): Call = {
-    val specific: PartialFunction[DeclarationPage, Object] = request.declarationType match {
+    val specific: PartialFunction[DeclarationPage, ExportsDeclaration => Call] = request.declarationType match {
       case STANDARD      => standardCacheDependent.orElse(standard)
       case SUPPLEMENTARY => supplementaryCacheDependent.orElse(supplementary)
       case SIMPLIFIED    => simplifiedCacheDependent.orElse(simplified)
       case OCCASIONAL    => occasionalCacheDependent.orElse(occasional)
       case CLEARANCE     => clearanceCacheDependent.orElse(clearance)
     }
-
-    (commonCacheDependent.orElse(common).orElse(specific)(page): @nowarn) match {
-      case mapping: Call                                 => mapping
-      case mapping: (ExportsDeclaration => Call) @nowarn => mapping(request.cacheModel)
-    }
+    
+    commonCacheDependent
+      .orElse(common)
+      .orElse(specific)(page)
+      .apply(request.cacheModel)
   }
 
   def backLinkForAdditionalInformation(page: DeclarationPage, itemId: String)(implicit request: JourneyRequest[_]): Call =
@@ -92,16 +91,17 @@ class Navigator @Inject() (
     }
 
   def backLink(page: DeclarationPage, itemId: ItemId)(implicit request: JourneyRequest[_]): Call = {
-    val specific: PartialFunction[DeclarationPage, Object] = request.declarationType match {
+    val specific: PartialFunction[DeclarationPage, (ExportsDeclaration, String) => Call] = request.declarationType match {
       case STANDARD      => standardCacheItemDependent.orElse(standardItemPage)
       case SUPPLEMENTARY => supplementaryCacheItemDependent.orElse(supplementaryItemPage)
       case SIMPLIFIED    => simplifiedCacheItemDependent.orElse(simplifiedItemPage)
       case OCCASIONAL    => occasionalCacheItemDependent.orElse(occasionalItemPage)
       case CLEARANCE     => clearanceCacheItemDependent.orElse(clearanceItemPage)
     }
-    (commonCacheItemDependent.orElse(commonItem).orElse(specific)(page): @nowarn) match {
-      case mapping: (String => Call) @nowarn                       => mapping(itemId.id)
-      case mapping: ((ExportsDeclaration, String) => Call) @nowarn => mapping(request.cacheModel, itemId.id)
-    }
+    
+    commonCacheItemDependent
+      .orElse(commonItem)
+      .orElse(specific)(page)
+      .apply(request.cacheModel, itemId.id)
   }
 }
