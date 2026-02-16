@@ -29,7 +29,7 @@ import play.api.data.{Form, Forms, Mapping}
 import play.api.i18n.Messages
 import play.api.libs.json.{Json, OFormat}
 import services.Countries.*
-import services.DiffTools.{ExportsDeclarationDiff, combinePointers}
+import services.DiffTools.{combinePointers, ExportsDeclarationDiff}
 import services.{AlteredField, DiffTools, OriginalAndNewValues}
 import utils.validators.forms.FieldValidator.*
 

@@ -67,7 +67,7 @@ trait OccasionalNavigator extends CacheDependentNavigators {
     case CusCode                       => (_, itemId) => UNDangerousGoodsCodeController.displayPage(itemId)
     case NactCode                      => (_, itemId) => NactCodeSummaryController.displayPage(itemId)
     case CommodityMeasure              => (_, itemId) => PackageInformationSummaryController.displayPage(itemId)
-    case page                          => (_, _) => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on occasional")
+    case page => (_, _) => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on occasional")
   }
 
   def occasionalCacheDependent: PartialFunction[DeclarationPage, ExportsDeclaration => Call] = {

@@ -19,7 +19,15 @@ package forms.section5.additionaldocuments
 import forms.DeclarationPage
 import forms.common.Date
 import forms.mappings.{AdditionalConstraintsMapping, ConditionalConstraint}
-import forms.section5.additionaldocuments.AdditionalDocument.{dateOfValidityPointer, documentIdentifierPointer, documentStatusPointer, documentStatusReasonPointer, documentTypeCodePointer, documentWriteOffPointer, issuingAuthorityNamePointer}
+import forms.section5.additionaldocuments.AdditionalDocument.{
+  dateOfValidityPointer,
+  documentIdentifierPointer,
+  documentStatusPointer,
+  documentStatusReasonPointer,
+  documentTypeCodePointer,
+  documentWriteOffPointer,
+  issuingAuthorityNamePointer
+}
 import forms.section5.additionaldocuments.DocumentWriteOff.documentWriteOffKey
 import models.DeclarationType.{CLEARANCE, DeclarationType}
 import models.ExportsFieldPointer.ExportsFieldPointer
@@ -30,7 +38,7 @@ import models.{ExportsDeclaration, FieldMapping}
 import play.api.data.Forms.*
 import play.api.data.{Form, FormError, Forms, Mapping}
 import play.api.libs.json.{JsValue, Json, OFormat, OWrites}
-import services.DiffTools.{ExportsDeclarationDiff, combinePointers, compareStringDifference}
+import services.DiffTools.{combinePointers, compareStringDifference, ExportsDeclarationDiff}
 import services.{DiffTools, TaggedAdditionalDocumentCodes, TaggedAuthCodes}
 import uk.gov.voa.play.form.ConditionalMappings.isAnyOf
 import utils.validators.forms.FieldValidator.*

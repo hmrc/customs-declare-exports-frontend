@@ -66,7 +66,7 @@ trait StandardNavigator extends CacheDependentNavigators {
     case CusCode                     => (_, itemId) => UNDangerousGoodsCodeController.displayPage(itemId)
     case NactCode                    => (_, itemId) => NactCodeSummaryController.displayPage(itemId)
     case CommodityMeasure            => (_, itemId) => PackageInformationSummaryController.displayPage(itemId)
-    case page                        => (_, _) => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on standard")
+    case page => (_, _) => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on standard")
   }
 
   def standardCacheDependent: PartialFunction[DeclarationPage, ExportsDeclaration => Call] = {

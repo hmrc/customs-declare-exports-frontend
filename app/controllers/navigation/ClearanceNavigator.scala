@@ -64,7 +64,7 @@ trait ClearanceNavigator extends CacheDependentNavigators {
   val clearanceItemPage: PartialFunction[DeclarationPage, (ExportsDeclaration, String) => Call] = {
     case AdditionalInformationRequired => (_, itemId) => CommodityMeasureController.displayPage(itemId)
     case AdditionalInformationSummary  => (_, itemId) => CommodityMeasureController.displayPage(itemId)
-    case page                          => (_, _) => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on clearance")
+    case page => (_, _) => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on clearance")
   }
 
   def clearanceCacheDependent: PartialFunction[DeclarationPage, ExportsDeclaration => Call] = {

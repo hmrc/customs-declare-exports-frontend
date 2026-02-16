@@ -73,7 +73,7 @@ class Navigator @Inject() (
       case OCCASIONAL    => occasionalCacheDependent.orElse(occasional)
       case CLEARANCE     => clearanceCacheDependent.orElse(clearance)
     }
-    
+
     commonCacheDependent
       .orElse(common)
       .orElse(specific)(page)
@@ -98,7 +98,7 @@ class Navigator @Inject() (
       case OCCASIONAL    => occasionalCacheItemDependent.orElse(occasionalItemPage)
       case CLEARANCE     => clearanceCacheItemDependent.orElse(clearanceItemPage)
     }
-    
+
     commonCacheItemDependent
       .orElse(commonItem)
       .orElse(specific)(page)

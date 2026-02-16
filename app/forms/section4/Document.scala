@@ -24,7 +24,7 @@ import play.api.data.Forms.{optional, text}
 import play.api.data.{Form, Forms, Mapping}
 import play.api.i18n.Messages
 import play.api.libs.json.{Json, OFormat}
-import services.DiffTools.{ExportsDeclarationDiff, combinePointers, compareStringDifference}
+import services.DiffTools.{combinePointers, compareStringDifference, ExportsDeclarationDiff}
 import services.{DiffTools, DocumentTypeService}
 import utils.validators.forms.FieldValidator.*
 
@@ -59,7 +59,9 @@ object Document extends DeclarationPage with FieldMapping {
   val formId = "PreviousDocuments"
 
   def form(docService: DocumentTypeService)(implicit messages: Messages): Form[Document] = {
-    val mapping = Forms.mapping(documentTypeMapping(docService), documentReferenceMapping, goodsIdentifierMapping)(Document.apply)(Document => Some(Tuple.fromProductTyped(Document)))
+    val mapping = Forms.mapping(documentTypeMapping(docService), documentReferenceMapping, goodsIdentifierMapping)(Document.apply)(Document =>
+      Some(Tuple.fromProductTyped(Document))
+    )
 
     Form(mapping)
   }

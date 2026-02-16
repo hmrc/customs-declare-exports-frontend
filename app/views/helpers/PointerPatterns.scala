@@ -28,8 +28,7 @@ object PointerPatterns {
   val expandAdditionalActors = (p: Pointer, _: ExportsDeclaration, _: ExportsDeclaration) =>
     Seq(Pointer(p.sections :+ PointerSection("eori", FIELD)), Pointer(p.sections :+ PointerSection("type", FIELD)))
 
-  val expandCusCode = (p: Pointer, _: ExportsDeclaration, _: ExportsDeclaration) =>
-    Seq(Pointer(p.sections :+ PointerSection("cusCode", FIELD)))
+  val expandCusCode = (p: Pointer, _: ExportsDeclaration, _: ExportsDeclaration) => Seq(Pointer(p.sections :+ PointerSection("cusCode", FIELD)))
 
   val expandDetails = (p: Pointer, _: ExportsDeclaration, _: ExportsDeclaration) => Seq(Pointer(p.sections :+ PointerSection("eori", FIELD)))
 

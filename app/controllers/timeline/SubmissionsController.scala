@@ -59,7 +59,13 @@ class SubmissionsController @Inject() (
     else findOrCreateDraftForRejection(rejectedParentId, redirect)
   }
 
-  def amendErrors(rejectedParentId: String, @unused pattern: String, message: String, isAmendment: Boolean, redirectUrl: RedirectUrl): Action[AnyContent] =
+  def amendErrors(
+    rejectedParentId: String,
+    @unused pattern: String,
+    message: String,
+    isAmendment: Boolean,
+    redirectUrl: RedirectUrl
+  ): Action[AnyContent] =
     authAndEmailActions.async { implicit request =>
       val flashData = if (message.nonEmpty) Map(FlashKeys.errorMessage -> message) else Map.empty[String, String]
       val redirect = setErrorFixMode(Redirect(redirectUrl.get(OnlyRelative).url).flashing(Flash(flashData)))
