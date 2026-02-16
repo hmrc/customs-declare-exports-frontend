@@ -135,6 +135,9 @@ object MultipleItemsHelperSpec {
 
   object TestForm {
     implicit val format: OFormat[TestForm] = Json.format[TestForm]
+
+    def unapply(value: TestForm): Option[String] = Some(value.value)
+
   }
 
   val errorMessage = "Incorrect value"

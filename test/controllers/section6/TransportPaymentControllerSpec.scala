@@ -107,7 +107,7 @@ class TransportPaymentControllerSpec extends ControllerSpec with AuditedControll
           val result = controller.submitForm()(postRequest(correctForm))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe ContainerController.displayContainerSummary
+          thePageNavigatedTo mustBe ContainerController.displayContainerSummary()
           verify(transportPaymentPage, times(0)).apply(any())(any(), any())
           verifyAudit()
         }

@@ -122,7 +122,7 @@ class ContainerControllerSpec extends ControllerSpec with AuditedControllerSpec 
         val result = controller.displayContainerSummary()(getRequest())
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe ContainerController.displayAddContainer
+        thePageNavigatedTo mustBe ContainerController.displayAddContainer()
       }
     }
   }
@@ -143,7 +143,7 @@ class ContainerControllerSpec extends ControllerSpec with AuditedControllerSpec 
         val result = controller.displayContainerRemove(containerId)(getRequest())
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe ContainerController.displayContainerSummary
+        thePageNavigatedTo mustBe ContainerController.displayContainerSummary()
       }
     }
   }
@@ -252,7 +252,7 @@ class ContainerControllerSpec extends ControllerSpec with AuditedControllerSpec 
         val result = controller.submitSummaryAction()(postRequest(body))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe ContainerController.displayAddContainer
+        thePageNavigatedTo mustBe ContainerController.displayAddContainer()
       }
 
       "user indicates they want to add another container in error-fix mode" in {
@@ -260,7 +260,7 @@ class ContainerControllerSpec extends ControllerSpec with AuditedControllerSpec 
         val result = controller.submitSummaryAction()(postRequest(body))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe ContainerController.displayAddContainer
+        thePageNavigatedTo mustBe ContainerController.displayAddContainer()
       }
     }
 
@@ -303,7 +303,7 @@ class ContainerControllerSpec extends ControllerSpec with AuditedControllerSpec 
         val result = controller.submitContainerRemove(containerId)(postRequest(body))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe ContainerController.displayContainerSummary
+        thePageNavigatedTo mustBe ContainerController.displayContainerSummary()
 
         verifyCachedContainers(1, Seq.empty, expectedUpdateInvocations = 2)
       }
@@ -317,7 +317,7 @@ class ContainerControllerSpec extends ControllerSpec with AuditedControllerSpec 
         val result = controller.submitContainerRemove(containerId)(postRequest(body))
 
         await(result) mustBe aRedirectToTheNextPage
-        thePageNavigatedTo mustBe ContainerController.displayContainerSummary
+        thePageNavigatedTo mustBe ContainerController.displayContainerSummary()
 
         verifyTheCacheIsUnchanged()
         verifyNoAudit()

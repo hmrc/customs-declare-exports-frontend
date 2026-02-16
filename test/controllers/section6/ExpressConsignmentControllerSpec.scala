@@ -99,7 +99,7 @@ class ExpressConsignmentControllerSpec extends ControllerSpec with AuditedContro
 
       "return 303 (SEE_OTHER) and redirect to 'Transport container' page" when {
         "answer is 'no'" in {
-          verifyRedirect(Some(YesNoAnswers.no), Some(ContainerController.displayContainerSummary))
+          verifyRedirect(Some(YesNoAnswers.no), Some(ContainerController.displayContainerSummary()))
         }
       }
 
