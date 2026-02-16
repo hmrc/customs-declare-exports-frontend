@@ -17,7 +17,6 @@
 package controllers.general
 
 import base.ControllerWithoutFormSpec
-import config.AppConfig
 import models.UnauthorisedReason.{UrlDirect, UserEoriNotAllowed, UserIsAgent, UserIsNotEnrolled}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{reset, verify, when}
@@ -27,11 +26,10 @@ import views.html.general.{unauthorised, unauthorisedAgent}
 
 class UnauthorisedControllerSpec extends ControllerWithoutFormSpec {
 
-  private val mockAppConfig = mock[AppConfig]
   private val unauthorisedPage = mock[unauthorised]
   private val unauthorisedAgentPage = mock[unauthorisedAgent]
 
-  val controller = new UnauthorisedController(mcc, unauthorisedPage, unauthorisedAgentPage, mockAppConfig)
+  val controller = new UnauthorisedController(mcc, unauthorisedPage, unauthorisedAgentPage)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()
@@ -43,7 +41,7 @@ class UnauthorisedControllerSpec extends ControllerWithoutFormSpec {
   override protected def afterEach(): Unit = {
     super.afterEach()
 
-    reset(unauthorisedPage, unauthorisedAgentPage, mockAppConfig)
+    reset(unauthorisedPage, unauthorisedAgentPage)
   }
 
   "Unauthorised controller" should {

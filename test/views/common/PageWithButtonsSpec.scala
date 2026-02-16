@@ -21,6 +21,7 @@ import models.requests.JourneyRequest
 import models.requests.SessionHelper.errorFixModeSessionKey
 import org.scalatest.BeforeAndAfterEach
 import play.api.i18n.Messages
+import play.api.mvc.AnyContent
 import play.twirl.api.HtmlFormat.Appendable
 
 trait PageWithButtonsSpec extends UnitViewSpec with BeforeAndAfterEach {
@@ -35,7 +36,7 @@ trait PageWithButtonsSpec extends UnitViewSpec with BeforeAndAfterEach {
   }
 
   "display 'Save and return to errors' button when in error-fix mode" in {
-    implicit val request = journeyRequest(aDeclaration(withType(typeAndViewInstance._1)), errorFixModeSessionKey -> "true")
+    implicit val request: JourneyRequest[AnyContent] = journeyRequest(aDeclaration(withType(typeAndViewInstance._1)), errorFixModeSessionKey -> "true")
     val view = typeAndViewInstance._2(request, messages)
     val saveAndReturnToErrorsButton = view.getElementById("save_and_return_to_errors")
     saveAndReturnToErrorsButton must containMessage(saveAndReturnToErrorsCaption)

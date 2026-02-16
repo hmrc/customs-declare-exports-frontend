@@ -307,7 +307,7 @@ class Card6ForTransportSpec extends UnitViewSpec with ExportsTestHelper with Inj
 
         val rows = checkSection(view, "containers", "container", 2, 1, 4)
 
-        val call = Some(ContainerController.displayContainerSummary)
+        val call = Some(ContainerController.displayContainerSummary())
 
         checkMultiRowSection(rows.get(0), List("container-1"), "container.id", id1, call, "container")
         checkMultiRowSection(rows.get(1), List("container-1-seals"), "container.securitySeals", "seal1, seal2")
@@ -323,7 +323,7 @@ class Card6ForTransportSpec extends UnitViewSpec with ExportsTestHelper with Inj
         val row = view.getElementsByClass("containers-heading")
         row must haveSummaryKey(messages("declaration.summary.containers"))
         row must haveSummaryValue(messages("site.none"))
-        row must haveSummaryActionWithPlaceholder(ContainerController.displayContainerSummary)
+        row must haveSummaryActionWithPlaceholder(ContainerController.displayContainerSummary())
 
         val expectedText = s"""${messages("site.change")} ${messages("declaration.summary.container.change")}"""
         row.first.getElementsByClass(summaryActionsClassName).text must startWith(expectedText)
@@ -346,7 +346,7 @@ class Card6ForTransportSpec extends UnitViewSpec with ExportsTestHelper with Inj
 
     "Card6ForTransport.backLink" when {
       "go to PreviousDocumentsSummaryController" in {
-        card6ForTransport.backLink(journeyRequest()) mustBe ContainerController.displayContainerSummary
+        card6ForTransport.backLink(journeyRequest()) mustBe ContainerController.displayContainerSummary()
       }
     }
 

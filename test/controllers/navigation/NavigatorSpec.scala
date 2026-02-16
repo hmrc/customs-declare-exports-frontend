@@ -73,49 +73,49 @@ class NavigatorSpec
 
     "go to the URL provided" when {
       "Save And Continue" in {
-        val result = navigator.continueTo(call)(decoratedRequest(requestWithFormAction(Some(SaveAndContinue))))
+        val result = Future.successful(navigator.continueTo(call)(decoratedRequest(requestWithFormAction(Some(SaveAndContinue)))))
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(url)
       }
 
       "Add" in {
-        val result = navigator.continueTo(call)(decoratedRequest(requestWithFormAction(Some(Add))))
+        val result = Future.successful(navigator.continueTo(call)(decoratedRequest(requestWithFormAction(Some(Add)))))
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(url)
       }
 
       "Remove" in {
-        val result = navigator.continueTo(call)(decoratedRequest(requestWithFormAction(Some(Remove(Seq.empty)))))
+        val result = Future.successful(navigator.continueTo(call)(decoratedRequest(requestWithFormAction(Some(Remove(Seq.empty))))))
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(url)
       }
 
       "Unknown Action" in {
-        val result = navigator.continueTo(call)(decoratedRequest(requestWithFormAction(Some(Unknown))))
+        val result = Future.successful(navigator.continueTo(call)(decoratedRequest(requestWithFormAction(Some(Unknown)))))
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(url)
       }
 
       "Error-fix flag is passed in error-fix mode" in {
-        val result = navigator.continueTo(call)(decoratedRequest(requestWithFormAction(Some(SaveAndContinue))))
+        val result = Future.successful(navigator.continueTo(call)(decoratedRequest(requestWithFormAction(Some(SaveAndContinue)))))
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(url)
       }
 
       "Add in error-fix mode with error-fix flag passed" in {
-        val result = navigator.continueTo(call)(decoratedRequest(requestWithFormAction(Some(Add))))
+        val result = Future.successful(navigator.continueTo(call)(decoratedRequest(requestWithFormAction(Some(Add)))))
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(url)
       }
 
       "Remove in error-fix mode with error-fix flag passed" in {
-        val result = navigator.continueTo(call)(decoratedRequest(requestWithFormAction(Some(Remove(Seq.empty)))))
+        val result = Future.successful(navigator.continueTo(call)(decoratedRequest(requestWithFormAction(Some(Remove(Seq.empty))))))
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result) mustBe Some(url)
@@ -123,7 +123,7 @@ class NavigatorSpec
     }
 
     "Go to the summary page when Save and return to summary form action" in {
-      val result = navigator.continueTo(call)(decoratedRequest(requestWithFormAction(Some(SaveAndReturnToSummary))))
+      val result = Future.successful(navigator.continueTo(call)(decoratedRequest(requestWithFormAction(Some(SaveAndReturnToSummary)))))
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(SummaryController.displayPage.url)
@@ -139,13 +139,13 @@ class NavigatorSpec
 
       "Save and return to errors is clicked when in error-fix mode and parentDeclarationId in request" in {
         val request = requestWithFormAction(Some(SaveAndReturnToErrors), true)
-        val result = navigator.continueTo(call)(decoratedRequest(request))
+        val result = Future.successful(navigator.continueTo(call)(decoratedRequest(request)))
         redirectLocation(result) mustBe Some(RejectedNotificationsController.displayPage(parentDeclarationId).url)
       }
 
       "Save and continue is clicked with mode ErrorFix and parentDeclarationId in request" in {
         val request = requestWithFormAction(Some(SaveAndContinue))
-        val result = navigator.continueTo(call)(decoratedRequest(request))
+        val result = Future.successful(navigator.continueTo(call)(decoratedRequest(request)))
         redirectLocation(result) mustBe Some(url)
       }
     }
@@ -159,7 +159,7 @@ class NavigatorSpec
           val request = requestWithFormAction(Some(SaveAndReturnToErrors), true)
             .withSession(submissionActionId -> actionId)
 
-          val result = navigator.continueTo(call)(decoratedRequest(request))
+          val result = Future.successful(navigator.continueTo(call)(decoratedRequest(request)))
           val expectedCall = RejectedNotificationsController.displayPageOnUnacceptedAmendment(actionId, Some(declaration.id))
           redirectLocation(result) mustBe Some(expectedCall.url)
         }
@@ -232,5 +232,4 @@ class NavigatorSpec
     }
   }
 
-  private implicit def result2future: Result => Future[Result] = Future.successful
 }

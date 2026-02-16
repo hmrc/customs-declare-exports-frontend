@@ -91,7 +91,7 @@ class TotalPackageQuantityControllerSpec extends ControllerSpec with AuditedCont
           withNewCaching(request.cacheModel)
 
           val body = Json.obj("totalPackage" -> "one")
-          val result = controller.saveTotalPackageQuantity().apply(postRequest(body, request.cacheModel))
+          val result = controller.saveTotalPackageQuantity.apply(postRequest(body, request.cacheModel))
           status(result) mustBe BAD_REQUEST
           verifyNoAudit()
         }

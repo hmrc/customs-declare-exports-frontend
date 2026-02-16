@@ -150,7 +150,7 @@ class DeclarantDetailsControllerSpec extends ControllerSpec with AuditedControll
           val correctForm = Json.obj(isEoriKey -> YesNoAnswers.no)
 
           val result = controller.submitForm()(postRequest(correctForm))
-          redirectLocation(result) mustBe Some(NotEligibleController.displayNotDeclarant.url)
+          redirectLocation(result) mustBe Some(NotEligibleController.displayNotDeclarant().url)
 
           session(result).get(SessionHelper.declarationUuid) must be(None)
           verifyNoAudit()
