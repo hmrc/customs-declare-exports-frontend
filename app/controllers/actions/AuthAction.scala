@@ -94,8 +94,7 @@ class AuthActionImpl @Inject() (
 
         val onAllowList = allowListAuthentication(cdsLoggedInUser.eori)
 
-        if (onAllowList)
-          block(new AuthenticatedRequest(request, cdsLoggedInUser))
+        if (onAllowList) block(new AuthenticatedRequest(request, cdsLoggedInUser))
         else {
           logger.warn(s"User rejected with onAllowList=$onAllowList")
           Future.successful(Results.Redirect(UnauthorisedController.onPageLoad(UserEoriNotAllowed)))

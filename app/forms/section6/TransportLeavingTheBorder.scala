@@ -75,9 +75,10 @@ object TransportLeavingTheBorder extends DeclarationPage with FieldMapping {
     val formatter: String => Formatter[ModeOfTransportCode] =
       if (isClearance) ModeOfTransportCode.formatterForClearance else ModeOfTransportCode.formatter
 
-    Forms.mapping("transportLeavingTheBorder" -> optional(of(formatter(s"$errorKey.incorrect"))).verifying(constraint))(
-      TransportLeavingTheBorder.apply
-    )(TransportLeavingTheBorder => Some(TransportLeavingTheBorder.code))
+    Forms
+      .mapping("transportLeavingTheBorder" -> optional(of(formatter(s"$errorKey.incorrect"))).verifying(constraint))(TransportLeavingTheBorder.apply)(
+        TransportLeavingTheBorder => Some(TransportLeavingTheBorder.code)
+      )
   }
 
   override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =

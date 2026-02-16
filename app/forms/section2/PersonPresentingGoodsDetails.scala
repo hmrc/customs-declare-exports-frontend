@@ -26,7 +26,7 @@ import models.{Amendment, FieldMapping}
 import play.api.data.{Form, Forms}
 import play.api.libs.json.{Json, OFormat}
 import services.DiffTools
-import services.DiffTools.{ExportsDeclarationDiff, combinePointers, compareDifference}
+import services.DiffTools.{combinePointers, compareDifference, ExportsDeclarationDiff}
 
 case class PersonPresentingGoodsDetails(eori: Eori) extends DiffTools[PersonPresentingGoodsDetails] with Amendment {
 
@@ -49,7 +49,9 @@ object PersonPresentingGoodsDetails extends DeclarationPage with FieldMapping {
 
   val fieldName = "eori"
 
-  private val mapping = Forms.mapping(fieldName -> Eori.mapping())(PersonPresentingGoodsDetails.apply)(PersonPresentingGoodsDetails => Some(PersonPresentingGoodsDetails.eori))
+  private val mapping = Forms.mapping(fieldName -> Eori.mapping())(PersonPresentingGoodsDetails.apply)(PersonPresentingGoodsDetails =>
+    Some(PersonPresentingGoodsDetails.eori)
+  )
 
   def form: Form[PersonPresentingGoodsDetails] = Form(mapping)
 

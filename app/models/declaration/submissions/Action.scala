@@ -16,7 +16,6 @@
 
 package models.declaration.submissions
 
-
 import java.time.{ZoneId, ZonedDateTime}
 import play.api.libs.json.{Json, OFormat}
 

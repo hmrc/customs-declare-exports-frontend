@@ -58,7 +58,7 @@ object ViewDates extends Logging {
         case Success(month) =>
           monthsForWelsh(month - 1) match {
             case (translateFrom, translateTo) => result.replace(translateFrom, translateTo)
-            case null                            => result
+            case null                         => result
           }
         case Failure(exc) =>
           logger.error("While translating the month to Welsh", exc)

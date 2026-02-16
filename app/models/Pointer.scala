@@ -28,10 +28,10 @@ enum PointerSectionType {
         json.validate[String].flatMap { s =>
           PointerSectionType.values.find(_.toString == s) match {
             case Some(value) => JsSuccess(value)
-            case None => JsError(s"Unknown PointerSectionTypeFormat: $s")
+            case None        => JsError(s"Unknown PointerSectionTypeFormat: $s")
           }
         }
-      
+
       def writes(sectionType: PointerSectionType): JsValue =
         JsString(sectionType.toString)
     }
