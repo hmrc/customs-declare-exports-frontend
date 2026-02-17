@@ -33,7 +33,7 @@ object IsExs extends DeclarationPage {
   val mapping: Mapping[IsExs] = Forms.mapping(
     "isExs" -> requiredRadio("declaration.exs.error")
       .verifying("declaration.exs.error", isContainedIn(YesNoAnswer.allowedValues))
-  )(IsExs.apply)(IsExs.unapply)
+  )(IsExs.apply)(IsExs => Some(IsExs.isExs))
 
   def form: Form[IsExs] = Form(mapping)
 }

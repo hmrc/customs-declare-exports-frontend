@@ -37,7 +37,7 @@ object Time {
     .mapping(
       "hour" -> optional(text().verifying("dateTime.time.hour.error", isContainedIn(validHours))),
       "minute" -> optional(text().verifying("dateTime.time.minute.error", isContainedIn(validMinutes)))
-    )(Time.apply)(Time.unapply)
+    )(Time.apply)(Time => Some(Tuple.fromProductTyped(Time)))
     .verifying("dateTime.time.error", validateTime(_))
 
   private def validateTime(time: Time): Boolean = time.nonEmpty || time.isEmpty

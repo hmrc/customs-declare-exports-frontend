@@ -49,7 +49,9 @@ object PersonPresentingGoodsDetails extends DeclarationPage with FieldMapping {
 
   val fieldName = "eori"
 
-  private val mapping = Forms.mapping(fieldName -> Eori.mapping())(PersonPresentingGoodsDetails.apply)(PersonPresentingGoodsDetails.unapply)
+  private val mapping = Forms.mapping(fieldName -> Eori.mapping())(PersonPresentingGoodsDetails.apply)(PersonPresentingGoodsDetails =>
+    Some(PersonPresentingGoodsDetails.eori)
+  )
 
   def form: Form[PersonPresentingGoodsDetails] = Form(mapping)
 

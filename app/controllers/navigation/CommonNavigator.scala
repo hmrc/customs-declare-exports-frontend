@@ -46,33 +46,33 @@ import views.helpers.summary.Card2ForParties
 
 trait CommonNavigator extends CacheDependentNavigators {
 
-  val common: PartialFunction[DeclarationPage, Call] = {
-    case JourneySelection             => ChoiceController.displayPage
-    case Mucr                         => LinkDucrToMucrController.displayPage
-    case RepresentativeEntity         => RepresentativeAgentController.displayPage
-    case RepresentativeStatus         => RepresentativeEntityController.displayPage
-    case ProcedureCode                => ItemsSummaryController.displayItemsSummaryPage
-    case ExportItem                   => SectionSummaryController.displayPage(4)
-    case DocumentChangeOrRemove       => PreviousDocumentsSummaryController.displayPage
-    case TransportLeavingTheBorder    => SectionSummaryController.displayPage(5)
-    case WarehouseIdentification      => TransportLeavingTheBorderController.displayPage
-    case TransportPayment             => ExpressConsignmentController.displayPage
-    case CarrierDetails               => CarrierEoriNumberController.displayPage
-    case InvoiceAndExchangeRateChoice => SectionSummaryController.displayPage(3)
-    case InvoiceAndExchangeRate       => InvoiceAndExchangeRateChoiceController.displayPage
-    case TraderReference              => DucrChoiceController.displayPage
-    case ConfirmDucr                  => TraderReferenceController.displayPage
-    case RoutingCountryPage           => RoutingCountriesController.displayRoutingQuestion
-    case DestinationCountryPage       => SectionSummaryController.displayPage(2)
+  val common: PartialFunction[DeclarationPage, ExportsDeclaration => Call] = {
+    case JourneySelection             => _ => ChoiceController.displayPage
+    case Mucr                         => _ => LinkDucrToMucrController.displayPage
+    case RepresentativeEntity         => _ => RepresentativeAgentController.displayPage
+    case RepresentativeStatus         => _ => RepresentativeEntityController.displayPage
+    case ProcedureCode                => _ => ItemsSummaryController.displayItemsSummaryPage
+    case ExportItem                   => _ => SectionSummaryController.displayPage(4)
+    case DocumentChangeOrRemove       => _ => PreviousDocumentsSummaryController.displayPage
+    case TransportLeavingTheBorder    => _ => SectionSummaryController.displayPage(5)
+    case WarehouseIdentification      => _ => TransportLeavingTheBorderController.displayPage
+    case TransportPayment             => _ => ExpressConsignmentController.displayPage
+    case CarrierDetails               => _ => CarrierEoriNumberController.displayPage
+    case InvoiceAndExchangeRateChoice => _ => SectionSummaryController.displayPage(3)
+    case InvoiceAndExchangeRate       => _ => InvoiceAndExchangeRateChoiceController.displayPage
+    case TraderReference              => _ => DucrChoiceController.displayPage
+    case ConfirmDucr                  => _ => TraderReferenceController.displayPage
+    case RoutingCountryPage           => _ => RoutingCountriesController.displayRoutingQuestion
+    case DestinationCountryPage       => _ => SectionSummaryController.displayPage(2)
   }
 
-  val commonItem: PartialFunction[DeclarationPage, String => Call] = {
-    case AdditionalProcedureCode           => ProcedureCodesController.displayPage
-    case FiscalInformation                 => AdditionalProcedureCodesController.displayPage
-    case AdditionalFiscalReferencesSummary => FiscalInformationController.displayPage
-    case UNDangerousGoodsCode              => CommodityDetailsController.displayPage
-    case StatisticalValue                  => NactCodeSummaryController.displayPage
-    case SupplementaryUnits                => CommodityMeasureController.displayPage
+  val commonItem: PartialFunction[DeclarationPage, (ExportsDeclaration, String) => Call] = {
+    case AdditionalProcedureCode           => (_, itemId) => ProcedureCodesController.displayPage(itemId)
+    case FiscalInformation                 => (_, itemId) => AdditionalProcedureCodesController.displayPage(itemId)
+    case AdditionalFiscalReferencesSummary => (_, itemId) => FiscalInformationController.displayPage(itemId)
+    case UNDangerousGoodsCode              => (_, itemId) => CommodityDetailsController.displayPage(itemId)
+    case StatisticalValue                  => (_, itemId) => NactCodeSummaryController.displayPage(itemId)
+    case SupplementaryUnits                => (_, itemId) => CommodityMeasureController.displayPage(itemId)
   }
 
   def commonCacheDependent(implicit request: JourneyRequest[_]): PartialFunction[DeclarationPage, ExportsDeclaration => Call] = {

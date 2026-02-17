@@ -19,7 +19,7 @@ package forms.timeline
 import play.api.data.Forms.{boolean, text}
 import play.api.data.{Form, Forms, Mapping}
 import play.api.libs.json.{Json, OFormat}
-import utils.validators.forms.FieldValidator._
+import utils.validators.forms.FieldValidator.*
 
 case class AmendmentSubmission(fullName: String, jobRole: String, email: String, reason: String, confirmation: Boolean)
 
@@ -57,7 +57,7 @@ object AmendmentSubmission {
         .verifying(s"amendment.$key.reason.long", isEmpty or noLongerThan(reasonMaxLength))
         .verifying(s"amendment.$key.reason.error", isEmpty or isValidAmendmentReason),
       confirmationKey -> boolean.verifying("amendment.submission.confirmation.missing", isTrue)
-    )(AmendmentSubmission.apply)(AmendmentSubmission.unapply)
+    )(AmendmentSubmission.apply)(AmendmentSubmission => Some(Tuple.fromProductTyped(AmendmentSubmission)))
   }
 
   def form(isCancellation: Boolean): Form[AmendmentSubmission] = Form(mapping(isCancellation))

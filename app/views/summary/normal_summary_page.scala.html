@@ -86,7 +86,9 @@
             RejectedNotificationsController.displayPage(parentId),
             "govuk-button govuk-button--secondary"
           )
-        }
+        }.getOrElse(HtmlFormat.empty)
+            } else {
+                HtmlFormat.empty
     }
 }
 

@@ -30,8 +30,8 @@ GET         /draft-saved                                   controllers.drafts.Ex
 
 # Sign out
 GET         /sign-out                                      controllers.general.SignOutController.signOut(signOutReason: models.SignOutReason)
-GET         /we-signed-you-out                             controllers.general.SignOutController.sessionTimeoutSignedOut
-GET         /you-have-signed-out                           controllers.general.SignOutController.userSignedOut
+GET         /we-signed-you-out                             controllers.general.SignOutController.sessionTimeoutSignedOut()
+GET         /you-have-signed-out                           controllers.general.SignOutController.userSignedOut()
 
 # Language controller
 GET        /language/:lang                                 controllers.general.LanguageSwitchController.switchToLanguage(lang: String)

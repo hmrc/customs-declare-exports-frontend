@@ -49,7 +49,7 @@
       else if (request.isType(CLEARANCE)) Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(DeclarantIsExporter)))
       else Some(BackButton(messages("site.backToPreviousSection"), navigator.backLink(DeclarantIsExporter)))
 ) {
-    @formHelper(action = DeclarantExporterController.submitForm, 'autoComplete -> "off") {
+    @formHelper(action = DeclarantExporterController.submitForm(), Symbol("autoComplete") -> "off") {
         @errorSummary(yesNoErrors(form.errors, DeclarantIsExporter.answerKey))
 
         @sectionHeader(messages("declaration.section.2"))

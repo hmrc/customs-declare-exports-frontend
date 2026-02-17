@@ -65,8 +65,8 @@ class JourneyActionSpec extends UnitWithMocksSpec with BeforeAndAfterEach with E
 
     "permit requests" when {
       "the session provides a known declaration id" in {
-        given(block.apply(any())).willReturn(Future.successful(Results.Ok))
-        given(cache.get(refEq(declarationId))(any[HeaderCarrier])).willReturn(Future.successful(Some(declaration)))
+        `given`(block.apply(any())).willReturn(Future.successful(Results.Ok))
+        `given`(cache.get(refEq(declarationId))(any[HeaderCarrier])).willReturn(Future.successful(Some(declaration)))
 
         await(journeyAction.invokeBlock(verifiedEmailRequest(), block)) mustBe Results.Ok
 
@@ -78,7 +78,7 @@ class JourneyActionSpec extends UnitWithMocksSpec with BeforeAndAfterEach with E
     "block requests" when {
 
       "the session provides an unknown declaration id" in {
-        given(cache.get(refEq(declarationId))(any[HeaderCarrier])).willReturn(Future.successful(None))
+        `given`(cache.get(refEq(declarationId))(any[HeaderCarrier])).willReturn(Future.successful(None))
         invokeAction(verifiedEmailRequest())
       }
 
@@ -95,8 +95,8 @@ class JourneyActionSpec extends UnitWithMocksSpec with BeforeAndAfterEach with E
       "the session provides a known declaration id and" when {
 
         "on unshared journey" in {
-          given(block.apply(any())).willReturn(Future.successful(Results.Ok))
-          given(cache.get(refEq(declarationId))(any[HeaderCarrier])).willReturn(Future.successful(Some(declaration)))
+          `given`(block.apply(any())).willReturn(Future.successful(Results.Ok))
+          `given`(cache.get(refEq(declarationId))(any[HeaderCarrier])).willReturn(Future.successful(Some(declaration)))
 
           await(journeyAction(STANDARD).invokeBlock(verifiedEmailRequest(), block)) mustBe Results.Ok
 
@@ -105,8 +105,8 @@ class JourneyActionSpec extends UnitWithMocksSpec with BeforeAndAfterEach with E
         }
 
         "on shared journey" in {
-          given(block.apply(any())).willReturn(Future.successful(Results.Ok))
-          given(cache.get(refEq(declarationId))(any[HeaderCarrier])).willReturn(Future.successful(Some(declaration)))
+          `given`(block.apply(any())).willReturn(Future.successful(Results.Ok))
+          `given`(cache.get(refEq(declarationId))(any[HeaderCarrier])).willReturn(Future.successful(Some(declaration)))
 
           await(journeyAction(STANDARD, SUPPLEMENTARY).invokeBlock(verifiedEmailRequest(), block)) mustBe Results.Ok
 
@@ -119,7 +119,7 @@ class JourneyActionSpec extends UnitWithMocksSpec with BeforeAndAfterEach with E
     "block requests" when {
 
       "the session provides an unknown declaration id" in {
-        given(cache.get(refEq(declarationId))(any[HeaderCarrier])).willReturn(Future.successful(None))
+        `given`(cache.get(refEq(declarationId))(any[HeaderCarrier])).willReturn(Future.successful(None))
         invokeAction(verifiedEmailRequest(), Some(STANDARD))
       }
 
@@ -130,7 +130,7 @@ class JourneyActionSpec extends UnitWithMocksSpec with BeforeAndAfterEach with E
       }
 
       "the session provides an id for a declaration of a different journey type" in {
-        given(cache.get(refEq(declarationId))(any[HeaderCarrier])).willReturn(Future.successful(Some(declaration)))
+        `given`(cache.get(refEq(declarationId))(any[HeaderCarrier])).willReturn(Future.successful(Some(declaration)))
         invokeAction(verifiedEmailRequest(), Some(OCCASIONAL))
       }
     }

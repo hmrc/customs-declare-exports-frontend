@@ -35,13 +35,13 @@ import models.declaration.ExportItem.itemsPrefix
 import models.declaration.ImplicitlySequencedObject
 import models.viewmodels.TariffContentKey
 import models.{ExportsDeclaration, FieldMapping}
-import play.api.data.Forms._
+import play.api.data.Forms.*
 import play.api.data.{Form, FormError, Forms, Mapping}
 import play.api.libs.json.{JsValue, Json, OFormat, OWrites}
 import services.DiffTools.{combinePointers, compareStringDifference, ExportsDeclarationDiff}
 import services.{DiffTools, TaggedAdditionalDocumentCodes, TaggedAuthCodes}
 import uk.gov.voa.play.form.ConditionalMappings.isAnyOf
-import utils.validators.forms.FieldValidator._
+import utils.validators.forms.FieldValidator.*
 
 case class AdditionalDocument(
   documentTypeCode: Option[String],
@@ -167,7 +167,7 @@ object AdditionalDocument extends DeclarationPage with FieldMapping {
           Date.mapping("declaration.additionalDocument.dateOfValidity.error.format", "declaration.additionalDocument.dateOfValidity.error.outOfRange")
         ),
         documentWriteOffKey -> optional(DocumentWriteOff.mapping)
-      )(form2data)(AdditionalDocument.unapply)
+      )(form2data)(AdditionalDocument => Some(Tuple.fromProductTyped(AdditionalDocument)))
   }
   // scalastyle:on
 

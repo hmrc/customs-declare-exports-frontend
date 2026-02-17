@@ -46,7 +46,7 @@
     backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(DucrChoice))),
     showDeclarationSummaryLink = false
 ) {
-    @formHelper(action = routes.DucrChoiceController.submitForm, 'autoComplete -> "off") {
+    @formHelper(action = routes.DucrChoiceController.submitForm, Symbol("autoComplete") -> "off") {
         @errorSummary(yesNoErrors(form.errors))
 
         @notificationBanner(

@@ -58,7 +58,7 @@
     title = Title("declaration.commodityDetails.title", "declaration.section.5", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(CommodityDetails, ItemId(itemId))))) {
 
-    @formHelper(action = CommodityDetailsController.submitForm(itemId), 'autoComplete -> "off") {
+    @formHelper(action = CommodityDetailsController.submitForm(itemId), Symbol("autoComplete") -> "off") {
         @errorSummary(form.errors)
 
         @notificationBanner(

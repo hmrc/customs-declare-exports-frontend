@@ -38,7 +38,7 @@ object InlandOrBorder extends DeclarationPage {
 
   val mapping: Mapping[InlandOrBorder] =
     Forms
-      .mapping(fieldId -> requiredRadio("declaration.inlandOrBorder.answer.empty"))(apply)(InlandOrBorder.unapply)
+      .mapping(fieldId -> requiredRadio("declaration.inlandOrBorder.answer.empty"))(apply)(InlandOrBorder => Some(InlandOrBorder.location))
 
   def form: Form[InlandOrBorder] = Form(mapping)
 

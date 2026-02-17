@@ -24,12 +24,12 @@ import models.FieldMapping
 import models.declaration.ExportItem.itemsPrefix
 import models.declaration.ImplicitlySequencedObject
 import models.viewmodels.TariffContentKey
-import play.api.data.Forms._
+import play.api.data.Forms.*
 import play.api.data.{Form, Forms}
 import play.api.libs.json.{Json, OFormat}
 import services.DiffTools
 import services.DiffTools.{combinePointers, compareStringDifference, ExportsDeclarationDiff}
-import utils.validators.forms.FieldValidator._
+import utils.validators.forms.FieldValidator.*
 
 case class AdditionalInformation(code: String, description: String) extends DiffTools[AdditionalInformation] with ImplicitlySequencedObject {
 
@@ -71,7 +71,7 @@ object AdditionalInformation extends DeclarationPage with FieldMapping {
           "declaration.additionalInformation.description.error",
           isEmpty or (noLongerThan(descriptionMaxLength) and isAlphanumericWithAllowedSpecialCharactersAndNewLine)
         )
-  )(AdditionalInformation.apply)(AdditionalInformation.unapply)
+  )(AdditionalInformation.apply)(AdditionalInformation => Some(Tuple.fromProductTyped(AdditionalInformation)))
 
   def form: Form[AdditionalInformation] = Form(mapping)
 

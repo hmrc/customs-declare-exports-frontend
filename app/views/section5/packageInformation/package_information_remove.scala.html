@@ -67,7 +67,7 @@
     title = Title("declaration.packageInformation.remove.title", "declaration.section.5", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.backToPreviousQuestion"), PackageInformationSummaryController.displayPage(itemId)))
 ) {
-    @formHelper(action = PackageInformationRemoveController.submitForm(itemId, info.id), 'autoComplete -> "off") {
+    @formHelper(action = PackageInformationRemoveController.submitForm(itemId, info.id), Symbol("autoComplete") -> "off") {
         @errorSummary(yesNoErrors(form.errors))
 
         @sectionHeader(messages("declaration.section.5"))

@@ -83,7 +83,7 @@ object LocationOfGoods extends DeclarationPage {
 
   def gvmsGoodsLocationsForArrivedDecls(implicit messages: Messages): Seq[String] =
     (1 to 8).map { ix =>
-      val extractor(code) = messages(s"declaration.locationOfGoods.radio.$ix")
+      val extractor(code) = messages(s"declaration.locationOfGoods.radio.$ix"): @unchecked
       code
     } :+ userChoice
 

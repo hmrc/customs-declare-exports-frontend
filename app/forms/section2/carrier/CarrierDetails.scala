@@ -43,10 +43,10 @@ object CarrierDetails extends DeclarationPage with FieldMapping {
   val id = "CarrierDetails"
 
   def defaultMapping(implicit messages: Messages, codeListConnector: CodeListConnector): Mapping[CarrierDetails] =
-    Forms.mapping("details" -> EntityDetails.addressMapping())(CarrierDetails.apply)(CarrierDetails.unapply)
+    Forms.mapping("details" -> EntityDetails.addressMapping())(CarrierDetails.apply)(CarrierDetails => Some(CarrierDetails.details))
 
   def optionalMapping(implicit messages: Messages, codeListConnector: CodeListConnector): Mapping[CarrierDetails] =
-    Forms.mapping("details" -> EntityDetails.optionalAddressMapping())(CarrierDetails.apply)(CarrierDetails.unapply)
+    Forms.mapping("details" -> EntityDetails.optionalAddressMapping())(CarrierDetails.apply)(CarrierDetails => Some(CarrierDetails.details))
 
   def form(declarationType: DeclarationType)(implicit messages: Messages, codeListConnector: CodeListConnector): Form[CarrierDetails] =
     declarationType match {

@@ -133,7 +133,7 @@ else "site.backToPreviousQuestion"
     backButton = Some(BackButton(messages(backButtonText), backLink)),
     useCustomContentWidth = true
 ) {
-    @formHelper(action = ItemsSummaryController.submit, 'autoComplete -> "off") {
+    @formHelper(action = ItemsSummaryController.submit, Symbol("autoComplete") -> "off") {
         @errorSummary(yesNoErrors(itemsErrors ++ form.errors))
 
         @sectionHeader(messages("declaration.section.5"))

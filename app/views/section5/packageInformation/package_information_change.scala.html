@@ -41,7 +41,7 @@
     title = Title("declaration.packageInformation.title", "declaration.section.5", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.backToPreviousQuestion"), PackageInformationSummaryController.displayPage(itemId)))
 ) {
-    @formHelper(action = PackageInformationChangeController.submitForm(itemId, code), 'autoComplete -> "off") {
+    @formHelper(action = PackageInformationChangeController.submitForm(itemId, code), Symbol("autoComplete") -> "off") {
         @editContent(form)
 
         @tariffExpander(PackageInformation, request.declarationType)(messages, appConfig)

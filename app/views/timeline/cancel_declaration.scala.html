@@ -45,7 +45,7 @@
     backButton = Some(BackButton(messages("site.back"), DeclarationDetailsController.displayPage(cancelDeclarationData.submissionId))),
     showDeclarationSummaryLink = false
 ) {
-    @formHelper(action = CancelDeclarationController.onSubmit, 'autoComplete -> "off") {
+    @formHelper(action = CancelDeclarationController.onSubmit, Symbol("autoComplete") -> "off") {
         @errorSummary(radioGroupErrors("changeReason", "noLongerRequired", form.errors))
 
         @pageTitle(messages("cancellation.title"), "govuk-heading-xl govuk-!-margin-bottom-2")

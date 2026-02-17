@@ -37,7 +37,7 @@
     title = Title("declaration.authorisationHolder.title", "declaration.section.2", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(AuthorisationHolder)))
 ) {
-    @formHelper(action = AuthorisationHolderAddController.submitForm, 'autoComplete -> "off") {
+    @formHelper(action = AuthorisationHolderAddController.submitForm(), Symbol("autoComplete") -> "off") {
         @editContent(form, userEori)
     }
 }

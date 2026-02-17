@@ -28,10 +28,10 @@ import play.api.data.Forms.text
 import play.api.data.{Form, Forms, Mapping}
 import play.api.i18n.Messages
 import play.api.libs.json.{Json, OFormat}
-import services.Countries._
+import services.Countries.*
 import services.DiffTools.{combinePointers, ExportsDeclarationDiff}
 import services.{AlteredField, DiffTools, OriginalAndNewValues}
-import utils.validators.forms.FieldValidator._
+import utils.validators.forms.FieldValidator.*
 
 case class AdditionalFiscalReference(country: String, reference: String) extends DiffTools[AdditionalFiscalReference] with ImplicitlySequencedObject {
 
@@ -69,7 +69,7 @@ object AdditionalFiscalReference extends DeclarationPage with FieldMapping {
       "reference" -> text()
         .verifying("declaration.additionalFiscalReferences.reference.empty", _.trim.nonEmpty)
         .verifying("declaration.additionalFiscalReferences.reference.error", isEmpty or (isAlphanumeric and noLongerThan(15)))
-    )(AdditionalFiscalReference.build)(AdditionalFiscalReference.unapply)
+    )(AdditionalFiscalReference.build)(AdditionalFiscalReference => Some(Tuple.fromProductTyped(AdditionalFiscalReference)))
 
   def form(implicit messages: Messages, codeListConnector: CodeListConnector): Form[AdditionalFiscalReference] = Form(mapping)
 

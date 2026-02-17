@@ -54,13 +54,13 @@
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 
-@hint = @{if(addProcCodesHelper.hintText.isEmpty) List.empty else List(HintTextAlternatives(addProcCodesHelper.hintText.get))}
+@hint = @{if(addProcCodesHelper.hintText().isEmpty) List.empty else List(HintTextAlternatives(addProcCodesHelper.hintText().get))}
 
 @govukLayout(
   title = Title("declaration.additionalProcedureCodes.title", "declaration.section.5", procedureCode.code, hasErrors = hasErrors),
   backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(AdditionalProcedureCode, ItemId(itemId))))) {
 
-  @formHelper(action = AdditionalProcedureCodesController.submitAdditionalProcedureCodes(itemId), 'autoComplete -> "off") {
+  @formHelper(action = AdditionalProcedureCodesController.submitAdditionalProcedureCodes(itemId), Symbol("autoComplete") -> "off") {
 
     @errorSummary(form.errors)
 

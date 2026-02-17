@@ -49,7 +49,7 @@ class ContainerAddViewSpec extends PageWithButtonsSpec with Injector {
 
     "display 'Back' button that links to 'containers summary' page" in {
       val backLinkContainer = view.getElementById("back-link")
-      backLinkContainer.getElementById("back-link") must haveHref(ContainerController.displayContainerSummary)
+      backLinkContainer.getElementById("back-link") must haveHref(ContainerController.displayContainerSummary())
     }
 
     checkAllSaveButtonsAreDisplayed(createView())

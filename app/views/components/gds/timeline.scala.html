@@ -19,8 +19,6 @@
 
 @import views.helpers.TimelineEvent
 
-@this()
-
 @(timelineEvents: Seq[TimelineEvent], dateTimeAsShown: TemporalAccessor => String)
 
 @htmlForTimelineEvent(timelineEvent: TimelineEvent) = {

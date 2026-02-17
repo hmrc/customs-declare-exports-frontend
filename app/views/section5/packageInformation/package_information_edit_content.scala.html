@@ -74,7 +74,7 @@
         ),
         emptySelectValue = messages("declaration.packageInformation.typesOfPackages.empty"),
         items = AutoCompleteItem.fromPackageType(packageTypesService.all),
-        args = List('otherErrorFields -> Seq("typesOfPackages"))
+        args = List(Symbol("otherErrorFields") -> Seq("typesOfPackages"))
     )}
 
 <!--Remove above when removing flag-->
@@ -117,7 +117,7 @@
         ),
         emptySelectValue = messages("declaration.packageInformation.typesOfPackages.empty"),
         items = AutoCompleteItem.fromPackageType(packageTypesService.all),
-        args = List('otherErrorFields -> Seq("typesOfPackages"))
+        args = List(Symbol("otherErrorFields") -> Seq("typesOfPackages"))
     )}
 
     @govukDetails(Details(
