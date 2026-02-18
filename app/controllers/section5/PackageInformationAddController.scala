@@ -26,8 +26,8 @@ import controllers.navigation.Navigator
 import controllers.section5.PackageInformationAddController.PackageInformationFormGroupId
 import controllers.section5.routes.PackageInformationSummaryController
 import forms.section5.PackageInformation
-import forms.section5.PackageInformation.{form, limit, typeId}
-import models.ExportsDeclaration
+import forms.section5.PackageInformation.{form, formOptional, limit, typeId}
+import models.{DeclarationType, ExportsDeclaration}
 import models.requests.JourneyRequest
 import play.api.i18n.I18nSupport
 import play.api.mvc._
@@ -58,7 +58,13 @@ class PackageInformationAddController @Inject() (
   }
 
   def submitForm(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    val binding = form.bindFromRequest(formValuesFromRequest(typeId))
+
+    val binding = if(request.isType(DeclarationType.SUPPLEMENTARY) && appConfig.isOptionalFieldsEnabled) {
+      formOptional.bindFromRequest(formValuesFromRequest(typeId))
+    } else {
+      form.bindFromRequest(formValuesFromRequest(typeId))
+    }
+
     MultipleItemsHelper
       .add(binding, allCachedPackageInformation(itemId), limit, PackageInformationFormGroupId, "declaration.packageInformation")
       .fold(
