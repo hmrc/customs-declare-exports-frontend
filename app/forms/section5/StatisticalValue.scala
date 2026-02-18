@@ -44,7 +44,7 @@ object StatisticalValue extends DeclarationPage with FieldMapping {
   private val statisticalValueDecimalPlaces = 2
 
   private val mappingStatisticalValue = text()
-    .verifying("declaration.statisticalValue.error.test", _.trim.nonEmpty)
+    .verifying("declaration.statisticalValue.error.empty", _.trim.nonEmpty)
     .verifying(
       "declaration.statisticalValue.error.length",
       input => input.isEmpty || noLongerThan(statisticalValueMaxLength)(input.replaceAll("\\.", ""))
