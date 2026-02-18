@@ -1645,6 +1645,7 @@ declaration.statisticalValue.guidance.bullet.2.flag = Datganiad Ail-allforio Saf
 declaration.statisticalValue.guidance.bullet.3.flag = Datganiad Allforio ar gyfer anfon nwyddau i Diriogaeth Ariannol Arbennig neu Diriogaeth sydd â Chyfundrefn Tollau gyda’r UE
 declaration.statisticalValue.guidance.text.2.flag = Ar gyfer Datganiad Allforio o dan Brosesu Allanol:
 declaration.statisticalValue.guidance.text.3.flag = Nodwch y gwerth ystadegol ar gyfer yr eitem nwyddau mewn GBP (£ sterling), hyd yn oed os defnyddir arian cyfred gwahanol yn DE 4/11 Cyfanswm a Anfonebwyd.
+declaration.statisticalValue.error.empty = cy: Enter the statistical value
 declaration.statisticalValue.error.length = Mae’n rhaid i gyfanswm y gost gynnwys 15 digid neu lai
 declaration.statisticalValue.error.wrongFormat = Mae’n rhaid i gyfanswm y gost gynnwys rhifau’n unig
 

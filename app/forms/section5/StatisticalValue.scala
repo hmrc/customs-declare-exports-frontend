@@ -44,6 +44,7 @@ object StatisticalValue extends DeclarationPage with FieldMapping {
   private val statisticalValueDecimalPlaces = 2
 
   private val mappingStatisticalValue = text()
+    .verifying("declaration.statisticalValue.error.empty", _.trim.nonEmpty)
     .verifying(
       "declaration.statisticalValue.error.length",
       input => input.isEmpty || noLongerThan(statisticalValueMaxLength)(input.replaceAll("\\.", ""))
@@ -54,6 +55,18 @@ object StatisticalValue extends DeclarationPage with FieldMapping {
     Forms.mapping(statisticalValueKey -> mappingStatisticalValue)(StatisticalValue.apply)(StatisticalValue.unapply)
 
   def form: Form[StatisticalValue] = Form(mapping)
+
+  private val mappingStatisticalValueOptional = text()
+    .verifying(
+      "declaration.statisticalValue.error.length",
+      input => input.isEmpty || noLongerThan(statisticalValueMaxLength)(input.replaceAll("\\.", ""))
+    )
+    .verifying("declaration.statisticalValue.error.wrongFormat", isEmpty or isDecimalWithNoMoreDecimalPlacesThan(statisticalValueDecimalPlaces))
+
+  private val mappingOptional: Mapping[StatisticalValue] =
+    Forms.mapping(statisticalValueKey -> mappingStatisticalValueOptional)(StatisticalValue.apply)(StatisticalValue.unapply)
+
+  def formOptional: Form[StatisticalValue] = Form(mappingOptional)
 
   override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
     List(TariffContentKey("tariff.declaration.item.statisticalValue.common"))

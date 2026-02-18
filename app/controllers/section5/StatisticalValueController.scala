@@ -16,13 +16,14 @@
 
 package controllers.section5
 
+import config.AppConfig
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.section5.routes.PackageInformationSummaryController
 import controllers.general.{ModelCacheable, SubmissionErrors}
 import controllers.navigation.Navigator
 import controllers.general.routes.RootController
 import forms.section5.StatisticalValue
-import forms.section5.StatisticalValue.form
+import forms.section5.StatisticalValue.{form, formOptional}
 import models.DeclarationType._
 import models.ExportsDeclaration
 import models.requests.JourneyRequest
@@ -45,7 +46,7 @@ class StatisticalValueController @Inject() (
   navigator: Navigator,
   mcc: MessagesControllerComponents,
   itemTypePage: statistical_value
-)(implicit ec: ExecutionContext, auditService: AuditService)
+)(implicit ec: ExecutionContext, auditService: AuditService, appConfig: AppConfig)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithUnsafeDefaultFormBinding {
 
   private val validJourneys = nonClearanceJourneys
@@ -61,20 +62,46 @@ class StatisticalValueController @Inject() (
 
   def submitItemType(itemId: String): Action[AnyContent] = (authenticate andThen journeyType(validJourneys)).async { implicit request =>
     if (redirectToRoot(itemId)) Future.successful(Redirect(RootController.displayPage))
-    else
-      form
-        .bindFromRequest()
-        .fold(
-          (formWithErrors: Form[StatisticalValue]) => Future.successful(BadRequest(itemTypePage(itemId, formWithErrors))),
-          updateExportsCache(itemId, _).map(_ => navigator.continueTo(PackageInformationSummaryController.displayPage(itemId)))
-        )
+    else {
+      if (!is3NS(itemId) && appConfig.isOptionalFieldsEnabled)
+        form
+          .bindFromRequest()
+          .fold(
+            (formWithErrors: Form[StatisticalValue]) => Future.successful(BadRequest(itemTypePage(itemId, formWithErrors))),
+            statisticalValue => {
+              val statisticalValueOption = Some(statisticalValue)
+              updateExportsCache(itemId, statisticalValueOption)
+                .map(_ => navigator.continueTo(PackageInformationSummaryController.displayPage(itemId)))
+            }
+          )
+      else
+        formOptional
+          .bindFromRequest()
+          .fold(
+            (formWithErrors: Form[StatisticalValue]) => Future.successful(BadRequest(itemTypePage(itemId, formWithErrors))),
+            statisticalValue => {
+              val statisticalValueOption = if (statisticalValue.statisticalValue.trim.isEmpty) None else Some(statisticalValue)
+              updateExportsCache(itemId, statisticalValueOption)
+                .map(_ => navigator.continueTo(PackageInformationSummaryController.displayPage(itemId)))
+            }
+          )
+
+    }
   }
 
   private def redirectToRoot(itemId: String)(implicit request: JourneyRequest[_]): Boolean =
     occasionalAndSimplified.contains(request.declarationType) && !request.cacheModel.isLowValueDeclaration(itemId)
 
-  private def updateExportsCache(itemId: String, updatedItem: StatisticalValue)(
+  private def is3NS(itemId: String)(implicit request: JourneyRequest[_]): Boolean = {
+    val item = request.cacheModel.itemBy(itemId)
+
+    val is3NS: Boolean =
+      item.exists(value => value.procedureCodes.exists(codes => codes.additionalProcedureCodes.contains("3NS")))
+    is3NS
+  }
+
+  private def updateExportsCache(itemId: String, updatedItem: Option[StatisticalValue])(
     implicit request: JourneyRequest[AnyContent]
   ): Future[ExportsDeclaration] =
-    updateDeclarationFromRequest(_.updatedItem(itemId, item => item.copy(statisticalValue = Some(updatedItem))))
+    updateDeclarationFromRequest(_.updatedItem(itemId, item => item.copy(statisticalValue = updatedItem)))
 }

@@ -26,14 +26,13 @@ class StatisticalValueFormSpec extends DeclarationPageBaseSpec {
   "StatisticalValue form" should {
 
     "return a form without errors" when {
-
       "provided with valid values" in {
         val form = StatisticalValue.form.bind(correctStatisticalValueMap("1234567890123.45"))
         form.hasErrors mustBe false
       }
 
-      "not provided with a value" in {
-        val form = StatisticalValue.form.bind(correctStatisticalValueMap(""))
+      "not provided with a value when the form is optional" in {
+        val form = StatisticalValue.formOptional.bind(correctStatisticalValueMap(""))
         form.hasErrors mustBe false
       }
     }
@@ -53,6 +52,11 @@ class StatisticalValueFormSpec extends DeclarationPageBaseSpec {
       "the statistical value contains non-digit characters" in {
         val form = StatisticalValue.form.bind(correctStatisticalValueMap("12a.456"))
         form.errors mustBe List(FormError(statisticalValueKey, "declaration.statisticalValue.error.wrongFormat"))
+      }
+
+      "not provided with a value" in {
+        val form = StatisticalValue.form.bind(correctStatisticalValueMap(""))
+        form.errors mustBe List(FormError(statisticalValueKey, "declaration.statisticalValue.error.empty"))
       }
     }
   }
