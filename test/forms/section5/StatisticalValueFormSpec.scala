@@ -16,7 +16,6 @@
 
 package forms.section5
 
-
 import forms.common.DeclarationPageBaseSpec
 import forms.section5.StatisticalValue.statisticalValueKey
 import models.viewmodels.TariffContentKey
