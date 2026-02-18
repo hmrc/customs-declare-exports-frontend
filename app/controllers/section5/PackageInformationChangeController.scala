@@ -26,8 +26,8 @@ import controllers.navigation.Navigator
 import controllers.section5.PackageInformationAddController.PackageInformationFormGroupId
 import controllers.section5.routes.PackageInformationSummaryController
 import forms.section5.PackageInformation
-import forms.section5.PackageInformation.form
-import models.ExportsDeclaration
+import forms.section5.PackageInformation.{form, formOptional}
+import models.{DeclarationType, ExportsDeclaration}
 import models.requests.JourneyRequest
 import play.api.data.Form
 import play.api.i18n.I18nSupport
@@ -63,7 +63,11 @@ class PackageInformationChangeController @Inject() (
 
   def submitForm(itemId: String, code: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     val maybePackageInfoToRemove = singleCachedPackageInformation(code, itemId)
-    val boundForm = form.bindFromRequest()
+    val boundForm = if(request.isType(DeclarationType.SUPPLEMENTARY) && appConfig.isOptionalFieldsEnabled) {
+      formOptional.bindFromRequest()
+    } else{
+      form.bindFromRequest()
+    }
 
     maybePackageInfoToRemove.fold(errorHandler.redirectToErrorPage) { packageInfoToRemove =>
       saveInformation(itemId, boundForm, allCachedPackageInformation(itemId), packageInfoToRemove)

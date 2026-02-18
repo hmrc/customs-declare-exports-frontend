@@ -113,12 +113,12 @@ object PackageInformation extends DeclarationPage with FieldMapping {
           typeId -> optional(
             text()
               .verifying("declaration.packageInformation.typesOfPackages.error", isContainedIn(packageTypesService.all.map(_.code)))
-          ),
+          ).verifying("declaration.packageInformation.typesOfPackages.empty", isSome),
           "shippingMarks" -> optional(
             text()
               .verifying("declaration.packageInformation.shippingMark.characterError", isEmpty or isAlphanumericWithAllowedSpecialCharacters)
               .verifying("declaration.packageInformation.shippingMark.lengthError", isEmpty or noLongerThan(42))
-          )
+          ).verifying("declaration.packageInformation.shippingMark.empty", isSome)
         )(form2DataOpt)(data2FormOpt)
     } else {
       Forms
@@ -139,7 +139,27 @@ object PackageInformation extends DeclarationPage with FieldMapping {
         )(form2Data)(data2Form)
     }
 
+  def mappingOptional(implicit messages: Messages, packageTypesService: PackageTypesService): Mapping[PackageInformation] =
+      Forms
+        .mapping(
+          "numberOfPackages" -> optional(
+            number()
+              .verifying("declaration.packageInformation.numberOfPackages.error", isInRange(NumberOfPackagesLimitLower, NumberOfPackagesLimitUpper))
+          ).verifying("declaration.packageInformation.numberOfPackages.error", isSome),
+          typeId -> optional(
+            text()
+              .verifying("declaration.packageInformation.typesOfPackages.error", isContainedIn(packageTypesService.all.map(_.code)))
+          ),
+          "shippingMarks" -> optional(
+            text()
+              .verifying("declaration.packageInformation.shippingMark.characterError", isEmpty or isAlphanumericWithAllowedSpecialCharacters)
+              .verifying("declaration.packageInformation.shippingMark.lengthError", isEmpty or noLongerThan(42))
+          )
+        )(form2DataOpt)(data2FormOpt)
+
   def form(implicit messages: Messages, packageTypesService: PackageTypesService, appConfig: AppConfig): Form[PackageInformation] = Form(mapping)
+
+  def formOptional(implicit messages: Messages, packageTypesService: PackageTypesService): Form[PackageInformation] = Form(mappingOptional)
 
   override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
     decType match {
