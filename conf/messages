@@ -1645,6 +1645,7 @@ declaration.statisticalValue.guidance.bullet.2.flag = Re-export Standard Declara
 declaration.statisticalValue.guidance.bullet.3.flag = Export Declaration for dispatch of goods to a Special Fiscal Territory or Territory with which the EU has formed a Customs Union
 declaration.statisticalValue.guidance.text.2.flag = For an Export Declaration under Outward Processing:
 declaration.statisticalValue.guidance.text.3.flag = Enter the statistical value for the goods item in GBP (£ sterling), even if a different currency is used in DE 4/11 Total Amount Invoiced.
+declaration.statisticalValue.error.empty = Enter the statistical value
 declaration.statisticalValue.error.length = Total cost must contain 15 digits or less
 declaration.statisticalValue.error.wrongFormat = Total cost must contain only numbers
 
