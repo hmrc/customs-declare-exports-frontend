@@ -140,22 +140,22 @@ object PackageInformation extends DeclarationPage with FieldMapping {
     }
 
   def mappingOptional(implicit messages: Messages, packageTypesService: PackageTypesService): Mapping[PackageInformation] =
-      Forms
-        .mapping(
-          "numberOfPackages" -> optional(
-            number()
-              .verifying("declaration.packageInformation.numberOfPackages.error", isInRange(NumberOfPackagesLimitLower, NumberOfPackagesLimitUpper))
-          ).verifying("declaration.packageInformation.numberOfPackages.error", isSome),
-          typeId -> optional(
-            text()
-              .verifying("declaration.packageInformation.typesOfPackages.error", isContainedIn(packageTypesService.all.map(_.code)))
-          ),
-          "shippingMarks" -> optional(
-            text()
-              .verifying("declaration.packageInformation.shippingMark.characterError", isEmpty or isAlphanumericWithAllowedSpecialCharacters)
-              .verifying("declaration.packageInformation.shippingMark.lengthError", isEmpty or noLongerThan(42))
-          )
-        )(form2DataOpt)(data2FormOpt)
+    Forms
+      .mapping(
+        "numberOfPackages" -> optional(
+          number()
+            .verifying("declaration.packageInformation.numberOfPackages.error", isInRange(NumberOfPackagesLimitLower, NumberOfPackagesLimitUpper))
+        ).verifying("declaration.packageInformation.numberOfPackages.error", isSome),
+        typeId -> optional(
+          text()
+            .verifying("declaration.packageInformation.typesOfPackages.error", isContainedIn(packageTypesService.all.map(_.code)))
+        ),
+        "shippingMarks" -> optional(
+          text()
+            .verifying("declaration.packageInformation.shippingMark.characterError", isEmpty or isAlphanumericWithAllowedSpecialCharacters)
+            .verifying("declaration.packageInformation.shippingMark.lengthError", isEmpty or noLongerThan(42))
+        )
+      )(form2DataOpt)(data2FormOpt)
 
   def form(implicit messages: Messages, packageTypesService: PackageTypesService, appConfig: AppConfig): Form[PackageInformation] = Form(mapping)
 

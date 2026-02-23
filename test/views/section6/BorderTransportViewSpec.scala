@@ -24,7 +24,7 @@ import forms.section6.BorderTransport.form
 import models.DeclarationType._
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
-import org.mockito.Mockito.{when, reset}
+import org.mockito.Mockito.{reset, when}
 import play.api.mvc.AnyContent
 import services.TransportCodeService
 import views.common.PageWithButtonsSpec
@@ -115,7 +115,6 @@ class BorderTransportViewSpec extends PageWithButtonsSpec with Injector {
               Option(view.getElementById(s"radio_${transportCode.id}")) must be(None)
             } else {
 
-
               Option(view.getElementById(s"radio_${transportCode.id}")) must not be None
 
               val suffix = if (transportCode.useAltRadioTextForBorderTransport) ".vBT" else ""
@@ -127,16 +126,16 @@ class BorderTransportViewSpec extends PageWithButtonsSpec with Injector {
 
               val inputLabel = view.getElementsByAttributeValue("for", transportCode.id).text
 
-              if(declarationType == SUPPLEMENTARY || declarationType == STANDARD) {
+              if (declarationType == SUPPLEMENTARY || declarationType == STANDARD) {
                 inputLabel mustBe messages(s"declaration.transportInformation.meansOfTransport.${transportCode.id}.label")
-              }else inputLabel mustBe messages(s"declaration.transportInformation.meansOfTransport.${transportCode.id}.label")
+              } else inputLabel mustBe messages(s"declaration.transportInformation.meansOfTransport.${transportCode.id}.label")
 
               val inputHint = view.getElementById(s"${transportCode.id}-hint").text
 
-              if(declarationType == SUPPLEMENTARY || declarationType == STANDARD) {
+              if (declarationType == SUPPLEMENTARY || declarationType == STANDARD) {
                 inputHint mustBe messages(s"declaration.transportInformation.meansOfTransport.${transportCode.id}.hint")
-              }else
-              inputHint mustBe messages(s"declaration.transportInformation.meansOfTransport.${transportCode.id}.hint")
+              } else
+                inputHint mustBe messages(s"declaration.transportInformation.meansOfTransport.${transportCode.id}.hint")
             }
           }
 
@@ -145,8 +144,6 @@ class BorderTransportViewSpec extends PageWithButtonsSpec with Injector {
         checkAllSaveButtonsAreDisplayed(createView())
       }
     }
-
-
 
     standardAndSupplementary.foreach { declarationType =>
       implicit val request: JourneyRequest[AnyContent] = withRequestOfType(declarationType)
