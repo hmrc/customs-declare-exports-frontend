@@ -108,10 +108,6 @@ class BorderTransportViewSpec extends PageWithButtonsSpec with Injector {
           reset(appConfig)
           when(appConfig.isOptionalFieldsEnabled).thenReturn(true)
 
-          System.out.println(s"//////////////////")
-          System.out.println(s"Test appConfig: ${appConfig.isOptionalFieldsEnabled}")
-          System.out.println(s"//////////////////")
-
           val view = createView()
 
           transportCodeService.transportCodesOnBorderTransport.foreach { transportCode =>
@@ -132,19 +128,13 @@ class BorderTransportViewSpec extends PageWithButtonsSpec with Injector {
               val inputLabel = view.getElementsByAttributeValue("for", transportCode.id).text
 
               if(declarationType == SUPPLEMENTARY || declarationType == STANDARD) {
-                inputLabel mustBe messages(s"declaration.transportInformation.meansOfTransport.${transportCode.id}.label.opt")
+                inputLabel mustBe messages(s"declaration.transportInformation.meansOfTransport.${transportCode.id}.label")
               }else inputLabel mustBe messages(s"declaration.transportInformation.meansOfTransport.${transportCode.id}.label")
-
-
 
               val inputHint = view.getElementById(s"${transportCode.id}-hint").text
 
-              System.out.println("$$$$$$$$$$$$$$")
-              System.out.println(s"Declaration type: $declarationType")
-              System.out.println("$$$$$$$$$$$$$$")
-
               if(declarationType == SUPPLEMENTARY || declarationType == STANDARD) {
-                inputHint mustBe messages(s"declaration.transportInformation.meansOfTransport.${transportCode.id}.hint.opt")
+                inputHint mustBe messages(s"declaration.transportInformation.meansOfTransport.${transportCode.id}.hint")
               }else
               inputHint mustBe messages(s"declaration.transportInformation.meansOfTransport.${transportCode.id}.hint")
             }
