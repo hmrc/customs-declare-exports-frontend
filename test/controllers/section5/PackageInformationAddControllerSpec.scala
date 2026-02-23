@@ -106,8 +106,8 @@ class PackageInformationAddControllerSpec extends ControllerSpec with AuditedCon
         verifyNoAudit()
 
         val errors = theResponseForm.errors
-        errors(0).messages.head mustBe "declaration.packageInformation.typesOfPackages.empty"
-        errors(1).messages.head mustBe "declaration.packageInformation.numberOfPackages.error"
+        errors(0).messages.head mustBe "declaration.packageInformation.numberOfPackages.error"
+        errors(1).messages.head mustBe "declaration.packageInformation.typesOfPackages.empty"
         errors(2).messages.head mustBe "declaration.packageInformation.shippingMark.empty"
       }
 
@@ -121,8 +121,8 @@ class PackageInformationAddControllerSpec extends ControllerSpec with AuditedCon
         verifyNoAudit()
 
         val errors = theResponseForm.errors
-        errors(0).messages.head mustBe "declaration.packageInformation.typesOfPackages.error"
-        errors(1).messages.head mustBe "error.number"
+        errors(0).messages.head mustBe "error.number"
+        errors(1).messages.head mustBe "declaration.packageInformation.typesOfPackages.error"
         errors(2).messages.head mustBe "declaration.packageInformation.shippingMark.characterError"
         errors(3).messages.head mustBe "declaration.packageInformation.shippingMark.lengthError"
       }

@@ -339,8 +339,8 @@ class Card5ForItemsSpec extends UnitViewSpec with ExportsTestHelper with Injecto
         val call = Some(PackageInformationSummaryController.displayPage(itemId))
         val keyId = "item.packageInformation"
 
-        checkMultiRowSection(rows.get(0), List("item-1-package-information-1-type"), s"$keyId.type", "Parcel (PC)", call, keyId)
-        checkMultiRowSection(rows.get(1), List("item-1-package-information-1-number"), s"$keyId.number", "10")
+        checkMultiRowSection(rows.get(0), List("item-1-package-information-1-number"), s"$keyId.number", "10")
+        checkMultiRowSection(rows.get(1), List("item-1-package-information-1-type"), s"$keyId.type", "Parcel (PC)", call, keyId)
         checkMultiRowSection(rows.get(2), List("item-1-package-information-1-markings"), s"$keyId.markings", "marks")
       }
 
@@ -349,7 +349,7 @@ class Card5ForItemsSpec extends UnitViewSpec with ExportsTestHelper with Injecto
         val item = itemWithAnswers.copy(packageInformation = Some(List(packageInformation)))
         val view = miniCyaView(declaration.copy(items = List(item)))
 
-        view.getElementsByClass("item-1-package-information-1-type").size mustBe 0
+        view.getElementsByClass("item-1-package-information-1-type").size mustBe 1
 
         val row1 = view.getElementsByClass("item-1-package-information-1-number")
         val call = Some(PackageInformationSummaryController.displayPage(itemId))
@@ -365,7 +365,7 @@ class Card5ForItemsSpec extends UnitViewSpec with ExportsTestHelper with Injecto
         val item = itemWithAnswers.copy(packageInformation = Some(List(packageInformation)))
         val view = miniCyaView(declaration.copy(items = List(item)))
 
-        view.getElementsByClass("item-1-package-information-1-type").size mustBe 0
+        view.getElementsByClass("item-1-package-information-1-type").size mustBe 1
         view.getElementsByClass("item-1-package-information-1-number").size mustBe 0
 
         val row = view.getElementsByClass("item-1-package-information-1-markings")

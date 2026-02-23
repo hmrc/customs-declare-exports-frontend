@@ -16,7 +16,6 @@
 
 package controllers.section5
 
-import config.AppConfig
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.section5.routes.PackageInformationSummaryController
 import controllers.general.{ModelCacheable, SubmissionErrors}
@@ -46,7 +45,7 @@ class StatisticalValueController @Inject() (
   navigator: Navigator,
   mcc: MessagesControllerComponents,
   itemTypePage: statistical_value
-)(implicit ec: ExecutionContext, auditService: AuditService, appConfig: AppConfig)
+)(implicit ec: ExecutionContext, auditService: AuditService)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithUnsafeDefaultFormBinding {
 
   private val validJourneys = nonClearanceJourneys
@@ -63,7 +62,7 @@ class StatisticalValueController @Inject() (
   def submitItemType(itemId: String): Action[AnyContent] = (authenticate andThen journeyType(validJourneys)).async { implicit request =>
     if (redirectToRoot(itemId)) Future.successful(Redirect(RootController.displayPage))
     else {
-      if (!is3NS(itemId) && appConfig.isOptionalFieldsEnabled)
+      if (!is3NS(itemId))
         form
           .bindFromRequest()
           .fold(

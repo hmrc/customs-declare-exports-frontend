@@ -16,7 +16,6 @@
 
 package controllers.section4
 
-import config.AppConfig
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.general.{ModelCacheable, SubmissionErrors}
 import controllers.navigation.Navigator
@@ -44,7 +43,7 @@ class InvoiceAndExchangeRateController @Inject() (
   mcc: MessagesControllerComponents,
   invoiceAndExchangeRatePage: invoice_and_exchange_rate,
   override val exportsCacheService: ExportsCacheService
-)(implicit ec: ExecutionContext, auditService: AuditService, appConfig: AppConfig)
+)(implicit ec: ExecutionContext, auditService: AuditService)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithUnsafeDefaultFormBinding {
 
   private val validTypes = Seq(DeclarationType.STANDARD, DeclarationType.SUPPLEMENTARY)
@@ -72,9 +71,7 @@ class InvoiceAndExchangeRateController @Inject() (
           InvoiceAndPackageTotals(
             totalAmountInvoiced = invoiceAndExchangeRate.totalAmountInvoiced,
             totalAmountInvoicedCurrency = invoiceAndExchangeRate.totalAmountInvoicedCurrency,
-            agreedExchangeRate = if (appConfig.isOptionalFieldsEnabled) {
-              if (invoiceAndExchangeRate.exchangeRate.nonEmpty) Some("Yes") else Some("No")
-            } else Some(invoiceAndExchangeRate.agreedExchangeRate),
+            agreedExchangeRate = if (invoiceAndExchangeRate.exchangeRate.nonEmpty) Some("Yes") else Some("No"),
             totalPackage = declaration.totalNumberOfItems.flatMap(_.totalPackage),
             exchangeRate =
               if (invoiceAndExchangeRate.agreedExchangeRate.toLowerCase == "no") None
