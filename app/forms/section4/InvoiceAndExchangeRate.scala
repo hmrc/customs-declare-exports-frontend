@@ -116,20 +116,19 @@ object InvoiceAndExchangeRate extends DeclarationPage {
   // with `validateWithoutCommas` before validating the number of digits.
   // To prevent the validation from allowing an invalid value like ",,,," we also must use the `isNotOnlyCommas`
   // function to specifically guard against this.
-  def mapping(implicit appConfig: AppConfig): Mapping[InvoiceAndExchangeRate] = Forms.mapping(
+  def mapping: Mapping[InvoiceAndExchangeRate] = Forms.mapping(
     totalAmountInvoiced -> validateTotalAmountInvoiced,
     totalAmountInvoicedCurrency -> validateTotalAmountInvoicedCurrency,
     agreedExchangeRateYesNo -> validateAgreedExchangeRateYesNo,
-    exchangeRate -> validateExchangeRate(appConfig.isOptionalFieldsEnabled)
+    exchangeRate -> validateExchangeRate
   )(InvoiceAndExchangeRate.apply)(InvoiceAndExchangeRate.unapply)
 
-  def form(implicit appConfig: AppConfig): Form[InvoiceAndExchangeRate] = Form(mapping)
+  def form: Form[InvoiceAndExchangeRate] = Form(mapping)
 
   override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =
     List(TariffContentKey("tariff.declaration.totalNumbersOfItems.common"))
 
-  private def validateExchangeRate(isOptional: Boolean): AdditionalConstraintsMapping[Option[String]] =
-    if (isOptional) {
+  private def validateExchangeRate(): AdditionalConstraintsMapping[Option[String]] =
       AdditionalConstraintsMapping(
         optional(text()).transform(_.map(_.toUpperCase), (o: Option[String]) => o),
         Seq(
@@ -145,23 +144,7 @@ object InvoiceAndExchangeRate extends DeclarationPage {
           )
         )
       )
-    } else {
-      AdditionalConstraintsMapping(
-        optional(text()).transform(_.map(_.toUpperCase), (o: Option[String]) => o),
-        Seq(
-          ConditionalConstraint(
-            isFieldIgnoreCaseString(agreedExchangeRateYesNo, YesNoAnswers.yes) and isFieldNotEmpty(exchangeRate),
-            rateFieldErrorKey,
-            isNotOnlyCommasOption and validateOptionWithoutCommas(ofPattern(exchangeRatePattern))
-          ),
-          ConditionalConstraint(
-            isFieldIgnoreCaseString(agreedExchangeRateYesNo, YesNoAnswers.yes),
-            exchangeRateYesRadioSelectedErrorKey,
-            nonEmptyOptionString
-          )
-        )
-      )
-    }
+
 
   private def validateTotalAmountInvoiced: AdditionalConstraintsMapping[Option[String]] =
     AdditionalConstraintsMapping(
