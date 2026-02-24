@@ -115,9 +115,8 @@ class ContainerController @Inject() (
   private def saveFirstContainer(containerFirst: ContainerFirst)(implicit request: JourneyRequest[AnyContent]): Future[Result] = {
 
     def withGoodsInContainerDeclared(declaration: ExportsDeclaration) =
-      if (appConfig.isOptionalFieldsEnabled) {
         declaration.copy(transport = declaration.transport.copy(goodsInContainerDeclared = Some(containerFirst.goodsInContainerDeclared)))
-      } else declaration
+
 
     containerFirst.id match {
       case Some(id) =>

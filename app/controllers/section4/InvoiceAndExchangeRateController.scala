@@ -16,7 +16,6 @@
 
 package controllers.section4
 
-import config.AppConfig
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.general.{ModelCacheable, SubmissionErrors}
 import controllers.navigation.Navigator
