@@ -227,7 +227,7 @@
   {
     "code": "CDS12078",
     "en": "Relation Error: As no Deferment Account Number is provided in D.E. 2/6, an immediate Method of Payment must be offered in D.E. 4/8",
-    "cy": "Gwall Perthynas: Gan nad oes Rhif Cyfrif Gohirio yn cael ei roi yn D.E. 2/6, mae\u2019n rhaid cynnig Dull Talu yn D.E. 4/8 ar unwaith"
+    "cy": "Gwall Perthynas: Gan nad oes Rhif y Cyfrif Gohirio wedi’i ddarparu yn D.E. 2/6 mae’n rhaid cynnig Dull o Dalu ar unwaith yn D.E. 4/8"
   },
   {
     "code": "CDS12079",
@@ -522,7 +522,7 @@
   {
     "code": "CDS12151",
     "en": "Relation Error: When a licence is declared, ID must be unique from all other additional documents (DE 2/3) in the same goods item",
-    "cy": "Gwall Perthynas: Pan ddatganir trwydded, mae\u2019n rhaid i\u2019r Dynodydd fod yn unigryw i bob dogfen ychwanegol arall (DE 2/3) yn yr un eitem o nwyddau"
+    "cy": "Gwall Perthynas: Pan fydd trwydded yn cael ei ddatgan, mae’n rhaid i’r ID fod yn unigryw i gymharu â’r holl ddogfennau ychwanegol eraill (DE 2/3) yn yr un eitem nwyddau"
   },
   {
     "code": "CDS13000",
@@ -877,22 +877,22 @@
   {
     "code": "CDS12152",
     "en": "Additional Procedure Code (DE 1/11) 1H7 can only be used when submitting an SRDS declaration and is required to be declared on all goods items.",
-    "cy": "Dim ond wrth gyflwyno datganiad SRDS y gellir defnyddio Cod Gweithdrefn Ychwanegol (DE 1/11) 1H7 ac mae'n ofynnol ei ddatgan ar bob eitem nwyddau."
+    "cy": "Gall Cod Gweithdrefn ychwanegol (DE 1/11) 1H7 ond cael ei ddefnyddio wrth gyflwyno datganiad SRDS ac mae angen iddo gael ei ddatgan ar yr holl eitemau nwyddau."
   },
   {
     "code": "CDS12171",
     "en": "Relation Error: The values supplied in Data Element 1 and Data Element 2 require a valid value to be provided in Data Element 3.",
-    "cy": "Gwall Perthynas: Mae'r gwerthoedd a ddarperir yn Elfen Ddata 1 ac Elfen Ddata 2 yn gofyn am ddarparu gwerth dilys yn Elfen Ddata 3."
+    "cy": "Gwall Perthynas: Mae'n rhaid darparu gwerth dilys yn Elfen Ddata 3 o ystyried y gwerthoedd a ddarperir yn Elfen Ddata 1 ac Elfen Ddata 2."
   },
   {
     "code": "CDS12172",
     "en": "Relation Error: The values supplied in Data Element 1 and Data Element 2 require a valid value to be provided in Data Element 3 and/or Data Element 4.",
-    "cy": "Gwall Perthynas: Mae'r gwerthoedd a gyflenwir yn Elfen Ddata 1 ac Elfen Ddata 2 yn gofyn am ddarparu gwerth dilys yn Elfen Ddata 3 a/neu Elfen Ddata 4."
+    "cy": "Gwall Perthynas: Mae'n rhaid darparu gwerth dilys yn Elfen Ddata 3 ac/neu Elfen Ddata 4 o ystyried y gwerthoedd a ddarperir yn Elfen Ddata 1 ac Elfen Ddata 2."
   },
   {
     "code": "CDS40012",
     "en": "At least one of the commodity codes you have declared requires additional information that cannot be provided on this dataset. Please use the standard full export declaration dataset (B1) instead.",
-    "cy": "Mae o leiaf un o'r codau nwyddau rydych chi wedi'u datgan yn gofyn am wybodaeth ychwanegol na ellir ei darparu ar y set ddata hon. Defnyddiwch y set ddata datganiad allforio llawn safonol (B1) yn lle hynny."
+    "cy": "Mae o leiaf un o’r codau nwyddau rydych wedi’u datgan yn gofyn am wybodaeth ychwanegol na ellir ei darparu ar y set ddata hon. Defnyddiwch y set ddata datganiad allforio llawn safonol (B1) yn lle hynny."
   },
   {
     "code": "CDS50018",
