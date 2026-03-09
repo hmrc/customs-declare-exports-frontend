@@ -35,7 +35,6 @@ import play.api.libs.json._
 import services.DiffTools
 import services.DiffTools.{combinePointers, compareDifference, compareIntDifference, ExportsDeclarationDiff}
 
-// scalastyle:off
 case class ExportsDeclaration(
   id: String,
   declarationMeta: DeclarationMeta,

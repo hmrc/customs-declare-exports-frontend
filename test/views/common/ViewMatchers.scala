@@ -31,7 +31,6 @@ import scala.concurrent.Future
 import scala.jdk.CollectionConverters.IteratorHasAsScala
 import scala.language.implicitConversions
 
-//noinspection ScalaStyle
 trait ViewMatchers {
 
   implicit private def elements2Scala(elements: Elements): Iterator[Element] = elements.iterator().asScala

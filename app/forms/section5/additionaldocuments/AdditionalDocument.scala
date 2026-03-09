@@ -113,7 +113,6 @@ object AdditionalDocument extends DeclarationPage with FieldMapping {
   val issuingAuthorityNameKey = "issuingAuthorityName"
   val dateOfValidityKey = "dateOfValidity"
 
-  // scalastyle:off
   private def mapping(
     declaration: ExportsDeclaration
   )(implicit taggedAuthCodes: TaggedAuthCodes, taggedAdditionalDocumentCodes: TaggedAdditionalDocumentCodes): Mapping[AdditionalDocument] = {
@@ -169,7 +168,6 @@ object AdditionalDocument extends DeclarationPage with FieldMapping {
         documentWriteOffKey -> optional(DocumentWriteOff.mapping)
       )(form2data)(AdditionalDocument => Some(Tuple.fromProductTyped(AdditionalDocument)))
   }
-  // scalastyle:on
 
   private def form2data(
     documentTypeCode: Option[String],

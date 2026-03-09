@@ -68,7 +68,6 @@ class ProcedureCodesController @Inject() (
       )
   }
 
-  // scalastyle:off
   private def updateCache(itemId: String, procedureCodeEntered: ProcedureCode)(
     implicit request: JourneyRequest[AnyContent]
   ): Future[ExportsDeclaration] = {
