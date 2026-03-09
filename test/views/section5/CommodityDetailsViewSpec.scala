@@ -36,7 +36,6 @@ class CommodityDetailsViewSpec extends UnitViewSpec with Injector {
   def createView(form: Form[CommodityDetails])(implicit request: JourneyRequest[_]): Document =
     page(itemId, form)(request, messages)
 
-  // scalastyle:off
   def commodityDetailsView(
     declarationType: DeclarationType,
     form: Form[CommodityDetails],
@@ -134,7 +133,6 @@ class CommodityDetailsViewSpec extends UnitViewSpec with Injector {
       saveButton.text mustBe messages(saveAndContinueCaption)
     }
   }
-  // scalastyle:on
 
   "Commodity Details View on empty page" when {
     for (decType <- DeclarationType.values)

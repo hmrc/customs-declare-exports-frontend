@@ -53,7 +53,6 @@ class AuthActionImpl @Inject() (
     agentCode and confidenceLevel and nino and saUtr and dateOfBirth and agentInformation and groupIdentifier and
     credentialRole and mdtpInformation and itmpName and itmpDateOfBirth and itmpAddress and credentialStrength and loginTimes
 
-  // scalastyle:off
   override def invokeBlock[A](request: Request[A], block: AuthenticatedRequest[A] => Future[Result]): Future[Result] = {
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
@@ -123,7 +122,6 @@ class AuthActionImpl @Inject() (
         Future.failed(e)
     }
   }
-  // scalastyle:on
 
   private def getEoriFromEnrolments(enrolments: Enrolments): Option[EnrolmentIdentifier] =
     enrolments.getEnrolment(enrolment).flatMap(_.getIdentifier(identifierKey))

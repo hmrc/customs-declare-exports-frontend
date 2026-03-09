@@ -41,10 +41,6 @@ The service's user interface is always built using the components provided by th
   However, they generate the same Html, with the same CSS classes, as the Html component sampled at [GDS pagination](https://design-system.service.gov.uk/components/pagination/).
 
 
-### Scalastyle
-
-Project contains scalafmt plugin.
-
 Commands for code formatting:
 
 ```

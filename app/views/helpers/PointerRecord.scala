@@ -53,7 +53,6 @@ abstract class DefaultPointerRecord extends PointerRecord {
   val amendKey = Option.empty[String]
 }
 
-// scalastyle:off
 object PointerRecord {
 
   private val pointerRecordForPage = (call: Call) =>
@@ -872,5 +871,4 @@ object PointerRecord {
       override val amendKey: Option[String] = Some("declaration.summary.transport.supervisingOffice")
     }
   )
-  // scalastyle:on
 }

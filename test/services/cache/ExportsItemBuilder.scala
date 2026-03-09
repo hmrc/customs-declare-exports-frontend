@@ -25,7 +25,6 @@ import models.declaration.{CommodityMeasure => CommodityMeasureModel, _}
 
 import java.util.UUID
 
-// scalastyle:off
 trait ExportsItemBuilder {
 
   val fiscalInformation: FiscalInformation = FiscalInformation("Yes")

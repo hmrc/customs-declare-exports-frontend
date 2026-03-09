@@ -58,7 +58,6 @@ trait MockAuthAction extends MockitoSugar with Stubs with MetricsMocks with Inje
       )(any(), any())
     ).thenReturn(Future.failed(exceptionThrown))
 
-  // scalastyle:off
   def authorizedUser(user: SignedInUser = exampleUser): Unit =
     when(
       mockAuthConnector.authorise(
@@ -259,7 +258,6 @@ trait MockAuthAction extends MockitoSugar with Stubs with MetricsMocks with Inje
         )
       )
     )
-  // scalastyle:on
 
   def getAuthenticatedRequest(declarationId: String = "declarationUuid"): VerifiedEmailRequest[AnyContentAsEmpty.type] =
     buildVerifiedEmailRequest(FakeRequest("GET", "").withSession(declarationUuid -> declarationId).withCSRFToken, exampleUser)

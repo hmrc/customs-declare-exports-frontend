@@ -38,7 +38,6 @@ import play.api.mvc.Call
 import services.TaggedAuthCodes
 import scala.annotation.unused
 
-// scalastyle:off
 trait CacheDependentNavigators {
 
   val taggedAuthCodes: TaggedAuthCodes

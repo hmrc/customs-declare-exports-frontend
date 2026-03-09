@@ -70,7 +70,6 @@ object DepartureTransport extends DeclarationPage {
     DepartureTransport(departureType, List(v1, v2, v3, v4, v5, v6, v7, v8).flatten.headOption.orElse(Some("")))
   }
 
-  // scalastyle:off
   private def model2Form(transportCodes: TransportCodes): DepartureTransport => Option[
     (Option[String], Option[String], Option[String], Option[String], Option[String], Option[String], Option[String], Option[String], Option[String])
   ] =
@@ -88,7 +87,6 @@ object DepartureTransport extends DeclarationPage {
           model2Ref(transportCodes.code8)
         )
       )
-  // scalastyle:on
 
   private def model2Ref(transportCode: TransportCode)(implicit departureTransport: DepartureTransport): Option[String] =
     if (!departureTransport.meansOfTransportOnDepartureType.contains(transportCode.value)) None

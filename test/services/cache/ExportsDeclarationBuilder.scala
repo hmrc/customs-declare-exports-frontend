@@ -38,7 +38,6 @@ import models.{DeclarationMeta, DeclarationType, ExportsDeclaration}
 import java.time.{Instant, LocalDate, LocalDateTime, ZoneOffset}
 import java.util.UUID
 
-//noinspection ScalaStyle
 trait ExportsDeclarationBuilder {
 
   protected type ExportsDeclarationModifier = ExportsDeclaration => ExportsDeclaration

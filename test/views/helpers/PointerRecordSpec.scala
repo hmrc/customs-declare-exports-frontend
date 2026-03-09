@@ -55,7 +55,6 @@ class PointerRecordSpec extends UnitViewSpec with ExportsTestHelper with Injecto
   when(codeListConnector.getPackageTypes(any())).thenReturn(ListMap(typeOfPackage.code -> typeOfPackage))
   when(codeListConnector.getDocumentTypes(any())).thenReturn(ListMap(previousDocType.code -> previousDocType))
 
-  // scalastyle:off
   "PointerRecord" can {
     "find a record for the following pointers" in {
       validatePointerValues("declaration.typeCode", "STANDARD", "Standard declaration")
@@ -231,7 +230,6 @@ class PointerRecordSpec extends UnitViewSpec with ExportsTestHelper with Injecto
       validatePointerValues("declaration.locations.warehouseIdentification.identificationType", warehouseIdentificationId)
       validatePointerValues("declaration.locations.warehouseIdentification.supervisingCustomsOffice", supervisingCustomsOffice)
     }
-    // scalastyle:on
   }
 
   val item = anItem(

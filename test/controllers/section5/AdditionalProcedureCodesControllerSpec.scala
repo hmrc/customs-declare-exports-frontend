@@ -506,7 +506,6 @@ class AdditionalProcedureCodesControllerSpec extends ControllerSpec with Audited
     }
   }
 
-  // scalastyle:off
   private def testCodesWithCachePopulated(defaultExportItem: ExportItem, formAction: (String, String))(implicit request: JourneyRequest[_]): Unit = {
 
     "provided with duplicated code" should {
@@ -568,7 +567,6 @@ class AdditionalProcedureCodesControllerSpec extends ControllerSpec with Audited
       }
     }
   }
-  // scalastyle:on
 
   private def testAddCodeSuccess(defaultExportItem: ExportItem, formAction: (String, String))(implicit request: JourneyRequest[_]): Unit = {
     val correctForm = Seq((additionalProcedureCodeKey, "123"), formAction)

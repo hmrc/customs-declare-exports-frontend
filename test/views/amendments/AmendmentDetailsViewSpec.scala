@@ -158,7 +158,6 @@ object AmendmentDetailsViewSpec {
     transport -> s"$summary.transport"
   )
 
-  // scalastyle:off
   lazy val amendments: List[Difference] = List(
     // =========================== Transport's fields
     amendment(s"$transport.expressConsignment", transport, s"${keys(transport)}.expressConsignment"),
@@ -306,11 +305,8 @@ object AmendmentDetailsViewSpec {
     addition(s"$items.additionalDocuments.documents.#1.measurementUnitQuantity", items, s"$item.additionalDocuments.measurementUnitQuantity"),
     addition("declaration.totalNumberOfItems.totalAmountInvoiced", transaction, s"${keys(transaction)}.itemAmount"),
     addition("declaration.totalNumberOfItems.totalAmountInvoicedCurrency", transaction, s"${keys(transaction)}.currencyCode"),
-    // addition("declaration.totalNumberOfItems", transaction, s"${keys(transaction)}.exchangeRate"), ???????????????
     addition("declaration.totalNumberOfItems.totalPackage", transaction, s"${keys(transaction)}.totalNoOfPackages"),
     addition("declaration.previousDocuments.#2.documentType", transaction, s"${keys(transaction)}.previousDocuments.type"),
     addition("declaration.previousDocuments.#2.documentReference", transaction, s"${keys(transaction)}.previousDocuments.reference")
-    // addition("declaration.previousDocuments.documents.#2", transaction, s"${keys(transaction)}.previousDocuments.goodsItemIdentifier"), ????????
   )
-  // scalastyle:on
 }
