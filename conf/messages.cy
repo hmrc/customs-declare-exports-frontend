@@ -1645,6 +1645,7 @@ declaration.statisticalValue.guidance.bullet.2.flag = Datganiad Ail-allforio Saf
 declaration.statisticalValue.guidance.bullet.3.flag = Datganiad Allforio ar gyfer anfon nwyddau i Diriogaeth Ariannol Arbennig neu Diriogaeth sydd â Chyfundrefn Tollau gyda’r UE
 declaration.statisticalValue.guidance.text.2.flag = Ar gyfer Datganiad Allforio o dan Brosesu Allanol:
 declaration.statisticalValue.guidance.text.3.flag = Nodwch y gwerth ystadegol ar gyfer yr eitem nwyddau mewn GBP (£ sterling), hyd yn oed os defnyddir arian cyfred gwahanol yn DE 4/11 Cyfanswm a Anfonebwyd.
+declaration.statisticalValue.error.empty = Nodwch y gwerth ystadegol
 declaration.statisticalValue.error.length = Mae’n rhaid i gyfanswm y gost gynnwys 15 digid neu lai
 declaration.statisticalValue.error.wrongFormat = Mae’n rhaid i gyfanswm y gost gynnwys rhifau’n unig
 
@@ -2721,14 +2722,14 @@ dmsError.CDS12158.title = Elfen ar Goll
 dmsError.CDS12066.title = Ni chaniateir cyfuniad o elfen(nau) neu werth(oedd)
 dmsError.CDS12067.title = Ni chaniateir cyfuniad o elfen(nau) neu werth(oedd)
 dmsError.CDS12069.title = Mae annilysu datganiad yn cael ei brosesu yn y Swyddfa lle mae’r nwyddau’n Gadael
-dmsError.CDS12170.title = Gwall Awdurdodi
+dmsError.CDS12170.title = Gwall awdurdodi
 dmsError.CDS12078.title = Gwall perthynas
 dmsError.CDS12151.title = Gwall perthynas
-dmsError.CDS12152.title = Mae cod gweithdrefn ychwanegol ar goll
+dmsError.CDS12152.title = Mae’r cod gweithdrefn ychwanegol ar goll
 dmsError.CDS12171.title = Gwall perthynas
 dmsError.CDS12172.title = Gwall perthynas
 dmsError.CDS40012.title = Gwall cod nwyddau
-dmsError.CDS50018.title = Mae Dyddiad/Amser Cyrraedd Nwyddau yn annilys neu heb ei gynnwys
+dmsError.CDS50018.title = Mae Dyddiad/Amser Cyrraedd y Nwyddau yn annilys neu heb ei gynnwys
 
 userSignedOut.title = Rydym wedi cadw’ch atebion a’ch allgofnodi
 

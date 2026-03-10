@@ -24,6 +24,7 @@ import forms.section6.BorderTransport.form
 import models.DeclarationType._
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
+import org.mockito.Mockito.{reset, when}
 import play.api.mvc.AnyContent
 import services.TransportCodeService
 import views.common.PageWithButtonsSpec
@@ -74,6 +75,10 @@ class BorderTransportViewSpec extends PageWithButtonsSpec with Injector {
         }
 
         "display the expected 'Means of Transport' section" in {
+          reset(appConfig)
+          when(appConfig.isOptionalFieldsEnabled).thenReturn(false)
+          val view = createView()
+
           transportCodeService.transportCodesOnBorderTransport.foreach { transportCode =>
             if (transportCode.value == "option_none") {
               Option(view.getElementById(s"radio_${transportCode.id}")) must be(None)
@@ -89,9 +94,8 @@ class BorderTransportViewSpec extends PageWithButtonsSpec with Injector {
               Option(view.getElementById(s"${transportCode.id}")) must not be None
 
               val inputLabel = view.getElementsByAttributeValue("for", transportCode.id).text
-              if (appConfig.isOptionalFieldsEnabled) {
-                inputLabel mustBe messages(s"declaration.transportInformation.meansOfTransport.${transportCode.id}.label.flag")
-              } else inputLabel mustBe messages(s"declaration.transportInformation.meansOfTransport.${transportCode.id}.label")
+
+              inputLabel mustBe messages(s"declaration.transportInformation.meansOfTransport.${transportCode.id}.label")
 
               val inputHint = view.getElementById(s"${transportCode.id}-hint").text
               inputHint mustBe messages(s"declaration.transportInformation.meansOfTransport.${transportCode.id}.hint")
@@ -99,6 +103,44 @@ class BorderTransportViewSpec extends PageWithButtonsSpec with Injector {
           }
 
         }
+
+        "display the expected 'Means of Transport' section FEATURE FLAGGED" in {
+          reset(appConfig)
+          when(appConfig.isOptionalFieldsEnabled).thenReturn(true)
+
+          val view = createView()
+
+          transportCodeService.transportCodesOnBorderTransport.foreach { transportCode =>
+            if (transportCode.value == "option_none") {
+              Option(view.getElementById(s"radio_${transportCode.id}")) must be(None)
+            } else {
+
+              Option(view.getElementById(s"radio_${transportCode.id}")) must not be None
+
+              val suffix = if (transportCode.useAltRadioTextForBorderTransport) ".vBT" else ""
+              val radioLabel = view.getElementsByAttributeValue("for", s"radio_${transportCode.id}").text
+
+              radioLabel mustBe messages(s"declaration.transportInformation.meansOfTransport.${transportCode.id}$suffix")
+
+              Option(view.getElementById(s"${transportCode.id}")) must not be None
+
+              val inputLabel = view.getElementsByAttributeValue("for", transportCode.id).text
+
+              if (declarationType == SUPPLEMENTARY || declarationType == STANDARD) {
+                inputLabel mustBe messages(s"declaration.transportInformation.meansOfTransport.${transportCode.id}.label")
+              } else inputLabel mustBe messages(s"declaration.transportInformation.meansOfTransport.${transportCode.id}.label")
+
+              val inputHint = view.getElementById(s"${transportCode.id}-hint").text
+
+              if (declarationType == SUPPLEMENTARY || declarationType == STANDARD) {
+                inputHint mustBe messages(s"declaration.transportInformation.meansOfTransport.${transportCode.id}.hint")
+              } else
+                inputHint mustBe messages(s"declaration.transportInformation.meansOfTransport.${transportCode.id}.hint")
+            }
+          }
+
+        }
+
         checkAllSaveButtonsAreDisplayed(createView())
       }
     }
