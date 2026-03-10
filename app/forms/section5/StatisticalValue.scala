@@ -64,7 +64,9 @@ object StatisticalValue extends DeclarationPage with FieldMapping {
     .verifying("declaration.statisticalValue.error.wrongFormat", isEmpty or isDecimalWithNoMoreDecimalPlacesThan(statisticalValueDecimalPlaces))
 
   private val mappingOptional: Mapping[StatisticalValue] =
-    Forms.mapping(statisticalValueKey -> mappingStatisticalValueOptional)(StatisticalValue.apply)(StatisticalValue.unapply)
+    Forms.mapping(statisticalValueKey -> mappingStatisticalValueOptional)(StatisticalValue.apply)(StatisticalValue =>
+      Some(StatisticalValue.statisticalValue)
+    )
 
   def formOptional: Form[StatisticalValue] = Form(mappingOptional)
 
