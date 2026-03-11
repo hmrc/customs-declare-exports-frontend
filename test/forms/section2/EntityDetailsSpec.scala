@@ -18,7 +18,7 @@ package forms.section2
 
 import forms.common.{AddressSpec, Eori}
 import org.scalatest.Assertion
-import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
+import org.scalatest.matchers.must.Matchers.mustBe
 import play.api.data.FormError
 import play.api.libs.json.{JsObject, JsString, JsValue}
 

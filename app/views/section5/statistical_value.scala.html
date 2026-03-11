@@ -78,7 +78,7 @@
     title = Title("declaration.statisticalValue.title", "declaration.section.5", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(StatisticalValue, ItemId(itemId))))
 ) {
-    @formHelper(action = StatisticalValueController.submitItemType(itemId), 'autoComplete -> "off") {
+    @formHelper(action = StatisticalValueController.submitItemType(itemId), Symbol("autoComplete") -> "off") {
         @errorSummary(form.errors)
 
         @notificationBanner(

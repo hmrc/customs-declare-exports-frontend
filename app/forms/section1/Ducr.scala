@@ -21,7 +21,7 @@ import models.requests.JourneyRequest
 import play.api.data.Forms.text
 import play.api.data.{Form, Forms, Mapping}
 import play.api.libs.json.{Json, OFormat}
-import utils.validators.forms.FieldValidator._
+import utils.validators.forms.FieldValidator.*
 
 import java.time.ZoneId
 
@@ -38,7 +38,7 @@ object Ducr extends DeclarationPage {
           .transform(_.toUpperCase, identity[String])
           .verifying("declaration.consignmentReferences.ducr.error.empty", nonEmpty)
           .verifying("declaration.consignmentReferences.ducr.error.invalid", isEmpty or isValidDucr)
-    )(form2Data)(Ducr.unapply)
+    )(form2Data)(Ducr => Some(Ducr.ducr))
 
   val form: Form[Ducr] = Form(mapping)
 

@@ -113,7 +113,7 @@
     title = Title("declaration.zeroRatedForVat.title",  "declaration.section.5", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(ZeroRatedForVat, ItemId(itemId))))) {
 
-    @formHelper(action = ZeroRatedForVatController.submitForm(itemId), 'autoComplete -> "off") {
+    @formHelper(action = ZeroRatedForVatController.submitForm(itemId), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 

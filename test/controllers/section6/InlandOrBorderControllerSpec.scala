@@ -265,7 +265,7 @@ class InlandOrBorderControllerSpec extends ControllerSpec with AuditedController
           }
 
           s"AdditionalDeclarationType is SUPPLEMENTARY_SIMPLIFIED" should {
-            val expectedNextPage = ContainerController.displayContainerSummary
+            val expectedNextPage = ContainerController.displayContainerSummary()
 
             s"redirect to ${expectedNextPage.url}" in {
               cacheRequest(SUPPLEMENTARY_SIMPLIFIED, withTransportLeavingTheBorder(modeOfTransportCode))

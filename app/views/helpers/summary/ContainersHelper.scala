@@ -66,5 +66,5 @@ object ContainersHelper extends SummaryHelper {
   }
 
   private def changeContainer(actionsEnabled: Boolean)(implicit messages: Messages): Option[Actions] =
-    changeLink(ContainerController.displayContainerSummary, "container", actionsEnabled)
+    changeLink(ContainerController.displayContainerSummary(), "container", actionsEnabled)
 }

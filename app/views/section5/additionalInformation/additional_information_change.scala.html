@@ -36,7 +36,7 @@
     backButton = Some(BackButton(messages("site.backToPreviousQuestion"), AdditionalInformationController.displayPage(itemId)))
 ) {
 
-    @formHelper(action = AdditionalInformationChangeController.submitForm(itemId, documentId), 'autoComplete -> "off") {
+    @formHelper(action = AdditionalInformationChangeController.submitForm(itemId, documentId), Symbol("autoComplete") -> "off") {
 
         @editContent(itemId, form)
 

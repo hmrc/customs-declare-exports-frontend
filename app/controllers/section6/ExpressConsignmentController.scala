@@ -70,7 +70,7 @@ class ExpressConsignmentController @Inject() (
 
   private def nextPage(yesNoAnswer: YesNoAnswer): Call =
     if (yesNoAnswer.answer == YesNoAnswers.yes) TransportPaymentController.displayPage
-    else ContainerController.displayContainerSummary
+    else ContainerController.displayContainerSummary()
 
   private def updateCache(yesNoAnswer: YesNoAnswer)(implicit request: JourneyRequest[_]): Future[ExportsDeclaration] =
     updateDeclarationFromRequest { model =>

@@ -39,8 +39,7 @@ trait ErrorInterpreter {
       .map(dmsErrorCode => dmsErrorCode.description)
       .getOrElse(messages("error.unknown"))
 
-    if (description.trim.isEmpty)
-      List(HtmlFormat.empty)
+    if (description.trim.isEmpty) List(HtmlFormat.empty)
     else {
       val desc = description.last match {
         case '.' | '?' | '!'           => description

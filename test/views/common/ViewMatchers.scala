@@ -20,7 +20,7 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
 import org.jsoup.select.Elements
 import org.scalatest.matchers._
-import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
+import org.scalatest.matchers.must.Matchers.mustBe
 import play.api.i18n.Messages
 import play.api.mvc.{Call, Result}
 import play.api.test.Helpers.{contentAsString, _}
@@ -31,7 +31,6 @@ import scala.concurrent.Future
 import scala.jdk.CollectionConverters.IteratorHasAsScala
 import scala.language.implicitConversions
 
-//noinspection ScalaStyle
 trait ViewMatchers {
 
   implicit private def elements2Scala(elements: Elements): Iterator[Element] = elements.iterator().asScala

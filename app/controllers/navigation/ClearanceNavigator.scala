@@ -41,30 +41,30 @@ import play.api.mvc.Call
 
 trait ClearanceNavigator extends CacheDependentNavigators {
 
-  val clearance: PartialFunction[DeclarationPage, Call] = {
-    case EntryIntoDeclarantsRecords   => SectionSummaryController.displayPage(1)
-    case DucrChoice                   => AdditionalDeclarationTypeController.displayPage
-    case ConsignmentReferences        => AdditionalDeclarationTypeController.displayPage
-    case LinkDucrToMucr               => LocalReferenceNumberController.displayPage
-    case ExporterDetails              => ExporterEoriNumberController.displayPage
-    case DeclarantDetails             => EntryIntoDeclarantsRecordsController.displayPage
-    case PersonPresentingGoodsDetails => EntryIntoDeclarantsRecordsController.displayPage
-    case ContainerAdd                 => ContainerController.displayContainerSummary
-    case RoutingCountryQuestionPage   => DestinationCountryController.displayPage
-    case RemoveCountryPage            => RoutingCountriesController.displayRoutingCountry
-    case ChangeCountryPage            => RoutingCountriesController.displayRoutingCountry
-    case LocationOfGoods              => DestinationCountryController.displayPage
-    case ConsignorEoriNumber          => IsExsController.displayPage
-    case ConsignorDetails             => ConsignorEoriNumberController.displayPage
-    case DocumentSummary              => SectionSummaryController.displayPage(3)
-    case CarrierEoriNumber            => ThirdPartyGoodsTransportationController.displayPage
-    case page                         => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on clearance")
+  val clearance: PartialFunction[DeclarationPage, ExportsDeclaration => Call] = {
+    case EntryIntoDeclarantsRecords   => _ => SectionSummaryController.displayPage(1)
+    case DucrChoice                   => _ => AdditionalDeclarationTypeController.displayPage
+    case ConsignmentReferences        => _ => AdditionalDeclarationTypeController.displayPage
+    case LinkDucrToMucr               => _ => LocalReferenceNumberController.displayPage
+    case ExporterDetails              => _ => ExporterEoriNumberController.displayPage
+    case DeclarantDetails             => _ => EntryIntoDeclarantsRecordsController.displayPage
+    case PersonPresentingGoodsDetails => _ => EntryIntoDeclarantsRecordsController.displayPage
+    case ContainerAdd                 => _ => ContainerController.displayContainerSummary()
+    case RoutingCountryQuestionPage   => _ => DestinationCountryController.displayPage
+    case RemoveCountryPage            => _ => RoutingCountriesController.displayRoutingCountry
+    case ChangeCountryPage            => _ => RoutingCountriesController.displayRoutingCountry
+    case LocationOfGoods              => _ => DestinationCountryController.displayPage
+    case ConsignorEoriNumber          => _ => IsExsController.displayPage
+    case ConsignorDetails             => _ => ConsignorEoriNumberController.displayPage
+    case DocumentSummary              => _ => SectionSummaryController.displayPage(3)
+    case CarrierEoriNumber            => _ => ThirdPartyGoodsTransportationController.displayPage
+    case page                         => _ => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on clearance")
   }
 
-  val clearanceItemPage: PartialFunction[DeclarationPage, String => Call] = {
-    case AdditionalInformationRequired => CommodityMeasureController.displayPage
-    case AdditionalInformationSummary  => CommodityMeasureController.displayPage
-    case page                          => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on clearance")
+  val clearanceItemPage: PartialFunction[DeclarationPage, (ExportsDeclaration, String) => Call] = {
+    case AdditionalInformationRequired => (_, itemId) => CommodityMeasureController.displayPage(itemId)
+    case AdditionalInformationSummary  => (_, itemId) => CommodityMeasureController.displayPage(itemId)
+    case page => (_, _) => throw new IllegalArgumentException(s"Navigator back-link route not implemented for $page on clearance")
   }
 
   def clearanceCacheDependent: PartialFunction[DeclarationPage, ExportsDeclaration => Call] = {

@@ -98,7 +98,7 @@
     title = Title("draft.declarations.remove.title", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.back"), SavedDeclarationsController.displayDeclarations()))) {
 
-    @formHelper(action = RemoveDraftDeclarationController.removeDeclaration(declaration.id), 'autoComplete -> "off") {
+    @formHelper(action = RemoveDraftDeclarationController.removeDeclaration(declaration.id), Symbol("autoComplete") -> "off") {
         @errorSummary(radioGroupErrors("remove", "Yes", form.errors))
 
         @govukFieldset(Fieldset(

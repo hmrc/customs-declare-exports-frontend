@@ -159,7 +159,7 @@
     title = title,
     backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(PackageInformation, ItemId(itemId))))
 ) {
-    @formHelper(action = PackageInformationSummaryController.submitForm(itemId), 'autoComplete -> "off") {
+    @formHelper(action = PackageInformationSummaryController.submitForm(itemId), Symbol("autoComplete") -> "off") {
         @errorSummary(yesNoErrors(form.errors))
 
         @sectionHeader(messages("declaration.section.5"))

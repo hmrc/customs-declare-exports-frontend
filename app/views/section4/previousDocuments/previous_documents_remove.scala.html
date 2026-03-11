@@ -72,7 +72,7 @@
     title = Title("declaration.previousDocuments.remove.title", "declaration.section.4", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(DocumentChangeOrRemove)))
 ) {
-    @formHelper(action = PreviousDocumentsRemoveController.submit(documentId), 'autoComplete -> "off") {
+    @formHelper(action = PreviousDocumentsRemoveController.submit(documentId), Symbol("autoComplete") -> "off") {
         @errorSummary(yesNoErrors(form.errors))
 
         @sectionHeader(messages("declaration.section.4"))

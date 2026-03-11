@@ -44,7 +44,7 @@
     title = Title("declaration.clearance.itemsAdd.title", "declaration.section.5"),
     backButton = Some(BackButton(messages("site.backToPreviousSection"), navigator.backLink(ExportItem)))) {
 
-    @formHelper(action = ItemsSummaryController.addFirstItem, 'autoComplete -> "off") {
+    @formHelper(action = ItemsSummaryController.addFirstItem, Symbol("autoComplete") -> "off") {
 
       @sectionHeader(messages("declaration.section.5"))
       @pageTitle(messages("declaration.clearance.itemsAdd.title"))
@@ -68,7 +68,7 @@
     title = Title("declaration.itemsAdd.title", "declaration.section.5"),
     backButton = Some(BackButton(messages("site.backToPreviousSection"), navigator.backLink(ExportItem)))) {
 
-    @formHelper(action = ItemsSummaryController.addFirstItem, 'autoComplete -> "off") {
+    @formHelper(action = ItemsSummaryController.addFirstItem, Symbol("autoComplete") -> "off") {
 
       @sectionHeader(messages("declaration.section.5"))
       @pageTitle(messages("declaration.itemsAdd.title"))

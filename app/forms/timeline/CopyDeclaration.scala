@@ -36,7 +36,7 @@ object CopyDeclaration extends DeclarationPage {
   def form: Form[CopyDeclaration] =
     Form(
       mapping("ducr" -> Ducr.mapping, "lrn" -> Lrn.mapping("declaration.consignmentReferences.lrn").verifying())(CopyDeclaration.apply)(
-        CopyDeclaration.unapply
+        CopyDeclaration => Some(Tuple.fromProductTyped(CopyDeclaration))
       )
     )
 

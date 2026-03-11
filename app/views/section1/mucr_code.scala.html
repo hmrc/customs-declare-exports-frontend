@@ -50,7 +50,7 @@
     showDeclarationSummaryLink = false
 ) {
 
-    @formHelper(action = MucrController.submitForm, 'autoComplete -> "off") {
+    @formHelper(action = MucrController.submitForm, Symbol("autoComplete") -> "off") {
         @errorSummary(form.errors)
 
         @sectionHeader(messages("declaration.section.1"))

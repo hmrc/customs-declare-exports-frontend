@@ -45,7 +45,7 @@ class Card6ForTransport @Inject() (summaryCard: summary_card, countryHelper: Cou
     summaryCard(card(6), rows(declaration, actionsEnabled))
 
   override def backLink(implicit request: JourneyRequest[_]): Call =
-    ContainerController.displayContainerSummary
+    ContainerController.displayContainerSummary()
 
   override def continueTo(implicit request: JourneyRequest[_]): Call =
     SummaryController.displayPage

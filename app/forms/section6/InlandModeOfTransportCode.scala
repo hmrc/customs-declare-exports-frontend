@@ -19,7 +19,7 @@ package forms.section6
 import forms.DeclarationPage
 import models.ExportsFieldPointer.ExportsFieldPointer
 import models.{Amendment, FieldMapping}
-import play.api.data.Forms._
+import play.api.data.Forms.*
 import play.api.data.{Form, Forms}
 import play.api.libs.json.{Json, OFormat}
 
@@ -49,7 +49,7 @@ object InlandModeOfTransportCode extends DeclarationPage with FieldMapping {
     .mapping(
       "inlandModeOfTransportCode" ->
         optional(of(ModeOfTransportCode.formatter("declaration.warehouse.inlandTransportDetails.error.incorrect")))
-    )(InlandModeOfTransportCode.apply)(InlandModeOfTransportCode.unapply)
+    )(InlandModeOfTransportCode.apply)(InlandModeOfTransportCode => Some(InlandModeOfTransportCode.inlandModeOfTransportCode))
 
   def form: Form[InlandModeOfTransportCode] = Form(mapping)
 }

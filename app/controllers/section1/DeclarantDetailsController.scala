@@ -77,7 +77,7 @@ class DeclarantDetailsController @Inject() (
           if (validForm.answer == YesNoAnswers.yes)
             updateCache(DeclarantDetails(EntityDetails(Some(Eori(request.eori)), None))).map(_ => navigator.continueTo(nextPage(request)))
           else
-            Future(Redirect(NotEligibleController.displayNotDeclarant).removingFromSession(declarationUuid, errorFixModeSessionKey))
+            Future(Redirect(NotEligibleController.displayNotDeclarant()).removingFromSession(declarationUuid, errorFixModeSessionKey))
       )
   }
 

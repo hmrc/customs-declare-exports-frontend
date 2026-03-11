@@ -50,7 +50,7 @@
     title = Title("declaration.consignee.title", "declaration.section.2", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(ConsigneeDetails)))) {
 
-    @formHelper(action = ConsigneeDetailsController.saveAddress, 'autoComplete -> "off") {
+    @formHelper(action = ConsigneeDetailsController.saveAddress, Symbol("autoComplete") -> "off") {
         @errorSummary(form.errors)
 
         @sectionHeader(messages("declaration.section.2"))

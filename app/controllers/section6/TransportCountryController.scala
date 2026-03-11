@@ -81,7 +81,7 @@ class TransportCountryController @Inject() (
   private def nextPage(implicit request: JourneyRequest[AnyContent]): Result = {
     val page = request.declarationType match {
       case STANDARD | OCCASIONAL | SIMPLIFIED => ExpressConsignmentController.displayPage
-      case SUPPLEMENTARY                      => ContainerController.displayContainerSummary
+      case SUPPLEMENTARY                      => ContainerController.displayContainerSummary()
     }
     navigator.continueTo(page)
   }

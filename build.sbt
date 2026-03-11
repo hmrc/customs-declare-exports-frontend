@@ -3,7 +3,7 @@ import uk.gov.hmrc.versioning.SbtGitVersioning.autoImport.majorVersion
 val appName = "customs-declare-exports-frontend"
 
 ThisBuild / majorVersion := 0
-ThisBuild / scalaVersion := "2.13.16"
+ThisBuild / scalaVersion := "3.3.7"
 
 PlayKeys.devSettings := List("play.server.http.port" -> "6791")
 
@@ -28,11 +28,10 @@ lazy val scalacFlags = List(
   "-unchecked",              // warn about unchecked type parameters
   "-Xfatal-warnings",        // warnings are fatal!!
   "-Wconf:cat=deprecation&src=app/controllers/.*:silent", // deprecation messages muted
-  "-Wunused:-nowarn",        // enable @no-warn annotation
   "-Wconf:src=target/.*:s",  // silence warnings from compiled files
   "-Wconf:msg=match may not be exhaustive:s", // silence warnings about non-exhaustive pattern matching
-  "-Wconf:src=test/.*&msg=a type was inferred to be `Object`:s", // silence warnings from mockito reset
-  "-Wconf:cat=unused&src=.*routes.*:s", // silence private val defaultPrefix in class Routes is never used
+  "-Wconf:msg=a type was inferred to be `Object`:s", // silence warnings from mockito reset
+  "-Wconf:src=.*routes.*:s", // silence private val defaultPrefix in class Routes is never used
   "-Wconf:msg=eq not selected from this instance:s", // silence eq not selected from this instance warning
   "-Wconf:msg=While parsing annotations in:s" // silence While parsing annotations in warning
 )
@@ -55,6 +54,9 @@ lazy val scoverageSettings = List(
   coverageHighlighting := true,
   Test / parallelExecution := false
 )
+
+Compile / scalacOptions := (Compile / scalacOptions).value.distinct
+Test / scalacOptions := (Test / scalacOptions).value.distinct
 
 addCommandAlias("ucomp", "Test/compile")
 addCommandAlias("precommit", ";clean;scalafmt;Test/scalafmt;coverage;test;scalafmtCheckAll;coverageReport")

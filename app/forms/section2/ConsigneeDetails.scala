@@ -44,8 +44,10 @@ object ConsigneeDetails extends DeclarationPage with FieldMapping {
     declarationType: DeclarationType
   )(implicit messages: Messages, codeListConnector: CodeListConnector): Mapping[ConsigneeDetails] =
     if (declarationType == CLEARANCE)
-      Forms.mapping("details" -> EntityDetails.partialAndOptionalAddressMapping(35))(ConsigneeDetails.apply)(ConsigneeDetails.unapply)
-    else Forms.mapping("details" -> EntityDetails.addressMapping(35))(ConsigneeDetails.apply)(ConsigneeDetails.unapply)
+      Forms.mapping("details" -> EntityDetails.partialAndOptionalAddressMapping(35))(ConsigneeDetails.apply)(ConsigneeDetails =>
+        Some(ConsigneeDetails.details)
+      )
+    else Forms.mapping("details" -> EntityDetails.addressMapping(35))(ConsigneeDetails.apply)(ConsigneeDetails => Some(ConsigneeDetails.details))
 
   def form(declarationType: DeclarationType)(implicit messages: Messages, codeListConnector: CodeListConnector): Form[ConsigneeDetails] = Form(
     mapping(declarationType)

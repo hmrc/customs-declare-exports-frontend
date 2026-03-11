@@ -70,7 +70,7 @@
     backButton = Some(BackButton(messages("site.backToPreviousQuestion"), previousPage)),
     showDeclarationSummaryLink = false
 ) {
-    @formHelper(action = AdditionalDeclarationTypeController.submitForm, 'autoComplete -> "off") {
+    @formHelper(action = AdditionalDeclarationTypeController.submitForm, Symbol("autoComplete") -> "off") {
         @errorSummary(declarationTypeHelper.radioGroupErrors(form))
 
         @if(!request.isType(SUPPLEMENTARY)) {

@@ -53,7 +53,7 @@
     title = Title(s"declaration.locationOfGoods.title.v$version", "declaration.section.3", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(LocationOfGoods)))
 ) {
-    @formHelper(action = LocationOfGoodsController.saveLocation, 'autoComplete -> "off") {
+    @formHelper(action = LocationOfGoodsController.saveLocation, Symbol("autoComplete") -> "off") {
         @errorSummary(locationOfGoodsHelper.errors(form, version))
 
         @notificationBanner(

@@ -74,7 +74,7 @@ object Date extends FieldMapping {
         dayKey -> optional(number()).verifying("dateTime.date.day.error.empty", _.nonEmpty),
         monthKey -> optional(number()).verifying("dateTime.date.month.error.empty", _.nonEmpty),
         yearKey -> optional(number()).verifying("dateTime.date.year.error.empty", _.nonEmpty)
-      )(Date.apply)(Date.unapply)
+      )(Date.apply)(Date => Some(Tuple.fromProductTyped(Date)))
       .verifying(formatError, isDateFormatValid)
       .verifying(rangeError, date => !isDateFormatValid(date) || isDateInRange(date))
 

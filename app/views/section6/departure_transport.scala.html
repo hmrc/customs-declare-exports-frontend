@@ -41,7 +41,7 @@
     title = departureTransportHelper.titleInHeadTag(form.hasErrors || form.hasGlobalErrors),
     backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(DepartureTransport)))) {
 
-    @formHelper(action = DepartureTransportController.submitForm, 'autoComplete -> "off") {
+    @formHelper(action = DepartureTransportController.submitForm, Symbol("autoComplete") -> "off") {
         @errorSummary(radioGroupErrors(radioButtonGroupId, departureTransportHelper.transportCodes.code1.id, form.errors))
 
         @sectionHeader(messages("declaration.section.6"))

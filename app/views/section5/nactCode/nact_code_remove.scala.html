@@ -56,7 +56,7 @@
     title = Title("declaration.nationalAdditionalCode.remove.header", "declaration.section.5", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.backToPreviousQuestion"), NactCodeSummaryController.displayPage(itemId)))
 ) {
-    @formHelper(action = NactCodeRemoveController.submitForm(itemId, code), 'autoComplete -> "off") {
+    @formHelper(action = NactCodeRemoveController.submitForm(itemId, code), Symbol("autoComplete") -> "off") {
         @errorSummary(yesNoErrors(form.errors))
 
         @sectionHeader(messages("declaration.section.5"))

@@ -28,7 +28,7 @@ import models.viewmodels.TariffContentKey
 import play.api.data.Forms.{optional, text}
 import play.api.data.{FieldMapping, Form, Forms, Mapping}
 import uk.gov.voa.play.form.Condition
-import utils.validators.forms.FieldValidator._
+import utils.validators.forms.FieldValidator.*
 
 import scala.util.Try
 
@@ -121,7 +121,7 @@ object InvoiceAndExchangeRate extends DeclarationPage {
     totalAmountInvoicedCurrency -> validateTotalAmountInvoicedCurrency,
     agreedExchangeRateYesNo -> validateAgreedExchangeRateYesNo,
     exchangeRate -> validateExchangeRate(appConfig.isOptionalFieldsEnabled)
-  )(InvoiceAndExchangeRate.apply)(InvoiceAndExchangeRate.unapply)
+  )(InvoiceAndExchangeRate.apply)(InvoiceAndExchangeRate => Some(Tuple.fromProductTyped(InvoiceAndExchangeRate)))
 
   def form(implicit appConfig: AppConfig): Form[InvoiceAndExchangeRate] = Form(mapping)
 
