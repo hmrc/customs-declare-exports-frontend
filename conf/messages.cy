@@ -711,6 +711,7 @@ submission.enhancedStatus.UNDERGOING_PHYSICAL_CHECK = Nwyddau yn cael eu harchwi
 submission.enhancedStatus.WITHDRAWN = Wedi’i dynnu’n ôl
 submission.enhancedStatus.PENDING = Ar y gweill
 submission.enhancedStatus.REQUESTED_CANCELLATION = Cais i ganslo wedi’i gyflwyno
+submission.enhancedStatus.DETAINED = Datganiad wedi'i gadw
 submission.enhancedStatus.UNKNOWN = Anhysbys
 submission.enhancedStatus.AMENDMENT_REQUESTED = Cais am ddiwygiad wedi’i wneud
 

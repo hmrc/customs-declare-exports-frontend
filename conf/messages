@@ -711,6 +711,7 @@ submission.enhancedStatus.UNDERGOING_PHYSICAL_CHECK     = Goods being examined
 submission.enhancedStatus.WITHDRAWN                     = Withdrawn
 submission.enhancedStatus.PENDING                       = Pending
 submission.enhancedStatus.REQUESTED_CANCELLATION        = Cancellation request submitted
+submission.enhancedStatus.DETAINED                      = Declaration detained
 submission.enhancedStatus.UNKNOWN                       = Unknown
 submission.enhancedStatus.AMENDMENT_REQUESTED           = Amendment requested
 
