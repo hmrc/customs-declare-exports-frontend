@@ -148,7 +148,7 @@
 
 @queryRaisedDetailsContent = {
   @paragraph(messages("declaration.details.readMoreAboutDecStatus.queryRaised.paragraph.1"))
-  @paragraph(messages("declaration.details.readMoreAboutDecStatus.queryRaised.paragraph.2", request.email))
+  @paragraph(messages("declaration.details.readMoreAboutDecStatus.queryRaised.paragraph.2"))
 }
 
 @goodsExaminedDetailsContent = {
@@ -165,6 +165,11 @@
   @paragraph(messages("declaration.details.readMoreAboutDecStatus.goodsExamined.paragraph.4"))
 }
 
+@goodsDetainedDetailsContent = {
+    @paragraph(messages("declaration.details.readMoreAboutDecStatus.detained.paragraph.1"))
+    @paragraph(messages("declaration.details.readMoreAboutDecStatus.detained.paragraph.2"))
+}
+
 @uploadingDocumentsDetails = {
   @paragraph(messages("declaration.details.uploadDocuments.details.paragraph.1"))
 
@@ -179,13 +184,13 @@
 }
 
 @declarationStatusReadMore = {
-@if(submission.allSubmissionRequestStatuses.intersect(Seq(GOODS_ARRIVED, GOODS_ARRIVED_MESSAGE)).nonEmpty) {
-  @govukDetails(Details(
-    id = Some("read-more-about-declaration-status-rearrivals"),
-    summary = Text(messages("declaration.details.readMoreAboutDecStatus.rearrivals.header")),
-    content = Text(messages("declaration.details.readMoreAboutDecStatus.rearrivals.paragraph"))
-  ))
-}
+  @if(submission.allSubmissionRequestStatuses.intersect(Seq(GOODS_ARRIVED, GOODS_ARRIVED_MESSAGE)).nonEmpty) {
+    @govukDetails(Details(
+      id = Some("read-more-about-declaration-status-rearrivals"),
+      summary = Text(messages("declaration.details.readMoreAboutDecStatus.rearrivals.header")),
+      content = Text(messages("declaration.details.readMoreAboutDecStatus.rearrivals.paragraph"))
+    ))
+  }
 
   @govukDetails(Details(
     id = Some("read-more-about-declaration-status-submitted"),
@@ -221,6 +226,12 @@
     id = Some("read-more-about-declaration-status-goods-being-examined"),
     summary = Text(messages("declaration.details.readMoreAboutDecStatus.goodsExamined.header")),
     content = HtmlContent(goodsExaminedDetailsContent)
+  ))
+
+  @govukDetails(Details(
+    id = Some("read-more-about-declaration-status-goods-being-detained"),
+    summary = Text(messages("declaration.details.readMoreAboutDecStatus.detained.header")),
+    content = HtmlContent(goodsDetainedDetailsContent)
   ))
 }
 

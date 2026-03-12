@@ -700,6 +700,13 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
       bulletPoints must include(messages(s"$msgKey.readMoreAboutDecStatus.goodsExamined.bullet.3"))
     }
 
+    "display 'read more' section with 'Goods being detained' declaration status expander" in {
+      val element = view.getElementById("read-more-about-declaration-status-goods-being-detained")
+      element must containMessage(s"$msgKey.readMoreAboutDecStatus.detained.header")
+      element must containMessage(s"$msgKey.readMoreAboutDecStatus.detained.paragraph.1")
+      element must containMessage(s"$msgKey.readMoreAboutDecStatus.detained.paragraph.2")
+    }
+
     "omit the Declaration Timeline from the page when there are no notifications for the declaration" in {
       val view = createView(submissionWithStatus())
       val element = view.getElementsByTag("ol")
