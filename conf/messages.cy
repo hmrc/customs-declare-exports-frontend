@@ -714,6 +714,7 @@ submission.enhancedStatus.REQUESTED_CANCELLATION = Cais i ganslo wedi’i gyflwy
 submission.enhancedStatus.DETAINED = Datganiad wedi'i gadw
 submission.enhancedStatus.UNKNOWN = Anhysbys
 submission.enhancedStatus.AMENDMENT_REQUESTED = Cais am ddiwygiad wedi’i wneud
+submission.enhancedStatus.DETAINED = Datganiad wedi’i gadw’n ôl
 
 submission.timeline.title.amendment.accepted = wedi’i dderbyn
 submission.timeline.title.amendment.failed = Wedi stopio dros dro
@@ -823,7 +824,7 @@ declaration.details.readMoreAboutDecStatus.paragraph = Darganfyddwch beth mae gw
 declaration.details.readMoreAboutDecStatus.rearrivals.header = Gwybodaeth am ‘Nwyddau sy’n cyrraedd eto’
 declaration.details.readMoreAboutDecStatus.rearrivals.paragraph = Mae nwyddau sy’n cyrraedd eto yn cynnwys nwyddau a gyflwynir mewn lleoliad newydd, ar ôl cael eu clirio eisoes i’w hallforio mewn mannau eraill. Gall nwyddau sy’n cyrraedd eto hefyd gynnwys llwythi mawr sy’n cael eu symud mewn dau neu fwy o gynwysyddion. Mae nwyddau sy’n cyrraedd eto yn cael eu cynnal gan lwythwyr cymeradwy yn lleoliad y porthladd newydd. Ni fydd yr wybodaeth ddiweddaraf am nwyddau sy’n cyrraedd eto yn ymddangos yn y gwasanaeth datganiad allforio hwn. Ymgynghorwch â’ch llwythwr neu’ch cludwr ynghylch gwybodaeth am nwyddau sy’n cyrraedd eto.
 declaration.details.readMoreAboutDecStatus.submitted.header = Statws ‘Datganiad wedi’i gyflwyno’
-declaration.details.readMoreAboutDecStatus.submitted.paragraph = Bydd datganiad a gyflwynwyd ymlaen llaw yn dangos pan fydd wedi’i gyflwyno’n llwyddiannus a dod i law CThEF
+declaration.details.readMoreAboutDecStatus.submitted.paragraph = Bydd datganiad a gyflwynwyd ymlaen llaw yn dangos pan fydd wedi’i gyflwyno’n llwyddiannus a dod i law CThEF.
 declaration.details.readMoreAboutDecStatus.decHasError.header = Statws ‘Mae gan y datganiad wallau’
 declaration.details.readMoreAboutDecStatus.decHasError.paragraph = Mae gwiriadau awtomatig wedi dangos atebion annilys ar eich datganiad. Agorwch y datganiad i fwrw golwg drosto a chywiro’r gwallau, ac yna’i ail-gyflwyno.
 declaration.details.readMoreAboutDecStatus.accepted.header = Statws ‘Wedi cyrraedd a’i dderbyn’
@@ -838,6 +839,10 @@ declaration.details.readMoreAboutDecStatus.documentsRequired.bullet.3 = unrhyw d
 declaration.details.readMoreAboutDecStatus.documentsRequired.paragraph.3 = Nid oes rhaid i chi uwchlwytho unrhyw ddogfennau oni bai bod gofyn i chi wneud hynny.
 declaration.details.readMoreAboutDecStatus.documentsRequired.paragraph.4 = Gallwch uwchlwytho dogfennau cyn i’ch nwyddau gyrraedd os hoffech, ac os nad oes eu hangen gan y tollau byddant yn cael eu dileu o fewn chwe mis.
 
+declaration.details.readMoreAboutDecStatus.queryRaised.header = Statws ‘Ymholiad wedi’i godi’
+declaration.details.readMoreAboutDecStatus.queryRaised.paragraph.1 = Efallai y bydd ymholiadau’n cael eu codi tra bo’ch nwyddau’n mynd trwy’r tollau. Bydd eich datganiad yn ymddangos yn y tab, ‘Angen gweithredu’ sy’n dangos ‘Ymholiad wedi’i godi’.
+declaration.details.readMoreAboutDecStatus.queryRaised.paragraph.2 = Byddwch hefyd yn cael gwybod am unrhyw ymholiadau ar eich e-bost CDS: {0}.
+
 declaration.details.readMoreAboutDecStatus.goodsExamined.header = Statws ‘Nwyddau’n cael eu harchwilio’
 declaration.details.readMoreAboutDecStatus.goodsExamined.paragraph.1 = Os bydd Llu’r Ffiniau yn penderfynu gwirio’ch nwyddau, bydd eich datganiad yn ymddangos yn y tab, ‘Angen gweithredu’ sy’n dangos ‘Nwyddau’n cael eu harchwilio’.
 declaration.details.readMoreAboutDecStatus.goodsExamined.paragraph.2 = Os bydd hyn yn digwydd, mae’n rhaid i chi uwchlwytho sganiau neu PDFs o’r holl ddogfennau yr ydych wedi eu cynnwys yn y datganiad, megis:
@@ -847,9 +852,9 @@ declaration.details.readMoreAboutDecStatus.goodsExamined.bullet.3 = unrhyw dysty
 declaration.details.readMoreAboutDecStatus.goodsExamined.paragraph.3 = Nid oes rhaid i chi uwchlwytho unrhyw ddogfennau oni bai bod gofyn i chi wneud hynny.
 declaration.details.readMoreAboutDecStatus.goodsExamined.paragraph.4 = Gallwch uwchlwytho dogfennau cyn i’ch nwyddau gyrraedd os hoffech, ac os nad oes eu hangen gan y tollau byddant yn cael eu dileu o fewn chwe mis.
 
-declaration.details.readMoreAboutDecStatus.queryRaised.header = Statws ‘Ymholiad wedi’i godi’
-declaration.details.readMoreAboutDecStatus.queryRaised.paragraph.1 = Efallai y bydd ymholiadau’n cael eu codi tra bo’ch nwyddau’n mynd trwy’r tollau. Bydd eich datganiad yn ymddangos yn y tab, ‘Angen gweithredu’ sy’n dangos ‘Ymholiad wedi’i godi’.
-declaration.details.readMoreAboutDecStatus.queryRaised.paragraph.2 = Byddwch hefyd yn cael gwybod am unrhyw ymholiadau ar eich e-bost CDS: {0}.
+declaration.details.readMoreAboutDecStatus.detained.header = Statws y ‘Datganiad wedi’i gadw’n ôl’
+declaration.details.readMoreAboutDecStatus.detained.paragraph.1 = Mae’r datganiad wedi caei ei gadw’n ôl o dan adran 139 y Ddeddf Rheoli Tollau Tramor a Chartref 1979, ac yn disgwyl ymholiadau pellach. Bydd eich datganiad i’w weld yn y tab ‘Wedi’i gyflwyno’ ac yn dangos ‘Datganiad wedi’i gadw’n ôl’.
+declaration.details.readMoreAboutDecStatus.detained.paragraph.2 = Byddwch hefyd yn cael eich hysbysu ynghylch unrhyw beth gaiff ei gadw’n ôl ar eich e-bost CDS: {0}.
 
 declaration.details.uploadDocuments.header = Wrthi’n uwchlwytho dogfennau
 declaration.details.uploadDocuments.details = Beth i uwchlwytho, a phryd
@@ -2812,3 +2817,4 @@ guidance.roro.section.5.paragraph.2 = Gall nwyddau a ddaeth i mewn i’r DU o da
 guidance.roro.section.6.header = Dogfennau fel prawf o ymadael
 guidance.roro.section.6.paragraph.1 = Cyn belled â bod statws eich datganiad yn dangos fel un sydd ‘Wedi’i glirio’, gallwch fod yn fodlon y bydd CThEF yn cymryd bod eich nwyddau wedi ymadael.
 guidance.roro.section.6.paragraph.2 = Mae dal angen i chi gadw tystiolaeth fasnachol o’r allforio megis tocynnau ar gyfer y daith, a phrawf o fewnforio. Nid oes angen darparu’r dogfennau hyn i’r Ganolfan Clirio Genedlaethol ar gyfer gwiriadau dogfennol ond efallai y bydd CThEF yn gofyn am gael gweld prawf o ymadael.
+

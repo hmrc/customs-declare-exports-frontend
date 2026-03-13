@@ -714,6 +714,7 @@ submission.enhancedStatus.REQUESTED_CANCELLATION        = Cancellation request s
 submission.enhancedStatus.DETAINED                      = Declaration detained
 submission.enhancedStatus.UNKNOWN                       = Unknown
 submission.enhancedStatus.AMENDMENT_REQUESTED           = Amendment requested
+submission.enhancedStatus.DETAINED                      = Declaration detained
 
 submission.timeline.title.amendment.accepted = accepted
 submission.timeline.title.amendment.failed = on hold
@@ -823,7 +824,7 @@ declaration.details.readMoreAboutDecStatus.paragraph = Find out what different d
 declaration.details.readMoreAboutDecStatus.rearrivals.header = Information about ‘Re-arrivals’
 declaration.details.readMoreAboutDecStatus.rearrivals.paragraph = Re-arrivals cover goods presented at a new location, having already been cleared for export elsewhere. Re-arrivals can also cover large consignments being moved in two or more containers. Re-arrivals are carried out by approved loaders at the new port location. Up-to-date information about re-arrivals will not appear in this export declaration service. Consult your loader or haulier about re-arrival information.
 declaration.details.readMoreAboutDecStatus.submitted.header = Status of ‘Declaration submitted’
-declaration.details.readMoreAboutDecStatus.submitted.paragraph = A pre-lodged declaration will show when it has been submitted successfully and received by HMRC
+declaration.details.readMoreAboutDecStatus.submitted.paragraph = A pre-lodged declaration will show when it has been submitted successfully and received by HMRC.
 declaration.details.readMoreAboutDecStatus.decHasError.header = Status of ‘Declaration has errors’
 declaration.details.readMoreAboutDecStatus.decHasError.paragraph = Automatic checks have shown invalid answers on your declaration. Open the declaration to view and correct the errors, then re-submit.
 declaration.details.readMoreAboutDecStatus.accepted.header = Status of ‘Arrived and accepted’
@@ -838,6 +839,10 @@ declaration.details.readMoreAboutDecStatus.documentsRequired.bullet.3 = any cert
 declaration.details.readMoreAboutDecStatus.documentsRequired.paragraph.3 = You do not have to upload any documents unless you are asked to do so.
 declaration.details.readMoreAboutDecStatus.documentsRequired.paragraph.4 = You can upload documents before your goods are arrived if you wish, and if they are not needed by customs they will be deleted within six months.
 
+declaration.details.readMoreAboutDecStatus.queryRaised.header = Status of ‘Query raised’
+declaration.details.readMoreAboutDecStatus.queryRaised.paragraph.1 = Queries may be raised while your goods are going through customs. Your declaration will appear in the ‘Action needed’ tab, showing ‘Query raised’.
+declaration.details.readMoreAboutDecStatus.queryRaised.paragraph.2 = You’ll also be notified about any queries on your CDS email: {0}.
+
 declaration.details.readMoreAboutDecStatus.goodsExamined.header = Status of ‘Goods being examined’
 declaration.details.readMoreAboutDecStatus.goodsExamined.paragraph.1 = If the Border Force decides to check your goods, your declaration will appear in the ‘Action needed’ tab showing ‘Goods being examined’.
 declaration.details.readMoreAboutDecStatus.goodsExamined.paragraph.2 = If this happens, you must upload scans or PDFs of all the documents you have included in the declaration, such as:
@@ -847,9 +852,9 @@ declaration.details.readMoreAboutDecStatus.goodsExamined.bullet.3 = any certific
 declaration.details.readMoreAboutDecStatus.goodsExamined.paragraph.3 = You do not have to upload any documents unless you are asked to do so.
 declaration.details.readMoreAboutDecStatus.goodsExamined.paragraph.4 = You can upload documents before your goods are arrived if you wish, and if they are not needed by customs they will be deleted within six months.
 
-declaration.details.readMoreAboutDecStatus.queryRaised.header = Status of ‘Query raised’
-declaration.details.readMoreAboutDecStatus.queryRaised.paragraph.1 = Queries may be raised while your goods are going through customs. Your declaration will appear in the ‘Action needed’ tab, showing ‘Query raised’.
-declaration.details.readMoreAboutDecStatus.queryRaised.paragraph.2 = You’ll also be notified about any queries on your CDS email: {0}.
+declaration.details.readMoreAboutDecStatus.detained.header = Status of ‘Declaration detained’
+declaration.details.readMoreAboutDecStatus.detained.paragraph.1 = Declaration has been detained under section 139 Customs and Excise Management Act 1979 pending further enquiries. Your declaration will appear in the ‘Submitted’ tab showing ‘Declaration detained’.
+declaration.details.readMoreAboutDecStatus.detained.paragraph.2 = You’ll also be notified about any detentions on your CDS email: {0}.
 
 declaration.details.uploadDocuments.header = Uploading documents
 declaration.details.uploadDocuments.details = What to upload, and when
@@ -2814,3 +2819,4 @@ guidance.roro.section.5.paragraph.2 = Goods that entered the UK under import rel
 guidance.roro.section.6.header = Documents as proof of departure
 guidance.roro.section.6.paragraph.1 = As long as your declaration status shows as ‘Cleared’ you can be satisfied that HMRC will assume that your goods have departed.
 guidance.roro.section.6.paragraph.2 = You still need to keep commercial evidence of the export such as boarding tickets, and proof of import. These documents do not need to be provided to NCH for documentary checks but HMRC may ask to see proof of departure.
+
