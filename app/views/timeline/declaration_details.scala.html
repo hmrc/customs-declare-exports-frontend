@@ -165,6 +165,12 @@
   @paragraph(messages("declaration.details.readMoreAboutDecStatus.goodsExamined.paragraph.4"))
 }
 
+@goodsDetainedDetailsContent = {
+  @paragraph(messages("declaration.details.readMoreAboutDecStatus.detained.paragraph.1"))
+  @paragraph(messages("declaration.details.readMoreAboutDecStatus.detained.paragraph.2", request.email))
+}
+
+
 @uploadingDocumentsDetails = {
   @paragraph(messages("declaration.details.uploadDocuments.details.paragraph.1"))
 
@@ -222,6 +228,13 @@
     summary = Text(messages("declaration.details.readMoreAboutDecStatus.goodsExamined.header")),
     content = HtmlContent(goodsExaminedDetailsContent)
   ))
+
+  @govukDetails(Details(
+    id = Some("read-more-about-declaration-status-goods-being-detained"),
+    summary = Text(messages("declaration.details.readMoreAboutDecStatus.detained.header")),
+    content = HtmlContent(goodsDetainedDetailsContent)
+  ))
+
 }
 
 @govukLayout(
