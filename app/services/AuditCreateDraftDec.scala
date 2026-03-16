@@ -28,6 +28,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 
 trait AuditCreateDraftDec {
 
+  // scalastyle:off parameter.number
   def audit(
     eori: String,
     newDecId: String,

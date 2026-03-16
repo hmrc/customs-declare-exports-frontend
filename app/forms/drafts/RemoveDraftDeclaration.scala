@@ -29,7 +29,7 @@ object RemoveDraftDeclaration {
     "remove" -> optional(boolean)
       .verifying("draft.declarations.remove.option.error.empty", _.isDefined)
       .transform(_.get, (b: Boolean) => Some(b))
-  )(RemoveDraftDeclaration.apply)(RemoveDraftDeclaration => Some(RemoveDraftDeclaration.remove))
+  )(RemoveDraftDeclaration.apply)(RemoveDraftDeclaration.unapply)
 
   def form: Form[RemoveDraftDeclaration] = Form(formMapping)
 }

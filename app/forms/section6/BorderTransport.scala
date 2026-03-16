@@ -125,6 +125,7 @@ object BorderTransport extends DeclarationPage {
       )
   }
 
+  // scalastyle:off
   private def model2Form(tcs: TransportCodeService): BorderTransport => Option[
     (
       String,
@@ -154,6 +155,7 @@ object BorderTransport extends DeclarationPage {
           model2Ref(tcs.NotProvided)
         )
       )
+  // scalastyle:on
 
   private def form2Ref(refs: Option[String]*): String = refs.map(_.getOrElse("")).mkString
 

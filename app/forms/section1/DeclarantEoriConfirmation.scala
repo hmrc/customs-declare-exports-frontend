@@ -37,7 +37,7 @@ object DeclarantEoriConfirmation extends DeclarationPage {
     Forms.mapping(
       isEoriKey -> requiredRadio("declaration.declarant.error")
         .verifying("declaration.declarant.error", isContainedIn(YesNoAnswer.allowedValues))
-    )(DeclarantEoriConfirmation.apply)(DeclarantEoriConfirmation => Some(DeclarantEoriConfirmation.answer))
+    )(DeclarantEoriConfirmation.apply)(DeclarantEoriConfirmation.unapply)
 
   def form: Form[DeclarantEoriConfirmation] = Form(mapping)
 

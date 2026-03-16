@@ -66,6 +66,7 @@ class SubmissionService @Inject() (connector: CustomsDeclareExportsConnector, au
       .map(Some(_))
   }
 
+  // scalastyle:off
   def submitAmendment(
     eori: String,
     declaration: ExportsDeclaration,
@@ -125,6 +126,7 @@ class SubmissionService @Inject() (connector: CustomsDeclareExportsConnector, au
       logger.warn(s"Amendment submission of a declaration(${declaration.id}) with 'parentDeclarationId' undefined")
       Future.successful(None)
     }
+  // scalastyle:on
 
   private def auditSubmission(
     eori: String,

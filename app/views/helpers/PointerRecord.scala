@@ -53,6 +53,7 @@ abstract class DefaultPointerRecord extends PointerRecord {
   val amendKey = Option.empty[String]
 }
 
+// scalastyle:off
 object PointerRecord {
 
   private val pointerRecordForPage = (call: Call) =>
@@ -237,7 +238,7 @@ object PointerRecord {
 
   private val containers = new DefaultPointerRecord() {
     def fetchRawValue(dec: ExportsDeclaration, args: Int*): Option[String] = getContainer(dec, args(0)).map(_.id)
-    override val pageLink1Param: Option[Call] = Some(ContainerController.displayContainerSummary())
+    override val pageLink1Param: Option[Call] = Some(ContainerController.displayContainerSummary)
     override val amendKey: Option[String] = Some("declaration.summary.container.id")
   }
 
@@ -871,4 +872,5 @@ object PointerRecord {
       override val amendKey: Option[String] = Some("declaration.summary.transport.supervisingOffice")
     }
   )
+  // scalastyle:on
 }

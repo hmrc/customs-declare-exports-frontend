@@ -25,7 +25,7 @@ import models.{Amendment, FieldMapping}
 import play.api.data.Forms.text
 import play.api.data.{Form, Forms, Mapping}
 import play.api.libs.json.{Json, OFormat}
-import utils.validators.forms.FieldValidator.*
+import utils.validators.forms.FieldValidator._
 
 case class NactCode(nactCode: String) extends Ordered[NactCode] with Amendment {
 
@@ -51,7 +51,7 @@ object NactCode extends DeclarationPage with FieldMapping {
         text()
           .verifying("declaration.nationalAdditionalCode.error.empty", nonEmpty)
           .verifying("declaration.nationalAdditionalCode.error.invalid", isEmpty or (hasSpecificLength(nactCodeLength) and isAlphanumeric))
-    )(NactCode.apply)(NactCode => Some(NactCode.nactCode))
+    )(NactCode.apply)(NactCode.unapply)
 
   def form: Form[NactCode] = Form(mapping)
 }
@@ -72,7 +72,7 @@ object ZeroRatedForVat extends DeclarationPage {
   val mapping: Mapping[NactCode] = Forms.mapping(
     NactCode.nactCodeKey -> requiredRadio("declaration.zeroRatedForVat.error")
       .verifying("declaration.zeroRatedForVat.error", isContainedIn(allowedValues))
-  )(NactCode.apply)(NactCode => Some(NactCode.nactCode))
+  )(NactCode.apply)(NactCode.unapply)
 
   def form: Form[NactCode] = Form(mapping)
 

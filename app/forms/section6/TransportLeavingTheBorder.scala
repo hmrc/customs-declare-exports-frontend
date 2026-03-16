@@ -25,10 +25,10 @@ import models.viewmodels.TariffContentKey
 import models.{Amendment, FieldMapping}
 import play.api.data.Forms.{of, optional}
 import play.api.data.format.Formatter
-import play.api.data.validation.*
+import play.api.data.validation._
 import play.api.data.{Form, Forms, Mapping}
-import play.api.libs.json.*
-import utils.validators.forms.FieldValidator.*
+import play.api.libs.json._
+import utils.validators.forms.FieldValidator._
 
 case class TransportLeavingTheBorder(code: Option[ModeOfTransportCode] = None) extends Ordered[TransportLeavingTheBorder] with Amendment {
 
@@ -75,10 +75,9 @@ object TransportLeavingTheBorder extends DeclarationPage with FieldMapping {
     val formatter: String => Formatter[ModeOfTransportCode] =
       if (isClearance) ModeOfTransportCode.formatterForClearance else ModeOfTransportCode.formatter
 
-    Forms
-      .mapping("transportLeavingTheBorder" -> optional(of(formatter(s"$errorKey.incorrect"))).verifying(constraint))(TransportLeavingTheBorder.apply)(
-        TransportLeavingTheBorder => Some(TransportLeavingTheBorder.code)
-      )
+    Forms.mapping("transportLeavingTheBorder" -> optional(of(formatter(s"$errorKey.incorrect"))).verifying(constraint))(
+      TransportLeavingTheBorder.apply
+    )(TransportLeavingTheBorder.unapply)
   }
 
   override def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] =

@@ -17,25 +17,13 @@
 package models
 
 import models.ExportsFieldPointer.ExportsFieldPointer
-import play.api.libs.json.{Format, JsError, JsResult, JsString, JsSuccess, JsValue, Reads, Writes}
+import models.PointerSectionType.PointerSectionType
+import play.api.libs.json.{Format, JsString, Reads, Writes}
 
-enum PointerSectionType {
-  case FIELD, SEQUENCE
-  implicit val pointerSectionTypeFormat: Format[PointerSectionType] =
-    new Format[PointerSectionType] {
-
-      def reads(json: JsValue): JsResult[PointerSectionType] =
-        json.validate[String].flatMap { s =>
-          PointerSectionType.values.find(_.toString == s) match {
-            case Some(value) => JsSuccess(value)
-            case None        => JsError(s"Unknown PointerSectionTypeFormat: $s")
-          }
-        }
-
-      def writes(sectionType: PointerSectionType): JsValue =
-        JsString(sectionType.toString)
-    }
-
+object PointerSectionType extends Enumeration {
+  type PointerSectionType = Value
+  val FIELD, SEQUENCE = Value
+  implicit val format: Format[models.PointerSectionType.Value] = Format(Reads.enumNameReads(PointerSectionType), Writes.enumNameWrites)
 }
 
 case class PointerSection(value: String, `type`: PointerSectionType) {

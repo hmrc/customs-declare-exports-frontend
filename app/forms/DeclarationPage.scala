@@ -18,10 +18,9 @@ package forms
 
 import models.DeclarationType.{CLEARANCE, DeclarationType}
 import models.viewmodels.TariffContentKey
-import scala.annotation.unused
 
 trait DeclarationPage {
-  def defineTariffContentKeys(@unused decType: DeclarationType): Seq[TariffContentKey] = Seq.empty
+  def defineTariffContentKeys(decType: DeclarationType): Seq[TariffContentKey] = Seq.empty
 }
 
 object DeclarationPage {

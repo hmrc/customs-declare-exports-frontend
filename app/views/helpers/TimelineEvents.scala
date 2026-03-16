@@ -51,6 +51,7 @@ object NotificationEvent {
   val maxSecondsBetweenClearedAndArrived = 10L
 }
 
+// scalastyle:off
 @Singleton
 class TimelineEvents @Inject() (
   link: link,
@@ -114,6 +115,7 @@ class TimelineEvents @Inject() (
     }
     addDeclarationSubmittedEvent(submission, timelineEvents)
   }
+  // scalastyle:on
 
   private def addDeclarationSubmittedEvent(submission: Submission, timelineEvents: Seq[TimelineEvent])(
     implicit messages: Messages

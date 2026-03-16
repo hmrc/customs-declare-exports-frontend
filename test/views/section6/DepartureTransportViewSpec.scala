@@ -224,7 +224,7 @@ class DepartureTransportViewSpec extends UnitViewSpec with Injector {
 
   val dataForVersion1 =
     additionalDeclTypesAllowedOnInlandOrBorder.flatMap { additionalType =>
-      nonRoRoOrPostalOrFTIModeOfTransportCodes.map { transportCode =>
+      nonRoRoOrPostalOrFTIModeOfTransportCodes.map { transportCode: ModeOfTransportCode =>
         DataOnTest(
           transportCodeService.transportCodesForV1,
           transportCode,

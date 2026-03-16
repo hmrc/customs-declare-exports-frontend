@@ -62,7 +62,7 @@ object YesNoAnswer {
     Forms.mapping(
       fieldName -> requiredRadio(errorKey)
         .verifying(errorKey, isContainedIn(allowedValues))
-    )(YesNoAnswer.apply)(YesNoAnswer => Some(YesNoAnswer.value))
+    )(YesNoAnswer.apply)(YesNoAnswer.unapply)
 
   val formId = "yesNo"
 

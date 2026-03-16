@@ -38,7 +38,7 @@ object DeclarantIsExporter extends DeclarationPage {
     Forms.mapping(
       answerKey -> requiredRadio("declaration.declarant.exporter.error")
         .verifying("declaration.declarant.exporter.error", isContainedIn(YesNoAnswer.allowedValues))
-    )(DeclarantIsExporter.apply)(DeclarantIsExporter => Some(DeclarantIsExporter.answer))
+    )(DeclarantIsExporter.apply)(DeclarantIsExporter.unapply)
 
   def form: Form[DeclarantIsExporter] = Form(mapping)
 }
