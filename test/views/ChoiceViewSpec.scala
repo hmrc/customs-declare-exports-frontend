@@ -49,9 +49,14 @@ class ChoiceViewSpec extends UnitViewSpec with CommonMessages {
   "Choice page" should {
 
     "display on banner the expected 'service name' (common to all pages)" in {
-      val element = view.getElementsByClass("govuk-header__service-name").first
-      element.tagName mustBe "a"
-      element.text mustBe messages("service.name")
+      val element = view.getElementsByClass("govuk-service-navigation__service-name").first
+      element.tagName mustBe "span"
+
+      val link = element.getElementsByTag("a").first
+      link.text mustBe messages("service.name")
+
+      link.attr("href") mustBe "/customs-declare-exports/choice"
+      link.hasClass("govuk-service-navigation__link") mustBe true
     }
 
     "display an error summary box" when {

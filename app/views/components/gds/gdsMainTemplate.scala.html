@@ -32,7 +32,6 @@
     govukBackLink: GovukBackLink,
     hmrcHead: HmrcHead,
     hmrcScripts: HmrcScripts,
-    hmrcLanguageSelectHelper: HmrcLanguageSelectHelper,
     hmrcReportTechnicalIssue: HmrcReportTechnicalIssueHelper,
     hmrcFooter: HmrcStandardFooter,
     hmrcTimeoutDialogHelper: HmrcTimeoutDialogHelper,
@@ -49,8 +48,7 @@
     useCustomContentWidth: Boolean = false,
     headContentOnJavaScriptDisabled: Option[Html] = None,
     displaySignOut: Boolean = false,
-    showDeclarationSummaryLink: Boolean = true,
-    showLanguageSwitch: Boolean = true
+    showDeclarationSummaryLink: Boolean = true
 )(contentBlock: Html)(implicit request: Request[_], messages: Messages)
 
 @userIsSignedIn = @{ request.isInstanceOf[AuthenticatedRequest[_]] }
@@ -93,10 +91,6 @@
 @beforeContentBlock = {
     @if(appConfig.isBetaBannerEnabled) {
       @phaseBanner("Beta")
-    }
-
-    @if(showLanguageSwitch && appConfig.languages.contains("cy")) {
-        @hmrcLanguageSelectHelper()
     }
 
     <div class="govuk-back-link-div">

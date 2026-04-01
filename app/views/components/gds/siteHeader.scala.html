@@ -20,6 +20,9 @@
 @import models.requests.JourneyRequest
 @import uk.gov.hmrc.hmrcfrontend.views.html.components.{Header, HmrcHeader}
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.language
+@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.header.v2._
+@import uk.gov.hmrc.govukfrontend.views.viewmodels.servicenavigation._
+@import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 
 @this(hmrcHeader: HmrcHeader)
 
@@ -31,11 +34,18 @@
     else None
 }
 
-@hmrcHeader(Header(
-    homepageUrl = "https://www.gov.uk",
-    serviceName = Some(messages("service.name")),
-    serviceUrl = ChoiceController.displayPage.url,
-    language = if(messages.lang.code == "en") language.En else language.Cy,
-    containerClasses = "govuk-width-container",
-    signOutHref = signOutHref
-))
+@hmrcHeader(
+    HeaderParams(
+        headerUrls = HeaderUrls(
+            homepageUrl = "https://www.gov.uk",
+            signOutHref = signOutHref
+        ),
+        language = if (messages.lang.code == "cy") language.Cy else language.En,
+        serviceNavigation = Some(
+            ServiceNavigation(
+                serviceName = Some(messages("service.name")),
+                serviceUrl = Some(ChoiceController.displayPage.url)
+            ).withLanguageToggle()
+        )
+    )
+)
