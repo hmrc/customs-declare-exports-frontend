@@ -168,6 +168,9 @@ object FieldValidator {
     countryCode.forall(_.isLetter) && number.forall(_.isDigit) && isInRange(eoriDigitsAmountMin, eoriDigitsAmountMax)(number.length)
   }
 
+  private val eoriPatternFlagged = Pattern.compile("[A-Z]{2}[A-Z0-9]{1,15}$")
+  val isValidEoriFlagged: String => Boolean = eoriPatternFlagged.matcher(_).matches()
+
   private val ducrPattern = Pattern.compile("[0-9]{1}[A-Z]{2}[0-9]{12}[-]{1}[-/()A-Z0-9]{1,19}")
   val isValidDucr: String => Boolean = ducrPattern.matcher(_).matches()
 
