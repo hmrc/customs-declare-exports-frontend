@@ -16,7 +16,7 @@
 
 package forms.common
 
-import config.AppConfig
+import com.typesafe.config.ConfigFactory
 import models.ExportsFieldPointer.ExportsFieldPointer
 import models.FieldMapping
 import play.api.data.Forms.text
@@ -30,7 +30,7 @@ case class Eori(value: String) extends Ordered[Eori] {
   override def toString() = value
 }
 
-object Eori extends FieldMapping  {
+object Eori extends FieldMapping {
   def build(value: String): Eori = new Eori(value.toUpperCase)
 
   override val pointer: ExportsFieldPointer = "eori"
@@ -42,19 +42,14 @@ object Eori extends FieldMapping  {
 
     override def reads(json: JsValue): JsResult[Eori] = mappedReads.reads(json)
   }
+  private lazy val euEoriEnabled: Boolean =
+    ConfigFactory.load().hasPath("features.euEori") && ConfigFactory.load().getBoolean("features.euEori")
 
-  def mapping(messageKeyWhenEmpty: String = "declaration.eori.empty")(implicit appConfig: AppConfig): Mapping[Eori] = {
-    if (appConfig.isEUEoriEnabled) {
-      text()
-        .verifying(messageKeyWhenEmpty, nonEmpty)
-        .verifying("declaration.eori.error.format", isEmpty or isValidEoriFlagged)
-        .transform(build, _.value)
-    }
-    else {
-      text()
-        .verifying(messageKeyWhenEmpty, nonEmpty)
-        .verifying("declaration.eori.error.format", isEmpty or isValidEori)
-        .transform(build, _.value)
-    }
+  def mapping(messageKeyWhenEmpty: String = "declaration.eori.empty"): Mapping[Eori] = {
+    val eoriValidator = if (euEoriEnabled) isValidEoriFlagged else isValidEori
+    text()
+      .verifying(messageKeyWhenEmpty, nonEmpty)
+      .verifying("declaration.eori.error.format", isEmpty or eoriValidator)
+      .transform(build, _.value)
   }
 }
