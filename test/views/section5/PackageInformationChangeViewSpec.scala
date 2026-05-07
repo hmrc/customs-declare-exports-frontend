@@ -83,11 +83,11 @@ class PackageInformationChangeViewSpec extends PageWithButtonsSpec with ExportsT
       "display the expected paragraphs" in {
         val indexedListOfParagraphs = List(
           messages("declaration.packageInformation.paragraph"),
+          messages("declaration.packageInformation.typesOfPackages.paragraph"),
           messages("declaration.packageInformation.numberOfPackages.details.paragraph.1"),
           messages("declaration.packageInformation.numberOfPackages.details.paragraph.2"),
           messages("declaration.packageInformation.numberOfPackages.details.paragraph.3").substring(0, 8) ++
             messages("declaration.packageInformation.numberOfPackages.details.paragraph.3.link"),
-          messages("declaration.packageInformation.typesOfPackages.paragraph"),
           messages("declaration.packageInformation.shippingMark.paragraph"),
           messages(exitAndReturnCaption)
         ).zipWithIndex

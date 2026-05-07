@@ -71,11 +71,6 @@
         inputClasses = Some("govuk-input--width-10")
     )
 
-    @govukDetails(Details(
-        summary = Text(messages("declaration.packageInformation.numberOfPackages.details.summary")),
-        content = HtmlContent(numberOfPackagesDetails)
-        ))
-
     @components.fields.field_accessible_autocomplete(
         field = form(PackageInformation.typeId),
         label = if (isSupplementaryDeclaration) {
@@ -94,6 +89,10 @@
         args = List('otherErrorFields -> Seq("typesOfPackages"))
     )
 
+    @govukDetails(Details(
+        summary = Text(messages("declaration.packageInformation.numberOfPackages.details.summary")),
+        content = HtmlContent(numberOfPackagesDetails)
+    ))
 
     @exportsInputText(
         field = form("shippingMarks"),
