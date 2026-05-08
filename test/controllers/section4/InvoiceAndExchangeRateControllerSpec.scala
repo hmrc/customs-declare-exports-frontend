@@ -66,7 +66,8 @@ class InvoiceAndExchangeRateControllerSpec extends ControllerSpec with AuditedCo
   val controller =
     new InvoiceAndExchangeRateController(mockAuthAction, mockJourneyAction, navigator, mcc, mockInvoiceAndExchangeRatePage, mockExportsCacheService)(
       ec,
-      auditService
+      auditService,
+      appConfig
     )
 
   val withoutExchange = InvoiceAndExchangeRate(

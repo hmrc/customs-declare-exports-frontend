@@ -17,6 +17,7 @@
 package views.section6
 
 import base.{Injector, MockAuthAction}
+import config.AppConfig
 import controllers.helpers.TransportSectionHelper.{postalOrFTIModeOfTransportCodes, Guernsey, Jersey}
 import controllers.section6.routes._
 import forms.common.Country
@@ -28,6 +29,7 @@ import models.DeclarationType
 import models.DeclarationType.{CLEARANCE, OCCASIONAL, SIMPLIFIED, STANDARD, SUPPLEMENTARY}
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
+import org.mockito.Mockito.when
 import org.scalatest.Assertion
 import play.api.data.Form
 import play.api.mvc.Call
@@ -44,8 +46,10 @@ class ContainerAddFirstViewSpec extends UnitViewSpec with ExportsTestHelper with
   private val form: Form[ContainerFirst] = ContainerFirst.form
   private val page: container_add_first = instanceOf[container_add_first]
 
+  override val appConfig: AppConfig = mock[AppConfig]
+
   private def createView(form: Form[ContainerFirst] = form)(implicit request: JourneyRequest[_]): Document =
-    page(form)(request, messages)
+    page(form)(request, messages, appConfig)
 
   "Transport Containers Add First View" should {
     val view = createView()
@@ -157,6 +161,7 @@ class ContainerAddFirstViewSpec extends UnitViewSpec with ExportsTestHelper with
       }
 
       "contain opt-not-to-declare option" in {
+        when(appConfig.isOptionalFieldsEnabled).thenReturn(true)
 
         val view = createView()(withRequestOfType(SUPPLEMENTARY))
 
@@ -191,9 +196,7 @@ class ContainerAddFirstViewSpec extends UnitViewSpec with ExportsTestHelper with
     "display data in Container ID input" in {
       val view = createView(ContainerFirst.form.fill(ContainerFirst(Some("Test"), HasContainerAnswers.yes)))
 
-      if (request.isType(DeclarationType.SUPPLEMENTARY)) {
-        view.getElementsByAttributeValue("for", "id").get(0) must containMessage("declaration.transportInformation.supplementary.containerId")
-      } else view.getElementsByAttributeValue("for", "id").get(0) must containMessage("declaration.transportInformation.containerId")
+      view.getElementsByAttributeValue("for", "id").get(0) must containMessage("declaration.transportInformation.containerId")
       view.getElementById("id").attr("value") must be("Test")
     }
   }

@@ -58,7 +58,7 @@ class PackageInformationAddController @Inject() (
   }
 
   def submitForm(itemId: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
-    val binding = if (request.isType(DeclarationType.SUPPLEMENTARY)) {
+    val binding = if (request.isType(DeclarationType.SUPPLEMENTARY) && appConfig.isOptionalFieldsEnabled) {
       formOptional.bindFromRequest(formValuesFromRequest(typeId))
     } else {
       form.bindFromRequest(formValuesFromRequest(typeId))

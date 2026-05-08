@@ -16,6 +16,7 @@
 
 package views.helpers
 
+import config.AppConfig
 import forms.section6.BorderTransport.radioButtonGroupId
 import forms.section6.{BorderTransport, TransportCode}
 import models.requests.JourneyRequest
@@ -30,7 +31,9 @@ import views.html.components.gds.exportsInputText
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class BorderTransportHelper @Inject() (exportsInputText: exportsInputText, transportCodeService: TransportCodeService) {
+class BorderTransportHelper @Inject() (exportsInputText: exportsInputText, transportCodeService: TransportCodeService)(
+  implicit appConfig: AppConfig
+) {
 
   private val prefix = "declaration.transportInformation.meansOfTransport"
 
@@ -39,10 +42,15 @@ class BorderTransportHelper @Inject() (exportsInputText: exportsInputText, trans
     radioButtons.dropRight(1)
   }
 
-  def radioButtonsOpt(form: Form[BorderTransport])(implicit messages: Messages): List[RadioItem] = {
-    val radioButtons: List[RadioItem] = transportCodeService.transportCodesOnBorderTransport.map(radioButtonOpt(form, _))
-    radioButtons.dropRight(1) :+ RadioItem(divider = Some(messages("site.radio.divider"))) :++ radioButtons.takeRight(1)
-  }
+  def radioButtonsOpt(form: Form[BorderTransport])(implicit messages: Messages): List[RadioItem] =
+    if (appConfig.isOptionalFieldsEnabled) {
+      val radioButtons: List[RadioItem] = transportCodeService.transportCodesOnBorderTransport.map(radioButtonOpt(form, _))
+      radioButtons.dropRight(1) :+ RadioItem(divider = Some(messages("site.radio.divider"))) :++ radioButtons.takeRight(1)
+
+    } else {
+      val radioButtons: List[RadioItem] = transportCodeService.transportCodesOnBorderTransport.map(radioButton(form, _))
+      radioButtons.dropRight(1)
+    }
 
   def titleInHeadTag(hasErrors: Boolean)(implicit messages: Messages, request: JourneyRequest[_]): Title = {
     val transportMode = ModeOfTransportCodeHelper.transportMode(request.cacheModel.transportLeavingBorderCode)
