@@ -17,6 +17,7 @@
 package views.section5
 
 import base.Injector
+import config.AppConfig
 import controllers.section5.routes._
 import forms.common.YesNoAnswer
 import forms.common.YesNoAnswer.form
@@ -36,14 +37,16 @@ import views.tags.ViewTest
 @ViewTest
 class PackageInformationViewSpec extends PageWithButtonsSpec with Injector {
 
+  val mockAppConfig = mock[AppConfig]
+
   override val typeAndViewInstance =
-    (STANDARD, page(itemId, form(), List(PackageInformationViewSpec.packageInformation))(_, _))
+    (STANDARD, page(itemId, form(), List(PackageInformationViewSpec.packageInformation))(_, _, mockAppConfig))
 
   val page = instanceOf[package_information]
 
   def createView(frm: Form[YesNoAnswer] = form(), packages: Seq[PackageInformation] = List(PackageInformationViewSpec.packageInformation))(
     implicit request: JourneyRequest[_]
-  ): Document = page(itemId, frm, packages)(request, messages)
+  ): Document = page(itemId, frm, packages)(request, messages, mockAppConfig)
 
   "have proper messages for labels" in {
     messages must haveTranslationFor("declaration.packageInformation.title")
@@ -121,16 +124,16 @@ class PackageInformationViewSpec extends PageWithButtonsSpec with Injector {
         val view = createView(packages = Seq(PackageInformation(1, "ID", Some("PA"), Some(100), Some("Shipping Mark"))))
 
         // check table header
-        view.select("table>thead>tr>th:nth-child(1)") must containMessageForElements("declaration.packageInformation.table.heading.numberOfPackages")
-        view.select("table>thead>tr>th:nth-child(2)") must containMessageForElements("declaration.packageInformation.table.heading.typesOfPackages")
+        view.select("table>thead>tr>th:nth-child(1)") must containMessageForElements("declaration.packageInformation.table.heading.typesOfPackages")
+        view.select("table>thead>tr>th:nth-child(2)") must containMessageForElements("declaration.packageInformation.table.heading.numberOfPackages")
         view.select("table>thead>tr>th:nth-child(3)") must containMessageForElements("declaration.packageInformation.table.heading.shippingMarks")
         // change & remove button column
         view.select("table>thead>tr>th:nth-child(4)") must containMessageForElements("site.change.header")
         view.select("table>thead>tr>th:nth-child(5)") must containMessageForElements("site.remove.header")
 
         // check row
-        view.select(".govuk-table__body > tr:nth-child(1) > td:nth-child(1)").text() mustBe "100"
-        view.select(".govuk-table__body > tr:nth-child(1) > td:nth-child(2)").text() mustBe "Packet (PA)"
+        view.select(".govuk-table__body > tr:nth-child(1) > td:nth-child(1)").text() mustBe "Packet (PA)"
+        view.select(".govuk-table__body > tr:nth-child(1) > td:nth-child(2)").text() mustBe "100"
         view.select(".govuk-table__body > tr:nth-child(1) > td:nth-child(3)").text() mustBe "Shipping Mark"
       }
 
@@ -143,20 +146,20 @@ class PackageInformationViewSpec extends PageWithButtonsSpec with Injector {
         )
 
         // check table header
-        view.select("table>thead>tr>th:nth-child(1)") must containMessageForElements("declaration.packageInformation.table.heading.numberOfPackages")
-        view.select("table>thead>tr>th:nth-child(2)") must containMessageForElements("declaration.packageInformation.table.heading.typesOfPackages")
+        view.select("table>thead>tr>th:nth-child(1)") must containMessageForElements("declaration.packageInformation.table.heading.typesOfPackages")
+        view.select("table>thead>tr>th:nth-child(2)") must containMessageForElements("declaration.packageInformation.table.heading.numberOfPackages")
         view.select("table>thead>tr>th:nth-child(3)") must containMessageForElements("declaration.packageInformation.table.heading.shippingMarks")
         // change & remove button column
         view.select("table>thead>tr>th:nth-child(4)") must containMessageForElements("site.change.header")
         view.select("table>thead>tr>th:nth-child(5)") must containMessageForElements("site.remove.header")
 
         // check rows
-        view.select(".govuk-table__body > tr:nth-child(1) > td:nth-child(1)").text() mustBe "100"
-        view.select(".govuk-table__body > tr:nth-child(1) > td:nth-child(2)").text() mustBe "Packet (PA)"
+        view.select(".govuk-table__body > tr:nth-child(1) > td:nth-child(1)").text() mustBe "Packet (PA)"
+        view.select(".govuk-table__body > tr:nth-child(1) > td:nth-child(2)").text() mustBe "100"
         view.select(".govuk-table__body > tr:nth-child(1) > td:nth-child(3)").text() mustBe "Shipping Mark"
 
-        view.select(".govuk-table__body > tr:nth-child(2) > td:nth-child(1)").text() mustBe "101"
-        view.select(".govuk-table__body > tr:nth-child(2) > td:nth-child(2)").text() mustBe "Pallet, box Combined open-ended box and pallet (PB)"
+        view.select(".govuk-table__body > tr:nth-child(2) > td:nth-child(1)").text() mustBe "Pallet, box Combined open-ended box and pallet (PB)"
+        view.select(".govuk-table__body > tr:nth-child(2) > td:nth-child(2)").text() mustBe "101"
         view.select(".govuk-table__body > tr:nth-child(2) > td:nth-child(3)").text() mustBe "Shipping Mark"
       }
     }

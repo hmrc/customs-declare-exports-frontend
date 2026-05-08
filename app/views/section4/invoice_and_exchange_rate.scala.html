@@ -117,7 +117,7 @@
 
     <h1 class="govuk-label-wrapper">
         @label(
-        "declaration.exchangeRate.input.label",
+        "declaration.exchangeRate.input.label.flag",
         "exchangeRate",
         "govuk-label govuk-label--m"
         )
@@ -207,10 +207,20 @@
         ))
         @paragraphBody(messages("declaration.invoice.details.body.3"))
 
-        @currencyCodeAndAmountFlag
+        @if(appConfig.isOptionalFieldsEnabled){
+            @currencyCodeAndAmountFlag
+        } else {
+            @currencyCodeAndAmount
+        }
 
-        @exchangeRateInputFlag
+        @if(appConfig.isOptionalFieldsEnabled){
+            @exchangeRateInputFlag
+        } else {
+            @heading(messages("declaration.exchangeRate"), "govuk-heading-m", "h2")
+            @paragraphBody(messages("declaration.exchangeRate.paragraph1.text"))
+        }
 
+@if(!appConfig.isOptionalFieldsEnabled){
 @govukFieldset(DescribedByHelper(
             form = form,
             fieldName = "yesNo",
@@ -223,7 +233,7 @@
             ),
             titleKey = None
         ))
-
+        }
 
 
         @govukDetails(Details(

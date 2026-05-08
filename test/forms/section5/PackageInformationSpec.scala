@@ -17,6 +17,7 @@
 package forms.section5
 
 import base.{Injector, JourneyTypeTestRunner, TestHelper, UnitWithMocksSpec}
+import config.AppConfig
 import forms.common.DeclarationPageBaseSpec
 import forms.section5.PackageInformation.form
 import models.viewmodels.TariffContentKey
@@ -30,6 +31,7 @@ class PackageInformationSpec extends UnitWithMocksSpec with JourneyTypeTestRunne
 
   private implicit val messages: Messages = stubMessagesApi().preferred(Seq(Lang(Locale.ENGLISH)))
   private implicit val packageTypesService: PackageTypesService = instanceOf[PackageTypesService]
+  private implicit val appConfig: AppConfig = mock[AppConfig]
 
   "Package Information" should {
 
@@ -86,8 +88,8 @@ class PackageInformationSpec extends UnitWithMocksSpec with JourneyTypeTestRunne
 
         errorMessages must be(
           List(
-            "declaration.packageInformation.numberOfPackages.error",
             "declaration.packageInformation.typesOfPackages.empty",
+            "declaration.packageInformation.numberOfPackages.error",
             "declaration.packageInformation.shippingMark.empty"
           )
         )
@@ -95,8 +97,8 @@ class PackageInformationSpec extends UnitWithMocksSpec with JourneyTypeTestRunne
 
       "inputs are incorrect" in {
         val incorrectForm = Map(
-          "numberOfPackages" -> "1000000",
           "typesOfPackages" -> "incorrect Type",
+          "numberOfPackages" -> "1000000",
           "shippingMarks" -> TestHelper.createRandomAlphanumericString(43)
         )
 
@@ -104,11 +106,11 @@ class PackageInformationSpec extends UnitWithMocksSpec with JourneyTypeTestRunne
         val errorKeys = result.errors.map(_.key)
         val errorMessages = result.errors.map(_.message)
 
-        errorKeys must be(List("numberOfPackages", "typesOfPackages", "shippingMarks"))
+        errorKeys must be(List("typesOfPackages", "numberOfPackages", "shippingMarks"))
         errorMessages must be(
           List(
-            "declaration.packageInformation.numberOfPackages.error",
             "declaration.packageInformation.typesOfPackages.error",
+            "declaration.packageInformation.numberOfPackages.error",
             "declaration.packageInformation.shippingMark.lengthError"
           )
         )
