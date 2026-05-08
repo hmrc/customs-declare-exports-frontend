@@ -16,7 +16,6 @@
 
 package controllers.section6
 
-import config.AppConfig
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.general.{ModelCacheable, SubmissionErrors}
 import controllers.helpers.TransportSectionHelper.skipBorderTransport
@@ -46,7 +45,7 @@ class BorderTransportController @Inject() (
   mcc: MessagesControllerComponents,
   implicit val transportCodeService: TransportCodeService,
   borderTransport: border_transport
-)(implicit ec: ExecutionContext, auditService: AuditService, appConfig: AppConfig)
+)(implicit ec: ExecutionContext, auditService: AuditService)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithUnsafeDefaultFormBinding {
 
   val displayPage: Action[AnyContent] = (authenticate andThen journeyType(nonClearanceJourneys)).async { implicit request =>

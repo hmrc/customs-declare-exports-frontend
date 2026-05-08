@@ -16,7 +16,6 @@
 
 package views.helpers.summary
 
-import config.AppConfig
 import controllers.section6.routes._
 import controllers.summary.routes.SummaryController
 import forms.section6.ModeOfTransportCode.Empty
@@ -34,7 +33,7 @@ import views.html.summary.summary_card
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class Card6ForTransport @Inject() (summaryCard: summary_card, countryHelper: CountryHelper, appConfig: AppConfig) extends SummaryCard {
+class Card6ForTransport @Inject() (summaryCard: summary_card, countryHelper: CountryHelper) extends SummaryCard {
 
   // Called by the Final CYA page
   def eval(declaration: ExportsDeclaration, actionsEnabled: Boolean = true)(implicit messages: Messages): Html =
@@ -61,12 +60,12 @@ class Card6ForTransport @Inject() (summaryCard: summary_card, countryHelper: Cou
           inlandModeOfTransport(declaration.locations, actionsEnabled),
           transportReference(declaration.transport, actionsEnabled),
           activeTransportType(declaration.transport, actionsEnabled),
-          transportCrossingTheBorder(declaration.transport, actionsEnabled, appConfig),
+          transportCrossingTheBorder(declaration.transport, actionsEnabled),
           expressConsignment(declaration.transport, actionsEnabled),
           transportPayment(declaration.transport, actionsEnabled)
         )
       ),
-      ContainersHelper.maybeSummarySection(declaration.transport, actionsEnabled, appConfig)
+      ContainersHelper.maybeSummarySection(declaration.transport, actionsEnabled)
     ).flatten
 
   private def borderTransport(transport: Transport, actionsEnabled: Boolean)(implicit messages: Messages): Option[SummaryListRow] =
@@ -144,7 +143,7 @@ class Card6ForTransport @Inject() (summaryCard: summary_card, countryHelper: Cou
 
   private def activeTransportType(transport: Transport, actionsEnabled: Boolean)(implicit messages: Messages): Option[SummaryListRow] =
     transport.meansOfTransportCrossingTheBorderType.flatMap { meansType =>
-      if (appConfig.isOptionalFieldsEnabled && meansType == "option_none") {
+      if (meansType == "option_none") {
         Option(
           SummaryListRow(
             key("transport.border.meansOfTransport.header"),
@@ -176,38 +175,23 @@ class Card6ForTransport @Inject() (summaryCard: summary_card, countryHelper: Cou
       )
     }
 
-  private def transportCrossingTheBorder(transport: Transport, actionsEnabled: Boolean, appConfig: AppConfig)(
-    implicit messages: Messages
-  ): Option[SummaryListRow] =
+  private def transportCrossingTheBorder(transport: Transport, actionsEnabled: Boolean)(implicit messages: Messages): Option[SummaryListRow] =
     transport.transportCrossingTheBorderNationality.map { transportCrossingTheBorderNationality =>
-      if (appConfig.isOptionalFieldsEnabled) {
-        lazy val country = transportCrossingTheBorderNationality.countryCode.map { value =>
-          if (value.trim.isEmpty) {
-            messages("declaration.summary.not.provided")
-          } else
-            countryHelper
-              .getShortNameForCountryCode(value)
-              .getOrElse(messages("declaration.summary.unknown"))
-        }.getOrElse(messages("declaration.summary.unknown"))
+      lazy val country = transportCrossingTheBorderNationality.countryCode.map { value =>
+        if (value.trim.isEmpty) {
+          messages("declaration.summary.not.provided")
+        } else
+          countryHelper
+            .getShortNameForCountryCode(value)
+            .getOrElse(messages("declaration.summary.unknown"))
+      }.getOrElse(messages("declaration.summary.unknown"))
 
-        SummaryListRow(
-          key("transport.registrationCountry"),
-          value(country),
-          classes = "active-transport-country",
-          changeLink(TransportCountryController.displayPage, "transport.registrationCountry", actionsEnabled)
-        )
-      } else {
-        lazy val country = transportCrossingTheBorderNationality.countryCode
-          .flatMap(countryHelper.getShortNameForCountryCode)
-          .getOrElse(messages("declaration.summary.unknown"))
-
-        SummaryListRow(
-          key("transport.registrationCountry"),
-          value(country),
-          classes = "active-transport-country",
-          changeLink(TransportCountryController.displayPage, "transport.registrationCountry", actionsEnabled)
-        )
-      }
+      SummaryListRow(
+        key("transport.registrationCountry"),
+        value(country),
+        classes = "active-transport-country",
+        changeLink(TransportCountryController.displayPage, "transport.registrationCountry", actionsEnabled)
+      )
     }
 
   private def expressConsignment(transport: Transport, actionsEnabled: Boolean)(implicit messages: Messages): Option[SummaryListRow] =

@@ -17,7 +17,6 @@
 package controllers.section5
 
 import base.{AuditedControllerSpec, ControllerSpec}
-import config.AppConfig
 import controllers.helpers.MultipleItemsHelper
 import controllers.general.routes.RootController
 import controllers.section5.routes.PackageInformationSummaryController
@@ -39,14 +38,8 @@ class StatisticalValueControllerSpec extends ControllerSpec with AuditedControll
 
   val mockItemTypePage = mock[statistical_value]
 
-  val mockAppConfig = mock[AppConfig]
-
   val controller =
-    new StatisticalValueController(mockAuthAction, mockJourneyAction, mockExportsCacheService, navigator, mcc, mockItemTypePage)(
-      ec,
-      auditService,
-      mockAppConfig
-    )
+    new StatisticalValueController(mockAuthAction, mockJourneyAction, mockExportsCacheService, navigator, mcc, mockItemTypePage)(ec, auditService)
 
   override protected def beforeEach(): Unit = {
     super.beforeEach()

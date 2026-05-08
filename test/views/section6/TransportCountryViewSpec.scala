@@ -26,6 +26,7 @@ import forms.section6.InlandOrBorder.Border
 import forms.section6.ModeOfTransportCode.{Maritime, Rail, RoRo}
 import forms.section6.TransportCountry
 import forms.section6.TransportCountry._
+//import models.DeclarationType
 import models.DeclarationType._
 import models.codes.Country
 import models.requests.JourneyRequest
@@ -67,7 +68,6 @@ class TransportCountryViewSpec extends PageWithButtonsSpec with Injector {
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    when(appConfig.isOptionalFieldsEnabled).thenReturn(false)
     when(codeListConnector.getCountryCodes(any())).thenReturn(ListMap("ZA" -> Country("South Africa", "ZA")))
   }
 
@@ -119,8 +119,6 @@ class TransportCountryViewSpec extends PageWithButtonsSpec with Injector {
 
               "display the expected paragraph FEATURE FLAGGED" when {
                 "'Transport Leaving the Border' is 'RoRo'" in {
-                  reset(appConfig)
-                  when(appConfig.isOptionalFieldsEnabled).thenReturn(true)
                   val view = createView(form(transportMode), transportMode)(journeyRequest(declarationType))
 
                   val body = view.getElementsByClass("govuk-body")
@@ -137,16 +135,19 @@ class TransportCountryViewSpec extends PageWithButtonsSpec with Injector {
 
               "display the expected paragraph" when {
                 "'Transport Leaving the Border' is 'RoRo'" in {
-                  reset(appConfig)
-                  when(appConfig.isOptionalFieldsEnabled).thenReturn(false)
                   val view = createView(form(transportMode), transportMode)(journeyRequest(declarationType))
 
                   val body = view.getElementsByClass("govuk-body")
 
                   body.size mustBe (if (code == RoRo) 2 else 1)
 
-                  val expectedText = messages(if (code == RoRo) s"$prefix.roro.inset.text" else exitAndReturnCaption)
-                  body.get(0).text mustBe expectedText
+                  if (declarationType.equals(STANDARD) || declarationType.equals(SUPPLEMENTARY)) {
+                    val expectedBodyText = messages(if (code == RoRo) s"$prefix.roro.paragraph.optional" else exitAndReturnCaption)
+                    body.get(0).text mustBe expectedBodyText
+                  } else {
+                    val expectedBodyText = messages(if (code == RoRo) s"$prefix.roro.paragraph" else exitAndReturnCaption)
+                    body.get(0).text mustBe expectedBodyText
+                  }
                 }
               }
 
@@ -164,16 +165,6 @@ class TransportCountryViewSpec extends PageWithButtonsSpec with Injector {
             }
 
             "display an error" when {
-
-              "the user does not enter a country" in {
-                val formData = Json.obj(transportCountry -> "")
-                val formWithError = form(transportMode).bind(formData, JsonBindMaxChars)
-                val view = createView(formWithError, transportMode)(journeyRequest(declarationType))
-
-                view must haveGovukGlobalErrorSummary
-                view must containErrorElementWithTagAndHref("a", s"#$transportCountry")
-                view must containErrorElementWithMessage(messages(s"$prefix.country.error.empty", transportMode))
-              }
 
               "the user enters an invalid country" in {
                 val formData = Json.obj(transportCountry -> "12345")

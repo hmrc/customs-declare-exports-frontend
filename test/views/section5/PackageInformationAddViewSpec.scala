@@ -77,7 +77,7 @@ class PackageInformationAddViewSpec extends PageWithButtonsSpec with ExportsTest
 
       "display the expected hint paragraphs" in {
         val indexedListOfMessages =
-          List("declaration.packageInformation.typesOfPackages.hint.noJs", "declaration.packageInformation.numberOfPackages.hint").zipWithIndex
+          List("declaration.packageInformation.numberOfPackages.hint", "declaration.packageInformation.typesOfPackages.hint.noJs").zipWithIndex
 
         val hints = view.getElementsByClass("govuk-hint")
         forAll(indexedListOfMessages)(t => hints.get(t._2) must containMessage(t._1))
