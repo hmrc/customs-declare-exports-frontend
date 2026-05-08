@@ -77,14 +77,13 @@
 
         @heading(messages(s"$prefix.title", transportMode), "govuk-label--xl", "h1", Some(form(transportCountry).id))
 
-            @insetTextOnRoRo
+        @insetTextOnRoRo
 
-                @if(isStandardOrSupplementaryDeclaration) {
-                    @paragraphOnRoRoOpt
-                } else {
-                    @paragraphOnRoRo
-                }
-
+        @if(isStandardOrSupplementaryDeclaration) {
+            @paragraphOnRoRoOpt
+        } else {
+            @paragraphOnRoRo
+        }
 
         @components.fields.field_accessible_location_autocomplete_with_header(
             field = form(transportCountry),
