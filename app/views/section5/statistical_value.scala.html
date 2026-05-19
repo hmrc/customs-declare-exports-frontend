@@ -52,26 +52,18 @@
 
 
 @expanderContent = {
-
-    @if(appConfig.isOptionalFieldsEnabled){
-    @paragraphBody(messages("declaration.statisticalValue.guidance.text.1.flag"))
+    @paragraphBody(messages("declaration.statisticalValue.guidance.text.1"))
     <ul class="govuk-list govuk-list--bullet">
-        <li>@messages("declaration.statisticalValue.guidance.bullet.1.flag")</li>
-        <li>@messages("declaration.statisticalValue.guidance.bullet.2.flag")</li>
-        <li>@messages("declaration.statisticalValue.guidance.bullet.3.flag")</li>
+        <li>@messages("declaration.statisticalValue.guidance.bullet.1")</li>
+        <li>@messages("declaration.statisticalValue.guidance.bullet.2")</li>
+        <li>@messages("declaration.statisticalValue.guidance.bullet.3")</li>
     </ul>
     <p class="govuk=body">
-        @messages("declaration.statisticalValue.guidance.text.2.flag")
+        @messages("declaration.statisticalValue.guidance.text.2")
         <br>
-        @messages("declaration.statisticalValue.guidance.text.3.flag")
+        @messages("declaration.statisticalValue.guidance.text.3")
     </p>
-    }else {
-    @paragraphBody(messages("declaration.statisticalValue.guidance.text.1"))
-    @paragraphBody(messages("declaration.statisticalValue.guidance.text.2"))
-    @paragraphBody(messages("declaration.statisticalValue.guidance.text.3"))
-    @paragraphBody(messages("declaration.statisticalValue.guidance.text.4"))
-    @paragraphBody(messages("declaration.statisticalValue.guidance.text.5"), classes = "govuk-body bold")
-}
+
 }
 
 @govukLayout(

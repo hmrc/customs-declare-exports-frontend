@@ -17,7 +17,6 @@
 package controllers.section6
 
 import base.{AuditedControllerSpec, ControllerSpec, MockTransportCodeService}
-import config.AppConfig
 import controllers.helpers.TransportSectionHelper.{Guernsey, Jersey}
 import controllers.general.routes.RootController
 import controllers.section6.routes.TransportCountryController
@@ -42,8 +41,6 @@ class BorderTransportControllerSpec extends ControllerSpec with AuditedControlle
 
   val borderTransportPage = mock[border_transport]
 
-  override val appConfig = mock[AppConfig]
-
   val controller = new BorderTransportController(
     mockAuthAction,
     mockJourneyAction,
@@ -52,7 +49,7 @@ class BorderTransportControllerSpec extends ControllerSpec with AuditedControlle
     mcc,
     transportCodeService,
     borderTransportPage
-  )(ec, auditService, appConfig)
+  )(ec, auditService)
 
   def theResponseForm: Form[BorderTransport] = {
     val captor = ArgumentCaptor.forClass(classOf[Form[BorderTransport]])

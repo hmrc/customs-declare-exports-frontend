@@ -66,8 +66,7 @@ class BorderTransportSpec extends DeclarationPageBaseSpec {
       "sending empty transport type reference" in {
         transportCodeService.transportCodesOnBorderTransport.foreach { transportCode =>
           val errors = form.bind(Map(radioButtonGroupId -> transportCode.value, transportCode.id -> "")).errors
-          errors.map(_.key) must be(List(transportCode.id))
-          errors.map(_.message) must be(List(s"$prefix.IDNumber.error.empty"))
+          errors.map(_.key) must be(List())
         }
       }
 
