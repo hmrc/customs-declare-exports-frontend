@@ -63,7 +63,7 @@ class PackageInformationChangeController @Inject() (
 
   def submitForm(itemId: String, code: String): Action[AnyContent] = (authenticate andThen journeyType).async { implicit request =>
     val maybePackageInfoToRemove = singleCachedPackageInformation(code, itemId)
-    val boundForm = if (request.isType(DeclarationType.SUPPLEMENTARY) && appConfig.isOptionalFieldsEnabled) {
+    val boundForm = if (request.isType(DeclarationType.SUPPLEMENTARY)) {
       formOptional.bindFromRequest()
     } else {
       form.bindFromRequest()

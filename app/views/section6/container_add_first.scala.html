@@ -14,7 +14,6 @@
  * limitations under the License.
  *@
 
-@import config.AppConfig
 @import controllers.navigation.Navigator
 @import controllers.section6.routes.ContainerController
 @import forms.section6.ContainerFirst
@@ -41,14 +40,14 @@
     navigator: Navigator
 )
 
-@(form: Form[ContainerFirst])(implicit request: JourneyRequest[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[ContainerFirst])(implicit request: JourneyRequest[_], messages: Messages)
 
 @hasErrors = @{form.hasErrors || form.hasGlobalErrors}
 
 @isSupplementaryDeclaration = @{request.isType(SUPPLEMENTARY)}
 
 @supplementaryDeclarationTypeRadios = @{
-  if(isSupplementaryDeclaration && appConfig.isOptionalFieldsEnabled) {
+  if(isSupplementaryDeclaration) {
     Seq(RadioItem(divider = Some(messages("site.radio.divider"))),
         RadioItem(
             id = Some("code_optNotToDeclare"),
@@ -97,8 +96,7 @@
                     conditionalHtml = Some(exportsInputText(
                         field = form(containerIdKey),
                         inputClasses = Some("govuk-input govuk-input--width-20"),
-                        labelKey = if(isSupplementaryDeclaration && appConfig.isOptionalFieldsEnabled) "declaration.transportInformation.supplementary.containerId" else "declaration.transportInformation.containerId"
-                    )),
+                        labelKey = if(isSupplementaryDeclaration) "declaration.transportInformation.supplementary.containerId" else "declaration.transportInformation.containerId")),
                     checked = form(hasContainerKey).value.contains(HasContainerAnswers.yes)
                 ),
                 RadioItem(

@@ -16,7 +16,6 @@
 
 package controllers.section6
 
-import config.AppConfig
 import controllers.actions.{AuthAction, JourneyAction}
 import controllers.general.{ModelCacheable, SubmissionErrors}
 import controllers.helpers.SequenceIdHelper.handleSequencing
@@ -56,7 +55,7 @@ class ContainerController @Inject() (
   addPage: container_add,
   summaryPage: container_summary,
   removePage: container_remove
-)(implicit ec: ExecutionContext, auditService: AuditService, appConfig: AppConfig)
+)(implicit ec: ExecutionContext, auditService: AuditService)
     extends FrontendController(mcc) with I18nSupport with ModelCacheable with SubmissionErrors with WithUnsafeDefaultFormBinding {
 
   def displayAddContainer(): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
@@ -115,9 +114,7 @@ class ContainerController @Inject() (
   private def saveFirstContainer(containerFirst: ContainerFirst)(implicit request: JourneyRequest[AnyContent]): Future[Result] = {
 
     def withGoodsInContainerDeclared(declaration: ExportsDeclaration) =
-      if (appConfig.isOptionalFieldsEnabled) {
-        declaration.copy(transport = declaration.transport.copy(goodsInContainerDeclared = Some(containerFirst.goodsInContainerDeclared)))
-      } else declaration
+      declaration.copy(transport = declaration.transport.copy(goodsInContainerDeclared = Some(containerFirst.goodsInContainerDeclared)))
 
     containerFirst.id match {
       case Some(id) =>

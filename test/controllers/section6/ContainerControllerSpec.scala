@@ -17,7 +17,6 @@
 package controllers.section6
 
 import base.{AuditedControllerSpec, ControllerSpec, Injector}
-import config.AppConfig
 import controllers.helpers.Remove
 import controllers.helpers.SequenceIdHelper.valueOfEso
 import controllers.section6.routes.{ContainerController, SealController}
@@ -45,8 +44,6 @@ class ContainerControllerSpec extends ControllerSpec with AuditedControllerSpec 
   private val transportContainersRemovePage = instanceOf[container_remove]
   private val transportContainersSummaryPage = mock[container_summary]
 
-  override val appConfig: AppConfig = mock[AppConfig]
-
   val controller = new ContainerController(
     mockAuthAction,
     mockJourneyAction,
@@ -57,7 +54,7 @@ class ContainerControllerSpec extends ControllerSpec with AuditedControllerSpec 
     transportContainersAddPage,
     transportContainersSummaryPage,
     transportContainersRemovePage
-  )(ec, auditService, appConfig)
+  )(ec, auditService)
 
   val containerId = "434335468"
   val sealId = "287345"
