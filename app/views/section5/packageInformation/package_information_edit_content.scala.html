@@ -87,7 +87,7 @@
         emptySelectValue = messages("declaration.packageInformation.typesOfPackages.empty"),
         items = AutoCompleteItem.fromPackageType(packageTypesService.all),
         args = List(Symbol("otherErrorFields") -> Seq("typesOfPackages"))
-    )}
+    )
 
     @govukDetails(Details(
         summary = Text(messages("declaration.packageInformation.numberOfPackages.details.summary")),
