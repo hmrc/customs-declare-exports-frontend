@@ -169,7 +169,6 @@ object ExportDeclarationTestData {
   lazy val correctGovernmentAgencyGoodsItemJSON: JsValue = JsArray(Seq(Json.toJson(createGovernmentAgencyGoodsItem())))
   lazy val correctStatisticalValueAmountJSON: JsValue =
     JsObject(Map("currencyId" -> JsString("GBP"), "value" -> JsString("44")))
-  lazy val correctPackageInformationJSON: JsValue = JsArray(Seq(correctPackageInformationJSON))
   val date = Date(Some(12), Some(12), Some(2019))
   val correctPackingJSON: JsValue = JsObject(
     Map("sequenceNumeric" -> JsString("0"), "marksNumbersId" -> JsString("wefdsf"), "typeCode" -> JsString("22"))

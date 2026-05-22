@@ -87,7 +87,7 @@ class SealSummaryViewSpec extends PageWithButtonsSpec with Injector {
       val backLinkContainer = view.getElementById("back-link")
 
       backLinkContainer must containMessage(backToPreviousQuestionCaption)
-      backLinkContainer.getElementById("back-link") must haveHref(ContainerController.displayContainerSummary)
+      backLinkContainer.getElementById("back-link") must haveHref(ContainerController.displayContainerSummary())
     }
 
     checkAllSaveButtonsAreDisplayed(createView())

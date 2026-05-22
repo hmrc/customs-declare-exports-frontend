@@ -56,7 +56,7 @@
     title = Title("declaration.natureOfTransaction.heading", "declaration.section.4", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(NatureOfTransaction)))) {
 
-    @formHelper(action = NatureOfTransactionController.saveTransactionType, 'autoComplete -> "off") {
+    @formHelper(action = NatureOfTransactionController.saveTransactionType(), Symbol("autoComplete") -> "off") {
         @errorSummary(radioGroupErrors("natureType", "Sale", form.errors))
 
         @sectionHeader(messages("declaration.section.4"))

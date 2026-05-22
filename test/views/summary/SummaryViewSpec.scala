@@ -70,7 +70,6 @@ trait SummaryViewSpec extends UnitViewSpec with Injector with Stubs {
       errorSummary.size mustBe dummyFormError.length
     }
 
-  // scalastyle:off
   def sectionsVisibility(view: ExportsDeclaration => Appendable): Unit = {
     "not have parties section" in {
       view(aDeclaration()).getElementsByClass("parties-card").size mustBe 0
@@ -117,5 +116,4 @@ trait SummaryViewSpec extends UnitViewSpec with Injector with Stubs {
       view(aDeclaration(withBorderTransport())).getElementsByClass("transport-card").text mustNot be(empty)
     }
   }
-  // scalastyle:on
 }

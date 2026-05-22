@@ -50,10 +50,10 @@ object TransportCountry extends DeclarationPage with FieldMapping {
 
   val prefix = "declaration.transportInformation.transportCountry"
 
-  def form(transportMode: String)(implicit messages: Messages, connector: CodeListConnector): Form[TransportCountry] =
-    Form(mapping(transportMode))
+  def form()(implicit messages: Messages, connector: CodeListConnector): Form[TransportCountry] =
+    Form(mapping())
 
-  private def mapping(transportMode: String)(implicit messages: Messages, connector: CodeListConnector): Mapping[TransportCountry] =
+  private def mapping()(implicit messages: Messages, connector: CodeListConnector): Mapping[TransportCountry] =
     Forms.mapping(
       transportCountry -> text
         .verifying(s"$prefix.country.error.invalid", input => input.isEmpty or isValidCountryCode(input))

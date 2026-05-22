@@ -36,7 +36,7 @@ object RepresentativeAgent extends DeclarationPage {
     .mapping(
       "representingAgent" -> requiredRadio("declaration.representative.agent.error")
         .verifying("declaration.representative.agent.error", isContainedIn(YesNoAnswer.allowedValues))
-    )(RepresentativeAgent.apply)(RepresentativeAgent.unapply)
+    )(RepresentativeAgent.apply)(RepresentativeAgent => Some(RepresentativeAgent.representingAgent))
 
   def form: Form[RepresentativeAgent] = Form(mapping)
 

@@ -192,7 +192,7 @@
     title = Title("declaration.invoice.details.title", "declaration.section.4", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(InvoiceAndExchangeRate)))) {
 
-    @formHelper(action = InvoiceAndExchangeRateController.saveNoOfItems, 'autoComplete -> "off") {
+    @formHelper(action = InvoiceAndExchangeRateController.saveNoOfItems(), Symbol("autoComplete") -> "off") {
         @errorSummary(form.errors)
 
         @sectionHeader(messages("declaration.section.4"))

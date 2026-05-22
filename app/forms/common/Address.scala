@@ -103,7 +103,7 @@ object Address extends FieldMapping {
       countryId -> text()
         .verifying("declaration.address.country.empty", nonEmpty)
         .verifying("declaration.address.country.error", input => input.isEmpty || isValidCountryCode(input))
-    )(Address.apply)(Address.unapply)
+    )(Address.apply)(Address => Some(Tuple.fromProductTyped(Address)))
   }
 
   def partialAndOptionalMapping(maxAddressLength: Int = 70)(implicit messages: Messages, codeListConnector: CodeListConnector): Mapping[Address] = {
@@ -124,7 +124,7 @@ object Address extends FieldMapping {
         .verifying("declaration.address.postCode.length", isEmpty or noLongerThan(9)),
       countryId -> text()
         .verifying("declaration.address.country.error", input => input.isEmpty or isValidCountryCode(input))
-    )(Address.apply)(Address.unapply)
+    )(Address.apply)(Address => Some(Tuple.fromProductTyped(Address)))
   }
 
   def form(implicit messages: Messages, codeListConnector: CodeListConnector): Form[Address] = Form(mapping())

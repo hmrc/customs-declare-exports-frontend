@@ -17,7 +17,7 @@
 package forms.section4
 
 import forms.DeclarationPage
-import models.DeclarationType.{DeclarationType, _}
+import models.DeclarationType.{DeclarationType, *}
 import models.viewmodels.TariffContentKey
 import play.api.data.Forms.{optional, text}
 import play.api.data.{Form, Forms}
@@ -41,7 +41,7 @@ object TotalPackageQuantity extends DeclarationPage {
       text()
         .verifying("declaration.totalPackageQuantity.error", isNumeric and noLongerThan(8))
     )
-  )(TotalPackageQuantity.apply)(TotalPackageQuantity.unapply)
+  )(TotalPackageQuantity.apply)(TotalPackageQuantity => Some(TotalPackageQuantity.totalPackage))
 
   private val requiredMapping = Forms.mapping(
     "totalPackage" -> text()

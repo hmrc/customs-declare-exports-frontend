@@ -70,7 +70,7 @@
     title = Title(s"$prefix.title", "declaration.section.6", transportMode, hasErrors = form.hasErrors || form.hasGlobalErrors),
     backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(TransportCountry)))
 ) {
-    @formHelper(action = TransportCountryController.submitForm, 'autoComplete -> "off") {
+    @formHelper(action = TransportCountryController.submitForm, Symbol("autoComplete") -> "off") {
         @errorSummary(form.errors)
 
         @sectionHeader(messages("declaration.section.6"))

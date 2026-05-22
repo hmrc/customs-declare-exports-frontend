@@ -57,7 +57,7 @@
     title = Title("declaration.fiscalInformation.title", "declaration.section.5", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(FiscalInformation, ItemId(itemId))))) {
 
-    @formHelper(action = FiscalInformationController.saveFiscalInformation(itemId), 'autoComplete -> "off") {
+    @formHelper(action = FiscalInformationController.saveFiscalInformation(itemId), Symbol("autoComplete") -> "off") {
         @errorSummary(radioGroupErrors("onwardSupplyRelief", "Yes", form.errors))
 
         @sectionHeader(messages("declaration.section.5"))

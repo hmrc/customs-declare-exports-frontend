@@ -233,8 +233,7 @@ class ItemsSummaryControllerSpec extends ControllerWithoutFormSpec with OptionVa
           val result = controller.submit()(postRequest(answerForm))
           status(result) mustBe SEE_OTHER
 
-          if (request.isType(CLEARANCE))
-            thePageNavigatedTo mustBe SectionSummaryController.displayPage(5)
+          if (request.isType(CLEARANCE)) thePageNavigatedTo mustBe SectionSummaryController.displayPage(5)
           else {
             val declaration = theCacheModelUpdated
             thePageNavigatedTo mustBe ProcedureCodesController.displayPage(declaration.items.last.id)

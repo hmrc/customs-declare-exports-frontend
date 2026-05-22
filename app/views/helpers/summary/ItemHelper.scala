@@ -16,7 +16,6 @@
 
 package views.helpers.summary
 
-import config.AppConfig
 import controllers.section5.routes._
 import models.DeclarationType.{isStandardOrSupplementary, DeclarationType}
 import models.declaration.ExportItem
@@ -29,8 +28,7 @@ import views.html.summary.summary_section
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class ItemHelper @Inject() (packageInformationHelper: PackageInformationHelper, summarySection: summary_section, appConfig: AppConfig)
-    extends SummaryHelper {
+class ItemHelper @Inject() (packageInformationHelper: PackageInformationHelper, summarySection: summary_section) extends SummaryHelper {
 
   def content(item: ExportItem, itemIdx: Int, declarationType: DeclarationType)(implicit messages: Messages): Html = {
     val summarySections = rows(item, false, itemIdx, declarationType)

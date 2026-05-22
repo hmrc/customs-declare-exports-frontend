@@ -319,7 +319,7 @@ class SealControllerSpec extends ControllerSpec with AuditedControllerSpec with 
           val result = controller.submitSummaryAction(containerId)(postRequest(body))
 
           await(result) mustBe aRedirectToTheNextPage
-          thePageNavigatedTo mustBe ContainerController.displayContainerSummary
+          thePageNavigatedTo mustBe ContainerController.displayContainerSummary()
         }
       }
 

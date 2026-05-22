@@ -20,7 +20,6 @@ import base.UnitWithMocksSpec
 import config.AppConfig
 import connectors.CodeListConnector
 import forms.common.DeclarationPageBaseSpec
-import forms.section6.ModeOfTransportCode.Maritime
 import forms.section6.TransportCountry.{prefix, transportCountry}
 import models.codes.Country
 import models.viewmodels.TariffContentKey
@@ -31,7 +30,6 @@ import play.api.data.FormError
 import play.api.i18n.{Lang, Messages}
 import play.api.libs.json.{JsObject, JsString, Json}
 import play.api.test.Helpers.stubMessagesApi
-import views.helpers.ModeOfTransportCodeHelper.transportMode
 
 import java.util.Locale
 import scala.collection.immutable.ListMap
@@ -54,7 +52,7 @@ class TransportCountrySpec extends UnitWithMocksSpec with BeforeAndAfterEach wit
 
   implicit val messages: Messages = stubMessagesApi().preferred(List(Lang(Locale.ENGLISH)))
 
-  val form = TransportCountry.form(transportMode(Some(Maritime)))
+  val form = TransportCountry.form()
 
   def formData(country: Option[String]): JsObject =
     Json.obj(transportCountry -> JsString(country.getOrElse("")))

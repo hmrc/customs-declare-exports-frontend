@@ -85,7 +85,7 @@ class ContainerController @Inject() (
     request.cacheModel.containers match {
       case containers if containers.nonEmpty => Ok(summaryPage(addAnotherContainerYesNoForm.withSubmissionErrors, containers))
 
-      case _ => navigator.continueTo(ContainerController.displayAddContainer)
+      case _ => navigator.continueTo(ContainerController.displayAddContainer())
     }
   }
 
@@ -103,7 +103,7 @@ class ContainerController @Inject() (
   def displayContainerRemove(containerId: String): Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
     request.cacheModel.containerBy(containerId) match {
       case Some(container) => Ok(removePage(removeContainerYesNoForm, container))
-      case _               => navigator.continueTo(ContainerController.displayContainerSummary)
+      case _               => navigator.continueTo(ContainerController.displayContainerSummary())
     }
   }
 
@@ -137,7 +137,7 @@ class ContainerController @Inject() (
       formWithErrors => Future.successful(BadRequest(addPage(formWithErrors))),
       containers =>
         if (containers != containersInCache) updateCache(containers).map(_ => redirectAfterAdd(containers.last.id))
-        else Future.successful(navigator.continueTo(ContainerController.displayContainerSummary))
+        else Future.successful(navigator.continueTo(ContainerController.displayContainerSummary()))
     )
 
   private def prepare(
@@ -175,7 +175,7 @@ class ContainerController @Inject() (
         formWithErrors => Future.successful(BadRequest(summaryPage(formWithErrors, request.cacheModel.containers))),
         _.answer match {
           case YesNoAnswers.yes =>
-            Future.successful(navigator.continueTo(ContainerController.displayAddContainer))
+            Future.successful(navigator.continueTo(ContainerController.displayAddContainer()))
 
           case YesNoAnswers.no =>
             updateDeclarationFromRequest(_.updateReadyForSubmission(true)) map { _ =>
@@ -191,7 +191,7 @@ class ContainerController @Inject() (
         formWithErrors => Future.successful(BadRequest(removePage(formWithErrors, request.cacheModel.containers.filter(_.id == containerId).head))),
         _.answer match {
           case YesNoAnswers.yes => removeContainer(containerId)
-          case YesNoAnswers.no  => Future.successful(navigator.continueTo(ContainerController.displayContainerSummary))
+          case YesNoAnswers.no  => Future.successful(navigator.continueTo(ContainerController.displayContainerSummary()))
         }
       )
 
@@ -205,7 +205,7 @@ class ContainerController @Inject() (
     for {
       declaration <- updateCache(request.cacheModel.containers.filterNot(_.id == containerId))
       _ <- removeGoodsInContainerDeclaredIfNoContainers(declaration)
-    } yield navigator.continueTo(ContainerController.displayContainerSummary)
+    } yield navigator.continueTo(ContainerController.displayContainerSummary())
   }
 
   private def containerId(values: Seq[String]): String = values.headOption.getOrElse("")

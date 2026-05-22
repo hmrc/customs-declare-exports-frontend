@@ -49,7 +49,7 @@
     showDeclarationSummaryLink = false
 ) {
 
-    @formHelper(action = CopyDeclarationController.submitPage, 'autoComplete -> "off") {
+    @formHelper(action = CopyDeclarationController.submitPage, Symbol("autoComplete") -> "off") {
         @errorSummary(form.errors)
 
         @pageTitle(messages("declaration.copy.title"))

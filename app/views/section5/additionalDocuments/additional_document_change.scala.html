@@ -36,7 +36,7 @@
     title = Title(additionalDocumentHelper.title(itemId), "declaration.section.5", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.backToPreviousQuestion"), AdditionalDocumentsController.displayPage(itemId)))
 ) {
-    @formHelper(action = AdditionalDocumentChangeController.submitForm(itemId, documentId), 'autoComplete -> "off") {
+    @formHelper(action = AdditionalDocumentChangeController.submitForm(itemId, documentId), Symbol("autoComplete") -> "off") {
         @editContent(itemId, form)
     }
 }

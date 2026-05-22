@@ -20,7 +20,7 @@ import forms.DeclarationPage
 import play.api.data.Form
 import play.api.data.Forms.{mapping, text}
 import play.api.libs.json.{Json, OFormat}
-import utils.validators.forms.FieldValidator._
+import utils.validators.forms.FieldValidator.*
 
 case class TraderReference(value: String)
 
@@ -39,6 +39,6 @@ object TraderReference extends DeclarationPage {
           .transform(_.toUpperCase, (s: String) => s)
           .verifying("declaration.traderReference.error.empty", nonEmpty)
           .verifying("declaration.traderReference.error.invalid", isEmpty or isValidTraderReference)
-      )(form2data)(TraderReference.unapply)
+      )(form2data)(TraderReference => Some(TraderReference.value))
     )
 }

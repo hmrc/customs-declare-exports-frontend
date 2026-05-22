@@ -191,7 +191,7 @@ class InlandTransportDetailsControllerSpec extends ControllerSpec with AuditedCo
 
       postalOrFTIModeOfTransportCodes.foreach { transportMode =>
         val expectedRedirect =
-          if (request.declarationType == SUPPLEMENTARY) ContainerController.displayContainerSummary
+          if (request.declarationType == SUPPLEMENTARY) ContainerController.displayContainerSummary()
           else ExpressConsignmentController.displayPage
 
         s"redirect to ${expectedRedirect.url}" when {

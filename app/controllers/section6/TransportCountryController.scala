@@ -53,7 +53,7 @@ class TransportCountryController @Inject() (
   val displayPage: Action[AnyContent] = (authenticate andThen journeyType(nonClearanceJourneys)).async { implicit request =>
     val pageToDisplay = () => {
       val transportMode = ModeOfTransportCodeHelper.transportMode(request.cacheModel.transportLeavingBorderCode)
-      val form = TransportCountry.form(transportMode).withSubmissionErrors
+      val form = TransportCountry.form().withSubmissionErrors
       val page = request.cacheModel.transport.transportCrossingTheBorderNationality match {
         case Some(data) => transportCountry(transportMode, form.fill(data))
         case _          => transportCountry(transportMode, form)
@@ -67,7 +67,7 @@ class TransportCountryController @Inject() (
     val verifyFormAndUpdateCache = () => {
       val transportMode = ModeOfTransportCodeHelper.transportMode(request.cacheModel.transportLeavingBorderCode)
       TransportCountry
-        .form(transportMode)
+        .form()
         .bindFromRequest(formValuesFromRequest(TransportCountry.transportCountry))
         .fold(formWithErrors => Future.successful(BadRequest(transportCountry(transportMode, formWithErrors))), updateCache(_).map(_ => nextPage))
     }
@@ -80,7 +80,7 @@ class TransportCountryController @Inject() (
   private def nextPage(implicit request: JourneyRequest[AnyContent]): Result = {
     val page = request.declarationType match {
       case STANDARD | OCCASIONAL | SIMPLIFIED => ExpressConsignmentController.displayPage
-      case SUPPLEMENTARY                      => ContainerController.displayContainerSummary
+      case SUPPLEMENTARY                      => ContainerController.displayContainerSummary()
     }
     navigator.continueTo(page)
   }

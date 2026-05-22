@@ -76,11 +76,11 @@ class TransportCountryViewSpec extends PageWithButtonsSpec with Injector {
     super.afterEach()
   }
 
-  def form(transportMode: String): Form[TransportCountry] = TransportCountry.form(transportMode)
+  def form(): Form[TransportCountry] = TransportCountry.form()
 
   override val typeAndViewInstance = {
     val maritime = ModeOfTransportCodeHelper.transportMode(Some(Maritime))
-    (STANDARD, page(maritime, form(maritime))(_, _))
+    (STANDARD, page(maritime, form())(_, _))
   }
 
   def createView(form: Form[TransportCountry], transportMode: String)(implicit request: JourneyRequest[_]): Document =
@@ -101,7 +101,7 @@ class TransportCountryViewSpec extends PageWithButtonsSpec with Injector {
           s"the transport mode is $transportMode" should {
 
             "contain the expected content" which {
-              val view = createView(form(transportMode), transportMode)(journeyRequest(declarationType))
+              val view = createView(form(), transportMode)(journeyRequest(declarationType))
 
               "display 'Back' button that links to the 'Border Transport' page" in {
                 val backButton = view.getElementById("back-link")
@@ -119,7 +119,7 @@ class TransportCountryViewSpec extends PageWithButtonsSpec with Injector {
 
               "display the expected paragraph FEATURE FLAGGED" when {
                 "'Transport Leaving the Border' is 'RoRo'" in {
-                  val view = createView(form(transportMode), transportMode)(journeyRequest(declarationType))
+                  val view = createView(form(), transportMode)(journeyRequest(declarationType))
 
                   val body = view.getElementsByClass("govuk-body")
 
@@ -135,7 +135,7 @@ class TransportCountryViewSpec extends PageWithButtonsSpec with Injector {
 
               "display the expected paragraph" when {
                 "'Transport Leaving the Border' is 'RoRo'" in {
-                  val view = createView(form(transportMode), transportMode)(journeyRequest(declarationType))
+                  val view = createView(form(), transportMode)(journeyRequest(declarationType))
 
                   val body = view.getElementsByClass("govuk-body")
 
@@ -168,7 +168,7 @@ class TransportCountryViewSpec extends PageWithButtonsSpec with Injector {
 
               "the user enters an invalid country" in {
                 val formData = Json.obj(transportCountry -> "12345")
-                val formWithError = form(transportMode).bind(formData, JsonBindMaxChars)
+                val formWithError = form().bind(formData, JsonBindMaxChars)
                 val view = createView(formWithError, transportMode)(journeyRequest(declarationType))
 
                 view must haveGovukGlobalErrorSummary
@@ -191,7 +191,7 @@ class TransportCountryViewSpec extends PageWithButtonsSpec with Injector {
             "display 'Back' button that links to the 'Departure Transport' page" when {
               "the user selects 'Border' on the /inland-or-border page" in {
                 implicit val request = withRequestOfType(declarationType, withInlandOrBorder(Some(Border)))
-                val view = createView(form(transportMode), transportMode)
+                val view = createView(form(), transportMode)
                 val backButton = view.getElementById("back-link")
                 backButton must containMessage("site.backToPreviousQuestion")
                 backButton.getElementById("back-link") must haveHref(DepartureTransportController.displayPage)
@@ -212,7 +212,7 @@ class TransportCountryViewSpec extends PageWithButtonsSpec with Injector {
             "display 'Back' button that links to the 'Inland or Border' page" when {
               "the user selects 'Border' on the /inland-or-border page" in {
                 implicit val request = withRequestOfType(declarationType, withInlandOrBorder(Some(Border)))
-                val view = createView(form(transportMode), transportMode)
+                val view = createView(form(), transportMode)
                 val backButton = view.getElementById("back-link")
                 backButton must containMessage("site.backToPreviousQuestion")
                 backButton.getElementById("back-link") must haveHref(InlandOrBorderController.displayPage)

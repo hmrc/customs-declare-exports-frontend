@@ -46,7 +46,7 @@
     title = Title("declaration.exs.title", "declaration.section.2", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(IsExs)))) {
 
-    @formHelper(action = IsExsController.submit, 'autoComplete -> "off") {
+    @formHelper(action = IsExsController.submit(), Symbol("autoComplete") -> "off") {
         @errorSummary(radioGroupErrors(isExsKey, "code_yes", form.errors))
 
         @sectionHeader(messages("declaration.section.2"))

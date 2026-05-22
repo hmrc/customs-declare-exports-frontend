@@ -35,8 +35,8 @@ class SignOutController @Inject() (
 
   def signOut(signOutReason: SignOutReason): Action[AnyContent] = Action { _ =>
     val redirectionTarget: Call = signOutReason match {
-      case SignOutReason.SessionTimeout => SignOutController.sessionTimeoutSignedOut
-      case SignOutReason.UserAction     => SignOutController.userSignedOut
+      case SignOutReason.SessionTimeout => SignOutController.sessionTimeoutSignedOut()
+      case SignOutReason.UserAction     => SignOutController.userSignedOut()
     }
     Redirect(config.signOut, Map("continue" -> Seq(s"${config.selfBaseUrl.getOrElse("")}${redirectionTarget.url}")))
   }

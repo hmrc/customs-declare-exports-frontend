@@ -52,7 +52,7 @@
     title = Title("declaration.exporterEori.title", "declaration.section.2", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(ExporterEoriNumber)))){
 
-    @formHelper(action = ExporterEoriNumberController.submit, 'autoComplete -> "off") {
+    @formHelper(action = ExporterEoriNumberController.submit(), Symbol("autoComplete") -> "off") {
         @errorSummary(radioGroupErrors("hasEori", "Yes", form.errors))
 
         @sectionHeader(messages("declaration.section.2"))
