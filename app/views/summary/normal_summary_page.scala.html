@@ -51,14 +51,18 @@
 
 @draftContinueLink = @{
     if (request.cacheModel.declarationMeta.readyForSubmission != Some(true)) {
-      maybeContinuePlaceholder.map { continuePlaceholder =>
-        govukButton(Button(
-            content = Text(messages("site.continue")),
-            classes = "govuk-!-margin-top-4",
-            href = Some(continuePlaceholder),
-            attributes = Map("id" -> continuePlaceholder)
-        ))
-      }
+        maybeContinuePlaceholder
+          .map { continuePlaceholder =>
+            govukButton(Button(
+              content = Text(messages("site.continue")),
+              classes = "govuk-!-margin-top-4",
+              href = Some(continuePlaceholder),
+              attributes = Map("id" -> continuePlaceholder)
+            ))
+          }
+          .getOrElse(HtmlFormat.empty)
+    } else {
+        HtmlFormat.empty
     }
 }
 
