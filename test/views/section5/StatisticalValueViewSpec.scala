@@ -26,22 +26,9 @@ import models.DeclarationType.STANDARD
 import org.jsoup.nodes.Document
 import org.mockito.Mockito.when
 import play.api.data.Form
-import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF, GovukDetails}
-import uk.gov.hmrc.hmrcfrontend.views.html.components.HmrcCurrencyInput
+import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF, GovukDetails, GovukInput}
 import views.common.PageWithButtonsSpec
-import views.html.components.gds.{
-  errorSummary,
-  exportsInsetText,
-  externalLink,
-  gdsMainTemplate,
-  heading,
-  label,
-  notificationBanner,
-  paragraphBody,
-  saveButtons,
-  sectionHeader,
-  tariffExpander
-}
+import views.html.components.gds.*
 import views.html.section5.statistical_value
 import views.tags.ViewTest
 
@@ -54,8 +41,8 @@ class StatisticalValueViewSpec extends PageWithButtonsSpec with Injector {
 
   val page = new statistical_value(
     instanceOf[gdsMainTemplate],
+    instanceOf[GovukInput],
     instanceOf[GovukDetails],
-    instanceOf[HmrcCurrencyInput],
     instanceOf[errorSummary],
     instanceOf[notificationBanner],
     instanceOf[sectionHeader],
