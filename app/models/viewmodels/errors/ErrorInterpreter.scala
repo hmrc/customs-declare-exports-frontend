@@ -59,7 +59,7 @@ trait ErrorInterpreter {
   def fieldsTableHeader(implicit messages: Messages): Html = Html(s"""<table class="govuk-table">
       |  <thead class="govuk-table__head">
       |    <tr class="govuk-table__row">
-      |      <th scope="col" class="govuk-table__header"></th>
+      |      <td scope="col" class="govuk-table__header"></td>
       |      <th scope="col" class="govuk-table__header" data-gtm-vis-has-fired-8267218_2200="1">${messages(
     "rejected.notification.fieldTable.column.2.title"
   )}</th>
@@ -82,7 +82,7 @@ trait ErrorInterpreter {
     call: Option[Html]
   ): String =
     s"""<tr class="govuk-table__row ${fieldPointer.toString.replaceAll("\\.#?", "-")}">
-       |  <td class="govuk-table__cell govuk-table__cell_break-word bold">${fieldName}</td>
+       |  <th class="govuk-table__cell govuk-table__cell_break-word bold" scope="row">${fieldName}</th>
        |  <td class="govuk-table__cell govuk-table__cell_break-word">${originalValue.getOrElse("-")}</td>
        |  <td class="govuk-table__cell govuk-table__cell_break-word">${updatedValue.getOrElse("-")}</td>
        |  <td class="govuk-table__cell govuk-table__cell_break-word">${call.getOrElse("")}</td>
