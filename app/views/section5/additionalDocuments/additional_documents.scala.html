@@ -62,6 +62,8 @@
     ))
 }
 
+@showStatus = @{ documents.exists(_.documentStatus.exists(_.nonEmpty)) }
+
 @documentsTable = {
     @if(documents.nonEmpty) {
         @govukTable(Table(
@@ -75,11 +77,15 @@
                     TableRow(
                         content = Text(document.documentIdentifier.getOrElse("")),
                         classes = "document-identifier"
-                    ),
-                    TableRow(
-                        content = Text(document.documentStatus.getOrElse("")),
-                        classes = "document-status"
-                    ),
+                    )
+                ) ++ (
+                    if(showStatus) Seq(
+                        TableRow(
+                            content = Text(document.documentStatus.getOrElse("")),
+                            classes = "document-status"
+                        )
+                    ) else Seq.empty
+                ) ++ Seq(
                     TableRow(
                         content = HtmlContent(link(
                             messages("site.change"),
@@ -100,26 +106,32 @@
                     )
                 )
             },
-            head = Some(List(
-                HeadCell(
-                    content = Text(messages("declaration.additionalDocument.summary.documentCode")),
-                    classes = "document-type"
-                ),
-                HeadCell(
-                    content = Text(messages("declaration.additionalDocument.summary.documentIdentifier")),
-                    classes = "document-identifier"
-                ),
-                HeadCell(
-                    content = Text(messages("declaration.additionalDocument.summary.statusCode")),
-                    classes = "document-identifier"
-                ),
-                HeadCell(
-                    content = HtmlContent(spanVisuallyHidden(messages("site.change.header")))
-                ),
-                HeadCell(
-                    content = HtmlContent(spanVisuallyHidden(messages("site.remove.header")))
+            head = Some(
+                List(
+                    HeadCell(
+                        content = Text(messages("declaration.additionalDocument.summary.documentCode")),
+                        classes = "document-type"
+                    ),
+                    HeadCell(
+                        content = Text(messages("declaration.additionalDocument.summary.documentIdentifier")),
+                        classes = "document-identifier"
+                    )
+                ) ++ (
+                    if(showStatus) List(
+                        HeadCell(
+                            content = Text(messages("declaration.additionalDocument.summary.statusCode")),
+                            classes = "document-status"
+                        )
+                    ) else Nil
+                ) ++ List(
+                    HeadCell(
+                        content = HtmlContent(spanVisuallyHidden(messages("site.change.header")))
+                    ),
+                    HeadCell(
+                        content = HtmlContent(spanVisuallyHidden(messages("site.remove.header")))
+                    )
                 )
-            )),
+            ),
             caption = Some(messages("declaration.additionalDocument.summary.caption")),
             captionClasses = "govuk-visually-hidden"
         ))
