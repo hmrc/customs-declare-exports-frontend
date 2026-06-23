@@ -20,20 +20,18 @@
 @import forms.section4.InvoiceAndExchangeRate
 @import forms.section4.InvoiceAndExchangeRate._
 @import models.requests.JourneyRequest
-@import play.twirl.api.HtmlFormat
 @import services.view.AutoCompleteItem
 @import services.InvoiceAndExchangeRateService
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.helpers.{BackButton, Title}
 @import views.helpers.AuthorisationHolderRequiredHelper
-@import views.helpers.DescribedByHelper
+
 @import views.html.components.gds._
 @import views.html.components.inputs.input_accessible_autocomplete
 
 @this(
     govukLayout: gdsMainTemplate,
     govukInput: GovukInput,
-    govukFieldset: GovukFieldset,
     govukDetails : GovukDetails,
     pageTitle: pageTitle,
     heading: heading,
@@ -104,11 +102,8 @@
 }
 
 @currencyCodeAndAmountFlag = {
-    <div class="govuk-form-group @if(totalAmountInvoicedErrors.nonEmpty){govuk-form-group--error}">
-    @govukFieldset(Fieldset(
-        attributes = Map("id" -> "currencyCodeAndAmount"),
-        html = HtmlFormat.fill(List(currencyCodeAndAmountContentFlag))
-    ))
+    <div id="currencyCodeAndAmount" class="govuk-form-group @if(totalAmountInvoicedErrors.nonEmpty){govuk-form-group--error}">
+        @currencyCodeAndAmountContentFlag
     </div>
 }
 
@@ -165,11 +160,8 @@
 }
 
 @currencyCodeAndAmount = {
-<div class="govuk-form-group @if(totalAmountInvoicedErrors.nonEmpty){govuk-form-group--error}">
-    @govukFieldset(Fieldset(
-    attributes = Map("id" -> "currencyCodeAndAmount"),
-    html = HtmlFormat.fill(List(currencyCodeAndAmountContent))
-    ))
+<div id="currencyCodeAndAmount" class="govuk-form-group @if(totalAmountInvoicedErrors.nonEmpty){govuk-form-group--error}">
+    @currencyCodeAndAmountContent
 </div>
 }
 
@@ -211,18 +203,17 @@
 
         @exchangeRateInputFlag
 
-@govukFieldset(DescribedByHelper(
-            form = form,
-            fieldName = "yesNo",
-            content = List(
-                yesNoRadios(
-                    form,
-                    answerKey = "agreedExchangeRate",
-                    yesConditionalHtml = Some(exchangeRateInput)
-                )
-            ),
-            titleKey = None
-        ))
+@yesNoRadios(
+            form,
+            heading = Some(Fieldset(
+                legend = Some(Legend(
+                    content = Text(messages("declaration.exchangeRate")),
+                    classes = "govuk-fieldset__legend--m"
+                ))
+            )),
+            answerKey = "agreedExchangeRate",
+            yesConditionalHtml = Some(exchangeRateInput)
+        )
 
 
 
