@@ -2406,11 +2406,11 @@ rejected.notification.guidance.section.1.paragraph.1.link = dudalen datganiadau 
 rejected.notification.guidance.section.2.header = Help gyda chywiro gwallau
 rejected.notification.guidance.section.2.paragraph.1 = Gall un gwall yn eich datganiad achosi i wallau cysylltiedig ymddangos mewn rhannau eraill o’r datganiad. Os bydd hyn yn digwydd, mae’n bosibl y gwelwch godau gwall yn cael eu hailadrodd.
 rejected.notification.guidance.section.2.paragraph.2 = Er mwyn rhoi gwybod am broblem, defnyddiwch y botwm penodol ar gyfer rhoi gwybod am broblem drwy ddefnyddio’r Gwasanaeth Datganiadau Tollau.
-rejected.notification.guidance.section.2.link.1 = Rhowch wybod am broblem drwy ddefnyddio’r Gwasanaeth Datganiadau Tollau
+rejected.notification.guidance.section.2.link.1 = Rhowch wybod am broblem drwy ddefnyddio’r Gwasanaeth Datganiadau Tollau (yn agor tab newydd)
 
 rejected.notification.guidance.section.3.header = Adnoddau defnyddiol eraill
-rejected.notification.guidance.section.3.link.1 = Datrysiadau ar gyfer gwallau hysbys yn y Gwasanaeth Datganiadau Tollau
-rejected.notification.guidance.section.3.link.2 = Arweiniad ar godau gwall Gwasanaeth Datganiadau Tollau
+rejected.notification.guidance.section.3.link.1 = Datrysiadau ar gyfer gwallau hysbys yn y Gwasanaeth Datganiadau Tollau (yn agor tab newydd)
+rejected.notification.guidance.section.3.link.2 = Arweiniad ar godau gwall Gwasanaeth Datganiadau Tollau (yn agor tab newydd)
 rejected.notification.guidance.section.3.paragraph.1 = Os oes angen help arnoch gyda gwallau sy’n gysylltiedig â gofynion Tariff penodol (megis dogfennau coll), ffoniwch y ddesg gymorth.
 rejected.notification.guidance.section.3.paragraph.2 = Ffôn: 0300 200 3705
 rejected.notification.guidance.section.3.paragraph.3 = Dydd Llun i Ddydd Gwener, 08:30 i 17:00 (heblaw am benwythnosau a gwyliau’r banc)
