@@ -21,7 +21,6 @@
 @import controllers.summary.routes.SectionSummaryController
 @import forms.section4.Document
 @import models.requests.JourneyRequest
-@import play.twirl.api.HtmlFormat
 @import services.{DocumentType, DocumentTypeService}
 @import services.view.AutoCompleteItem
 @import uk.gov.hmrc.govukfrontend.views.html.components._
@@ -31,7 +30,6 @@
 
 @this(
     govukLayout: gdsMainTemplate,
-    govukFieldset: GovukFieldset,
     errorSummary: errorSummary,
     sectionHeader: sectionHeader,
     pageTitle: pageTitle,
@@ -96,6 +94,7 @@
 
         @templateHelper.insetText(appConfig)
 
-        @govukFieldset(Fieldset(html = HtmlFormat.fill(List(formFields, saveButtons()))))
+        @formFields
+        @saveButtons()
     }
 }
