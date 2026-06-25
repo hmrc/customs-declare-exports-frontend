@@ -32,13 +32,13 @@ case class CommodityMeasure(grossMass: Option[String], netMass: Option[String])
 object CommodityMeasure extends DeclarationPage {
 
   def apply(cm: CM): CommodityMeasure =
-    new CommodityMeasure(cm.grossMass, cm.netMass)
+    new CommodityMeasure(cm.netMass, cm.grossMass)
 
   def apply(grossMass: String, netMass: String): CommodityMeasure =
     new CommodityMeasure(if (grossMass.isEmpty) None else Some(grossMass), if (netMass.isEmpty) None else Some(netMass))
 
   def unapply(commodityMeasure: CommodityMeasure): Option[(String, String)] =
-    Some((commodityMeasure.grossMass.getOrElse(""), commodityMeasure.netMass.getOrElse("")))
+    Some((commodityMeasure.netMass.getOrElse(""), commodityMeasure.grossMass.getOrElse("")))
 
   def form(declarationType: DeclarationType): Form[CommodityMeasure] =
     declarationType match {
@@ -75,12 +75,6 @@ object CommodityMeasure extends DeclarationPage {
   )(CommodityMeasure.apply)(CommodityMeasure.unapply)
 
   private val optionalMapping = Forms.mapping(
-    "grossMass" -> of(
-      CrossFieldFormatter(
-        secondaryKey = "",
-        constraints = List(("declaration.commodityMeasure.error", (gross, _) => isEmpty(gross) or massFormatValidation(gross)))
-      )
-    ),
     "netMass" -> of(
       CrossFieldFormatter(
         secondaryKey = "grossMass",
@@ -91,6 +85,12 @@ object CommodityMeasure extends DeclarationPage {
             (net, gross) => isEmpty(net) or isEmpty(gross) or !massFormatValidation(net) or isFirstSmallerOrEqual(net, gross)
           )
         )
+      )
+    ),
+    "grossMass" -> of(
+      CrossFieldFormatter(
+        secondaryKey = "",
+        constraints = List(("declaration.commodityMeasure.error", (gross, _) => isEmpty(gross) or massFormatValidation(gross)))
       )
     )
   )(CommodityMeasure.apply)(CommodityMeasure.unapply)
