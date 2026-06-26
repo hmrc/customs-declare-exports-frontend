@@ -29,7 +29,6 @@ case class CommodityMeasure(
   supplementaryUnitsNotRequired: Option[Boolean],
   netMass: Option[String],
   grossMass: Option[String]
-  
 ) extends DiffTools[CommodityMeasure] {
 
   // supplementaryUnitsNotRequired is not used to build WCO XML payload
@@ -49,7 +48,7 @@ object CommodityMeasure extends FieldMapping {
   val netMassPointer: ExportsFieldPointer = "netMass"
   val grossMassPointer: ExportsFieldPointer = "grossMass"
 
-  lazy val keyForGrossMass = s"$itemsPrefix.grossWeight"
   lazy val keyForNetMass = s"$itemsPrefix.netWeight"
+  lazy val keyForGrossMass = s"$itemsPrefix.grossWeight"
   lazy val keyForSupplementaryUnits = s"$itemsPrefix.supplementaryUnits"
 }

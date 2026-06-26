@@ -35,10 +35,7 @@ object CommodityMeasure extends DeclarationPage {
     new CommodityMeasure(cm.netMass, cm.grossMass)
 
   def apply(netMass: String, grossMass: String): CommodityMeasure =
-    new CommodityMeasure(
-      if (netMass.isEmpty) None else Some(netMass),
-      if (grossMass.isEmpty) None else Some(grossMass)
-    )
+    new CommodityMeasure(if (netMass.isEmpty) None else Some(netMass), if (grossMass.isEmpty) None else Some(grossMass))
 
   def unapply(commodityMeasure: CommodityMeasure): Option[(String, String)] =
     Some((commodityMeasure.netMass.getOrElse(""), commodityMeasure.grossMass.getOrElse("")))

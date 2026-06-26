@@ -34,7 +34,7 @@ import views.common.UnitViewSpec
 
 class Card5ForItemsSpec extends UnitViewSpec with ExportsTestHelper with Injector {
 
-  private val commodityMeasure = CommodityMeasure(Some("12"), Some(false), Some("666"), Some("555"))
+  private val commodityMeasure = CommodityMeasure(Some("12"), Some(false), Some("555"), Some("666"))
 
   private val itemWithAnswers = anItem(
     withItemId(itemId),
@@ -376,13 +376,13 @@ class Card5ForItemsSpec extends UnitViewSpec with ExportsTestHelper with Injecto
       "show 'Gross weight in kilograms'" in {
         val row = view.getElementsByClass("item-1-gross-weight")
         val call = Some(CommodityMeasureController.displayPage(itemId))
-        checkSummaryRow(row, "item.grossWeight", "555", call, "item.grossWeight")
+        checkSummaryRow(row, "item.grossWeight", "666", call, "item.grossWeight")
         assert(row.first.hasClass("govuk-summary-list__row--no-border"))
       }
 
       "show 'Net weight in kilograms'" in {
         val row = view.getElementsByClass("item-1-net-weight")
-        checkSummaryRow(row, "item.netWeight", "666", None, "ign")
+        checkSummaryRow(row, "item.netWeight", "555", None, "ign")
       }
 
       "show 'Supplementary units' only for STANDARD & SUPPLEMENTARY declarations" in {
