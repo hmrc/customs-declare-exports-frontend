@@ -85,9 +85,14 @@ trait ErrorInterpreter {
        |  <th class="govuk-table__cell govuk-table__cell_break-word bold" scope="row">${fieldName}</th>
        |  <td class="govuk-table__cell govuk-table__cell_break-word">${originalValue.getOrElse("-")}</td>
        |  <td class="govuk-table__cell govuk-table__cell_break-word">${updatedValue.getOrElse("-")}</td>
-       |  <td class="govuk-table__cell govuk-table__cell_break-word">${call.getOrElse("")}</td>
+       |  <td class="govuk-table__cell govuk-table__cell_break-word">${addDescriptiveTextToChangeLink(fieldName, call)}</td>
        |</tr>
        |""".stripMargin
+
+  private def addDescriptiveTextToChangeLink(fieldName: String, call: Option[Html]) =
+    call.map { c =>
+      Html(c.body.replace("</a>", s"<span class='govuk-visually-hidden'>$fieldName</span></a>"))
+    }.getOrElse("")
 
   val fieldsTableFooter: Html = Html("</tbody></table>".stripMargin)
 
