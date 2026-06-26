@@ -376,13 +376,13 @@ class Card5ForItemsSpec extends UnitViewSpec with ExportsTestHelper with Injecto
       "show 'Gross weight in kilograms'" in {
         val row = view.getElementsByClass("item-1-gross-weight")
         val call = Some(CommodityMeasureController.displayPage(itemId))
-        checkSummaryRow(row, "item.grossWeight", "666", call, "item.grossWeight")
+        checkSummaryRow(row, "item.grossWeight", "555", call, "item.grossWeight")
         assert(row.first.hasClass("govuk-summary-list__row--no-border"))
       }
 
       "show 'Net weight in kilograms'" in {
         val row = view.getElementsByClass("item-1-net-weight")
-        checkSummaryRow(row, "item.netWeight", "555", None, "ign")
+        checkSummaryRow(row, "item.netWeight", "666", None, "ign")
       }
 
       "show 'Supplementary units' only for STANDARD & SUPPLEMENTARY declarations" in {

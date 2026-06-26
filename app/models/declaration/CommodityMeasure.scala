@@ -27,8 +27,9 @@ import services.DiffTools.{combinePointers, compareStringDifference, ExportsDecl
 case class CommodityMeasure(
   supplementaryUnits: Option[String],
   supplementaryUnitsNotRequired: Option[Boolean],
-  grossMass: Option[String],
-  netMass: Option[String]
+  netMass: Option[String],
+  grossMass: Option[String]
+  
 ) extends DiffTools[CommodityMeasure] {
 
   // supplementaryUnitsNotRequired is not used to build WCO XML payload

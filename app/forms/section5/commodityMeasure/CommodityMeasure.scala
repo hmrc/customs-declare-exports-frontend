@@ -27,15 +27,18 @@ import utils.validators.forms.FieldValidator._
 
 import scala.util.Try
 
-case class CommodityMeasure(grossMass: Option[String], netMass: Option[String])
+case class CommodityMeasure(netMass: Option[String], grossMass: Option[String])
 
 object CommodityMeasure extends DeclarationPage {
 
   def apply(cm: CM): CommodityMeasure =
     new CommodityMeasure(cm.netMass, cm.grossMass)
 
-  def apply(grossMass: String, netMass: String): CommodityMeasure =
-    new CommodityMeasure(if (grossMass.isEmpty) None else Some(grossMass), if (netMass.isEmpty) None else Some(netMass))
+  def apply(netMass: String, grossMass: String): CommodityMeasure =
+    new CommodityMeasure(
+      if (netMass.isEmpty) None else Some(netMass),
+      if (grossMass.isEmpty) None else Some(grossMass)
+    )
 
   def unapply(commodityMeasure: CommodityMeasure): Option[(String, String)] =
     Some((commodityMeasure.netMass.getOrElse(""), commodityMeasure.grossMass.getOrElse("")))
