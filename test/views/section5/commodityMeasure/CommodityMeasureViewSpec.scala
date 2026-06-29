@@ -117,14 +117,14 @@ class CommodityMeasureViewSpec extends PageWithButtonsSpec with Injector with Mo
       }
 
       "display data in net mass input" in {
-        val form = CommodityMeasure.form(request.declarationType).fill(CommodityMeasure(Some(""), Some("123")))
+        val form = CommodityMeasure.form(request.declarationType).fill(CommodityMeasure(Some("123"), Some("")))
         val view = createView(form)
 
         view.getElementById("netMass").attr("value") mustBe "123"
       }
 
       "display data in gross mass input" in {
-        val form = CommodityMeasure.form(request.declarationType).fill(CommodityMeasure(Some("123"), Some("")))
+        val form = CommodityMeasure.form(request.declarationType).fill(CommodityMeasure(Some(""), Some("123")))
         val view = createView(form)
 
         view.getElementById("grossMass").attr("value") mustBe "123"

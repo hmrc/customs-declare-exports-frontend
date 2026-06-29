@@ -24,8 +24,8 @@ import play.api.data.Form
 
 class CommodityMeasureSpec extends UnitSpec with DeclarationPageBaseSpec {
 
-  private def form(declarationType: DeclarationType, grossMass: String, netMass: String): Form[CommodityMeasure] =
-    CommodityMeasure.form(declarationType).bind(Map("grossMass" -> grossMass, "netMass" -> netMass))
+  private def form(declarationType: DeclarationType, netMass: String, grossMass: String): Form[CommodityMeasure] =
+    CommodityMeasure.form(declarationType).bind(Map("netMass" -> netMass, "grossMass" -> grossMass))
 
   "Commodity Measure form" should {
 
@@ -35,15 +35,15 @@ class CommodityMeasureSpec extends UnitSpec with DeclarationPageBaseSpec {
         s"the declaration is of type $declarationType and" when {
 
           "the user enters net and gross mass with correct values" in {
-            form(declarationType, "124.123", "123.123").errors must be(empty)
+            form(declarationType, "123.123", "124.123").errors must be(empty)
           }
 
           "the user does not enter decimal digits" in {
-            form(declarationType, "124", "123").errors must be(empty)
+            form(declarationType, "123", "124").errors must be(empty)
           }
 
           "the user does not enter decimal digits after the decimal separator" in {
-            form(declarationType, "124.", "123.").errors must be(empty)
+            form(declarationType, "123.", "124.").errors must be(empty)
           }
 
           "net and gross mass are equal" in {
@@ -55,11 +55,11 @@ class CommodityMeasureSpec extends UnitSpec with DeclarationPageBaseSpec {
           }
 
           "the user enters net mass only" in {
-            form(declarationType, "", "124.123").errors must be(empty)
+            form(declarationType, "124.123", "").errors must be(empty)
           }
 
           "the user enters gross mass only" in {
-            form(declarationType, "123.123", "").errors must be(empty)
+            form(declarationType, "", "123.123").errors must be(empty)
           }
         }
       }
@@ -68,15 +68,15 @@ class CommodityMeasureSpec extends UnitSpec with DeclarationPageBaseSpec {
         s"the declaration is of type $declarationType and" when {
 
           "the user enters net and gross mass with correct values" in {
-            form(declarationType, "124.123", "123.123").errors must be(empty)
+            form(declarationType, "123.123", "124.123").errors must be(empty)
           }
 
           "the user does not enter decimal digits" in {
-            form(declarationType, "124", "123").errors must be(empty)
+            form(declarationType, "123", "124").errors must be(empty)
           }
 
           "the user does not enter decimal digits after the decimal separator" in {
-            form(declarationType, "124.", "123.").errors must be(empty)
+            form(declarationType, "123.", "124.").errors must be(empty)
           }
 
           "net and gross mass are equal" in {
@@ -92,9 +92,9 @@ class CommodityMeasureSpec extends UnitSpec with DeclarationPageBaseSpec {
         s"the declaration is of type $declarationType and" when {
 
           "the user enters too many decimal digits" in {
-            val result = form(declarationType, "12345.1234", "1234.1234")
+            val result = form(declarationType, "1234.1234", "12345.1234")
 
-            val expectedErrorKeys = List("grossMass", "netMass")
+            val expectedErrorKeys = List("netMass", "grossMass")
             val errorKeys = result.errors.map(_.key)
             errorKeys must be(expectedErrorKeys)
 
@@ -106,7 +106,7 @@ class CommodityMeasureSpec extends UnitSpec with DeclarationPageBaseSpec {
           "the user enters too many digits" in {
             val result = form(declarationType, "123456789.123", "123456789.123")
 
-            val expectedErrorKeys = List("grossMass", "netMass")
+            val expectedErrorKeys = List("netMass", "grossMass")
             val errorKeys = result.errors.map(_.key)
             errorKeys must be(expectedErrorKeys)
 
@@ -116,9 +116,9 @@ class CommodityMeasureSpec extends UnitSpec with DeclarationPageBaseSpec {
           }
 
           "the user enters more than one decimal separator" in {
-            val result = form(declarationType, "123.45.12", "12.34.12")
+            val result = form(declarationType, "12.34.12", "123.45.12")
 
-            val expectedErrorKeys = List("grossMass", "netMass")
+            val expectedErrorKeys = List("netMass", "grossMass")
             val errorKeys = result.errors.map(_.key)
             errorKeys must be(expectedErrorKeys)
 
@@ -128,9 +128,9 @@ class CommodityMeasureSpec extends UnitSpec with DeclarationPageBaseSpec {
           }
 
           "the user enters non-digit characters" in {
-            val result = form(declarationType, "1234A89", "126B789.12")
+            val result = form(declarationType, "126B789.12", "1234A89")
 
-            val expectedErrorKeys = List("grossMass", "netMass")
+            val expectedErrorKeys = List("netMass", "grossMass")
             val errorKeys = result.errors.map(_.key)
             errorKeys must be(expectedErrorKeys)
 
@@ -140,7 +140,7 @@ class CommodityMeasureSpec extends UnitSpec with DeclarationPageBaseSpec {
           }
 
           "net mass is greater than gross mass" in {
-            val result = form(declarationType, "123.123", "124.123")
+            val result = form(declarationType, "124.123", "123.123")
 
             val errorKeys = result.errors.map(_.key)
             val expectedErrorKeys = List("netMass")
@@ -159,36 +159,36 @@ class CommodityMeasureSpec extends UnitSpec with DeclarationPageBaseSpec {
           "net and gross mass are empty" in {
             val result = form(declarationType, "", "")
 
-            val expectedErrorKeys = List("grossMass", "netMass")
+            val expectedErrorKeys = List("netMass", "grossMass")
             val errorKeys = result.errors.map(_.key)
             errorKeys must be(expectedErrorKeys)
 
             val errorMessages = result.errors.map(_.message)
-            val expectedErrorMessages = List("declaration.commodityMeasure.empty", "declaration.commodityMeasure.empty")
+            val expectedErrorMessages = List("declaration.commodityMeasure.netWeight.empty", "declaration.commodityMeasure.grossWeight.empty")
             errorMessages must be(expectedErrorMessages)
           }
 
           "the user enters net mass only" in {
-            val result = form(declarationType, "", "124.123")
+            val result = form(declarationType, "124.123", "")
 
             val errorKeys = result.errors.map(_.key)
             val expectedErrorKeys = List("grossMass")
             errorKeys must be(expectedErrorKeys)
 
             val errorMessages = result.errors.map(_.message)
-            val expectedErrorMessages = List("declaration.commodityMeasure.empty")
+            val expectedErrorMessages = List("declaration.commodityMeasure.grossWeight.empty")
             errorMessages must be(expectedErrorMessages)
           }
 
           "the user enters gross mass only" in {
-            val result = form(declarationType, "124.123", "")
+            val result = form(declarationType, "", "124.123")
 
             val errorKeys = result.errors.map(_.key)
             val expectedErrorKeys = List("netMass")
             errorKeys must be(expectedErrorKeys)
 
             val errorMessages = result.errors.map(_.message)
-            val expectedErrorMessages = List("declaration.commodityMeasure.empty")
+            val expectedErrorMessages = List("declaration.commodityMeasure.netWeight.empty")
             errorMessages must be(expectedErrorMessages)
           }
         }

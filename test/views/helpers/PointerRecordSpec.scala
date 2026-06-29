@@ -245,7 +245,7 @@ class PointerRecordSpec extends UnitViewSpec with ExportsTestHelper with Injecto
     withNactCodes(NactCode("111"), NactCode("222")),
     withNactExemptionCode(NactCode("VATE")),
     withPackageInformation(typeOfPackage.code, numberOfPackages, shippingMarks),
-    withCommodityMeasure(CommodityMeasure(Some(supplementaryUnits), Some(true), Some(grossMass), Some(netMass))),
+    withCommodityMeasure(CommodityMeasure(Some(supplementaryUnits), Some(true), Some(netMass), Some(grossMass))),
     withAdditionalInformation(additionalInformationCode, additionalInformationDescription),
     withIsLicenseRequired(),
     withAdditionalDocuments(Yes, withAdditionalDocument(documentTypeCode, documentIdentifier)),

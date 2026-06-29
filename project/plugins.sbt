@@ -11,6 +11,6 @@ addSbtPlugin("org.scalameta" % "sbt-scalafmt" % "2.5.2")
 
 addSbtPlugin("org.scoverage" % "sbt-scoverage" % "2.3.1")
 
-addSbtPlugin("uk.gov.hmrc" % "sbt-sass-compiler"   % "0.13.0")
+addSbtPlugin("uk.gov.hmrc" % "sbt-sass-compiler" % "0.13.0")
 
 addDependencyTreePlugin

@@ -214,7 +214,7 @@ class ItemHelper @Inject() (packageInformationHelper: PackageInformationHelper, 
     item.commodityMeasure.map { commodityMeasure =>
       lazy val keyOnPackageInformation = {
         val text = messages("declaration.summary.item.grossWeight")
-        Key(HtmlContent(s"""<div class="govuk-!-margin-top-4 govuk-!-margin-bottom-0">$text</div>"""))
+        Key(HtmlContent(s"""<div class="govuk-!-margin-bottom-0">$text</div>"""))
       }
       SummaryListRow(
         if (hasPackageInformation) keyOnPackageInformation else key("item.grossWeight"),
