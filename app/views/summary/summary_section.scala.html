@@ -35,7 +35,8 @@
         @messages(s"declaration.summary.${heading.messageSuffix}", itemSection.index)
         @if(itemSection.href != anchorPlaceholder) {
           <span class="remove-item-link">
-              @link(messages("declaration.summary.item.remove"), Call("GET", itemSection.href))
+              @link(messages("declaration.summary.item.remove"), Call("GET", itemSection.href),
+                    textHidden=Some("Remove " + messages(s"declaration.summary.${heading.messageSuffix}", itemSection.index)))
           </span>
         }
       </h3>
