@@ -42,7 +42,13 @@
     backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(DepartureTransport)))) {
 
     @formHelper(action = DepartureTransportController.submitForm, Symbol("autoComplete") -> "off") {
-        @errorSummary(radioGroupErrors(radioButtonGroupId, departureTransportHelper.transportCodes.code1.id, form.errors))
+        @errorSummary(
+            radioGroupErrors(
+                radioButtonGroupId,
+                s"radio_${departureTransportHelper.transportCodes.code1.id}",
+                form.errors
+            )
+        )
 
         @sectionHeader(messages("declaration.section.6"))
         <fieldset class="govuk-fieldset" @if(form.hasErrors) { aria-describedby="departureTransportType-error" }>

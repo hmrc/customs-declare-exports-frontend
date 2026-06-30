@@ -26,6 +26,7 @@
 @import views.helpers.{BackButton, LocationOfGoodsHelper, Title}
 @import views.html.components.gds._
 @import views.html.helper.CSPNonce
+@import views.helpers.ErrorMapper.radioGroupErrors
 
 @this(
     govukLayout: gdsMainTemplate,
@@ -55,6 +56,7 @@
 ) {
     @formHelper(action = LocationOfGoodsController.saveLocation, Symbol("autoComplete") -> "off") {
         @errorSummary(locationOfGoodsHelper.errors(form, version))
+        @errorSummary(radioGroupErrors("answer", "Yes", locationOfGoodsHelper.errors(form, version)))
 
         @notificationBanner(
             title = messages("declaration.locationOfGoods.notification.title"),
