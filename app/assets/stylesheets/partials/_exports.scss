@@ -32,28 +32,6 @@
   }
 }
 
-.button-link {
-  background: none !important;
-  color: inherit;
-  border: none;
-  padding: 0 !important;
-  font: inherit;
-  cursor: pointer;
-  text-decoration: underline;
-  -webkit-box-shadow: none;
-  box-shadow: none;
-
-  &:hover {
-    color: #2e8aca;
-  }
-  &:focus {
-    color: inherit;
-  }
-  &:visited {
-    color: #4c2c92;
-  }
-}
-
 .table-head {
   font-weight: 700;
 }

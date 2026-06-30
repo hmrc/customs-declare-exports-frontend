@@ -86,7 +86,7 @@ class SupplementaryUnitsController @Inject() (
     val notRequired = newUnits.supplementaryUnits.fold(Some(true))(_ => Some(false))
     item.commodityMeasure match {
       case Some(commodityMeasure) =>
-        Some(CommodityMeasure(newUnits.supplementaryUnits, notRequired, commodityMeasure.grossMass, commodityMeasure.netMass))
+        Some(CommodityMeasure(newUnits.supplementaryUnits, notRequired, commodityMeasure.netMass, commodityMeasure.grossMass))
 
       case _ => Some(CommodityMeasure(newUnits.supplementaryUnits, notRequired, None, None))
     }

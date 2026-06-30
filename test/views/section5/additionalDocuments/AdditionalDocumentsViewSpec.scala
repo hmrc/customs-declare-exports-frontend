@@ -140,6 +140,10 @@ class AdditionalDocumentsViewSpec extends UnitViewSpec with Injector {
             header.getElementsByClass("govuk-table__header").get(1) must containMessage("declaration.additionalDocument.summary.documentIdentifier")
           }
 
+          "have header for Status code" in {
+            header.getElementsByClass("govuk-table__header").get(2) must containMessage("declaration.additionalDocument.summary.statusCode")
+          }
+
           "have visually hidden header for Change links" in {
             header.getElementsByClass("govuk-table__header").get(3) must containMessage("site.change.header")
           }
@@ -160,6 +164,10 @@ class AdditionalDocumentsViewSpec extends UnitViewSpec with Injector {
             row.selectFirst(".document-identifier").text() must equal(correctAdditionalDocument.documentIdentifier.get)
           }
 
+          "have Status code" in {
+            row.selectFirst(".document-status").text() must equal(correctAdditionalDocument.documentStatus.get)
+          }
+
           "have change link" in {
             val removeLink = row.select(".govuk-link").get(0)
             removeLink must containMessage("site.change")
@@ -177,6 +185,22 @@ class AdditionalDocumentsViewSpec extends UnitViewSpec with Injector {
             val href = AdditionalDocumentRemoveController.displayPage(itemId, ListItem.createId(0, correctAdditionalDocument))
             removeLink must haveHref(href)
           }
+        }
+      }
+
+      "display a table with previously entered document with no 'Status code'" that {
+        val documentWithoutStatus = correctAdditionalDocument.copy(documentStatus = None)
+        val view = createView(cachedDocuments = Seq(documentWithoutStatus))
+
+        "have no 'Status code' header" in {
+          val headers = view.getElementById("additional_documents").getElementsByClass("govuk-table__header")
+          headers.eachText() must not contain messages("declaration.additionalDocument.summary.statusCode")
+        }
+
+        "have no status data" in {
+          val row = view.selectFirst("#additional_documents tbody tr")
+          row.selectFirst(".document-status") mustBe null
+          row.getElementsByTag("td").size mustBe 4
         }
       }
     }

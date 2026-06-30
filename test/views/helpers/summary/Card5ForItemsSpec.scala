@@ -34,7 +34,7 @@ import views.common.UnitViewSpec
 
 class Card5ForItemsSpec extends UnitViewSpec with ExportsTestHelper with Injector {
 
-  private val commodityMeasure = CommodityMeasure(Some("12"), Some(false), Some("666"), Some("555"))
+  private val commodityMeasure = CommodityMeasure(Some("12"), Some(false), Some("555"), Some("666"))
 
   private val itemWithAnswers = anItem(
     withItemId(itemId),

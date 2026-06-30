@@ -15,19 +15,21 @@
   }
 }
 
+.govuk-panel.govuk-panel--confirmation .govuk-panel__title,
+.govuk-panel.govuk-panel--confirmation .govuk-panel__body {
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+}
+
 // reduce breaking font size on smaller screens on confirmation page
-@media screen and (max-width: 40.0625em){
+@media screen and (max-width: 60em){
   .govuk-panel.govuk-panel--confirmation .govuk-panel__title {
     font-size: 1.5em;
   }
 }
 
-@media screen and (min-width: 40.0625em){
+@media screen and (min-width: 60em){
   .govuk-panel.govuk-panel--confirmation .govuk-panel__title {
     font-size: 2.1em;
   }
-}
-
-button.button-link.govuk-link.govuk-link--no-visited-state:focus {
-  background: #fd0!important;
 }

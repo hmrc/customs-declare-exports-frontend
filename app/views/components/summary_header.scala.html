@@ -16,19 +16,17 @@
 
 @(title: String = "", sectionHeader: String = "", hint: String = "", hintHtml: Option[Html] = None)
 
-<header class="page-heading">
-    @if(sectionHeader.nonEmpty) {
-        <p id="section-header" class="heading-secondary">
-            <span class="visuallyhidden">This section is </span>
-            @sectionHeader
-        </p>
-    }
+@if(sectionHeader.nonEmpty) {
+    <p id="section-header" class="heading-secondary">
+        <span class="visuallyhidden">This section is </span>
+        @sectionHeader
+    </p>
+}
 
-    @if(title.nonEmpty) {
-        <h1 class="title" id="title">@title</h1>
-    }
+@if(title.nonEmpty) {
+    <h1 class="title" id="title">@title</h1>
+}
 
-    @if(hint.nonEmpty || hintHtml.isDefined) {
-        <span id="hint" class="form-hint">@hintHtml.getOrElse(hint)</span>
-    }
-</header>
+@if(hint.nonEmpty || hintHtml.isDefined) {
+    <span id="hint" class="form-hint">@hintHtml.getOrElse(hint)</span>
+}

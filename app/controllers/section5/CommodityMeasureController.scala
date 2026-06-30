@@ -83,11 +83,11 @@ class CommodityMeasureController @Inject() (
           CommodityMeasureModel(
             commodityMeasure.supplementaryUnits,
             commodityMeasure.supplementaryUnitsNotRequired,
-            updatedItem.grossMass,
-            updatedItem.netMass
+            updatedItem.netMass,
+            updatedItem.grossMass
           )
         )
 
-      case _ => Some(CommodityMeasureModel(None, None, updatedItem.grossMass, updatedItem.netMass))
+      case _ => Some(CommodityMeasureModel(None, None, updatedItem.netMass, updatedItem.grossMass))
     }
 }

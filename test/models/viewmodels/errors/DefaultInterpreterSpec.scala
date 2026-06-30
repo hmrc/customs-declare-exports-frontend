@@ -18,7 +18,7 @@ package models.viewmodels.errors
 
 import base.UnitSpec
 import connectors.CodeListConnector
-import models.Pointer
+import models.{ExportsDeclaration, Pointer}
 import models.codes.DmsErrorCode
 import models.declaration.errors.{ErrorInstance, FieldInvolved}
 import org.mockito.ArgumentMatchers.any
@@ -46,11 +46,11 @@ class DefaultInterpreterSpec extends UnitSpec with UnitViewSpec with BeforeAndAf
     reset(codeListConnector)
   }
 
-  val declaration = aDeclaration(withItems(2))
+  val declaration: ExportsDeclaration = aDeclaration(withItems(2))
 
   val govTable = """<table class="govuk-table">"""
-  val colHeader2 = messages("rejected.notification.fieldTable.column.2.title")
-  val colHeader3 = messages("rejected.notification.fieldTable.column.3.title")
+  val colHeader2: String = messages("rejected.notification.fieldTable.column.2.title")
+  val colHeader3: String = messages("rejected.notification.fieldTable.column.3.title")
   val dummyLink = """<a href="">Change</a>"""
   val fieldPointer = "declaration.items.#1.additionalDocument.#2.documentStatus"
   val APCFieldPointer = "declaration.items.#1.procedureCodes.additionalProcedureCodes.#2"
@@ -90,7 +90,8 @@ class DefaultInterpreterSpec extends UnitSpec with UnitViewSpec with BeforeAndAf
         html must include(colHeader3)
         html must include(originalVal)
         html must include(draftVal)
-        html must include(dummyLink)
+        html must include("Change")
+        html must include("govuk-visually-hidden")
         html must include(fieldPointer.replaceAll("\\.#?", "-"))
       }
     }

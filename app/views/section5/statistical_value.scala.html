@@ -20,8 +20,6 @@
 @import forms.section5.StatisticalValue
 @import models.requests.JourneyRequest
 @import uk.gov.hmrc.govukfrontend.views.html.components._
-@import uk.gov.hmrc.hmrcfrontend.views.html.components.HmrcCurrencyInput
-@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.currencyinput.CurrencyInput
 @import views.components.gds.Styles._
 @import views.helpers.{BackButton, Title}
 @import views.helpers.ErrorMapper.prefixedErrorMessage
@@ -29,8 +27,8 @@
 
 @this(
     govukLayout: gdsMainTemplate,
+    govukInput: GovukInput,
     govukDetails: GovukDetails,
-    hmrcCurrencyInput: HmrcCurrencyInput,
     errorSummary: errorSummary,
     notificationBanner: notificationBanner,
     sectionHeader: sectionHeader,
@@ -86,7 +84,7 @@
 
         @insetText(content = Text(messages("declaration.statisticalValue.inset.text")), "govuk-!-margin-top-4")
 
-        @hmrcCurrencyInput(CurrencyInput(
+        @govukInput(Input(
             id = "statisticalValue",
             name = "statisticalValue",
             value = form("statisticalValue").value,

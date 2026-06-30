@@ -78,13 +78,13 @@ class CommodityMeasureControllerSpec extends ControllerSpec with AuditedControll
         }
 
         "display page method is invoked and commodity measure cache is not empty" in {
-          val item = ExportItem("itemId", commodityMeasure = Some(CM(None, None, Some("1000"), Some("500"))))
+          val item = ExportItem("itemId", commodityMeasure = Some(CM(None, None, Some("500"), Some("1000"))))
           withNewCaching(aDeclaration(withType(request.declarationType), withItem(item)))
 
           val result = controller.displayPage("itemId")(getRequest())
 
           status(result) must be(OK)
-          theResponseForm.value mustBe Some(CommodityMeasure(Some("1000"), Some("500")))
+          theResponseForm.value mustBe Some(CommodityMeasure(Some("500"), Some("1000")))
         }
       }
     }
@@ -107,7 +107,7 @@ class CommodityMeasureControllerSpec extends ControllerSpec with AuditedControll
 
     "return 303 (SEE_OTHER) on submitPage" when {
 
-      val correctForm = Json.toJson(CommodityMeasure(Some("1000"), Some("500")))(format)
+      val correctForm = Json.toJson(CommodityMeasure(Some("500"), Some("1000")))(format)
 
       onJourney(STANDARD, SUPPLEMENTARY) { request =>
         "information provided by user are correct" in {

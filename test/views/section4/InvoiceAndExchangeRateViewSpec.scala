@@ -30,7 +30,7 @@ import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
 import play.api.data.Form
 import services.InvoiceAndExchangeRateService
-import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF, GovukDetails, GovukFieldset, GovukInput}
+import uk.gov.hmrc.govukfrontend.views.html.components.{FormWithCSRF, GovukDetails, GovukInput}
 import views.html.section4.invoice_and_exchange_rate
 import views.common.PageWithButtonsSpec
 import views.html.components.gds.{
@@ -59,7 +59,6 @@ class InvoiceAndExchangeRateViewSpec extends PageWithButtonsSpec with Injector {
   val page = new invoice_and_exchange_rate(
     instanceOf[gdsMainTemplate],
     instanceOf[GovukInput],
-    instanceOf[GovukFieldset],
     instanceOf[GovukDetails],
     instanceOf[pageTitle],
     instanceOf[heading],

@@ -18,13 +18,11 @@
 @import controllers.section5.AdditionalInformationAddController.AdditionalInformationFormGroupId
 @import forms.section5.AdditionalInformation
 @import models.requests.JourneyRequest
-@import play.twirl.api.HtmlFormat
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.components.gds.Styles._
 @import views.html.components.gds._
 
 @this(
-    govukFieldset: GovukFieldset,
     errorSummary: errorSummary,
     formGroupWrapper: formGroupWrapper,
     sectionHeader: sectionHeader,
@@ -72,10 +70,6 @@
     url = appConfig.additionalInformationAppendix4
 )))
 
-@govukFieldset(Fieldset(
-    html = HtmlFormat.fill(List(
-        pageFields,
-        tariffExpander(AdditionalInformation, request.declarationType)(messages, appConfig),
-        saveButtons()
-    ))
-))
+@pageFields
+@tariffExpander(AdditionalInformation, request.declarationType)(messages, appConfig)
+@saveButtons()
