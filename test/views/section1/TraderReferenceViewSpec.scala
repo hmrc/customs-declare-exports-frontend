@@ -99,6 +99,6 @@ class TraderReferenceViewSpec extends PageWithButtonsSpec with Injector with Moc
       backLink must haveHref(DucrChoiceController.displayPage.url)
     }
 
-    checkAllSaveButtonsAreDisplayed(view)
+    checkSaveAndContinueButtonIsDisplayed(view)
   }
 }

@@ -107,7 +107,7 @@ class DucrChoiceViewSpec extends PageWithButtonsSpec with Injector {
         view must containErrorElementWithMessageKey(errorKey)
       }
 
-      checkAllSaveButtonsAreDisplayed(createView())
+      checkSaveAndContinueButtonIsDisplayed(view)
     }
   }
 }
