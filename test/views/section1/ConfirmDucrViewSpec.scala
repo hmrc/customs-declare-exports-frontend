@@ -77,12 +77,12 @@ class ConfirmDucrViewSpec extends PageWithButtonsSpec with Injector with MockAut
       content must containMessage("declaration.confirmDucr.expander.content.list.4")
     }
 
-    "display back button to Trader Referemce page" in {
+    "display back button to Trader Reference page" in {
       val backLink = view.getElementById("back-link")
       backLink must containMessage(backToPreviousQuestionCaption)
       backLink must haveHref(TraderReferenceController.displayPage)
     }
 
-    checkAllSaveButtonsAreDisplayed(view)
+    checkSaveAndContinueButtonIsDisplayed(view)
   }
 }
