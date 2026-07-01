@@ -53,7 +53,36 @@ $(document).ready(function(){
         let existingAriaValue= autoCompleteElement.getAttribute('aria-describedby')
         autoCompleteElement.setAttribute('aria-describedby', existingAriaValue + ' ' + defaultAriaDescribedBy)
     }
+    fixAutocompleteAccessibility()
 });
+
+function fixAutocompleteAccessibility() {
+    document.querySelectorAll('input[role="combobox"]').forEach(function(combobox) {
+        var listboxId = combobox.getAttribute('aria-controls') || combobox.getAttribute('aria-owns')
+
+        if (listboxId) {
+            if (!combobox.getAttribute('aria-controls')) {
+                combobox.setAttribute('aria-controls', listboxId)
+            }
+
+            var listbox = document.getElementById(listboxId)
+            if (listbox) {
+                var label = document.querySelector('label[for="' + combobox.id + '"]')
+                if (label) {
+                    listbox.removeAttribute('aria-labelledby')
+                    listbox.setAttribute('aria-label', label.textContent.trim())
+                }
+            }
+        }
+        var wrapper = combobox.closest('.autocomplete__wrapper')
+        if (wrapper) {
+            var hintInput = wrapper.querySelector('input.autocomplete__hint')
+            if (hintInput) {
+                hintInput.setAttribute('aria-hidden', 'true')
+            }
+        }
+    })
+}
 
 // ================================================================================
 //  Function to enhance any select element into an accessible auto-complete (by id)
@@ -101,6 +130,8 @@ function enhanceSelectIntoAutoComplete(selectElementId, dataSource, submitOnConf
             return (result.synonyms.findIndex( function(s) { return s.toLowerCase().indexOf(query.toLowerCase()) !== -1 } ) !== -1 ) || (result.displayName.toLowerCase().indexOf(query.toLowerCase()) !== -1)
         }) : [])
     }
+
+    fixAutocompleteAccessibility()
 };
 
 function updateContentToJsEnabledVersion(elementsArray) {
