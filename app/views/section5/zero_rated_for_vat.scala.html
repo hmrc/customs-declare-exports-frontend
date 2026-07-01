@@ -94,7 +94,7 @@
                     checked = form(NactCode.nactCodeKey).value.contains(VatZeroRatedReduced.toString)
                 ),
             ),
-            errorMessage = form("zeroRatedForVat").error.map(err => ErrorMessage(content = Text(messages("declaration.zeroRatedForVat.error"))))
+            errorMessage = form(NactCode.nactCodeKey).error.map(err => ErrorMessage(content = Text(messages("declaration.zeroRatedForVat.error"))))
         ))
     }
 }
@@ -115,7 +115,10 @@
 
     @formHelper(action = ZeroRatedForVatController.submitForm(itemId), Symbol("autoComplete") -> "off") {
 
-        @errorSummary(form.errors)
+        @errorSummary(form.errors.map { error =>
+            if (error.key == NactCode.nactCodeKey) error.copy(key = VatReportAfterDeclaration.toString)
+            else error
+        })
 
         @sectionHeader(messages("declaration.section.5"))
 
