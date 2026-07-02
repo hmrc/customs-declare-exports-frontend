@@ -31,15 +31,17 @@
         @messages(s"declaration.summary.${heading.messageSuffix}")
       </h3>
     } { itemSection =>
-      <h3 class="@headingId(heading) govuk-heading-s remove-item-flex govuk-!-margin-bottom-4 @itemSection.topPaddingClass">
+      <div class="remove-item-flex">
+      <h3 class="@headingId(heading) govuk-heading-s govuk-!-margin-bottom-4 @itemSection.topPaddingClass">
         @messages(s"declaration.summary.${heading.messageSuffix}", itemSection.index)
-        @if(itemSection.href != anchorPlaceholder) {
-          <span class="remove-item-link">
+      </h3>
+      @if(itemSection.href != anchorPlaceholder) {
+          <span class="remove-item-link @itemSection.topPaddingClass govuk-heading-s">
               @link(messages("declaration.summary.item.remove"), Call("GET", itemSection.href),
                     textHidden=Some("Remove " + messages(s"declaration.summary.${heading.messageSuffix}", itemSection.index)))
           </span>
         }
-      </h3>
+      </div>
     }
 }
 @govukSummaryList(SummaryList(summarySection.rows))

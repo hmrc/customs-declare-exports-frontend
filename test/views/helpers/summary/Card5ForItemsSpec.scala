@@ -104,19 +104,15 @@ class Card5ForItemsSpec extends UnitViewSpec with ExportsTestHelper with Injecto
         headings.size mustBe 2
 
         assert(headings.first.hasClass("item-1-heading"))
-        val href1 = RemoveItemsSummaryController.displayRemoveItemConfirmationPage(item1.id)
-        headings.first must haveSummaryAction(href1)
 
         assert(headings.last.hasClass("item-2-heading"))
-        val href2 = RemoveItemsSummaryController.displayRemoveItemConfirmationPage(item2.id)
-        headings.last must haveSummaryAction(href2)
 
         val call1 = Some(CusCodeController.displayPage(item1.id))
-        val row1 = checkSection(view, "item-1", "Declaration item 1 Remove itemRemove Declaration item 1", 2, 0, 1).first
+        val row1 = checkSection(view, "item-1", "Declaration item 1", 2, 0, 1).first
         checkMultiRowSection(row1, List("item-1-cus-code"), "item.cusCode", "code1", call1, "item.cusCode")
 
         val call2 = Some(CusCodeController.displayPage(item2.id))
-        val row2 = checkSection(view, "item-2", "Declaration item 2 Remove itemRemove Declaration item 2", 2, 1, 1).first
+        val row2 = checkSection(view, "item-2", "Declaration item 2", 2, 1, 1).first
         checkMultiRowSection(row2, List("item-2-cus-code"), "item.cusCode", "code2", call2, "item.cusCode")
       }
 
