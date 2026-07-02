@@ -56,9 +56,10 @@ case class AuthorisationHolder(authorisationTypeCode: Option[String], eori: Opti
 
 object AuthorisationHolder extends DeclarationPage with FieldMapping {
 
-  val pointer: ExportsFieldPointer = "holders"
-  val authorisationTypeCodePointer: ExportsFieldPointer = "authorisationTypeCode"
-  val eoriPointer: ExportsFieldPointer = "eori"
+  val authorisationHolderFormGroupId: String = "authorisationHolder"
+  val AuthorisationTypeCodeId = "authorisationTypeCode"
+  val EoriId = "eori"
+  val EoriSourceId = s"eoriSource_${EoriSource.UserEori.toString}"
 
   lazy val keyForEori = s"${partiesPrefix}.holders.holder.eori"
   lazy val keyForTypeCode = s"${partiesPrefix}.holders.holder.type"
