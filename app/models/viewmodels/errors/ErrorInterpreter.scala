@@ -91,7 +91,7 @@ trait ErrorInterpreter {
 
   private def addDescriptiveTextToChangeLink(fieldName: String, call: Option[Html]) =
     call.map { c =>
-      Html(c.body.replace("</a>", s"<span class='govuk-visually-hidden'>$fieldName</span></a>"))
+      Html(c.body.replace("</a>", s"<span class='govuk-visually-hidden govuk-body govuk-!-font-size-16'>$fieldName</span></a>"))
     }.getOrElse("")
 
   val fieldsTableFooter: Html = Html("</tbody></table>".stripMargin)
