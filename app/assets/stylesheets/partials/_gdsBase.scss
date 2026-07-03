@@ -25,6 +25,12 @@ a list within the table cell.
 }
 
 
+.govuk-summary-card {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+
 /*
 ====================================
 In same pages we wrap all the input fields inside a fieldset, this means that the bottom margin of the H1 is not applied

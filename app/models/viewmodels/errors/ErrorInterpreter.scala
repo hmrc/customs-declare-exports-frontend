@@ -60,15 +60,9 @@ trait ErrorInterpreter {
       |  <thead class="govuk-table__head">
       |    <tr class="govuk-table__row">
       |      <td scope="col" class="govuk-table__header"></td>
-      |      <th scope="col" class="govuk-table__header" data-gtm-vis-has-fired-8267218_2200="1">${messages(
-    "rejected.notification.fieldTable.column.2.title"
-  )}</th>
-      |      <th scope="col" class="govuk-table__header" data-gtm-vis-has-fired-8267218_2200="1">${messages(
-    "rejected.notification.fieldTable.column.3.title"
-  )}</th>
-      |      <th scope="col" class="govuk-table__header" data-gtm-vis-has-fired-8267218_2200="1">${messages(
-    "rejected.notification.fieldTable.column.4.title"
-  )}</th>
+      |      <th scope="col" class="govuk-table__header" data-gtm-vis-has-fired-8267218_2200="1">${messages("rejected.notification.fieldTable.column.2.title")}</th>
+      |      <th scope="col" class="govuk-table__header" data-gtm-vis-has-fired-8267218_2200="1">${messages("rejected.notification.fieldTable.column.3.title")}</th>
+      |      <th scope="col" class="govuk-table__header" data-gtm-vis-has-fired-8267218_2200="1">${messages("rejected.notification.fieldTable.column.4.title")}</th>
       |    </tr>
       |  </thead>
       |  <tbody class="govuk-table__body">
@@ -91,7 +85,7 @@ trait ErrorInterpreter {
 
   private def addDescriptiveTextToChangeLink(fieldName: String, call: Option[Html]) =
     call.map { c =>
-      Html(c.body.replace("</a>", s"<span class='govuk-visually-hidden'>$fieldName</span></a>"))
+      Html(c.body.replace("</a>", s"<span class='govuk-visually-hidden govuk-body govuk-!-font-size-16'>$fieldName</span></a>"))
     }.getOrElse("")
 
   val fieldsTableFooter: Html = Html("</tbody></table>".stripMargin)
