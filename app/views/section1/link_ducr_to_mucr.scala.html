@@ -64,13 +64,7 @@
 
         @yesNoRadios(
             form = form,
-            inline = true,
-            heading = Some(Fieldset(
-                legend = Some(Legend(
-                    content = Text(messages("declaration.linkDucrToMucr.title")),
-                    classes = "govuk-fieldset__legend--s govuk-visually-hidden"
-                ))
-            ))
+            inline = true
         )
 
         @saveButtons()
