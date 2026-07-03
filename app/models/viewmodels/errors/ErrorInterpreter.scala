@@ -60,9 +60,15 @@ trait ErrorInterpreter {
       |  <thead class="govuk-table__head">
       |    <tr class="govuk-table__row">
       |      <td scope="col" class="govuk-table__header"></td>
-      |      <th scope="col" class="govuk-table__header" data-gtm-vis-has-fired-8267218_2200="1">${messages("rejected.notification.fieldTable.column.2.title")}</th>
-      |      <th scope="col" class="govuk-table__header" data-gtm-vis-has-fired-8267218_2200="1">${messages("rejected.notification.fieldTable.column.3.title")}</th>
-      |      <th scope="col" class="govuk-table__header" data-gtm-vis-has-fired-8267218_2200="1">${messages("rejected.notification.fieldTable.column.4.title")}</th>
+      |      <th scope="col" class="govuk-table__header" data-gtm-vis-has-fired-8267218_2200="1">${messages(
+    "rejected.notification.fieldTable.column.2.title"
+  )}</th>
+      |      <th scope="col" class="govuk-table__header" data-gtm-vis-has-fired-8267218_2200="1">${messages(
+    "rejected.notification.fieldTable.column.3.title"
+  )}</th>
+      |      <th scope="col" class="govuk-table__header" data-gtm-vis-has-fired-8267218_2200="1">${messages(
+    "rejected.notification.fieldTable.column.4.title"
+  )}</th>
       |    </tr>
       |  </thead>
       |  <tbody class="govuk-table__body">
