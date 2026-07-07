@@ -78,15 +78,17 @@
 
 @documentsTable = {
     @if(documents.nonEmpty) {
+        @defining(templateHelper.versionSelection == 1) { hideGoodsItemIdentifier =>
         @govukTable(Table(
             rows = documents.zipWithIndex.map { case (document, index) =>
                 Seq(
                     TableRow(content = Text(documentTypeService.findByCode(document.documentType).asTextWithBrackets)),
 
-                    TableRow(content = Text(document.documentReference)),
-
-                    TableRow(content = Text(document.goodsItemIdentifier.getOrElse(""))),
-
+                    TableRow(content = Text(document.documentReference))
+                ) ++
+                (if (hideGoodsItemIdentifier) Seq.empty
+                 else Seq(TableRow(content = Text(document.goodsItemIdentifier.getOrElse(""))))) ++
+                Seq(
                     TableRow(
                         content = HtmlContent(link(
                             messages("site.remove"),
@@ -103,19 +105,18 @@
                     )
                 )
             },
-            head = Some(List(
-                HeadCell(content = Text(messages("declaration.previousDocuments.summary.documentCode.label"))),
+            head = Some(
+                List(
+                    HeadCell(content = Text(messages("declaration.previousDocuments.summary.documentCode.label"))),
 
-                HeadCell(content = Text(messages("declaration.previousDocuments.summary.documentReference.label"))),
-
-                HeadCell(content =
-                    if (templateHelper.versionSelection == 1) Empty
-                    else Text(messages("declaration.previousDocuments.summary.goodsItemIdentifier.label"))
-                ),
-
-                HeadCell(content = HtmlContent(spanVisuallyHidden(messages("site.remove.header"))))
-            ))
+                    HeadCell(content = Text(messages("declaration.previousDocuments.summary.documentReference.label")))
+                ) ++
+                (if (hideGoodsItemIdentifier) Nil
+                 else List(HeadCell(content = Text(messages("declaration.previousDocuments.summary.goodsItemIdentifier.label"))))) ++
+                List(HeadCell(content = HtmlContent(spanVisuallyHidden(messages("site.remove.header")))))
+            )
         ))
+        }
     }
 }
 
