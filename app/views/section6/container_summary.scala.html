@@ -127,20 +127,16 @@
 
         @sectionHeader(messages("declaration.section.6"))
 
-        @govukFieldset(Fieldset(
-            legend = Some(Legend(
-                content = Text(
-                  if(containers.size == 1) messages("declaration.transportInformation.containers.title")
-                  else messages("declaration.transportInformation.containers.multiple.title", containers.size)
-                ),
-                classes = gdsPageLegend,
-                isPageHeading = true
-            )),
-            html = HtmlFormat.fill(List(
-                containersTable,
-                addContainerRadios,
-                saveButtons()
-            ))
-        ))
+        <h1 class="@gdsPageLegend">
+            @Text(
+                if(containers.size == 1) messages("declaration.transportInformation.containers.title")
+                else messages("declaration.transportInformation.containers.multiple.title", containers.size)
+            ).asHtml
+        </h1>
+
+        @containersTable
+        @addContainerRadios
+
+        @saveButtons()
     }
 }
