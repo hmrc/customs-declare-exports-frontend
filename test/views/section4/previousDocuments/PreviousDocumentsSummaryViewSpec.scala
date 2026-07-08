@@ -102,7 +102,7 @@ class PreviousDocumentsSummaryViewSpec extends PageWithButtonsSpec with Injector
       }
 
       "display 'Add another document' question" in {
-        val addAnotherDocument = createView().getElementsByClass("govuk-fieldset__heading").get(1)
+        val addAnotherDocument = createView().getElementsByClass("govuk-fieldset__heading").first()
         addAnotherDocument must containMessage("declaration.previousDocuments.addAnotherDocument")
       }
 

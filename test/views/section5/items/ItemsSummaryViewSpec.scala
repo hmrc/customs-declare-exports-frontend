@@ -171,7 +171,9 @@ class ItemsSummaryViewSpec extends UnitViewSpec with ExportsTestHelper with Stub
     "render Yes - No form" in {
       val view = createView(items = List(ExportItem("id")))
 
-      view.getElementsByClass("govuk-fieldset__legend").get(1) must containMessage("declaration.itemsSummary.addAnotherItem.question")
+      view.getElementsByClass("govuk-fieldset__legend").first() must
+        containMessage("declaration.itemsSummary.addAnotherItem.question")
+
       view must containElementWithClass("govuk-radios")
       view must containElementWithID("code_yes")
       view must containElementWithID("code_no")
