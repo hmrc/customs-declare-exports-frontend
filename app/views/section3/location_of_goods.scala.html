@@ -56,7 +56,6 @@
 ) {
     @formHelper(action = LocationOfGoodsController.saveLocation, Symbol("autoComplete") -> "off") {
         @errorSummary(locationOfGoodsHelper.errors(form, version))
-        @errorSummary(radioGroupErrors("answer", "code_yes", locationOfGoodsHelper.errors(form, version)))
 
         @notificationBanner(
             title = messages("declaration.locationOfGoods.notification.title"),
