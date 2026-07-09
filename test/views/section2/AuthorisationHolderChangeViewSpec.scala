@@ -74,7 +74,7 @@ class AuthorisationHolderChangeViewSpec extends UnitViewSpec with CommonMessages
         val view = createView(createForm.fill(authorisationHolder))
 
         view.getElementById("conditional-OtherEori").attr("class").contains("hidden") mustBe true
-        view.getElementById("UserEori").getElementsByAttribute("checked").size mustBe 1
+        view.getElementById("eoriSource").getElementsByAttribute("checked").size mustBe 1
       }
 
       "display data OtherEori checked and data is present in EORI input" in {

@@ -67,11 +67,11 @@ class AuthorisationHolderAddViewSpec extends UnitViewSpec with CommonMessages wi
 
       "display unselected radio buttons with labels" in {
         view
-          .getElementById("UserEori")
+          .getElementById("eoriSource")
           .getElementsByAttribute("checked")
           .size mustBe 0
 
-        view.getElementsByAttributeValue("for", "UserEori").text mustBe messages("declaration.authorisationHolder.eori.user.text", eori)
+        view.getElementsByAttributeValue("for", "eoriSource").text mustBe messages("declaration.authorisationHolder.eori.user.text", eori)
 
         view
           .getElementById("OtherEori")
@@ -216,12 +216,12 @@ class AuthorisationHolderAddViewSpec extends UnitViewSpec with CommonMessages wi
         view.getElementById("eori").attr("value") mustBe empty
       }
 
-      "display UserEori checked" in {
+      "display eoriSource checked" in {
         val authorisationHolder = AuthorisationHolder(Some("test"), Some(Eori("test1")), Some(UserEori))
         val view = createView(createForm.fill(authorisationHolder))
 
         view.getElementById("conditional-OtherEori").attr("class").contains("hidden") mustBe true
-        view.getElementById("UserEori").getElementsByAttribute("checked").size mustBe 1
+        view.getElementById("eoriSource").getElementsByAttribute("checked").size mustBe 1
       }
 
       "display OtherEori checked and data is present in EORI input only" in {

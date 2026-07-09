@@ -63,7 +63,7 @@
         name = EoriSourceId,
         items = Seq(
             RadioItem(
-                id = Some(UserEori.toString),
+                id = Some(EoriSourceId),
                 value = Some(UserEori.toString),
                 content = Text(messages("declaration.authorisationHolder.eori.user.text", userEori)),
                 checked = form(EoriSourceId).value.contains(UserEori.toString)
@@ -76,7 +76,6 @@
                 conditionalHtml = Some(otherEoriInput),
             )
         ),
-        attributes = Map("id" -> EoriSourceId),
         errorMessage = form(EoriSourceId).error.map(prefixedErrorMessage(_))
     ))
 }
