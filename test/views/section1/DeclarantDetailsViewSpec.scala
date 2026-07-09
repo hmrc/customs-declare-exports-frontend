@@ -49,6 +49,10 @@ class DeclarantDetailsViewSpec extends UnitViewSpec with ExportsTestHelper with 
         view.getElementsByTag("h1") must containMessageForElements("declaration.declarant.title", request.eori)
       }
 
+      "display a single title" in {
+        view.getElementsByTag("h1").size() mustBe 1
+      }
+
       "display radio button with Yes option" in {
         view.getElementById("code_yes").attr("value") mustBe YesNoAnswers.yes
         view.getElementsByAttributeValue("for", "code_yes") must containMessageForElements("site.yes")

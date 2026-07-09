@@ -56,18 +56,17 @@
 
         @sectionHeader(messages("declaration.section.1"))
 
-        @heading(messages("declaration.ducr.choice.title"))
+        <fieldset class="govuk-fieldset" @if(form.hasErrors) { aria-describedby="ducr-error" }>
+            <legend class="govuk-fieldset__legend govuk-!-margin-bottom-0">
+                @heading(messages("declaration.ducr.choice.title"))
+            </legend>
 
-        @yesNoRadios(
-            form = form,
-            noKey = Some("declaration.ducr.choice.answer.no"),
-            heading = Some(Fieldset(
-                legend = Some(Legend(
-                    content = Text(messages("declaration.ducr.choice.title")),
-                    classes = "govuk-visually-hidden"
-               ))
-            ))
-        )
+            @yesNoRadios(
+                form = form,
+                noKey = Some("declaration.ducr.choice.answer.no"),
+    
+            )
+        </fieldset>
 
         @saveButtons(showExitButton = false)
     }

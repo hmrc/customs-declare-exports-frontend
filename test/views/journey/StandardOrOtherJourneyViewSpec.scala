@@ -54,6 +54,10 @@ class StandardOrOtherJourneyViewSpec extends UnitViewSpec with CommonMessages wi
       view.getElementsByTag("h1").first.text() mustBe messages("declaration.type.description")
     }
 
+    "display a single title" in {
+      view.getElementsByTag("h1").size() mustBe 1
+    }
+
     "display the expected radio buttons" in {
       view.getElementsByClass("govuk-radios__divider").text mustBe messages("site.radio.divider")
       val radios = view.getElementsByClass("govuk-radios__item")

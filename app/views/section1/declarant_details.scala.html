@@ -77,35 +77,33 @@
 
         @sectionHeader(messages(sectionMessagesKey))
 
-        @heading(messages("declaration.declarant.title", request.eori))
+        <fieldset class="govuk-fieldset" @if(form.hasErrors) { aria-describedby="declarantEori-error" }>
+            <legend class="govuk-fieldset__legend govuk-!-margin-bottom-0">
+                @heading(messages("declaration.declarant.title", request.eori))
+            </legend>
 
-        @paragraphBody(messages("declaration.declarant.paragraph"))
+            @paragraphBody(messages("declaration.declarant.paragraph"))
 
-        @govukRadios(Radios(
-            name = isEoriKey,
-            classes = "govuk-radios--inline",
-            fieldset = Some(Fieldset(
-                legend = Some(Legend(
-                    content = Text(messages("declaration.declarant.title", request.eori)),
-                    classes = "govuk-visually-hidden"
-                ))
-            )),
-            items = Seq(
-                RadioItem(
-                    id = Some("code_yes"),
-                    value = Some(YesNoAnswers.yes),
-                    content = Text(messages("site.yes")),
-                    checked = form(isEoriKey).value.contains(YesNoAnswers.yes)
+            @govukRadios(Radios(
+                name = isEoriKey,
+                classes = "govuk-radios--inline",
+                items = Seq(
+                    RadioItem(
+                        id = Some("code_yes"),
+                        value = Some(YesNoAnswers.yes),
+                        content = Text(messages("site.yes")),
+                        checked = form(isEoriKey).value.contains(YesNoAnswers.yes)
+                    ),
+                    RadioItem(
+                        id = Some("code_no"),
+                        value = Some(YesNoAnswers.no),
+                        content = Text(messages("site.no")),
+                        checked = form(isEoriKey).value.contains(YesNoAnswers.no)
+                    )
                 ),
-                RadioItem(
-                    id = Some("code_no"),
-                    value = Some(YesNoAnswers.no),
-                    content = Text(messages("site.no")),
-                    checked = form(isEoriKey).value.contains(YesNoAnswers.no)
-                )
-            ),
-            errorMessage = form(isEoriKey).error.map(prefixedErrorMessage(_))
-        ))
+                errorMessage = form(isEoriKey).error.map(prefixedErrorMessage(_))
+            ))
+        </fieldset>
 
         @buttons
     }

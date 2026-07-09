@@ -52,18 +52,22 @@
 
         @sectionHeader(messages("declaration.section.4"))
 
-        @heading(messages("declaration.invoice.amount.choice.title"))
+        <fieldset class="govuk-fieldset" @if(form.hasErrors) { aria-describedby="invoiceAndExchangeRateChoice-error" }>
+            <legend class="govuk-fieldset__legend govuk-!-margin-bottom-0">
+                @heading(messages("declaration.invoice.amount.choice.title"))
+            </legend>
 
-        @yesNoRadios(
-            form = form,
-            noKey = Some("declaration.invoice.amount.choice.answer.no"),
-            heading = Some(Fieldset(
-                legend = Some(Legend(
-                    content = Text(messages("declaration.invoice.amount.choice.title")),
-                    classes = "govuk-visually-hidden"
-               ))
-            ))
-        )
+            @yesNoRadios(
+                form = form,
+                noKey = Some("declaration.invoice.amount.choice.answer.no"),
+                heading = Some(Fieldset(
+                    legend = Some(Legend(
+                        content = Text(messages("declaration.invoice.amount.choice.title")),
+                        classes = "govuk-visually-hidden"
+                   ))
+                ))
+            )
+        </fieldset>
 
         @tariffExpander(InvoiceAndExchangeRateChoice, request.declarationType)(messages, appConfig)
 
