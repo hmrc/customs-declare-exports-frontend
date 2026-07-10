@@ -63,7 +63,7 @@ class DeclarantExporterViewSpec extends PageWithButtonsSpec with Injector {
       }
 
       "display a single title" in {
-        createView().getElementsByTag("h1").size() mustBe 1      
+        createView().getElementsByTag("h1").size() mustBe 1
       }
 
       "display section header" in {
