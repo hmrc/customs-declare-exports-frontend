@@ -117,21 +117,17 @@
             @addSealRadios
             @tariffExpander(Seal, request.declarationType)(messages, appConfig)
         } else {
-            @govukFieldset(Fieldset(
-                legend = Some(Legend(
-                    content = Text(
-                        if(seals.isEmpty) messages("declaration.seal.add.first", containerId)
-                        else if(seals.size == 1) messages("declaration.seal.summary.title", containerId)
-                        else messages("declaration.seal.summary.multiple.title", seals.size, containerId)
-                    ),
-                    classes = gdsPageLegend,
-                    isPageHeading = true
-                )),
-                html = HtmlFormat.fill(List(
-                    sealsTable,
-                    addSealRadios
-                ))
-            ))
+
+            <h1 class="@gdsPageLegend">
+                @Text(
+                    if(seals.isEmpty) messages("declaration.seal.add.first", containerId)
+                    else if(seals.size == 1) messages("declaration.seal.summary.title", containerId)
+                    else messages("declaration.seal.summary.multiple.title", seals.size, containerId)
+                ).asHtml
+            </h1>
+
+            @sealsTable
+            @addSealRadios
         }
 
         @saveButtons()

@@ -105,17 +105,14 @@
 
         @sectionHeader(messages("declaration.section.5"))
 
-        @govukFieldset(Fieldset(
-            legend = Some(Legend(
-                content = header,
-                classes = gdsPageLegend,
-                isPageHeading = true
-            )),
-            html = HtmlFormat.fill(List(
-                referenceTable,
-                addAnotherQuestion("declaration.additionalFiscalReferences.add.another", form),
-                saveButtons()
-            ))
-        ))
+        <h1 class="@gdsPageLegend">
+            @header.asHtml
+        </h1>
+
+        @referenceTable
+
+        @addAnotherQuestion("declaration.additionalFiscalReferences.add.another", form)
+
+        @saveButtons()
     }
 }
