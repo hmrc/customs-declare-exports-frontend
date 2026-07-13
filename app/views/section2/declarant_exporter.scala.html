@@ -53,23 +53,20 @@
         @errorSummary(yesNoErrors(form.errors, DeclarantIsExporter.answerKey))
 
         @sectionHeader(messages("declaration.section.2"))
+        <fieldset class="govuk-fieldset" @if(form.hasErrors) { aria-describedby="declarantExporter-error" }>
+            <legend class="govuk-fieldset__legend govuk-!-margin-bottom-0">
+                @heading(messages("declaration.declarant.exporter.title"))
+            </legend>
+            @paragraphBody(messages("declaration.declarant.exporter.body"))
 
-        @heading(messages("declaration.declarant.exporter.title"))
+            @yesNoRadios(
+                form = form,
+                answerKey = "answer",
+                noKey = Some("declaration.declarant.exporter.answer.no"),
+                noHint = Some(Seq("declaration.declarant.exporter.answer.no.hint")),
 
-        @paragraphBody(messages("declaration.declarant.exporter.body"))
-
-        @yesNoRadios(
-            form = form,
-            answerKey = "answer",
-            noKey = Some("declaration.declarant.exporter.answer.no"),
-            noHint = Some(Seq("declaration.declarant.exporter.answer.no.hint")),
-            heading = Some(Fieldset(
-                legend = Some(Legend(
-                    content = Text(messages("declaration.declarant.exporter.title")),
-                    classes = "govuk-visually-hidden"
-               ))
-            ))
-        )
+            )
+        </fieldset>
 
         @saveButtons()
     }

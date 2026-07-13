@@ -50,21 +50,20 @@
         @errorSummary(yesNoErrors(form.errors))
 
         @sectionHeader(messages("declaration.section.6"))
-        @heading(messages("declaration.transportInformation.expressConsignment.title"))
 
-        @paragraphBody(messages("declaration.transportInformation.expressConsignment.paragraph.1"))
-        @paragraphBody(messages("declaration.transportInformation.expressConsignment.paragraph.2"))
+        <fieldset class="govuk-fieldset" @if(form.hasErrors) { aria-describedby="expressConsignment-error" }>
+            <legend class="govuk-fieldset__legend govuk-!-margin-bottom-0">
+                @heading(messages("declaration.transportInformation.expressConsignment.title"))
+            </legend>
 
-        @yesNoRadios(
-            form = form,
-            inline = true,
-            heading = Some(Fieldset(
-                legend = Some(Legend(
-                    content = Text(messages("declaration.transportInformation.expressConsignment.title")),
-                    classes = "govuk-visually-hidden"
-                ))
-            ))
-        )
+            @paragraphBody(messages("declaration.transportInformation.expressConsignment.paragraph.1"))
+            @paragraphBody(messages("declaration.transportInformation.expressConsignment.paragraph.2"))
+
+            @yesNoRadios(
+                form = form,
+                inline = true
+            )
+        </fieldset>
 
         @saveButtons()
     }

@@ -57,15 +57,17 @@
             title = messages("declaration.linkDucrToMucr.banner.title"),
             content = paragraphBody(messages("declaration.linkDucrToMucr.banner.content"))
         )
-
-        @heading(messages("declaration.linkDucrToMucr.title"))
-
+        <fieldset class="govuk-fieldset" @if(form.hasErrors) { aria-describedby="linkDucrToMucr-error" }>
+            <legend class="govuk-fieldset__legend govuk-!-margin-bottom-0">
+                @heading(messages("declaration.linkDucrToMucr.title"))
+            </legend>
         @insetText(HtmlContent(paragraphBody(messages("declaration.linkDucrToMucr.paragraph"))))
 
         @yesNoRadios(
             form = form,
             inline = true
         )
+        </fieldset>
 
         @saveButtons()
     }
