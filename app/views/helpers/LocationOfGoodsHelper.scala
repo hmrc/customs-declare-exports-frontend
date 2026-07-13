@@ -53,6 +53,7 @@ class LocationOfGoodsHelper @Inject() (
   heading: heading,
   insetText: exportsInsetText,
   exportsInputText: exportsInputText,
+  spanVisuallyHidden: spanVisuallyHidden,
   externalLink: externalLink,
   link: link,
   paragraph: paragraphBody,
@@ -127,10 +128,12 @@ class LocationOfGoodsHelper @Inject() (
     (1 to 10).flatMap { ix =>
       val title = if (ix <= 9) Some(heading(text(s"$ix.title"), titleClasses, "h2")) else None
       val hint =
-        if (ix <= 8) row(externalLink(text(s"$ix.link1"), expanderLinks(ix)), classes = "")
+        if (ix <= 8) row(externalLink(text = text(s"$ix.link1") + spanVisuallyHidden(messages("site.newTab")), expanderLinks(ix)), classes = "")
         else {
-          val link1 = externalLink(text(s"$ix.link1"), expanderLinks(ix))
-          val link2 = if (ix == 9) externalLink(text(s"$ix.link2"), appConfig.previousProcedureCodes) else HtmlFormat.empty
+          val link1 = externalLink(text = text(s"$ix.link1") + spanVisuallyHidden(messages("site.newTab")), expanderLinks(ix))
+          val link2 =
+            if (ix == 9) externalLink(text = text(s"$ix.link2") + spanVisuallyHidden(messages("site.newTab")), appConfig.previousProcedureCodes)
+            else HtmlFormat.empty
           govukHint(Hint(content = HtmlContent(text(s"$ix.text", link1, link2))))
         }
 

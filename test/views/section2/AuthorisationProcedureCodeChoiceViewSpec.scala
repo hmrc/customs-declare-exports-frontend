@@ -144,8 +144,8 @@ class AuthorisationProcedureCodeChoiceViewSpec extends PageWithButtonsSpec with 
       val link1 = expander.getElementById("link1")
       val link2 = expander.getElementById("link2")
 
-      link1.text mustBe messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.11.linkText")
-      link2.text mustBe messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.12.linkText")
+      link1.text mustBe s"${messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.11.linkText")} ${messages("site.newTab")}"
+      link2.text mustBe s"${messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.12.linkText")} ${messages("site.newTab")} )"
 
       val paragraphs = expander.child(1).getElementsByClass("govuk-body")
       paragraphs.size mustBe 11
@@ -161,24 +161,24 @@ class AuthorisationProcedureCodeChoiceViewSpec extends PageWithButtonsSpec with 
       paragraphs.get(4).text mustBe messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.5")
       paragraphs.get(5).text mustBe messages(
         "declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.6",
-        messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.6.linkText")
+        messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.6.linkText") + " " + messages("site.newTab")
       )
       paragraphs.get(6).text mustBe messages(
         "declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.7",
-        messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.7.linkText")
+        messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.7.linkText") + " " + messages("site.newTab")
       )
       paragraphs.get(7).text mustBe messages(
         "declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.8",
-        messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.8.linkText")
+        messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.8.linkText") + " " + messages("site.newTab")
       )
       paragraphs.get(8).text mustBe messages(
         "declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.9",
-        messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.9.linkText")
+        messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.9.linkText") + " " + messages("site.newTab")
       )
       paragraphs.get(9).text mustBe messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.10")
       paragraphs.get(10).text mustBe messages(
         "declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.13",
-        messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.13.linkText")
+        messages("declaration.authorisations.procedureCodeChoice.readMoreExpander.paragraph.13.linkText") + " " + messages("site.newTab")
       )
     }
 

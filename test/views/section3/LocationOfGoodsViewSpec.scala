@@ -292,7 +292,7 @@ class LocationOfGoodsViewSpec extends PageWithButtonsSpec with Injector {
         if (ix < 9) {
           val link1 = iterator.next().children.get(0)
           assert(link1.hasClass("govuk-link"))
-          link1.text mustBe messages(s"$prefix.expander.paragraph$ix.link1")
+          link1.text mustBe s"${messages(s"$prefix.expander.paragraph$ix.link1")} ${messages("site.newTab")}"
         }
       }
 
@@ -302,10 +302,11 @@ class LocationOfGoodsViewSpec extends PageWithButtonsSpec with Injector {
         val expectedText = removeLineBreakIfAny(
           messages(
             s"$prefix.expander.paragraph$ix.text",
-            messages(s"$prefix.expander.paragraph$ix.link1"),
-            if (ix == 9) messages(s"$prefix.expander.paragraph$ix.link2") else ""
+            s"${messages(s"$prefix.expander.paragraph$ix.link1")} ${messages("site.newTab")}",
+            if (ix == 9) s"${messages(s"$prefix.expander.paragraph$ix.link2")} ${messages("site.newTab")}" else ""
           )
         )
+        println(expectedText)
         hint.text mustBe expectedText
       }
     }

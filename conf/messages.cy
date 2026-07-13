@@ -74,6 +74,8 @@ site.pagination.showing = Yn dangos
 site.pagination.showing.no = Yn dangos dim
 site.pagination.of = o
 
+site.newTab = (yn agor tab newydd)
+
 general.inquiries.help.link = Help gydag ymholiadau cyffredinol (yn agor tab newydd)
 
 mrn.heading = MRN: {0}

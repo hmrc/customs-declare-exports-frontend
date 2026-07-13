@@ -74,6 +74,8 @@ site.pagination.showing = Showing
 site.pagination.showing.no = Showing no
 site.pagination.of = of
 
+site.newTab = (opens in new tab)
+
 general.inquiries.help.link = General enquires help (opens in new tab)
 
 mrn.heading = MRN: {0}
@@ -1058,8 +1060,8 @@ declaration.locationOfGoods.expander.paragraph9.title = Customs Supervised Expor
 declaration.locationOfGoods.expander.paragraph9.text = {0}<br>Where CSE is not being used, enter the location details as given under the ‘Location of goods’ entry in {1}
 declaration.locationOfGoods.expander.paragraph9.link1 = Customs Supervised Export (CSE) premises location codes
 declaration.locationOfGoods.expander.paragraph9.link2 = DE 1/10: Requested and Previous Procedure Codes.
-declaration.locationOfGoods.expander.paragraph10.text = If your goods location is not covered by the above guidance, refer to the codes for {0}.
-declaration.locationOfGoods.expander.paragraph10.link1 = Data Element 5/23 of the Customs Declaration Service (CDS) (Appendix 16)
+declaration.locationOfGoods.expander.paragraph10.text = If your goods location is not covered by the above guidance, refer to the codes for {0}
+declaration.locationOfGoods.expander.paragraph10.link1 = Data Element 5/23 of the Customs Declaration Service (CDS) (Appendix 16).
 
 declaration.locationOfGoods.error.empty = Select a goods location
 declaration.locationOfGoods.code.empty = Enter a goods location code
