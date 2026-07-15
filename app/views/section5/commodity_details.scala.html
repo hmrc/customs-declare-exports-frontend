@@ -88,12 +88,12 @@
           subHeadingClasses = "govuk-heading govuk-heading-m"
         )
 
-        @govukHint(Hint(content = Text(messages("declaration.commodityDetails.description.hint"))))
 
         @characterCount(
             field = form(CommodityDetails.descriptionOfGoodsKey),
             labelClasses = "govuk-label--m",
-            maxLength = Some(CommodityDetails.descriptionOfGoodsMaxLength)
+            maxLength = Some(CommodityDetails.descriptionOfGoodsMaxLength),
+            hintKey = Some("declaration.commodityDetails.description.hint")
         )
 
         @tariffExpander(CommodityDetails, request.declarationType)(messages, appConfig)
