@@ -57,6 +57,10 @@ class InvoiceAndExchangeRateChoiceViewSpec extends PageWithButtonsSpec with Inje
         view.getElementsByTag("h1").first() must containMessage("declaration.invoice.amount.choice.title")
       }
 
+      "display a single title" in {
+        view.getElementsByTag("h1").size() mustBe 1
+      }
+
       "display two Yes/No radio buttons" in {
         val radios = view.getElementsByClass("govuk-radios").first.children
         radios.size mustBe 2

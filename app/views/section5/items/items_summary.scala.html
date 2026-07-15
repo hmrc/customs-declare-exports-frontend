@@ -123,11 +123,14 @@
         ))
     }
 }
+
 @backLink = @{navigator.backLink(ExportItem)}
+
 @backButtonText = @{
-if(backLink == SectionSummaryController.displayPage(4)) { "site.backToPreviousSection" }
-else "site.backToPreviousQuestion"
+    if(backLink == SectionSummaryController.displayPage(4)) { "site.backToPreviousSection" }
+    else "site.backToPreviousQuestion"
 }
+
 @govukLayout(
     title = Title(titleMessageKey, "declaration.section.5", items.length.toString, hasErrors = hasErrors),
     backButton = Some(BackButton(messages(backButtonText), backLink)),
@@ -137,19 +140,17 @@ else "site.backToPreviousQuestion"
         @errorSummary(yesNoErrors(itemsErrors ++ form.errors))
 
         @sectionHeader(messages("declaration.section.5"))
-        @govukFieldset(Fieldset(
-            legend = Some(Legend(
-                content = Text(messages(titleMessageKey, items.length)),
-                classes = gdsPageLegend,
-                isPageHeading = true
-            )),
-            html = HtmlFormat.fill(List(
-                itemsTable,
-                if (!request.isType(CLEARANCE))
-                addAnotherQuestion("declaration.itemsSummary.addAnotherItem.question", form)
-                else HtmlFormat.empty,
-                saveButtons()
-            ))
-        ))
+
+        <h1 class="@gdsPageLegend">
+            @Text(messages(titleMessageKey, items.length)).asHtml
+        </h1>
+
+        @itemsTable
+
+        @if(!request.isType(CLEARANCE)) {
+            @addAnotherQuestion("declaration.itemsSummary.addAnotherItem.question", form)
+        } else { @{HtmlFormat.empty} }
+
+        @saveButtons()
     }
 }

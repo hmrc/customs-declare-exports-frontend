@@ -81,6 +81,10 @@ class DucrChoiceViewSpec extends PageWithButtonsSpec with Injector {
         view.getElementsByTag("h1").first() must containMessage("declaration.ducr.choice.title")
       }
 
+      "display a single title" in {
+        view.getElementsByTag("h1").size() mustBe 1
+      }
+
       "display two Yes/No radio buttons" in {
         val radios = view.getElementsByClass("govuk-radios").first.children
         radios.size mustBe 2

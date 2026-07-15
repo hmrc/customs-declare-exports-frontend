@@ -106,17 +106,14 @@
 
         @sectionHeader(messages("declaration.section.2"))
 
-        @govukFieldset(Fieldset(
-            legend = Some(Legend(
-                content = header,
-                classes = gdsPageLegend,
-                isPageHeading = true
-            )),
-            html = HtmlFormat.fill(List(
-                actorsTable,
-                addAnotherQuestion("declaration.additionalActors.add.another", form),
-                saveButtons()
-            ))
-        ))
+        <h1 class="@gdsPageLegend">
+            @header.asHtml
+        </h1>
+
+        @actorsTable
+
+        @addAnotherQuestion("declaration.additionalActors.add.another", form)
+
+        @saveButtons()
     }
 }

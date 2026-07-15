@@ -37,7 +37,7 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.hint.Hint
 import uk.gov.hmrc.govukfrontend.views.viewmodels.input.Input
 import uk.gov.hmrc.govukfrontend.views.viewmodels.label.Label
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.{RadioItem, Radios}
-import views.helpers.ErrorMapper.radioGroupErrors
+import views.helpers.ErrorMapper.{radioGroupErrors, yesNoErrors}
 import views.html.components.fields.field_accessible_autocomplete
 import views.html.components.gds._
 
@@ -102,7 +102,7 @@ class LocationOfGoodsHelper @Inject() (
   def errors(form: Form[LocationOfGoods], version: Int)(implicit messages: Messages): Seq[FormError] =
     version match {
       case 3 | 5 => radioGroupErrors(radioGroupId, gvmsGoodsLocationsForArrivedDecls.head, form.errors)
-      case _     => form.errors
+      case _     => yesNoErrors(form.errors, radioGroupId)
     }
 
   def expander(version: Int)(implicit messages: Messages): Html = {

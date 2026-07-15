@@ -26,7 +26,6 @@
 @import views.helpers.{BackButton, Title}
 @import views.html.components.gds._
 
-
 @this(govukLayout: gdsMainTemplate,
     govukFieldset: GovukFieldset,
     govukButton: GovukButton,
@@ -42,7 +41,6 @@
     link: link,
     appConfig: AppConfig
 )
-
 
 @(itemId: String, form: Form[NactCode], restrictedForZeroVat: Boolean)(implicit request: JourneyRequest[_], messages: Messages)
 

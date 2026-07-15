@@ -100,17 +100,14 @@
 
         @sectionHeader(messages("declaration.section.5"))
 
-        @govukFieldset(Fieldset(
-            legend = Some(Legend(
-                content = header,
-                classes = gdsPageLegend,
-                isPageHeading = true
-            )),
-            html = HtmlFormat.fill(List(
-                nactCodesTable,
-                addAnotherQuestion("declaration.nationalAdditionalCode.label", form),
-                saveButtons()
-            ))
-        ))
+        <h1 class="@gdsPageLegend">
+            @header.asHtml
+        </h1>
+
+        @nactCodesTable
+
+        @addAnotherQuestion("declaration.nationalAdditionalCode.label", form)
+
+        @saveButtons()
     }
 }

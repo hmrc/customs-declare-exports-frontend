@@ -28,16 +28,16 @@
 @import views.helpers.ErrorMapper.prefixedErrorMessage
 
 @this(
-    govukLayout: gdsMainTemplate,
-    govukRadios: GovukRadios,
-    govukWarningText: GovukWarningText,
-    errorSummary: errorSummary,
-    paragraphBody: paragraphBody,
-    externalLink: externalLink,
-    saveAndContinue: saveAndContinue,
-    formHelper: FormWithCSRF,
-    appConfig: AppConfig,
-    heading: heading
+        govukLayout: gdsMainTemplate,
+        govukRadios: GovukRadios,
+        govukWarningText: GovukWarningText,
+        errorSummary: errorSummary,
+        paragraphBody: paragraphBody,
+        externalLink: externalLink,
+        saveAndContinue: saveAndContinue,
+        formHelper: FormWithCSRF,
+        appConfig: AppConfig,
+        heading: heading
 )
 
 @(form: Form[_])(implicit request: Request[_], messages: Messages)
@@ -49,48 +49,42 @@
 ) {
     @formHelper(action = StandardOrOtherJourneyController.submitChoice, Symbol("autoComplete") -> "off") {
         @errorSummary(radioGroupErrors("type", STANDARD.toString, form.errors))
+        <fieldset class="govuk-fieldset" @if(form.hasErrors) {aria-describedby="declarationType-error" }>
+            <legend class="govuk-fieldset__legend govuk-!-margin-bottom-0">
+                @heading(messages("declaration.type.description"))
+            </legend>
 
-        @heading(messages("declaration.type.description"))
+            @paragraphBody(messages("tariff.declaration.type.text.1"))
+            @paragraphBody(messages("tariff.declaration.type.text.2", externalLink(
+                text = messages("tariff.declaration.type.linkText.2"),
+                url = appConfig.standardDeclarationType
+            )))
 
-        @paragraphBody(messages("tariff.declaration.type.text.1"))
-        @paragraphBody(messages("tariff.declaration.type.text.2", externalLink(
-            text = messages("tariff.declaration.type.linkText.2"),
-            url = appConfig.standardDeclarationType
-        )))
+            @govukRadios(Radios(
+                name = "type",
+                items = Seq(
+                    RadioItem(
+                        id = Some(STANDARD.toString),
+                        value = Some(STANDARD.toString),
+                        content = Text(messages("declaration.type.standard")),
+                        hint = Some(Hint(content = Text(messages("declaration.type.standard.hint")))),
+                        checked = form("type").value.contains(STANDARD.toString)
+                    ),
 
-        @govukRadios(Radios(
-            name = "type",
-            fieldset = Some(Fieldset(
-                legend = Some(Legend(
-                    content = Text(messages("declaration.type.description")),
-                    isPageHeading = true,
-                    classes = "govuk-visually-hidden"
-                ))
-            )),
-            items = Seq(
-                RadioItem(
-                    id = Some(STANDARD.toString),
-                    value = Some(STANDARD.toString),
-                    content = Text(messages("declaration.type.standard")),
-                    hint = Some(Hint(content = Text(messages("declaration.type.standard.hint")))),
-                    checked = form("type").value.contains(STANDARD.toString)
+                    RadioItem(divider = Some(messages("site.radio.divider"))),
+
+                    RadioItem(
+                        id = Some(NonStandardDeclarationType),
+                        value = Some(NonStandardDeclarationType),
+                        content = Text(messages("declaration.type.other")),
+                        hint = Some(Hint(content = Text(messages("declaration.type.other.hint")))),
+                        checked = form("type").value.contains(NonStandardDeclarationType)
+                    )
                 ),
 
-                RadioItem(divider = Some(messages("site.radio.divider"))),
-
-                RadioItem(
-                    id = Some(NonStandardDeclarationType),
-                    value = Some(NonStandardDeclarationType),
-                    content = Text(messages("declaration.type.other")),
-                    hint = Some(Hint(content = Text(messages("declaration.type.other.hint")))),
-                    checked = form("type").value.contains(NonStandardDeclarationType)
-                )
-            ),
-
-            errorMessage = form("type").error.map(prefixedErrorMessage(_))
-
-
-        ))
+                errorMessage = form("type").error.map(prefixedErrorMessage(_))
+            ))
+        </fieldset>
 
         @govukWarningText(WarningText(
             iconFallbackText = Some(messages("site.warning")),

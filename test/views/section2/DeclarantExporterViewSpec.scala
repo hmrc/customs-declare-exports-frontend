@@ -62,6 +62,10 @@ class DeclarantExporterViewSpec extends PageWithButtonsSpec with Injector {
         createView().getElementsByClass(Styles.gdsPageHeading) must containMessageForElements("declaration.declarant.exporter.title")
       }
 
+      "display a single title" in {
+        createView().getElementsByTag("h1").size() mustBe 1
+      }
+
       "display section header" in {
         createView().getElementById("section-header") must containMessage("declaration.section.2")
       }

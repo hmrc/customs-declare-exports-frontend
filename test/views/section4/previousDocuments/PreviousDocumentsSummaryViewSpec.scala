@@ -20,6 +20,7 @@ import base.Injector
 import controllers.section4.routes.NatureOfTransactionController
 import controllers.summary.routes.SectionSummaryController
 import forms.common.YesNoAnswer.form
+import forms.section2.AuthorisationProcedureCodeChoice.Choice1040
 import forms.section4.Document
 import models.DeclarationType
 import models.DeclarationType.STANDARD
@@ -101,7 +102,7 @@ class PreviousDocumentsSummaryViewSpec extends PageWithButtonsSpec with Injector
       }
 
       "display 'Add another document' question" in {
-        val addAnotherDocument = createView().getElementsByClass("govuk-fieldset__heading").get(1)
+        val addAnotherDocument = createView().getElementsByClass("govuk-fieldset__heading").first()
         addAnotherDocument must containMessage("declaration.previousDocuments.addAnotherDocument")
       }
 
@@ -129,6 +130,26 @@ class PreviousDocumentsSummaryViewSpec extends PageWithButtonsSpec with Injector
         val backButton = createView()(specificRequest).getElementById("back-link")
         backButton must containMessage("site.back")
         backButton must haveHref(SectionSummaryController.displayPage(3))
+      }
+    }
+
+    "the declaration is on version 1 (no goods item identifier)" should {
+      implicit val request: JourneyRequest[_] =
+        journeyRequest(aDeclaration(withType(STANDARD), withAuthorisationProcedureCodeChoice(Choice1040)))
+
+      "not display the goods item identifier column heading" in {
+        val tableHeader = createView().getElementsByClass("govuk-table__header")
+        tableHeader.size mustBe 3
+        tableHeader.get(0) must containMessage("declaration.previousDocuments.summary.documentCode.label")
+        tableHeader.get(1) must containMessage("declaration.previousDocuments.summary.documentReference.label")
+        tableHeader.get(2) must containMessage("site.remove.header")
+      }
+
+      "not display the empty goods item identifier cells in the document rows" in {
+        val tableRow = createView().getElementsByClass("govuk-table__row")
+        tableRow.get(1).children.size mustBe 3
+        tableRow.get(1).child(0).text() mustBe "Entry Summary Declaration (ENS) (355)"
+        tableRow.get(1).child(1).text() mustBe "reference1"
       }
     }
   }

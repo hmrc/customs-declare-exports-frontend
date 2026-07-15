@@ -55,7 +55,13 @@
 
     @formHelper(action = BorderTransportController.submitForm, Symbol("autoComplete") -> "off") {
 
-        @errorSummary(radioGroupErrors(radioButtonGroupId, tcs.transportCodesOnBorderTransport.head.id, form.errors))
+        @errorSummary(
+            radioGroupErrors(
+                radioButtonGroupId,
+                s"radio_${tcs.transportCodesOnBorderTransport.head.id}",
+                form.errors
+            )
+        )
 
         @sectionHeader(messages("declaration.section.6"))
 
