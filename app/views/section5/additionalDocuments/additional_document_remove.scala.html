@@ -108,10 +108,10 @@
             )),
             html = HtmlFormat.fill(List(
                 documentTable,
-                yesNoRadios(form, inline = true),
-                saveButtons()
+                yesNoRadios(form, inline = true)
             ))
         ))
-    }
 
+        @saveButtons()
+    }
 }

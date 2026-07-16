@@ -57,18 +57,23 @@
 
     @sectionHeader(messages("declaration.section.2"))
 
-    @govukFieldset(DescribedByHelper(
+    @{ govukFieldset(DescribedByHelper(
         form = form,
         fieldName = "yesNo",
         content = List(
             authorisationHolderRequiredHelper.body,
             yesNoRadios(form, inline = true),
-            authorisationHolderRequiredHelper.insetText,
-            tariffExpander(AuthorisationHolderRequired, request.declarationType)(messages, appConfig),
-            saveButtons()
+            authorisationHolderRequiredHelper.insetText
         ),
         titleKey = Some(authorisationHolderRequiredHelper.title)
-        ))
+    ))}
+
+    @tariffExpander(
+        AuthorisationHolderRequired,
+        request.declarationType
+    )(messages, appConfig)
+
+    @saveButtons()
+
     }
 }
-

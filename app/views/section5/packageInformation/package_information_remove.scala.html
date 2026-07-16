@@ -80,9 +80,10 @@
             )),
             html = HtmlFormat.fill(List(
                 packageInformationTable,
-                yesNoRadios(form, inline = true),
-                saveButtons()
+                yesNoRadios(form, inline = true)
             ))
         ))
+
+        @saveButtons()
     }
 }

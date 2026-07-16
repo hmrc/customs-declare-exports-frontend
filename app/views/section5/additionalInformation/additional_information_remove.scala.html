@@ -73,9 +73,10 @@
             )),
             html = HtmlFormat.fill(List(
                 informationTable,
-                yesNoRadios(form, inline = true),
-                saveButtons()
+                yesNoRadios(form, inline = true)
             ))
         ))
+
+        @saveButtons()
     }
 }

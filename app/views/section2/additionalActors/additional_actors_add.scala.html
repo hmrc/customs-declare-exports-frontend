@@ -120,6 +120,7 @@
         @errorSummary(form.errors)
 
         @sectionHeader(messages("declaration.section.2"))
+
         @govukFieldset(Fieldset(
             legend = Some(Legend(
                 content = Text(messages("declaration.additionalActors.title")),
@@ -128,9 +129,10 @@
             )),
             html = HtmlFormat.fill(List(
               paragraphBody(messages("declaration.additionalActors.body.text")),
-              radios,
-              saveButtons()
+              radios
             ))
         ))
+
+        @saveButtons()
     }
 }
