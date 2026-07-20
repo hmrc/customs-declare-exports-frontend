@@ -81,9 +81,10 @@
             )),
             html = HtmlFormat.fill(List(
                 inputFields,
-                tariffExpander(AdditionalFiscalReference, request.declarationType)(messages, appConfig),
-                saveButtons()
+                tariffExpander(AdditionalFiscalReference, request.declarationType)(messages, appConfig)
             ))
         ))
+
+        @saveButtons()
     }
 }

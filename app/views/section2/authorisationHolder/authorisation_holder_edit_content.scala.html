@@ -107,7 +107,7 @@
         content = Text(messages("declaration.authorisationHolder.eori")),
         classes = "govuk-fieldset__legend--m"
     )),
-    html = HtmlFormat.fill(List(formContent, saveButtons()))
+    html = HtmlFormat.fill(List(formContent))
 ))
 
-
+@saveButtons()

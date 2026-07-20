@@ -69,9 +69,10 @@
             )),
             html = HtmlFormat.fill(List(
                 nactCodeSummary,
-                yesNoRadios(form, inline = true),
-                saveButtons()
+                yesNoRadios(form, inline = true)
             ))
         ))
+
+        @saveButtons()
     }
 }

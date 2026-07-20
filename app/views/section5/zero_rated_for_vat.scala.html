@@ -128,8 +128,17 @@
                 isPageHeading = true
             )),
             html = HtmlFormat.fill(List(
-              paragraph, radios, guidance, tariffExpander(ZeroRatedForVat, request.declarationType)(messages, appConfig), saveButtons()
+                paragraph,
+                radios,
+                guidance
             ))
         ))
+
+        @tariffExpander(
+            ZeroRatedForVat,
+            request.declarationType
+        )(messages, appConfig)
+
+        @saveButtons()
     }
 }

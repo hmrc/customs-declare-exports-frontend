@@ -66,9 +66,10 @@
             )),
             html = HtmlFormat.fill(List(
                 group_address(form, ".exporter"),
-                tariffExpander(ExporterDetails, request.declarationType)(messages, appConfig),
-                saveButtons()
+                tariffExpander(ExporterDetails, request.declarationType)(messages, appConfig)
             ))
         ))
+
+        @saveButtons()
     }
 }
