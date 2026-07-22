@@ -26,8 +26,7 @@ import play.api.i18n.Messages
 import play.api.mvc.{Call, Request}
 import play.twirl.api.Html
 import play.twirl.api.HtmlFormat.Appendable
-import uk.gov.hmrc.govukfrontend.views.html.components.{GovukButton, GovukTable}
-import uk.gov.hmrc.govukfrontend.views.viewmodels.button.Button
+import uk.gov.hmrc.govukfrontend.views.html.components.GovukTable
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{HtmlContent, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.table.{HeadCell, Table, TableRow}
 import views.helpers.{EnhancedStatusHelper, ViewDates}
@@ -133,10 +132,7 @@ object DashboardHelper {
 
   def toUTC(datetime: ZonedDateTime): Instant = datetime.withZoneSameInstant(ZoneId.of("UTC")).toInstant
 
-
-  def tabGroup(
-                selectedStatusGroup: StatusGroup
-              )(implicit messages: Messages): Html = {
+  def tabGroup(selectedStatusGroup: StatusGroup)(implicit messages: Messages): Html = {
 
     val tabs = statusGroups.map { statusGroup =>
       val listSelectedClass =
@@ -149,10 +145,8 @@ object DashboardHelper {
         if (statusGroup == selectedStatusGroup) " selected-status-group"
         else ""
 
-
       val ariaCurrent =
-          s"aria-pressed = ${statusGroup == selectedStatusGroup}"
-
+        s"aria-pressed = ${statusGroup == selectedStatusGroup}"
 
       s"""
          |<li class="govuk-tabs__list-item$listSelectedClass">
@@ -167,8 +161,7 @@ object DashboardHelper {
          |""".stripMargin
     }.mkString
 
-    Html(
-      s"""
+    Html(s"""
          |<nav
          |  id="filters"
          |  class="govuk-tabs govuk-!-static-margin-bottom-0"
@@ -178,8 +171,7 @@ object DashboardHelper {
          |    $tabs
          |  </ul>
          |</nav>
-         |""".stripMargin
-    )
+         |""".stripMargin)
   }
 
   def currentPage(implicit request: Request[_]): Int = request.getQueryString(Page).fold(1)(_.toInt)
