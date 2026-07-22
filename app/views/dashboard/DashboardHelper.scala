@@ -133,25 +133,53 @@ object DashboardHelper {
 
   def toUTC(datetime: ZonedDateTime): Instant = datetime.withZoneSameInstant(ZoneId.of("UTC")).toInstant
 
-  def buttonGroup(selectedStatusGroup: StatusGroup, govukButton: GovukButton)(implicit messages: Messages): Html = {
-    val groupOfButtons = statusGroups.map { statusGroup =>
-      govukButton(
-        Button(
-          content = Text(messages(s"dashboard.$statusGroup.button.text")),
-          href = Some(s"/customs-declare-exports/dashboard?groups=$statusGroup&page=1"),
-          attributes = Map("id" -> s"$statusGroup-submissions-button", "aria-pressed" -> (statusGroup == selectedStatusGroup).toString),
-          classes =
-            if (statusGroup != selectedStatusGroup) "govuk-button--secondary"
-            else "govuk-button--secondary selected-status-group"
-        )
-      ).toString()
+
+  def tabGroup(
+                selectedStatusGroup: StatusGroup
+              )(implicit messages: Messages): Html = {
+
+    val tabs = statusGroups.map { statusGroup =>
+      val listSelectedClass =
+        if (statusGroup == selectedStatusGroup)
+          " govuk-tabs__list-item--selected"
+        else
+          ""
+
+      val linkSelectedClass =
+        if (statusGroup == selectedStatusGroup) " selected-status-group"
+        else ""
+
+
+      val ariaCurrent =
+          s"aria-pressed = ${statusGroup == selectedStatusGroup}"
+
+
+      s"""
+         |<li class="govuk-tabs__list-item$listSelectedClass">
+         |  <a
+         |    class="govuk-tabs__tab$linkSelectedClass"
+         |    href="/customs-declare-exports/dashboard?$Groups=$statusGroup&$Page=1"
+         |    id="$statusGroup-submissions-tab"
+         |    $ariaCurrent>
+         |    ${messages(s"dashboard.$statusGroup.button.text")}
+         |  </a>
+         |</li>
+         |""".stripMargin
     }.mkString
 
-    Html(s"""
-         |<nav id="filters" aria-label="${messages("aria.label.filters")}">
-         |  <div class="govuk-button-group">$groupOfButtons</div>
+    Html(
+      s"""
+         |<nav
+         |  id="filters"
+         |  class="govuk-tabs govuk-!-static-margin-bottom-0"
+         |  aria-label="${messages("aria.label.filters")}">
+         |
+         |  <ul class="govuk-tabs__list">
+         |    $tabs
+         |  </ul>
          |</nav>
-         |""".stripMargin)
+         |""".stripMargin
+    )
   }
 
   def currentPage(implicit request: Request[_]): Int = request.getQueryString(Page).fold(1)(_.toInt)
@@ -163,7 +191,7 @@ object DashboardHelper {
     val statusGroup = pageOfSubmissions.statusGroup
     val href = s"${DashboardController.displayPage}?$Groups=$statusGroup"
     Html(s"""
-          |<div id="$statusGroup-submissions">
+          |<div id="$statusGroup-submissions" class="govuk-tabs__panel ">
           |  ${table(statusGroup, pageOfSubmissions, totalPagesInGroup, href).toString}
           |</div>
           |""".stripMargin)

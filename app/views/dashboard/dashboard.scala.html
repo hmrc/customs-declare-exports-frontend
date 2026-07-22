@@ -17,16 +17,15 @@
 @import config.PaginationConfig
 @import controllers.routes.ChoiceController
 @import models.PageOfSubmissions
-@import uk.gov.hmrc.govukfrontend.views.html.components.GovukButton
+@import uk.gov.hmrc.govukfrontend.views.html.components.{GovukButton, GovukTabs}
 @import views.components.gds.Styles.gdsPageHeading
 @import views.dashboard.DashboardHelper
-@import views.dashboard.DashboardHelper.{buttonGroup, currentPage, notification, panels, title}
+@import views.dashboard.DashboardHelper.{buttonGroup, currentPage, notification, panels, title, tabGroup}
 @import views.helpers.{BackButton, Title}
 @import views.html.components.gds.{gdsMainTemplate, linkButton, pageTitle, paragraphBody}
 
 @this(
     govukLayout: gdsMainTemplate,
-    govukButton: GovukButton,
     linkButton: linkButton,
     pageTitle: pageTitle,
     paragraph: paragraphBody,
@@ -56,7 +55,7 @@
 
             @paragraph(messages("dashboard.check.status.hint"), classes = "govuk-body govuk-!-margin-bottom-4")
 
-            @buttonGroup(pageOfSubmissions.statusGroup, govukButton)
+            @tabGroup(pageOfSubmissions.statusGroup)
 
             @panels(pageOfSubmissions, totalPagesInGroup, table)
 
