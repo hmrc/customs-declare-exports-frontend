@@ -84,6 +84,11 @@ CSS to support browser font sizes for auto-complete component
   line-height: 1.31579;
 }
 
+.govuk-tabs__panel {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
 /*
 ====================================
 CSS to improve behaviour of table cells with large non-breaking content

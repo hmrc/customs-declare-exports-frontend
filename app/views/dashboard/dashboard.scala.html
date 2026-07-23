@@ -17,26 +17,27 @@
 @import config.PaginationConfig
 @import controllers.routes.ChoiceController
 @import models.PageOfSubmissions
-@import uk.gov.hmrc.govukfrontend.views.html.components.GovukButton
+@import uk.gov.hmrc.govukfrontend.views.html.components.{GovukButton, GovukTabs}
 @import views.components.gds.Styles.gdsPageHeading
 @import views.dashboard.DashboardHelper
-@import views.dashboard.DashboardHelper.{buttonGroup, currentPage, notification, panels, title}
+@import views.dashboard.DashboardHelper.{ currentPage, notification, panels, title, tabGroup}
 @import views.helpers.{BackButton, Title}
 @import views.html.components.gds.{gdsMainTemplate, linkButton, pageTitle, paragraphBody}
 
 @this(
-    govukLayout: gdsMainTemplate,
-    govukButton: GovukButton,
-    linkButton: linkButton,
-    pageTitle: pageTitle,
-    paragraph: paragraphBody,
-    table: table,
-    paginationConfig: PaginationConfig
+        govukLayout: gdsMainTemplate,
+        linkButton: linkButton,
+        pageTitle: pageTitle,
+        paragraph: paragraphBody,
+        table: table,
+        paginationConfig: PaginationConfig
 )
 
 @(pageOfSubmissions: PageOfSubmissions)(implicit request: Request[_], messages: Messages)
 
-@totalPagesInGroup = @{ DashboardHelper.totalPagesInGroup(pageOfSubmissions, paginationConfig.itemsPerPage) }
+@totalPagesInGroup = @{
+    DashboardHelper.totalPagesInGroup(pageOfSubmissions, paginationConfig.itemsPerPage)
+}
 
 @govukLayout(
     title = Title.pageOf(title(pageOfSubmissions.statusGroup), currentPage, totalPagesInGroup),
@@ -45,7 +46,7 @@
     showDeclarationSummaryLink = false
 ) {
     <a href="#filters" class="govuk-skip-link" data-module="govuk-skip-link">
-      @messages("dashboard.button.group.link")
+    @messages("dashboard.button.group.link")
     </a>
 
     <div class="govuk-grid-row">
@@ -56,7 +57,7 @@
 
             @paragraph(messages("dashboard.check.status.hint"), classes = "govuk-body govuk-!-margin-bottom-4")
 
-            @buttonGroup(pageOfSubmissions.statusGroup, govukButton)
+            @tabGroup(pageOfSubmissions.statusGroup)
 
             @panels(pageOfSubmissions, totalPagesInGroup, table)
 

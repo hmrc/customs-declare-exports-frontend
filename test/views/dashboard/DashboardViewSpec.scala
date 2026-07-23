@@ -156,18 +156,18 @@ class DashboardViewSpec extends UnitViewSpec with BeforeAndAfterEach with Export
       view.getElementsByClass("govuk-body").get(1).text mustBe messages("dashboard.check.status.hint")
     }
 
-    "display the expected group of buttons for status filtering" in {
+    "display the expected group of tabs for status filtering" in {
       val navigation = view.getElementById(filterId)
       navigation.tagName mustBe "nav"
 
-      val buttonGroup = navigation.getElementsByClass("govuk-button-group").get(0)
+      val tabGroup = navigation.getElementsByClass("govuk-tabs").get(0)
 
-      val links = buttonGroup.getElementsByTag("a")
+      val links = tabGroup.getElementsByTag("a")
       links.size mustBe 4
 
       statusGroups.zipWithIndex.foreach { case (statusGroup, index) =>
         val link = links.get(index)
-        assert(link.hasClass("govuk-button"))
+        assert(link.hasClass("govuk-tabs__tab"))
         link.text mustBe messages(s"dashboard.$statusGroup.button.text")
         link.attr("href") mustBe s"/customs-declare-exports/dashboard?groups=$statusGroup&page=1"
 
