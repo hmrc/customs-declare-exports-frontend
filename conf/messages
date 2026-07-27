@@ -1217,7 +1217,7 @@ declaration.additionalDocument.code.empty = Enter the document code required for
 declaration.additionalDocument.code.empty.fromAuthCode = Enter a document code and authorisation number to show the EORI you entered in section 3 is the holder of this authorisation
 declaration.additionalDocument.code.error = Document code must be in the correct format
 
-declaration.additionalDocument.identifier = Document identifier
+declaration.additionalDocument.identifier = Document identifier (if required)
 declaration.additionalDocument.identifier.body = Document identifiers can be licence or certificate serial numbers. Details are in column 4 of the document code tables.
 declaration.additionalDocument.identifier.inset.body.1 = For authorisations, the identifier is the authorisation number given to you by HMRC to use for CDS declarations. It is in a prescribed format usually containing country code, authorisation code, EORI number and time-stamp.
 declaration.additionalDocument.identifier.inset.body.2 = Authorisations do not require any further entries on this page.

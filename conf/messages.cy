@@ -1217,7 +1217,7 @@ declaration.additionalDocument.code.empty = Nodwch god y ddogfen sydd ei angen a
 declaration.additionalDocument.code.empty.fromAuthCode = Nodwch god y ddogfen a rhif awdurdodi i ddangos bod yr EORI roeddech wedi’i nodi yn adran 3 yw deiliad yr awdurdodiad hwn
 declaration.additionalDocument.code.error = Mae’n rhaid i god y ddogfen fod yn y fformat cywir
 
-declaration.additionalDocument.identifier = Dynodydd y ddogfen
+declaration.additionalDocument.identifier = Dynodydd y ddogfen (os oes angen)
 declaration.additionalDocument.identifier.body = Gall dynodyddion y ddogfen fod yn rhifau cyfresol trwydded neu dystysgrif. Mae’r manylion i’w gweld yng ngholofn 4 o’r tablau codau dogfen.
 declaration.additionalDocument.identifier.inset.body.1 = Ar gyfer awdurdodiadau, y dynodydd yw’r rhif awdurdodi a roddwyd i chi gan CThEF i’w ddefnyddio ar gyfer datganiadau CDS. Mae hwn mewn fformat rhagnodedig, sydd fel arfer yn cynnwys cod gwlad, cod awdurdodi, rhif EORI a stamp amser.
 declaration.additionalDocument.identifier.inset.body.2 = Nid yw awdurdodiadau angen unrhyw gofnodion pellach ar y dudalen hon.
