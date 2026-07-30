@@ -172,7 +172,6 @@ class DashboardViewSpec extends UnitViewSpec with BeforeAndAfterEach with Export
         link.attr("href") mustBe s"/customs-declare-exports/dashboard?groups=$statusGroup&page=1"
 
         link.hasClass("selected-status-group") mustBe (statusGroup == SubmittedStatuses)
-        link.attr("aria-pressed") mustBe (statusGroup == SubmittedStatuses).toString
       }
     }
 

@@ -146,7 +146,7 @@ object DashboardHelper {
         else ""
 
       val ariaCurrent =
-        s"aria-pressed = ${statusGroup == selectedStatusGroup}"
+        """ aria-current="page""""
 
       s"""
          |<li class="govuk-tabs__list-item$listSelectedClass">
