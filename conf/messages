@@ -2,7 +2,7 @@ date.day = Day
 date.month = Month
 date.year = Year
 
-service.name = Make and manage an export declaration online
+service.name = Customs Declaration Service: make and manage an export declaration
 
 feedback = This is a new service. Help us improve it and {0} .
 feedback.link = give your feedback (opens in new tab)
@@ -548,7 +548,7 @@ declaration.declarant.exporter.answer.no.hint = For example, a freight forwarder
 declaration.declarant.exporter.error = Select yes if you are the exporter
 
 declaration.thirdPartyGoodsTransportation.title = Will the goods be moved by a third party carrier or haulier?
-declaration.thirdPartyGoodsTransportation.body = This includes road and RoRo hauliers, airline or maritime carriers.
+declaration.thirdPartyGoodsTransportation.body = This includes road and Roll On/Roll Off (RoRo) hauliers, airline or maritime carriers.
 declaration.thirdPartyGoodsTransportation.radio.yes = Yes
 declaration.thirdPartyGoodsTransportation.radio.no = No, we use our own transport
 declaration.thirdPartyGoodsTransportation.radio.text = Transport linked to EORI {0}
@@ -1458,7 +1458,7 @@ declaration.transportInformation.meansOfTransport.NotApplicable = Does not apply
 declaration.transportInformation.meansOfTransport.NotApplicable.vBT = I don’t know
 declaration.transportInformation.meansOfTransport.NotApplicable.label = Does not apply
 declaration.transportInformation.meansOfTransport.NotApplicable.hint = Does not apply
-declaration.transportInformation.meansOfTransport.ShipOrRoroImoNumber = Ship IMO number
+declaration.transportInformation.meansOfTransport.ShipOrRoroImoNumber = Ship International Maritime Organisation (IMO) number
 declaration.transportInformation.meansOfTransport.ShipOrRoroImoNumber.vBT = Ship or RoRo ferry IMO number
 declaration.transportInformation.meansOfTransport.ShipOrRoroImoNumber.label = IMO identification number
 declaration.transportInformation.meansOfTransport.ShipOrRoroImoNumber.label.opt = IMO identification number (optional)
