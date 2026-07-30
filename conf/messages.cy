@@ -2,7 +2,7 @@ date.day = Diwrnod
 date.month = Mis
 date.year = Blwyddyn
 
-service.name = Gwneud a rheoli datganiad allforio ar-lein
+service.name = Gwasanaeth Datganiadau Tollau: gwneud a rheoli datganiad allforio
 
 feedback = Gwasanaeth newydd yw hwn. Rhowch help i ni ei wella, a {0}.
 feedback.link = rhoi eich adborth (yn agor tab newydd)
@@ -548,7 +548,7 @@ declaration.declarant.exporter.answer.no.hint = Er enghraifft, trefnydd anfon nw
 declaration.declarant.exporter.error = Dewiswch ‘Iawn’ os mai chi yw’r allforiwr
 
 declaration.thirdPartyGoodsTransportation.title = A fydd y nwyddau’n cael eu symud gan gludwr trydydd parti?
-declaration.thirdPartyGoodsTransportation.body = Mae hyn yn cynnwys cludwyr nwyddau ar y ffordd a RoRo, a chariwyr cwmni hedfan neu dros y môr.
+declaration.thirdPartyGoodsTransportation.body = Mae hyn yn cynnwys cludwyr nwyddau ar y ffordd a gyrru-ymlaen-ac-i-ffwrdd (RoRo), a charwyr cwmni hedfan neu dros y môr.
 declaration.thirdPartyGoodsTransportation.radio.yes = Iawn
 declaration.thirdPartyGoodsTransportation.radio.no = Na, rydym yn defnyddio dull cludo ein hunain
 declaration.thirdPartyGoodsTransportation.radio.text = Dull o gludo ynghlwm wrth yr EORI, sef {0}
@@ -1458,7 +1458,7 @@ declaration.transportInformation.meansOfTransport.NotApplicable = Nid yw’n ber
 declaration.transportInformation.meansOfTransport.NotApplicable.vBT = Nid wyf yn gwybod
 declaration.transportInformation.meansOfTransport.NotApplicable.label = Nid yw’n berthnasol
 declaration.transportInformation.meansOfTransport.NotApplicable.hint = Nid yw’n berthnasol
-declaration.transportInformation.meansOfTransport.ShipOrRoroImoNumber = Rhif IMO y llong
+declaration.transportInformation.meansOfTransport.ShipOrRoroImoNumber = Rhif Sefydliad Arforol Rhyngwladol (IMO) y llong
 declaration.transportInformation.meansOfTransport.ShipOrRoroImoNumber.vBT = Rhif IMO y llong neu’r fferi RoRo
 declaration.transportInformation.meansOfTransport.ShipOrRoroImoNumber.label = Rhif adnabod IMO
 declaration.transportInformation.meansOfTransport.ShipOrRoroImoNumber.label.opt = Rhif adnabod IMO (dewisol)
