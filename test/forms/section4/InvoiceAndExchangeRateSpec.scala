@@ -164,9 +164,12 @@ class InvoiceAndExchangeRateSpec extends DeclarationPageBaseSpec {
     "return errors" when {
       "form fields are empty" in {
         val form = InvoiceAndExchangeRate.form
-          .bind(Map(totalAmountInvoiced -> ""))
+          .bind(Map(totalAmountInvoiced -> "", totalAmountInvoicedCurrency -> ""))
 
-        form.errors mustBe Seq(FormError(totalAmountInvoiced, invoiceFieldErrorEmptyKey))
+        form.errors mustBe Seq(
+          FormError(totalAmountInvoicedCurrency, invoiceCurrencyFieldErrorKey),
+          FormError(totalAmountInvoiced, invoiceFieldErrorEmptyKey)
+        )
       }
 
       "exchange rate specified" that {
@@ -366,26 +369,26 @@ class InvoiceAndExchangeRateSpec extends DeclarationPageBaseSpec {
           "amount invoiced is less than 100,000" when {
             "all numeric" in {
               val form = InvoiceAndExchangeRate.form
-                .bind(formData(amount = Some("100"), currency = Some("GBP"), rate = Some("12"), rateYesNo = Some(YesNoAnswers.yes)))
+                .bind(formData(currency = Some("GBP"), amount = Some("100"), rate = Some("12"), rateYesNo = Some(YesNoAnswers.yes)))
               form.errors mustBe Seq(FormError(totalAmountInvoiced, invoiceFieldErrorLessThan100000Key))
             }
 
             "commas" in {
               val form = InvoiceAndExchangeRate.form
-                .bind(formData(amount = Some("10,000"), currency = Some("GBP"), rate = Some("10"), rateYesNo = Some(YesNoAnswers.yes)))
+                .bind(formData(currency = Some("GBP"), amount = Some("10,000"), rate = Some("10"), rateYesNo = Some(YesNoAnswers.yes)))
               form.errors mustBe Seq(FormError(totalAmountInvoiced, invoiceFieldErrorLessThan100000Key))
             }
 
             "decimals" when {
               "decimal in number" in {
                 val form = InvoiceAndExchangeRate.form
-                  .bind(formData(amount = Some("10.00"), currency = Some("GBP"), rate = Some("10"), rateYesNo = Some(YesNoAnswers.yes)))
+                  .bind(formData(currency = Some("GBP"), amount = Some("10.00"), rate = Some("10"), rateYesNo = Some(YesNoAnswers.yes)))
                 form.errors mustBe Seq(FormError(totalAmountInvoiced, invoiceFieldErrorLessThan100000Key))
               }
 
               "starts with decimal" in {
                 val form = InvoiceAndExchangeRate.form
-                  .bind(formData(amount = Some(".10"), currency = Some("GBP"), rate = Some("10"), rateYesNo = Some(YesNoAnswers.yes)))
+                  .bind(formData(currency = Some("GBP"), amount = Some(".10"), rate = Some("10"), rateYesNo = Some(YesNoAnswers.yes)))
                 form.errors mustBe Seq(FormError(totalAmountInvoiced, invoiceFieldErrorLessThan100000Key))
               }
             }
@@ -396,13 +399,13 @@ class InvoiceAndExchangeRateSpec extends DeclarationPageBaseSpec {
           "reject codes that are not three char in length" in {
             withClue("less than three chars") {
               val form = InvoiceAndExchangeRate.form
-                .bind(formData(amount = Some("12"), currency = Some("GB"), rateYesNo = Some(YesNoAnswers.no)))
+                .bind(formData(currency = Some("GB"), amount = Some("12"), rateYesNo = Some(YesNoAnswers.no)))
               form.errors mustBe currencyInvalidWithoutExchangeRateFormErrors
             }
 
             withClue("more than three chars") {
               val form = InvoiceAndExchangeRate.form
-                .bind(formData(amount = Some("12"), currency = Some("GBPP"), rateYesNo = Some(YesNoAnswers.no)))
+                .bind(formData(currency = Some("GBPP"), amount = Some("12"), rateYesNo = Some(YesNoAnswers.no)))
               form.errors mustBe currencyInvalidWithoutExchangeRateFormErrors
             }
           }

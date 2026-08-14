@@ -119,8 +119,8 @@ class ConsignmentReferencesSpec extends DeclarationPageBaseSpec with JourneyType
           form.errors.length mustBe 3
           form.errors(0).key mustBe "ducr.ducr"
           form.errors(0).message mustBe "error.required"
-          form.errors(1).message mustBe "error.required"
-          form.errors(2).message mustBe "declaration.consignmentReferences.supplementary.mrn.error.empty"
+          form.errors(1).message mustBe "declaration.consignmentReferences.supplementary.mrn.error.empty"
+          form.errors(2).message mustBe "error.required"
         }
 
         "provided with empty input for SUPPLEMENTARY with additionalDecType of SUPPLEMENTARY_EIDR" in {
@@ -130,8 +130,8 @@ class ConsignmentReferencesSpec extends DeclarationPageBaseSpec with JourneyType
           form.errors.length mustBe 3
           form.errors(0).key mustBe "ducr.ducr"
           form.errors(0).message mustBe "error.required"
-          form.errors(1).message mustBe "error.required"
-          form.errors(2).message mustBe "declaration.consignmentReferences.supplementary.eidr.error.empty"
+          form.errors(1).message mustBe "declaration.consignmentReferences.supplementary.eidr.error.empty"
+          form.errors(2).message mustBe "error.required"
         }
       }
 
