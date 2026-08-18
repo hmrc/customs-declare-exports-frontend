@@ -48,7 +48,7 @@ object WarehouseIdentification extends DeclarationPage with FieldMapping {
 
   val formId = "WarehouseIdentification"
 
-  val inWarehouseKey = "inWarehouse"
+  val inWarehouseKey = "code_yes"
   val warehouseIdKey = "identificationNumber"
 
   private def form2ModelYesNo: (String, Option[String]) => WarehouseIdentification = { case (inWarehouse, warehouseId) =>

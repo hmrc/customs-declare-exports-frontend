@@ -166,7 +166,7 @@ class LocationOfGoodsHelper @Inject() (
 
   private def radioButton(form: Form[LocationOfGoods], goodsLocation: String, ix: Int)(implicit messages: Messages): RadioItem =
     RadioItem(
-      id = Some(s"radio-$goodsLocation"),
+      id = if (goodsLocation == userChoice) Some(s"radio-$goodsLocation") else Some(s"$goodsLocation"),
       value = Some(goodsLocation),
       content = Text(messages(s"declaration.locationOfGoods.radio.$ix")),
       checked = form(radioGroupId).value.contains(goodsLocation),
