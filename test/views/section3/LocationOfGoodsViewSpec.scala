@@ -196,7 +196,7 @@ class LocationOfGoodsViewSpec extends PageWithButtonsSpec with Injector {
 
             gvmsGoodsLocationsForArrivedDecls.zipWithIndex.foreach { case (code, index) =>
               val radioItem = radioItems.get(index)
-              val input = if(code == "userChoice") radioItem.getElementById(s"radio-$code")else radioItem.getElementById(s"$code")
+              val input = if (code == "userChoice") radioItem.getElementById(s"radio-$code") else radioItem.getElementById(s"$code")
               assert(input.hasClass("govuk-radios__input"))
               input.attr("name") mustBe radioGroupId
               input.attr("value") mustBe code
