@@ -84,7 +84,7 @@ object LocationOfGoods extends DeclarationPage {
   def gvmsGoodsLocationsForArrivedDecls(implicit messages: Messages): Seq[String] =
     (1 to 8).map { ix =>
       val extractor(code) = messages(s"declaration.locationOfGoods.radio.$ix"): @unchecked
-      code
+      s"radio-$code"
     } :+ userChoice
 
   private def mappingForVersion3And5(implicit messages: Messages, codeListConnector: CodeListConnector): Mapping[LocationOfGoods] =
@@ -141,7 +141,7 @@ object LocationOfGoods extends DeclarationPage {
   private def form2Data(radioId: String, maybeCode: Option[String]): LocationOfGoods =
     (radioId, maybeCode) match {
       case (`userChoice`, Some(code)) => LocationOfGoods(code.toUpperCase)
-      case (code, None)               => LocationOfGoods(code.toUpperCase)
+      case (code, None)               => LocationOfGoods(code)
     }
 
   private def model2Form(
