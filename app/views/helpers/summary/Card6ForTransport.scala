@@ -120,8 +120,7 @@ class Card6ForTransport @Inject() (summaryCard: summary_card, countryHelper: Cou
               key("transport.inlandModeOfTransport"),
               valueHtml(messages("declaration.summary.not.provided")),
               classes = "mode-of-transport",
-              changeLink(InlandTransportDetailsController.displayPage, "transport.inlandModeOfTransport", actionsEnabled
-              )
+              changeLink(InlandTransportDetailsController.displayPage, "transport.inlandModeOfTransport", actionsEnabled)
             )
           )
 
