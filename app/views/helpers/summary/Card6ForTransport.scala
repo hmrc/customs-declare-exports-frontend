@@ -16,9 +16,8 @@
 
 package views.helpers.summary
 
-import controllers.section6.routes._
+import controllers.section6.routes.*
 import controllers.summary.routes.SummaryController
-import forms.section6.ModeOfTransportCode.Empty
 import models.ExportsDeclaration
 import models.declaration.{Locations, Transport}
 import models.requests.JourneyRequest
@@ -112,14 +111,29 @@ class Card6ForTransport @Inject() (summaryCard: summary_card, countryHelper: Cou
     }
 
   private def inlandModeOfTransport(locations: Locations, actionsEnabled: Boolean)(implicit messages: Messages): Option[SummaryListRow] =
-    locations.inlandModeOfTransportCode.flatMap {
-      _.inlandModeOfTransportCode.filterNot(_ == Empty).map { inlandModeOfTransportCode =>
-        SummaryListRow(
-          key("transport.inlandModeOfTransport"),
-          valueKey(s"declaration.summary.transport.inlandModeOfTransport.$inlandModeOfTransportCode"),
-          classes = "mode-of-transport",
-          changeLink(InlandTransportDetailsController.displayPage, "transport.inlandModeOfTransport", actionsEnabled)
-        )
+    locations.inlandModeOfTransportCode.flatMap { transport =>
+      transport.inlandModeOfTransportCode match {
+
+        case None =>
+          Some(
+            SummaryListRow(
+              key("transport.inlandModeOfTransport"),
+              valueHtml(messages("declaration.summary.not.provided")),
+              classes = "mode-of-transport",
+              changeLink(InlandTransportDetailsController.displayPage, "transport.inlandModeOfTransport", actionsEnabled
+              )
+            )
+          )
+
+        case Some(inlandModeOfTransportCode) =>
+          Some(
+            SummaryListRow(
+              key("transport.inlandModeOfTransport"),
+              valueKey(s"declaration.summary.transport.inlandModeOfTransport.$inlandModeOfTransportCode"),
+              classes = "mode-of-transport",
+              changeLink(InlandTransportDetailsController.displayPage, "transport.inlandModeOfTransport", actionsEnabled)
+            )
+          )
       }
     }
 

@@ -1372,6 +1372,8 @@ declaration.warehouse.inlandTransportDetails.transportMode.fixedTransportInstall
 declaration.warehouse.inlandTransportDetails.transportMode.inlandWaterway = Cludiant dyfrffyrdd mewndirol
 declaration.warehouse.inlandTransportDetails.transportMode.unknown = Dull anhysbys, er enghraifft hunan-yriad
 declaration.warehouse.inlandTransportDetails.transportMode.unknown.hint = Er enghraifft, nwyddau sy’n cael eu cludo gan deithiwr.
+declaration.warehouse.inlandTransportDetails.transportMode.optNotDeclare = Optio i beidio â datgan
+declaration.warehouse.inlandTransportDetails.transportMode.or = neu
 
 declaration.inlandOrBorder.title = Ble byddwch yn cyflwyno’ch nwyddau i’r tollau?
 declaration.inlandOrBorder.answer.border = Wrth leoliad wrth y ffin neu wrth y ffiniau yn y DU megis porthladd arforol neu faes awyr

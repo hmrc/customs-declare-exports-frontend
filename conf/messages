@@ -1372,6 +1372,8 @@ declaration.warehouse.inlandTransportDetails.transportMode.fixedTransportInstall
 declaration.warehouse.inlandTransportDetails.transportMode.inlandWaterway = Inland waterway transport
 declaration.warehouse.inlandTransportDetails.transportMode.unknown = Mode unknown, for example own propulsion
 declaration.warehouse.inlandTransportDetails.transportMode.unknown.hint = For example, goods carried by a passenger.
+declaration.warehouse.inlandTransportDetails.transportMode.optNotDeclare = Opt to not declare
+declaration.warehouse.inlandTransportDetails.transportMode.or = Or
 
 declaration.inlandOrBorder.title = Where are you presenting your goods to customs?
 declaration.inlandOrBorder.answer.border = At a UK border or frontier location such as a maritime port or airport
