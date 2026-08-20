@@ -32,8 +32,8 @@ import utils.validators.forms.FieldValidator.*
 import scala.util.Try
 
 case class InvoiceAndExchangeRate(
-  totalAmountInvoiced: Option[String],
   totalAmountInvoicedCurrency: Option[String],
+  totalAmountInvoiced: Option[String],
   agreedExchangeRate: String,
   exchangeRate: Option[String]
 )
@@ -116,8 +116,8 @@ object InvoiceAndExchangeRate extends DeclarationPage {
   // To prevent the validation from allowing an invalid value like ",,,," we also must use the `isNotOnlyCommas`
   // function to specifically guard against this.
   def mapping: Mapping[InvoiceAndExchangeRate] = Forms.mapping(
-    totalAmountInvoiced -> validateTotalAmountInvoiced,
     totalAmountInvoicedCurrency -> validateTotalAmountInvoicedCurrency,
+    totalAmountInvoiced -> validateTotalAmountInvoiced,
     agreedExchangeRateYesNo -> validateAgreedExchangeRateYesNo,
     exchangeRate -> validateExchangeRate
   )(InvoiceAndExchangeRate.apply)(InvoiceAndExchangeRate => Some(Tuple.fromProductTyped(InvoiceAndExchangeRate)))
@@ -166,11 +166,7 @@ object InvoiceAndExchangeRate extends DeclarationPage {
     AdditionalConstraintsMapping(
       optional(text()).transform(_.map(_.toUpperCase), (o: Option[String]) => o),
       Seq(
-        ConditionalConstraint(
-          isFieldEmpty(totalAmountInvoicedCurrency) and isFieldNotEmpty(totalAmountInvoiced),
-          invoiceCurrencyFieldErrorKey,
-          (_: Option[String]) => false
-        ),
+        ConditionalConstraint(isFieldEmpty(totalAmountInvoicedCurrency), invoiceCurrencyFieldErrorKey, (_: Option[String]) => false),
         ConditionalConstraint(
           isFieldIgnoreCaseString(agreedExchangeRateYesNo, YesNoAnswers.yes) and isFieldNotEmpty(exchangeRate),
           invoiceCurrencyFieldWithExchangeRateErrorKey,

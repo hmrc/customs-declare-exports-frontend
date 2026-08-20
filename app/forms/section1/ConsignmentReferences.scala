@@ -45,15 +45,15 @@ object ConsignmentReferences extends DeclarationPage {
 
   def form(decType: DeclarationType, additionalDecType: Option[AdditionalDeclarationType]): Form[ConsignmentReferences] = {
 
-    def form2Model: (Ducr, Lrn, Option[Mrn], Option[String]) => ConsignmentReferences = { case (ducr, lrn, mrn, eidrDateStamp) =>
+    def form2Model: (Ducr, Option[Mrn], Option[String], Lrn) => ConsignmentReferences = { case (ducr, mrn, eidrDateStamp, lrn) =>
       ConsignmentReferences(Some(ducr), Some(lrn), mrn, eidrDateStamp)
     }
 
-    def model2Form: ConsignmentReferences => Option[(Ducr, Lrn, Option[Mrn], Option[String])] = model =>
+    def model2Form: ConsignmentReferences => Option[(Ducr, Option[Mrn], Option[String], Lrn)] = model =>
       for {
         ducr <- model.ducr
         lrn <- model.lrn
-      } yield (ducr, lrn, model.mrn, model.eidrDateStamp)
+      } yield (ducr, model.mrn, model.eidrDateStamp, lrn)
 
     val mrnMapping = (decType, additionalDecType) match {
       case (SUPPLEMENTARY, Some(AdditionalDeclarationType.SUPPLEMENTARY_SIMPLIFIED)) =>
@@ -80,9 +80,9 @@ object ConsignmentReferences extends DeclarationPage {
     Form(
       mapping(
         "ducr" -> Ducr.mapping,
-        "lrn" -> Lrn.mapping("declaration.consignmentReferences.lrn").verifying(),
         "mrn" -> mrnMapping,
-        "eidrDateStamp" -> eidrMapping
+        "eidrDateStamp" -> eidrMapping,
+        "lrn" -> Lrn.mapping("declaration.consignmentReferences.lrn").verifying()
       )(form2Model)(model2Form)
     )
   }
