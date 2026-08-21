@@ -21,6 +21,7 @@ import controllers.summary.routes.SummaryController
 import models.ExportsDeclaration
 import models.declaration.{Locations, Transport}
 import models.requests.JourneyRequest
+import forms.section6.ModeOfTransportCode.Empty
 import play.api.i18n.Messages
 import play.api.mvc.Call
 import play.twirl.api.{Html, HtmlFormat}
@@ -111,30 +112,20 @@ class Card6ForTransport @Inject() (summaryCard: summary_card, countryHelper: Cou
     }
 
   private def inlandModeOfTransport(locations: Locations, actionsEnabled: Boolean)(implicit messages: Messages): Option[SummaryListRow] =
-    locations.inlandModeOfTransportCode.flatMap { transport =>
-      transport.inlandModeOfTransportCode match {
+    locations.inlandModeOfTransportCode.map { transport =>
 
-        case None =>
-          Some(
-            SummaryListRow(
-              key("transport.inlandModeOfTransport"),
-              valueHtml(messages("declaration.summary.not.provided")),
-              classes = "mode-of-transport",
-              changeLink(InlandTransportDetailsController.displayPage, "transport.inlandModeOfTransport", actionsEnabled)
-            )
-          )
+      val message = transport.inlandModeOfTransportCode
+        .filterNot(_ == Empty).fold(
+          valueHtml(messages("declaration.summary.not.provided"))) { inlandModeOfTransportCode =>
+          valueKey(s"declaration.summary.transport.inlandModeOfTransport.$inlandModeOfTransportCode")
+        }
 
-        case Some(inlandModeOfTransportCode) =>
-          Some(
-            SummaryListRow(
-              key("transport.inlandModeOfTransport"),
-              valueKey(s"declaration.summary.transport.inlandModeOfTransport.$inlandModeOfTransportCode"),
-              classes = "mode-of-transport",
-              changeLink(InlandTransportDetailsController.displayPage, "transport.inlandModeOfTransport", actionsEnabled)
-            )
-          )
-      }
-    }
+      SummaryListRow(
+        key("transport.inlandModeOfTransport"),
+        message,
+        classes = "mode-of-transport",
+        changeLink(InlandTransportDetailsController.displayPage, "transport.inlandModeOfTransport", actionsEnabled))
+  }
 
   private def transportReference(transport: Transport, actionsEnabled: Boolean)(implicit messages: Messages): Option[SummaryListRow] = {
     val meansOfTransportOnDeparture = List(
