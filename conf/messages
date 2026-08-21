@@ -1354,7 +1354,7 @@ declaration.warehouse.supervisingCustomsOffice.label = Select a customs supervis
 declaration.warehouse.supervisingCustomsOffice.error = Select a customs supervising office from the list
 
 declaration.warehouse.inlandTransportDetails.title = How will the goods be transported to the UK border?
-declaration.warehouse.inlandTransportDetails.body = What mode of transport will carry the goods to the port or airport where they will leave the UK?
+declaration.warehouse.inlandTransportDetails.body = Select the mode of transport taking the goods to the port or airport where they will leave the UK. Or, you can choose not to provide these details by selecting the "Opt not to declare" option.
 declaration.warehouse.inlandTransportDetails.error.incorrect = Select an inland mode of transport from the list
 declaration.warehouse.inlandTransportDetails.error.not.postal = Select ‘Postal’ to be consistent with your selection for transport leaving the UK
 declaration.warehouse.inlandTransportDetails.error.not.fti = Select ‘Fixed transport installation’ to be consistent with your selection for transport leaving the UK
@@ -1419,7 +1419,7 @@ declaration.transportInformation.meansOfTransport.departure.error.length = Refer
 
 declaration.transportInformation.meansOfTransport.crossingTheBorder.title = What are the details for the {0}?
 declaration.transportInformation.meansOfTransport.crossingTheBorder.body = Select the details you will give for the transport taking the goods out of the UK. You can then enter the required details in the box or enter ‘Unknown’ if you want to give the details later.
-declaration.transportInformation.meansOfTransport.crossingTheBorder.body.opt = Select the type of transport taking the goods out of the UK and provide the details in the box provided. Or, you can choose not to provide these details by selecting the "Do not provide transport details" option.
+declaration.transportInformation.meansOfTransport.crossingTheBorder.body.opt = Select the type of transport taking the goods out of the UK and provide the details in the box provided. Or, you can choose not to provide these details by selecting the "Opt not to declare" option.
 declaration.transportInformation.meansOfTransport.crossingTheBorder.IDNumber.error.empty = Enter a transport reference
 declaration.transportInformation.meansOfTransport.crossingTheBorder.IDNumber.error.length = Reference must contain 35 characters or less
 declaration.transportInformation.meansOfTransport.crossingTheBorder.IDNumber.error.invalid = Reference must contain only letters and numbers
