@@ -18,10 +18,10 @@ package views.helpers.summary
 
 import controllers.section6.routes.*
 import controllers.summary.routes.SummaryController
+import forms.section6.ModeOfTransportCode.Empty
 import models.ExportsDeclaration
 import models.declaration.{Locations, Transport}
 import models.requests.JourneyRequest
-import forms.section6.ModeOfTransportCode.Empty
 import play.api.i18n.Messages
 import play.api.mvc.Call
 import play.twirl.api.{Html, HtmlFormat}
@@ -115,8 +115,8 @@ class Card6ForTransport @Inject() (summaryCard: summary_card, countryHelper: Cou
     locations.inlandModeOfTransportCode.map { transport =>
 
       val message = transport.inlandModeOfTransportCode
-        .filterNot(_ == Empty).fold(
-          valueHtml(messages("declaration.summary.not.provided"))) { inlandModeOfTransportCode =>
+        .filterNot(_ == Empty)
+        .fold(valueHtml(messages("declaration.summary.not.provided"))) { inlandModeOfTransportCode =>
           valueKey(s"declaration.summary.transport.inlandModeOfTransport.$inlandModeOfTransportCode")
         }
 
@@ -124,8 +124,9 @@ class Card6ForTransport @Inject() (summaryCard: summary_card, countryHelper: Cou
         key("transport.inlandModeOfTransport"),
         message,
         classes = "mode-of-transport",
-        changeLink(InlandTransportDetailsController.displayPage, "transport.inlandModeOfTransport", actionsEnabled))
-  }
+        changeLink(InlandTransportDetailsController.displayPage, "transport.inlandModeOfTransport", actionsEnabled)
+      )
+    }
 
   private def transportReference(transport: Transport, actionsEnabled: Boolean)(implicit messages: Messages): Option[SummaryListRow] = {
     val meansOfTransportOnDeparture = List(
