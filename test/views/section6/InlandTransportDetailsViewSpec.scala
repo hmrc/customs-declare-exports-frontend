@@ -67,6 +67,8 @@ class InlandTransportDetailsViewSpec extends PageWithButtonsSpec with ExportsTes
         messages must haveTranslationFor("declaration.warehouse.inlandTransportDetails.transportMode.inlandWaterway")
         messages must haveTranslationFor("declaration.warehouse.inlandTransportDetails.transportMode.unknown")
         messages must haveTranslationFor("declaration.warehouse.inlandTransportDetails.transportMode.unknown.hint")
+        messages must haveTranslationFor("declaration.warehouse.inlandTransportDetails.transportMode.optNotDeclare")
+        messages must haveTranslationFor("declaration.warehouse.inlandTransportDetails.transportMode.or")
       }
 
       "display same page title as header" in {

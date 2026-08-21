@@ -115,6 +115,13 @@
                             content = Text(messages("declaration.warehouse.inlandTransportDetails.transportMode.unknown")),
                             hint = Some(Hint(content = Text(messages("declaration.warehouse.inlandTransportDetails.transportMode.unknown.hint")))),
                             checked = form("inlandModeOfTransportCode").value.contains(Unknown.value)
+                        ),
+                        RadioItem(
+                            divider = Some(messages("declaration.warehouse.inlandTransportDetails.transportMode.or"))
+                        ),
+                        RadioItem(
+                            id = Some("Inland_OptNotDeclare"),
+                            content = Text(messages("declaration.warehouse.inlandTransportDetails.transportMode.optNotDeclare"))
                         )
                     ),
                     errorMessage = form("inlandModeOfTransportCode").error.map(prefixedErrorMessage(_))
