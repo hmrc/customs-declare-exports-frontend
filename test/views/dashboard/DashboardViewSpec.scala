@@ -37,7 +37,7 @@ import play.twirl.api.Html
 import services.cache.ExportsTestHelper
 import views.common.UnitViewSpec
 import views.dashboard.DashboardHelper._
-import views.helpers.ViewDates
+import views.helpers.FromToTime
 import views.html.dashboard.dashboard
 import views.tags.ViewTest
 
@@ -387,7 +387,7 @@ class DashboardViewSpec extends UnitViewSpec with BeforeAndAfterEach with Export
 
             tableCell(view, row, 1).text mustBe ducr
             tableCell(view, row, 2).text mustBe lrn
-            tableCell(view, row, 3).text mustBe ViewDates.formatDateAtTime(dateTime.minusSeconds(row))
+            tableCell(view, row, 3).text mustBe FromToTime.formatDateAtTime(dateTime.minusSeconds(row))
             tableCell(view, row, 4).text mustBe messages("submission.enhancedStatus.RECEIVED")
           }
         }
@@ -402,7 +402,7 @@ class DashboardViewSpec extends UnitViewSpec with BeforeAndAfterEach with Export
 
           tableCell(view, 1, 1).text mustBe empty
           tableCell(view, 1, 2).text mustBe lrn
-          tableCell(view, 1, 3).text mustBe ViewDates.formatDateAtTime(lastStatusUpdate)
+          tableCell(view, 1, 3).text mustBe FromToTime.formatDateAtTime(lastStatusUpdate)
           tableCell(view, 1, 4).text mustBe messages("submission.enhancedStatus.PENDING")
         }
       }

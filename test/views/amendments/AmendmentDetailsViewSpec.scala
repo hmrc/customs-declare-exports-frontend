@@ -25,7 +25,7 @@ import play.twirl.api.HtmlFormat.Appendable
 import testdata.SubmissionsTestData.{action, submission}
 import views.amendments.AmendmentDetailsViewSpec._
 import views.common.UnitViewSpec
-import views.helpers.{CommonMessages, ViewDates}
+import views.helpers.{CommonMessages, FromToTime}
 import views.html.amendments.amendment_details
 import views.tags.ViewTest
 
@@ -75,7 +75,7 @@ class AmendmentDetailsViewSpec extends UnitViewSpec with CommonMessages with Inj
 
     "display the date of the last update" in {
       view.getElementsByClass("govuk-heading-s").get(0).text mustBe messages("amendment.details.last.updated")
-      view.getElementsByTag("time").text mustBe ViewDates.formatDateAtTime(action.requestTimestamp)
+      view.getElementsByTag("time").text mustBe FromToTime.formatDateAtTime(action.requestTimestamp)
     }
 
     "display the amendment reason" in {

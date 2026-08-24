@@ -37,7 +37,7 @@ import play.api.mvc.Call
 import play.twirl.api.HtmlFormat.Appendable
 import views.common.UnitViewSpec
 import views.dashboard.DashboardHelper.toDashboard
-import views.helpers.{EnhancedStatusHelper, NotificationEvent, ViewDates}
+import views.helpers.{EnhancedStatusHelper, FromToTime, NotificationEvent}
 import views.html.timeline.declaration_details
 
 import java.time.ZonedDateTime
@@ -410,7 +410,7 @@ class DeclarationDetailsViewSpec extends UnitViewSpec with GivenWhenThen with In
       events.size mustBe notificationSummaries.size
 
       def dateTimeAsShown(notification: NotificationSummary): String =
-        ViewDates.formatDateAtTime(notification.dateTimeIssued)
+        FromToTime.formatDateAtTime(notification.dateTimeIssued)
 
       notificationSummaries
         .filterNot(_.enhancedStatus == RECEIVED)

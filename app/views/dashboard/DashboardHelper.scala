@@ -29,7 +29,7 @@ import play.twirl.api.HtmlFormat.Appendable
 import uk.gov.hmrc.govukfrontend.views.html.components.GovukTable
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{HtmlContent, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.table.{HeadCell, Table, TableRow}
-import views.helpers.{EnhancedStatusHelper, ViewDates}
+import views.helpers.{EnhancedStatusHelper, FromToTime}
 import views.html.components.gds.link
 import views.html.dashboard.table
 
@@ -88,7 +88,7 @@ class DashboardHelper @Inject() (govukTable: GovukTable, link: link) {
     )
 
   private def updatedOn(submission: Submission)(implicit messages: Messages): String =
-    submission.enhancedStatusLastUpdated.map(ViewDates.formatDateAtTime).getOrElse("")
+    submission.enhancedStatusLastUpdated.map(FromToTime.formatDateAtTime).getOrElse("")
 }
 
 object DashboardHelper {

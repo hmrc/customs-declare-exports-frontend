@@ -23,7 +23,7 @@ import org.jsoup.nodes.Document
 import play.api.test.FakeRequest
 import tools.Stubs
 import views.common.UnitViewSpec
-import views.helpers.{CommonMessages, EadHelper, Title, ViewDates}
+import views.helpers.{CommonMessages, EadHelper, FromToTime, Title}
 import views.html.timeline.ead
 import views.tags.ViewTest
 
@@ -62,11 +62,11 @@ class EadViewSpec extends UnitViewSpec with CommonMessages with Stubs with Injec
       "the date/time fields" in {
         val paragraph = view.getElementsByClass("ead-body")
         paragraph.get(6).text mustBe s"${messages("ead.template.releasedDateTime")}:"
-        paragraph.get(7).text mustBe mrnStatus.releasedDateTime.map(ViewDates.formatDateAtTime).get
+        paragraph.get(7).text mustBe mrnStatus.releasedDateTime.map(FromToTime.formatDateAtTime).get
         paragraph.get(8).text mustBe s"${messages("ead.template.acceptanceDateTime")}:"
-        paragraph.get(9).text mustBe mrnStatus.acceptanceDateTime.map(ViewDates.formatDateAtTime).get
+        paragraph.get(9).text mustBe mrnStatus.acceptanceDateTime.map(FromToTime.formatDateAtTime).get
         paragraph.get(10).text mustBe s"${messages("ead.template.receivedDateTime")}:"
-        paragraph.get(11).text mustBe ViewDates.formatDateAtTime(mrnStatus.receivedDateTime)
+        paragraph.get(11).text mustBe FromToTime.formatDateAtTime(mrnStatus.receivedDateTime)
       }
 
       "previous docs" in {
@@ -94,7 +94,7 @@ class EadViewSpec extends UnitViewSpec with CommonMessages with Stubs with Injec
       }
 
       "the created field" in {
-        val expectedText = s"${messages("ead.template.createdDateTime")}: ${ViewDates.formatDateAtTime(mrnStatus.createdDateTime)}"
+        val expectedText = s"${messages("ead.template.createdDateTime")}: ${FromToTime.formatDateAtTime(mrnStatus.createdDateTime)}"
         val paragraph = view.getElementsByClass("ead-body")
         paragraph.get(paragraph.size() - 2).text mustBe expectedText
       }

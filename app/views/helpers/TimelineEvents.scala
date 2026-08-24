@@ -249,7 +249,7 @@ class TimelineEvents @Inject() (
       if (isExternalAmendment) "declaration.details.view.external.amendment.details"
       else "declaration.details.view.amendment.details"
 
-    val spanContent = spanVisuallyHidden(messages("declaration.details.view.amendment.hiddenDetails", ViewDates.formatDateAtTime(dateTimeIssued)))
+    val spanContent = spanVisuallyHidden(messages("declaration.details.view.amendment.hiddenDetails", FromToTime.formatDateAtTime(dateTimeIssued)))
     link(s"${messages(key)} $spanContent", AmendmentDetailsController.displayPage(actionId))
   }
 

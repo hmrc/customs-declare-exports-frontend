@@ -36,7 +36,7 @@ class AmendmentDetailsHelper extends Logging {
     Html(s"""
          |<h2 class="govuk-heading-s govuk-!-margin-top-6 govuk-!-margin-bottom-0">${messages("amendment.details.last.updated")}</h2>
          |<time class="govuk-body date-of-amendment" datetime="${ISO_OFFSET_DATE_TIME.format(timestamp)}">
-         |  ${ViewDates.formatDateAtTime(timestamp)}
+         |  ${FromToTime.formatDateAtTime(timestamp)}
          |</time>
          |""".stripMargin)
 

@@ -17,7 +17,7 @@
 @import controllers.timeline.routes.DeclarationDetailsController
 @import models.dis.MrnStatus
 @import models.requests.SessionHelper.{getValue, submissionUuid}
-@import views.helpers.{BackButton, EadHelper, Title, ViewDates}
+@import views.helpers.{BackButton, EadHelper, FromToTime, Title}
 @import views.html.components.gds._
 @import views.html.components.print_page_button
 
@@ -89,19 +89,19 @@
             <!-- Date and time goods released: -->
             <div class="ead-right-col margin-bottom-15">
                 <h3 class="govuk-!-margin-top-1 ead-body">@messages("ead.template.releasedDateTime"):</h3>
-                <p class="lead ead-body">@mrnStatus.releasedDateTime.map(ViewDates.formatDateAtTime).getOrElse("")</p>
+                <p class="lead ead-body">@mrnStatus.releasedDateTime.map(FromToTime.formatDateAtTime).getOrElse("")</p>
             </div>
 
             <!-- Date and time goods accepted: -->
             <div class="ead-right-col margin-bottom-15">
                 <h3 class="govuk-!-margin-top-1 ead-body">@messages("ead.template.acceptanceDateTime"):</h3>
-                <p class="lead ead-body">@mrnStatus.acceptanceDateTime.map(ViewDates.formatDateAtTime).getOrElse("")</p>
+                <p class="lead ead-body">@mrnStatus.acceptanceDateTime.map(FromToTime.formatDateAtTime).getOrElse("")</p>
             </div>
 
             <!-- Date and time declaration received: -->
             <div class="ead-right-col margin-bottom-15">
                 <h3 class="govuk-!-margin-top-1 ead-body">@messages("ead.template.receivedDateTime"):</h3>
-                <p class="lead ead-body">@ViewDates.formatDateAtTime(mrnStatus.receivedDateTime)</p>
+                <p class="lead ead-body">@FromToTime.formatDateAtTime(mrnStatus.receivedDateTime)</p>
             </div>
         </div>
     </div>
@@ -124,7 +124,7 @@
         <div class="govuk-grid-column-two-thirds-ead">
             <!-- DUCR -->
             <div class="govuk-summary-list__row">
-                <p class="ead-body"><b>@messages("ead.template.createdDateTime"):</b> @ViewDates.formatDateAtTime(mrnStatus.createdDateTime)</p>
+                <p class="ead-body"><b>@messages("ead.template.createdDateTime"):</b> @FromToTime.formatDateAtTime(mrnStatus.createdDateTime)</p>
             </div>
         </div>
         <div class="govuk-grid-column-one-third-ead">

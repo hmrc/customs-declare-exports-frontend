@@ -33,8 +33,8 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{HtmlContent, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.insettext.InsetText
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{Actions, Key, SummaryListRow}
 import views.helpers.EnhancedStatusHelper.asText
-import views.helpers.ViewDates
-import views.helpers.ViewDates.formatDateAtTime
+import views.helpers.FromToTime
+import views.helpers.FromToTime.formatDateAtTime
 import views.html.components.gds.{link, paragraphBody}
 import views.html.summary.summary_card
 
@@ -139,7 +139,7 @@ class Card1ForReferences @Inject() (
       Some(
         SummaryListRow(
           Key(Text(asText(notification.enhancedStatus))),
-          valueHtml(ViewDates.formatDateAtTime(notification.dateTimeIssued)),
+          valueHtml(FromToTime.formatDateAtTime(notification.dateTimeIssued)),
           classes = "notification-status"
         )
       )
