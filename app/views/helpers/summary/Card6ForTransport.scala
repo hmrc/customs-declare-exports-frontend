@@ -16,7 +16,7 @@
 
 package views.helpers.summary
 
-import controllers.section6.routes._
+import controllers.section6.routes.*
 import controllers.summary.routes.SummaryController
 import forms.section6.ModeOfTransportCode.Empty
 import models.ExportsDeclaration
@@ -112,15 +112,20 @@ class Card6ForTransport @Inject() (summaryCard: summary_card, countryHelper: Cou
     }
 
   private def inlandModeOfTransport(locations: Locations, actionsEnabled: Boolean)(implicit messages: Messages): Option[SummaryListRow] =
-    locations.inlandModeOfTransportCode.flatMap {
-      _.inlandModeOfTransportCode.filterNot(_ == Empty).map { inlandModeOfTransportCode =>
-        SummaryListRow(
-          key("transport.inlandModeOfTransport"),
-          valueKey(s"declaration.summary.transport.inlandModeOfTransport.$inlandModeOfTransportCode"),
-          classes = "mode-of-transport",
-          changeLink(InlandTransportDetailsController.displayPage, "transport.inlandModeOfTransport", actionsEnabled)
-        )
-      }
+    locations.inlandModeOfTransportCode.map { transport =>
+
+      val message = transport.inlandModeOfTransportCode
+        .filterNot(_ == Empty)
+        .fold(valueHtml(messages("declaration.summary.not.provided"))) { inlandModeOfTransportCode =>
+          valueKey(s"declaration.summary.transport.inlandModeOfTransport.$inlandModeOfTransportCode")
+        }
+
+      SummaryListRow(
+        key("transport.inlandModeOfTransport"),
+        message,
+        classes = "mode-of-transport",
+        changeLink(InlandTransportDetailsController.displayPage, "transport.inlandModeOfTransport", actionsEnabled)
+      )
     }
 
   private def transportReference(transport: Transport, actionsEnabled: Boolean)(implicit messages: Messages): Option[SummaryListRow] = {
