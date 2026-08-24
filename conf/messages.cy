@@ -104,6 +104,7 @@ dateTime.date.year.error.empty = Mae’n rhaid i’r dyddiad gynnwys blwyddyn
 dateTime.time.error = Mae’n rhaid i’r amser fod yn y fformat cywir
 dateTime.time.hour.error = Mae’n rhaid i’r awr fod rhwng 0 a 23
 dateTime.time.minute.error = Mae’n rhaid i’r funud fod rhwng 0 a 59
+dateTime.at = am
 
 global.error.title = Mae problem wedi codi
 global.error.heading = Mae problem wedi codi gyda gwasanaeth

@@ -35,8 +35,8 @@ import play.api.libs.json.Json
 import play.twirl.api.Html
 import services.cache.ExportsTestHelper
 import views.helpers.EnhancedStatusHelper.asText
-import views.helpers.ViewDates
-import views.helpers.ViewDates.formatDateAtTime
+import views.helpers.FromToTime
+import views.helpers.FromToTime.formatDateAtTime
 import views.helpers.summary.Card1ForReferencesSpec.{notifications, submission}
 import views.common.UnitViewSpec
 
@@ -239,7 +239,7 @@ class Card1ForReferencesSpec extends UnitViewSpec with ExportsTestHelper with In
       for (ix <- 0 until notifications.size) {
         val row = new Elements(rows.get(ix))
         row must haveSummaryKey(asText(notifications(ix).enhancedStatus))
-        row must haveSummaryValue(ViewDates.formatDateAtTime(notifications(ix).dateTimeIssued))
+        row must haveSummaryValue(FromToTime.formatDateAtTime(notifications(ix).dateTimeIssued))
         row.first.getElementsByClass(summaryActionsClassName).size mustBe 0
       }
     }

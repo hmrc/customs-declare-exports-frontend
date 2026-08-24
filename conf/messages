@@ -104,6 +104,7 @@ dateTime.date.year.error.empty = The date must include a year
 dateTime.time.error = Time must be in the correct format
 dateTime.time.hour.error = Hour must be between 0 and 23
 dateTime.time.minute.error = Minute must be between 0 and 59
+dateTime.at = at
 
 global.error.title = There is a problem
 global.error.heading = There is a problem with a service

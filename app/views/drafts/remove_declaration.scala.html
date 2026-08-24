@@ -19,7 +19,7 @@
 @import forms.drafts.RemoveDraftDeclaration
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.components.gds.Styles._
-@import views.helpers.{BackButton, Title, ViewDates}
+@import views.helpers.{BackButton, FromToTime, Title}
 @import views.helpers.ErrorMapper.radioGroupErrors
 @import views.html.components.gds._
 @import views.helpers.ErrorMapper.prefixedErrorMessage
@@ -48,7 +48,7 @@
                     content = Text(declaration.ducr.map(_.ducr).getOrElse(messages("draft.declarations.noDucr")))
                 ),
                 TableRow(
-                    content = Text(ViewDates.formatDateAtTime(declaration.declarationMeta.updatedDateTime))
+                    content = Text(FromToTime.formatDateAtTime(declaration.declarationMeta.updatedDateTime))
                 )
             )
         ),

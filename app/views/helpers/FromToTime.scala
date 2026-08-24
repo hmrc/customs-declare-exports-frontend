@@ -20,6 +20,7 @@ import play.api.i18n.Messages
 
 import java.time._
 import java.time.format.DateTimeFormatter
+import java.time.temporal.TemporalAccessor
 import java.util.Locale
 
 case class FromToTime(fromHour: String, fromDate: String, toHour: String, toDate: String)
@@ -27,7 +28,10 @@ case class FromToTime(fromHour: String, fromDate: String, toHour: String, toDate
 object FromToTime {
 
   private val HOUR_PATTERN = "h:mma"
-  private val DATE_PATTERN = "EEEE d MMMM YYYY"
+  private val DATE_PATTERN = "EEEE d MMMM uuuu"
+  private val DAY_MONTH_YEAR_PATTERN = "d MMMM uuuu"
+
+  private val zoneId = ZoneId.of("Europe/London")
 
   def apply(fromDateTimeString: String, toDateTimeString: String)(implicit messages: Messages): FromToTime = {
     val locale = messages.lang.toLocale
@@ -36,6 +40,15 @@ object FromToTime {
 
     FromToTime(fromHour, fromDate, toHour, toDate)
   }
+
+  def formatDate(temporal: TemporalAccessor)(implicit messages: Messages): String =
+    format(temporal, DAY_MONTH_YEAR_PATTERN)
+
+  def formatDateAtTime(temporal: TemporalAccessor)(implicit messages: Messages): String =
+    s"${formatDate(temporal)} ${messages("dateTime.at")} ${format(temporal, HOUR_PATTERN).toLowerCase()}"
+
+  private def format(temporal: TemporalAccessor, pattern: String)(implicit messages: Messages): String =
+    DateTimeFormatter.ofPattern(pattern, messages.lang.toLocale).withZone(zoneId).format(temporal)
 
   private def formatDateTime(dateTime: ZonedDateTime, pattern: String, locale: Locale): String =
     dateTime.format(DateTimeFormatter.ofPattern(pattern, locale))

@@ -21,7 +21,16 @@ import org.scalatest.BeforeAndAfterEach
 import play.api.i18n.{Lang, Messages}
 import views.common.UnitViewSpec
 
+import java.time.Instant
+
 class FromToTimeSpec extends UnitViewSpec with BeforeAndAfterEach {
+
+  private val instant = Instant.parse("2023-08-31T23:55:00Z")
+
+  private val welshMonths =
+    List("Ionawr", "Chwefror", "Mawrth", "Ebrill", "Mai", "Mehefin", "Gorffennaf", "Awst", "Medi", "Hydref", "Tachwedd", "Rhagfyr")
+
+  private def firstOfMonthAt11(monthOfYear: Int): Instant = Instant.parse(f"2023-$monthOfYear%02d-01T11:00:00Z")
 
   trait Setup {
     val english = Lang("en")
@@ -99,6 +108,39 @@ class FromToTimeSpec extends UnitViewSpec with BeforeAndAfterEach {
       fromTo.fromDate mustBe "Dydd Mercher 26 Chwefror 2025"
       fromTo.toHour mustBe "2:30yb"
       fromTo.toDate mustBe "Dydd Iau 27 Chwefror 2025"
+    }
+
+    "Output the calendar year for the final week of December" in new Setup {
+      when(messages.lang).thenReturn(english)
+
+      // YYYY returns 2026 instead of 2025
+      val fromTo = FromToTime("2025-12-29T23:00Z", "2025-12-31T02:00Z")
+      fromTo.fromDate mustBe "Monday 29 December 2025"
+      fromTo.toDate mustBe "Wednesday 31 December 2025"
+    }
+  }
+
+  "the Locale is English" should {
+
+    "format date at time correctly" in {
+      FromToTime.formatDate(instant)(messages) mustBe "1 September 2023"
+      FromToTime.formatDateAtTime(instant)(messages) mustBe "1 September 2023 at 12:55am"
+    }
+  }
+
+  "the Locale is Welsh" should {
+
+    "format date at time correctly" in {
+      for (ix <- 1 to 12) {
+        val instant = firstOfMonthAt11(ix)
+        val month = welshMonths(ix - 1)
+
+        FromToTime.formatDate(instant)(messagesCy) mustBe s"1 $month 2023"
+
+        // British Summer Time runs from April to October, shifting 11:00 UTC to 12:00 local
+        val expectedTime = if ((4 to 10).contains(ix)) "12:00yh" else "11:00yb"
+        FromToTime.formatDateAtTime(instant)(messagesCy) mustBe s"1 $month 2023 am $expectedTime"
+      }
     }
   }
 }

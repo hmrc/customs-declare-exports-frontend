@@ -18,7 +18,7 @@
 @import models.responses.FlashKeys
 @import play.twirl.api.HtmlFormat
 @import uk.gov.hmrc.govukfrontend.views.html.components.{GovukPanel, HtmlContent, Panel, Text}
-@import views.helpers.{Title, ViewDates}
+@import views.helpers.{FromToTime, Title}
 @import views.html.components.gds.{gdsMainTemplate, govUkLink, heading, link, paragraph, paragraphBody}
 @import views.html.components.viewDeclarationSummaryLink
 
@@ -39,7 +39,7 @@
 
 @expiresMessage = {
     <div id="draft_confirmation-expiry">
-      @paragraph(Html(messages("declaration.draft.info", ViewDates.formatDate(Instant.ofEpochMilli(expiry.toLong)))))
+      @paragraph(Html(messages("declaration.draft.info", FromToTime.formatDate(Instant.ofEpochMilli(expiry.toLong)))))
     </div>
 }
 
