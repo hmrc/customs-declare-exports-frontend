@@ -45,10 +45,12 @@ object InlandModeOfTransportCode extends DeclarationPage with FieldMapping {
 
   val formId = "InlandModeOfTransportCode"
 
+  private val errorKey = "declaration.warehouse.inlandTransportDetails.error.incorrect"
+
   private val mapping = Forms
     .mapping(
       "inlandModeOfTransportCode" ->
-        optional(of(ModeOfTransportCode.formatter("declaration.warehouse.inlandTransportDetails.error.incorrect")))
+        optional(of(ModeOfTransportCode.formatterForClearance(errorKey))).verifying(errorKey, _.isDefined)
     )(InlandModeOfTransportCode.apply)(InlandModeOfTransportCode => Some(InlandModeOfTransportCode.inlandModeOfTransportCode))
 
   def form: Form[InlandModeOfTransportCode] = Form(mapping)

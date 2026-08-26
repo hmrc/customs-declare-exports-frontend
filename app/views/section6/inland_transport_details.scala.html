@@ -17,13 +17,14 @@
 @import controllers.navigation.Navigator
 @import controllers.section6.routes.InlandTransportDetailsController
 @import forms.section6.InlandModeOfTransportCode
+@import forms.section6.ModeOfTransportCode
 @import forms.section6.ModeOfTransportCode._
 @import models.requests.JourneyRequest
 @import play.twirl.api.HtmlFormat
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.components.gds.Styles._
 @import views.helpers.{BackButton, Title}
-@import views.helpers.ErrorMapper.prefixedErrorMessage
+@import views.helpers.ErrorMapper.{prefixedErrorMessage, radioGroupErrors}
 @import views.html.components.gds._
 
 @this(
@@ -47,7 +48,7 @@
     backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(InlandModeOfTransportCode)))) {
 
     @formHelper(InlandTransportDetailsController.submit(), Symbol("autoComplete") -> "off") {
-        @errorSummary(form.errors)
+        @errorSummary(radioGroupErrors("inlandModeOfTransportCode", "Inland_Road", form.errors))
 
         @sectionHeader(messages("declaration.section.6"))
 
@@ -121,7 +122,9 @@
                         ),
                         RadioItem(
                             id = Some("Inland_OptNotDeclare"),
-                            content = Text(messages("declaration.warehouse.inlandTransportDetails.transportMode.optNotDeclare"))
+                            value = Some(ModeOfTransportCode.Empty.value),
+                            content = Text(messages("declaration.warehouse.inlandTransportDetails.transportMode.optNotDeclare")),
+                            checked = form("inlandModeOfTransportCode").value.contains(ModeOfTransportCode.Empty.value)
                         )
                     ),
                     errorMessage = form("inlandModeOfTransportCode").error.map(prefixedErrorMessage(_))
