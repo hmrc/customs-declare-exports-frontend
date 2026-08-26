@@ -19,6 +19,7 @@ package connectors
 import com.codahale.metrics.Timer
 import config.AppConfig
 import forms.section1.Lrn
+import forms.section6.ModeOfTransportCode.Empty
 import models.CancellationStatus.CancellationResult
 import models._
 import models.declaration.DeclarationStatus.{AMENDMENT_DRAFT, DRAFT, INITIAL}
@@ -175,9 +176,13 @@ class CustomsDeclareExportsConnector @Inject() (appConfig: AppConfig, httpClient
 
   def updateDeclaration(decl: ExportsDeclaration, eori: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[ExportsDeclaration] = {
     logPayload("Update Declaration Request", decl)
+    val locations = decl.inlandModeOfTransportCode match {
+      case Some(Empty) => decl.locations.copy(inlandModeOfTransportCode = None)
+      case _ => decl.locations
+    }
     val updateStopwatch = updateTimer.time()
-
-    putJson[ExportsDeclaration, ExportsDeclaration](getUrl(s"${appConfig.declarationsPath}"), decl).andThen {
+    val newDecl = decl.copy(locations = locations)
+    putJson[ExportsDeclaration, ExportsDeclaration](getUrl(s"${appConfig.declarationsPath}"), newDecl).andThen {
       case Success(declaration) =>
         logPayload("Update Declaration Response", declaration)
         updateStopwatch.stop()
