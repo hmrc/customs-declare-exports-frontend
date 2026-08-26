@@ -24,8 +24,10 @@ import controllers.general.{ErrorHandler, ModelCacheable}
 import controllers.helpers.ErrorFixModeHelper.inErrorFixMode
 import controllers.routes.ChoiceController
 import controllers.summary.routes.{ConfirmationController, SubmissionController, SummaryController}
+import forms.section6.ModeOfTransportCode.Empty
 import forms.summary.LegalDeclaration
 import forms.timeline.AmendmentSubmission
+import models.ExportsDeclaration
 import models.declaration.submissions.Submission
 import models.requests.SessionHelper._
 import models.requests.{JourneyRequest, VerifiedEmailRequest}
@@ -120,10 +122,13 @@ class SubmissionController @Inject() (
       .bindFromRequest()
       .fold(
         (formWithErrors: Form[LegalDeclaration]) => Future.successful(BadRequest(legal_declaration(formWithErrors))),
-        submissionService.submitDeclaration(request.eori, request.cacheModel, _).map {
-          case Some(submission) => Redirect(ConfirmationController.displayHoldingPage).withSession(session(submission))
-          case _                => errorHandler.internalServerError("Error from Customs Declarations API")
-        }
+        legalDeclaration =>
+          removeInlandTransportOptOut.flatMap { declaration =>
+            submissionService.submitDeclaration(request.eori, declaration, legalDeclaration).map {
+              case Some(submission) => Redirect(ConfirmationController.displayHoldingPage).withSession(session(submission))
+              case _                => errorHandler.internalServerError("Error from Customs Declarations API")
+            }
+          }
       )
   }
 
@@ -136,7 +141,10 @@ class SubmissionController @Inject() (
       amendmentSubmission =>
         getValue(submissionUuid).fold(errorHandler.internalError(submissionError(amendmentAction))) { submissionId =>
           for {
-            declaration <- exportsCacheService.update(request.cacheModel.copy(statementDescription = Some(amendmentSubmission.reason)), request.eori)
+            declaration <- exportsCacheService.update(
+              withoutInlandTransportOptOut(request.cacheModel).copy(statementDescription = Some(amendmentSubmission.reason)),
+              request.eori
+            )
             maybeActionId <- submissionService.submitAmendment(request.eori, declaration, amendmentSubmission, submissionId, amendmentAction)
           } yield maybeActionId match {
             case Some(actionId) =>
@@ -146,6 +154,17 @@ class SubmissionController @Inject() (
           }
         }
     )
+  }
+
+  private def withoutInlandTransportOptOut(declaration: ExportsDeclaration): ExportsDeclaration =
+    if (declaration.inlandModeOfTransportCode.contains(Empty))
+      declaration.copy(locations = declaration.locations.copy(inlandModeOfTransportCode = None))
+    else declaration
+
+  private def removeInlandTransportOptOut(implicit hc: HeaderCarrier, request: JourneyRequest[_]): Future[ExportsDeclaration] = {
+    val declaration = withoutInlandTransportOptOut(request.cacheModel)
+    if (declaration == request.cacheModel) Future.successful(declaration)
+    else exportsCacheService.update(declaration, request.eori)
   }
 
   private def submissionError(amendmentAction: AmendmentAction)(implicit request: JourneyRequest[_]): String = {
