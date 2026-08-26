@@ -1356,7 +1356,7 @@ declaration.warehouse.supervisingCustomsOffice.error = Dewiswch swyddfa oruchwyl
 
 declaration.warehouse.inlandTransportDetails.title = Sut bydd y nwyddau’n cael eu cludo i ffin y DU?
 declaration.warehouse.inlandTransportDetails.body = Dewiswch y dull o gludo sy’n mynd â’r nwyddau i’r porthladd neu’r maes awyr lle bydd y nwyddau’n gadael y DU. Neu, gallwch ddewis peidio â darparu'r manylion hyn drwy ddewis yr opsiwn "Optio i beidio â datgan".
-declaration.warehouse.inlandTransportDetails.error.incorrect = Dewiswch ddull cludo mewndirol o’r rhestr
+declaration.warehouse.inlandTransportDetails.error.incorrect = Dewiswch y dull cludo sy'n cludo'r nwyddau i ffin y DU
 declaration.warehouse.inlandTransportDetails.error.not.postal = Dewiswch ‘Trwy’r post’ i fod yn gyson â’ch dewis ar gyfer cludiant sy’n gadael y DU
 declaration.warehouse.inlandTransportDetails.error.not.fti = Dewiswch ‘Gosodiad trafnidiaeth sefydlog’ i fod yn gyson â’ch dewis ar gyfer cludiant sy’n gadael y DU
 declaration.warehouse.inlandTransportDetails.transportMode.sea = Cludiant môr

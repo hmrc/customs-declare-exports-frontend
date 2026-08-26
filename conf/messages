@@ -1356,7 +1356,7 @@ declaration.warehouse.supervisingCustomsOffice.error = Select a customs supervis
 
 declaration.warehouse.inlandTransportDetails.title = How will the goods be transported to the UK border?
 declaration.warehouse.inlandTransportDetails.body = Select the mode of transport taking the goods to the port or airport where they will leave the UK. Or, you can choose not to provide these details by selecting the "Opt not to declare" option.
-declaration.warehouse.inlandTransportDetails.error.incorrect = Select an inland mode of transport from the list
+declaration.warehouse.inlandTransportDetails.error.incorrect = Select the mode of transport carrying the goods to the UK border
 declaration.warehouse.inlandTransportDetails.error.not.postal = Select ‘Postal’ to be consistent with your selection for transport leaving the UK
 declaration.warehouse.inlandTransportDetails.error.not.fti = Select ‘Fixed transport installation’ to be consistent with your selection for transport leaving the UK
 declaration.warehouse.inlandTransportDetails.transportMode.sea = Sea transport
