@@ -23,6 +23,7 @@ import controllers.section6.routes._
 import forms.section1.AdditionalDeclarationType._
 import forms.section6.InlandModeOfTransportCode
 import forms.section6.InlandModeOfTransportCode.form
+import forms.section6.ModeOfTransportCode
 import models.DeclarationType._
 import models.requests.JourneyRequest
 import org.jsoup.nodes.Document
@@ -115,6 +116,38 @@ class InlandTransportDetailsViewSpec extends PageWithButtonsSpec with ExportsTes
         "have 'Mode unknown' option" in {
           val key = "declaration.warehouse.inlandTransportDetails.transportMode.unknown"
           view.getElementsByAttributeValue("for", "Inland_Unknown") must containMessageForElements(key)
+        }
+
+        "have an 'Opt to not declare' option submitting the 'no-code' value" in {
+          val key = "declaration.warehouse.inlandTransportDetails.transportMode.optNotDeclare"
+          view.getElementsByAttributeValue("for", "Inland_OptNotDeclare") must containMessageForElements(key)
+          view.getElementById("Inland_OptNotDeclare").attr("value") mustBe ModeOfTransportCode.Empty.value
+        }
+      }
+
+      "select the 'Opt to not declare' option" when {
+        "it is the mode of transport held in the cache" in {
+          val viewWithOptOut = createView(form.fill(InlandModeOfTransportCode(Some(ModeOfTransportCode.Empty))))
+
+          viewWithOptOut.getElementById("Inland_OptNotDeclare").hasAttr("checked") mustBe true
+        }
+      }
+
+      "display an error" when {
+        "no mode of transport was selected" in {
+          val viewWithError = createView(form.bind(Map.empty[String, String]))
+
+          viewWithError must haveGovukGlobalErrorSummary
+          viewWithError must haveGovukFieldError(
+            "inlandModeOfTransportCode",
+            messages("declaration.warehouse.inlandTransportDetails.error.incorrect")
+          )
+        }
+
+        "the error summary links to the first radio button" in {
+          val viewWithError = createView(form.bind(Map.empty[String, String]))
+
+          viewWithError.getElementsByClass("govuk-error-summary__list").select("a").attr("href") mustBe "#Inland_Road"
         }
       }
 

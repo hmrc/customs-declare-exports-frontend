@@ -39,6 +39,23 @@ class InlandModeOfTransportCodeSpec extends DeclarationPageBaseSpec with LightFo
 
       form.bind(incorrectTransportCode, JsonBindMaxChars) mustBe errorless
     }
+
+    "validate inland mode transport code - the 'Opt to not declare' choice" in {
+      val optNotToDeclare: JsValue =
+        JsObject(Map("inlandModeOfTransportCode" -> JsString(ModeOfTransportCode.Empty.value)))
+
+      val boundForm = form.bind(optNotToDeclare, JsonBindMaxChars)
+
+      boundForm mustBe errorless
+      boundForm.value.get.inlandModeOfTransportCode mustBe Some(ModeOfTransportCode.Empty)
+    }
+
+    "validate inland mode transport code - no choice" in {
+      val errors = form.bind(JsObject(Map.empty[String, JsValue]), JsonBindMaxChars).errors
+
+      errors.map(_.key) must contain("inlandModeOfTransportCode")
+      errors.map(_.message) must contain("declaration.warehouse.inlandTransportDetails.error.incorrect")
+    }
   }
 }
 

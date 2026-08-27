@@ -20,6 +20,7 @@ import base.ControllerWithoutFormSpec
 import controllers.amendments.routes.AmendmentOutcomeController
 import controllers.routes.ChoiceController
 import controllers.summary.routes.{ConfirmationController, SubmissionController, SummaryController}
+import forms.section6.ModeOfTransportCode.{Empty, Maritime}
 import forms.summary.LegalDeclaration
 import forms.summary.LegalDeclaration._
 import forms.timeline.AmendmentSubmission.reasonKey
@@ -29,6 +30,7 @@ import models.declaration.submissions.EnhancedStatus.RECEIVED
 import models.declaration.submissions.Submission
 import models.requests.SessionHelper
 import models.requests.SessionHelper._
+import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{reset, verify, verifyNoInteractions, when}
 import org.scalatest.concurrent.ScalaFutures
@@ -268,6 +270,20 @@ class SubmissionControllerSpec extends ControllerWithoutFormSpec with ScalaFutur
       val result = controller.submitAmendment(SubmissionAmendment.toString)(postRequest(bodyWithoutField))
       status(result) must be(BAD_REQUEST)
     }
+
+    "remove the inland mode of transport from the cache model" when {
+      "the user opted not to declare it" in {
+        val optedOut = aDeclarationAfter(declaration, withInlandModeOfTransportCode(Empty))
+        withNewCaching(optedOut)
+        when(mockSubmissionService.submitAmendment(any(), any(), any(), any(), any())(any(), any()))
+          .thenReturn(Future.successful(Some("actionId")))
+
+        val sessionData = List(declarationUuid -> optedOut.id, submissionUuid -> "submissionUuid")
+        await(controller.submitAmendment("Submission")(postRequestWithSession(body, sessionData)))
+
+        theCacheModelUpdated.locations.inlandModeOfTransportCode mustBe None
+      }
+    }
   }
 
   "SubmissionController.submitDeclaration" should {
@@ -314,6 +330,38 @@ class SubmissionControllerSpec extends ControllerWithoutFormSpec with ScalaFutur
         val result = controller.submitDeclaration()(postRequestWithSubmissionError)
 
         status(result) must be(BAD_REQUEST)
+      }
+    }
+
+    "remove the inland mode of transport before submitting" when {
+      "the user opted not to declare it" in {
+        withNewCaching(aDeclarationAfter(aDeclaration(), withInlandModeOfTransportCode(Empty)))
+
+        when(mockSubmissionService.submitDeclaration(any(), any[ExportsDeclaration], any[LegalDeclaration])(any(), any()))
+          .thenReturn(Future.successful(Some(expectedSubmission)))
+
+        val body = Json.obj("fullName" -> "Test Tester", "jobRole" -> "Tester", "email" -> "test@tester.com", "confirmation" -> "true")
+        await(controller.submitDeclaration()(postRequest(body)))
+
+        theCacheModelUpdated.locations.inlandModeOfTransportCode mustBe None
+
+        val captor = ArgumentCaptor.forClass(classOf[ExportsDeclaration])
+        verify(mockSubmissionService).submitDeclaration(any(), captor.capture(), any[LegalDeclaration])(any(), any())
+        captor.getValue.locations.inlandModeOfTransportCode mustBe None
+      }
+    }
+
+    "leave the cached declaration untouched" when {
+      "a mode of transport was declared" in {
+        withNewCaching(aDeclarationAfter(aDeclaration(), withInlandModeOfTransportCode(Maritime)))
+
+        when(mockSubmissionService.submitDeclaration(any(), any[ExportsDeclaration], any[LegalDeclaration])(any(), any()))
+          .thenReturn(Future.successful(Some(expectedSubmission)))
+
+        val body = Json.obj("fullName" -> "Test Tester", "jobRole" -> "Tester", "email" -> "test@tester.com", "confirmation" -> "true")
+        await(controller.submitDeclaration()(postRequest(body)))
+
+        verifyTheCacheIsUnchanged()
       }
     }
 
