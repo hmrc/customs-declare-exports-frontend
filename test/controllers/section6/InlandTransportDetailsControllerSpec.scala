@@ -130,6 +130,25 @@ class InlandTransportDetailsControllerSpec extends ControllerSpec with AuditedCo
         verifyNoAudit()
       }
 
+      "return Bad Request if no inland mode of transport is selected" in {
+        withNewCaching(request.cacheModel)
+
+        val result = controller.submit()(postRequest(Json.obj()))
+
+        status(result) mustBe BAD_REQUEST
+        verifyNoAudit()
+      }
+
+      "update cache with Empty when 'Opt to not declare' is selected" in {
+        withNewCaching(request.cacheModel)
+
+        val body = Json.obj("inlandModeOfTransportCode" -> Empty.value)
+        await(controller.submit().apply(postRequest(body)))
+
+        theCacheModelUpdated.locations.inlandModeOfTransportCode.value.inlandModeOfTransportCode.value mustBe Empty
+        verifyAudit()
+      }
+
       "return an error" when {
 
         postalOrFTIModeOfTransportCodes.foreach { modeOfTransportCode =>
