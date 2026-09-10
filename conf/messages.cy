@@ -1315,8 +1315,6 @@ declaration.totalPackageQuantity.error = Mae’n rhaid i gyfanswm nifer y pecynn
 
 declaration.transport.leavingTheBorder.title = Drwy ba ddull cludo y bydd y nwyddau’n gadael y DU?
 declaration.transport.leavingTheBorder.hint = Mae hyn yn golygu’r dull cludo ‘gweithredol’, felly os yw cynhwysydd yn cael ei lwytho ar long cargo, dewiswch ‘Cludiant môr’. Os yw tryc neu gynhwysydd yn mynd ar fferi neu Eurotunnel, dewiswch ‘Cludiant gyrru-ymlaen-ac-i-ffwrdd (RoRo)’.
-declaration.transport.leavingTheBorder.inset = I gael rhagor o help gydag allforyn sy’n cael ei gludo drwy RoRo, gweler {0}.
-declaration.transport.leavingTheBorder.inset.link = Anfon nwyddau i’w hallforio o borthladdoedd gyrru-ymlaen-ac-i-ffwrdd neu drwy Eurotunnel (yn agor tab newydd)
 declaration.transport.leavingTheBorder.transportMode.sea = Cludiant môr
 declaration.transport.leavingTheBorder.transportMode.rail = Cludiant rheilffordd
 declaration.transport.leavingTheBorder.transportMode.road = Cludiant ffordd
@@ -2768,53 +2766,3 @@ ead.template.previousDocuments = Dogfennau Blaenorol
 ead.template.createdDateTime = Crëwyd
 ead.template.versionId = Dynodydd y Fersiwn
 
-guidance.roro.heading = Arweiniad
-guidance.roro.title = Anfon nwyddau i’w hallforio o borthladdoedd gyrru-ymlaen-ac-i-ffwrdd neu drwy Eurotunnel
-guidance.roro.intro = Darganfyddwch beth i’w wneud os ydych yn defnyddio gyrru-ymlaen-ac-i-ffwrdd (RoRo) gan gynnwys Eurotunnel i allforio cludiant ffordd, llwythi ar y rheilffordd neu lwythi ar eu pennau eu hunain o’r DU i wledydd eraill.
-
-guidance.roro.section.1.header = Allforio o’r DU ar y ffordd a RoRo
-guidance.roro.section.1.paragraph.1 = Er mwyn bod yn barod, bydd angen i chi wneud y canlynol:
-guidance.roro.section.1.list.1.bullet.1 = cael {0}
-guidance.roro.section.1.list.1.bullet.1.link = Rhif EORI yn y DU
-guidance.roro.section.1.list.1.bullet.2 = penderfynwch {0} a beth yw’r opsiynau ar gyfer y nwyddau rydych am eu hallforio
-guidance.roro.section.1.list.1.bullet.2.link = os oes angen i chi wneud datganiadau allforio
-guidance.roro.section.1.paragraph.2 = Os ydych yn defnyddio asiant neu drefnydd anfon nwyddau, byddant yn gallu nodi’r manylion RoRo hyn ar eich rhan. Os byddwch yn gwneud datganiadau eich hun, byddwch yn gallu gwneud hyn gan ddefnyddio’ch meddalwedd, neu drwy gael at naill neu’r llall o’r systemau tollau presennol yn uniongyrchol - y {0} presennol neu’r system newydd sy’n disodli CHIEF, y {1}.
-guidance.roro.section.1.paragraph.2.link.1 = System Allforio Genedlaethol
-guidance.roro.section.1.paragraph.2.link.2 = Gwasanaeth datganiadau allforio CDS
-
-guidance.roro.section.2.header = O 22 Ionawr 2022 ymlaen: gofynion penodol ar CDS ar gyfer cludiant RoRo a chynwysyddion
-guidance.roro.section.2.paragraph.1 = RoRo yw pan fydd nwyddau’n cael eu gyrru ymlaen i’r fferi neu’r trên, ac oddi arno, ac mae’n cynnwys nwyddau a ddaw gyda rhywun a nwyddau ar eu pennau eu hunain.
-guidance.roro.section.2.paragraph.2 = Gallwch gael {0}, gan gynnwys y lleoliadau lle bydd nwyddau’n cael eu gwirio.
-guidance.roro.section.2.paragraph.2.link = rhestr o leoliadau sy’n defnyddio nwyddau sydd wedi gadael ond sydd bellach wedi cyrraedd (yn agor tab newydd)
-guidance.roro.section.2.paragraph.3 = Ar gyfer nwyddau RoRo sy’n gadael Dover, Eurotunnel, Abergwaun, Caergybi, Lerpwl, Heysham, Penfro/Aberdaugleddau, Sheerness neu Newhaven, defnyddiwch yr wybodaeth a’r codau canlynol:
-
-guidance.roro.section.2.list.1.bullet.1 = Yn ‘Math o ddatganiad’ (adran 1) dewiswch ‘Wedi cyrraedd’. Fodd bynnag, ar gyfer Sheerness a Newhaven dewiswch wedi’i gyflwyno ymlaen llaw
-guidance.roro.section.2.list.1.bullet.2 = Ar gyfer datganiadau sydd wedi cyrraedd yn unig, ar ‘Ychwanegwch yr awdurdodiad ar gyfer yr allforyn hwn’ (adran 2) dewiswch EXRR a nodwch eich rhif EORI, neu rhif EORI yr allforiwr os ydych yn asiant. Peidiwch â nodi CSE hyd yn oed os yw dal gennych.
-guidance.roro.section.2.list.1.bullet.3 = Yn ‘Beth yw cod lleoliad y nwyddau?’ (adran 3), nodwch un o’r canlynol: <ul class
-guidance.roro.section.2.list.1.bullet.3.link = Gwasanaeth Symud Cerbydau Nwyddau (GVMS) (yn agor tab newydd)
-guidance.roro.section.2.list.1.bullet.4 = Yn ‘Ble mae’r swyddfa dollau lle mae’r nwyddau’n gadael?’ (adran 3), dewiswch y man lle y bwriedir i’r nwyddau ymadael o blith y canlynol: <ul class
-guidance.roro.section.2.list.1.bullet.5 = Yn ‘Sut bydd y nwyddau’n cael eu cludo i ffin y DU?’ neu ‘Pa fath o gludiant aeth â’r nwyddau o’r warws i’r ffin?’ (adran 6), dewiswch ‘Cludiant ar ffyrdd’.
-guidance.roro.section.2.list.1.bullet.6 = Yn ‘Beth yw manylion y cludiant ar y ffordd?’ (adran 6), dewiswch ‘Rhif cofrestru’r cerbyd’ a nodwch rif cofrestru’r lori a fydd yn cludo’ch nwyddau allan o’r DU neu i’r derfynfa. Ar gyfer nwyddau sydd ar eu pen eu hunain, nodwch rif y trelar hefyd. Gallwch nodi ‘Anhysbys’ os nad yw’r manylion gennych, ond peidiwch â gadael hwn yn wag.
-guidance.roro.section.2.list.1.bullet.7 = Yn ‘Beth yw manylion y cludiant a wnaeth adael y ffin?’, nodwch rif y fferi, enw’r fferi, neu (ar gyfer Eurotunnel) rif y wagen. Gallwch nodi ‘Anhysbys’ os nad yw’r manylion gennych, ond peidiwch â gadael hwn yn wag.
-guidance.roro.section.2.list.1.bullet.8 = Yn ‘A yw’r nwyddau mewn cynhwysydd neu gynwysyddion?’, rhowch rif adnabod y cynhwysydd, neu rhowch ‘Anhysbys’ os nad yw’r manylion gennych, ond peidiwch â gadael hwn yn wag. Sylwch fod ‘cynhwysydd’ yn cynnwys pob math o gynhwysydd gan gynnwys cyrff cyfnewid.
-
-guidance.roro.section.3.header = Cyflwyno’r datganiad ‘wedi cyrraedd’
-guidance.roro.section.3.paragraph.1 = Fe’ch cynghorir i gyflwyno’r datganiad ‘wedi cyrraedd’ cyn i’r nwyddau adael eich safle (neu safle’r masnachwr). Bydd hyn yn anfon neges glirio i chi (caniatâd i symud ymlaen) a fydd yn galluogi’ch gyrrwr i fynd yn syth ymlaen i’r swyddfa lle mae’r nwyddau’n gadael. Os oes angen i’ch nwyddau ddilyn llwybr 1 neu lwybr 2 (gwiriadau dogfennol neu ffisegol), byddwch yn cael hysbysiad ar unwaith wrth i chi gyflwyno’ch datganiad.
-guidance.roro.section.3.paragraph.2 = Ym mhob achos, bydd rhaid i chi gyflwyno’r datganiad cyn i’r nwyddau gyrraedd y porthladd.
-
-guidance.roro.section.4.header = Gweithdrefnau clirio
-guidance.roro.section.4.paragraph.1 = Unwaith y byddwch wedi cyflwyno’r datganiad, bydd CThEF yn anfon hysbysiad atoch yn rhoi llwybr 1, 2, 3 neu 6 i chi. Ystyr pob un o’r rhain yw fel a ganlyn:
-
-guidance.roro.section.4.list.1.bullet.1 = Llwybr 1: Mae angen gwirio dogfennau – uwchlwythwch ddogfennau sy’n ategu’ch datganiad ac arhoswch am ganiatâd i symud ymlaen neu am gyfarwyddyd pellach
-guidance.roro.section.4.list.1.bullet.2 = Llwybr 2: Gofynnir i chi uwchlwytho dogfennau (yn debyg i Lwybr 1) ac i sicrhau bod y cludwr neu’r gyrrwr yn cludo’ch nwyddau i fan allforio dynodedig neu safle awdurdodedig, fel y gallwn gyflawni gwiriadau’r tollau
-guidance.roro.section.4.list.1.bullet.3 = Llwybr 3: Gwirio dogfennau ar ôl ymadael – anfonwch gopi o’r cofnod allforio a dogfennau ategol drwy e-bost i’r {0} neu drwy’r post i: <address>Freepost RTGR-LSCG-LTJS<br>Cyllid a Thollau EF / HM Revenue and Customs<br>Canolfan Clirio Genedlaethol / National Clearance Hub<br>Ralli Quays<br>3 Stanley Street<br>Salford<br>M60 9LA<br>Y Deyrnas Unedig / United Kingdom</address>
-guidance.roro.section.4.list.1.bullet.3.link = Ganolfan Clirio Genedlaethol
-guidance.roro.section.4.list.1.bullet.4 = Llwybr 6: Rhoddir caniatâd i chi symud ymlaen i borthladd
-
-guidance.roro.section.5.header = Cyfradd sero TAW a buddion eraill
-guidance.roro.section.5.paragraph.1 = Lle gallwch ddangos prawf dogfennol o allforio, gan gynnwys tystiolaeth fasnachol, gall unrhyw nwyddau sy’n agored i TAW gael eu hystyried ar gyfer cyfradd sero TAW. Os ydych yn gweithgynhyrchu nwyddau yn y DU, gallwch wrthbwyso’ch rhwymedigaeth TAW.
-guidance.roro.section.5.paragraph.2 = Gall nwyddau a ddaeth i mewn i’r DU o dan ryddhadau mewnforio, neu sy’n destun gohiriad toll ecséis, gael eu cofnodi pan gânt eu hail-allforio neu eu hallforio. Bydd hyn yn helpu i gefnogi dod â’r rhyddhad neu’r gohiriad i ben.
-
-guidance.roro.section.6.header = Dogfennau fel prawf o ymadael
-guidance.roro.section.6.paragraph.1 = Cyn belled â bod statws eich datganiad yn dangos fel un sydd ‘Wedi’i glirio’, gallwch fod yn fodlon y bydd CThEF yn cymryd bod eich nwyddau wedi ymadael.
-guidance.roro.section.6.paragraph.2 = Mae dal angen i chi gadw tystiolaeth fasnachol o’r allforio megis tocynnau ar gyfer y daith, a phrawf o fewnforio. Nid oes angen darparu’r dogfennau hyn i’r Ganolfan Clirio Genedlaethol ar gyfer gwiriadau dogfennol ond efallai y bydd CThEF yn gofyn am gael gweld prawf o ymadael.

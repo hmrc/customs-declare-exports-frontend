@@ -34,7 +34,7 @@ import services.audit.AuditService
 import services.cache.ExportsCacheService
 import uk.gov.hmrc.play.bootstrap.controller.WithUnsafeDefaultFormBinding
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import views.html.section6.{send_by_roro, transport_leaving_the_border}
+import views.html.section6.transport_leaving_the_border
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -47,7 +47,6 @@ class TransportLeavingTheBorderController @Inject() (
   navigator: Navigator,
   mcc: MessagesControllerComponents,
   transportAtBorder: transport_leaving_the_border,
-  sendByRoroPage: send_by_roro,
   inlandOrBorderHelper: InlandOrBorderHelper,
   supervisingCustomsOfficeHelper: SupervisingCustomsOfficeHelper
 )(implicit ec: ExecutionContext, auditService: AuditService)
@@ -67,10 +66,6 @@ class TransportLeavingTheBorderController @Inject() (
         formWithErrors => Future.successful(BadRequest(transportAtBorder(formWithErrors))),
         updateCache(_).map(declaration => navigator.continueTo(nextPage(declaration)))
       )
-  }
-
-  val sendByRoro: Action[AnyContent] = (authenticate andThen journeyType) { implicit request =>
-    Ok(sendByRoroPage())
   }
 
   private def nextPage(declaration: ExportsDeclaration): Call =

@@ -3,7 +3,7 @@ import sbt.*
 object Dependencies {
 
   val bootstrapPlayVersion = "10.8.0"
-  val frontendPlayVersion = "13.12.0"
+  val frontendPlayVersion = "13.13.0"
 
   val compile: Seq[ModuleID] = List(
     "uk.gov.hmrc"                    %% "bootstrap-frontend-play-30"             % bootstrapPlayVersion,

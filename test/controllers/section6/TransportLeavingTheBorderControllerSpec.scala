@@ -38,11 +38,10 @@ import play.api.libs.json.Json
 import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.Helpers._
 import play.twirl.api.HtmlFormat
-import views.html.section6.{send_by_roro, transport_leaving_the_border}
+import views.html.section6.transport_leaving_the_border
 
 class TransportLeavingTheBorderControllerSpec extends ControllerSpec with AuditedControllerSpec with OptionValues {
 
-  private val sendByRoro = mock[send_by_roro]
   private val transportLeavingTheBorder = mock[transport_leaving_the_border]
 
   private val inlandOrBorderHelper = instanceOf[InlandOrBorderHelper]
@@ -55,7 +54,6 @@ class TransportLeavingTheBorderControllerSpec extends ControllerSpec with Audite
     navigator,
     mcc,
     transportLeavingTheBorder,
-    sendByRoro,
     inlandOrBorderHelper = inlandOrBorderHelper,
     supervisingCustomsOfficeHelper
   )(ec, auditService)
@@ -64,12 +62,11 @@ class TransportLeavingTheBorderControllerSpec extends ControllerSpec with Audite
     super.beforeEach()
     authorizedUser()
     withNewCaching(aStandardDeclaration)
-    when(sendByRoro.apply()(any(), any())).thenReturn(HtmlFormat.empty)
     when(transportLeavingTheBorder.apply(any())(any(), any())).thenReturn(HtmlFormat.empty)
   }
 
   override protected def afterEach(): Unit = {
-    reset(sendByRoro, transportLeavingTheBorder)
+    reset(transportLeavingTheBorder)
     super.afterEach()
   }
 
@@ -336,12 +333,4 @@ class TransportLeavingTheBorderControllerSpec extends ControllerSpec with Audite
     }
   }
 
-  "TransportLeavingTheBorderController" should {
-    "return 200 (OK)" when {
-      "the sendByRoroPage method is invoked" in {
-        val result = controller.sendByRoro(getRequest())
-        status(result) must be(OK)
-      }
-    }
-  }
 }

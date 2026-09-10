@@ -17,9 +17,7 @@
 package views.section6
 
 import base.Injector
-import controllers.section6.routes.TransportLeavingTheBorderController
 import controllers.summary.routes.SectionSummaryController
-import forms.section2.authorisationHolder.AuthorizationTypeCodes.EXRR
 import forms.section6.TransportLeavingTheBorder.form
 import models.DeclarationType._
 import models.requests.JourneyRequest
@@ -52,10 +50,6 @@ class TransportLeavingTheBorderViewSpec extends PageWithButtonsSpec with Injecto
 
       "display the expected body text" in {
         view.getElementsByClass("govuk-body").get(0).text mustBe messages("declaration.transport.leavingTheBorder.hint")
-      }
-
-      "not display any inset text when no authorisation code has been entered" in {
-        view.getElementsByClass("govuk-inset-text").size mustBe 0
       }
 
       "display 'Back' button that links to 'Items Summary' page" in {
@@ -149,27 +143,6 @@ class TransportLeavingTheBorderViewSpec extends PageWithButtonsSpec with Injecto
             "declaration.transport.leavingTheBorder.transportMode.empty"
           )
         }
-      }
-    }
-
-    onEveryAdditionalType(withAuthorisationHolders(Some("APE"))) { implicit request =>
-      val view = createView()
-
-      "not display any inset text when no 'EXRR' authorisation code has been entered" in {
-        view.getElementsByClass("govuk-inset-text").size mustBe 0
-      }
-    }
-
-    onEveryAdditionalType(withAuthorisationHolders(Some(EXRR))) { implicit request =>
-      val view = createView()
-
-      "display the expected inset text when an 'EXRR' authorisation code has been entered" in {
-        val insetText = view.getElementsByClass("govuk-inset-text")
-        insetText.size mustBe 1
-        insetText.text mustBe messages("declaration.transport.leavingTheBorder.inset", messages("declaration.transport.leavingTheBorder.inset.link"))
-
-        val links = view.getElementsByClass("govuk-link--no-visited-state")
-        links.get(0) must haveHref(TransportLeavingTheBorderController.sendByRoro.url)
       }
     }
   }

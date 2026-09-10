@@ -455,10 +455,6 @@ GET         /transport-leaving-the-border        controllers.section6.TransportL
 
 POST        /transport-leaving-the-border        controllers.section6.TransportLeavingTheBorderController.submitForm()
 
-# Guidance page from Transport leaving the border when auth code is EXRR
-
-GET         /send-by-roro                        controllers.section6.TransportLeavingTheBorderController.sendByRoro
-
 # Identification of a Warehouse
 
 GET         /warehouse-details                   controllers.section6.WarehouseIdentificationController.displayPage
