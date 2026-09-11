@@ -111,7 +111,7 @@
     title = Title("declaration.zeroRatedForVat.title",  "declaration.section.5", hasErrors = hasErrors),
     backButton = Some(BackButton(messages("site.backToPreviousQuestion"), navigator.backLink(ZeroRatedForVat, ItemId(itemId))))) {
 
-    @formHelper(action = ZeroRatedForVatController.submitForm(itemId), Symbol("autoComplete") -> "off") {
+    @formHelper(action = ZeroRatedForVatController.submitForm(itemId)) {
 
         @errorSummary(form.errors.map { error =>
             if (error.key == NactCode.nactCodeKey) error.copy(key = VatReportAfterDeclaration.toString)

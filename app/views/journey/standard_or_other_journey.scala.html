@@ -47,7 +47,7 @@
     backButton = Some(BackButton(messages("site.backToSelectionPage"), ChoiceController.displayPage)),
     showDeclarationSummaryLink = false
 ) {
-    @formHelper(action = StandardOrOtherJourneyController.submitChoice, Symbol("autoComplete") -> "off") {
+    @formHelper(action = StandardOrOtherJourneyController.submitChoice) {
         @errorSummary(radioGroupErrors("type", STANDARD.toString, form.errors))
         <fieldset class="govuk-fieldset" @if(form.hasErrors) {aria-describedby="declarationType-error" }>
             <legend class="govuk-fieldset__legend govuk-!-margin-bottom-0">
