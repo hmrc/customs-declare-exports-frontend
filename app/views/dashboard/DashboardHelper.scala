@@ -159,8 +159,7 @@ object DashboardHelper {
          |""".stripMargin
     }.mkString
 
-    Html(
-      s"""
+    Html(s"""
          |<nav
          |  id="filters"
          |  class="govuk-tabs govuk-!-static-margin-bottom-0"
@@ -169,8 +168,7 @@ object DashboardHelper {
          |    $tabs
          |  </ul>
          |</nav>
-         |""".stripMargin
-    )
+         |""".stripMargin)
   }
 
   def currentPage(implicit request: Request[_]): Int = request.getQueryString(Page).fold(1)(_.toInt)
