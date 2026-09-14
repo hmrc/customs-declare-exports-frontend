@@ -83,7 +83,7 @@
     title = Title(templateHelper.title, "declaration.section.4", hasErrors = hasErrors),
     backButton = Some(BackButton(messages(backButtonText), backLink))
 ) {
-    @formHelper(action = PreviousDocumentsController.submit, Symbol("autoComplete") -> "off") {
+    @formHelper(action = PreviousDocumentsController.submit) {
         @errorSummary(form.errors)
 
         @sectionHeader(messages("declaration.section.4"))
