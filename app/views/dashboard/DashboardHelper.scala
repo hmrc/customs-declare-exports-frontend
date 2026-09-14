@@ -135,18 +135,16 @@ object DashboardHelper {
   def tabGroup(selectedStatusGroup: StatusGroup)(implicit messages: Messages): Html = {
 
     val tabs = statusGroups.map { statusGroup =>
+      val selected = statusGroup == selectedStatusGroup
+
       val listSelectedClass =
-        if (statusGroup == selectedStatusGroup)
-          " govuk-tabs__list-item--selected"
-        else
-          ""
+        if (selected) " govuk-tabs__list-item--selected" else ""
 
       val linkSelectedClass =
-        if (statusGroup == selectedStatusGroup) " selected-status-group"
-        else ""
+        if (selected) " selected-status-group" else ""
 
-      val ariaCurrent =
-        """ aria-current="page""""
+      val currentPage =
+        if (selected) """ aria-current="page"""" else ""
 
       s"""
          |<li class="govuk-tabs__list-item$listSelectedClass">
@@ -154,7 +152,7 @@ object DashboardHelper {
          |    class="govuk-tabs__tab$linkSelectedClass"
          |    href="/customs-declare-exports/dashboard?$Groups=$statusGroup&$Page=1"
          |    id="$statusGroup-submissions-tab"
-         |    $ariaCurrent>
+         |    $currentPage>
          |    ${messages(s"dashboard.$statusGroup.button.text")}
          |  </a>
          |</li>
@@ -166,7 +164,6 @@ object DashboardHelper {
          |  id="filters"
          |  class="govuk-tabs govuk-!-static-margin-bottom-0"
          |  aria-label="${messages("aria.label.filters")}">
-         |
          |  <ul class="govuk-tabs__list">
          |    $tabs
          |  </ul>
