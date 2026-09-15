@@ -116,7 +116,7 @@ class Card3ForRoutesAndLocations @Inject() (summaryCard: summary_card, countryHe
         if (declaration.isAmendmentDraft) None
         else changeLink(LocationOfGoodsController.displayPage, "locations.goodsLocationCode", actionsEnabled)
 
-      SummaryListRow(key("locations.goodsLocationCode"), value(goodsLocation.value), classes = s"${cssNoBorderOnGVMS}goods-location-code", actions)
+      SummaryListRow(key("locations.goodsLocationCode"), value(goodsLocation.value.drop(6)), classes = s"${cssNoBorderOnGVMS}goods-location-code", actions)
     }
 
   private def additionalInformation(locations: Locations)(implicit messages: Messages): Option[SummaryListRow] =
