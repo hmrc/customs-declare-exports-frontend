@@ -32,7 +32,7 @@ class Card3ForRoutesAndLocationsSpec extends UnitViewSpec with ExportsTestHelper
     aDeclaration(
       withRoutingCountries(List(Country(Some("FR")), Country(Some("IT")))),
       withDestinationCountry(Country(Some("ES"))),
-      withGoodsLocation(LocationOfGoods("GBAUEMAEMAEMA")),
+      withGoodsLocation(LocationOfGoods("radio-GBAUEMAEMAEMA")),
       withOfficeOfExit("123")
     )
 
