@@ -102,7 +102,7 @@ class LocationOfGoodsHelper @Inject() (
 
   def errors(form: Form[LocationOfGoods], version: Int)(implicit messages: Messages): Seq[FormError] =
     version match {
-      case 3 | 5 => radioGroupErrors(radioGroupId, gvmsGoodsLocationsForArrivedDecls.head, form.errors)
+      case 3 | 5 => radioGroupErrors(radioGroupId, s"radio-${gvmsGoodsLocationsForArrivedDecls.head}", form.errors)
       case _     => yesNoErrors(form.errors, radioGroupId)
     }
 
