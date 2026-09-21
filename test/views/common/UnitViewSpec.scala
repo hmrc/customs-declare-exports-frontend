@@ -81,10 +81,11 @@ trait UnitViewSpec extends UnitWithMocksSpec with CommonMessages with MessageSpe
     headingText: String,
     expectedSummaryLists: Int,
     wantedSummaryList: Int,
-    expectedSummaryRows: Int
+    expectedSummaryRows: Int,
+    headingLevel: Int = 3
   ): Elements = {
     val heading = view.getElementsByClass(s"$headingId-heading").first
-    heading.tagName mustBe "h3"
+    heading.tagName mustBe s"h$headingLevel"
     messages.isDefinedAt(s"declaration.summary.$headingText") match {
       case false => heading.text mustBe headingText
       case _     => heading.text mustBe messages(s"declaration.summary.$headingText")

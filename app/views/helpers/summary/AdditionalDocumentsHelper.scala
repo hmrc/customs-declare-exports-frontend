@@ -46,7 +46,7 @@ object AdditionalDocumentsHelper extends SummaryHelper {
         }
       }
       val summaryListRows = (licenseRow(item, false, actionsEnabled, itemIndex) +: documentRows).flatten
-      val sectionTitle = Some(SummarySectionHeading(s"item-$itemIndex-additional-documents", "item.additionalDocuments"))
+      val sectionTitle = Some(SummarySectionHeading(s"item-$itemIndex-additional-documents", "item.additionalDocuments", headingLevel = 4))
       Some(SummarySection(summaryListRows, sectionTitle))
     } else
       maybeSummarySection(

@@ -23,25 +23,38 @@
 
 @(summarySection: SummarySection)(implicit messages: Messages)
 
-@headingId(heading: SummarySectionHeading): String = @{ s"${heading.sectionId}-heading" }
+@headingId(heading: SummarySectionHeading) = @{ s"${heading.sectionId}-heading" }
+@headingMessage(heading: SummarySectionHeading) = @{ s"declaration.summary.${heading.messageSuffix}" }
 
 @summarySection.maybeHeading.map { heading =>
     @heading.maybeItemSection.fold {
-      <h3 class="@headingId(heading) govuk-heading-s heading-on-no-data govuk-!-margin-bottom-0">
-        @messages(s"declaration.summary.${heading.messageSuffix}")
-      </h3>
-    } { itemSection =>
-      <div class="remove-item-flex">
-      <h3 class="@headingId(heading) govuk-heading-s govuk-!-margin-bottom-4 @itemSection.topPaddingClass">
-        @messages(s"declaration.summary.${heading.messageSuffix}", itemSection.index)
-      </h3>
-      @if(itemSection.href != anchorPlaceholder) {
-          <span class="remove-item-link @itemSection.topPaddingClass govuk-heading-s">
-              @link(messages("declaration.summary.item.remove"), Call("GET", itemSection.href),
-                    textHidden=Some("Remove " + messages(s"declaration.summary.${heading.messageSuffix}", itemSection.index)))
-          </span>
+        @if(heading.headingLevel == 4) {
+            <h4 class="@headingId(heading) govuk-heading-s heading-on-no-data govuk-!-margin-bottom-0">
+                @messages(headingMessage(heading))
+            </h4>
+        } else {
+            <h3 class="@headingId(heading) govuk-heading-s heading-on-no-data govuk-!-margin-bottom-0">
+                @messages(headingMessage(heading))
+            </h3>
         }
-      </div>
+    } { itemSection =>
+        <div class="remove-item-flex">
+            <h3 class="@headingId(heading) govuk-heading-s govuk-!-margin-bottom-4 @itemSection.topPaddingClass">
+                @messages(headingMessage(heading), itemSection.index)
+            </h3>
+            @if(itemSection.href != anchorPlaceholder) {
+                <span class="remove-item-link @itemSection.topPaddingClass govuk-heading-s">
+                    @link(
+                        messages("declaration.summary.item.remove"),
+                        Call("GET", itemSection.href),
+                        textHidden = Some(
+                            "Remove " + messages(headingMessage(heading), itemSection.index)
+                        )
+                    )
+                </span>
+            }
+        </div>
     }
 }
+
 @govukSummaryList(SummaryList(summarySection.rows))

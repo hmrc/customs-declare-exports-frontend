@@ -32,7 +32,7 @@ object AdditionalInformationHelper extends SummaryHelper {
 
       if (summaryListRows.isEmpty) headingOnNoInformation(item, actionsEnabled, itemIndex)
       else {
-        val heading = SummarySectionHeading(s"item-$itemIndex-additional-information", "item.additionalInformation")
+        val heading = SummarySectionHeading(s"item-$itemIndex-additional-information", "item.additionalInformation", headingLevel = 4)
         SummarySection(summaryListRows, Some(heading))
       }
     }

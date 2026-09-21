@@ -321,7 +321,7 @@ class Card5ForItemsSpec extends UnitViewSpec with ExportsTestHelper with Injecto
 
       "show the 'Packing details' section" in {
         val heading = view.getElementsByClass("item-1-package-information-heading").first
-        heading.tagName mustBe "h3"
+        heading.tagName mustBe "h4"
         heading.text mustBe messages("declaration.summary.item.packageInformation")
 
         val summaryLists = view.getElementsByClass("govuk-summary-list")
@@ -407,7 +407,7 @@ class Card5ForItemsSpec extends UnitViewSpec with ExportsTestHelper with Injecto
 
       "show the 'Additional Information' section" in {
         val heading = view.getElementsByClass("item-1-additional-information-heading").first
-        heading.tagName mustBe "h3"
+        heading.tagName mustBe "h4"
         heading.text mustBe messages("declaration.summary.item.additionalInformation")
 
         val summaryLists = view.getElementsByClass("govuk-summary-list")
@@ -445,7 +445,7 @@ class Card5ForItemsSpec extends UnitViewSpec with ExportsTestHelper with Injecto
       }
 
       "show the 'Additional Documents' section, with the 'License' row as first" in {
-        val rows = checkSection(view, "item-1-additional-documents", addDocs, 5, 4, 3)
+        val rows = checkSection(view, "item-1-additional-documents", addDocs, 5, 4, 3, 4)
 
         val call1 = Some(IsLicenceRequiredController.displayPage(itemId))
         checkMultiRowSection(rows.get(0), List("item-1-licences"), "item.licences", messages("site.yes"), call1, "item.licences")
