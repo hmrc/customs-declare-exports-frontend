@@ -21,6 +21,6 @@ import views.helpers.summary.SummaryHelper.anchorPlaceholder
 
 case class ItemSection(index: Int, href: String = anchorPlaceholder, topPaddingClass: String = "")
 
-case class SummarySectionHeading(sectionId: String, messageSuffix: String, maybeItemSection: Option[ItemSection] = None)
+case class SummarySectionHeading(sectionId: String, messageSuffix: String, maybeItemSection: Option[ItemSection] = None, headingLevel: Int = 3)
 
 case class SummarySection(rows: Seq[SummaryListRow], maybeHeading: Option[SummarySectionHeading] = None)

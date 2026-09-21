@@ -35,7 +35,11 @@ class PackageInformationHelper @Inject() (packageTypesService: PackageTypesServi
       }.flatten
 
       if (summaryListRows.isEmpty) headingOnNoPackageInfo(item, actionsEnabled, itemIndex)
-      else SummarySection(summaryListRows, Some(SummarySectionHeading(s"item-$itemIndex-package-information", "item.packageInformation")))
+      else
+        SummarySection(
+          summaryListRows,
+          Some(SummarySectionHeading(s"item-$itemIndex-package-information", "item.packageInformation", headingLevel = 4))
+        )
     }
 
   private def headingOnNoPackageInfo(item: ExportItem, actionsEnabled: Boolean, itemIndex: Int)(implicit messages: Messages): SummarySection =
