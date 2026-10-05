@@ -42,6 +42,14 @@ The service starts on port `6791`. To access it, [sign in through the auth login
 sbt test
 ```
 
+#### Pre-push check
+There is a script called `precheck.sh` that runs all tests, examines their coverage and checks if all the files are properly formatted.
+It is good practice to run it just before pushing to GitHub.
+
+```bash
+./precheck.sh
+```
+
 #### Acceptance tests (smoke and regression)
 Once your changes are done, run the [exports-ui-acceptance-tests](https://github.com/hmrc/exports-ui-acceptance-tests) against your locally running copy of this service (see [Running the service locally](#running-the-service-locally)).
 
@@ -159,11 +167,6 @@ Format all project files:
 ```bash
 sbt scalafmtAll
 ```
-
-### Pre-merge check
-There is a script called `precheck.sh` that runs all tests, examine their coverage and check if all the files are properly formatted.
-It is a good practise to run it just before pushing to GitHub. 
-
 
 ### Auto Complete
 This project has a
