@@ -47,6 +47,9 @@ Once your changes are done, run the [exports-ui-acceptance-tests](https://github
 
 For the Service Manager profile, the test tags and the script options, see [exports-ui-acceptance-tests - How to run tests](https://github.com/hmrc/exports-ui-acceptance-tests#how-to-run-tests).
 
+#### Performance tests
+The performance tests for this service are in [exports-declarations-performance-tests](https://github.com/hmrc/exports-declarations-performance-tests). For how to run them and which environments they run against, see that repository's README.
+
 ### Staging
 The acceptance tests can be run against Staging by passing the `staging` argument to the test script. See [exports-ui-acceptance-tests - How to run tests](https://github.com/hmrc/exports-ui-acceptance-tests#how-to-run-tests).
 
@@ -136,22 +139,31 @@ The feature flags and what they control:
 
 `betaBanner = [true/false]` - When enabled, all pages in the service have a BETA banner.
 
-### Code formatting
-To format the code:
+### Scalafmt
+The code is formatted with [sbt-scalafmt](https://scalameta.org/scalafmt/docs/installation.html#sbt), using the rules in `.scalafmt.conf`.
 
-```
-scalafmt        # format compile sources
-test:scalafmt   # format test sources
-sbt:scalafmt    # format .sbt source
+Check that all project files are formatted as expected:
+
+```bash
+sbt scalafmtCheckAll scalafmtSbtCheck
 ```
 
-To check that everything is formatted:
+Format `*.sbt` and `project/*.scala` files:
 
+```bash
+sbt scalafmtSbt
 ```
-scalafmt::test      # check compile sources
-test:scalafmt::test # check test sources
-sbt:scalafmt::test  # check .sbt sources
+
+Format all project files:
+
+```bash
+sbt scalafmtAll
 ```
+
+### Pre-merge check
+There is a script called `precheck.sh` that runs all tests, examine their coverage and check if all the files are properly formatted.
+It is a good practise to run it just before pushing to GitHub. 
+
 
 ### Auto Complete
 This project has a

@@ -22,13 +22,14 @@ lazy val commonSettings = List(
 )
 
 lazy val scalacFlags = List(
-  "-deprecation",            // warn about use of deprecated APIs
-  "-encoding", "UTF-8",      // source files are in UTF-8
-  "-feature",                // warn about misused language features
-  "-unchecked",              // warn about unchecked type parameters
-  "-Xfatal-warnings",        // warnings are fatal!!
+  "-deprecation", // warn about use of deprecated APIs
+  "-encoding",
+  "UTF-8", // source files are in UTF-8
+  "-feature", // warn about misused language features
+  "-unchecked", // warn about unchecked type parameters
+  "-Xfatal-warnings", // warnings are fatal!!
   "-Wconf:cat=deprecation&src=app/controllers/.*:silent", // deprecation messages muted
-  "-Wconf:src=target/.*:s",  // silence warnings from compiled files
+  "-Wconf:src=target/.*:s", // silence warnings from compiled files
   "-Wconf:msg=match may not be exhaustive:s", // silence warnings about non-exhaustive pattern matching
   "-Wconf:msg=a type was inferred to be `Object`:s", // silence warnings from mockito reset
   "-Wconf:src=.*routes.*:s", // silence private val defaultPrefix in class Routes is never used
