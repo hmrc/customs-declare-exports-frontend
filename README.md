@@ -15,7 +15,7 @@ It provides functionality for traders to submit and manage exports declarations 
 | Performance tests | [exports-declarations-performance-tests](https://github.com/hmrc/exports-declarations-performance-tests) |
 | Stubs used in Local and Staging |[customs-declarations-stub](https://github.com/hmrc/customs-declarations-stub) |
 
-## How to Run this Service
+## How to Test this Service
 
 ### Prerequisites
 Start all the services CDS Exports depends on with [Service Manager](#service-manager-profiles):
@@ -32,18 +32,18 @@ sm2 --stop CUSTOMS_DECLARE_EXPORTS_FRONTEND
 sbt run
 ```
 
-The service starts on port `6791`. To access it, [sign in through the auth login stub,](https://github.com/hmrc/exports-ui-acceptance-tests#enrolment-required) and you will be redirected to http://localhost:6791/customs-declare-exports/choice.
+The service starts on port `6791`. To access it, [sign in through the auth login stub](https://github.com/hmrc/exports-ui-acceptance-tests#enrolment-required), and you will be redirected to http://localhost:6791/customs-declare-exports/choice.
 
 ## How to Test this Service
 
 ### Local
 
-#### Unit tests
+#### Unit Tests
 ```bash
 sbt test
 ```
 
-#### Pre-push check
+#### Pre-Push Check
 There is a script called `precheck.sh` that runs all tests, examines their coverage and checks if all the files are properly formatted.
 It is good practice to run it just before pushing to GitHub.
 
@@ -51,20 +51,22 @@ It is good practice to run it just before pushing to GitHub.
 ./precheck.sh
 ```
 
-#### Acceptance tests (smoke and regression)
-The acceptance tests for this service are in [exports-ui-acceptance-tests](https://github.com/hmrc/exports-ui-acceptance-tests). For how to run them and which environments they run against, see that repository's README.
+#### Acceptance Tests (Smoke and Regression)
+The acceptance tests for this service are in [exports-ui-acceptance-tests](https://github.com/hmrc/exports-ui-acceptance-tests). For how to run them and which environments they run against, see [README](https://github.com/hmrc/exports-ui-acceptance-tests#how-to-run-the-tests).
 
-#### Performance tests
-The performance tests for this service are in [exports-declarations-performance-tests](https://github.com/hmrc/exports-declarations-performance-tests). For how to run them and which environments they run against, see that repository's README.
+#### Performance Tests
+The performance tests for this service are in [exports-declarations-performance-tests](https://github.com/hmrc/exports-declarations-performance-tests). For how to run them and which environments they run against, see [README](https://github.com/hmrc/exports-declarations-performance-tests#how-to-run-the-tests).
 
 ### Manual Testing in QA and Staging
-To manually verify the service in the QA or Staging environment, refer to the [Manual Service Verification in QA and Staging](https://github.com/hmrc/exports-ui-acceptance-tests#manual-service-verification-in-qa-and-staging) section of the exports-ui-acceptance-tests README for environment URLs, enrolment requirements, and detailed access steps.
+After the successful [deployment pipeline](https://build.tax.service.gov.uk/job/BordersAndTradeLiveServices/job/CDSExports/job/customs-declare-exports-frontend-pipeline/),manual testing is performed in QA and/or Staging environment.For more details refer [Manual Service Verification in QA and Staging.](https://github.com/hmrc/exports-ui-acceptance-tests#manual-service-verification-in-qa-and-staging)
 
 ## Service Catalogue
 - [customs-declare-exports-frontend in the MDTP Catalogue](https://catalogue.tax.service.gov.uk/repositories/customs-declare-exports-frontend)
 
 ## Jenkins Pipeline
-- Front End Build and Deployment Pipeline [customs-declare-exports-frontend build](https://build.tax.service.gov.uk/job/BordersAndTradeLiveServices/job/CDSExports/job/customs-declare-exports-frontend/)
+- Front End Build and Deployment Pipeline
+  -  [Build pipeline](https://build.tax.service.gov.uk/job/BordersAndTradeLiveServices/job/CDSExports/job/customs-declare-exports-frontend/)
+  -  [Deployment pipeline](https://hmrcdigital.slack.com/archives/D0AHH4QKB9C/p1791392226925179)
 - The acceptance test Jenkins jobs (smoke and regression) are listed in the [exports-ui-acceptance-tests README](https://github.com/hmrc/exports-ui-acceptance-tests#jenkins-builds).
 - The performance test Jenkins jobs are listed in the [exports-declarations-performance-tests README](https://github.com/hmrc/exports-declarations-performance-tests#jenkins-builds).
 
@@ -113,7 +115,7 @@ All paths are relative to `/customs-declare-exports` and need an [authenticated 
 
 ## Developer Notes
 
-### Feature flags
+### Feature Flags
 This service uses feature flags to enable or disable some of its features. You can change or override them in config under the `microservice.services.features.<featureName>` key.
 
 The feature flags and what they control:
@@ -141,16 +143,16 @@ Format all project files:
 sbt scalafmtAll
 ```
 
-### Auto Complete
+### Autocomplete
 This project has a
 [TamperMonkey](https://chrome.google.com/webstore/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo?hl=en) (Google Chrome)
 or
 [GreaseMonkey](https://addons.mozilla.org/en-GB/firefox/addon/greasemonkey/) (Firefox)
-Auto Complete script to help you get through the form journey faster.
+`autocomplete` script to help you get through the form journey faster.
 
-You can find these scripts in the `docs` directory.
+You can find these scripts in the [[docs](https://github.com/hmrc/customs-declare-exports-frontend/tree/main/docs)] directory.
 
-### Tariff Code lists
+### TariffCodelists
 As instructed by the Exports Product Manager and CDS stakeholders, the [CDS Tariff](https://www.gov.uk/government/collections/uk-trade-tariff-volume-3-for-cds--2)
 is our source of truth for any CDS codes, until further instructions or until we connect to a service that provides this data.
 
