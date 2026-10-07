@@ -85,7 +85,7 @@ These profiles are defined in [service-manager-config](https://github.com/hmrc/s
 
 ## Endpoints
 
-All paths are relative to `/customs-declare-exports` and need an [authenticated user with the HMRC-CUS-ORG enrolment](#enrolment-required).
+All paths are relative to `/customs-declare-exports` and need an [authenticated user with the HMRC-CUS-ORG enrolment](https://github.com/hmrc/exports-ui-acceptance-tests#enrolment-required).
 
 | Method | Path | Purpose | Sample request (query / form body) | Response |
 |---|---|---|---|---|
