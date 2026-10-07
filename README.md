@@ -31,7 +31,7 @@ sm2 --stop CUSTOMS_DECLARE_EXPORTS_FRONTEND
 sbt run
 ```
 
-The service starts on port `6791`. To access it, [sign in through the auth login stub](#enrolment-required) and you will be redirected to http://localhost:6791/customs-declare-exports/choice.
+The service starts on port `6791`. To access it, [sign in through the auth login stub,](https://github.com/hmrc/exports-ui-acceptance-tests#enrolment-required) and you will be redirected to http://localhost:6791/customs-declare-exports/choice.
 
 ## How to Test this Service
 
