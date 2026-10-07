@@ -5,14 +5,14 @@ This public-facing microservice is part of the Customs Exports Declaration Servi
 
 It provides functionality for traders to submit and manage exports declarations (create, amend, copy and cancel declarations, view submissions and their notifications, and manage saved drafts).
 
-| | |
-|---|---|
 | Digital service | CDS Exports |
+|-----------------|-------------|
 | Local port | `6791` |
 | Base path | `/customs-declare-exports` |
 | Back-end | [customs-declare-exports](https://github.com/hmrc/customs-declare-exports) (port `6792`) |
 | Acceptance tests | [exports-ui-acceptance-tests](https://github.com/hmrc/exports-ui-acceptance-tests) |
 | Performance tests | [exports-declarations-performance-tests](https://github.com/hmrc/exports-declarations-performance-tests) |
+| Stubs used in Local and Staging |[[customs-declarations-stub](https://github.com/hmrc/customs-declarations-stub)] |
 
 ## How to Run this Service
 
@@ -51,20 +51,13 @@ It is good practice to run it just before pushing to GitHub.
 ```
 
 #### Acceptance tests (smoke and regression)
-Once your changes are done, run the [exports-ui-acceptance-tests](https://github.com/hmrc/exports-ui-acceptance-tests) against your locally running copy of this service (see [Running the service locally](#running-the-service-locally)).
-
-For the Service Manager profile, the test tags and the script options, see [exports-ui-acceptance-tests - How to run tests](https://github.com/hmrc/exports-ui-acceptance-tests#how-to-run-tests).
+The acceptance tests for this service are in [exports-ui-acceptance-tests](https://github.com/hmrc/exports-ui-acceptance-tests). For how to run them and which environments they run against, see that repository's README.
 
 #### Performance tests
 The performance tests for this service are in [exports-declarations-performance-tests](https://github.com/hmrc/exports-declarations-performance-tests). For how to run them and which environments they run against, see that repository's README.
 
-### Staging
-The acceptance tests can be run against Staging by passing the `staging` argument to the test script. See [exports-ui-acceptance-tests - How to run tests](https://github.com/hmrc/exports-ui-acceptance-tests#how-to-run-tests).
-
-To check the service manually, sign in through the auth login stub at https://www.staging.tax.service.gov.uk/auth-login-stub/gg-sign-in, using the [enrolment details](#enrolment-required) below and the redirect URL https://www.staging.tax.service.gov.uk/customs-declare-exports/choice.
-
-### QA
-The QA environment uses real upstream services, so the acceptance tests are **not** run against QA.
+### Manual Testing in QA and Staging
+To manually verify the service in the QA or Staging environment, refer to the [[exports-ui-acceptance-tests](https://github.com/hmrc/exports-ui-acceptance-tests#manual-service-verification-in-qa-and-staging)] documentation for environment URLs, enrolment requirements, and detailed access steps.
 
 ## Service Catalogue
 - [customs-declare-exports-frontend in the MDTP Catalogue](https://catalogue.tax.service.gov.uk/repositories/customs-declare-exports-frontend)
@@ -72,17 +65,8 @@ The QA environment uses real upstream services, so the acceptance tests are **no
 ## Jenkins Pipeline
 - [customs-declare-exports-frontend build](https://build.tax.service.gov.uk/job/BordersAndTradeLiveServices/job/CDSExports/job/customs-declare-exports-frontend/)
 
-The acceptance test Jenkins jobs (smoke and regression) are listed in the [exports-ui-acceptance-tests README](https://github.com/hmrc/exports-ui-acceptance-tests#how-to-run-tests).
-
-## Smoke and Regression Test Coverage
-The smoke and regression tests for this service are in [exports-ui-acceptance-tests](https://github.com/hmrc/exports-ui-acceptance-tests). They cover:
-- **Smoke**: the main declaration journeys from start to submission.
-- **Regression**: the declaration journeys (Standard, Simplified, Occasional, Supplementary and Clearance), split by section:
-  - Sections 1, 2 and 3
-  - Sections 4 and 5
-  - Section 6, Amend, Dashboard and Rejected Notifications
-
-For how to run each test pack, see [exports-ui-acceptance-tests - How to run tests](https://github.com/hmrc/exports-ui-acceptance-tests#how-to-run-tests). For the full list of scenarios, see [exports-ui-acceptance-tests - Testing Scenarios Coverage](https://confluence.tools.tax.service.gov.uk/spaces/BTL/pages/1398703349/exports-ui-acceptance-tests+-Testing+Scenarios+Coverage).
+ - The acceptance test Jenkins jobs (smoke and regression) are listed in the [exports-ui-acceptance-tests README](https://github.com/hmrc/exports-ui-acceptance-tests#how-to-run-tests).
+ - The performance test Jenkins jobs are listed in the [[exports-declarations-performance-tests README](https://github.com/hmrc/exports-declarations-performance-tests/blob/main/README.md)].
 
 ## Service Manager Profiles
 These profiles are defined in [service-manager-config](https://github.com/hmrc/service-manager-config).
@@ -126,17 +110,6 @@ All paths are relative to `/customs-declare-exports` and need an [authenticated 
 | GET | `/declaration/saved-summary` | Summary of the declaration in progress | – | `200` |
 | POST | `/declaration/submit-your-declaration` | Submit the declaration to CDS | `fullName=Joe+Bloggs&jobRole=Export+Manager&email=joe.bloggs@example.com&confirmation=true` | `303` → `/declaration/holding`, then `/declaration/confirmation` |
 | GET / POST | `/declaration/...` | Other journey pages (sections 1 to 6, amendments) | Page fields plus a button: `SaveAndContinue` (next page), `SaveAndReturnToSummary` or `SaveAndReturnToErrors` | `303` → next page |
-
-## Enrolment Required
-
-Locally, sign in through the auth login stub at http://localhost:9949/auth-login-stub/gg-sign-in, enter the values below, and submit.
-
-| Field | Value |
-|---|---|
-| Redirect URL | Local: `http://localhost:6791/customs-declare-exports/choice`<br>Staging: `https://www.staging.tax.service.gov.uk/customs-declare-exports/choice` |
-| Enrolment Key | `HMRC-CUS-ORG` |
-| Identifier Name | `EORINumber` |
-| Identifier Value | A GB EORI number, e.g. `GB123456789006` |
 
 ## Developer Notes
 
