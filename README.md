@@ -57,7 +57,7 @@ The acceptance tests for this service are in [exports-ui-acceptance-tests](https
 The performance tests for this service are in [exports-declarations-performance-tests](https://github.com/hmrc/exports-declarations-performance-tests). For how to run them and which environments they run against, see that repository's README.
 
 ### Manual Testing in QA and Staging
-To manually verify the service in the QA or Staging environment, refer to the [[exports-ui-acceptance-tests](https://github.com/hmrc/exports-ui-acceptance-tests#manual-service-verification-in-qa-and-staging)] documentation for environment URLs, enrolment requirements, and detailed access steps.
+To manually verify the service in the QA or Staging environment, refer to the [[Manual Service Verification in QA and Staging](https://github.com/hmrc/exports-ui-acceptance-tests#manual-service-verification-in-qa-and-staging)] section of the exports-ui-acceptance-tests README for environment URLs, enrolment requirements, and detailed access steps.
 
 ## Service Catalogue
 - [customs-declare-exports-frontend in the MDTP Catalogue](https://catalogue.tax.service.gov.uk/repositories/customs-declare-exports-frontend)
