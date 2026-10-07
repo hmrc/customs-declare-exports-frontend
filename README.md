@@ -63,10 +63,9 @@ To manually verify the service in the QA or Staging environment, refer to the [[
 - [customs-declare-exports-frontend in the MDTP Catalogue](https://catalogue.tax.service.gov.uk/repositories/customs-declare-exports-frontend)
 
 ## Jenkins Pipeline
-- [customs-declare-exports-frontend build](https://build.tax.service.gov.uk/job/BordersAndTradeLiveServices/job/CDSExports/job/customs-declare-exports-frontend/)
-
- - The acceptance test Jenkins jobs (smoke and regression) are listed in the [exports-ui-acceptance-tests README](https://github.com/hmrc/exports-ui-acceptance-tests#how-to-run-tests).
- - The performance test Jenkins jobs are listed in the [[exports-declarations-performance-tests README](https://github.com/hmrc/exports-declarations-performance-tests/blob/main/README.md)].
+- Front End Build and Deployment Pipeline [customs-declare-exports-frontend build](https://build.tax.service.gov.uk/job/BordersAndTradeLiveServices/job/CDSExports/job/customs-declare-exports-frontend/)
+- The acceptance test Jenkins jobs (smoke and regression) are listed in the [exports-ui-acceptance-tests README](https://github.com/hmrc/exports-ui-acceptance-tests#jenkins-builds).
+- The performance test Jenkins jobs are listed in the [[exports-declarations-performance-tests README](https://github.com/hmrc/exports-declarations-performance-tests#jenkins-builds)].
 
 ## Service Manager Profiles
 These profiles are defined in [service-manager-config](https://github.com/hmrc/service-manager-config).
