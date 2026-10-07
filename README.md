@@ -5,8 +5,8 @@ This public-facing microservice is part of the Customs Exports Declaration Servi
 
 It provides functionality for traders to submit and manage exports declarations (create, amend, copy and cancel declarations, view submissions and their notifications, and manage saved drafts).
 
-| | | 
-|-|-|
+| Key | Value | 
+|-----|-------|
 | Digital service | CDS Exports |
 | Local port | `6791` |
 | Base path | `/customs-declare-exports` |
@@ -26,9 +26,8 @@ sm2 --start CDS_EXPORTS_DECLARATION_ALL
 
 ### Running the service locally
 To run this service from source (for example, to test your own changes), stop the instance started by Service Manager and run it with sbt:
-
+- sm2 --stop CUSTOMS_DECLARE_EXPORTS_FRONTEND
 ```bash
-sm2 --stop CUSTOMS_DECLARE_EXPORTS_FRONTEND
 sbt run
 ```
 
