@@ -5,14 +5,15 @@ This public-facing microservice is part of the Customs Exports Declaration Servi
 
 It provides functionality for traders to submit and manage exports declarations (create, amend, copy and cancel declarations, view submissions and their notifications, and manage saved drafts).
 
+| | | 
+|-|-|
 | Digital service | CDS Exports |
-|-----------------|-------------|
 | Local port | `6791` |
 | Base path | `/customs-declare-exports` |
 | Back-end | [customs-declare-exports](https://github.com/hmrc/customs-declare-exports) (port `6792`) |
 | Acceptance tests | [exports-ui-acceptance-tests](https://github.com/hmrc/exports-ui-acceptance-tests) |
 | Performance tests | [exports-declarations-performance-tests](https://github.com/hmrc/exports-declarations-performance-tests) |
-| Stubs used in Local and Staging |[[customs-declarations-stub](https://github.com/hmrc/customs-declarations-stub)] |
+| Stubs used in Local and Staging |[customs-declarations-stub](https://github.com/hmrc/customs-declarations-stub) |
 
 ## How to Run this Service
 
