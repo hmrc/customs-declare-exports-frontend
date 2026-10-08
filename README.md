@@ -15,7 +15,7 @@ It provides functionality for traders to submit and manage exports declarations 
 | Performance tests | [exports-declarations-performance-tests](https://github.com/hmrc/exports-declarations-performance-tests) |
 | Stubs used in Local and Staging |[customs-declarations-stub](https://github.com/hmrc/customs-declarations-stub) |
 
-## How to Run this Service
+## How to Run This Service
 
 ### Prerequisites
 Start all the services CDS Exports depends on with [Service Manager](#service-manager-profiles):
@@ -33,7 +33,7 @@ sbt run
 
 The service starts on port `6791`. To access it, [sign in through the auth login stub](https://github.com/hmrc/exports-ui-acceptance-tests#enrolment-required), and you will be redirected to http://localhost:6791/customs-declare-exports/choice.
 
-## How to Test this Service
+## How to Test This Service
 
 ### Local
 
@@ -151,7 +151,7 @@ or
 
 You can find these scripts in the [[docs](https://github.com/hmrc/customs-declare-exports-frontend/tree/main/docs)] directory.
 
-### TariffCodelists
+### TariffCodeLists
 As instructed by the Exports Product Manager and CDS stakeholders, the [CDS Tariff](https://www.gov.uk/government/collections/uk-trade-tariff-volume-3-for-cds--2)
 is our source of truth for any CDS codes, until further instructions or until we connect to a service that provides this data.
 
