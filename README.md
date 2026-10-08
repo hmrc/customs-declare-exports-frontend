@@ -149,7 +149,7 @@ or
 [GreaseMonkey](https://addons.mozilla.org/en-GB/firefox/addon/greasemonkey/) (Firefox)
 `autocomplete` script to help you get through the form journey faster.
 
-You can find these scripts in the [[docs](https://github.com/hmrc/customs-declare-exports-frontend/tree/main/docs)] directory.
+You can find these scripts in the [docs](https://github.com/hmrc/customs-declare-exports-frontend/tree/main/docs) directory.
 
 ### TariffCodeLists
 As instructed by the Exports Product Manager and CDS stakeholders, the [CDS Tariff](https://www.gov.uk/government/collections/uk-trade-tariff-volume-3-for-cds--2)
