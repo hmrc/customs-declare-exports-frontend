@@ -57,7 +57,7 @@ The acceptance tests for this service are in [exports-ui-acceptance-tests](https
 The performance tests for this service are in [exports-declarations-performance-tests](https://github.com/hmrc/exports-declarations-performance-tests). For how to run them and which environments they run against, see [README](https://github.com/hmrc/exports-declarations-performance-tests#how-to-run-the-tests).
 
 ### Manual Testing in QA and Staging
-After the successful [deployment pipeline](https://build.tax.service.gov.uk/job/BordersAndTradeLiveServices/job/CDSExports/job/customs-declare-exports-frontend-pipeline/), manual testing is performed in QA and/or Staging environment. For more details refer [Manual Service Verification in QA and Staging.](https://github.com/hmrc/exports-ui-acceptance-tests#manual-service-verification-in-qa-and-staging)
+After the successful [deployment pipeline](https://build.tax.service.gov.uk/job/BordersAndTradeLiveServices/job/CDSExports/job/customs-declare-exports-frontend-pipeline/), manual testing is performed in QA and/or Staging environment. For more details see [Manual Service Verification in QA and Staging.](https://github.com/hmrc/exports-ui-acceptance-tests#manual-service-verification-in-qa-and-staging)
 
 ## Service Catalogue
 - [customs-declare-exports-frontend in the MDTP Catalogue](https://catalogue.tax.service.gov.uk/repositories/customs-declare-exports-frontend)
