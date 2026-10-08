@@ -24,7 +24,7 @@ Start all the services CDS Exports depends on with [Service Manager](https://git
 sm2 --start CDS_EXPORTS_DECLARATION_ALL
 ```
 
-### Running the service locally
+### Running the Service Locally
 To run this service from source (for example, to test your own changes), stop the instance started by Service Manager and run it with sbt:
 ```bash
 sm2 --stop CUSTOMS_DECLARE_EXPORTS_FRONTEND
