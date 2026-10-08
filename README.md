@@ -15,7 +15,7 @@ It provides functionality for traders to submit and manage exports declarations 
 | Performance tests | [exports-declarations-performance-tests](https://github.com/hmrc/exports-declarations-performance-tests) |
 | Stubs used in Local and Staging |[customs-declarations-stub](https://github.com/hmrc/customs-declarations-stub) |
 
-## How to Test this Service
+## How to Run this Service
 
 ### Prerequisites
 Start all the services CDS Exports depends on with [Service Manager](#service-manager-profiles):
