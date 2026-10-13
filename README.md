@@ -159,8 +159,8 @@ We use the following codes:
  * [Country codes](https://www.gov.uk/government/publications/country-codes-for-the-customs-declaration-service) 
  * [Authorisation codes](https://www.gov.uk/government/publications/authorisation-type-codes-for-data-element-339-of-the-customs-declaration-service) (3/39 in tariff) 
  * [UK Office of Exit codes](https://www.gov.uk/government/publications/uk-customs-office-codes-for-data-element-512-of-the-customs-declaration-service) (5/12 in tariff) 
- * [Document type codes (previous document page)](https://www.gov.uk/government/publications/previous-document-codes-for-data-element-21-of-the-customs-declaration-service) (2/1 in tariff) *Last published: 1 August 2018*
- * [Package Type codes](https://www.gov.uk/government/publications/package-type-codes-for-data-element-69-of-the-customs-declaration-service) (6/9 in tariff) *Last published: 1 August 2018*
+ * [Document type codes (previous document page)](https://www.gov.uk/government/publications/previous-document-codes-for-data-element-21-of-the-customs-declaration-service) (2/1 in tariff) 
+ * [Package Type codes](https://www.gov.uk/government/publications/package-type-codes-for-data-element-69-of-the-customs-declaration-service) (6/9 in tariff) 
  * [Customs supervising office codes](https://www.gov.uk/government/publications/supervising-office-codes-for-data-element-527-of-the-customs-declaration-service) (5/27 in tariff) 
 
 ## License
