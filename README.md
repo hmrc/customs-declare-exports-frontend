@@ -65,7 +65,7 @@ After the successful [deployment pipeline](https://build.tax.service.gov.uk/job/
 ## Jenkins Pipeline
 - Front End Build and Deployment Pipeline
   -  [Build pipeline](https://build.tax.service.gov.uk/job/BordersAndTradeLiveServices/job/CDSExports/job/customs-declare-exports-frontend/)
-  -  [Deployment pipeline](https://hmrcdigital.slack.com/archives/D0AHH4QKB9C/p1791392226925179)
+  -  [Deployment pipeline](https://build.tax.service.gov.uk/job/BordersAndTradeLiveServices/job/CDSExports/job/customs-declare-exports-frontend-pipeline/)
 - The acceptance test Jenkins jobs (smoke and regression) are listed in the [exports-ui-acceptance-tests README](https://github.com/hmrc/exports-ui-acceptance-tests#jenkins-builds).
 - The performance test Jenkins jobs are listed in the [exports-declarations-performance-tests README](https://github.com/hmrc/exports-declarations-performance-tests#jenkins-builds).
 
